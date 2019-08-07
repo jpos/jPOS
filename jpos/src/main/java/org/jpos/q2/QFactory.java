@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,11 +20,9 @@ package org.jpos.q2;
 
 
 import org.jdom2.Element;
-import org.jpos.core.Configurable;
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
-import org.jpos.core.XmlConfigurable;
+import org.jpos.core.*;
 import org.jpos.q2.qbean.QConfig;
+import org.jpos.rc.Result;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
@@ -64,7 +62,7 @@ public class QFactory {
                MBeanException,
                InstanceNotFoundException
     {
-        String clazz  = e.getAttributeValue ("class");
+        String clazz  = getAttributeValue (e, "class");
         if (clazz == null) {
             try {
                 clazz = classMapping.getString (e.getName());
@@ -74,16 +72,13 @@ public class QFactory {
             }
         }
         MBeanServer mserver = server.getMBeanServer();
-        getExtraPath (server.getLoader (), e);
+        if (!q2.isDisableDynamicClassloader())
+            getExtraPath(server.getLoader(), e);
         return mserver.instantiate (clazz, loaderName);
     }
 
     public ObjectInstance createQBean (Q2 server, Element e, Object obj) 
-        throws ClassNotFoundException, 
-               InstantiationException,
-               IllegalAccessException,
-               MalformedObjectNameException,
-               MalformedURLException,
+        throws MalformedObjectNameException,
                InstanceAlreadyExistsException,
                InstanceNotFoundException,
                MBeanException,
@@ -92,7 +87,7 @@ public class QFactory {
                ReflectionException,
                ConfigurationException
     {
-        String name   = e.getAttributeValue ("name");
+        String name   = getAttributeValue (e, "name");
         if (name == null)
             name = e.getName ();
 
@@ -106,10 +101,10 @@ public class QFactory {
         );
         try {
             setAttribute (mserver, objectName, "Name", name);
-            String logger = e.getAttributeValue ("logger");
+            String logger = getAttributeValue (e, "logger");
             if (logger != null)
                 setAttribute (mserver, objectName, "Logger", logger);
-            String realm = e.getAttributeValue ("realm");
+            String realm = getAttributeValue (e, "realm");
             if (realm != null)
                 setAttribute (mserver, objectName, "Realm", realm);
             setAttribute (mserver, objectName, "Server", server);
@@ -120,10 +115,10 @@ public class QFactory {
             if (obj instanceof QBean) 
                 mserver.invoke (objectName, "init",  null, null);
         }
-        catch (ConfigurationException ce) {
+        catch (Throwable t) {
             mserver.unregisterMBean(objectName);
-            ce.fillInStackTrace();
-            throw ce;
+            t.fillInStackTrace();
+            throw t;
         }
 
         return instance;
@@ -131,7 +126,8 @@ public class QFactory {
     public Q2 getQ2() {
         return q2;
     }
-    public void getExtraPath (QClassLoader loader, Element e) {
+
+    private void getExtraPath (QClassLoader loader, Element e) {
         Element classpathElement = e.getChild ("classpath");
         if (classpathElement != null) {
             try {
@@ -256,8 +252,9 @@ public class QFactory {
             type = "java.lang.Long";
         else if ("boolean".equals (type))
             type = "java.lang.Boolean";
-       
+
         String value = childElement.getText();
+        value = Environment.getEnvironment().getProperty(value, value);
         try {
             Class attributeType = Class.forName(type);
             if(Collection.class.isAssignableFrom(attributeType))
@@ -313,26 +310,32 @@ public class QFactory {
         return tmp.toString();
     }
 
-    public Object newInstance (String clazz)
+    public <T> T newInstance (String clazz)
         throws ConfigurationException
     {
         try {
             MBeanServer mserver = q2.getMBeanServer();
-            return mserver.instantiate (clazz, loaderName);
+            return (T)mserver.instantiate (clazz, loaderName);
         } catch (Exception e) {
             throw new ConfigurationException (clazz, e);
         }
     }
 
+    public <T> T newInstance (Class<T> clazz)
+            throws ConfigurationException
+    {
+        return newInstance(clazz.getName());
+    }
+
     public Configuration getConfiguration (Element e)
         throws ConfigurationException
     {
-        String configurationFactoryClazz = e.getAttributeValue("configuration-factory");
+        String configurationFactoryClazz = getAttributeValue(e, "configuration-factory");
         ConfigurationFactory cf = configurationFactoryClazz != null ?
             (ConfigurationFactory) newInstance(configurationFactoryClazz) : defaultConfigurationFactory;
 
         Configuration cfg = cf.getConfiguration(e);
-        String merge = e.getAttributeValue("merge-configuration");
+        String merge = getAttributeValue(e, "merge-configuration");
         if (merge != null) {
             StringTokenizer st = new StringTokenizer(merge, ", ");
             while (st.hasMoreElements()) {
@@ -362,15 +365,20 @@ public class QFactory {
 
     public void setLogger (Object obj, Element e) {
         if (obj instanceof LogSource) {
-            String loggerName = e.getAttributeValue ("logger");
+            String loggerName = getAttributeValue (e, "logger");
             if (loggerName != null) {
-                String realm = e.getAttributeValue ("realm");
+                String realm = getAttributeValue (e, "realm");
                 if (realm == null)
                     realm = e.getName();
                 Logger logger = Logger.getLogger (loggerName);
                 ((LogSource)obj).setLogger (logger, realm);
             }
         }
+    }
+
+    public static String getAttributeValue (Element e, String name) {
+        String s = e.getAttributeValue(name);
+        return Environment.getEnvironment().getProperty(s, s);
     }
     public void setConfiguration (Object obj, Element e) 
         throws ConfigurationException 

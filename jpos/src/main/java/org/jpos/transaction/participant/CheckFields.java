@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,12 +46,13 @@ public class CheckFields implements TransactionParticipant, Configurable {
     private Pattern CAPTUREDATE_PATTERN = Pattern.compile("^\\d{4}");
     private Pattern ORIGINAL_DATA_ELEMENTS_PATTERN = Pattern.compile("^\\d{30,41}$");
     private boolean ignoreCardValidation = false;
+    private boolean allowExtraFields = false;
 
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
         Result rc = ctx.getResult();
         try {
-            ISOMsg m = (ISOMsg) ctx.get (request);
+            ISOMsg m = ctx.get (request);
             if (m == null) {
                 ctx.getResult().fail(CMF.INVALID_TRANSACTION, Caller.info(), "'%s' not available in Context", request);
                 return ABORTED | NO_JOIN | READONLY;
@@ -59,7 +60,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
             Set<String> validFields = new HashSet<>();
             assertFields (ctx, m, cfg.get ("mandatory", ""), true, validFields, rc);
             assertFields (ctx, m, cfg.get ("optional", ""), false, validFields, rc);
-            assertNoExtraFields (m, validFields, rc);
+            if (!allowExtraFields) assertNoExtraFields (m, validFields, rc);
         } catch (Throwable t) {
             rc.fail(CMF.SYSTEM_ERROR, Caller.info(), t.getMessage());
             ctx.log(t);
@@ -71,6 +72,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
         this.cfg = cfg;
         request = cfg.get ("request", ContextConstants.REQUEST.toString());
         ignoreCardValidation = cfg.getBoolean("ignore-card-validation", false);
+        allowExtraFields = cfg.getBoolean("allow-extra-fields", false);
     }
 
     private void assertFields(Context ctx, ISOMsg m, String fields, boolean mandatory, Set<String> validFields, Result rc) {
@@ -126,7 +128,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
         }
     }
     private void assertNoExtraFields (ISOMsg m, Set validFields, Result rc) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i=1; i<=m.getMaxField(); i++) { // we start at 1, MTI is always valid
             String s = Integer.toString (i);
             if (m.hasField(i) && !validFields.contains (s)) {
@@ -140,6 +142,10 @@ public class CheckFields implements TransactionParticipant, Configurable {
     }
 
     private void putCard (Context ctx, ISOMsg m, boolean mandatory, Set<String> validFields, Result rc) {
+        boolean hasCard = m.hasAny("2", "14", "35", "45");
+        if (!mandatory && !hasCard)
+            return; // nothing to do, card is optional
+
         try {
             Card.Builder cb = Card.builder().isomsg(m);
             if (ignoreCardValidation)
@@ -156,18 +162,18 @@ public class CheckFields implements TransactionParticipant, Configurable {
                 validFields.add("14");
         } catch (InvalidCardException e) {
             validFields.addAll(Arrays.asList("2", "14", "35", "45"));
-            if (mandatory) {
-                rc.fail((m.hasAny("2", "14", "35", "45") ? CMF.INVALID_CARD_NUMBER : CMF.MISSING_FIELD),
-                  Caller.info(), e.getMessage());
+            if (hasCard) {
+                rc.fail(CMF.INVALID_CARD_NUMBER, Caller.info(), e.getMessage());
+            } else if (mandatory) {
+                rc.fail(CMF.MISSING_FIELD, Caller.info(), e.getMessage());
             }
-            else
-                rc.warn(Caller.info(), e.getMessage());
         }
     }
 
     private void putPCode (Context ctx, ISOMsg m, boolean mandatory, Set<String> validFields, Result rc) {
         if (m.hasField(3)) {
             String s = m.getString(3);
+
             validFields.add("3");
             if (PCODE_PATTERN.matcher(s).matches()) {
                 ctx.put(ContextConstants.PCODE.toString(), m.getString(3));

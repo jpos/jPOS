@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,10 @@
 
 package org.jpos.iso.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.ServerSocket;
 
@@ -29,7 +29,7 @@ import org.jpos.iso.ISOPackager;
 import org.jpos.iso.packager.GenericPackager;
 import org.jpos.iso.packager.ISO93APackager;
 import org.jpos.iso.packager.ISOBaseValidatingPackager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HEXChannelTest {
 
@@ -38,20 +38,20 @@ public class HEXChannelTest {
         ISOPackager p = new GenericPackager();
         byte[] TPDU = new byte[3];
         HEXChannel hEXChannel = new HEXChannel("testHEXChannelHost", 100, p, TPDU);
-        assertEquals("hEXChannel.getIncomingFilters().size()", 0, hEXChannel.getIncomingFilters().size());
-        assertEquals("hEXChannel.getMaxPacketLength()", 100000, hEXChannel.getMaxPacketLength());
-        assertSame("hEXChannel.getPackager()", p, hEXChannel.getPackager());
-        assertEquals("hEXChannel.getPort()", 100, hEXChannel.getPort());
-        assertEquals("hEXChannel.getName()", "", hEXChannel.getName());
-        assertEquals("hEXChannel.getCounters().length", 3, hEXChannel.getCounters().length);
-        assertNull("hEXChannel.getLogger()", hEXChannel.getLogger());
-        assertNull("hEXChannel.getSocketFactory()", hEXChannel.getSocketFactory());
-        assertSame("hEXChannel.getHeader()", TPDU, hEXChannel.getHeader());
-        assertEquals("hEXChannel.getOutgoingFilters().size()", 0, hEXChannel.getOutgoingFilters().size());
-        assertNull("hEXChannel.getServerSocket()", hEXChannel.getServerSocket());
-        assertEquals("hEXChannel.getOriginalRealm()", "org.jpos.iso.channel.HEXChannel", hEXChannel.getOriginalRealm());
-        assertNull("hEXChannel.getRealm()", hEXChannel.getRealm());
-        assertEquals("hEXChannel.getHost()", "testHEXChannelHost", hEXChannel.getHost());
+        assertEquals(0, hEXChannel.getIncomingFilters().size(), "hEXChannel.getIncomingFilters().size()");
+        assertEquals(100000, hEXChannel.getMaxPacketLength(), "hEXChannel.getMaxPacketLength()");
+        assertSame(p, hEXChannel.getPackager(), "hEXChannel.getPackager()");
+        assertEquals(100, hEXChannel.getPort(), "hEXChannel.getPort()");
+        assertEquals("", hEXChannel.getName(), "hEXChannel.getName()");
+        assertEquals(3, hEXChannel.getCounters().length, "hEXChannel.getCounters().length");
+        assertNull(hEXChannel.getLogger(), "hEXChannel.getLogger()");
+        assertNull(hEXChannel.getSocketFactory(), "hEXChannel.getSocketFactory()");
+        assertSame(TPDU, hEXChannel.getHeader(), "hEXChannel.getHeader()");
+        assertEquals(0, hEXChannel.getOutgoingFilters().size(), "hEXChannel.getOutgoingFilters().size()");
+        assertNull(hEXChannel.getServerSocket(), "hEXChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.HEXChannel", hEXChannel.getOriginalRealm(), "hEXChannel.getOriginalRealm()");
+        assertNull(hEXChannel.getRealm(), "hEXChannel.getRealm()");
+        assertEquals("testHEXChannelHost", hEXChannel.getHost(), "hEXChannel.getHost()");
     }
 
     @Test
@@ -59,38 +59,38 @@ public class HEXChannelTest {
         byte[] TPDU = new byte[1];
         ISOPackager p = new ISO93APackager();
         HEXChannel hEXChannel = new HEXChannel(p, TPDU);
-        assertEquals("hEXChannel.getIncomingFilters().size()", 0, hEXChannel.getIncomingFilters().size());
-        assertEquals("hEXChannel.getMaxPacketLength()", 100000, hEXChannel.getMaxPacketLength());
-        assertSame("hEXChannel.getPackager()", p, hEXChannel.getPackager());
-        assertEquals("hEXChannel.getPort()", 0, hEXChannel.getPort());
-        assertEquals("hEXChannel.getName()", "", hEXChannel.getName());
-        assertEquals("hEXChannel.getCounters().length", 3, hEXChannel.getCounters().length);
-        assertNull("hEXChannel.getLogger()", hEXChannel.getLogger());
-        assertNull("hEXChannel.getSocketFactory()", hEXChannel.getSocketFactory());
-        assertSame("hEXChannel.getHeader()", TPDU, hEXChannel.getHeader());
-        assertEquals("hEXChannel.getOutgoingFilters().size()", 0, hEXChannel.getOutgoingFilters().size());
-        assertNull("hEXChannel.getServerSocket()", hEXChannel.getServerSocket());
-        assertEquals("hEXChannel.getOriginalRealm()", "org.jpos.iso.channel.HEXChannel", hEXChannel.getOriginalRealm());
-        assertNull("hEXChannel.getRealm()", hEXChannel.getRealm());
-        assertNull("hEXChannel.getHost()", hEXChannel.getHost());
+        assertEquals(0, hEXChannel.getIncomingFilters().size(), "hEXChannel.getIncomingFilters().size()");
+        assertEquals(100000, hEXChannel.getMaxPacketLength(), "hEXChannel.getMaxPacketLength()");
+        assertSame(p, hEXChannel.getPackager(), "hEXChannel.getPackager()");
+        assertEquals(0, hEXChannel.getPort(), "hEXChannel.getPort()");
+        assertEquals("", hEXChannel.getName(), "hEXChannel.getName()");
+        assertEquals(3, hEXChannel.getCounters().length, "hEXChannel.getCounters().length");
+        assertNull(hEXChannel.getLogger(), "hEXChannel.getLogger()");
+        assertNull(hEXChannel.getSocketFactory(), "hEXChannel.getSocketFactory()");
+        assertSame(TPDU, hEXChannel.getHeader(), "hEXChannel.getHeader()");
+        assertEquals(0, hEXChannel.getOutgoingFilters().size(), "hEXChannel.getOutgoingFilters().size()");
+        assertNull(hEXChannel.getServerSocket(), "hEXChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.HEXChannel", hEXChannel.getOriginalRealm(), "hEXChannel.getOriginalRealm()");
+        assertNull(hEXChannel.getRealm(), "hEXChannel.getRealm()");
+        assertNull(hEXChannel.getHost(), "hEXChannel.getHost()");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         HEXChannel hEXChannel = new HEXChannel();
-        assertEquals("hEXChannel.getIncomingFilters().size()", 0, hEXChannel.getIncomingFilters().size());
-        assertEquals("hEXChannel.getMaxPacketLength()", 100000, hEXChannel.getMaxPacketLength());
-        assertEquals("hEXChannel.getPort()", 0, hEXChannel.getPort());
-        assertEquals("hEXChannel.getName()", "", hEXChannel.getName());
-        assertEquals("hEXChannel.getCounters().length", 3, hEXChannel.getCounters().length);
-        assertNull("hEXChannel.getLogger()", hEXChannel.getLogger());
-        assertNull("hEXChannel.getSocketFactory()", hEXChannel.getSocketFactory());
-        assertNull("hEXChannel.getHeader()", hEXChannel.getHeader());
-        assertEquals("hEXChannel.getOutgoingFilters().size()", 0, hEXChannel.getOutgoingFilters().size());
-        assertNull("hEXChannel.getServerSocket()", hEXChannel.getServerSocket());
-        assertEquals("hEXChannel.getOriginalRealm()", "org.jpos.iso.channel.HEXChannel", hEXChannel.getOriginalRealm());
-        assertNull("hEXChannel.getRealm()", hEXChannel.getRealm());
-        assertNull("hEXChannel.getHost()", hEXChannel.getHost());
+        assertEquals(0, hEXChannel.getIncomingFilters().size(), "hEXChannel.getIncomingFilters().size()");
+        assertEquals(100000, hEXChannel.getMaxPacketLength(), "hEXChannel.getMaxPacketLength()");
+        assertEquals(0, hEXChannel.getPort(), "hEXChannel.getPort()");
+        assertEquals("", hEXChannel.getName(), "hEXChannel.getName()");
+        assertEquals(3, hEXChannel.getCounters().length, "hEXChannel.getCounters().length");
+        assertNull(hEXChannel.getLogger(), "hEXChannel.getLogger()");
+        assertNull(hEXChannel.getSocketFactory(), "hEXChannel.getSocketFactory()");
+        assertNull(hEXChannel.getHeader(), "hEXChannel.getHeader()");
+        assertEquals(0, hEXChannel.getOutgoingFilters().size(), "hEXChannel.getOutgoingFilters().size()");
+        assertNull(hEXChannel.getServerSocket(), "hEXChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.HEXChannel", hEXChannel.getOriginalRealm(), "hEXChannel.getOriginalRealm()");
+        assertNull(hEXChannel.getRealm(), "hEXChannel.getRealm()");
+        assertNull(hEXChannel.getHost(), "hEXChannel.getHost()");
     }
 
     @Test
@@ -99,20 +99,20 @@ public class HEXChannelTest {
         byte[] TPDU = new byte[2];
         ServerSocket serverSocket = new ServerSocket();
         HEXChannel hEXChannel = new HEXChannel(p, TPDU, serverSocket);
-        assertEquals("hEXChannel.getIncomingFilters().size()", 0, hEXChannel.getIncomingFilters().size());
-        assertEquals("hEXChannel.getMaxPacketLength()", 100000, hEXChannel.getMaxPacketLength());
-        assertSame("hEXChannel.getPackager()", p, hEXChannel.getPackager());
-        assertEquals("hEXChannel.getPort()", 0, hEXChannel.getPort());
-        assertEquals("hEXChannel.getName()", "", hEXChannel.getName());
-        assertEquals("hEXChannel.getCounters().length", 3, hEXChannel.getCounters().length);
-        assertNull("hEXChannel.getLogger()", hEXChannel.getLogger());
-        assertNull("hEXChannel.getSocketFactory()", hEXChannel.getSocketFactory());
-        assertSame("hEXChannel.getHeader()", TPDU, hEXChannel.getHeader());
-        assertEquals("hEXChannel.getOutgoingFilters().size()", 0, hEXChannel.getOutgoingFilters().size());
-        assertSame("hEXChannel.getServerSocket()", serverSocket, hEXChannel.getServerSocket());
-        assertEquals("hEXChannel.getOriginalRealm()", "org.jpos.iso.channel.HEXChannel", hEXChannel.getOriginalRealm());
-        assertNull("hEXChannel.getRealm()", hEXChannel.getRealm());
-        assertNull("hEXChannel.getHost()", hEXChannel.getHost());
+        assertEquals(0, hEXChannel.getIncomingFilters().size(), "hEXChannel.getIncomingFilters().size()");
+        assertEquals(100000, hEXChannel.getMaxPacketLength(), "hEXChannel.getMaxPacketLength()");
+        assertSame(p, hEXChannel.getPackager(), "hEXChannel.getPackager()");
+        assertEquals(0, hEXChannel.getPort(), "hEXChannel.getPort()");
+        assertEquals("", hEXChannel.getName(), "hEXChannel.getName()");
+        assertEquals(3, hEXChannel.getCounters().length, "hEXChannel.getCounters().length");
+        assertNull(hEXChannel.getLogger(), "hEXChannel.getLogger()");
+        assertNull(hEXChannel.getSocketFactory(), "hEXChannel.getSocketFactory()");
+        assertSame(TPDU, hEXChannel.getHeader(), "hEXChannel.getHeader()");
+        assertEquals(0, hEXChannel.getOutgoingFilters().size(), "hEXChannel.getOutgoingFilters().size()");
+        assertSame(serverSocket, hEXChannel.getServerSocket(), "hEXChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.HEXChannel", hEXChannel.getOriginalRealm(), "hEXChannel.getOriginalRealm()");
+        assertNull(hEXChannel.getRealm(), "hEXChannel.getRealm()");
+        assertNull(hEXChannel.getHost(), "hEXChannel.getHost()");
     }
 
     @Test
@@ -123,7 +123,7 @@ public class HEXChannelTest {
             hEXChannel.getMessageLength();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -134,7 +134,7 @@ public class HEXChannelTest {
             hEXChannel.sendMessageLength(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -143,7 +143,7 @@ public class HEXChannelTest {
         byte[] TPDU = new byte[1];
         HEXChannel hEXChannel = new HEXChannel("testHEXChannelHost", 100, null, TPDU);
         hEXChannel.setHeader("testHEXChannelHeader");
-        assertEquals("hEXChannel.getHeader().length", 20, hEXChannel.getHeader().length);
+        assertEquals(20, hEXChannel.getHeader().length, "hEXChannel.getHeader().length");
     }
 
     @Test
@@ -154,8 +154,8 @@ public class HEXChannelTest {
             hEXChannel.setHeader((String) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("hEXChannel.getHeader()", TPDU, hEXChannel.getHeader());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(TPDU, hEXChannel.getHeader(), "hEXChannel.getHeader()");
         }
     }
 }

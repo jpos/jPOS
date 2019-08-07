@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,11 @@
 
 package org.jpos.iso.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.Proxy;
 import java.net.Socket;
@@ -31,7 +31,7 @@ import java.net.SocketException;
 import org.jpos.iso.packager.ISO87APackagerBBitmap;
 import org.jpos.iso.packager.PostPackager;
 import org.jpos.iso.packager.XMLPackager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class X25ChannelTest {
 
@@ -44,15 +44,15 @@ public class X25ChannelTest {
             x25Channel.connect(socket);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("x25Channel.reader", x25Channel.reader);
-            assertEquals("x25Channel.getOriginalRealm()", "org.jpos.iso.channel.X25Channel", x25Channel.getOriginalRealm());
-            assertEquals("x25Channel.getCounters().length", 3, x25Channel.getCounters().length);
-            assertNull("x25Channel.getRealm()", x25Channel.getRealm());
-            assertSame("x25Channel.getSocket()", socket, x25Channel.getSocket());
-            assertFalse("x25Channel.isConnected()", x25Channel.isConnected());
-            assertNull("x25Channel.getLogger()", x25Channel.getLogger());
-            assertNull("socket.getChannel()", socket.getChannel());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(x25Channel.reader, "x25Channel.reader");
+            assertEquals("org.jpos.iso.channel.X25Channel", x25Channel.getOriginalRealm(), "x25Channel.getOriginalRealm()");
+            assertEquals(3, x25Channel.getCounters().length, "x25Channel.getCounters().length");
+            assertNull(x25Channel.getRealm(), "x25Channel.getRealm()");
+            assertSame(socket, x25Channel.getSocket(), "x25Channel.getSocket()");
+            assertFalse(x25Channel.isConnected(), "x25Channel.isConnected()");
+            assertNull(x25Channel.getLogger(), "x25Channel.getLogger()");
+            assertNull(socket.getChannel(), "socket.getChannel()");
         }
     }
 
@@ -65,35 +65,35 @@ public class X25ChannelTest {
             x25Channel.connect(socket);
             fail("Expected SocketException to be thrown");
         } catch (SocketException ex) {
-            assertEquals("ex.getClass()", SocketException.class, ex.getClass());
-            assertNull("x25Channel.reader", x25Channel.reader);
-            assertEquals("x25Channel.getOriginalRealm()", "org.jpos.iso.channel.X25Channel", x25Channel.getOriginalRealm());
-            assertEquals("x25Channel.getCounters().length", 3, x25Channel.getCounters().length);
-            assertNull("x25Channel.getRealm()", x25Channel.getRealm());
-            assertSame("x25Channel.getSocket()", socket, x25Channel.getSocket());
-            assertFalse("x25Channel.isConnected()", x25Channel.isConnected());
-            assertNull("x25Channel.getLogger()", x25Channel.getLogger());
-            assertNull("socket.getChannel()", socket.getChannel());
+            assertEquals(SocketException.class, ex.getClass(), "ex.getClass()");
+            assertNull(x25Channel.reader, "x25Channel.reader");
+            assertEquals("org.jpos.iso.channel.X25Channel", x25Channel.getOriginalRealm(), "x25Channel.getOriginalRealm()");
+            assertEquals(3, x25Channel.getCounters().length, "x25Channel.getCounters().length");
+            assertNull(x25Channel.getRealm(), "x25Channel.getRealm()");
+            assertSame(socket, x25Channel.getSocket(), "x25Channel.getSocket()");
+            assertFalse(x25Channel.isConnected(), "x25Channel.isConnected()");
+            assertNull(x25Channel.getLogger(), "x25Channel.getLogger()");
+            assertNull(socket.getChannel(), "socket.getChannel()");
         }
     }
 
     @Test
     public void testConstructor() throws Throwable {
         X25Channel x25Channel = new X25Channel();
-        assertEquals("x25Channel.getIncomingFilters().size()", 0, x25Channel.getIncomingFilters().size());
-        assertEquals("x25Channel.getMaxPacketLength()", 100000, x25Channel.getMaxPacketLength());
-        assertEquals("x25Channel.getPort()", 0, x25Channel.getPort());
-        assertEquals("x25Channel.getName()", "", x25Channel.getName());
-        assertNull("x25Channel.reader", x25Channel.reader);
-        assertEquals("x25Channel.getCounters().length", 3, x25Channel.getCounters().length);
-        assertNull("x25Channel.getLogger()", x25Channel.getLogger());
-        assertNull("x25Channel.getSocketFactory()", x25Channel.getSocketFactory());
-        assertNull("x25Channel.getHeader()", x25Channel.getHeader());
-        assertEquals("x25Channel.getOutgoingFilters().size()", 0, x25Channel.getOutgoingFilters().size());
-        assertNull("x25Channel.getServerSocket()", x25Channel.getServerSocket());
-        assertEquals("x25Channel.getOriginalRealm()", "org.jpos.iso.channel.X25Channel", x25Channel.getOriginalRealm());
-        assertNull("x25Channel.getRealm()", x25Channel.getRealm());
-        assertNull("x25Channel.getHost()", x25Channel.getHost());
+        assertEquals(0, x25Channel.getIncomingFilters().size(), "x25Channel.getIncomingFilters().size()");
+        assertEquals(100000, x25Channel.getMaxPacketLength(), "x25Channel.getMaxPacketLength()");
+        assertEquals(0, x25Channel.getPort(), "x25Channel.getPort()");
+        assertEquals("", x25Channel.getName(), "x25Channel.getName()");
+        assertNull(x25Channel.reader, "x25Channel.reader");
+        assertEquals(3, x25Channel.getCounters().length, "x25Channel.getCounters().length");
+        assertNull(x25Channel.getLogger(), "x25Channel.getLogger()");
+        assertNull(x25Channel.getSocketFactory(), "x25Channel.getSocketFactory()");
+        assertNull(x25Channel.getHeader(), "x25Channel.getHeader()");
+        assertEquals(0, x25Channel.getOutgoingFilters().size(), "x25Channel.getOutgoingFilters().size()");
+        assertNull(x25Channel.getServerSocket(), "x25Channel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.X25Channel", x25Channel.getOriginalRealm(), "x25Channel.getOriginalRealm()");
+        assertNull(x25Channel.getRealm(), "x25Channel.getRealm()");
+        assertNull(x25Channel.getHost(), "x25Channel.getHost()");
     }
 
     @Test
@@ -102,21 +102,21 @@ public class X25ChannelTest {
         X25Channel x25Channel = new X25Channel("testX25ChannelHost", 100, null);
         x25Channel.setHeader(header);
         int result = x25Channel.getHeaderLength();
-        assertEquals("result", 1, result);
+        assertEquals(1, result, "result");
     }
 
     @Test
     public void testGetHeaderLength1() throws Throwable {
         X25Channel x25Channel = new X25Channel();
         int result = x25Channel.getHeaderLength();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testSetHeader() throws Throwable {
         X25Channel x25Channel = new X25Channel(new PostPackager());
         x25Channel.setHeader("testX25ChannelHeader");
-        assertEquals("x25Channel.header.length", 10, x25Channel.header.length);
+        assertEquals(10, x25Channel.header.length, "x25Channel.header.length");
     }
 
     @Test
@@ -126,8 +126,8 @@ public class X25ChannelTest {
             x25Channel.setHeader((String) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("x25Channel.header", x25Channel.header);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(x25Channel.header, "x25Channel.header");
         }
     }
 }

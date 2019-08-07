@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,24 @@
 
 package org.jpos.iso;
 
+import java.lang.ref.WeakReference;
+
 public class ISOServerClientDisconnectEvent extends java.util.EventObject {
-    public ISOServerClientDisconnectEvent(Object source) {
+    private WeakReference<ISOChannel> channelRef;
+    public ISOServerClientDisconnectEvent(Object source,  ISOChannel channel) {
         super(source);
+        this.channelRef = new WeakReference(channel);
+    }
+
+    public ISOChannel getISOChannel() {
+        return channelRef.get();
+    }
+
+    @Override
+    public String toString() {
+        return "ISOServerClientDisconnectEvent{" +
+          "channel='" + getISOChannel() + '\'' +
+          ", source=" + source +
+          '}';
     }
 }

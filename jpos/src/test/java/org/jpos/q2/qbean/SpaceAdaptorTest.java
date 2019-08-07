@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,36 +18,36 @@
 
 package org.jpos.q2.qbean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Set;
 
 import javax.management.MalformedObjectNameException;
 
 import org.jdom2.Element;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SpaceAdaptorTest {
 
     @Test
     public void testConstructor() throws Throwable {
         SpaceAdaptor spaceAdaptor = new SpaceAdaptor();
-        assertEquals("spaceAdaptor.getLog().getRealm()", "org.jpos.q2.qbean.SpaceAdaptor", spaceAdaptor.getLog().getRealm());
-        assertNull("spaceAdaptor.getKeys()", spaceAdaptor.getKeys());
-        assertEquals("spaceAdaptor.getState()", -1, spaceAdaptor.getState());
-        assertTrue("spaceAdaptor.isModified()", spaceAdaptor.isModified());
-        assertNull("spaceAdaptor.getSpaceName()", spaceAdaptor.getSpaceName());
+        assertEquals("org.jpos.q2.qbean.SpaceAdaptor", spaceAdaptor.getLog().getRealm(), "spaceAdaptor.getLog().getRealm()");
+        assertNull(spaceAdaptor.getKeys(), "spaceAdaptor.getKeys()");
+        assertEquals(-1, spaceAdaptor.getState(), "spaceAdaptor.getState()");
+        assertTrue(spaceAdaptor.isModified(), "spaceAdaptor.isModified()");
+        assertNull(spaceAdaptor.getSpaceName(), "spaceAdaptor.getSpaceName()");
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testGetKeys() throws Throwable {
         Set result = new SpaceAdaptor().getKeys();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -57,9 +57,9 @@ public class SpaceAdaptorTest {
             spaceAdaptor.setSpaceName("testSpaceAdaptorSpaceName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("spaceAdaptor.getSpaceName()", "testSpaceAdaptorSpaceName", spaceAdaptor.getSpaceName());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("spaceAdaptor.isModified()", spaceAdaptor.isModified());
+            assertEquals("testSpaceAdaptorSpaceName", spaceAdaptor.getSpaceName(), "spaceAdaptor.getSpaceName()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(spaceAdaptor.isModified(), "spaceAdaptor.isModified()");
         }
     }
 
@@ -72,7 +72,7 @@ public class SpaceAdaptorTest {
             spaceAdaptor.startService();
             fail("Expected MalformedObjectNameException to be thrown");
         } catch (MalformedObjectNameException ex) {
-            assertEquals("spaceAdaptor.getKeys().size()", 0, spaceAdaptor.getKeys().size());
+            assertEquals(0, spaceAdaptor.getKeys().size(), "spaceAdaptor.getKeys().size()");
         }
     }
 
@@ -83,7 +83,7 @@ public class SpaceAdaptorTest {
             spaceAdaptor.stopService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

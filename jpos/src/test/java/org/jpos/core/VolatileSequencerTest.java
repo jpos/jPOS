@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,11 @@
 
 package org.jpos.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 // import junitx.util.PrivateAccessor;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VolatileSequencerTest {
 
@@ -37,7 +37,7 @@ public class VolatileSequencerTest {
         VolatileSequencer volatileSequencer = new VolatileSequencer();
         volatileSequencer.get("abcdefghijklmnopqrstuvwxyz", 1);
         int result = volatileSequencer.get("abcdefghijklmnopqrstuvwxyz", -1);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -45,21 +45,21 @@ public class VolatileSequencerTest {
         VolatileSequencer volatileSequencer = new VolatileSequencer();
         int add = volatileSequencer.get("  ", -1);
         int result = volatileSequencer.get("  ", 0);
-        assertEquals("result", add, result);
+        assertEquals(add, result, "result");
     }
 
     @Test
     public void testGet2() throws Throwable {
         VolatileSequencer volatileSequencer = new VolatileSequencer();
         int result = volatileSequencer.get("testVolatileSequencerCounterName", 0);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testGet3() throws Throwable {
         VolatileSequencer volatileSequencer = new VolatileSequencer();
         int result = volatileSequencer.get("testVolatileSequencerCounterName");
-        assertEquals("result", 1, result);
+        assertEquals(1, result, "result");
     }
 
     @Test
@@ -68,7 +68,7 @@ public class VolatileSequencerTest {
         volatileSequencer.set("testString", -2);
         volatileSequencer.get("testString");
         int result = volatileSequencer.get("testString");
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -76,15 +76,15 @@ public class VolatileSequencerTest {
         VolatileSequencer volatileSequencer = new VolatileSequencer();
         volatileSequencer.get("testVolatileSequencerCounterName", 100);
         String[] result = volatileSequencer.getCounterNames();
-        assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", "testVolatileSequencerCounterName", result[0]);
+        assertEquals(1, result.length, "result.length");
+        assertEquals("testVolatileSequencerCounterName", result[0], "result[0]");
     }
 
     @Test
     public void testGetCounterNames1() throws Throwable {
         VolatileSequencer volatileSequencer = new VolatileSequencer();
         String[] result = volatileSequencer.getCounterNames();
-        assertEquals("result.length", 0, result.length);
+        assertEquals(0, result.length, "result.length");
     }
 
     @Test
@@ -92,7 +92,7 @@ public class VolatileSequencerTest {
         VolatileSequencer volatileSequencer = new VolatileSequencer();
         int add = volatileSequencer.get("", 100);
         int result = volatileSequencer.set("", add);
-        assertEquals("result", add, result);
+        assertEquals(add, result, "result");
     }
 
     @Test
@@ -100,13 +100,13 @@ public class VolatileSequencerTest {
         VolatileSequencer volatileSequencer = new VolatileSequencer();
         int add = volatileSequencer.get("testString", 0);
         int result = volatileSequencer.set("testString", 100);
-        assertEquals("result", add, result);
+        assertEquals(add, result, "result");
     }
 
     @Test
     public void testSet2() throws Throwable {
         VolatileSequencer volatileSequencer = new VolatileSequencer();
         int result = volatileSequencer.set("testVolatileSequencerCounterName", 100);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 }

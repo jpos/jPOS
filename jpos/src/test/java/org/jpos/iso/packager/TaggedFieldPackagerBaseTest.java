@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,14 @@
 
 package org.jpos.iso.packager;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.BufferedInputStream;
-import junit.framework.TestCase;
+
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOMsg;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,7 +36,7 @@ import java.util.Map;
 /**
  *
  */
-public class TaggedFieldPackagerBaseTest extends TestCase {
+public class TaggedFieldPackagerBaseTest {
 
     @Test
     public void testPack() throws Exception {

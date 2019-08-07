@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,19 +18,19 @@
 
 package org.jpos.q2.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.q2.Q2;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class KeyStoreAdaptorTest {
     @Mock
     Q2 q2;
@@ -38,17 +38,17 @@ public class KeyStoreAdaptorTest {
     @Test
     public void testConstructor() throws Throwable {
         KeyStoreAdaptor keyStoreAdaptor = new KeyStoreAdaptor();
-        assertEquals("keyStoreAdaptor.clazz", "org.jpos.security.SimpleKeyFile", keyStoreAdaptor.clazz);
-        assertEquals("keyStoreAdaptor.getLog().getRealm()", "org.jpos.q2.security.KeyStoreAdaptor", keyStoreAdaptor.getLog()
-                .getRealm());
-        assertEquals("keyStoreAdaptor.getState()", -1, keyStoreAdaptor.getState());
-        assertTrue("keyStoreAdaptor.isModified()", keyStoreAdaptor.isModified());
+        assertEquals("org.jpos.security.SimpleKeyFile", keyStoreAdaptor.clazz, "keyStoreAdaptor.clazz");
+        assertEquals("org.jpos.q2.security.KeyStoreAdaptor", keyStoreAdaptor.getLog()
+                .getRealm(), "keyStoreAdaptor.getLog().getRealm()");
+        assertEquals(-1, keyStoreAdaptor.getState(), "keyStoreAdaptor.getState()");
+        assertTrue(keyStoreAdaptor.isModified(), "keyStoreAdaptor.isModified()");
     }
 
     @Test
     public void testGetImpl() throws Throwable {
         String result = new KeyStoreAdaptor().getImpl();
-        assertEquals("result", "org.jpos.security.SimpleKeyFile", result);
+        assertEquals("org.jpos.security.SimpleKeyFile", result, "result");
     }
 
     @Test
@@ -60,9 +60,9 @@ public class KeyStoreAdaptorTest {
             keyStoreAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("keyStoreAdaptor.isModified()", keyStoreAdaptor.isModified());
-            assertNull("keyStoreAdaptor.ks", keyStoreAdaptor.ks);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(keyStoreAdaptor.isModified(), "keyStoreAdaptor.isModified()");
+            assertNull(keyStoreAdaptor.ks, "keyStoreAdaptor.ks");
         }
     }
 
@@ -73,9 +73,9 @@ public class KeyStoreAdaptorTest {
             keyStoreAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("keyStoreAdaptor.isModified()", keyStoreAdaptor.isModified());
-            assertNull("keyStoreAdaptor.ks", keyStoreAdaptor.ks);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(keyStoreAdaptor.isModified(), "keyStoreAdaptor.isModified()");
+            assertNull(keyStoreAdaptor.ks, "keyStoreAdaptor.ks");
         }
     }
 
@@ -83,7 +83,7 @@ public class KeyStoreAdaptorTest {
     public void testSetImpl() throws Throwable {
         KeyStoreAdaptor keyStoreAdaptor = new KeyStoreAdaptor();
         keyStoreAdaptor.setImpl("testKeyStoreAdaptorClazz");
-        assertEquals("keyStoreAdaptor.clazz", "testKeyStoreAdaptorClazz", keyStoreAdaptor.clazz);
+        assertEquals("testKeyStoreAdaptorClazz", keyStoreAdaptor.clazz, "keyStoreAdaptor.clazz");
     }
 
  
@@ -92,7 +92,7 @@ public class KeyStoreAdaptorTest {
         KeyStoreAdaptor keyStoreAdaptor = new KeyStoreAdaptor();
         keyStoreAdaptor.setName("testKeyStoreAdaptorName");
         keyStoreAdaptor.destroyService();
-        assertEquals("keyStoreAdaptor.getName()", "testKeyStoreAdaptorName", keyStoreAdaptor.getName());
+        assertEquals("testKeyStoreAdaptorName", keyStoreAdaptor.getName(), "keyStoreAdaptor.getName()");
     }
 
 

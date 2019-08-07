@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,12 @@
 
 package org.jpos.security.jceadapter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JCEHandlerExceptionTest {
 
@@ -31,30 +31,30 @@ public class JCEHandlerExceptionTest {
     public void testConstructor() throws Throwable {
         Exception e = new JCEHandlerException("testJCEHandlerExceptions");
         JCEHandlerException jCEHandlerException = new JCEHandlerException(e);
-        assertEquals("jCEHandlerException.getMessage()",
-                "org.jpos.security.jceadapter.JCEHandlerException: testJCEHandlerExceptions", jCEHandlerException.getMessage());
-        assertSame("jCEHandlerException.getNested()", e, jCEHandlerException.getNested());
+        assertEquals("org.jpos.security.jceadapter.JCEHandlerException: testJCEHandlerExceptions",
+                jCEHandlerException.getMessage(), "jCEHandlerException.getMessage()");
+        assertSame(e, jCEHandlerException.getNested(), "jCEHandlerException.getNested()");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         JCEHandlerException jCEHandlerException = new JCEHandlerException("testJCEHandlerExceptions");
-        assertEquals("jCEHandlerException.getMessage()", "testJCEHandlerExceptions", jCEHandlerException.getMessage());
-        assertNull("jCEHandlerException.getNested()", jCEHandlerException.getNested());
+        assertEquals("testJCEHandlerExceptions", jCEHandlerException.getMessage(), "jCEHandlerException.getMessage()");
+        assertNull(jCEHandlerException.getNested(), "jCEHandlerException.getNested()");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         Exception e = new Exception("testJCEHandlerExceptionParam1");
         JCEHandlerException jCEHandlerException = new JCEHandlerException("testJCEHandlerExceptions", e);
-        assertEquals("jCEHandlerException.getMessage()", "testJCEHandlerExceptions", jCEHandlerException.getMessage());
-        assertSame("jCEHandlerException.getNested()", e, jCEHandlerException.getNested());
+        assertEquals("testJCEHandlerExceptions", jCEHandlerException.getMessage(), "jCEHandlerException.getMessage()");
+        assertSame(e, jCEHandlerException.getNested(), "jCEHandlerException.getNested()");
     }
 
     @Test
     public void testConstructor3() throws Throwable {
         JCEHandlerException jCEHandlerException = new JCEHandlerException();
-        assertNull("jCEHandlerException.getNested()", jCEHandlerException.getNested());
+        assertNull(jCEHandlerException.getNested(), "jCEHandlerException.getNested()");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class JCEHandlerExceptionTest {
             new JCEHandlerException((Exception) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

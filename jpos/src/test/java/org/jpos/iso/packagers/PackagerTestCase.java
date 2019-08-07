@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,8 @@
 
 package org.jpos.iso.packagers;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
@@ -26,6 +27,8 @@ import org.jpos.iso.TestUtils;
 import org.jpos.iso.packager.*;
 import org.jpos.util.Profiler;
 import org.jpos.util.TPS;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,7 +37,7 @@ import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.Date;
 
-public class PackagerTestCase extends TestCase {
+public class PackagerTestCase {
     private XMLPackager xmlPackager;
     public static final String PREFIX = "build/resources/test/org/jpos/iso/packagers/";
 
@@ -73,61 +76,74 @@ public class PackagerTestCase extends TestCase {
         }
     }
 
+    @BeforeEach
     public void setUp () throws Exception {
         xmlPackager = new XMLPackager();
     }
-    public PackagerTestCase (String name) {
-        super (name);
-    }
+    @Test
     public void testPostPackager () throws Exception {
         doTest (new PostPackager(), "post", "post");
     }
+    @Test
     public void testISO87APackager() throws Exception {
         doTest (new ISO87APackager(), "ISO87", "ISO87APackager");
     }
+    @Test
     public void testISO87BPackager() throws Exception {
         doTest (new ISO87BPackager(), "ISO87", "ISO87BPackager");
     }
+    @Test
     public void testGeneric87ascii() throws Exception {
         doTest (new GenericPackager ("src/main/resources/packager/iso87ascii.xml"),
             "ISO87", "ISO87APackager");
     }
+    @Test
     public void testGeneric87asciiAsResource() throws Exception {
         doTest (new GenericPackager ("jar:packager/iso87ascii.xml"),
                 "ISO87", "ISO87APackager");
     }
 
+    @Test
     public void testGeneric87binary() throws Exception {
         doTest (new GenericPackager ("src/main/resources/packager/iso87binary.xml"),
             "ISO87", "ISO87BPackager");
     }
+    @Test
     public void testISO93APackager() throws Exception {
         doTest (new ISO93APackager(), "ISO93", "ISO93APackager");
     }
+    @Test
     public void testISO93BPackager() throws Exception {
         doTest (new ISO93BPackager(), "ISO93", "ISO93BPackager");
     }
+    @Test
     public void testGeneric93ascii() throws Exception {
         doTest (new GenericPackager ("src/main/resources/packager/iso93ascii.xml"),
             "ISO93", "ISO93APackager");
     }
+    @Test
     public void testGeneric93binary() throws Exception {
         doTest (new GenericPackager ("src/main/resources/packager/iso93binary.xml"), "ISO93", "ISO93BPackager");
     }        
+    @Test
     public void testF64Binary() throws Exception {
         doTest (new GenericPackager ("src/main/resources/packager/iso87binary.xml"), "ISO87-Field64", "ISO87B-Field64");
     }
+    @Test
     public void testF64ascii() throws Exception {
         doTest (new GenericPackager ("src/main/resources/packager/iso87ascii.xml"),
             "ISO87-Field64", "ISO87A-Field64");
     }
+    @Test
     public void testXMLPackager () throws Exception {
         doTest (xmlPackager, "XMLPackager", "XMLPackager");
     }
 
+    @Test
     public void testGeneric93ebcdic() throws Exception {
         doTest (new GenericPackager ("src/dist/cfg/packager/iso93ebcdic-custom.xml"), "ISO93ebcdic-Custom-XmlMsg", "ISO93ebcdic-Custom-Img");        
     }
+    @Test
     public void testPerformance() throws Exception {
         final int COUNT = 100000;
         ISOPackager p = new GenericPackager ("src/main/resources/packager/iso87binary.xml");

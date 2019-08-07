@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,23 +18,28 @@
 
 package org.jpos.util;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FSDMsgPropertiesTestCase extends TestCase {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+public class FSDMsgPropertiesTestCase {
     private static final String SCHEMA_DIR_URL = "file:build/resources/test/org/jpos/util/";
     private static String FS = "\034";
     private FSDMsg imsg;
     private FSDMsg omsg;
 
+    @BeforeEach
     public void setUp() throws Exception {
         imsg = new FSDMsg(SCHEMA_DIR_URL + "msg-prop-");
         omsg = new FSDMsg(SCHEMA_DIR_URL + "msg-prop-");
     }
 
+    @Test
     public void testSeparator() throws Exception {
         imsg.set("testafs", "x");
         imsg.set("b", "y");
-        assertEquals("properties", "x'FS'y", imsg.pack().replace(FS, "'FS'"));
+        assertEquals("x'FS'y", imsg.pack().replace(FS, "'FS'"), "properties");
 
         omsg.unpack(imsg.pack().getBytes());
 

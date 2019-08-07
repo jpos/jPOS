@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,10 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VAPSMSPackagerTest {
 
@@ -32,7 +32,7 @@ public class VAPSMSPackagerTest {
             new VAPSMSPackager();
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException ex) {
-            assertEquals("ex.getMessage()", "Length 255 too long for org.jpos.iso.IFB_LLCHAR", ex.getMessage());
+            assertEquals("Length 255 too long for org.jpos.iso.IFB_LLCHAR", ex.getMessage(), "ex.getMessage()");
         }
     }
 

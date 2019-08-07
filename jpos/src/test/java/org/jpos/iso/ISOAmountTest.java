@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,8 +19,8 @@
 package org.jpos.iso;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayInputStream;
@@ -34,13 +34,13 @@ import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ISOAmountTest {
     ISOAmount iSOAmount;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         iSOAmount = new ISOAmount(28, 840, BigDecimal.TEN.setScale(2));
     }

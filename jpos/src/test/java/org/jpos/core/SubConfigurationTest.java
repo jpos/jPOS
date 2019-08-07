@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,29 +18,29 @@
 
 package org.jpos.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SubConfigurationTest {
 
     @Test
     public void testConstructor() throws Throwable {
         new SubConfiguration();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         Configuration cfg = new SubConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
-        assertEquals("subConfiguration.prefix", "testSubConfigurationPrefix", subConfiguration.prefix);
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
+        assertEquals("testSubConfigurationPrefix", subConfiguration.prefix, "subConfiguration.prefix");
     }
 
     @Test
@@ -48,8 +48,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         String result = subConfiguration.get("testSubConfigurationPropertyName");
-        assertEquals("result", "", result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals("", result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -57,8 +57,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         String result = subConfiguration.get("testSubConfigurationPropertyName", "testSubConfigurationDefaultValue");
-        assertEquals("result", "testSubConfigurationDefaultValue", result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals("testSubConfigurationDefaultValue", result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -67,9 +67,9 @@ public class SubConfigurationTest {
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         subConfiguration.put("testString", "");
         String[] result = subConfiguration.getAll("testString");
-        assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", "", result[0]);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(1, result.length, "result.length");
+        assertEquals("", result[0], "result[0]");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -77,8 +77,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         String[] result = subConfiguration.getAll("testSubConfigurationPropertyName");
-        assertEquals("result.length", 0, result.length);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(0, result.length, "result.length");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -89,8 +89,8 @@ public class SubConfigurationTest {
             subConfiguration.getAll("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -99,8 +99,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         boolean result = subConfiguration.getBoolean("testSubConfigurationPropertyName");
-        assertFalse("result", result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertFalse(result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -108,8 +108,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         boolean result = subConfiguration.getBoolean("testSubConfigurationPropertyName", false);
-        assertFalse("result", result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertFalse(result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -117,8 +117,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         boolean result = subConfiguration.getBoolean("testSubConfigurationPropertyName", true);
-        assertTrue("result", result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertTrue(result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -129,8 +129,8 @@ public class SubConfigurationTest {
             subConfiguration.getBoolean("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -141,8 +141,8 @@ public class SubConfigurationTest {
             subConfiguration.getBoolean("testSubConfigurationPropertyName", true);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("subConfiguration.cfg", subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -151,8 +151,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         double result = subConfiguration.getDouble("testSubConfigurationPropertyName");
-        assertEquals("result", 0.0, result, 1.0E-6);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(0.0, result, 1.0E-6, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -160,8 +160,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         double result = subConfiguration.getDouble("testSubConfigurationPropertyName", 0.0);
-        assertEquals("result", 0.0, result, 1.0E-6);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(0.0, result, 1.0E-6, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -169,8 +169,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         double result = subConfiguration.getDouble("testSubConfigurationPropertyName", 100.0);
-        assertEquals("result", 100.0, result, 1.0E-6);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(100.0, result, 1.0E-6, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -181,8 +181,8 @@ public class SubConfigurationTest {
             subConfiguration.getDouble("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -194,8 +194,8 @@ public class SubConfigurationTest {
             subConfiguration.getDouble("testSubConfigurationPropertyName", 100.0);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -208,8 +208,8 @@ public class SubConfigurationTest {
             subConfiguration.getDouble("testString");
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \"false\"", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertEquals("For input string: \"false\"", ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -222,8 +222,8 @@ public class SubConfigurationTest {
             subConfiguration.getDouble("testString", 100.0);
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "empty String", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertEquals("empty String", ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -232,8 +232,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         int result = subConfiguration.getInt("testSubConfigurationPropertyName", 100);
-        assertEquals("result", 100, result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(100, result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -241,8 +241,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         int result = subConfiguration.getInt("testSubConfigurationPropertyName", 0);
-        assertEquals("result", 0, result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(0, result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -250,8 +250,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         int result = subConfiguration.getInt("testSubConfigurationPropertyName");
-        assertEquals("result", 0, result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(0, result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -262,8 +262,8 @@ public class SubConfigurationTest {
             subConfiguration.getInt("testSubConfigurationPropertyName", 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -275,8 +275,8 @@ public class SubConfigurationTest {
             subConfiguration.getInt("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -289,8 +289,8 @@ public class SubConfigurationTest {
             subConfiguration.getInt("testString", 100);
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \"\"", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertEquals("For input string: \"\"", ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -304,8 +304,8 @@ public class SubConfigurationTest {
             subConfiguration.getInt("testString");
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \"\"", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertEquals("For input string: \"\"", ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -314,8 +314,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         long result = subConfiguration.getLong("testSubConfigurationPropertyName", 100L);
-        assertEquals("result", 100L, result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(100L, result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -323,8 +323,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         long result = subConfiguration.getLong("testSubConfigurationPropertyName", 0L);
-        assertEquals("result", 0L, result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(0L, result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -332,8 +332,8 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         long result = subConfiguration.getLong("testSubConfigurationPropertyName");
-        assertEquals("result", 0L, result);
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertEquals(0L, result, "result");
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -344,8 +344,8 @@ public class SubConfigurationTest {
             subConfiguration.getLong("testSubConfigurationPropertyName", 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -356,8 +356,8 @@ public class SubConfigurationTest {
             subConfiguration.getLong("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("subConfiguration.cfg", subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -370,8 +370,8 @@ public class SubConfigurationTest {
             subConfiguration.getLong("testString", 100L);
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \"false\"", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertEquals("For input string: \"false\"", ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -385,8 +385,8 @@ public class SubConfigurationTest {
             subConfiguration.getLong("testString");
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \"\"", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertEquals("For input string: \"\"", ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -398,11 +398,11 @@ public class SubConfigurationTest {
             subConfiguration.getObject("testSubConfigurationPropertyName");
             fail("Expected ConfigurationException to be thrown");
         } catch (ConfigurationException ex) {
-            assertEquals("ex.getMessage()",
+            assertEquals(
                     "Error trying to create an object from property testSubConfigurationPrefixtestSubConfigurationPropertyName",
-                    ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+                    ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -414,8 +414,8 @@ public class SubConfigurationTest {
             subConfiguration.get("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -426,8 +426,8 @@ public class SubConfigurationTest {
             subConfiguration.get("testSubConfigurationPropertyName", "testSubConfigurationDefaultValue");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("subConfiguration.cfg", subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -436,7 +436,7 @@ public class SubConfigurationTest {
         Configuration cfg = new SimpleConfiguration();
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         subConfiguration.put("testSubConfigurationName", "");
-        assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+        assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
@@ -448,8 +448,8 @@ public class SubConfigurationTest {
             subConfiguration.put("testSubConfigurationName", "testString");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("subConfiguration.cfg", cfg, subConfiguration.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
 
@@ -458,13 +458,13 @@ public class SubConfigurationTest {
         SubConfiguration subConfiguration = new SubConfiguration(new SubConfiguration(), "testSubConfigurationPrefix");
         Configuration newCfg = new SimpleConfiguration();
         subConfiguration.setConfiguration(newCfg);
-        assertSame("subConfiguration.cfg", newCfg, subConfiguration.cfg);
+        assertSame(newCfg, subConfiguration.cfg, "subConfiguration.cfg");
     }
 
     @Test
     public void testSetPrefix() throws Throwable {
         SubConfiguration subConfiguration = new SubConfiguration();
         subConfiguration.setPrefix("testSubConfigurationNewPrefix");
-        assertEquals("subConfiguration.prefix", "testSubConfigurationNewPrefix", subConfiguration.prefix);
+        assertEquals("testSubConfigurationNewPrefix", subConfiguration.prefix, "subConfiguration.prefix");
     }
 }

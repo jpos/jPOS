@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,11 @@
 
 package org.jpos.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Properties;
 
@@ -30,7 +31,7 @@ import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BaseSMAdapterTest {
 
@@ -39,16 +40,16 @@ public class BaseSMAdapterTest {
         Configuration cfg = new SubConfiguration(new SimpleConfiguration(new Properties(null)), "testBaseSMAdapterPrefix");
         Logger logger = new Logger();
         BaseSMAdapter baseSMAdapter = new BaseSMAdapter(cfg, logger, "testBaseSMAdapterRealm");
-        assertSame("baseSMAdapter.cfg", cfg, baseSMAdapter.cfg);
-        assertEquals("baseSMAdapter.realm", "testBaseSMAdapterRealm", baseSMAdapter.realm);
-        assertSame("baseSMAdapter.logger", logger, baseSMAdapter.logger);
+        assertSame(cfg, baseSMAdapter.cfg, "baseSMAdapter.cfg");
+        assertEquals("testBaseSMAdapterRealm", baseSMAdapter.realm, "baseSMAdapter.realm");
+        assertSame(logger, baseSMAdapter.logger, "baseSMAdapter.logger");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         BaseSMAdapter baseSMAdapter = new BaseSMAdapter();
-        assertNull("baseSMAdapter.realm", baseSMAdapter.realm);
-        assertNull("baseSMAdapter.logger", baseSMAdapter.logger);
+        assertNull(baseSMAdapter.realm, "baseSMAdapter.realm");
+        assertNull(baseSMAdapter.logger, "baseSMAdapter.logger");
     }
 
     @Test
@@ -58,9 +59,9 @@ public class BaseSMAdapterTest {
             baseSMAdapter.decryptPINImpl(new EncryptedPIN());
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -70,7 +71,7 @@ public class BaseSMAdapterTest {
             new BaseSMAdapter().encryptPIN("testBaseSMAdapterPin", null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -84,9 +85,9 @@ public class BaseSMAdapterTest {
                             new SecureDESKey());
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -98,9 +99,9 @@ public class BaseSMAdapterTest {
                     new SecureDESKey((short) 100, "testBaseSMAdapterKeyType", "testString".getBytes(), "".getBytes()), (byte) 0);
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -112,16 +113,18 @@ public class BaseSMAdapterTest {
             jCESecurityModule.generateCBC_MACImpl(data, new SecureDESKey());
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
-    @Test(expected = SMException.class)
+    @Test
     public void testGenerateCBC_MACThrowsSMException1() throws Throwable {
-        new BaseSMAdapter().generateCBC_MAC(null, new SecureDESKey((short) 100, "testBaseSMAdapterKeyType",
-                "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"));
+        assertThrows(SMException.class, () -> {
+            new BaseSMAdapter().generateCBC_MAC(null, new SecureDESKey((short) 100, "testBaseSMAdapterKeyType",
+                    "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"));
+        });
     }
 
     @Test
@@ -131,9 +134,9 @@ public class BaseSMAdapterTest {
             baseSMAdapter.generateKeyImpl((short) 100, "testBaseSMAdapterKeyType");
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -143,7 +146,7 @@ public class BaseSMAdapterTest {
         Logger logger = Logger.getLogger("testBaseSMAdapterName");
         baseSMAdapter.setLogger(logger, "testBaseSMAdapterRealm");
         Logger result = baseSMAdapter.getLogger();
-        assertSame("result", logger, result);
+        assertSame(logger, result, "result");
     }
 
     @Test
@@ -151,7 +154,7 @@ public class BaseSMAdapterTest {
         BaseSMAdapter jCESecurityModule = new BaseSMAdapter();
         jCESecurityModule.setLogger(new Logger(), "testBaseSMAdapterRealm");
         String result = jCESecurityModule.getRealm();
-        assertEquals("result", "testBaseSMAdapterRealm", result);
+        assertEquals("testBaseSMAdapterRealm", result, "result");
     }
 
     @Test
@@ -159,7 +162,7 @@ public class BaseSMAdapterTest {
         BaseSMAdapter jCESecurityModule = new BaseSMAdapter();
         jCESecurityModule.setName("testString");
         BaseSMAdapter result = (BaseSMAdapter) BaseSMAdapter.getSMAdapter("testString");
-        assertSame("result", jCESecurityModule, result);
+        assertSame(jCESecurityModule, result, "result");
     }
 
     @Test
@@ -168,7 +171,7 @@ public class BaseSMAdapterTest {
             BaseSMAdapter.getSMAdapter("14CharactersXX");
             fail("Expected NotFoundException to be thrown");
         } catch (NameRegistrar.NotFoundException ex) {
-            assertEquals("ex.getMessage()", "s-m-adapter.14CharactersXX", ex.getMessage());
+            assertEquals("s-m-adapter.14CharactersXX", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -180,16 +183,18 @@ public class BaseSMAdapterTest {
             baseSMAdapter.importKeyImpl((short) 100, "testBaseSMAdapterKeyType", encryptedKey, new SecureDESKey(), true);
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
-    @Test(expected = SMException.class)
+    @Test
     public void testImportKeyThrowsSMException2() throws Throwable {
-        new BaseSMAdapter().importKey((short) 100, "testBaseSMAdapterKeyType", null, new SecureDESKey((short) 100,
-                "testBaseSMAdapterKeyType", "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"), true);
+        assertThrows(SMException.class, () -> {
+            new BaseSMAdapter().importKey((short) 100, "testBaseSMAdapterKeyType", null, new SecureDESKey((short) 100,
+                    "testBaseSMAdapterKeyType", "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"), true);
+        });
     }
 
     @Test
@@ -199,9 +204,9 @@ public class BaseSMAdapterTest {
             baseSMAdapter.importPINImpl(new EncryptedPIN(), new SecureDESKey());
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -215,9 +220,9 @@ public class BaseSMAdapterTest {
                     "testBaseSMAdapterKeyType", "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"));
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -226,7 +231,7 @@ public class BaseSMAdapterTest {
         BaseSMAdapter baseSMAdapter = new BaseSMAdapter();
         Configuration cfg = new SimpleConfiguration();
         baseSMAdapter.setConfiguration(cfg);
-        assertSame("baseSMAdapter.cfg", cfg, baseSMAdapter.cfg);
+        assertSame(cfg, baseSMAdapter.cfg, "baseSMAdapter.cfg");
     }
 
     @Test
@@ -234,15 +239,15 @@ public class BaseSMAdapterTest {
         BaseSMAdapter baseSMAdapter = new BaseSMAdapter();
         Logger logger = Logger.getLogger("testBaseSMAdapterName");
         baseSMAdapter.setLogger(logger, "testBaseSMAdapterRealm");
-        assertSame("baseSMAdapter.logger", logger, baseSMAdapter.logger);
-        assertEquals("baseSMAdapter.realm", "testBaseSMAdapterRealm", baseSMAdapter.realm);
+        assertSame(logger, baseSMAdapter.logger, "baseSMAdapter.logger");
+        assertEquals("testBaseSMAdapterRealm", baseSMAdapter.realm, "baseSMAdapter.realm");
     }
 
     @Test
     public void testSetName() throws Throwable {
         BaseSMAdapter baseSMAdapter = new BaseSMAdapter();
         baseSMAdapter.setName("testBaseSMAdapterName");
-        assertEquals("baseSMAdapter.getName()", "testBaseSMAdapterName", baseSMAdapter.getName());
+        assertEquals("testBaseSMAdapterName", baseSMAdapter.getName(), "baseSMAdapter.getName()");
     }
 
     @Test
@@ -253,9 +258,9 @@ public class BaseSMAdapterTest {
             baseSMAdapter.translatePINImpl(new EncryptedPIN(), new KeySerialNumber(), bdk, bdk, (byte) 0);
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -268,9 +273,9 @@ public class BaseSMAdapterTest {
                     "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"), new SecureDESKey(), (byte) 0);
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 

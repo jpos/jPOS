@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -61,109 +61,112 @@ public class DailyLogListener extends RotateLogListener{
         COMPRESSION_FORMATS.put("gzip", GZIP);
         COMPRESSION_FORMATS.put("zip", ZIP);
     }
-    
+
     /** Creates a new instance of DailyLogListener */
     public DailyLogListener() {
         setLastDate(getDateFmt().format(new Date()));
     }
 
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
+        maxSize = cfg.getLong("maxsize",DEF_MAXSIZE);
+        sleepTime = cfg.getLong("sleeptime", DEF_WIN) * 1000;
+
         String suffix = cfg.get("suffix", DEF_SUFFIX), prefix = cfg.get("prefix");
         setSuffix(suffix);
         setPrefix(prefix);
-        Integer formatObj =
-                COMPRESSION_FORMATS
-                .get(cfg.get("compression-format","none").toLowerCase());
-        int compressionFormat = formatObj == null ? 0 : formatObj;
-        setCompressionFormat(compressionFormat);
-        setCompressedSuffix(cfg.get("compressed-suffix", 
-                DEF_COMPRESSED_SUFFIX[compressionFormat]));
-        setCompressionBufferSize(cfg.getInt("compression-buffer-size", 
-                DEF_BUFFER_SIZE));
         logName = prefix + suffix;
-        maxSize = cfg.getLong("maxsize",DEF_MAXSIZE);
-        try {
-            openLogFile();
-        } catch (IOException e) {
-            throw new ConfigurationException ("error opening file: " + logName, 
-                    e);
-        }
-        sleepTime = cfg.getInt("window", DEF_WIN);
-        if (sleepTime <= 0)
-            sleepTime = DEF_WIN;
-        sleepTime*=1000;
-        DateFormat fmt = new SimpleDateFormat(cfg.get("date-format",DEF_DATE_FMT));
 
 		maxAge = cfg.getLong("maxage", DEF_MAXAGE);
 		if (maxAge > 0) {
 			maxAge *= 1000;
 		}
+
+        DateFormat fmt = new SimpleDateFormat(cfg.get("date-format",DEF_DATE_FMT));
+        setDateFmt(fmt);
 		deleteRegex = cfg.get("delete-regex", defaultDeleteRegex());
 
-        setDateFmt(fmt);
+        Integer formatObj =
+                COMPRESSION_FORMATS
+                .get(cfg.get("compression-format","none").toLowerCase());
+        int compressionFormat = formatObj == null ? 0 : formatObj;
+        setCompressionFormat(compressionFormat);
+        setCompressedSuffix(cfg.get("compressed-suffix",
+                DEF_COMPRESSED_SUFFIX[compressionFormat]));
+        setCompressionBufferSize(cfg.getInt("compression-buffer-size",
+                DEF_BUFFER_SIZE));
+
         setLastDate(fmt.format(new Date()));
-        Date time;
-        try {
-            time = new SimpleDateFormat("HH:mm:ss").parse(cfg.get("first-rotate-time", "00:00:00"));
-        } catch (ParseException ex) {
-            throw new ConfigurationException("Bad 'first-rotate-time' format " +
-                    "expected HH(0-23):mm:ss ",ex);
-        }
-        String strDate = cfg.get("first-rotate-date",null);
-        //calculate the first execution time
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.MILLISECOND,0);
-        Calendar calTemp = Calendar.getInstance();
-        calTemp.setTime(time);
-        cal.set(Calendar.SECOND,calTemp.get(Calendar.SECOND));
-        cal.set(Calendar.MINUTE,calTemp.get(Calendar.MINUTE));
-        cal.set(Calendar.HOUR_OF_DAY,calTemp.get(Calendar.HOUR_OF_DAY));
-        
-        if (strDate != null) {
-            Date date;
+
+        timer = () -> {
+            Date time;
+            String strDate = cfg.get("first-rotate-date", null);
             try {
-                date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
+                time = new SimpleDateFormat("HH:mm:ss").parse(cfg.get("first-rotate-time", "00:00:00"));
             } catch (ParseException ex) {
-                throw new ConfigurationException("Bad 'first-rotate-date' " +
-                        "format, expected (yyyy-MM-dd)", ex);
+                throw new ConfigurationException("Bad 'first-rotate-time' format " +
+                        "expected HH(0-23):mm:ss ", ex);
             }
-            calTemp.setTime(date);
-            cal.set(calTemp.get(Calendar.YEAR), calTemp.get(Calendar.MONTH), 
-                    calTemp.get(Calendar.DATE));
-        }
-        //here cal contains the first execution, let/s calculate the next one
-        calTemp.setTime(new Date());
-        //if first execution time already happened
-        if (cal.before(calTemp)){
-            //how many windows between cal and now
-            long n = (calTemp.getTimeInMillis() - cal.getTimeInMillis()) / 
-                    sleepTime;
-            cal.setTimeInMillis(cal.getTimeInMillis() + sleepTime*(n+1));
-        }
-        DefaultTimer.getTimer().scheduleAtFixedRate(
-                rotate = new DailyRotate(), cal.getTime(), sleepTime);
+            //calculate the first execution time
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.MILLISECOND, 0);
+            Calendar calTemp = Calendar.getInstance();
+            calTemp.setTime(time);
+            cal.set(Calendar.SECOND, calTemp.get(Calendar.SECOND));
+            cal.set(Calendar.MINUTE, calTemp.get(Calendar.MINUTE));
+            cal.set(Calendar.HOUR_OF_DAY, calTemp.get(Calendar.HOUR_OF_DAY));
+
+            if (strDate != null) {
+                Date date;
+                try {
+                    date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
+                } catch (ParseException ex) {
+                    throw new ConfigurationException("Bad 'first-rotate-date' " +
+                            "format, expected (yyyy-MM-dd)", ex);
+                }
+                calTemp.setTime(date);
+                cal.set(calTemp.get(Calendar.YEAR), calTemp.get(Calendar.MONTH),
+                        calTemp.get(Calendar.DATE));
+            }
+            //here cal contains the first execution, let/s calculate the next one
+            calTemp.setTime(new Date());
+            //if first execution time already happened
+            if (cal.before(calTemp)) {
+                //how many windows between cal and now
+                long n = (calTemp.getTimeInMillis() - cal.getTimeInMillis()) /
+                        sleepTime;
+                cal.setTimeInMillis(cal.getTimeInMillis() + sleepTime * (n + 1));
+            }
+            DefaultTimer.getTimer().scheduleAtFixedRate(
+                    rotate = new DailyRotate(), cal.getTime(), sleepTime);
+        };
+
+        // This is needed or else the closure will not capture the file name pattern.
+        fileNamePattern = cfg.get("file-name-pattern", null);
+
+        rotationAlgo = () -> {
+            String compressedSuffix = getSuffix() + getCompressedSuffix();
+            String newName;
+            if (fileNamePattern != null && !fileNamePattern.isEmpty()) {
+                newName = fileNameFromPattern(getPrefix(), fileNamePattern) + getLastDate();
+            } else {
+                newName = getPrefix() + getLastDate();
+            }
+            int i=0;
+            File dest = new File (newName+compressedSuffix), source = new File(logName);
+            while (dest.exists())
+                dest  = new File (newName + "." + ++i + compressedSuffix);
+            source.renameTo(dest);
+            setLastDate(getDateFmt().format(new Date()));
+            compress(dest);
+        };
+
+        super.setConfiguration(cfg);
     }
 
-	private String defaultDeleteRegex() {
+    private String defaultDeleteRegex() {
 		Path prefixPath = Paths.get(prefix);
 		return "^" + prefixPath.getFileName().toString() + ".+\\" + suffix + "\\" + compressedSuffix + "$";
 	}
-
-	public synchronized  void logRotate() throws IOException {
-        closeLogFile ();
-        super.close ();
-        setPrintStream (null);
-        String suffix = getSuffix() + getCompressedSuffix();
-        String newName = getPrefix()+getLastDate();
-        int i=0;
-        File dest = new File (newName+suffix), source = new File(logName);
-        while (dest.exists()) 
-            dest  = new File (newName + "." + ++i + suffix);
-        source.renameTo(dest);
-        setLastDate(getDateFmt().format(new Date()));
-        openLogFile();
-        compress(dest);
-    }
 
 	public void deleteOldLogs() throws IOException {
 		if (maxAge <= 0) {
@@ -473,8 +476,7 @@ public class DailyLogListener extends RotateLogListener{
      */
     private int compressionBufferSize = DEF_BUFFER_SIZE;
 
-    /**
-     * Getter for property compressionBufferSize.
+    /**    * Getter for property compressionBufferSize.
      * @return Value of property compressionBufferSize.
      */
     public int getCompressionBufferSize() {
@@ -490,12 +492,7 @@ public class DailyLogListener extends RotateLogListener{
             compressionBufferSize : DEF_BUFFER_SIZE;
     }
 
-    protected void checkSize() {
-        if (maxSize>0 )
-            super.checkSize();
-    }
-
-    /** 
+    /**
      * Hook method to optionally compress the file
      * @param logFile the file name
      */

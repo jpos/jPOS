@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,36 +18,41 @@
 
 package org.jpos.q2.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jdom2.Element;
+import org.jpos.core.Configuration;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.Connector;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.channel.PADChannel;
 import org.jpos.iso.packager.EuroSubFieldPackager;
 import org.jpos.util.NameRegistrar;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class QMUXTest {
 
     @Test
     public void testConstructor() throws Throwable {
         QMUX qMUX = new QMUX();
-        assertEquals("qMUX.getLog().getRealm()", "org.jpos.q2.iso.QMUX", qMUX.getLog().getRealm());
-        assertEquals("qMUX.getState()", -1, qMUX.getState());
-        assertTrue("qMUX.isModified()", qMUX.isModified());
-        assertEquals("qMUX.listeners.size()", 0, qMUX.listeners.size());
+        assertEquals("org.jpos.q2.iso.QMUX", qMUX.getLog().getRealm(), "qMUX.getLog().getRealm()");
+        assertEquals(-1, qMUX.getState(), "qMUX.getState()");
+        assertTrue(qMUX.isModified(), "qMUX.isModified()");
+        assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
     }
 
     @Test
     public void testGetInQueue() throws Throwable {
         String result = new QMUX().getInQueue();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -58,8 +63,8 @@ public class QMUXTest {
             qMUX.getKey(m);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -69,27 +74,54 @@ public class QMUXTest {
             QMUX.getMUX("testQMUXName");
             fail("Expected NotFoundException to be thrown");
         } catch (NameRegistrar.NotFoundException ex) {
-            assertEquals("ex.getMessage()", "mux.testQMUXName", ex.getMessage());
+            assertEquals("mux.testQMUXName", ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetOutQueue() throws Throwable {
         String result = new QMUX().getOutQueue();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testGetUnhandledQueue() throws Throwable {
         String result = new QMUX().getUnhandledQueue();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
+    public void testInitServiceWithoutListeners() throws Throwable {
+        QMUX mux = new QMUX();
+        Configuration cfg = new SimpleConfiguration();
+        mux.setConfiguration(cfg);
+        Element persist = new Element("testQMUXName");
+        persist.addContent(new Element("in").addContent("queue-in"));
+        persist.addContent(new Element("out").addContent("queue-out"));
+        persist.addContent(new Element("unhandled").addContent("queue-unhandled"));
+        persist.addContent(new Element("ready").addContent("test-ready"));
+        persist.addContent(new Element("unhandled").addContent("queue-unhandled"));
+        mux.setPersist(persist);
+        mux.initService();
+
+        assertEquals("queue-unhandled", mux.unhandled);
+        assertEquals("queue-out", mux.out);
+        assertEquals("queue-in", mux.in);
+        assertNull(mux.ignorerc);
+        assertNotNull(mux.sp);
+        assertFalse(mux.isModified());
+        assertArrayEquals(new String[]{"test-ready"}, mux.ready);
+        assertArrayEquals(new String[]{"41", "11"}, mux.key);
+        assertEquals(0, mux.listeners.size());
+    }
+
+    @Test
     public void testInitServiceThrowsNullPointerException() throws Throwable {
-        QMUX qMUX = new QMUX();
-        qMUX.setPersist(new Element("testQMUXName", "testQMUXUri"));
-        qMUX.initService();
+        assertThrows(NullPointerException.class, () -> {
+            QMUX qMUX = new QMUX();
+            qMUX.setPersist(new Element("testQMUXName", "testQMUXUri"));
+            qMUX.initService();
+        });
     }
 
     @Test
@@ -99,22 +131,22 @@ public class QMUXTest {
             qMUX.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("qMUX.unhandled", qMUX.unhandled);
-            assertNull("qMUX.out", qMUX.out);
-            assertNull("qMUX.in", qMUX.in);
-            assertNull("qMUX.ignorerc", qMUX.ignorerc);
-            assertNull("qMUX.sp", qMUX.sp);
-            assertFalse("qMUX.isModified()", qMUX.isModified());
-            assertNull("qMUX.ready", qMUX.ready);
-            assertNull("qMUX.key", qMUX.key);
-            assertEquals("qMUX.listeners.size()", 0, qMUX.listeners.size());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(qMUX.unhandled, "qMUX.unhandled");
+            assertNull(qMUX.out, "qMUX.out");
+            assertNull(qMUX.in, "qMUX.in");
+            assertNull(qMUX.ignorerc, "qMUX.ignorerc");
+            assertNull(qMUX.sp, "qMUX.sp");
+            assertFalse(qMUX.isModified(), "qMUX.isModified()");
+            assertNull(qMUX.ready, "qMUX.ready");
+            assertNull(qMUX.key, "qMUX.key");
+            assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
         }
     }
 
     @Test
     public void testIsConnected() throws Throwable {
-        assertFalse("result", new QMUX().isConnected()); // MUX was not started
+        assertFalse(new QMUX().isConnected(), "result"); // MUX was not started
     }
 
     @Test
@@ -124,9 +156,9 @@ public class QMUXTest {
             qMUX.notify("", Integer.valueOf(2));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("qMUX.sp", qMUX.sp);
-            assertEquals("qMUX.listeners.size()", 0, qMUX.listeners.size());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(qMUX.sp, "qMUX.sp");
+            assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
         }
     }
 
@@ -136,7 +168,7 @@ public class QMUXTest {
         m.setSource(new PADChannel(new EuroSubFieldPackager()));
         QMUX qMUX = new QMUX();
         qMUX.processUnhandled(m);
-        assertEquals("qMUX.listeners.size()", 0, qMUX.listeners.size());
+        assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
     }
 
     @Test
@@ -144,9 +176,9 @@ public class QMUXTest {
         QMUX qMUX = new QMUX();
         ISOMsg m = new ISOMsg("testQMUXMti");
         qMUX.processUnhandled(m);
-        assertNull("qMUX.sp", qMUX.sp);
-        assertEquals("qMUX.listeners.size()", 0, qMUX.listeners.size());
-        assertEquals("m.getDirection()", 0, m.getDirection());
+        assertNull(qMUX.sp, "qMUX.sp");
+        assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
+        assertEquals(0, m.getDirection(), "m.getDirection()");
     }
 
     @Test
@@ -156,9 +188,9 @@ public class QMUXTest {
             qMUX.processUnhandled(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("qMUX.sp", qMUX.sp);
-            assertEquals("qMUX.listeners.size()", 0, qMUX.listeners.size());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(qMUX.sp, "qMUX.sp");
+            assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
         }
     }
 
@@ -166,8 +198,8 @@ public class QMUXTest {
     public void testRemoveISORequestListener() throws Throwable {
         QMUX qMUX = new QMUX();
         boolean result = qMUX.removeISORequestListener(new Connector());
-        assertFalse("result", result);
-        assertEquals("qMUX.listeners.size()", 0, qMUX.listeners.size());
+        assertFalse(result, "result");
+        assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
     }
 
     @Test
@@ -176,9 +208,9 @@ public class QMUXTest {
         ISORequestListener l = new Connector();
         qMUX.addISORequestListener(l);
         boolean result = qMUX.removeISORequestListener(l);
-        assertEquals("qMUX.listeners.size()", 0, qMUX.listeners.size());
-        assertFalse("qMUX.listeners.contains(l)", qMUX.listeners.contains(l));
-        assertTrue("result", result);
+        assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
+        assertFalse(qMUX.listeners.contains(l), "qMUX.listeners.contains(l)");
+        assertTrue(result, "result");
     }
 
     @Test
@@ -189,9 +221,9 @@ public class QMUXTest {
             qMUX.request(m, 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("qMUX.sp", qMUX.sp);
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(qMUX.sp, "qMUX.sp");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -202,9 +234,9 @@ public class QMUXTest {
             qMUX.setInQueue("testQMUXIn");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("qMUX.in", "testQMUXIn", qMUX.in);
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("qMUX.isModified()", qMUX.isModified());
+            assertEquals("testQMUXIn", qMUX.in, "qMUX.in");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(qMUX.isModified(), "qMUX.isModified()");
         }
     }
 
@@ -215,9 +247,9 @@ public class QMUXTest {
             qMUX.setOutQueue("testQMUXOut");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("qMUX.out", "testQMUXOut", qMUX.out);
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("qMUX.isModified()", qMUX.isModified());
+            assertEquals("testQMUXOut", qMUX.out, "qMUX.out");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(qMUX.isModified(), "qMUX.isModified()");
         }
     }
 
@@ -228,9 +260,9 @@ public class QMUXTest {
             qMUX.setUnhandledQueue("testQMUXUnhandled");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("qMUX.unhandled", "testQMUXUnhandled", qMUX.unhandled);
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("qMUX.isModified()", qMUX.isModified());
+            assertEquals("testQMUXUnhandled", qMUX.unhandled, "qMUX.unhandled");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(qMUX.isModified(), "qMUX.isModified()");
         }
     }
 
@@ -242,8 +274,8 @@ public class QMUXTest {
             qMUX.startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("qMUX.sp", qMUX.sp);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(qMUX.sp, "qMUX.sp");
         }
     }
 
@@ -254,8 +286,8 @@ public class QMUXTest {
             qMUX.stopService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("qMUX.sp", qMUX.sp);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(qMUX.sp, "qMUX.sp");
         }
     }
 }

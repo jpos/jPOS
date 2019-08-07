@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,12 @@
 
 package org.jpos.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConfigurationExceptionTest {
 
@@ -31,30 +31,30 @@ public class ConfigurationExceptionTest {
     public void testConstructor() throws Throwable {
         Throwable nested = new ConfigurationException();
         ConfigurationException configurationException = new ConfigurationException("testConfigurationExceptionDetail", nested);
-        assertEquals("configurationException.getMessage()", "testConfigurationExceptionDetail", configurationException.getMessage());
-        assertSame("configurationException.getNested()", nested, configurationException.getNested());
+        assertEquals("testConfigurationExceptionDetail", configurationException.getMessage(), "configurationException.getMessage()");
+        assertSame(nested, configurationException.getNested(), "configurationException.getNested()");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         Throwable nested = new ConfigurationException();
         ConfigurationException configurationException = new ConfigurationException(nested);
-        assertEquals("configurationException.getMessage()", "org.jpos.core.ConfigurationException",
-                configurationException.getMessage());
-        assertSame("configurationException.getNested()", nested, configurationException.getNested());
+        assertEquals("org.jpos.core.ConfigurationException", configurationException.getMessage(),
+                "configurationException.getMessage()");
+        assertSame(nested, configurationException.getNested(), "configurationException.getNested()");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         ConfigurationException configurationException = new ConfigurationException("testConfigurationExceptionDetail");
-        assertEquals("configurationException.getMessage()", "testConfigurationExceptionDetail", configurationException.getMessage());
-        assertNull("configurationException.getNested()", configurationException.getNested());
+        assertEquals("testConfigurationExceptionDetail", configurationException.getMessage(), "configurationException.getMessage()");
+        assertNull(configurationException.getNested(), "configurationException.getNested()");
     }
 
     @Test
     public void testConstructor3() throws Throwable {
         ConfigurationException configurationException = new ConfigurationException();
-        assertNull("configurationException.getNested()", configurationException.getNested());
+        assertNull(configurationException.getNested(), "configurationException.getNested()");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ConfigurationExceptionTest {
             new ConfigurationException((Throwable) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

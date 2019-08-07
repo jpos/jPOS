@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,9 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NullPrefixerTest {
 
@@ -28,7 +28,7 @@ public class NullPrefixerTest {
     public void testDecodeLength() throws Throwable {
         byte[] b = new byte[2];
         int result = NullPrefixer.INSTANCE.decodeLength(b, 100);
-        assertEquals("result", -1, result);
+        assertEquals(-1, result, "result");
     }
 
     @Test
@@ -36,12 +36,12 @@ public class NullPrefixerTest {
         NullPrefixer INSTANCE = NullPrefixer.INSTANCE;
         byte[] b = new byte[2];
         INSTANCE.encodeLength(100, b);
-        assertEquals("INSTANCE.getPackedLength()", 0, INSTANCE.getPackedLength());
+        assertEquals(0, INSTANCE.getPackedLength(), "INSTANCE.getPackedLength()");
     }
 
     @Test
     public void testGetPackedLength() throws Throwable {
         int result = NullPrefixer.INSTANCE.getPackedLength();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 }

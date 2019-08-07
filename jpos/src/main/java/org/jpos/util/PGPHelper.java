@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import org.bouncycastle.openpgp.operator.PBESecretKeyDecryptor;
 import org.bouncycastle.openpgp.operator.bc.*;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
 import org.jpos.q2.Q2;
+import org.jpos.q2.install.ModuleUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -46,7 +47,7 @@ public class PGPHelper {
             Security.addProvider(new BouncyCastleProvider());
     }
 
-    private static boolean verifySignature(InputStream in, PGPPublicKey pk) throws IOException, NoSuchProviderException, PGPException, SignatureException {
+    private static boolean verifySignature(InputStream in, PGPPublicKey pk) throws IOException, PGPException {
         boolean verify = false;
         boolean newl = false;
         int ch;
@@ -141,7 +142,7 @@ public class PGPHelper {
     }
 
     public static int checkLicense() {
-        int rc = 0x80000;
+        int rc = 0x90000;
         boolean newl = false;
         int ch;
 
@@ -190,6 +191,7 @@ public class PGPHelper {
                         String s;
                         Pattern p1 = Pattern.compile("\\s(valid through:)\\s(\\d\\d\\d\\d-\\d\\d-\\d\\d)?", Pattern.CASE_INSENSITIVE);
                         Pattern p2 = Pattern.compile("\\s(instances:)\\s([\\d]{0,4})?", Pattern.CASE_INSENSITIVE);
+                        String h = ModuleUtils.getSystemHash();
                         while ((s = reader.readLine()) != null) {
                             Matcher matcher = p1.matcher(s);
                             if (matcher.find() && matcher.groupCount() == 2) {
@@ -201,6 +203,9 @@ public class PGPHelper {
                             matcher = p2.matcher(s);
                             if (matcher.find() && matcher.groupCount() == 2) {
                                 rc |= Integer.parseInt(matcher.group(2));
+                            }
+                            if (s.contains(h)) {
+                                rc &= 0xEFFFF;
                             }
                         }
                     }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,32 +18,32 @@
 
 package org.jpos.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class KeySerialNumberTest {
 
     @Test
     public void testConstructor() throws Throwable {
         KeySerialNumber keySerialNumber = new KeySerialNumber();
-        assertNull("keySerialNumber.getBaseKeyID()", keySerialNumber.getBaseKeyID());
+        assertNull(keySerialNumber.getBaseKeyID(), "keySerialNumber.getBaseKeyID()");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         KeySerialNumber keySerialNumber = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
                 "testKeySerialNumberTransactionCounter");
-        assertEquals("keySerialNumber.baseKeyID", "testKeySerialNumberBaseKeyID", keySerialNumber.baseKeyID);
-        assertEquals("keySerialNumber.deviceID", "testKeySerialNumberDeviceID", keySerialNumber.deviceID);
-        assertEquals("keySerialNumber.transactionCounter", "testKeySerialNumberTransactionCounter",
-                keySerialNumber.transactionCounter);
+        assertEquals("testKeySerialNumberBaseKeyID", keySerialNumber.baseKeyID, "keySerialNumber.baseKeyID");
+        assertEquals("testKeySerialNumberDeviceID", keySerialNumber.deviceID, "keySerialNumber.deviceID");
+        assertEquals("testKeySerialNumberTransactionCounter",
+                keySerialNumber.transactionCounter, "keySerialNumber.transactionCounter");
     }
 
     @Test
@@ -53,7 +53,7 @@ public class KeySerialNumberTest {
         p.format("testKeySerialNumberParam1", objects);
         new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID", "testKeySerialNumberTransactionCounter")
                 .dump(p, "testKeySerialNumberIndent");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -62,7 +62,7 @@ public class KeySerialNumberTest {
             new KeySerialNumber().dump(null, "testKeySerialNumberIndent");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -70,27 +70,27 @@ public class KeySerialNumberTest {
     public void testGetBaseKeyID() throws Throwable {
         String result = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
                 "testKeySerialNumberTransactionCounter").getBaseKeyID();
-        assertEquals("result", "testKeySerialNumberBaseKeyID", result);
+        assertEquals("testKeySerialNumberBaseKeyID", result, "result");
     }
 
     @Test
     public void testGetDeviceID() throws Throwable {
         String result = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
                 "testKeySerialNumberTransactionCounter").getDeviceID();
-        assertEquals("result", "testKeySerialNumberDeviceID", result);
+        assertEquals("testKeySerialNumberDeviceID", result, "result");
     }
 
     @Test
     public void testGetTransactionCounter() throws Throwable {
         String result = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
                 "testKeySerialNumberTransactionCounter").getTransactionCounter();
-        assertEquals("result", "testKeySerialNumberTransactionCounter", result);
+        assertEquals("testKeySerialNumberTransactionCounter", result, "result");
     }
 
     @Test
     public void testGetTransactionCounter1() throws Throwable {
         String result = new KeySerialNumber().getTransactionCounter();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -98,7 +98,7 @@ public class KeySerialNumberTest {
         KeySerialNumber keySerialNumber = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
                 "testKeySerialNumberTransactionCounter");
         keySerialNumber.setBaseKeyID("testKeySerialNumberBaseKeyID1");
-        assertEquals("keySerialNumber.baseKeyID", "testKeySerialNumberBaseKeyID1", keySerialNumber.baseKeyID);
+        assertEquals("testKeySerialNumberBaseKeyID1", keySerialNumber.baseKeyID, "keySerialNumber.baseKeyID");
     }
 
     @Test
@@ -106,7 +106,7 @@ public class KeySerialNumberTest {
         KeySerialNumber keySerialNumber = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
                 "testKeySerialNumberTransactionCounter");
         keySerialNumber.setDeviceID("testKeySerialNumberDeviceID1");
-        assertEquals("keySerialNumber.deviceID", "testKeySerialNumberDeviceID1", keySerialNumber.deviceID);
+        assertEquals("testKeySerialNumberDeviceID1", keySerialNumber.deviceID, "keySerialNumber.deviceID");
     }
 
     @Test
@@ -114,7 +114,7 @@ public class KeySerialNumberTest {
         KeySerialNumber keySerialNumber = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
                 "testKeySerialNumberTransactionCounter");
         keySerialNumber.setTransactionCounter("testKeySerialNumberTransactionCounter1");
-        assertEquals("keySerialNumber.transactionCounter", "testKeySerialNumberTransactionCounter1",
-                keySerialNumber.transactionCounter);
+        assertEquals("testKeySerialNumberTransactionCounter1",
+                keySerialNumber.transactionCounter, "keySerialNumber.transactionCounter");
     }
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,10 @@
 
 package org.jpos.bsh;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
@@ -32,12 +32,12 @@ import org.jpos.iso.channel.CSChannel;
 import org.jpos.iso.channel.PADChannel;
 import org.jpos.iso.packager.PostPackager;
 import org.jpos.util.LogEvent;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BSHFilterTest {
 
     @Mock
@@ -46,7 +46,7 @@ public class BSHFilterTest {
     @Test
     public void testConstructor() throws Throwable {
         new BSHFilter();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -55,8 +55,8 @@ public class BSHFilterTest {
         BSHFilter bSHFilter = new BSHFilter();
         bSHFilter.setConfiguration(cfg);
         ISOMsg result = bSHFilter.filter(new PADChannel(), null, new LogEvent("testBSHFilterTag", "testString"));
-        assertNull("result", result);
-        assertSame("bSHFilter.cfg", cfg, bSHFilter.cfg);
+        assertNull(result, "result");
+        assertSame(cfg, bSHFilter.cfg, "bSHFilter.cfg");
     }
 
     @Test
@@ -68,8 +68,8 @@ public class BSHFilterTest {
         LogEvent evt = new LogEvent();
 
         ISOVMsg result = (ISOVMsg) bSHFilter.filter(channel, m, evt);
-        assertSame("result", m, result);
-        assertSame("bSHFilter.cfg", cfg, bSHFilter.cfg);
+        assertSame(m, result, "result");
+        assertSame(cfg, bSHFilter.cfg, "bSHFilter.cfg");
     }
 
     @Test
@@ -80,8 +80,8 @@ public class BSHFilterTest {
             bSHFilter.filter(new CSChannel("testBSHFilterHost", 100, new PostPackager()), new ISOMsg("testBSHFilterMti"), evt);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("bSHFilter.cfg", bSHFilter.cfg);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(bSHFilter.cfg, "bSHFilter.cfg");
         }
     }
 
@@ -90,6 +90,6 @@ public class BSHFilterTest {
         BSHFilter bSHFilter = new BSHFilter();
         Configuration cfg = new SimpleConfiguration();
         bSHFilter.setConfiguration(cfg);
-        assertSame("bSHFilter.cfg", cfg, bSHFilter.cfg);
+        assertSame(cfg, bSHFilter.cfg, "bSHFilter.cfg");
     }
 }

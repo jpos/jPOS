@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -68,23 +68,23 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
                     Object job = pool.dequeue();
                     if (job instanceof Runnable) {
                         setName (name + "-running");
-                        synchronized (this) {
+                        synchronized (ThreadPool.this) {
                             currentJob = job;
+                            active++;
                         }
                         try {
-                            active++;
                             ((Runnable) job).run();
                             setName (name + "-idle");
                         } catch (Throwable t) {
                             setName (name + "-idle-"+t.getMessage());
                         }
-                        synchronized (this) {
+                        synchronized (ThreadPool.this) {
                             currentJob = null;
                             available++;
                             active--;
                         }
                     } else {
-                        synchronized (this) {
+                        synchronized (ThreadPool.this) {
                             currentJob = null;
                             available++;
                         }

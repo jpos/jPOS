@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -109,6 +109,18 @@ public enum CMF implements IRC {
     DRIVER_NUMBER_INVALID(1069),
     VID_INVALID(1070),
     CERTIFICATE_EXPIRED(1071),
+    MISSING_FIELD(1802),
+    EXTRA_FIELD(1803),
+    INVALID_CARD(1804),
+    CARD_NOT_ACTIVE(1806),
+    CARD_NOT_CONFIGURED(1808),
+    SYSTEM_ERROR_DB(1811),
+    SYSTEM_ERROR_TXN(1812),
+    INVALID_FIELD(1830),
+    MISCONFIGURED_ENDPOINT(1831),
+    INVALID_REQUEST(1832),
+    HOST_UNREACHABLE(1833),
+
 
     // Denied Financial
     FINANCIAL_DO_NOT_HONOUR (2000),
@@ -194,12 +206,6 @@ public enum CMF implements IRC {
 
     // jPOS specific result codes
     JPOS(10000),
-    INVALID_FIELD(10001),
-    MISSING_FIELD(10002),
-    EXTRA_FIELD(10003),
-    MISCONFIGURED_ENDPOINT(10004),
-    INVALID_REQUEST(10005),
-    HOST_UNREACHABLE(10006),
     INTERNAL_ERROR(19999,false,true),
 
     // User specific result codes

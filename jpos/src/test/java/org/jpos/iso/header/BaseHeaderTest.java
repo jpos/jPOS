@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,16 +18,16 @@
 
 package org.jpos.iso.header;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BaseHeaderTest {
 
@@ -38,34 +38,34 @@ public class BaseHeaderTest {
         byte[] header2 = new byte[1];
         baseHeader.unpack(header2);
         BaseHeader result = (BaseHeader) baseHeader.clone();
-        assertEquals("result.getLength()", 1, result.getLength());
-        assertTrue("baseHeader.header", Arrays.equals(header2, baseHeader.header));
+        assertEquals(1, result.getLength(), "result.getLength()");
+        assertTrue(Arrays.equals(header2, baseHeader.header), "baseHeader.header");
     }
 
     @Test
     public void testClone1() throws Throwable {
         BaseHeader result = (BaseHeader) new BaseHeader().clone();
-        assertEquals("result.getLength()", 0, result.getLength());
+        assertEquals(0, result.getLength(), "result.getLength()");
     }
 
     @Test
     public void testConstructor() throws Throwable {
         BaseHeader baseHeader = new BaseHeader();
-        assertNull("baseHeader.header", baseHeader.header);
+        assertNull(baseHeader.header, "baseHeader.header");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         byte[] header = new byte[3];
         BaseHeader baseHeader = new BaseHeader(header);
-        assertTrue("baseHeader.header", Arrays.equals(header, baseHeader.header));
+        assertTrue(Arrays.equals(header, baseHeader.header), "baseHeader.header");
     }
 
     @Test
     public void testDump() throws Throwable {
         PrintStream p = new PrintStream(new ByteArrayOutputStream(), true);
         new BaseHeader(null).dump(p, "testBaseHeaderIndent");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class BaseHeaderTest {
         byte[] header = new byte[3];
         PrintStream p = new PrintStream(new ByteArrayOutputStream());
         new BaseHeader(header).dump(p, "testBaseHeaderIndent");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -82,21 +82,21 @@ public class BaseHeaderTest {
             new BASE1Header("testBaseHeaderSource", "testBaseHeaderDestination").dump(null, "testBaseHeaderIndent");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetDestination() throws Throwable {
         String result = new BaseHeader().getDestination();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testGetLength() throws Throwable {
         byte[] header = new byte[3];
         int result = new BaseHeader(header).getLength();
-        assertEquals("result", 3, result);
+        assertEquals(3, result, "result");
     }
 
     @Test
@@ -105,13 +105,13 @@ public class BaseHeaderTest {
         BaseHeader baseHeader = new BaseHeader(header);
         int unpack = baseHeader.unpack(null);
         int result = baseHeader.getLength();
-        assertEquals("result", unpack, result);
+        assertEquals(unpack, result, "result");
     }
 
     @Test
     public void testGetSource() throws Throwable {
         String result = new BaseHeader().getSource();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -121,8 +121,8 @@ public class BaseHeaderTest {
         byte[] header2 = new byte[3];
         baseHeader.unpack(header2);
         byte[] result = baseHeader.pack();
-        assertTrue("result", Arrays.equals(header2, result));
-        assertEquals("header2[0]", (byte) 0, header2[0]);
+        assertTrue(Arrays.equals(header2, result), "result");
+        assertEquals((byte) 0, header2[0], "header2[0]");
     }
 
     @Test
@@ -130,7 +130,7 @@ public class BaseHeaderTest {
         byte[] header = new byte[0];
         BaseHeader baseHeader = new BaseHeader(header);
         baseHeader.setDestination("testBaseHeaderDst");
-        assertEquals("baseHeader.getLength()", 0, baseHeader.getLength());
+        assertEquals(0, baseHeader.getLength(), "baseHeader.getLength()");
     }
 
     @Test
@@ -138,7 +138,7 @@ public class BaseHeaderTest {
         byte[] header = new byte[0];
         BaseHeader baseHeader = new BaseHeader(header);
         baseHeader.setSource("testBaseHeaderSrc");
-        assertEquals("baseHeader.getLength()", 0, baseHeader.getLength());
+        assertEquals(0, baseHeader.getLength(), "baseHeader.getLength()");
     }
 
     @Test
@@ -146,7 +146,7 @@ public class BaseHeaderTest {
         byte[] header = new byte[0];
         BaseHeader baseHeader = new BaseHeader(header);
         baseHeader.swapDirection();
-        assertEquals("baseHeader.getLength()", 0, baseHeader.getLength());
+        assertEquals(0, baseHeader.getLength(), "baseHeader.getLength()");
     }
 
     @Test
@@ -154,8 +154,8 @@ public class BaseHeaderTest {
         byte[] header = new byte[0];
         BaseHeader baseHeader = new BaseHeader(header);
         int result = baseHeader.unpack(null);
-        assertNull("baseHeader.header", baseHeader.header);
-        assertEquals("result", 0, result);
+        assertNull(baseHeader.header, "baseHeader.header");
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -164,8 +164,8 @@ public class BaseHeaderTest {
         BaseHeader baseHeader = new BaseHeader(header);
         byte[] header2 = new byte[1];
         int result = baseHeader.unpack(header2);
-        assertTrue("baseHeader.header", Arrays.equals(header2, baseHeader.header));
-        assertEquals("baseHeader.header[0]", (byte) 0, baseHeader.header[0]);
-        assertEquals("result", 1, result);
+        assertTrue(Arrays.equals(header2, baseHeader.header), "baseHeader.header");
+        assertEquals((byte) 0, baseHeader.header[0], "baseHeader.header[0]");
+        assertEquals(1, result, "result");
     }
 }

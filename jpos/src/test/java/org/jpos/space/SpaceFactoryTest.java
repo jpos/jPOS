@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,25 +18,26 @@
 
 package org.jpos.space;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SpaceFactoryTest {
 
     @Test
     public void testConstructor() throws Throwable {
 	new SpaceFactory();
-	assertTrue("Test completed without Exception", true);
+	assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testGetSpace2() throws Throwable {
 	TSpace result = (TSpace) SpaceFactory.getSpace("testString");
-	assertTrue("result.isEmpty()", result.isEmpty());
+	assertTrue(result.isEmpty(), "result.isEmpty()");
     }
 
     public void testGetSpaceThrowsNullPointerException1() throws Throwable {
@@ -45,14 +46,16 @@ public class SpaceFactoryTest {
 		    "testSpaceFactoryName", "testSpaceFactoryParam");
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetSpaceThrowsNullPointerException2() throws Throwable {
-	SpaceFactory.getSpace("testSpaceFactoryScheme", "testSpaceFactoryName",
-		null);
+	assertThrows(NullPointerException.class, () -> {
+	    SpaceFactory.getSpace("testSpaceFactoryScheme", "testSpaceFactoryName",
+		    null);
+	});
     }
 
     @Test
@@ -63,9 +66,8 @@ public class SpaceFactoryTest {
 	    fail("Expected SpaceError to be thrown");
 	} catch (SpaceError ex) {
 	    assertEquals(
-		    "ex.getMessage()",
 		    "spacelet:testSpaceFactoryName:testSpaceFactoryParam not found.",
-		    ex.getMessage());
+		    ex.getMessage(), "ex.getMessage()");
 	}
     }
 }

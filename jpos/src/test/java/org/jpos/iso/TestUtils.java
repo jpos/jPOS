@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,7 @@
 
 package org.jpos.iso;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * @author joconnor
@@ -26,9 +26,9 @@ import junit.framework.Assert;
 public class TestUtils {
     /** Tests for equality of array elements */
     public static void assertEquals(Object[] expected, Object[] was) {
-        Assert.assertEquals("Wrong size array", expected.length, was.length);
+        Assertions.assertEquals(expected.length, was.length, "Wrong size array");
         for (int i= 0; i < expected.length; i++) {
-            Assert.assertEquals("Non-equal objects at index " + i, expected[i], was[i]);
+            Assertions.assertEquals(expected[i], was[i], "Non-equal objects at index " + i);
         }
     }
 
@@ -36,13 +36,13 @@ public class TestUtils {
     public static void assertEquals(byte[] expected, byte[] was) {
         if (expected.length != was.length) {
             for (int i = 0; i < expected.length && i < was.length; i++) {
-                Assert.assertEquals("Arrays different lengths. Non-equal objects at index " + i, expected[i], was[i]);
+                Assertions.assertEquals(expected[i], was[i], "Arrays different lengths. Non-equal objects at index " + i);
             }
             // Following always fails, but gives a nice error message
-            Assert.assertEquals("Wrong size array", expected.length, was.length);
+            Assertions.assertEquals(expected.length, was.length, "Wrong size array");
         } else {
             for (int i= 0; i < expected.length; i++) {
-                Assert.assertEquals("Non-equal objects at index " + i, expected[i], was[i]);
+                Assertions.assertEquals(expected[i], was[i], "Non-equal objects at index " + i);
             }
         }
     }

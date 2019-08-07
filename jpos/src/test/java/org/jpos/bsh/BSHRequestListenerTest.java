@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,12 @@
 
 package org.jpos.bsh;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
@@ -32,14 +32,14 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.channel.CSChannel;
 import org.jpos.iso.channel.LogChannel;
 import org.jpos.iso.channel.PostChannel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BSHRequestListenerTest {
 
     @Test
     public void testConstructor() throws Throwable {
         new BSHRequestListener();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -47,16 +47,16 @@ public class BSHRequestListenerTest {
         BSHRequestListener bSHRequestListener = new BSHRequestListener();
         bSHRequestListener.setConfiguration(new SimpleConfiguration());
         boolean result = bSHRequestListener.process(new PostChannel(), new ISOMsg("testBSHRequestListenerMti"));
-        assertFalse("result should be false", result); //there is no source to process
-        assertEquals("bSHRequestListener.whitelist.size()", 1, bSHRequestListener.whitelist.size());
+        assertFalse(result, "result should be false"); //there is no source to process
+        assertEquals(1, bSHRequestListener.whitelist.size(), "bSHRequestListener.whitelist.size()");
     }
 
     @Test
     public void testProcess1() throws Throwable {
         BSHRequestListener bSHRequestListener = new BSHRequestListener();
         boolean result = bSHRequestListener.process(new CSChannel(), new ISOMsg());
-        assertFalse("result", result);
-        assertNull("bSHRequestListener.whitelist", bSHRequestListener.whitelist);
+        assertFalse(result, "result");
+        assertNull(bSHRequestListener.whitelist, "bSHRequestListener.whitelist");
     }
 
     @Test
@@ -65,8 +65,8 @@ public class BSHRequestListenerTest {
         ISOMsg m = new ISOMsg();
         m.setMTI("testBSHRequestListenerMti");
         boolean result = bSHRequestListener.process(new LogChannel(), m);
-        assertFalse("result", result);
-        assertNull("bSHRequestListener.whitelist", bSHRequestListener.whitelist);
+        assertFalse(result, "result");
+        assertNull(bSHRequestListener.whitelist, "bSHRequestListener.whitelist");
     }
 
     @Test
@@ -74,9 +74,9 @@ public class BSHRequestListenerTest {
         BSHRequestListener bSHRequestListener = new BSHRequestListener();
         Configuration cfg = new SimpleConfiguration();
         bSHRequestListener.setConfiguration(cfg);
-        assertEquals("bSHRequestListener.whitelist.size()", 1, bSHRequestListener.whitelist.size());
-        assertEquals("bSHRequestListener.bshSource.length", 0, bSHRequestListener.bshSource.length);
-        assertSame("bSHRequestListener.cfg", cfg, bSHRequestListener.cfg);
+        assertEquals(1, bSHRequestListener.whitelist.size(), "bSHRequestListener.whitelist.size()");
+        assertEquals(0, bSHRequestListener.bshSource.length, "bSHRequestListener.bshSource.length");
+        assertSame(cfg, bSHRequestListener.cfg, "bSHRequestListener.cfg");
     }
 
     @Test
@@ -87,10 +87,10 @@ public class BSHRequestListenerTest {
             bSHRequestListener.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertSame("bSHRequestListener.cfg", cfg, bSHRequestListener.cfg);
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("bSHRequestListener.whitelist", bSHRequestListener.whitelist);
-            assertNull("bSHRequestListener.bshSource", bSHRequestListener.bshSource);
+            assertSame(cfg, bSHRequestListener.cfg, "bSHRequestListener.cfg");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(bSHRequestListener.whitelist, "bSHRequestListener.whitelist");
+            assertNull(bSHRequestListener.bshSource, "bSHRequestListener.bshSource");
         }
     }
 }

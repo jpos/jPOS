@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,19 +18,19 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jpos.iso.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class NativePackagerTest {
     ISOMsg m;
     ISOPackager p;
     static final byte[] PACKED = ISOUtil.hex2byte("ACED0005778100FFFF460000000430383030460003000630303030303046000B000630303030303146002900083239313130303031420037000455AA11224D00007F460002000A54657374203132372E32460003000A54657374203132372E33460004000A54657374203132372E344D000005460001000C54657374203132372E352E31454545");
 
-    @Before
+    @BeforeEach
     public void setup() throws ISOException, NoSuchFieldException {
         p = new NativePackager();
         m = new ISOMsg();
@@ -48,7 +48,7 @@ public class NativePackagerTest {
 
     @Test
     public void testPack() throws ISOException {
-        assertArrayEquals("Expected image", PACKED, m.pack());
+        assertArrayEquals(PACKED, m.pack(), "Expected image");
     }
 
     @Test

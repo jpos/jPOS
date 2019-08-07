@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,42 +18,75 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
+import org.junit.jupiter.api.Test;
 
 public class AsciiPrefixer2Test {
 
     @Test
     public void testConstructor() throws Throwable {
         AsciiPrefixer asciiPrefixer = new AsciiPrefixer(100);
-        assertEquals("asciiPrefixer.getPackedLength()", 100, asciiPrefixer.getPackedLength());
+        assertEquals(100, asciiPrefixer.getPackedLength(), "asciiPrefixer.getPackedLength()");
     }
 
     @Test
     public void testDecodeLength() throws Throwable {
         byte[] bytes = new byte[2];
-        int result = AsciiPrefixer.LL.decodeLength(bytes, 0);
-        assertEquals("result", -528, result);
+        try {
+            int result = AsciiPrefixer.LL.decodeLength(bytes, 0);
+            fail("Expected ISOException to be thrown");
+        } catch (ISOException ex) {
+            assertEquals("Invalid character found. Expected digit.", ex.getMessage(), "ex.getMessage()");
+        }
     }
 
     @Test
     public void testDecodeLength1() throws Throwable {
         byte[] b = new byte[1];
         int result = new AsciiPrefixer(0).decodeLength(b, 100);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
+    }
+
+    @Test
+    public void testDecodeBadLength1DigitThrowsISOException() throws Throwable {
+        byte[] bytes = new byte[] {'9'+1};
+        try {
+            int result = AsciiPrefixer.L.decodeLength(bytes, 0);
+            fail("Expected ISOException to be thrown");
+        } catch (ISOException ex) {
+            assertEquals("Invalid character found. Expected digit.", ex.getMessage(), "ex.getMessage()");
+        }
+    }
+
+    @Test
+    public void testDecodeBadLength2DigitsDoesntFail() throws Throwable {
+        byte[] bytes = new byte[] {'1', '0'-1, '0'};
+        try {
+            int result = AsciiPrefixer.LLL.decodeLength(bytes, 0);
+            fail("Expected ISOException to be thrown");
+        } catch (ISOException ex) {
+            assertEquals("Invalid character found. Expected digit.", ex.getMessage(), "ex.getMessage()");
+        }
     }
 
     @Test
     public void testDecodeLengthThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        byte[] b = new byte[3];
+        byte[] b = new byte[] {'0', '0', '0'};
         try {
             new AsciiPrefixer(100).decodeLength(b, 0);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("3", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 3 out of bounds for length 3", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -63,7 +96,7 @@ public class AsciiPrefixer2Test {
             new AsciiPrefixer(100).decodeLength(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -71,14 +104,14 @@ public class AsciiPrefixer2Test {
     public void testEncodeLength() throws Throwable {
         byte[] b = new byte[3];
         new AsciiPrefixer(-1).encodeLength(0, b);
-        assertEquals("b.length", 3, b.length);
+        assertEquals(3, b.length, "b.length");
     }
 
     @Test
     public void testEncodeLength1() throws Throwable {
         byte[] bytes = new byte[2];
         AsciiPrefixer.LL.encodeLength(0, bytes);
-        assertEquals("bytes[0]", (byte) 48, bytes[0]);
+        assertEquals((byte) 48, bytes[0], "bytes[0]");
     }
 
     @Test
@@ -88,8 +121,12 @@ public class AsciiPrefixer2Test {
             new AsciiPrefixer(1).encodeLength(100, b);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
-            assertEquals("b.length", 0, b.length);
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("0", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 0 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(0, b.length, "b.length");
         }
     }
 
@@ -100,9 +137,9 @@ public class AsciiPrefixer2Test {
             AsciiPrefixer.LL.encodeLength(100, bytes);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("bytes[0]", (byte) 48, bytes[0]);
-            assertEquals("ex.getMessage()", "invalid len 100. Prefixing digits = 2", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals((byte) 48, bytes[0], "bytes[0]");
+            assertEquals("invalid len 100. Prefixing digits = 2", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -113,9 +150,9 @@ public class AsciiPrefixer2Test {
             new AsciiPrefixer(0).encodeLength(1, b);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "invalid len 1. Prefixing digits = 0", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertEquals("b.length", 0, b.length);
+            assertEquals("invalid len 1. Prefixing digits = 0", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertEquals(0, b.length, "b.length");
         }
     }
 
@@ -126,9 +163,9 @@ public class AsciiPrefixer2Test {
             new AsciiPrefixer(0).encodeLength(-1, b);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "invalid len -1. Prefixing digits = 0", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertEquals("b.length", 0, b.length);
+            assertEquals("invalid len -1. Prefixing digits = 0", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertEquals(0, b.length, "b.length");
         }
     }
 
@@ -138,19 +175,19 @@ public class AsciiPrefixer2Test {
             new AsciiPrefixer(2).encodeLength(100, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetPackedLength() throws Throwable {
         int result = new AsciiPrefixer(0).getPackedLength();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testGetPackedLength1() throws Throwable {
         int result = new AsciiPrefixer(100).getPackedLength();
-        assertEquals("result", 100, result);
+        assertEquals(100, result, "result");
     }
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,12 @@
 
 package org.jpos.space;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -32,18 +32,18 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jpos.iso.ISOUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings("unchecked")
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TSpaceTest {
 
     @Test
     public void testConstructor() throws Throwable {
         TSpace tSpace = new TSpace();
-        assertEquals("tSpace.entries.size()", 0, tSpace.entries.size());
+        assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @Test
@@ -54,26 +54,26 @@ public class TSpaceTest {
         tSpace.out(Integer.valueOf(31), "");
         PrintStream p = new PrintStream(new ByteArrayOutputStream(), true);
         tSpace.dump(p, "testTSpaceIndent");
-        assertEquals("tSpace.entries.size()", 3, tSpace.entries.size());
+        assertEquals(3, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @Test
     public void testExpirableCompareTo() throws Throwable {
         int result = new TSpace.Expirable(Integer.valueOf(0), 1L).compareTo(new TSpace.Expirable(new Object(), 0L));
-        assertEquals("result", 1, result);
+        assertEquals(1, result, "result");
     }
 
     @Test
     public void testExpirableCompareTo1() throws Throwable {
         TSpace.Expirable obj = new TSpace.Expirable(new Object(), 0L);
         int result = new TSpace.Expirable(new Object(), 0L).compareTo(obj);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testExpirableCompareTo2() throws Throwable {
         int result = new TSpace.Expirable(null, 0L).compareTo(new TSpace.Expirable(new Object(), 1L));
-        assertEquals("result", -1, result);
+        assertEquals(-1, result, "result");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class TSpaceTest {
             new TSpace.Expirable(new Object(), 100L).compareTo(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -90,44 +90,44 @@ public class TSpaceTest {
     public void testExpirableConstructor() throws Throwable {
         Object value = new Object();
         TSpace.Expirable expirable = new TSpace.Expirable(value, 100L);
-        assertEquals("expirable.expires", 100L, expirable.expires);
-        assertSame("expirable.value", value, expirable.value);
+        assertEquals(100L, expirable.expires, "expirable.expires");
+        assertSame(value, expirable.value, "expirable.value");
     }
 
     @Test
     public void testExpirableGetValue() throws Throwable {
         String result = (String) new TSpace.Expirable("", 9184833384926L).getValue();
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
     public void testExpirableGetValue1() throws Throwable {
         Object result = new TSpace.Expirable(null, 9184833384926L).getValue();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testExpirableGetValue2() throws Throwable {
         Object result = new TSpace.Expirable(new Object(), 100L).getValue();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testExpirableIsExpired() throws Throwable {
         boolean result = new TSpace.Expirable("", 9184833384926L).isExpired();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
     public void testExpirableIsExpired1() throws Throwable {
         boolean result = new TSpace.Expirable(new Object(), 100L).isExpired();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testExpirableToString() throws Throwable {
         new TSpace.Expirable(";\"i", 100L).toString();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -136,7 +136,7 @@ public class TSpaceTest {
             new TSpace.Expirable(null, 100L).toString();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -145,31 +145,31 @@ public class TSpaceTest {
 
         TSpace tSpace = new TSpace();
         tSpace.gc();
-        assertEquals("tSpace.entries.size()", 0, tSpace.entries.size());
+        assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @Test
     public void testGetKeysAsString() throws Throwable {
         TSpace tSpace = new TSpace();
         String result = tSpace.getKeysAsString();
-        assertEquals("result", "", result);
-        assertEquals("tSpace.entries.size()", 0, tSpace.entries.size());
+        assertEquals("", result, "result");
+        assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @Test
     public void testGetKeySet() throws Throwable {
         TSpace tSpace = new TSpace();
         AbstractSet result = (AbstractSet) tSpace.getKeySet();
-        assertEquals("result.size()", 0, result.size());
-        assertEquals("tSpace.entries.size()", 0, tSpace.entries.size());
+        assertEquals(0, result.size(), "result.size()");
+        assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @Test
     public void testIn() throws Throwable {
         TSpace tSpace = new TSpace();
         Object result = tSpace.in(Long.valueOf(0L), 1L);
-        assertNull("result", result);
-        assertEquals("tSpace.entries.size()", 0, tSpace.entries.size());
+        assertNull(result, "result");
+        assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @Test
@@ -177,8 +177,8 @@ public class TSpaceTest {
         TSpace tSpace = new TSpace();
         MD5Template key = new MD5Template("", "");
         Object result = tSpace.inp(key);
-        assertNull("result", result);
-        assertEquals("tSpace.entries.size()", 0, tSpace.entries.size());
+        assertNull(result, "result");
+        assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @SuppressWarnings("unchecked")
@@ -191,34 +191,34 @@ public class TSpaceTest {
         tSpace.inp(new MD5Template("", (Object) null));
         tSpace.out("", "", 1000L);
         String result = (String) tSpace.inp("");
-        assertEquals("tSpace.entries.get(\"\").size()", 1, ((List) tSpace.entries.get("")).size());
-        assertFalse("tSpace.entries.get(\"\").get(0) had \"testString\" removed",
-                "testString".equals(((List) tSpace.entries.get("")).get(0)));
-        assertEquals("result", "testString", result);
-        assertEquals("tSpace.entries.size()", 3, tSpace.entries.size());
+        assertEquals(1, ((List) tSpace.entries.get("")).size(), "tSpace.entries.get(\"\").size()");
+        assertFalse("testString".equals(((List) tSpace.entries.get("")).get(0)),
+                "tSpace.entries.get(\"\").get(0) had \"testString\" removed");
+        assertEquals("testString", result, "result");
+        assertEquals(3, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @Test
     public void testInp2() throws Throwable {
         TSpace tSpace = new TSpace();
         Object result = tSpace.inp(null);
-        assertNull("result", result);
-        assertEquals("tSpace.entries.size()", 0, tSpace.entries.size());
+        assertNull(result, "result");
+        assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @Test
     public void testIsEmpty() throws Throwable {
         TSpace tSpace = new TSpace();
         boolean result = tSpace.isEmpty();
-        assertTrue("result", result);
-        assertEquals("tSpace.entries.size()", 0, tSpace.entries.size());
+        assertTrue(result, "result");
+        assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @Test
     public void testOut() throws Throwable {
         TSpace tSpace = new TSpace();
         tSpace.out(Integer.valueOf(0), "testString", 100L);
-        assertEquals("tSpace.entries.size()", 1, tSpace.entries.size());
+        assertEquals(1, tSpace.entries.size(), "tSpace.entries.size()");
     }
 
     @SuppressWarnings("unchecked")
@@ -236,6 +236,6 @@ public class TSpaceTest {
         }
         sp.out("TEST", Boolean.TRUE);
         ISOUtil.sleep(500L);
-        assertTrue("Counter should be zero", ai.get() == 0);
+        assertTrue(ai.get() == 0, "Counter should be zero");
     }
 }

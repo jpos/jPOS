@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,36 +18,35 @@
 
 package org.jpos.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jpos.transaction.participant.BSHTransactionParticipant;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SimpleLogSourceTest {
 
     @Test
     public void testConstructor() throws Throwable {
         SimpleLogSource simpleLogSource = new SimpleLogSource();
-        assertNull("simpleLogSource.realm", simpleLogSource.realm);
-        assertNull("simpleLogSource.logger", simpleLogSource.logger);
+        assertNull(simpleLogSource.realm, "simpleLogSource.realm");
+        assertNull(simpleLogSource.logger, "simpleLogSource.logger");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         Logger logger = new Logger();
         SimpleLogSource simpleLogSource = new SimpleLogSource(logger, "testSimpleLogSourceRealm");
-        assertEquals("simpleLogSource.realm", "testSimpleLogSourceRealm", simpleLogSource.realm);
-        assertSame("simpleLogSource.logger", logger, simpleLogSource.logger);
+        assertEquals("testSimpleLogSourceRealm", simpleLogSource.realm, "simpleLogSource.realm");
+        assertSame(logger, simpleLogSource.logger, "simpleLogSource.logger");
     }
 
     @Test
     public void testError() throws Throwable {
         new BSHTransactionParticipant().error("testSimpleLogSourceDetail", Integer.valueOf(0));
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -56,7 +55,7 @@ public class SimpleLogSourceTest {
         SimpleLogSource bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.setLogger(logger, "testSimpleLogSourceRealm");
         Logger result = bSHTransactionParticipant.getLogger();
-        assertSame("result", logger, result);
+        assertSame(logger, result, "result");
     }
 
     @Test
@@ -64,19 +63,19 @@ public class SimpleLogSourceTest {
         SimpleLogSource bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.setRealm("testSimpleLogSourceRealm");
         String result = bSHTransactionParticipant.getRealm();
-        assertEquals("result", "testSimpleLogSourceRealm", result);
+        assertEquals("testSimpleLogSourceRealm", result, "result");
     }
 
     @Test
     public void testGetRealm1() throws Throwable {
         String result = new BSHTransactionParticipant().getRealm();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testInfo1() throws Throwable {
         new BSHTransactionParticipant().info("testSimpleLogSourceDetail", "testString");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -84,23 +83,23 @@ public class SimpleLogSourceTest {
         Logger logger = new Logger();
         SimpleLogSource bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.setLogger(logger, "testSimpleLogSourceRealm");
-        assertEquals("(BSHTransactionParticipant) bSHTransactionParticipant.realm", "testSimpleLogSourceRealm",
-                ((BSHTransactionParticipant) bSHTransactionParticipant).realm);
-        assertSame("(BSHTransactionParticipant) bSHTransactionParticipant.logger", logger,
-                ((BSHTransactionParticipant) bSHTransactionParticipant).logger);
+        assertEquals("testSimpleLogSourceRealm", ((BSHTransactionParticipant) bSHTransactionParticipant).realm,
+                "(BSHTransactionParticipant) bSHTransactionParticipant.realm");
+        assertSame(logger, ((BSHTransactionParticipant) bSHTransactionParticipant).logger,
+                "(BSHTransactionParticipant) bSHTransactionParticipant.logger");
     }
 
     @Test
     public void testSetRealm() throws Throwable {
         SimpleLogSource bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.setRealm("testSimpleLogSourceRealm");
-        assertEquals("(BSHTransactionParticipant) bSHTransactionParticipant.realm", "testSimpleLogSourceRealm",
-                ((BSHTransactionParticipant) bSHTransactionParticipant).realm);
+        assertEquals("testSimpleLogSourceRealm", ((BSHTransactionParticipant) bSHTransactionParticipant).realm,
+                "(BSHTransactionParticipant) bSHTransactionParticipant.realm");
     }
 
     @Test
     public void testWarning() throws Throwable {
         new BSHTransactionParticipant().warning("testSimpleLogSourceDetail", "");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 }

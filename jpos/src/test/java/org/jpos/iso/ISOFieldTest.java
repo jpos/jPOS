@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,12 +19,12 @@
 package org.jpos.iso;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,34 +32,34 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ISOFieldTest {
 
     @Test
     public void testConstructor() throws Throwable {
         ISOField iSOField = new ISOField(100);
-        assertEquals("iSOField.fieldNumber", 100, iSOField.fieldNumber);
+        assertEquals(100, iSOField.fieldNumber, "iSOField.fieldNumber");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         ISOField iSOField = new ISOField(100, "testISOFieldv");
-        assertEquals("iSOField.fieldNumber", 100, iSOField.fieldNumber);
-        assertEquals("iSOField.value", "testISOFieldv", iSOField.value);
+        assertEquals(100, iSOField.fieldNumber, "iSOField.fieldNumber");
+        assertEquals("testISOFieldv", iSOField.value, "iSOField.value");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         ISOField iSOField = new ISOField();
-        assertEquals("iSOField.fieldNumber", -1, iSOField.fieldNumber);
+        assertEquals(-1, iSOField.fieldNumber, "iSOField.fieldNumber");
     }
 
     @Test
     public void testDump() throws Throwable {
         PrintStream p = new PrintStream(new ByteArrayOutputStream(), true);
         new ISOField(100, "testISOFieldv").dump(p, "testISOFieldIndent");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -67,14 +67,14 @@ public class ISOFieldTest {
         ISOField iSOField = new ISOField(100);
         iSOField.setValue("");
         byte[] result = iSOField.getBytes();
-        assertEquals("result.length", 0, result.length);
+        assertEquals(0, result.length, "result.length");
     }
 
     @Test
     public void testGetBytes1() throws Throwable {
         byte[] result = new ISOField(100, "testISOFieldv").getBytes();
-        assertEquals("result.length", 13, result.length);
-        assertEquals("result[0]", (byte) 116, result[0]);
+        assertEquals(13, result.length, "result.length");
+        assertEquals((byte) 116, result[0], "result[0]");
     }
 
     @Test
@@ -86,25 +86,25 @@ public class ISOFieldTest {
     @Test
     public void testGetKey() throws Throwable {
         Integer result = (Integer) new ISOField(100).getKey();
-        assertEquals("result", 100, result.intValue());
+        assertEquals(100, result.intValue(), "result");
     }
 
     @Test
     public void testGetKey1() throws Throwable {
         Integer result = (Integer) new ISOField(0).getKey();
-        assertEquals("result", 0, result.intValue());
+        assertEquals(0, result.intValue(), "result");
     }
 
     @Test
     public void testGetValue() throws Throwable {
         String result = (String) new ISOField(100, "testISOFieldv").getValue();
-        assertEquals("result", "testISOFieldv", result);
+        assertEquals("testISOFieldv", result, "result");
     }
 
     @Test
     public void testGetValue1() throws Throwable {
         Object result = new ISOField(100).getValue();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -113,8 +113,8 @@ public class ISOFieldTest {
             new ISOField(100).pack();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "Not available on Leaf", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("Not available on Leaf", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -122,14 +122,14 @@ public class ISOFieldTest {
     public void testSetFieldNumber() throws Throwable {
         ISOField iSOField = new ISOField(100);
         iSOField.setFieldNumber(1000);
-        assertEquals("iSOField.fieldNumber", 1000, iSOField.fieldNumber);
+        assertEquals(1000, iSOField.fieldNumber, "iSOField.fieldNumber");
     }
 
     @Test
     public void testSetValue() throws Throwable {
         ISOField iSOField = new ISOField(100);
         iSOField.setValue(" W");
-        assertEquals("iSOField.value", " W", iSOField.value);
+        assertEquals(" W", iSOField.value, "iSOField.value");
     }
 
     @Test
@@ -145,8 +145,8 @@ public class ISOFieldTest {
             new ISOField(100).unpack(new ByteArrayInputStream("".getBytes()));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "Not available on Leaf", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("Not available on Leaf", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -157,8 +157,8 @@ public class ISOFieldTest {
             new ISOField(100, "testISOFieldv").unpack(b);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "Not available on Leaf", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("Not available on Leaf", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -176,7 +176,7 @@ public class ISOFieldTest {
             new ISOField(100).writeExternal(out);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -186,7 +186,7 @@ public class ISOFieldTest {
             new ISOField(100).writeExternal(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

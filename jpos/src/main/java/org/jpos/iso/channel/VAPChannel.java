@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,6 +44,7 @@ public class VAPChannel extends BaseChannel {
     boolean debugPoll;
     int headerFormat = 2;
     private boolean replyKeepAlive = true;
+    private boolean swapDirection = false;
 
     /**
      * Public constructor (used by Class.forName("...").newInstance())
@@ -207,6 +208,7 @@ public class VAPChannel extends BaseChannel {
         return false;
     }
 
+
     /**
      * sends an ISOMsg over the TCP/IP session.
      *
@@ -221,9 +223,8 @@ public class VAPChannel extends BaseChannel {
      */
     public void send (ISOMsg m) throws IOException, ISOException
     {
-        if (m.isIncoming() && m.getHeader() != null) {
-            BASE1Header h = new BASE1Header(m.getHeader());
-            h.swapDirection();
+        if (m.isIncoming() && m.getHeader() != null && swapDirection) {
+            m.getISOHeader().swapDirection();
         }
         super.send(m);
     }
@@ -237,5 +238,6 @@ public class VAPChannel extends BaseChannel {
         debugPoll = cfg.getBoolean("debug-poll", false);
         headerFormat = cfg.getInt("header-format", 2);
         replyKeepAlive = cfg.getBoolean("reply-keepalive", true);
+        swapDirection = cfg.getBoolean("swap-direction", true);
     }
 }

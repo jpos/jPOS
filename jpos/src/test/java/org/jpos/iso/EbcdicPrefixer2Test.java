@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,25 +18,28 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
+import org.junit.jupiter.api.Test;
 
 public class EbcdicPrefixer2Test {
 
     @Test
     public void testConstructor() throws Throwable {
         EbcdicPrefixer ebcdicPrefixer = new EbcdicPrefixer(100);
-        assertEquals("ebcdicPrefixer.getPackedLength()", 100, ebcdicPrefixer.getPackedLength());
+        assertEquals(100, ebcdicPrefixer.getPackedLength(), "ebcdicPrefixer.getPackedLength()");
     }
 
     @Test
     public void testDecodeLength() throws Throwable {
         byte[] b = new byte[1];
         int result = new EbcdicPrefixer(0).decodeLength(b, 100);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -44,7 +47,7 @@ public class EbcdicPrefixer2Test {
         byte[] bytes = new byte[2];
         bytes[0] = (byte) -14;
         int result = EbcdicPrefixer.LL.decodeLength(bytes, 0);
-        assertEquals("result", 20, result);
+        assertEquals(20, result, "result");
     }
 
     @Test
@@ -54,7 +57,11 @@ public class EbcdicPrefixer2Test {
             new EbcdicPrefixer(100).decodeLength(b, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("100", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 100 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -65,7 +72,11 @@ public class EbcdicPrefixer2Test {
             new EbcdicPrefixer(100).decodeLength(b, 0);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "50", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("50", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 50 out of bounds for length 50", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -75,7 +86,7 @@ public class EbcdicPrefixer2Test {
             new EbcdicPrefixer(100).decodeLength(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -83,21 +94,21 @@ public class EbcdicPrefixer2Test {
     public void testEncodeLength() throws Throwable {
         byte[] b = new byte[4];
         new EbcdicPrefixer(1).encodeLength(100, b);
-        assertEquals("b[0]", (byte) -16, b[0]);
+        assertEquals((byte) -16, b[0], "b[0]");
     }
 
     @Test
     public void testEncodeLength1() throws Throwable {
         byte[] b = new byte[0];
         new EbcdicPrefixer(0).encodeLength(100, b);
-        assertEquals("b.length", 0, b.length);
+        assertEquals(0, b.length, "b.length");
     }
 
     @Test
     public void testEncodeLength2() throws Throwable {
         byte[] bytes = new byte[2];
         EbcdicPrefixer.LL.encodeLength(100, bytes);
-        assertEquals("bytes[0]", (byte) -16, bytes[0]);
+        assertEquals((byte) -16, bytes[0], "bytes[0]");
     }
 
     @Test
@@ -107,9 +118,13 @@ public class EbcdicPrefixer2Test {
             new EbcdicPrefixer(2).encodeLength(-10, b);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("b[1]", (byte) -16, b[1]);
-            assertEquals("ex.getMessage()", "-1", ex.getMessage());
-            assertEquals("b.length", 2, b.length);
+            assertEquals((byte) -16, b[1], "b[1]");
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("-1", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index -1 out of bounds for length 10", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(2, b.length, "b.length");
         }
     }
 
@@ -120,8 +135,12 @@ public class EbcdicPrefixer2Test {
             new EbcdicPrefixer(2).encodeLength(100, b);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
-            assertEquals("b.length", 1, b.length);
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("1", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 1 out of bounds for length 1", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(1, b.length, "b.length");
         }
     }
 
@@ -131,19 +150,19 @@ public class EbcdicPrefixer2Test {
             new EbcdicPrefixer(2).encodeLength(100, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetPackedLength() throws Throwable {
         int result = new EbcdicPrefixer(100).getPackedLength();
-        assertEquals("result", 100, result);
+        assertEquals(100, result, "result");
     }
 
     @Test
     public void testGetPackedLength1() throws Throwable {
         int result = new EbcdicPrefixer(0).getPackedLength();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 }

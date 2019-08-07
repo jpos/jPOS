@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,17 +18,17 @@
 
 package org.jpos.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore ("test causes problems, closes stdout")
+@Disabled("test causes problems, closes stdout")
 public class LoggerTest {
 
     @Test
@@ -36,15 +36,15 @@ public class LoggerTest {
         Logger logger = new Logger();
         LogListener l = new SimpleLogListener();
         logger.addListener(l);
-        assertEquals("m_logger.listeners.size()", 1, logger.listeners.size());
-        assertSame("m_logger.listeners.get(0)", l, logger.listeners.get(0));
+        assertEquals(1, logger.listeners.size(), "m_logger.listeners.size()");
+        assertSame(l, logger.listeners.get(0), "m_logger.listeners.get(0)");
     }
 
     @Test
     public void testConstructor() throws Throwable {
         Logger logger = new Logger();
-        assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());
-        assertEquals("m_logger.name", "", logger.name);
+        assertEquals(0, logger.listeners.size(), "m_logger.listeners.size()");
+        assertEquals("", logger.name, "m_logger.name");
     }
 
     @Test
@@ -53,8 +53,8 @@ public class LoggerTest {
         LogListener l = new SimpleLogListener();
         logger.addListener(l);
         logger.destroy();
-        assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());
-        assertFalse("m_logger.listeners.contains(l)", logger.listeners.contains(l));
+        assertEquals(0, logger.listeners.size(), "m_logger.listeners.size()");
+        assertFalse(logger.listeners.contains(l), "m_logger.listeners.contains(l)");
     }
 
     @Test
@@ -63,19 +63,19 @@ public class LoggerTest {
         logger.addListener(new SimpleLogListener());
         logger.addListener(new ExceptionLogFilter());
         logger.destroy();
-        assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());
+        assertEquals(0, logger.listeners.size(), "m_logger.listeners.size()");
     }
 
     @Test
     public void testGetLogger() throws Throwable {
         Logger result = Logger.getLogger("testLoggerName");
-        assertEquals("result.getName()", "testLoggerName", result.getName());
+        assertEquals("testLoggerName", result.getName(), "result.getName()");
     }
 
     @Test
     public void testGetName() throws Throwable {
         String result = new Logger().getName();
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
@@ -83,32 +83,32 @@ public class LoggerTest {
         Logger logger = new Logger();
         logger.addListener(new SimpleLogListener());
         boolean result = logger.hasListeners();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testHasListeners1() throws Throwable {
         boolean result = new Logger().hasListeners();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
     public void testLog() throws Throwable {
         Logger.log(new LogEvent(new SimpleLogSource(Logger.getLogger("testLoggerName"), "testLoggerRealm"), "testLoggerTag",
                 "testString"));
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testLog1() throws Throwable {
         Logger.log(new LogEvent(new Log(), "testLoggerTag", "testString"));
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testLog2() throws Throwable {
         Logger.log(new LogEvent(null, "testLoggerTag", ""));
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -117,7 +117,7 @@ public class LoggerTest {
             Logger.log(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -127,8 +127,8 @@ public class LoggerTest {
         LogListener l = new SimpleLogListener();
         logger.addListener(l);
         logger.removeAllListeners();
-        assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());
-        assertFalse("m_logger.listeners.contains(l)", logger.listeners.contains(l));
+        assertEquals(0, logger.listeners.size(), "m_logger.listeners.size()");
+        assertFalse(logger.listeners.contains(l), "m_logger.listeners.contains(l)");
     }
 
     @Test
@@ -137,7 +137,7 @@ public class LoggerTest {
         logger.addListener(new FilterLogListener());
         logger.addListener(new RotateLogListener());
         logger.removeAllListeners();
-        assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());
+        assertEquals(0, logger.listeners.size(), "m_logger.listeners.size()");
     }
 
     @Test
@@ -146,28 +146,28 @@ public class LoggerTest {
         LogListener l = new RotateLogListener();
         logger.addListener(l);
         logger.removeAllListeners();
-        assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());
-        assertFalse("m_logger.listeners.contains(l)", logger.listeners.contains(l));
+        assertEquals(0, logger.listeners.size(), "m_logger.listeners.size()");
+        assertFalse(logger.listeners.contains(l), "m_logger.listeners.contains(l)");
     }
 
     @Test
     public void testRemoveAllListeners3() throws Throwable {
         Logger logger = new Logger();
         logger.removeAllListeners();
-        assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());
+        assertEquals(0, logger.listeners.size(), "m_logger.listeners.size()");
     }
 
     @Test
     public void testRemoveListener() throws Throwable {
         Logger logger = new Logger();
         logger.removeListener(new SimpleLogListener());
-        assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());
+        assertEquals(0, logger.listeners.size(), "m_logger.listeners.size()");
     }
 
     @Test
     public void testSetName() throws Throwable {
         Logger logger = new Logger();
         logger.setName("testLoggerName");
-        assertEquals("m_logger.name", "testLoggerName", logger.name);
+        assertEquals("testLoggerName", logger.name, "m_logger.name");
     }
 }

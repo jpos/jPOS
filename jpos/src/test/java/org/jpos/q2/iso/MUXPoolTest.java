@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,14 @@
 
 package org.jpos.q2.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jdom2.Element;
 import org.jpos.iso.ISOMsg;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MUXPoolTest {
     @Test
@@ -35,11 +35,11 @@ public class MUXPoolTest {
             mUXPool.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("mUXPool.isModified()", mUXPool.isModified());
-            assertNull("mUXPool.muxName", mUXPool.muxName);
-            assertNull("mUXPool.mux", mUXPool.mux);
-            assertEquals("mUXPool.strategy", 0, mUXPool.strategy);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(mUXPool.isModified(), "mUXPool.isModified()");
+            assertNull(mUXPool.muxName, "mUXPool.muxName");
+            assertNull(mUXPool.mux, "mUXPool.mux");
+            assertEquals(0, mUXPool.strategy, "mUXPool.strategy");
         }
     }
 
@@ -51,11 +51,11 @@ public class MUXPoolTest {
             mUXPool.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("mUXPool.mux", mUXPool.mux);
-            assertFalse("mUXPool.isModified()", mUXPool.isModified());
-            assertEquals("mUXPool.strategy", 0, mUXPool.strategy);
-            assertNull("mUXPool.muxName", mUXPool.muxName);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(mUXPool.mux, "mUXPool.mux");
+            assertFalse(mUXPool.isModified(), "mUXPool.isModified()");
+            assertEquals(0, mUXPool.strategy, "mUXPool.strategy");
+            assertNull(mUXPool.muxName, "mUXPool.muxName");
         }
     }
 
@@ -65,7 +65,7 @@ public class MUXPoolTest {
             new MUXPool().isConnected();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -76,7 +76,7 @@ public class MUXPoolTest {
             mUXPool.request(new ISOMsg("testMUXPoolMti"), 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -84,6 +84,6 @@ public class MUXPoolTest {
     public void testStopService() throws Throwable {
         MUXPool mUXPool = new MUXPool();
         mUXPool.stopService();
-        assertNull("mUXPool.getName()", mUXPool.getName());
+        assertNull(mUXPool.getName(), "mUXPool.getName()");
     }
 }

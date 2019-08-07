@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * various functions needed to pack/unpack ISO-8583 fields
@@ -1497,15 +1498,16 @@ public class ISOUtil {
         return bd.movePointLeft(pow).doubleValue();
     }
 
+
     /**
-     * Converts a string[] into a comma-delimited String.
+     * Converts a string[] or multiple strings into one comma-delimited String.
      *
      * Takes care of escaping commas using a backlash
      * @see org.jpos.iso.ISOUtil#commaDecode(String)
      * @param ss string array to be comma encoded
      * @return comma encoded string
      */
-    public static String commaEncode (String[] ss) {
+    public static String commaEncode (String... ss) {
         StringBuilder sb = new StringBuilder();
         for (String s : ss) {
             if (sb.length() > 0)
@@ -1662,4 +1664,15 @@ public class ISOUtil {
         return builder.toString();
     }
 
+    public static byte[] decodeHexDump(String s) {
+        return hex2byte(
+            Arrays.stream(s.split("\\r\\n|[\\r\\n]"))
+                .map(x ->
+                         x.replaceAll("^.{4}  ", "").
+                             replaceAll("\\s\\s", " ").
+                             replaceAll("(([0-9A-F][0-9A-F]\\s){1,16}).*$", "$1").
+                             replaceAll("\\s", "")
+                ).collect(Collectors.joining()));
+    }
+    
 }

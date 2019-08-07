@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,20 +27,20 @@ import org.jpos.rc.Result;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.ContextConstants;
 import org.jpos.transaction.TransactionConstants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.jpos.transaction.ContextConstants.DESTINATION;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class SelectDestinationTest implements TransactionConstants {
     private SelectDestination p;
     private Configuration cfg;
 
-    @Before
+    @BeforeEach
     public void setUp() throws ConfigurationException {
         cfg = new SimpleConfiguration();
         cfg.put ("default-destination", "LOCAL");
@@ -83,10 +83,10 @@ public class SelectDestinationTest implements TransactionConstants {
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("4111111111111111"));
         int action = p.prepare(1L, ctx);
-        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertFalse("No failures", rc.hasFailures());
-        assertEquals("Invalid Destination", "V", ctx.getString(DESTINATION.toString()));
+        assertFalse(rc.hasFailures(), "No failures");
+        assertEquals("V", ctx.getString(DESTINATION.toString()), "Invalid Destination");
     }
     @Test
     public void testNetwork_M () {
@@ -95,10 +95,10 @@ public class SelectDestinationTest implements TransactionConstants {
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("5111111111111118"));
         int action = p.prepare(1L, ctx);
-        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertFalse("No failures", rc.hasFailures());
-        assertEquals("Invalid Destination", "M", ctx.getString(DESTINATION.toString()));
+        assertFalse(rc.hasFailures(), "No failures");
+        assertEquals("M", ctx.getString(DESTINATION.toString()), "Invalid Destination");
     }
     @Test
     public void testInvalidLUHN () {
@@ -107,10 +107,10 @@ public class SelectDestinationTest implements TransactionConstants {
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("5111111111111111"));
         int action = p.prepare(1L, ctx);
-        assertEquals ("Action should be ABORTED|NO_JOIN|READONLY", ABORTED | NO_JOIN | READONLY, action);
+        assertEquals (ABORTED | NO_JOIN | READONLY, action, "Action should be ABORTED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertTrue("Has failures", rc.hasFailures());
-        assertTrue("Should raise invalid card error", rc.failure().getIrc() == CMF.INVALID_CARD_OR_CARDHOLDER_NUMBER);
+        assertTrue(rc.hasFailures(), "Has failures");
+        assertTrue(rc.failure().getIrc() == CMF.INVALID_CARD_OR_CARDHOLDER_NUMBER, "Should raise invalid card error");
     }
 
     @Test
@@ -120,10 +120,10 @@ public class SelectDestinationTest implements TransactionConstants {
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("6111111111111111"));
         int action = p.prepare(1L, ctx);
-        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertFalse("No failures", rc.hasFailures());
-        assertEquals("Invalid Destination", "N6", ctx.getString(DESTINATION.toString()));
+        assertFalse(rc.hasFailures(), "No failures");
+        assertEquals("N6", ctx.getString(DESTINATION.toString()), "Invalid Destination");
     }
 
     @Test
@@ -133,10 +133,10 @@ public class SelectDestinationTest implements TransactionConstants {
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("7111111111111111"));
         int action = p.prepare(1L, ctx);
-        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertFalse("No failures", rc.hasFailures());
-        assertEquals("Invalid Destination", "N7", ctx.getString(DESTINATION.toString()));
+        assertFalse(rc.hasFailures(), "No failures");
+        assertEquals("N7", ctx.getString(DESTINATION.toString()), "Invalid Destination");
     }
     @Test
     public void testNetwork_Default () {
@@ -145,10 +145,10 @@ public class SelectDestinationTest implements TransactionConstants {
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("0000000000000001"));
         int action = p.prepare(1L, ctx);
-        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertFalse("No failures", rc.hasFailures());
-        assertEquals("Invalid Destination", "DEFAULT", ctx.getString(DESTINATION.toString()));
+        assertFalse(rc.hasFailures(), "No failures");
+        assertEquals("DEFAULT", ctx.getString(DESTINATION.toString()), "Invalid Destination");
     }
 
 

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,23 +18,15 @@
 
 package org.jpos.core;
 
-import static org.jpos.util.Serializer.serialize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
-
-// import junitx.util.PrivateAccessor;
-
-import org.jpos.iso.ISOUtil;
 import org.jpos.util.Serializer;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unchecked")
 public class SimpleConfigurationTest {
@@ -51,7 +43,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration("testSimpleConfigurationFilename");
             fail("Expected FileNotFoundException to be thrown");
         } catch (FileNotFoundException ex) {
-            assertEquals("ex.getClass()", FileNotFoundException.class, ex.getClass());
+            assertEquals(FileNotFoundException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -68,13 +60,13 @@ public class SimpleConfigurationTest {
     @Test
     public void testGet() throws Throwable {
         String result = new SimpleConfiguration(new Properties()).get("testSimpleConfigurationName", null);
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testGet1() throws Throwable {
         String result = new SimpleConfiguration(new Properties()).get("testSimpleConfigurationName", "testSimpleConfigurationDef");
-        assertEquals("result", "testSimpleConfigurationDef", result);
+        assertEquals("testSimpleConfigurationDef", result, "result");
     }
 
     @Test
@@ -82,13 +74,13 @@ public class SimpleConfigurationTest {
         SimpleConfiguration simpleConfiguration = new SimpleConfiguration(new Properties());
         simpleConfiguration.put("testString", "");
         String result = simpleConfiguration.get("testString", "testSimpleConfigurationDef");
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
     public void testGet3() throws Throwable {
         String result = new SimpleConfiguration(new Properties()).get("testSimpleConfigurationName");
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
@@ -96,7 +88,7 @@ public class SimpleConfigurationTest {
         SimpleConfiguration simpleConfiguration = new SimpleConfiguration(new Properties());
         simpleConfiguration.put("E", "");
         String result = simpleConfiguration.get("E");
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
@@ -104,14 +96,14 @@ public class SimpleConfigurationTest {
         SimpleConfiguration simpleConfiguration = new SimpleConfiguration();
         simpleConfiguration.put("testString", "");
         String[] result = simpleConfiguration.getAll("testString");
-        assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", "", result[0]);
+        assertEquals(1, result.length, "result.length");
+        assertEquals("", result[0], "result[0]");
     }
 
     @Test
     public void testGetAll1() throws Throwable {
         String[] result = new SimpleConfiguration(new Properties()).getAll("testSimpleConfigurationName");
-        assertEquals("result.length", 0, result.length);
+        assertEquals(0, result.length, "result.length");
     }
 
     @Test
@@ -120,14 +112,14 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).getAll("testSimpleConfigurationName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetBoolean() throws Throwable {
         boolean result = new SimpleConfiguration().getBoolean("testSimpleConfigurationName", true);
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
@@ -135,7 +127,7 @@ public class SimpleConfigurationTest {
         SimpleConfiguration simpleConfiguration = new SimpleConfiguration(new Properties());
         simpleConfiguration.put("testString", "");
         boolean result = simpleConfiguration.getBoolean("testString", false);
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -143,7 +135,7 @@ public class SimpleConfigurationTest {
         SimpleConfiguration simpleConfiguration = new SimpleConfiguration(new Properties());
         simpleConfiguration.put("testString", "testString");
         boolean result = simpleConfiguration.getBoolean("testString", true);
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -151,13 +143,13 @@ public class SimpleConfigurationTest {
         Properties props = new Properties();
         props.put("^\n", "testString");
         boolean result = new SimpleConfiguration(props).getBoolean("^\n");
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
     public void testGetBoolean4() throws Throwable {
         boolean result = new SimpleConfiguration(new Properties()).getBoolean("testSimpleConfigurationName");
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -165,7 +157,7 @@ public class SimpleConfigurationTest {
         SimpleConfiguration simpleConfiguration = new SimpleConfiguration(new Properties());
         simpleConfiguration.put("testString", "");
         boolean result = simpleConfiguration.getBoolean("testString");
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -176,7 +168,7 @@ public class SimpleConfigurationTest {
         props.put("testString", "testString");
         String name = (String) props.put("testString", new ArrayList());
         boolean result = simpleConfiguration.getBoolean(name);
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -189,7 +181,7 @@ public class SimpleConfigurationTest {
         props.put("testString", "testString");
         String name = (String) props.put("testString", arrayList);
         boolean result = simpleConfiguration.getBoolean(name);
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -198,7 +190,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).getBoolean("testSimpleConfigurationName", true);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -208,26 +200,26 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).getBoolean("testSimpleConfigurationName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetDouble() throws Throwable {
         double result = new SimpleConfiguration(new Properties()).getDouble("testSimpleConfigurationName");
-        assertEquals("result", 0.0, result, 1.0E-6);
+        assertEquals(0.0, result, 1.0E-6, "result");
     }
 
     @Test
     public void testGetDouble1() throws Throwable {
         double result = new SimpleConfiguration(new Properties()).getDouble("testSimpleConfigurationName", 0.0);
-        assertEquals("result", 0.0, result, 1.0E-6);
+        assertEquals(0.0, result, 1.0E-6, "result");
     }
 
     @Test
     public void testGetDouble2() throws Throwable {
         double result = new SimpleConfiguration(new Properties()).getDouble("testSimpleConfigurationName", 100.0);
-        assertEquals("result", 100.0, result, 1.0E-6);
+        assertEquals(100.0, result, 1.0E-6, "result");
     }
 
     @Test
@@ -236,7 +228,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).getDouble("testSimpleConfigurationName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -246,7 +238,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).getDouble("testSimpleConfigurationName", 100.0);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -258,7 +250,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration(props).getDouble("X%:?6IB(BA");
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \"testString\"", ex.getMessage());
+            assertEquals("For input string: \"testString\"", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -270,26 +262,26 @@ public class SimpleConfigurationTest {
             simpleConfiguration.getDouble("testString", 100.0);
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "empty String", ex.getMessage());
+            assertEquals("empty String", ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetInt() throws Throwable {
         int result = new SimpleConfiguration(new Properties()).getInt("testSimpleConfigurationName", 100);
-        assertEquals("result", 100, result);
+        assertEquals(100, result, "result");
     }
 
     @Test
     public void testGetInt1() throws Throwable {
         int result = new SimpleConfiguration(new Properties()).getInt("testSimpleConfigurationName", 0);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testGetInt2() throws Throwable {
         int result = new SimpleConfiguration(new Properties()).getInt("testSimpleConfigurationName");
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -298,7 +290,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).getInt("testSimpleConfigurationName", 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -308,7 +300,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).getInt("testSimpleConfigurationName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -320,7 +312,7 @@ public class SimpleConfigurationTest {
             simpleConfiguration.getInt("testString", 100);
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \"\"", ex.getMessage());
+            assertEquals("For input string: \"\"", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -332,26 +324,26 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration(props).getInt("YnFqoMm>b^[gMH*a^qc\f\n#\nUXhdWK\\^G");
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \"testString\"", ex.getMessage());
+            assertEquals("For input string: \"testString\"", ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetLong() throws Throwable {
         long result = new SimpleConfiguration().getLong("testSimpleConfigurationName", 100L);
-        assertEquals("result", 100L, result);
+        assertEquals(100L, result, "result");
     }
 
     @Test
     public void testGetLong1() throws Throwable {
         long result = new SimpleConfiguration(new Properties()).getLong("testSimpleConfigurationName", 0L);
-        assertEquals("result", 0L, result);
+        assertEquals(0L, result, "result");
     }
 
     @Test
     public void testGetLong2() throws Throwable {
         long result = new SimpleConfiguration(new Properties()).getLong("testSimpleConfigurationName");
-        assertEquals("result", 0L, result);
+        assertEquals(0L, result, "result");
     }
 
     @Test
@@ -361,7 +353,7 @@ public class SimpleConfigurationTest {
         props.put("testString", "testString");
         String name = (String) props.put("testString", "4");
         long result = new SimpleConfiguration(props).getLong(name);
-        assertEquals("result", 4L, result);
+        assertEquals(4L, result, "result");
     }
 
     @Test
@@ -370,7 +362,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration(new Properties()).getLong(null, 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -380,7 +372,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).getLong("testSimpleConfigurationName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -392,7 +384,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration(props).getLong("testString");
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \"testString\"", ex.getMessage());
+            assertEquals("For input string: \"testString\"", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -402,7 +394,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).get("testSimpleConfigurationName", "testSimpleConfigurationDef");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -412,7 +404,7 @@ public class SimpleConfigurationTest {
             new SimpleConfiguration((Properties) null).get("testSimpleConfigurationName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -424,7 +416,7 @@ public class SimpleConfigurationTest {
             simpleConfiguration.load("testSimpleConfigurationFilename");
             fail("Expected FileNotFoundException to be thrown");
         } catch (FileNotFoundException ex) {
-            assertEquals("ex.getClass()", FileNotFoundException.class, ex.getClass());
+            assertEquals(FileNotFoundException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -446,7 +438,7 @@ public class SimpleConfigurationTest {
             simpleConfiguration.put("testSimpleConfigurationName", "testString");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -455,7 +447,69 @@ public class SimpleConfigurationTest {
         SimpleConfiguration cfg = new SimpleConfiguration();
         cfg.put ("A", "The Quick Brown Fox Jumps Over The Lazy Dog");
         Configuration cfg1 = Serializer.serializeDeserialize(cfg);
-        assertEquals("cfg.A should equal cfg1.A", cfg.get("A"), cfg1.get("A"));
-        assertEquals ("cfg should equal cfg1", cfg, cfg1);
+        assertEquals(cfg.get("A"), cfg1.get("A"), "cfg.A should equal cfg1.A");
+        assertEquals (cfg, cfg1, "cfg should equal cfg1");
+    }
+
+    @Test
+    public void testReadSystemProperty () {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        System.setProperty("jpos.url", "http://jpos.org");
+        cfg.put("host", "${jpos.url}");
+        assertEquals("http://jpos.org", cfg.get("host"));
+        cfg.put("host", "$sys{jpos.url}");
+        assertEquals("http://jpos.org", cfg.get("host"));
+        cfg.put("host", "$env{jpos.url}");
+        assertTrue(cfg.get("host").isEmpty());
+    }
+
+    @Test
+    public void testInvalidProperty() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("host", "$invalid{jpos.url}");
+        assertEquals("$invalid{jpos.url}", cfg.get("host"));
+    }
+
+    @Test
+    @Disabled // regexp failing
+    public void testInvalidNested() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("invalid", "$invalid{${nested}}");
+        assertEquals("$invalid{${nested}}", cfg.get("invalid"));
+    }
+
+    @Test
+    public void testReadVerbatimProperty () {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put ("verbatim", "$verb{${verbatin.property}}");
+        assertEquals("${verbatin.property}", cfg.get("verbatim"));
+    }
+
+    @Test
+    public void testReadEnvironmentVariable () {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("home", "$env{HOME}");
+        assertEquals(System.getenv("HOME"), cfg.get("home"));
+        cfg.put("home", "${HOME}");
+        assertEquals(System.getenv("HOME"), cfg.get("home"));
+        cfg.put("home", "$sys{HOME}");
+        assertTrue(cfg.get("home").isEmpty());
+    }
+
+    @Test
+    public void testgetAllProperty() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        System.setProperty("jpos.url", "http://jpos.org");
+        cfg.put("host", "${jpos.url}");
+        assertArrayEquals(new String[] { "http://jpos.org" }, cfg.getAll("host"));
+    }
+
+    @Test
+    public void testMultipleProperties() {
+        System.setProperty("jpos.host", "http://jpos.org");
+        System.setProperty("jpos.port", "80");
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put ("host", "${jpos.host}:${jpos.port}");
+        assertEquals("http://jpos.org:80", cfg.get("host"));
     }
 }

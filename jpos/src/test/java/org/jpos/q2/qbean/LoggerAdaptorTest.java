@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,25 +18,25 @@
 
 package org.jpos.q2.qbean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 public class LoggerAdaptorTest {
 
     @Test
     public void testConstructor() throws Throwable {
         LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
-        assertEquals("loggerAdaptor.getLog().getRealm()", "org.jpos.q2.qbean.LoggerAdaptor", loggerAdaptor.getLog().getRealm());
-        assertEquals("loggerAdaptor.getState()", -1, loggerAdaptor.getState());
-        assertTrue("loggerAdaptor.isModified()", loggerAdaptor.isModified());
+        assertEquals("org.jpos.q2.qbean.LoggerAdaptor", loggerAdaptor.getLog().getRealm(), "loggerAdaptor.getLog().getRealm()");
+        assertEquals(-1, loggerAdaptor.getState(), "loggerAdaptor.getState()");
+        assertTrue(loggerAdaptor.isModified(), "loggerAdaptor.isModified()");
     }
 
     @Test
     public void testDestroyService() throws Throwable {
         LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
         loggerAdaptor.destroyService();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,6 @@
 
 package  org.jpos.security.jceadapter;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.javatuples.Pair;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -66,7 +65,7 @@ import javax.crypto.Cipher;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("unchecked")
-public class JCESecurityModule extends BaseSMAdapter {
+public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     /**
      * Pattern representing key type string value.
      */
@@ -411,6 +410,12 @@ public class JCESecurityModule extends BaseSMAdapter {
         return calculateCVV(accountNo,concatKeys(cvkA, cvkB),expDate,serviceCode);
     }
 
+    @Override
+    protected String calculateCVDImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                                   String expDate, String serviceCode) throws SMException {
+        return calculateCVD(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
+    }
+
     protected void checkCAVVArgs(String upn, String authrc, String sfarc)
             throws SMException {
         if (upn == null)
@@ -446,6 +451,13 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     @Override
+    protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                     String cvv, String expDate, String serviceCode) throws SMException {
+        String result = calculateCVD(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
+        return result.equals(cvv);
+    }
+
+    @Override
     protected boolean verifyCAVVImpl(String accountNo, SecureDESKey cvk, String cavv,
                      String upn, String authrc, String sfarc) throws SMException {
         checkCAVVArgs(upn, authrc,sfarc);
@@ -454,22 +466,35 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     protected String calculatedCVV(String accountNo, SecureDESKey imkac,
-                     Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
 
         if (mkdm==null)
           mkdm = MKDMethod.OPTION_A;
+
         byte[] panpsn = formatPANPSN_dCVD(accountNo, null, mkdm);
         Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
 
         String alteredPAN = ISOUtil.hexString(atc) + accountNo.substring(4);
 
-        return calculateCVV(alteredPAN, mkac, expDate, serviceCode);
+        return calculateCVD(alteredPAN, mkac, expDate, serviceCode);
     }
 
     @Override
     protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
                      Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+
+        String ed = ISODate.formatDate(expDate, "yyMM");
+        String res = calculatedCVV(accountNo, imkac, ed,
+                serviceCode, atc, mkdm
+        );
+        return res.equals(dcvv);
+    }
+
+    @Override
+    protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
+                     String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
 
         String res = calculatedCVV(accountNo, imkac, expDate,
@@ -1191,13 +1216,12 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     /**
-     * Generates a random clear key component.<br>
-     * Used by Console, that's why it is package protected.
+     * Generates a random clear key component.
      * @param keyLength
      * @return clear key componenet
      * @throws SMException
      */
-    String generateClearKeyComponent (short keyLength) throws SMException {
+    public String generateClearKeyComponent (short keyLength) throws SMException {
         String clearKeyComponenetHexString;
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "Key Length", keyLength)
@@ -1288,11 +1312,11 @@ public class JCESecurityModule extends BaseSMAdapter {
             String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException {
         SecureDESKey secureDESKey;
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        
+
         try {
             byte[] clearComponent1 = ISOUtil.hex2byte(clearComponent1HexString);
-            byte[] clearComponent2 = ISOUtil.hex2byte(clearComponent2HexString);
-            byte[] clearComponent3 = ISOUtil.hex2byte(clearComponent3HexString);
+            byte[] clearComponent2 = clearComponent2HexString != null ? ISOUtil.hex2byte(clearComponent2HexString) : new byte[keyLength >> 3];
+            byte[] clearComponent3 = clearComponent3HexString != null ? ISOUtil.hex2byte(clearComponent3HexString) : new byte[keyLength >> 3];
             byte[] clearKeyBytes = ISOUtil.xor(ISOUtil.xor(clearComponent1, clearComponent2),
                     clearComponent3);
             Key clearKey = jceHandler.formDESKey(keyLength, clearKeyBytes);
@@ -1314,6 +1338,21 @@ public class JCESecurityModule extends BaseSMAdapter {
         }
         return  secureDESKey;
     }
+
+    @Override
+    public SecureDESKey formKEYfromClearComponents (short keyLength, String keyType, String... components)
+      throws SMException
+    {
+        if (components.length < 1 || components.length > 3)
+            throw new SMException("Invalid number of clear key components");
+        String[] s = new String[3];
+        int i=0;
+        for (String component : components)
+            s[i++] = component;
+
+        return formKEYfromThreeClearComponents(keyLength, keyType, s[0], s[1], s[2]);
+    }
+
 
     /**
      * Calculates a key check value over a clear key

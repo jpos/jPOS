@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,17 +24,19 @@ import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.jar.JarEntry;
+import java.util.stream.Collectors;
 
 /**
  * @author vsalaman
  */
 public class ModuleUtils
 {
+    private static final String MODULES_UUID_DIR = "META-INF/modules/uuids/";
+
     public static List<String> getModuleEntries(String prefix) throws IOException
     {
         List<String> result=new ArrayList<String>();
@@ -60,7 +62,25 @@ public class ModuleUtils
         return result;
     }
 
-    private static List<String> resolveModuleEntriesFromFiles(URL url,String _prefix) throws IOException, URISyntaxException
+    public static List<String> getModulesUUIDs () throws IOException {
+        return ModuleUtils.getModuleEntries(MODULES_UUID_DIR)
+          .stream()
+          .sorted()
+          .map(p -> p.substring(MODULES_UUID_DIR.length()))
+          .collect(Collectors.toList());
+    }
+
+    public static String getSystemHash() throws IOException, NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        boolean updated = false;
+        for (String s : getModulesUUIDs()) {
+            digest.update(s.getBytes());
+            updated = true;
+        }
+        return updated ? Base64.getEncoder().encodeToString(digest.digest()) : "";
+    }
+
+    private static List<String> resolveModuleEntriesFromFiles(URL url,String _prefix) throws URISyntaxException
     {
         final String prefix=_prefix.endsWith("/")?_prefix:_prefix+"/";
 

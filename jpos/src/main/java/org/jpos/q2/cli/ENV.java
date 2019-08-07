@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
 
 package org.jpos.q2.cli;
 
+import org.jpos.core.Environment;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import org.jline.terminal.Terminal;
@@ -26,6 +27,7 @@ import org.jline.terminal.Terminal;
 public class ENV implements CLICommand {
     public void exec(CLIContext cli, String[] args) throws Exception {
         Terminal term = cli.getReader().getTerminal();
-        cli.println("TERM=" + term.getClass().getSimpleName() + "/" + term.getType());
+        cli.println ("TERM=" + term.getClass().getSimpleName() + "/" + term.getType());
+        cli.println (Environment.getEnvironment().toString());
     }
 }

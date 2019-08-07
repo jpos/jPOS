@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,20 @@
 
 package org.jpos.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import org.jpos.iso.ISOUtil;
-import org.junit.Before;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.Test;
+import org.hamcrest.Matchers;
+import org.jpos.iso.ISOUtil;
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
 
 public class SimpleMsgTest {
 
@@ -33,7 +39,7 @@ public class SimpleMsgTest {
     ByteArrayOutputStream os;
     private static final String NL = System.getProperty("line.separator");
 
-    @Before
+    @BeforeEach
     public void setUp() {
       os = new ByteArrayOutputStream();
       p = new PrintStream(os);
@@ -42,50 +48,50 @@ public class SimpleMsgTest {
     @Test
     public void testConstructor() throws Throwable {
         SimpleMsg simpleMsg = new SimpleMsg("tag", "Some Name", true);
-        assertEquals("simpleMsg.msgContent", Boolean.TRUE, simpleMsg.msgContent);
-        assertEquals("simpleMsg.tagName", "tag", simpleMsg.tagName);
-        assertEquals("simpleMsg.msgName", "Some Name", simpleMsg.msgName);
+        assertEquals(Boolean.TRUE, simpleMsg.msgContent, "simpleMsg.msgContent");
+        assertEquals("tag", simpleMsg.tagName, "simpleMsg.tagName");
+        assertEquals("Some Name", simpleMsg.msgName, "simpleMsg.msgName");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         SimpleMsg simpleMsg = new SimpleMsg("tag", "Some Name", "testString");
-        assertEquals("simpleMsg.msgContent", "testString", simpleMsg.msgContent);
-        assertEquals("simpleMsg.tagName", "tag", simpleMsg.tagName);
-        assertEquals("simpleMsg.msgName", "Some Name", simpleMsg.msgName);
+        assertEquals("testString", simpleMsg.msgContent, "simpleMsg.msgContent");
+        assertEquals("tag", simpleMsg.tagName, "simpleMsg.tagName");
+        assertEquals("Some Name", simpleMsg.msgName, "simpleMsg.msgName");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         SimpleMsg simpleMsg = new SimpleMsg("tag", "Some Name", 100L);
-        assertEquals("simpleMsg.msgContent", 100L, simpleMsg.msgContent);
-        assertEquals("simpleMsg.tagName", "tag", simpleMsg.tagName);
-        assertEquals("simpleMsg.msgName", "Some Name", simpleMsg.msgName);
+        assertEquals(100L, simpleMsg.msgContent, "simpleMsg.msgContent");
+        assertEquals("tag", simpleMsg.tagName, "simpleMsg.tagName");
+        assertEquals("Some Name", simpleMsg.msgName, "simpleMsg.msgName");
     }
 
     @Test
     public void testConstructor3() throws Throwable {
         SimpleMsg simpleMsg = new SimpleMsg("tag", "Some Name", 100);
-        assertEquals("simpleMsg.msgContent", 100, simpleMsg.msgContent);
-        assertEquals("simpleMsg.tagName", "tag", simpleMsg.tagName);
-        assertEquals("simpleMsg.msgName", "Some Name", simpleMsg.msgName);
+        assertEquals(100, simpleMsg.msgContent, "simpleMsg.msgContent");
+        assertEquals("tag", simpleMsg.tagName, "simpleMsg.tagName");
+        assertEquals("Some Name", simpleMsg.msgName, "simpleMsg.msgName");
     }
 
     @Test
     public void testConstructor4() throws Throwable {
         SimpleMsg simpleMsg = new SimpleMsg("tag", "Some Name", (short) 100);
-        assertEquals("simpleMsg.msgContent", (short) 100, simpleMsg.msgContent);
-        assertEquals("simpleMsg.tagName", "tag", simpleMsg.tagName);
-        assertEquals("simpleMsg.msgName", "Some Name", simpleMsg.msgName);
+        assertEquals((short) 100, simpleMsg.msgContent, "simpleMsg.msgContent");
+        assertEquals("tag", simpleMsg.tagName, "simpleMsg.tagName");
+        assertEquals("Some Name", simpleMsg.msgName, "simpleMsg.msgName");
     }
 
     @Test
     public void testConstructor5() throws Throwable {
         byte[] msgContent = new byte[0];
         SimpleMsg simpleMsg = new SimpleMsg("tag", "Some Name", msgContent);
-        assertEquals("simpleMsg.msgContent", "", simpleMsg.msgContent);
-        assertEquals("simpleMsg.tagName", "tag", simpleMsg.tagName);
-        assertEquals("simpleMsg.msgName", "Some Name", simpleMsg.msgName);
+        assertEquals("", simpleMsg.msgContent, "simpleMsg.msgContent");
+        assertEquals("tag", simpleMsg.tagName, "simpleMsg.tagName");
+        assertEquals("Some Name", simpleMsg.msgName, "simpleMsg.msgName");
     }
 
     @Test
@@ -269,23 +275,40 @@ public class SimpleMsgTest {
     }
 
     @Test
+    public void testDumpExceptionStackTrace() {
+        Exception ex = new IllegalArgumentException("This value is illegal"
+                , new IllegalStateException("Some illegal state")
+        );
+        Loggeable msg = new SimpleMsg("unexpected-exception", ex);
+
+        msg.dump(p, "--||--");
+        String res = os.toString();
+
+        assertThat(res, Matchers.startsWith("--||--<unexpected-exception>" + NL));
+        assertThat(res, Matchers.endsWith("--||--</unexpected-exception>" + NL));
+
+        assertThat(res, Matchers.containsString(NL + "--||--    java.lang.IllegalArgumentException: This value is illegal" + NL));
+        assertThat(res, Matchers.containsString(NL + "--||--    Caused by: java.lang.IllegalStateException: Some illegal state" + NL));
+        assertThat(res, Matchers.containsString(NL + "--||--            at org.jpos.util.SimpleMsgTest.test"));
+    }
+
+    @Test
     public void testDumpInnerCompositeAndNulls() throws Throwable {
-        SimpleMsg[] msgContent = new SimpleMsg[4];
-        msgContent[0] = new SimpleMsg("inner-tag", "Inner Name", 100);
+        List<Loggeable> msgContent = new ArrayList<>();
+        msgContent.add(new SimpleMsg("inner-tag", "Inner Name", 100));
         new SimpleMsg("tag", "Some Name", msgContent).dump(p, "--||--");
         assertEquals( "--||--<tag name=\"Some Name\">" + NL +
                       "--||--  <inner-tag name=\"Inner Name\">" + NL +
                       "--||--    100" + NL +
                       "--||--  </inner-tag>" + NL +
-                      "--||--  null" + NL +
-                      "--||--  null" + NL +
-                      "--||--  null" + NL +
                       "--||--</tag>" +  NL
                       ,os.toString());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testDumpPrintStreamNull() throws Throwable {
-        new SimpleMsg("tag", "Some Name", 100L).dump(null, "--||--");
+        assertThrows(NullPointerException.class, () -> {
+            new SimpleMsg("tag", "Some Name", 100L).dump(null, "--||--");
+        });
     }
 }

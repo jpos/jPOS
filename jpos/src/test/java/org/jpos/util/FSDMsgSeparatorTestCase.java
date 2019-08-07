@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,12 @@
 
 package org.jpos.util;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FSDMsgSeparatorTestCase extends TestCase {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+public class FSDMsgSeparatorTestCase {
     private static final String SCHEMA_DIR_URL = "file:build/resources/test/org/jpos/util/";
 
     private static String FS = "\034";
@@ -29,16 +32,18 @@ public class FSDMsgSeparatorTestCase extends TestCase {
 
     private FSDMsg omsg;
 
+    @BeforeEach
     public void setUp() throws Exception {
         imsg = new FSDMsg(SCHEMA_DIR_URL + "msg-separator-");
         omsg = new FSDMsg(SCHEMA_DIR_URL + "msg-separator-");
     }
 
+    @Test
     public void testSeparator() throws Exception {
         String value = "1";
         String field = "testafs";
         imsg.set(field, value);
-        assertEquals("Separator", "1'FS'", imsg.pack().replace(FS, "'FS'"));
+        assertEquals("1'FS'", imsg.pack().replace(FS, "'FS'"), "Separator");
 
         omsg.unpack(imsg.pack().getBytes());
 

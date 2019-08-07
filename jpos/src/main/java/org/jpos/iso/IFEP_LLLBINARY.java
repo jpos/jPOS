@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,9 +21,27 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class IFEP_LLLBINARY extends ISOBinaryFieldPackager {
+
+    private static final int TAG_HEADER_LENGTH = 2;
+    private final int prefixerPackedLength;
+
     public IFEP_LLLBINARY() {
         super();
+        prefixerPackedLength = 3;
     }
+
+    public IFEP_LLLBINARY(int length, String description) {
+        super(length, description, LiteralBinaryInterpreter.INSTANCE, EbcdicPrefixer.LLL);
+        checkLength(length, 999);
+        prefixerPackedLength = EbcdicPrefixer.LLL.getPackedLength();
+    }
+
+    public IFEP_LLLBINARY(int length, String description, BinaryInterpreter binaryInterpreter, Prefixer prefixer) {
+        super(length, description, binaryInterpreter, prefixer);
+        checkLength(length, 999);
+        prefixerPackedLength = prefixer.getPackedLength();
+    }
+
     /**
      * @param c - a component
      * @return packed component
@@ -38,14 +56,14 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager {
                 +c.getKey().toString()
             );
 
-        byte[] b = new byte[len + 5];
+        byte[] b = new byte[len + prefixerPackedLength + TAG_HEADER_LENGTH];
         byte[] llltt = 
             ISOUtil.asciiToEbcdic (
-              ISOUtil.zeropad(Integer.toString(len+2), 3)
-              +ISOUtil.zeropad(c.getKey().toString(), 2));
+              ISOUtil.zeropad(Integer.toString(len+ TAG_HEADER_LENGTH), prefixerPackedLength)
+              +ISOUtil.zeropad(c.getKey().toString(), TAG_HEADER_LENGTH));
 
-        System.arraycopy(llltt, 0, b, 0, 5);
-        System.arraycopy(c.getValue(), 0, b, 5, len);
+        System.arraycopy(llltt, 0, b, 0, TAG_HEADER_LENGTH + prefixerPackedLength);
+        System.arraycopy(c.getValue(), 0, b, TAG_HEADER_LENGTH + prefixerPackedLength, len);
         return b;
     }
 
@@ -59,18 +77,18 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-        int len = Integer.parseInt(ISOUtil.ebcdicToAscii(b, offset, 3)) - 2;
+        int len = Integer.parseInt(ISOUtil.ebcdicToAscii(b, offset, prefixerPackedLength)) - TAG_HEADER_LENGTH;
         if (!(c instanceof ISOBinaryField))
             throw new ISOException 
                 (c.getClass().getName() + " is not an ISOBinaryField");
 
         c.setFieldNumber (
-            Integer.parseInt(ISOUtil.ebcdicToAscii (b, offset+3, 2))
+            Integer.parseInt(ISOUtil.ebcdicToAscii (b, offset+prefixerPackedLength, TAG_HEADER_LENGTH))
         );
         byte[] value = new byte[len];
-        System.arraycopy(b, offset+5, value, 0, len);
+        System.arraycopy(b, offset + prefixerPackedLength + TAG_HEADER_LENGTH , value, 0, len);
         c.setValue (value);
-        return len + 5;
+        return len + prefixerPackedLength + TAG_HEADER_LENGTH;
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
@@ -80,12 +98,12 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager {
             throw new ISOException 
                 (c.getClass().getName() + " is not an ISOField");
 
-        int len   = Integer.parseInt(ISOUtil.ebcdicToAscii(readBytes (in, 3))) - 2;
-        int fldno = Integer.parseInt(ISOUtil.ebcdicToAscii(readBytes (in, 2)));
+        int len   = Integer.parseInt(ISOUtil.ebcdicToAscii(readBytes (in, prefixerPackedLength))) - TAG_HEADER_LENGTH;
+        int fldno = Integer.parseInt(ISOUtil.ebcdicToAscii(readBytes (in, TAG_HEADER_LENGTH)));
         c.setFieldNumber (fldno);
         c.setValue (readBytes(in, len));
     }
     public int getMaxPackedLength() {
-        return getLength() + 5;
+        return getLength() + prefixerPackedLength + TAG_HEADER_LENGTH;
     }
 }

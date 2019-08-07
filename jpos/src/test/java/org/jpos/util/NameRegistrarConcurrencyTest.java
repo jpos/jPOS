@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,9 +20,9 @@ package org.jpos.util;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +33,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.jpos.util.NameRegistrar.NotFoundException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NameRegistrarConcurrencyTest {
     static final int TOTAL_THREADS_TO_RUN = 100;
@@ -99,16 +99,15 @@ public class NameRegistrarConcurrencyTest {
                 });
             }
             // wait until all threads are ready
-            assertTrue(
-                    "Timeout initializing threads! Perform long lasting initializations before passing runnables to assertConcurrent",
-                    allExecutorThreadsReady.await(runnables.size() * 10, TimeUnit.MILLISECONDS));
+            assertTrue(allExecutorThreadsReady.await(runnables.size() * 10, TimeUnit.MILLISECONDS),
+                    "Timeout initializing threads! Perform long lasting initializations before passing runnables to assertConcurrent");
             // start all test runners
             afterInitBlocker.countDown();
-            assertTrue(message + " timeout! More than" + maxTimeoutSeconds + "seconds",
-                    allDone.await(maxTimeoutSeconds, TimeUnit.SECONDS));
+            assertTrue(allDone.await(maxTimeoutSeconds, TimeUnit.SECONDS),
+                    message + " timeout! More than" + maxTimeoutSeconds + "seconds");
         } finally {
             threadPool.shutdownNow();
         }
-        assertTrue(message + "failed with exception(s)" + exceptions, exceptions.isEmpty());
+        assertTrue(exceptions.isEmpty(), message + "failed with exception(s)" + exceptions);
     }
 }

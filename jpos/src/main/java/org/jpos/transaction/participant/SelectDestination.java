@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import org.jdom2.Element;
 import org.jpos.core.*;
 import org.jpos.iso.ISOMsg;
 import org.jpos.q2.Q2;
+import org.jpos.q2.QFactory;
 import org.jpos.rc.CMF;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.ContextConstants;
@@ -99,7 +100,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
      */
     public void setConfiguration(Element xml) throws ConfigurationException {
         for (Element ep : xml.getChildren("endpoint")) {
-            String destination = ep.getAttributeValue("destination");
+            String destination = QFactory.getAttributeValue(ep, "destination");
             StringTokenizer st = new StringTokenizer(ep.getText());
             while (st.hasMoreElements()) {
                 BinRange br = new BinRange(destination, st.nextToken());
@@ -107,9 +108,9 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
             }
         }
         for (Element re : xml.getChildren("regexp")) {
-            String destination = re.getAttributeValue("destination");
+            String destination = QFactory.getAttributeValue(re, "destination");
             regexps.add(
-              new PanRegExp(re.getAttributeValue("destination"), re.getTextTrim())
+              new PanRegExp(QFactory.getAttributeValue(re, "destination"), re.getTextTrim())
             );
         }
         LogEvent evt = Log.getLog(Q2.LOGGER_NAME, this.getClass().getName()).createLogEvent("config");

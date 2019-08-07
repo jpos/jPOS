@@ -39,6 +39,7 @@ Then we have an `IRCConverter` interface that maps an `IRC` into an `RC`
 -------------
 public interface IRCConverter {
     RC convert (IRC irc);
+    IRC convert (RC rc);
 }
 -------------
 

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,23 +18,23 @@
 
 package org.jpos.q2.ui;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jdom2.Element;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UITest {
 
     @Test
     public void testConstructor() throws Throwable {
         UI uI = new UI();
-        assertEquals("uI.getLog().getRealm()", "org.jpos.q2.ui.UI", uI.getLog().getRealm());
-        assertEquals("uI.getState()", -1, uI.getState());
-        assertTrue("uI.isModified()", uI.isModified());
+        assertEquals("org.jpos.q2.ui.UI", uI.getLog().getRealm(), "uI.getLog().getRealm()");
+        assertEquals(-1, uI.getState(), "uI.getState()");
+        assertTrue(uI.isModified(), "uI.isModified()");
     }
 
     @Test
@@ -43,7 +43,7 @@ public class UITest {
             new UI().newInstance("testUIClazz");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -55,9 +55,9 @@ public class UITest {
             uI.startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("uI.isModified()", uI.isModified());
-            assertNull("uI.ui", uI.ui);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(uI.isModified(), "uI.isModified()");
+            assertNull(uI.ui, "uI.ui");
         }
     }
 
@@ -68,9 +68,9 @@ public class UITest {
             uI.startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("uI.isModified()", uI.isModified());
-            assertNull("uI.ui", uI.ui);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(uI.isModified(), "uI.isModified()");
+            assertNull(uI.ui, "uI.ui");
         }
     }
 
@@ -79,6 +79,6 @@ public class UITest {
         UI uI = new UI();
         uI.setName("ui");
         uI.stopService();
-        assertNull("uI.ui", uI.ui);
+        assertNull(uI.ui, "uI.ui");
     }
 }

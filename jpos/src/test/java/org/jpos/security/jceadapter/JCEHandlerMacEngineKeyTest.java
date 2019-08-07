@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,13 +24,13 @@ import java.security.Key;
 import java.security.Provider;
 
 import org.jpos.testhelpers.EqualsHashCodeTestCase;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public class JCEHandlerMacEngineKeyTest extends EqualsHashCodeTestCase {
     private Provider provider;
     private Key macKey;
 
-    @Before
+    @BeforeEach
     public void onSetup() {
         provider = mock(Provider.class);
         macKey = mock(Key.class);

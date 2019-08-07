@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,27 +18,30 @@
 
 package org.jpos.q2.qbean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
+import org.junit.jupiter.api.Test;
 
 public class QExecTest {
 
     @Test
     public void testConstructor() throws Throwable {
         QExec qExec = new QExec();
-        assertEquals("qExec.getLog().getRealm()", "org.jpos.q2.qbean.QExec", qExec.getLog().getRealm());
-        assertEquals("qExec.getState()", -1, qExec.getState());
-        assertTrue("qExec.isModified()", qExec.isModified());
+        assertEquals("org.jpos.q2.qbean.QExec", qExec.getLog().getRealm(), "qExec.getLog().getRealm()");
+        assertEquals(-1, qExec.getState(), "qExec.getState()");
+        assertTrue(qExec.isModified(), "qExec.isModified()");
     }
 
     @Test
     public void testGetShutdownScript() throws Throwable {
         String result = new QExec().getShutdownScript();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -46,13 +49,13 @@ public class QExecTest {
         QExec qExec = new QExec();
         qExec.setShutdownScript("testQExecScriptPath");
         String result = qExec.getShutdownScript();
-        assertEquals("result", "testQExecScriptPath", result);
+        assertEquals("testQExecScriptPath", result, "result");
     }
 
     @Test
     public void testGetStartScript() throws Throwable {
         String result = new QExec().getStartScript();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -60,21 +63,21 @@ public class QExecTest {
         QExec qExec = new QExec();
         qExec.setStartScript("testQExecScriptPath");
         String result = qExec.getStartScript();
-        assertEquals("result", "testQExecScriptPath", result);
+        assertEquals("testQExecScriptPath", result, "result");
     }
 
     @Test
     public void testSetShutdownScript() throws Throwable {
         QExec qExec = new QExec();
         qExec.setShutdownScript("testQExecScriptPath");
-        assertEquals("qExec.shutdownScript", "testQExecScriptPath", qExec.shutdownScript);
+        assertEquals("testQExecScriptPath", qExec.shutdownScript, "qExec.shutdownScript");
     }
 
     @Test
     public void testSetStartScript() throws Throwable {
         QExec qExec = new QExec();
         qExec.setStartScript("testQExecScriptPath");
-        assertEquals("qExec.startScript", "testQExecScriptPath", qExec.startScript);
+        assertEquals("testQExecScriptPath", qExec.startScript, "qExec.startScript");
     }
 
     @Test
@@ -85,7 +88,7 @@ public class QExecTest {
             qExec.startService();
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException ex) {
-            assertEquals("ex.getMessage()", "Empty command", ex.getMessage());
+            assertEquals("Empty command", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -98,7 +101,11 @@ public class QExecTest {
             qExec.stopService();
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("0", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 0 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -110,7 +117,7 @@ public class QExecTest {
             qExec.stopService();
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException ex) {
-            assertEquals("ex.getMessage()", "Empty command", ex.getMessage());
+            assertEquals("Empty command", ex.getMessage(), "ex.getMessage()");
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,75 +18,75 @@
 
 package org.jpos.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.security.InvalidParameterException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EncryptedPINTest {
 
     @Test
     public void testConstructor() throws Throwable {
         EncryptedPIN encryptedPIN = new EncryptedPIN();
-        assertNull("encryptedPIN.getAccountNumber()", encryptedPIN.getAccountNumber());
+        assertNull(encryptedPIN.getAccountNumber(), "encryptedPIN.getAccountNumber()");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "13CharactersX");
-        assertEquals("encryptedPIN.accountNumber", "13Characters", encryptedPIN.accountNumber);
-        assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
-        assertEquals("encryptedPIN.pinBlock.length", 17, encryptedPIN.pinBlock.length);
+        assertEquals("13Characters", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
+        assertEquals((byte) 0, encryptedPIN.pinBlockFormat, "encryptedPIN.pinBlockFormat");
+        assertEquals(17, encryptedPIN.pinBlock.length, "encryptedPIN.pinBlock.length");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "12Characters", false);
-        assertEquals("encryptedPIN.accountNumber", "12Characters", encryptedPIN.accountNumber);
-        assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
-        assertEquals("encryptedPIN.pinBlock.length", 17, encryptedPIN.pinBlock.length);
+        assertEquals("12Characters", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
+        assertEquals((byte) 0, encryptedPIN.pinBlockFormat, "encryptedPIN.pinBlockFormat");
+        assertEquals(17, encryptedPIN.pinBlock.length, "encryptedPIN.pinBlock.length");
     }
 
     @Test
     public void testConstructor3() throws Throwable {
         EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "11Character");
-        assertEquals("encryptedPIN.accountNumber", "0011Characte", encryptedPIN.accountNumber);
-        assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
-        assertEquals("encryptedPIN.pinBlock.length", 17, encryptedPIN.pinBlock.length);
+        assertEquals("0011Characte", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
+        assertEquals((byte) 0, encryptedPIN.pinBlockFormat, "encryptedPIN.pinBlockFormat");
+        assertEquals(17, encryptedPIN.pinBlock.length, "encryptedPIN.pinBlock.length");
     }
 
     @Test
     public void testConstructor4() throws Throwable {
         byte[] pinBlock = new byte[1];
         EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "13CharactersX");
-        assertEquals("encryptedPIN.accountNumber", "13Characters", encryptedPIN.accountNumber);
-        assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
-        assertSame("encryptedPIN.pinBlock", pinBlock, encryptedPIN.pinBlock);
+        assertEquals("13Characters", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
+        assertEquals((byte) 0, encryptedPIN.pinBlockFormat, "encryptedPIN.pinBlockFormat");
+        assertSame(pinBlock, encryptedPIN.pinBlock, "encryptedPIN.pinBlock");
     }
 
     @Test
     public void testConstructor5() throws Throwable {
         byte[] pinBlock = new byte[0];
         EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "12Characters", false);
-        assertEquals("encryptedPIN.accountNumber", "12Characters", encryptedPIN.accountNumber);
-        assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
-        assertSame("encryptedPIN.pinBlock", pinBlock, encryptedPIN.pinBlock);
+        assertEquals("12Characters", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
+        assertEquals((byte) 0, encryptedPIN.pinBlockFormat, "encryptedPIN.pinBlockFormat");
+        assertSame(pinBlock, encryptedPIN.pinBlock, "encryptedPIN.pinBlock");
     }
 
     @Test
     public void testConstructor6() throws Throwable {
         byte[] pinBlock = new byte[1];
         EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "11Character");
-        assertEquals("encryptedPIN.accountNumber", "0011Characte", encryptedPIN.accountNumber);
-        assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
-        assertSame("encryptedPIN.pinBlock", pinBlock, encryptedPIN.pinBlock);
+        assertEquals("0011Characte", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
+        assertEquals((byte) 0, encryptedPIN.pinBlockFormat, "encryptedPIN.pinBlockFormat");
+        assertSame(pinBlock, encryptedPIN.pinBlock, "encryptedPIN.pinBlock");
     }
 
     @Test
@@ -95,7 +95,7 @@ public class EncryptedPINTest {
             new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -106,7 +106,7 @@ public class EncryptedPINTest {
             new EncryptedPIN(pinBlock, (byte) 0, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -120,7 +120,7 @@ public class EncryptedPINTest {
         byte[] pinBlock = new byte[0];
         PrintStream p = new PrintStream(new ByteArrayOutputStream(), true, "UTF-16BE");
         new EncryptedPIN(pinBlock, (byte) 0, "testEncryptedPINAccountNumber").dump(p, "testEncryptedPINIndent");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -129,7 +129,7 @@ public class EncryptedPINTest {
             new EncryptedPIN().dump(null, "testEncryptedPINIndent");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -143,26 +143,26 @@ public class EncryptedPINTest {
             encryptedPIN.dump(p, "testEncryptedPINIndent");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testExtractAccountNumberPart() throws Throwable {
         String result = EncryptedPIN.extractAccountNumberPart("11Character");
-        assertEquals("result", "0011Characte", result);
+        assertEquals("0011Characte", result, "result");
     }
 
     @Test
     public void testExtractAccountNumberPart1() throws Throwable {
         String result = EncryptedPIN.extractAccountNumberPart("13CharactersX");
-        assertEquals("result", "13Characters", result);
+        assertEquals("13Characters", result, "result");
     }
 
     @Test
     public void testExtractAccountNumberPart2() throws Throwable {
         String result = EncryptedPIN.extractAccountNumberPart("12Characters");
-        assertEquals("result", "012Character", result);
+        assertEquals("012Character", result, "result");
     }
 
     @Test
@@ -171,7 +171,7 @@ public class EncryptedPINTest {
             EncryptedPIN.extractAccountNumberPart(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -179,13 +179,13 @@ public class EncryptedPINTest {
     public void testGetAccountNumber() throws Throwable {
         byte[] pinBlock = new byte[0];
         String result = new EncryptedPIN(pinBlock, (byte) 0, "testEncryptedPINAccountNumber").getAccountNumber();
-        assertEquals("result", "AccountNumbe", result);
+        assertEquals("AccountNumbe", result, "result");
     }
 
     @Test
     public void testGetAccountNumber1() throws Throwable {
         String result = new EncryptedPIN().getAccountNumber();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -195,8 +195,8 @@ public class EncryptedPINTest {
         byte[] pinBlock2 = new byte[3];
         encryptedPIN.setPINBlock(pinBlock2);
         byte[] result = encryptedPIN.getPINBlock();
-        assertSame("result", pinBlock2, result);
-        assertEquals("pinBlock2[0]", (byte) 0, pinBlock2[0]);
+        assertSame(pinBlock2, result, "result");
+        assertEquals((byte) 0, pinBlock2[0], "pinBlock2[0]");
     }
 
     @Test
@@ -206,14 +206,14 @@ public class EncryptedPINTest {
         byte[] pinBlock2 = new byte[0];
         encryptedPIN.setPINBlock(pinBlock2);
         byte[] result = encryptedPIN.getPINBlock();
-        assertSame("result", pinBlock2, result);
+        assertSame(pinBlock2, result, "result");
     }
 
     @Test
     public void testGetPINBlockFormat() throws Throwable {
         byte[] pinBlock = new byte[2];
         byte result = new EncryptedPIN(pinBlock, (byte) 100, "testEncryptedPINAccountNumber").getPINBlockFormat();
-        assertEquals("result", (byte) 100, result);
+        assertEquals((byte) 100, result, "result");
     }
 
     @Test
@@ -222,7 +222,7 @@ public class EncryptedPINTest {
         EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "testEncryptedPINAccountNumber");
         encryptedPIN.setPINBlockFormat((byte) 0);
         byte result = encryptedPIN.getPINBlockFormat();
-        assertEquals("result", (byte) 0, result);
+        assertEquals((byte) 0, result, "result");
     }
 
     @Test
@@ -239,14 +239,14 @@ public class EncryptedPINTest {
     public void testSetAccountNumber1() throws Throwable {
         EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "testEncryptedPINAccountNumber");
         encryptedPIN.setAccountNumber("12Characters");
-        assertEquals("encryptedPIN.accountNumber", "12Characters", encryptedPIN.accountNumber);
+        assertEquals("12Characters", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
     }
 
     @Test
     public void test11Chars() throws Throwable {
         byte[] pinBlock = new byte[3];
         EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "11Character");
-        assertEquals("encryptedPIN.accountNumber", "0011Characte", encryptedPIN.accountNumber);
+        assertEquals("0011Characte", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
     }
 
     @Test
@@ -256,8 +256,8 @@ public class EncryptedPINTest {
             encryptedPIN.setAccountNumber(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("encryptedPIN.accountNumber", "AccountNumbe", encryptedPIN.accountNumber);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals("AccountNumbe", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
         }
     }
 
@@ -267,13 +267,13 @@ public class EncryptedPINTest {
         EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "testEncryptedPINAccountNumber");
         byte[] pinBlock2 = new byte[0];
         encryptedPIN.setPINBlock(pinBlock2);
-        assertSame("encryptedPIN.pinBlock", pinBlock2, encryptedPIN.pinBlock);
+        assertSame(pinBlock2, encryptedPIN.pinBlock, "encryptedPIN.pinBlock");
     }
 
     @Test
     public void testSetPINBlockFormat() throws Throwable {
         EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "testEncryptedPINAccountNumber");
         encryptedPIN.setPINBlockFormat((byte) 100);
-        assertEquals("encryptedPIN.pinBlockFormat", (byte) 100, encryptedPIN.pinBlockFormat);
+        assertEquals((byte) 100, encryptedPIN.pinBlockFormat, "encryptedPIN.pinBlockFormat");
     }
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,12 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.iso.ISOBaseValidator;
 import org.jpos.iso.ISOComponent;
@@ -41,15 +41,15 @@ import org.jpos.iso.validator.ISOVException;
 import org.jpos.iso.validator.MSGTEST;
 import org.jpos.iso.validator.MSGTEST02;
 import org.jpos.iso.validator.TEST0100;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ISOBaseValidatingPackagerTest {
 
     @Test
     public void testConstructor() throws Throwable {
         ISOBaseValidatingPackager iSOBaseValidatingPackager = new ISOBaseValidatingPackager();
-        assertNull("iSOBaseValidatingPackager.getLogger()", iSOBaseValidatingPackager.getLogger());
-        assertNull("iSOBaseValidatingPackager.getRealm()", iSOBaseValidatingPackager.getRealm());
+        assertNull(iSOBaseValidatingPackager.getLogger(), "iSOBaseValidatingPackager.getLogger()");
+        assertNull(iSOBaseValidatingPackager.getRealm(), "iSOBaseValidatingPackager.getRealm()");
     }
 
     @Test
@@ -57,8 +57,8 @@ public class ISOBaseValidatingPackagerTest {
         ISOValidator[] fvlds = new ISOValidator[1];
         ISOBaseValidatingPackager cTCSubElementPackager = new CTCSubElementPackager();
         cTCSubElementPackager.setFieldValidator(fvlds);
-        assertSame("(CTCSubElementPackager) cTCSubElementPackager.fldVld", fvlds,
-                ((CTCSubElementPackager) cTCSubElementPackager).fldVld);
+        assertSame(fvlds, ((CTCSubElementPackager) cTCSubElementPackager).fldVld,
+                "(CTCSubElementPackager) cTCSubElementPackager.fldVld");
     }
 
     @Test
@@ -66,8 +66,8 @@ public class ISOBaseValidatingPackagerTest {
         ISOBaseValidator[] msgVlds = new ISOBaseValidator[0];
         ISOBaseValidatingPackager cTCSubElementPackager = new CTCSubElementPackager();
         cTCSubElementPackager.setMsgValidator(msgVlds);
-        assertSame("(CTCSubElementPackager) cTCSubElementPackager.msgVld", msgVlds,
-                ((CTCSubElementPackager) cTCSubElementPackager).msgVld);
+        assertSame(msgVlds, ((CTCSubElementPackager) cTCSubElementPackager).msgVld,
+                "(CTCSubElementPackager) cTCSubElementPackager.msgVld");
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ISOBaseValidatingPackagerTest {
         iSOBaseValidatingPackager.setMsgValidator(msgVlds);
         ISOComponent m = new ISOMsg("testISOBaseValidatingPackagerMti");
         ISOMsg result = (ISOMsg) iSOBaseValidatingPackager.validate(m);
-        assertSame("result", m, result);
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ISOBaseValidatingPackagerTest {
         iSOBaseValidatingPackager.setFieldValidator(fvlds);
         iSOBaseValidatingPackager.setMsgValidator(msgVlds);
         ISOVMsg result = (ISOVMsg) iSOBaseValidatingPackager.validate(new ISOMsg("testISOBaseValidatingPackagerMti"));
-        assertNotNull("result", result);
+        assertNotNull(result, "result");
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ISOBaseValidatingPackagerTest {
         iSOBaseValidatingPackager.setFieldValidator(fvlds);
         iSOBaseValidatingPackager.setMsgValidator(msgVlds);
         ISOVMsg result = (ISOVMsg) iSOBaseValidatingPackager.validate(new ISOMsg("testISOBaseValidatingPackagerMti"));
-        assertNotNull("result", result);
+        assertNotNull(result, "result");
     }
 
     @Test
@@ -119,7 +119,7 @@ public class ISOBaseValidatingPackagerTest {
         iSOBaseValidatingPackager.setFieldValidator(fvlds);
         ISOComponent m = new ISOMsg("testISOBaseValidatingPackagerMti");
         ISOMsg result = (ISOMsg) iSOBaseValidatingPackager.validate(m);
-        assertSame("result", m, result);
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -133,7 +133,7 @@ public class ISOBaseValidatingPackagerTest {
         fvlds[1] = new ISOFieldValidator();
         iSOBaseValidatingPackager.setFieldValidator(fvlds);
         ISOVMsg result = (ISOVMsg) iSOBaseValidatingPackager.validate(new ISOMsg("testISOBaseValidatingPackagerMti"));
-        assertNotNull("result", result);
+        assertNotNull(result, "result");
     }
 
     @Test
@@ -147,7 +147,7 @@ public class ISOBaseValidatingPackagerTest {
         ISOMsg m = new ISOMsg("testISOBaseValidatingPackagerMti");
         m.setMTI("testISOBaseValidatingPackagerMti");
         ISOMsg result = (ISOMsg) iSOBaseValidatingPackager.validate(m);
-        assertSame("result", m, result);
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -162,7 +162,7 @@ public class ISOBaseValidatingPackagerTest {
         msgVlds[1] = new MSGTEST();
         iSOBaseValidatingPackager.setMsgValidator(msgVlds);
         ISOVMsg result = (ISOVMsg) iSOBaseValidatingPackager.validate(new ISOMsg(100));
-        assertNotNull("result", result);
+        assertNotNull(result, "result");
     }
 
     @Test
@@ -176,7 +176,7 @@ public class ISOBaseValidatingPackagerTest {
         msgVlds[0] = new ISOBaseValidator(true);
         iSOBaseValidatingPackager.setMsgValidator(msgVlds);
         ISOMsg result = (ISOMsg) iSOBaseValidatingPackager.validate(new ISOMsg(100));
-        assertEquals("result.getDirection()", 0, result.getDirection());
+        assertEquals(0, result.getDirection(), "result.getDirection()");
     }
 
     @Test
@@ -189,7 +189,7 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg());
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
+            assertEquals(ClassCastException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -199,7 +199,7 @@ public class ISOBaseValidatingPackagerTest {
             new ISOBaseValidatingPackager().validate(new ISOField(100, "testISOBaseValidatingPackagerv"));
             fail("Expected ClassCastException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("ex.getClass()", NullPointerException.class, ex.getClass());
+            assertEquals(NullPointerException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -213,7 +213,7 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg());
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
+            assertEquals(ClassCastException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -228,7 +228,7 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg("testISOBaseValidatingPackagerMti"));
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
+            assertEquals(ClassCastException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -243,7 +243,7 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg());
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
+            assertEquals(ClassCastException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -259,8 +259,8 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "MTI not available", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("MTI not available", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -277,8 +277,8 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg(100));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "can't getMTI on inner message", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("can't getMTI on inner message", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -298,8 +298,8 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "MTI not available", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("MTI not available", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -317,8 +317,8 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "MTI not available", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("MTI not available", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -336,8 +336,8 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "MTI not available", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("MTI not available", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -354,8 +354,8 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "MTI not available", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("MTI not available", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -373,10 +373,10 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(new ISOMsg());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "Error on msg. ", ex.getMessage());
-            assertFalse("ex.treated()", ((ISOVException) ex).treated());
-            assertNotNull("ex.getErrComponent()", ((ISOVException) ex).getErrComponent());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Error on msg. ", ex.getMessage(), "ex.getMessage()");
+            assertFalse(((ISOVException) ex).treated(), "ex.treated()");
+            assertNotNull(((ISOVException) ex).getErrComponent(), "ex.getErrComponent()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -395,7 +395,7 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(m);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -405,7 +405,7 @@ public class ISOBaseValidatingPackagerTest {
             new ISOBaseValidatingPackager().validate(new ISOMsg("testISOBaseValidatingPackagerMti"));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -426,7 +426,7 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(m);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -444,7 +444,7 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(m);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -463,7 +463,7 @@ public class ISOBaseValidatingPackagerTest {
             iSOBaseValidatingPackager.validate(m);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,11 @@
 
 package org.jpos.iso.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,12 +41,12 @@ import org.jpos.iso.packager.ISOBaseValidatingPackager;
 import org.jpos.iso.packager.X92GenericPackager;
 import org.jpos.iso.packager.XMLPackager;
 import org.jpos.util.LogEvent;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MacroFilterTest {
     @Mock
     ISOMsg m;
@@ -54,8 +54,8 @@ public class MacroFilterTest {
     @Test
     public void testConstructor() throws Throwable {
         MacroFilter macroFilter = new MacroFilter();
-        assertEquals("macroFilter.unsetFields.length", 0, macroFilter.unsetFields.length);
-        assertEquals("macroFilter.validFields.length", 0, macroFilter.validFields.length);
+        assertEquals(0, macroFilter.unsetFields.length, "macroFilter.unsetFields.length");
+        assertEquals(0, macroFilter.validFields.length, "macroFilter.validFields.length");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class MacroFilterTest {
         LogEvent evt = new LogEvent("testMacroFilterTag", "\u0000\u0000");
         when(m.getMaxField()).thenReturn(0);
         ISOMsg result = macroFilter.filter(channel, m, evt);
-        assertSame("result", m, result);
+        assertSame(m, result, "result");
         verify(m).hasField(0);
     }
 
@@ -76,7 +76,7 @@ public class MacroFilterTest {
         m.set(1, "");
         ISOMsg result = new MacroFilter().filter(new CSChannel(new ISOBaseValidatingPackager()), m, new LogEvent(
                 "testMacroFilterTag", ""));
-        assertEquals("result.getDirection()", 0, result.getDirection());
+        assertEquals(0, result.getDirection(), "result.getDirection()");
     }
 
     @Test
@@ -84,7 +84,7 @@ public class MacroFilterTest {
         ISOMsg m = new ISOMsg();
         m.set(100, "testMacroFilterValue");
         ISOMsg result = new MacroFilter().filter(new BASE24TCPChannel(), m, new LogEvent("testMacroFilterTag"));
-        assertSame("result", m, result);
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -96,7 +96,7 @@ public class MacroFilterTest {
         when(m.hasField(0)).thenReturn(false);
 
         ISOMsg result = macroFilter.filter(channel, m, evt);
-        assertSame("result", m, result);
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -108,7 +108,7 @@ public class MacroFilterTest {
         m.set(100, "");
         ISOMsg result = new MacroFilter().filter(new CSChannel(new ISOBaseValidatingPackager()), m, new LogEvent(
                 "testMacroFilterTag", ""));
-        assertSame("result", m, result);
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -122,7 +122,7 @@ public class MacroFilterTest {
         when(m.getValue(0)).thenReturn("N/A in Composite");
 
         ISOMsg result = macroFilter.filter(channel, m, evt);
-        assertSame("result", m, result);
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -131,7 +131,7 @@ public class MacroFilterTest {
         m.set(100, "");
         ISOMsg result = new MacroFilter().filter(new CSChannel(new ISOBaseValidatingPackager()), m, new LogEvent(
                 "testMacroFilterTag", ""));
-        assertEquals("result.getDirection()", 0, result.getDirection());
+        assertEquals(0, result.getDirection(), "result.getDirection()");
     }
 
     @Test
@@ -142,9 +142,9 @@ public class MacroFilterTest {
             macroFilter.filter(new PADChannel("testMacroFilterHost", 100, new XMLPackager()), null, evt);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("macroFilter.cfg", macroFilter.cfg);
-            assertNull("macroFilter.seq", macroFilter.seq);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(macroFilter.cfg, "macroFilter.cfg");
+            assertNull(macroFilter.seq, "macroFilter.seq");
         }
     }
 
@@ -153,10 +153,10 @@ public class MacroFilterTest {
         MacroFilter macroFilter = new MacroFilter();
         Configuration cfg = new SimpleConfiguration();
         macroFilter.setConfiguration(cfg);
-        assertNotNull("macroFilter.seq", macroFilter.seq);
-        assertSame("macroFilter.cfg", cfg, macroFilter.cfg);
-        assertEquals("macroFilter.unsetFields.length", 0, macroFilter.unsetFields.length);
-        assertEquals("macroFilter.validFields.length", 0, macroFilter.validFields.length);
+        assertNotNull(macroFilter.seq, "macroFilter.seq");
+        assertSame(cfg, macroFilter.cfg, "macroFilter.cfg");
+        assertEquals(0, macroFilter.unsetFields.length, "macroFilter.unsetFields.length");
+        assertEquals(0, macroFilter.validFields.length, "macroFilter.validFields.length");
     }
 
     @Test
@@ -165,9 +165,9 @@ public class MacroFilterTest {
         Configuration cfg = new SimpleConfiguration();
         macroFilter.setConfiguration(cfg);
         macroFilter.setConfiguration(cfg);
-        assertSame("macroFilter.cfg", cfg, macroFilter.cfg);
-        assertEquals("macroFilter.unsetFields.length", 0, macroFilter.unsetFields.length);
-        assertEquals("macroFilter.validFields.length", 0, macroFilter.validFields.length);
+        assertSame(cfg, macroFilter.cfg, "macroFilter.cfg");
+        assertEquals(0, macroFilter.unsetFields.length, "macroFilter.unsetFields.length");
+        assertEquals(0, macroFilter.validFields.length, "macroFilter.validFields.length");
     }
 
     @Test
@@ -178,11 +178,11 @@ public class MacroFilterTest {
             macroFilter.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertSame("macroFilter.cfg", cfg, macroFilter.cfg);
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("macroFilter.unsetFields.length", 0, macroFilter.unsetFields.length);
-            assertEquals("macroFilter.validFields.length", 0, macroFilter.validFields.length);
-            assertNull("macroFilter.seq", macroFilter.seq);
+            assertSame(cfg, macroFilter.cfg, "macroFilter.cfg");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, macroFilter.unsetFields.length, "macroFilter.unsetFields.length");
+            assertEquals(0, macroFilter.validFields.length, "macroFilter.validFields.length");
+            assertNull(macroFilter.seq, "macroFilter.seq");
         }
     }
 }

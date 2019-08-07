@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,15 +18,18 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.BitSet;
 
 /**
  * @author ay
  */
-public class IFE_BITMAPTest extends TestCase
-{
+public class IFE_BITMAPTest {
     
     IFE_BITMAP oneByte ;
     IFE_BITMAP twoBytes ;
@@ -39,6 +42,7 @@ public class IFE_BITMAPTest extends TestCase
     byte[] DataWith2ndBitMapBitOn, DataWith2ndBitMapBitOff, thirtytwoByteBitMapIn48Bytes, sixteenByteBitMapIn48Bytes, testbytes, outBytes;
     String in;
     
+    @BeforeEach
     public void setUp() {
     	oneByte = new IFE_BITMAP(1,"1 byte bitmap");
         twoBytes = new IFE_BITMAP(2,"2 byte bitmap");
@@ -58,56 +62,59 @@ public class IFE_BITMAPTest extends TestCase
         
     }
 
+    @Test
     public void test01ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
     {
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = oneByte.unpack(c, DataWith2ndBitMapBitOn,0);
-        assertEquals("1 bytes bitmap: unpack of 1 byte bitmap should consume 2 bytes in characters",2,consumed);
-        assertEquals("1 bytes bitmap: 1 byte bitmap should result in a bitmap holding fields up to 8",8,((BitSet)c.getValue()).length() - 1);
+        assertEquals(2, consumed, "1 bytes bitmap: unpack of 1 byte bitmap should consume 2 bytes in characters");
+        assertEquals(8, ((BitSet) c.getValue()).length() - 1, "1 bytes bitmap: 1 byte bitmap should result in a bitmap holding fields up to 8");
 
         outBytes = oneByte.pack(c);
-        assertEquals("1 bytes bitmap: pack of 1 byte bitmap must produce a result 2 bytes long",2,outBytes.length);
-        assertEquals("1 bytes bitmap: pack of unpacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,2),ISOUtil.hexString(outBytes));
+        assertEquals(2, outBytes.length, "1 bytes bitmap: pack of 1 byte bitmap must produce a result 2 bytes long");
+        assertEquals(ISOUtil.hexString(DataWith2ndBitMapBitOn, 0, 2), ISOUtil.hexString(outBytes), "1 bytes bitmap: pack of unpacked value should be the same as original");
     }
+    @Test
     public void test02ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
     {
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = twoBytes.unpack(c, DataWith2ndBitMapBitOn,0);
-        assertEquals("2 bytes bitmap: unpack of 2 bytew bitmap should consume 4 bytes in characters",4,consumed);
-        assertEquals("2 bytes bitmap: 2 bytes bitmap should result in a bitmap holding fields up to 16",16,((BitSet)c.getValue()).length() - 1);
+        assertEquals(4, consumed, "2 bytes bitmap: unpack of 2 bytew bitmap should consume 4 bytes in characters");
+        assertEquals(16, ((BitSet) c.getValue()).length() - 1, "2 bytes bitmap: 2 bytes bitmap should result in a bitmap holding fields up to 16");
 
         outBytes = twoBytes.pack(c);
-        assertEquals("2 bytes bitmap: pack of 2 byte bitmap must produce a result 4 bytes long",4,outBytes.length);
-        assertEquals("2 bytes bitmap: pack of unpacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,4),ISOUtil.hexString(outBytes));
+        assertEquals(4, outBytes.length, "2 bytes bitmap: pack of 2 byte bitmap must produce a result 4 bytes long");
+        assertEquals(ISOUtil.hexString(DataWith2ndBitMapBitOn, 0, 4), ISOUtil.hexString(outBytes), "2 bytes bitmap: pack of unpacked value should be the same as original");
         
         try {
             outBytes = oneByte.pack(c);
             fail("2 bytes bitmap: pack of 16 bits bitmap by 1 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.", e.getMessage());
         }
     }
+    @Test
     public void test03ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
     {
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = threeBytes.unpack(c, DataWith2ndBitMapBitOn,0);
-        assertEquals("3 bytes bitmap: unpack of 3 bytew bitmap should consume 6 bytes in characters",6,consumed);
-        assertEquals("3 bytes bitmap: 3 bytes bitmap should result in a bitmap holding fields up to 24",24,((BitSet)c.getValue()).length() - 1);
+        assertEquals(6, consumed, "3 bytes bitmap: unpack of 3 bytew bitmap should consume 6 bytes in characters");
+        assertEquals(24, ((BitSet) c.getValue()).length() - 1, "3 bytes bitmap: 3 bytes bitmap should result in a bitmap holding fields up to 24");
 
         outBytes = threeBytes.pack(c);
-        assertEquals("3 bytes bitmap:pack of 3 byte bitmap must produce a result 6 bytes long",6,outBytes.length);
-        assertEquals("3 bytes bitmap: pack of unpacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,6),ISOUtil.hexString(outBytes));
+        assertEquals(6, outBytes.length, "3 bytes bitmap:pack of 3 byte bitmap must produce a result 6 bytes long");
+        assertEquals(ISOUtil.hexString(DataWith2ndBitMapBitOn, 0, 6), ISOUtil.hexString(outBytes), "3 bytes bitmap: pack of unpacked value should be the same as original");
         
         try {
             outBytes = oneByte.pack(c);
             fail("3 bytes bitmap: pack of 24 bits bitmap by 1 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.", e.getMessage());
         }
         
         try {
@@ -115,28 +122,29 @@ public class IFE_BITMAPTest extends TestCase
             fail("3 bytes bitmap: pack of 24 bits bitmap by 2 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.", e.getMessage());
         }
                 
     }    
+    @Test
     public void test04ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
     {
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = fourBytes.unpack(c, DataWith2ndBitMapBitOn,0);
-        assertEquals("4 bytes bitmap: unpack of 4 bytes bitmap should consume 8 bytes in characters",8,consumed);
-        assertEquals("4 bytes bitmap: 4 bytes bitmap should result in a bitmap holding fields up to 32",32,((BitSet)c.getValue()).length() - 1);
+        assertEquals(8, consumed, "4 bytes bitmap: unpack of 4 bytes bitmap should consume 8 bytes in characters");
+        assertEquals(32, ((BitSet) c.getValue()).length() - 1, "4 bytes bitmap: 4 bytes bitmap should result in a bitmap holding fields up to 32");
 
         outBytes = fourBytes.pack(c);
-        assertEquals("4 bytes bitmap: pack of 4 byte bitmap must produce a result 8 bytes long",8,outBytes.length);
-        assertEquals("4 bytes bitmap: pack of unpacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,8),ISOUtil.hexString(outBytes));
+        assertEquals(8, outBytes.length, "4 bytes bitmap: pack of 4 byte bitmap must produce a result 8 bytes long");
+        assertEquals(ISOUtil.hexString(DataWith2ndBitMapBitOn, 0, 8), ISOUtil.hexString(outBytes), "4 bytes bitmap: pack of unpacked value should be the same as original");
         
         try {
             outBytes = oneByte.pack(c);
             fail("4 bytes bitmap: pack of 32 bits bitmap by 1 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.", e.getMessage());
         }
         
         try {
@@ -144,7 +152,7 @@ public class IFE_BITMAPTest extends TestCase
             fail("4 bytes bitmap: pack of 32 bits bitmap by 2 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.", e.getMessage());
         }
         
         try {
@@ -152,28 +160,29 @@ public class IFE_BITMAPTest extends TestCase
             fail("4 bytes bitmap: pack of 32 bits bitmap by 3 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 24 in the 3 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 24 in the 3 bytes available.", e.getMessage());
         }
     }
  
+    @Test
     public void test08ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
     {
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = eightBytes.unpack(c, DataWith2ndBitMapBitOn,0);
-        assertEquals("8 bytes bitmap: unpack of 8 bytes bitmap should consume 16 bytes in characters", 16, consumed);
-        assertEquals("8 bytes bitmap: 8 bytes bitmap should result in a bitmap holding fields up to 64", 64 ,((BitSet)c.getValue()).length() - 1);
+        assertEquals(16, consumed, "8 bytes bitmap: unpack of 8 bytes bitmap should consume 16 bytes in characters");
+        assertEquals(64, ((BitSet) c.getValue()).length() - 1, "8 bytes bitmap: 8 bytes bitmap should result in a bitmap holding fields up to 64");
 
         outBytes = eightBytes.pack(c);
-        assertEquals("8 bytes bitmap: pack of 8 bytes bitmap must produce a result 16 bytes long",16,outBytes.length);
-        assertEquals("8 bytes bitmap: pack of upacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,16),ISOUtil.hexString(outBytes));
+        assertEquals(16, outBytes.length, "8 bytes bitmap: pack of 8 bytes bitmap must produce a result 16 bytes long");
+        assertEquals(ISOUtil.hexString(DataWith2ndBitMapBitOn, 0, 16), ISOUtil.hexString(outBytes), "8 bytes bitmap: pack of upacked value should be the same as original");
         
         try {
             outBytes = oneByte.pack(c);
             fail("8 bytes bitmap: pack of 64 bits bitmap by 1 byte packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.", e.getMessage());
         }
         
         try {
@@ -181,7 +190,7 @@ public class IFE_BITMAPTest extends TestCase
             fail("8 bytes bitmap: pack of 64 bits bitmap by 2 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.", e.getMessage());
         }
         
         try {
@@ -189,7 +198,7 @@ public class IFE_BITMAPTest extends TestCase
             fail("8 bytes bitmap: pack of 64 bits bitmap by 3 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 24 in the 3 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 24 in the 3 bytes available.", e.getMessage());
         }
         
         try {
@@ -197,28 +206,29 @@ public class IFE_BITMAPTest extends TestCase
             fail("8 bytes bitmap: pack of 64 bits bitmap by 4 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 32 in the 4 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 32 in the 4 bytes available.", e.getMessage());
         }
         
     }
     
+    @Test
     public void test16ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
     {
         ISOComponent c = new ISOBitMap(1);
         int consumed = sixteenBytes.unpack(c, DataWith2ndBitMapBitOn, 0);
-        assertEquals("16 bytes bitmap: unpack of 8 bytes bitmap should consume 32 bytes in characters", 32, consumed);
-        assertEquals("16 bytes bitmap: 16 bytes bitmap should result in a bitmap holding fields up to 128", 128 ,((BitSet)c.getValue()).length() - 1);
+        assertEquals(32, consumed, "16 bytes bitmap: unpack of 8 bytes bitmap should consume 32 bytes in characters");
+        assertEquals(128, ((BitSet) c.getValue()).length() - 1, "16 bytes bitmap: 16 bytes bitmap should result in a bitmap holding fields up to 128");
 
         outBytes = sixteenBytes.pack(c);
-        assertEquals("16 bytes bitmap: pack of 16 bytes bitmap must produce a result 32 bytes long",32,outBytes.length);
-        assertEquals("16 bytes bitmap: pack of upacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,32),ISOUtil.hexString(outBytes));
+        assertEquals(32, outBytes.length, "16 bytes bitmap: pack of 16 bytes bitmap must produce a result 32 bytes long");
+        assertEquals(ISOUtil.hexString(DataWith2ndBitMapBitOn, 0, 32), ISOUtil.hexString(outBytes), "16 bytes bitmap: pack of upacked value should be the same as original");
         
         try {
             outBytes = oneByte.pack(c);
             fail("16 bytes bitmap: pack of 64 bits bitmap by 1 byte packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.", e.getMessage());
         }
         
         try {
@@ -226,7 +236,7 @@ public class IFE_BITMAPTest extends TestCase
             fail("16 bytes bitmap: pack of 64 bits bitmap by 2 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.", e.getMessage());
         }
         
         try {
@@ -234,7 +244,7 @@ public class IFE_BITMAPTest extends TestCase
             fail("16 bytes bitmap: pack of 64 bits bitmap by 3 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 24 in the 3 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 24 in the 3 bytes available.", e.getMessage());
         }
         
         try {
@@ -242,28 +252,29 @@ public class IFE_BITMAPTest extends TestCase
             fail("16 bytes bitmap: pack of 64 bits bitmap by 4 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 32 in the 4 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 32 in the 4 bytes available.", e.getMessage());
         }
         try {
             outBytes = eightBytes.pack(c);
             fail("16 bytes bitmap: pack of 64 bits bitmap by 4 bytes packager should result in ISOException");
         } catch (Exception e) {
             // expected.
-            assertEquals("Bitmap can only hold bits numbered up to 64 in the 8 bytes available.",e.getMessage());
+            assertEquals("Bitmap can only hold bits numbered up to 64 in the 8 bytes available.", e.getMessage());
         }
     }
     
+    @Test
     public void test16ByteBitmapWithDataWith2ndBitMapBitOFF() throws Exception
     {
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = sixteenBytes.unpack(c, DataWith2ndBitMapBitOff,0);
-        assertEquals("16 bytes bitmap with data with 2nd bit map bit off: unpack of 8 bytes bitmap should consume 32 bytes in characters as the 2nd bitmap indicator is off",16,consumed);
-        assertEquals("16 bytes bitmap with data with 2nd bit map bit off: 16 byte bitmap with 2nd bitmap idicator is off should have a maximum field of 64",64,((BitSet)c.getValue()).length() - 1);
+        assertEquals(16, consumed, "16 bytes bitmap with data with 2nd bit map bit off: unpack of 8 bytes bitmap should consume 32 bytes in characters as the 2nd bitmap indicator is off");
+        assertEquals(64, ((BitSet) c.getValue()).length() - 1, "16 bytes bitmap with data with 2nd bit map bit off: 16 byte bitmap with 2nd bitmap idicator is off should have a maximum field of 64");
         
         outBytes = sixteenBytes.pack(c);
-        assertEquals("16 bytes bitmap with data with 2nd bit map bit off: pack of 64 bits bitmap with 16 bytes packager must produce a result 16 bytes long",16,outBytes.length);
-        assertEquals("16 bytes bitmap with data with 2nd bit map bit off: pack of upacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOff,0,16),ISOUtil.hexString(outBytes));
+        assertEquals(16, outBytes.length, "16 bytes bitmap with data with 2nd bit map bit off: pack of 64 bits bitmap with 16 bytes packager must produce a result 16 bytes long");
+        assertEquals(ISOUtil.hexString(DataWith2ndBitMapBitOff, 0, 16), ISOUtil.hexString(outBytes), "16 bytes bitmap with data with 2nd bit map bit off: pack of upacked value should be the same as original");
        
     }
 /*    

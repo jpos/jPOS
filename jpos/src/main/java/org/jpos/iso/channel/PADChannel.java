@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -101,9 +101,9 @@ public class PADChannel extends BaseChannel {
             }
             m.setHeader (header);
             m.setDirection(ISOMsg.INCOMING);
+            evt.addMessage (m);
             m = applyIncomingFilters (m, evt);
             m.setDirection(ISOMsg.INCOMING);
-            evt.addMessage (m);
             cnt[RX]++;
             setChanged();
             notifyObservers(m);

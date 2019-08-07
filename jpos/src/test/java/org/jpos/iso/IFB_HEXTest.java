@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,15 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author apr (based on IFB_NUMERIC contributed by joconnor)
  */
-public class IFB_HEXTest extends TestCase {
+public class IFB_HEXTest {
+    @Test
     public void testPack() throws Exception {
         ISOField field = new ISOField(3, "0123456789ABCDEF");
         IFB_HEX packager = new IFB_HEX(16, "Should be 0123456789ABCDEF", true);
@@ -32,6 +35,7 @@ public class IFB_HEXTest extends TestCase {
             packager.pack(field));
     }
 
+    @Test
     public void testUnpack() throws Exception {
         byte[] raw = new byte[] {0x01, 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xAB, (byte) 0xCD, (byte) 0xEF}  ;
         IFB_HEX packager = new IFB_HEX(16, "Should be 0123456789ABCDEF", true);
@@ -40,6 +44,7 @@ public class IFB_HEXTest extends TestCase {
         assertEquals("0123456789ABCDEF", (String) field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception {
         String origin = "0123456789ABCDEF";
         ISOField f = new ISOField(12, origin);
@@ -50,6 +55,7 @@ public class IFB_HEXTest extends TestCase {
         assertEquals(origin, (String) unpack.getValue());
     }
 
+    @Test
     public void testLeftPad() throws Exception {
         String origin = "0123456789ABCDE";
         ISOField f = new ISOField(12, origin);
@@ -61,6 +67,7 @@ public class IFB_HEXTest extends TestCase {
         assertEquals ("00123456789ABCDE", ISOUtil.hexString(packager.pack(f)));
     }
 
+    @Test
     public void testRightPad() throws Exception {
         String origin = "0123456789ABCDE";
         ISOField f = new ISOField(12, origin);

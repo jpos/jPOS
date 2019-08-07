@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,12 +19,14 @@
 package org.jpos.util;
 
 import org.jpos.iso.ISOUtil;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.internal.matchers.Matches;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import java.util.regex.Pattern;
+import org.hamcrest.text.MatchesPattern;
 
 public class ThreadPoolTest {
 
@@ -37,41 +39,41 @@ public class ThreadPoolTest {
     @Test
     public void testConstructor() throws Throwable {
         ThreadPool threadPool = new ThreadPool(-1, 1);
-        assertEquals("threadPool.getJobCount()", 0, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 1, threadPool.getPoolSize());
-        assertEquals("threadPool.getMaxPoolSize()", 1, threadPool.getMaxPoolSize());
+        assertEquals(0, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(1, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         ThreadPool threadPool = new ThreadPool(-2, -1);
-        assertEquals("threadPool.getJobCount()", 0, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 1, threadPool.getPoolSize());
-        assertEquals("threadPool.getMaxPoolSize()", 100, threadPool.getMaxPoolSize());
+        assertEquals(0, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(100, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         ThreadPool threadPool = new ThreadPool(0, 100);
-        assertEquals("threadPool.getJobCount()", 0, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 1, threadPool.getPoolSize());
-        assertEquals("threadPool.getMaxPoolSize()", 100, threadPool.getMaxPoolSize());
+        assertEquals(0, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(100, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
     }
 
     @Test
     public void testConstructor3() throws Throwable {
         ThreadPool threadPool = new ThreadPool(1, 0);
-        assertEquals("threadPool.getJobCount()", 0, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 1, threadPool.getPoolSize());
-        assertEquals("threadPool.getMaxPoolSize()", 100, threadPool.getMaxPoolSize());
+        assertEquals(0, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(100, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
     }
 
     @Test
     public void testConstructor4() throws Throwable {
         ThreadPool threadPool = new ThreadPool(2, 100);
-        assertEquals("threadPool.getJobCount()", 0, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 2, threadPool.getPoolSize());
-        assertEquals("threadPool.getMaxPoolSize()", 100, threadPool.getMaxPoolSize());
+        assertEquals(0, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(2, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(100, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
     }
 
     @Test
@@ -80,12 +82,12 @@ public class ThreadPoolTest {
         ISOUtil.sleep(50);
         threadPool.execute(new TestTask());
         ISOUtil.sleep(50);
-        assertEquals("threadPool.getJobCount()", 1, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 1, threadPool.getPoolSize());
-        assertEquals("threadPool.getMaxPoolSize()", 100, threadPool.getMaxPoolSize());
+        assertEquals(1, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(100, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
         ISOUtil.sleep(500);
-        assertEquals("threadPool.getJobCount()", 1, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 1, threadPool.getPoolSize());
+        assertEquals(1, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
     }
 
     @Test
@@ -94,19 +96,19 @@ public class ThreadPoolTest {
         threadPool.execute(new TestTask());
         threadPool.execute(new TestTask());
         ISOUtil.sleep(50);
-        assertEquals("threadPool.getJobCount()", 2, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 1, threadPool.getPoolSize());
-        assertEquals("threadPool.getMaxPoolSize()", 1, threadPool.getMaxPoolSize());
-        assertEquals("threadPool.getPendingCount()", 1, threadPool.getPendingCount());
+        assertEquals(2, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(1, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
+        assertEquals(1, threadPool.getPendingCount(), "threadPool.getPendingCount()");
         ISOUtil.sleep(500);
-        assertEquals("threadPool.getJobCount()", 2, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 1, threadPool.getPoolSize());
-        assertEquals("threadPool.getPendingCount()", 0, threadPool.getPendingCount());
-        assertEquals("threadPool.getMaxPoolSize()", 1, threadPool.getMaxPoolSize());
+        assertEquals(2, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(0, threadPool.getPendingCount(), "threadPool.getPendingCount()");
+        assertEquals(1, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
         ISOUtil.sleep(550);
-        assertEquals("threadPool.getJobCount()", 2, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 1, threadPool.getPoolSize());
-        assertEquals("threadPool.getMaxPoolSize()", 1, threadPool.getMaxPoolSize());
+        assertEquals(2, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(1, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
     }
 
     @Test
@@ -116,9 +118,9 @@ public class ThreadPoolTest {
         ISOUtil.sleep(20);
         threadPool.execute(new TestTask());
         ISOUtil.sleep(20);
-        assertEquals("threadPool.getJobCount()", 2, threadPool.getJobCount());
-        assertEquals("threadPool.getPoolSize()", 2, threadPool.getPoolSize());
-        assertEquals("threadPool.getMaxPoolSize()", 2, threadPool.getMaxPoolSize());
+        assertEquals(2, threadPool.getJobCount(), "threadPool.getJobCount()");
+        assertEquals(2, threadPool.getPoolSize(), "threadPool.getPoolSize()");
+        assertEquals(2, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
     }
 
     @Test
@@ -131,10 +133,10 @@ public class ThreadPoolTest {
         Thread[] tl = new Thread[threadPool.activeCount()];
         threadPool.enumerate(tl);
         for (Thread t :tl )
-            assertThat(t.getName(), new Matches("ThreadPool.PooledThread-\\d+-(running|idle)"));
+            assertThat(t.getName(), new MatchesPattern(Pattern.compile("ThreadPool.PooledThread-\\d+-(running|idle)")));
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testConcurrentThreadAllocation() throws Throwable {
         ThreadPool pool = new ThreadPool(1, 200, "Test-ThreadPool");
@@ -143,12 +145,33 @@ public class ThreadPoolTest {
         serverThread.start();
 
         serverThread.join(15000);
-        assertEquals("pool.getActiveCount()", 100, pool.getActiveCount());
+        assertEquals(100, pool.getActiveCount(), "pool.getActiveCount()");
         
         synchronized (server) {
             server.notifyAll();
         }
         pool.close();
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testIssue196 () {
+        ThreadPool pool = new ThreadPool(10, 20, "thepool");
+
+        int available = pool.getAvailableCount();
+        int active = pool.getActiveCount();
+
+        long end = System.currentTimeMillis() + 10000L; // run for 10 seconds top
+        int i = 0;
+        while (active >= 0 && System.currentTimeMillis() < end) {
+            while (available > 0) {
+                pool.execute(() -> { });
+                available = pool.getAvailableCount();
+            }
+            available = pool.getAvailableCount();
+            active = pool.getActiveCount();
+        }
+        assertTrue (active >= 0, "Active should be >= 0 but it is " + active);
     }
 
     private static class Job implements Runnable {
@@ -185,5 +208,7 @@ public class ThreadPoolTest {
             }
         }
     }
+
+
 
 }

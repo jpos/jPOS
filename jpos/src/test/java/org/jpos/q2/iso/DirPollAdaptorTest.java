@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,19 +18,19 @@
 
 package org.jpos.q2.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.q2.Q2;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DirPollAdaptorTest {
     @Mock
     Q2 q2;
@@ -38,17 +38,17 @@ public class DirPollAdaptorTest {
     @Test
     public void testConstructor() throws Throwable {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
-        assertEquals("dirPollAdaptor.getLog().getRealm()", "org.jpos.q2.iso.DirPollAdaptor", dirPollAdaptor.getLog().getRealm());
-        assertEquals("dirPollAdaptor.getState()", -1, dirPollAdaptor.getState());
-        assertTrue("dirPollAdaptor.isModified()", dirPollAdaptor.isModified());
-        assertEquals("dirPollAdaptor.pollInterval", 1000L, dirPollAdaptor.pollInterval);
-        assertEquals("dirPollAdaptor.poolSize", 1, dirPollAdaptor.poolSize);
+        assertEquals("org.jpos.q2.iso.DirPollAdaptor", dirPollAdaptor.getLog().getRealm(), "dirPollAdaptor.getLog().getRealm()");
+        assertEquals(-1, dirPollAdaptor.getState(), "dirPollAdaptor.getState()");
+        assertTrue(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
+        assertEquals(1000L, dirPollAdaptor.pollInterval, "dirPollAdaptor.pollInterval");
+        assertEquals(1, dirPollAdaptor.poolSize, "dirPollAdaptor.poolSize");
     }
 
     @Test
     public void testGetPath() throws Throwable {
         String result = new DirPollAdaptor().getPath();
-        assertEquals("result", ".", result);
+        assertEquals(".", result, "result");
     }
 
     @Test
@@ -56,13 +56,13 @@ public class DirPollAdaptorTest {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setPath("testDirPollAdaptorPath");
         String result = dirPollAdaptor.getPath();
-        assertEquals("result", "testDirPollAdaptorPath", result);
+        assertEquals("testDirPollAdaptorPath", result, "result");
     }
 
     @Test
     public void testGetPollInterval() throws Throwable {
         long result = new DirPollAdaptor().getPollInterval();
-        assertEquals("result", 1000L, result);
+        assertEquals(1000L, result, "result");
     }
 
     @Test
@@ -70,7 +70,7 @@ public class DirPollAdaptorTest {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setPollInterval(0L);
         long result = dirPollAdaptor.getPollInterval();
-        assertEquals("result", 0L, result);
+        assertEquals(0L, result, "result");
     }
 
     @Test
@@ -78,19 +78,19 @@ public class DirPollAdaptorTest {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setPoolSize(0);
         int result = dirPollAdaptor.getPoolSize();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testGetPoolSize1() throws Throwable {
         int result = new DirPollAdaptor().getPoolSize();
-        assertEquals("result", 1, result);
+        assertEquals(1, result, "result");
     }
 
     @Test
     public void testGetPriorities() throws Throwable {
         String result = new DirPollAdaptor().getPriorities();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -98,7 +98,7 @@ public class DirPollAdaptorTest {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setPriorities("testDirPollAdaptorPriorities");
         String result = dirPollAdaptor.getPriorities();
-        assertEquals("result", "testDirPollAdaptorPriorities", result);
+        assertEquals("testDirPollAdaptorPriorities", result, "result");
     }
 
     @Test
@@ -106,13 +106,13 @@ public class DirPollAdaptorTest {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setProcessor("testDirPollAdaptorProcessor");
         String result = dirPollAdaptor.getProcessor();
-        assertEquals("result", "testDirPollAdaptorProcessor", result);
+        assertEquals("testDirPollAdaptorProcessor", result, "result");
     }
 
     @Test
     public void testGetProcessor1() throws Throwable {
         String result = new DirPollAdaptor().getProcessor();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -124,9 +124,9 @@ public class DirPollAdaptorTest {
             dirPollAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("dirPollAdaptor.dirPoll.getPath()", ".", dirPollAdaptor.dirPoll.getPath());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("dirPollAdaptor.isModified()", dirPollAdaptor.isModified());
+            assertEquals(".", dirPollAdaptor.dirPoll.getPath(), "dirPollAdaptor.dirPoll.getPath()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
         }
     }
 
@@ -141,9 +141,9 @@ public class DirPollAdaptorTest {
             dirPollAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("dirPollAdaptor.dirPoll.getPath()", ".", dirPollAdaptor.dirPoll.getPath());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("dirPollAdaptor.isModified()", dirPollAdaptor.isModified());
+            assertEquals(".", dirPollAdaptor.dirPoll.getPath(), "dirPollAdaptor.dirPoll.getPath()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
         }
     }
 
@@ -154,9 +154,9 @@ public class DirPollAdaptorTest {
             dirPollAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("dirPollAdaptor.dirPoll", dirPollAdaptor.dirPoll);
-            assertTrue("dirPollAdaptor.isModified()", dirPollAdaptor.isModified());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(dirPollAdaptor.dirPoll, "dirPollAdaptor.dirPoll");
+            assertTrue(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
         }
     }
 
@@ -164,40 +164,40 @@ public class DirPollAdaptorTest {
     public void testSetPath() throws Throwable {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setPath("testDirPollAdaptorPath");
-        assertEquals("dirPollAdaptor.path", "testDirPollAdaptorPath", dirPollAdaptor.path);
-        assertTrue("dirPollAdaptor.isModified()", dirPollAdaptor.isModified());
+        assertEquals("testDirPollAdaptorPath", dirPollAdaptor.path, "dirPollAdaptor.path");
+        assertTrue(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
     }
 
     @Test
     public void testSetPollInterval() throws Throwable {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setPollInterval(100L);
-        assertEquals("dirPollAdaptor.pollInterval", 100L, dirPollAdaptor.pollInterval);
-        assertTrue("dirPollAdaptor.isModified()", dirPollAdaptor.isModified());
+        assertEquals(100L, dirPollAdaptor.pollInterval, "dirPollAdaptor.pollInterval");
+        assertTrue(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
     }
 
     @Test
     public void testSetPoolSize() throws Throwable {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setPoolSize(100);
-        assertEquals("dirPollAdaptor.poolSize", 100, dirPollAdaptor.poolSize);
-        assertTrue("dirPollAdaptor.isModified()", dirPollAdaptor.isModified());
+        assertEquals(100, dirPollAdaptor.poolSize, "dirPollAdaptor.poolSize");
+        assertTrue(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
     }
 
     @Test
     public void testSetPriorities() throws Throwable {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setPriorities("testDirPollAdaptorPriorities");
-        assertEquals("dirPollAdaptor.priorities", "testDirPollAdaptorPriorities", dirPollAdaptor.priorities);
-        assertTrue("dirPollAdaptor.isModified()", dirPollAdaptor.isModified());
+        assertEquals("testDirPollAdaptorPriorities", dirPollAdaptor.priorities, "dirPollAdaptor.priorities");
+        assertTrue(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
     }
 
     @Test
     public void testSetProcessor() throws Throwable {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
         dirPollAdaptor.setProcessor("testDirPollAdaptorProcessor");
-        assertEquals("dirPollAdaptor.processorClass", "testDirPollAdaptorProcessor", dirPollAdaptor.processorClass);
-        assertTrue("dirPollAdaptor.isModified()", dirPollAdaptor.isModified());
+        assertEquals("testDirPollAdaptorProcessor", dirPollAdaptor.processorClass, "dirPollAdaptor.processorClass");
+        assertTrue(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
     }
 
     @Test
@@ -206,7 +206,7 @@ public class DirPollAdaptorTest {
         try {
             dirPollAdaptor.startService();
         } catch (IllegalStateException e) {
-            assertNull("dirPollAdaptor.dirPoll", dirPollAdaptor.dirPoll);
+            assertNull(dirPollAdaptor.dirPoll, "dirPollAdaptor.dirPoll");
         }
     }
 
@@ -217,8 +217,8 @@ public class DirPollAdaptorTest {
             dirPollAdaptor.stopService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("dirPollAdaptor.dirPoll", dirPollAdaptor.dirPoll);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(dirPollAdaptor.dirPoll, "dirPollAdaptor.dirPoll");
         }
     }
 }

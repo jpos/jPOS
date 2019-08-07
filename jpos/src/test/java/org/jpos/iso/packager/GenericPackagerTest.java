@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,14 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
@@ -36,8 +39,8 @@ import org.jpos.iso.IFA_AMOUNT;
 import org.jpos.iso.IFA_BITMAP;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -50,8 +53,8 @@ public class GenericPackagerTest {
     @Test
     public void testConstructor() throws Throwable {
         GenericPackager genericPackager = new GenericPackager();
-        assertNull("genericPackager.getLogger()", genericPackager.getLogger());
-        assertNull("genericPackager.getRealm()", genericPackager.getRealm());
+        assertNull(genericPackager.getLogger(), "genericPackager.getLogger()");
+        assertNull(genericPackager.getRealm(), "genericPackager.getRealm()");
     }
 
     @Test
@@ -60,7 +63,7 @@ public class GenericPackagerTest {
             new GenericPackager("testGenericPackagerFilename");
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getNested().getClass()", FileNotFoundException.class, ex.getNested().getClass());
+            assertEquals(FileNotFoundException.class, ex.getNested().getClass(), "ex.getNested().getClass()");
         }
     }
 
@@ -70,8 +73,8 @@ public class GenericPackagerTest {
             new GenericPackager(new ByteArrayInputStream("".getBytes()));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getNested().getClass()", SAXParseException.class, ex.getNested().getClass());
-            assertEquals("ex.getNested().getMessage()", "Premature end of file.", ex.getNested().getMessage());
+            assertEquals(SAXParseException.class, ex.getNested().getClass(), "ex.getNested().getClass()");
+            assertEquals("Premature end of file.", ex.getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
@@ -79,13 +82,13 @@ public class GenericPackagerTest {
     public void testEmitBitMap() throws Throwable {
         GenericPackager genericPackager = new GenericPackager();
         boolean result = genericPackager.emitBitMap();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testGenericContentHandlerConstructor() throws Throwable {
         new GenericSubFieldPackager().new GenericContentHandler();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -93,7 +96,7 @@ public class GenericPackagerTest {
         GenericPackager.GenericContentHandler genericContentHandler = new X92GenericPackager().new GenericContentHandler();
         genericContentHandler.startDocument();
         genericContentHandler.endDocument();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -102,7 +105,7 @@ public class GenericPackagerTest {
             new GenericSubFieldPackager().new GenericContentHandler().endDocument();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -116,8 +119,8 @@ public class GenericPackagerTest {
             genericContentHandler.endDocument();
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertEquals("ex.getMessage()", "Format error in XML Field Description File", ex.getMessage());
-            assertNull("ex.getException()", ex.getException());
+            assertEquals("Format error in XML Field Description File", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getException(), "ex.getException()");
         }
     }
 
@@ -151,7 +154,7 @@ public class GenericPackagerTest {
                     "testGenericContentHandlerQName");
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
+            assertEquals(ClassCastException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -164,7 +167,7 @@ public class GenericPackagerTest {
                     "testGenericContentHandlerQName");
             fail("Expected EmptyStackException to be thrown");
         } catch (EmptyStackException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -176,7 +179,7 @@ public class GenericPackagerTest {
                     "testGenericContentHandlerQName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -187,7 +190,7 @@ public class GenericPackagerTest {
             genericContentHandler.endElement("testGenericContentHandlerNamespaceURI", null, "testGenericContentHandlerQName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -197,7 +200,7 @@ public class GenericPackagerTest {
             new GenericSubFieldPackager().new GenericContentHandler().error(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -209,12 +212,12 @@ public class GenericPackagerTest {
             new GenericSubFieldPackager().new GenericContentHandler().error(ex2);
             fail("Expected SAXParseException to be thrown");
         } catch (SAXParseException ex) {
-            assertEquals("ex.getMessage()", "testGenericContentHandlerParam1", ex.getMessage());
-            assertEquals("ex.getPublicId()", "testGenericContentHandlerParam2", ex.getPublicId());
-            assertEquals("ex.getSystemId()", "testGenericContentHandlerParam3", ex.getSystemId());
-            assertEquals("ex.getLineNumber()", 100, ex.getLineNumber());
-            assertEquals("ex.getColumnNumber()", 1000, ex.getColumnNumber());
-            assertNull("ex.getException()", ex.getException());
+            assertEquals("testGenericContentHandlerParam1", ex.getMessage(), "ex.getMessage()");
+            assertEquals("testGenericContentHandlerParam2", ex.getPublicId(), "ex.getPublicId()");
+            assertEquals("testGenericContentHandlerParam3", ex.getSystemId(), "ex.getSystemId()");
+            assertEquals(100, ex.getLineNumber(), "ex.getLineNumber()");
+            assertEquals(1000, ex.getColumnNumber(), "ex.getColumnNumber()");
+            assertNull(ex.getException(), "ex.getException()");
         }
     }
 
@@ -224,7 +227,7 @@ public class GenericPackagerTest {
             new GenericPackager().new GenericContentHandler().fatalError(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -235,12 +238,12 @@ public class GenericPackagerTest {
             new GenericPackager().new GenericContentHandler().fatalError(ex2);
             fail("Expected SAXParseException to be thrown");
         } catch (SAXParseException ex) {
-            assertEquals("ex.getMessage()", "testGenericContentHandlerParam1", ex.getMessage());
-            assertNull("ex.getPublicId()", ex.getPublicId());
-            assertNull("ex.getSystemId()", ex.getSystemId());
-            assertEquals("ex.getLineNumber()", 0, ex.getLineNumber());
-            assertEquals("ex.getColumnNumber()", 0, ex.getColumnNumber());
-            assertNull("ex.getException()", ex.getException());
+            assertEquals("testGenericContentHandlerParam1", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getPublicId(), "ex.getPublicId()");
+            assertNull(ex.getSystemId(), "ex.getSystemId()");
+            assertEquals(0, ex.getLineNumber(), "ex.getLineNumber()");
+            assertEquals(0, ex.getColumnNumber(), "ex.getColumnNumber()");
+            assertNull(ex.getException(), "ex.getException()");
         }
     }
 
@@ -274,8 +277,12 @@ public class GenericPackagerTest {
                     "testGenericContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -288,9 +295,13 @@ public class GenericPackagerTest {
                     "testGenericContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
 
@@ -303,8 +314,12 @@ public class GenericPackagerTest {
                     .startElement("testGenericContentHandlerNamespaceURI", null, "testGenericContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -317,9 +332,13 @@ public class GenericPackagerTest {
                     "testGenericContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
 
@@ -332,8 +351,12 @@ public class GenericPackagerTest {
                     "testGenericContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertEquals("ex.getMessage()", "null", ex.getMessage());
-            assertEquals("ex.getException().getMessage()", "null", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("null", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NumberFormatException: null", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals("null", ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -345,7 +368,7 @@ public class GenericPackagerTest {
         GenericPackager genericPackager = new GenericPackager();
         genericPackager.setFieldPackager(fld);
         ISOFieldPackager result = genericPackager.getBitMapfieldPackager();
-        assertSame("result", iFA_AMOUNT, result);
+        assertSame(iFA_AMOUNT, result, "result");
     }
 
     @Test
@@ -357,7 +380,11 @@ public class GenericPackagerTest {
             genericPackager.getBitMapfieldPackager();
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("1", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 1 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -368,7 +395,7 @@ public class GenericPackagerTest {
             genericPackager.getBitMapfieldPackager();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -379,7 +406,7 @@ public class GenericPackagerTest {
         fld[1] = new IFA_BITMAP();
         genericValidatingPackager.setFieldPackager(fld);
         int result = genericValidatingPackager.getFirstField();
-        assertEquals("result", 2, result);
+        assertEquals(2, result, "result");
     }
 
     @Test
@@ -388,7 +415,7 @@ public class GenericPackagerTest {
         ISOFieldPackager[] fld = new ISOFieldPackager[3];
         genericPackager.setFieldPackager(fld);
         int result = genericPackager.getFirstField();
-        assertEquals("result", 1, result);
+        assertEquals(1, result, "result");
     }
 
     @Test
@@ -406,7 +433,7 @@ public class GenericPackagerTest {
             genericPackager.getFirstField();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -414,7 +441,7 @@ public class GenericPackagerTest {
     public void testGetMaxValidField() throws Throwable {
         GenericPackager genericPackager = new GenericPackager();
         int result = genericPackager.getMaxValidField();
-        assertEquals("result", 128, result);
+        assertEquals(128, result, "result");
     }
 
     @Test
@@ -423,8 +450,8 @@ public class GenericPackagerTest {
             new GenericSubFieldPackager().readFile(new ByteArrayInputStream("".getBytes()));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getNested().getClass()", SAXParseException.class, ex.getNested().getClass());
-            assertEquals("ex.getNested().getMessage()", "Premature end of file.", ex.getNested().getMessage());
+            assertEquals(SAXParseException.class, ex.getNested().getClass(), "ex.getNested().getClass()");
+            assertEquals("Premature end of file.", ex.getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
@@ -434,11 +461,11 @@ public class GenericPackagerTest {
             new GenericPackager().readFile("testGenericPackagerFilename");
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getNested().getClass()", FileNotFoundException.class, ex.getNested().getClass());
+            assertEquals(FileNotFoundException.class, ex.getNested().getClass(), "ex.getNested().getClass()");
         }
     }
 
-    @Ignore ("test failing")
+    @Disabled("test failing")
     @Test
     public void testSetConfigurationThrowsConfigurationException() throws Throwable {
         GenericPackager genericPackager = new GenericPackager();
@@ -448,15 +475,14 @@ public class GenericPackagerTest {
             fail("Expected ConfigurationException to be thrown");
         } catch (ConfigurationException ex) {
             assertEquals(
-                    "ex.getMessage()",
                     "org.jpos.iso.ISOException: java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl (java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl)",
-                    ex.getMessage());
-            assertEquals("ex.getNested().getMessage()", "java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl",
-                    ex.getNested().getMessage());
-            assertEquals("(GenericValidatingPackager) genericValidatingPackager.getLogger().getName()", "",
-                    genericPackager.getLogger().getName());
-            assertEquals("(GenericValidatingPackager) genericValidatingPackager.getRealm()", "",
-                    genericPackager.getRealm());
+                    ex.getMessage(), "ex.getMessage()");
+            assertEquals("java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl",
+                    ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertEquals("", genericPackager.getLogger().getName(),
+                    "(GenericValidatingPackager) genericValidatingPackager.getLogger().getName()");
+            assertEquals("", genericPackager.getRealm(),
+                    "(GenericValidatingPackager) genericValidatingPackager.getRealm()");
         }
     }
 
@@ -468,9 +494,9 @@ public class GenericPackagerTest {
             genericSubFieldPackager.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("(GenericSubFieldPackager) genericSubFieldPackager.getLogger()", genericSubFieldPackager.getLogger());
-            assertNull("(GenericSubFieldPackager) genericSubFieldPackager.getRealm()", genericSubFieldPackager.getRealm());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(genericSubFieldPackager.getLogger(), "(GenericSubFieldPackager) genericSubFieldPackager.getLogger()");
+            assertNull(genericSubFieldPackager.getRealm(), "(GenericSubFieldPackager) genericSubFieldPackager.getRealm()");
         }
     }
 }

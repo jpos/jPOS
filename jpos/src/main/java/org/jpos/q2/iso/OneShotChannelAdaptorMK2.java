@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -322,13 +322,13 @@ public class OneShotChannelAdaptorMK2
     private ISOChannel newChannel(Element e, QFactory f)
             throws ConfigurationException
     {
-        String channelName = e.getAttributeValue("class");
+        String channelName = QFactory.getAttributeValue(e, "class");
         if (channelName == null)
         {
             throw new ConfigurationException("class attribute missing from channel element.");
         }
 
-        String packagerName = e.getAttributeValue("packager");
+        String packagerName = QFactory.getAttributeValue(e, "packager");
 
         ISOChannel channel = (ISOChannel) f.newInstance(channelName);
         ISOPackager packager;
@@ -338,7 +338,7 @@ public class OneShotChannelAdaptorMK2
             channel.setPackager(packager);
             f.setConfiguration(packager, e);
         }
-        QFactory.invoke(channel, "setHeader", e.getAttributeValue("header"));
+        QFactory.invoke(channel, "setHeader", QFactory.getAttributeValue(e, "header"));
         f.setLogger(channel, e);
         f.setConfiguration(channel, e);
 
@@ -368,11 +368,11 @@ public class OneShotChannelAdaptorMK2
         for (Object o : e.getChildren("filter"))
         {
             Element f = (Element) o;
-            String clazz = f.getAttributeValue("class");
+            String clazz = QFactory.getAttributeValue(f, "class");
             ISOFilter filter = (ISOFilter) fact.newInstance(clazz);
             fact.setLogger(filter, f);
             fact.setConfiguration(filter, f);
-            String direction = f.getAttributeValue("direction");
+            String direction = QFactory.getAttributeValue(f, "direction");
             if (direction == null)
             {
                 channel.addFilter(filter);

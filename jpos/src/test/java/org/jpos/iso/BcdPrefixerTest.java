@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,16 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ASCII length Prefixer.
  * @author jonathan.oconnor@xcom
  */
-public class BcdPrefixerTest extends TestCase
-{
+public class BcdPrefixerTest {
+    @Test
     public void testEncode() throws Exception
     {
         byte[] b = new byte[1];
@@ -33,6 +35,7 @@ public class BcdPrefixerTest extends TestCase
         TestUtils.assertEquals(new byte[]{0x21}, b);
     }
 
+    @Test
     public void testEncodeShortLength() throws Exception
     {
         byte[] b = new byte[1];
@@ -40,6 +43,7 @@ public class BcdPrefixerTest extends TestCase
         TestUtils.assertEquals(new byte[]{0x03}, b);
     }
 
+    @Test
     public void testEncodeLLL() throws Exception
     {
         byte[] b = new byte[2];
@@ -47,6 +51,7 @@ public class BcdPrefixerTest extends TestCase
         TestUtils.assertEquals(new byte[]{0x03, 0x21}, b);
     }
 
+    @Test
     public void testEncodeLLLShortLength() throws Exception
     {
         byte[] b = new byte[2];
@@ -54,6 +59,7 @@ public class BcdPrefixerTest extends TestCase
         TestUtils.assertEquals(new byte[]{0x00, 0x03}, b);
     }
 
+    @Test
     public void testEncode99() throws Exception
     {
         byte[] b = new byte[1];
@@ -61,24 +67,28 @@ public class BcdPrefixerTest extends TestCase
         TestUtils.assertEquals(new byte[]{(byte)0x99}, b);
     }
 
+    @Test
     public void testDecode() throws Exception
     {
         byte[] b = new byte[]{0x25};
         assertEquals(25, BcdPrefixer.LL.decodeLength(b, 0));
     }
 
+    @Test
     public void testDecode19() throws Exception
     {
         byte[] b = new byte[]{0x19};
         assertEquals(19, BcdPrefixer.LL.decodeLength(b, 0));
     }
 
+    @Test
     public void testDecode99() throws Exception
     {
         byte[] b = new byte[]{(byte)0x99};
         assertEquals(99, BcdPrefixer.LL.decodeLength(b, 0));
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         int len = 3;

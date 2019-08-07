@@ -1,5 +1,3 @@
-apply plugin: 'osgi'
-
 dependencies {
     compile "commons-cli:commons-cli:1.2"
     compile 'org.apache.felix:org.apache.felix.framework:5.4.0'
@@ -49,9 +47,7 @@ jar () {
                    'Implementation-Version': version,
                    'Main-Class': 'org.jpos.qnode.QNode',
                    'Class-Path': manifestClasspath
-        instruction 'Bundle-Vendor', 'jPOS.org'
-        instruction 'Bundle-Description', "jPOS ${project.version}"
-    } 
+    }
 }
 
 task sourceJar( type: Jar ) {

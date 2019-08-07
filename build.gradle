@@ -10,9 +10,10 @@ subprojects {
     apply plugin: 'maven'
     apply plugin: 'signing'
     apply plugin: 'pmd'
+    apply plugin: 'project-report'
 
     group = 'org.jpos'
-    version = '2.1.2-SNAPSHOT'
+    version = '2.1.4-SNAPSHOT'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
@@ -28,7 +29,6 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url 'http://jpos.org/maven' }
-        maven { url 'http://download.oracle.com/maven' }
         mavenLocal()
     }
     if (project.hasProperty("lint")) {
@@ -104,6 +104,10 @@ subprojects {
         }
     }
     test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
         systemProperty 'user.language', 'en'
     }
 }

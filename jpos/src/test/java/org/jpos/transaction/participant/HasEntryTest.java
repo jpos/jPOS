@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,18 +19,18 @@
 package org.jpos.transaction.participant;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import org.jpos.core.Configuration;
 import org.jpos.transaction.Context;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class HasEntryTest {
     HasEntry hasEntry;
     @Mock
@@ -38,10 +38,9 @@ public class HasEntryTest {
     @Mock
     Configuration configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         hasEntry = new HasEntry();
-        given(configuration.get("name")).willReturn("XYZtest");
         hasEntry.setConfiguration(configuration);
     }
 
@@ -53,6 +52,7 @@ public class HasEntryTest {
     @Test
     public void testSelect() {
         // given
+        given(configuration.get("name")).willReturn("XYZtest");
         given(context.get("XYZtest")).willReturn("someStuffs");
         given(configuration.get("yes", "UNKNOWN")).willReturn("someStuffs");
         // when
@@ -64,6 +64,7 @@ public class HasEntryTest {
     @Test
     public void testSelectNo() {
         // given
+        given(configuration.get("name")).willReturn("XYZtest");
         given(context.get("XYZtest")).willReturn(null);
         given(configuration.get("no", "UNKNOWN")).willReturn("differentStuffs");
         // when

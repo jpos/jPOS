@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,18 +18,18 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ISO93BPackagerTest {
 
     @Test
     public void testConstructor() throws Throwable {
         ISO93BPackager iSO93BPackager = new ISO93BPackager();
-        assertNull("iSO93BPackager.getLogger()", iSO93BPackager.getLogger());
-        assertNull("iSO93BPackager.getRealm()", iSO93BPackager.getRealm());
-        assertEquals("iSO93BPackager.fld.length", 129, iSO93BPackager.fld.length);
+        assertNull(iSO93BPackager.getLogger(), "iSO93BPackager.getLogger()");
+        assertNull(iSO93BPackager.getRealm(), "iSO93BPackager.getRealm()");
+        assertEquals(129, iSO93BPackager.fld.length, "iSO93BPackager.fld.length");
     }
 }

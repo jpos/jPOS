@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,22 +18,22 @@
 
 package org.jpos.q2.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.q2.Q2;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DailyTaskAdaptorTest {
     @Mock
     Q2 q2;
@@ -41,11 +41,11 @@ public class DailyTaskAdaptorTest {
     @Test
     public void testConstructor() throws Throwable {
         DailyTaskAdaptor dailyTaskAdaptor = new DailyTaskAdaptor();
-        assertEquals("dailyTaskAdaptor.getLog().getRealm()", "org.jpos.q2.iso.DailyTaskAdaptor", dailyTaskAdaptor.getLog()
-                .getRealm());
-        assertEquals("dailyTaskAdaptor.getState()", -1, dailyTaskAdaptor.getState());
-        assertNull("dailyTaskAdaptor.thisThread", dailyTaskAdaptor.thisThread);
-        assertTrue("dailyTaskAdaptor.isModified()", dailyTaskAdaptor.isModified());
+        assertEquals("org.jpos.q2.iso.DailyTaskAdaptor", dailyTaskAdaptor.getLog()
+                .getRealm(), "dailyTaskAdaptor.getLog().getRealm()");
+        assertEquals(-1, dailyTaskAdaptor.getState(), "dailyTaskAdaptor.getState()");
+        assertNull(dailyTaskAdaptor.thisThread, "dailyTaskAdaptor.thisThread");
+        assertTrue(dailyTaskAdaptor.isModified(), "dailyTaskAdaptor.isModified()");
     }
 
     @Test
@@ -55,8 +55,8 @@ public class DailyTaskAdaptorTest {
             dailyTaskAdaptor.getWhen();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("dailyTaskAdaptor.getConfiguration()", dailyTaskAdaptor.getConfiguration());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(dailyTaskAdaptor.getConfiguration(), "dailyTaskAdaptor.getConfiguration()");
         }
     }
 
@@ -69,8 +69,8 @@ public class DailyTaskAdaptorTest {
             dailyTaskAdaptor.getWhen();
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \":0\"", ex.getMessage());
-            assertSame("dailyTaskAdaptor.getConfiguration()", cfg, dailyTaskAdaptor.getConfiguration());
+            assertEquals("For input string: \":0\"", ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, dailyTaskAdaptor.getConfiguration(), "dailyTaskAdaptor.getConfiguration()");
         }
     }
 
@@ -81,9 +81,9 @@ public class DailyTaskAdaptorTest {
             dailyTaskAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertTrue("dailyTaskAdaptor.isModified()", dailyTaskAdaptor.isModified());
-            assertNull("dailyTaskAdaptor.task", dailyTaskAdaptor.task);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertTrue(dailyTaskAdaptor.isModified(), "dailyTaskAdaptor.isModified()");
+            assertNull(dailyTaskAdaptor.task, "dailyTaskAdaptor.task");
         }
     }
 
@@ -99,9 +99,9 @@ public class DailyTaskAdaptorTest {
             dailyTaskAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("dailyTaskAdaptor.isModified()", dailyTaskAdaptor.isModified());
-            assertNull("dailyTaskAdaptor.task", dailyTaskAdaptor.task);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(dailyTaskAdaptor.isModified(), "dailyTaskAdaptor.isModified()");
+            assertNull(dailyTaskAdaptor.task, "dailyTaskAdaptor.task");
         }
     }
 
@@ -109,7 +109,7 @@ public class DailyTaskAdaptorTest {
     public void testRun() throws Throwable {
         DailyTaskAdaptor dailyTaskAdaptor = new DailyTaskAdaptor();
         dailyTaskAdaptor.run();
-        assertNull("dailyTaskAdaptor.getConfiguration()", dailyTaskAdaptor.getConfiguration());
+        assertNull(dailyTaskAdaptor.getConfiguration(), "dailyTaskAdaptor.getConfiguration()");
     }
 
     @Test
@@ -120,8 +120,8 @@ public class DailyTaskAdaptorTest {
             dailyTaskAdaptor.run();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("dailyTaskAdaptor.getConfiguration()", dailyTaskAdaptor.getConfiguration());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(dailyTaskAdaptor.getConfiguration(), "dailyTaskAdaptor.getConfiguration()");
         }
     }
 
@@ -135,8 +135,8 @@ public class DailyTaskAdaptorTest {
             dailyTaskAdaptor.run();
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \":0\"", ex.getMessage());
-            assertSame("dailyTaskAdaptor.getConfiguration()", cfg, dailyTaskAdaptor.getConfiguration());
+            assertEquals("For input string: \":0\"", ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, dailyTaskAdaptor.getConfiguration(), "dailyTaskAdaptor.getConfiguration()");
         }
     }
 
@@ -144,7 +144,7 @@ public class DailyTaskAdaptorTest {
     public void testStartService() throws Throwable {
         DailyTaskAdaptor dailyTaskAdaptor = new DailyTaskAdaptor();
         dailyTaskAdaptor.startService();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -152,14 +152,14 @@ public class DailyTaskAdaptorTest {
         DailyTaskAdaptor dailyTaskAdaptor = new DailyTaskAdaptor();
         dailyTaskAdaptor.startService();
         dailyTaskAdaptor.stopService();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testStopService1() throws Throwable {
         DailyTaskAdaptor dailyTaskAdaptor = new DailyTaskAdaptor();
         dailyTaskAdaptor.stopService();
-        assertNull("dailyTaskAdaptor.thisThread", dailyTaskAdaptor.thisThread);
+        assertNull(dailyTaskAdaptor.thisThread, "dailyTaskAdaptor.thisThread");
     }
 
     @Test
@@ -169,8 +169,8 @@ public class DailyTaskAdaptorTest {
             dailyTaskAdaptor.waitUntilStartTime();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("dailyTaskAdaptor.getConfiguration()", dailyTaskAdaptor.getConfiguration());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(dailyTaskAdaptor.getConfiguration(), "dailyTaskAdaptor.getConfiguration()");
         }
     }
 
@@ -183,8 +183,8 @@ public class DailyTaskAdaptorTest {
             dailyTaskAdaptor.waitUntilStartTime();
             fail("Expected NumberFormatException to be thrown");
         } catch (NumberFormatException ex) {
-            assertEquals("ex.getMessage()", "For input string: \":0\"", ex.getMessage());
-            assertSame("dailyTaskAdaptor.getConfiguration()", cfg, dailyTaskAdaptor.getConfiguration());
+            assertEquals("For input string: \":0\"", ex.getMessage(), "ex.getMessage()");
+            assertSame(cfg, dailyTaskAdaptor.getConfiguration(), "dailyTaskAdaptor.getConfiguration()");
         }
     }
 

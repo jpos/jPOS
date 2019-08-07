@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,12 @@
 
 package org.jpos.rc;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.util.Caller;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -66,9 +66,10 @@ public class CMFTest {
         cfg.put("10000","----,jPOS error message");
         c.setConfiguration(cfg);
 
-        assertEquals("Standard RC", new SimpleRC("0000", "APPROVED"), c.convert(CMF.APPROVED));
-        assertEquals("ResourceBundle override", new SimpleRC("ZZZZ", "General Decline"), c.convert(CMF.GENERAL_DECLINE));
-        assertEquals("Configuration override", new SimpleRC("----", "jPOS error message"), c.convert(CMF.JPOS));
+        assertEquals(new SimpleRC("0000", "APPROVED"), c.convert(CMF.APPROVED), "Standard RC");
+        assertEquals(new SimpleRC("ZZZZ", "General decline"), c.convert(CMF.GENERAL_DECLINE), "ResourceBundle override");
+        assertEquals(new SimpleRC("9999", "Internal error"), c.convert(CMF.INTERNAL_ERROR), "ResourceBundle override");
+        assertEquals(new SimpleRC("----", "jPOS error message"), c.convert(CMF.JPOS), "Configuration override");
     }
 
     @Test

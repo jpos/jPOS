@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,15 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IFA_LLBNUMTest extends TestCase
-{
+public class IFA_LLBNUMTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(12, "123");
@@ -33,6 +35,7 @@ public class IFA_LLBNUMTest extends TestCase
                 field));
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{0x30, 0x34, 0x01, 0x23};
@@ -42,6 +45,7 @@ public class IFA_LLBNUMTest extends TestCase
         assertEquals("0123", (String) field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         String origin = "123456789";

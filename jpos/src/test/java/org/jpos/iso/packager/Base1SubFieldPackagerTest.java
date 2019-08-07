@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,27 +18,30 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.X92_BITMAP;
 import org.jpos.util.Logger;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class Base1SubFieldPackagerTest {
 
     @Test
     public void testConstructor() throws Throwable {
         Base1SubFieldPackager base1SubFieldPackager = new Base1SubFieldPackager();
-        assertNull("base1SubFieldPackager.getLogger()", base1SubFieldPackager.getLogger());
-        assertNull("base1SubFieldPackager.getRealm()", base1SubFieldPackager.getRealm());
+        assertNull(base1SubFieldPackager.getLogger(), "base1SubFieldPackager.getLogger()");
+        assertNull(base1SubFieldPackager.getRealm(), "base1SubFieldPackager.getRealm()");
     }
 
     @Test
@@ -47,7 +50,7 @@ public class Base1SubFieldPackagerTest {
         ISOFieldPackager[] fld = new ISOFieldPackager[1];
         base1SubFieldPackager.setFieldPackager(fld);
         boolean result = base1SubFieldPackager.emitBitMap();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -60,8 +63,11 @@ public class Base1SubFieldPackagerTest {
             f126Packager.emitBitMap();
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
-
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("0", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 0 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -69,7 +75,7 @@ public class Base1SubFieldPackagerTest {
     public void testGetBitMapfieldPackager() throws Throwable {
         Base1SubFieldPackager f126Packager = new Base1Packager.F126Packager();
         Base1_BITMAP126 result = (Base1_BITMAP126) f126Packager.getBitMapfieldPackager();
-        assertEquals("result.getMaxPackedLength()", 2, result.getMaxPackedLength());
+        assertEquals(2, result.getMaxPackedLength(), "result.getMaxPackedLength()");
     }
 
     @Test
@@ -79,7 +85,7 @@ public class Base1SubFieldPackagerTest {
             base1SubFieldPackager.getBitMapfieldPackager();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -90,7 +96,7 @@ public class Base1SubFieldPackagerTest {
         fld[0] = new X92_BITMAP(100, "testBase1SubFieldPackagerDescription");
         base1SubFieldPackager.setFieldPackager(fld);
         int result = base1SubFieldPackager.getFirstField();
-        assertEquals("result", 1, result);
+        assertEquals(1, result, "result");
     }
 
     @Test
@@ -99,7 +105,7 @@ public class Base1SubFieldPackagerTest {
         Base1SubFieldPackager f126Packager = new Base1Packager.F126Packager();
         f126Packager.setFieldPackager(fld);
         int result = f126Packager.getFirstField();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -109,7 +115,7 @@ public class Base1SubFieldPackagerTest {
             base1SubFieldPackager.getFirstField();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -121,7 +127,7 @@ public class Base1SubFieldPackagerTest {
         base1SubFieldPackager.setLogger(new Logger(), "testBase1SubFieldPackagerRealm");
         byte[] b = new byte[0];
         int result = base1SubFieldPackager.unpack(new ISOMsg(100), b);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,11 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.ServerSocket;
 
@@ -32,12 +32,12 @@ import org.jpos.iso.channel.NACChannel;
 import org.jpos.iso.channel.XMLChannel;
 import org.jpos.iso.packager.EuroPackager;
 import org.jpos.util.Logger;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConnectorTest {
     @Mock
     Logger logger;
@@ -45,7 +45,7 @@ public class ConnectorTest {
     @Test
     public void testConstructor() throws Throwable {
         Connector connector = new Connector();
-        assertEquals("connector.timeout", 0, connector.timeout);
+        assertEquals(0, connector.timeout, "connector.timeout");
     }
 
     @Test
@@ -54,13 +54,13 @@ public class ConnectorTest {
         Logger logger = new Logger();
         connector.setLogger(logger, "testConnectorRealm");
         Logger result = connector.getLogger();
-        assertSame("result", logger, result);
+        assertSame(logger, result, "result");
     }
 
     @Test
     public void testGetRealm() throws Throwable {
         String result = new Connector().getRealm();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -69,14 +69,14 @@ public class ConnectorTest {
 
         connector.setLogger(logger, "testConnectorRealm");
         String result = connector.getRealm();
-        assertEquals("result", "testConnectorRealm", result);
+        assertEquals("testConnectorRealm", result, "result");
     }
 
     @Test
     public void testProcess() throws Throwable {
         Connector connector = new Connector();
         boolean result = connector.process(new XMLChannel(), new ISOMsg(100));
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
@@ -84,8 +84,8 @@ public class ConnectorTest {
         ISOSource source = new XMLChannel(new EuroPackager(), new ServerSocket());
         ISOMsg m = new ISOMsg(100);
         Connector.Process process = new Connector().new Process(source, m);
-        assertSame("process.m", m, process.m);
-        assertSame("process.source", source, process.source);
+        assertSame(m, process.m, "process.m");
+        assertSame(source, process.source, "process.source");
     }
 
     @Test
@@ -96,9 +96,9 @@ public class ConnectorTest {
             process.run();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("process.m", process.m);
-            assertSame("process.source", source, process.source);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(process.m, "process.m");
+            assertSame(source, process.source, "process.source");
         }
     }
 
@@ -110,10 +110,10 @@ public class ConnectorTest {
             connector.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("connector.timeout", 0, connector.timeout);
-            assertNull("connector.channelName", connector.channelName);
-            assertNull("connector.muxName", connector.muxName);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, connector.timeout, "connector.timeout");
+            assertNull(connector.channelName, "connector.channelName");
+            assertNull(connector.muxName, "connector.muxName");
         }
     }
 
@@ -122,7 +122,7 @@ public class ConnectorTest {
         Connector connector = new Connector();
         Logger logger = new Logger();
         connector.setLogger(logger, "testConnectorRealm");
-        assertSame("connector.getLogger()", logger, connector.getLogger());
-        assertEquals("connector.getRealm()", "testConnectorRealm", connector.getRealm());
+        assertSame(logger, connector.getLogger(), "connector.getLogger()");
+        assertEquals("testConnectorRealm", connector.getRealm(), "connector.getRealm()");
     }
 }

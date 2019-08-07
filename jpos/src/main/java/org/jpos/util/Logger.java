@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -126,7 +126,7 @@ public class Logger implements LogProducer,Configurable
     public synchronized static Logger getLogger (String name) {
         Logger l;
         try {
-            l = (Logger) NameRegistrar.get (NRPREFIX+name);
+            l = NameRegistrar.get (NRPREFIX+name);
         } catch (NameRegistrar.NotFoundException e) {
             l = new Logger();
             l.setName (name);

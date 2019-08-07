@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,47 +18,47 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CurrencyTest {
 
     @Test
     public void testConstructor() throws Throwable {
         Currency currency = new Currency("testCurrencyAlphacode", 100, 1000);
-        assertEquals("currency.isocode", 100, currency.isocode);
-        assertEquals("currency.numdecimals", 1000, currency.numdecimals);
-        assertEquals("currency.alphacode", "testCurrencyAlphacode", currency.alphacode);
+        assertEquals(100, currency.isocode, "currency.isocode");
+        assertEquals(1000, currency.numdecimals, "currency.numdecimals");
+        assertEquals("testCurrencyAlphacode", currency.alphacode, "currency.alphacode");
     }
 
     @Test
     public void testGetAlphaCode() throws Throwable {
         String result = new Currency("testCurrencyAlphacode", 100, 1000).getAlphaCode();
-        assertEquals("result", "testCurrencyAlphacode", result);
+        assertEquals("testCurrencyAlphacode", result, "result");
     }
 
     @Test
     public void testGetDecimals() throws Throwable {
         int result = new Currency("testCurrencyAlphacode", 100, 0).getDecimals();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testGetDecimals1() throws Throwable {
         int result = new Currency("testCurrencyAlphacode", 100, 1000).getDecimals();
-        assertEquals("result", 1000, result);
+        assertEquals(1000, result, "result");
     }
 
     @Test
     public void testGetIsoCode() throws Throwable {
         int result = new Currency("testCurrencyAlphacode", 0, 100).getIsoCode();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testGetIsoCode1() throws Throwable {
         int result = new Currency("testCurrencyAlphacode", 100, 1000).getIsoCode();
-        assertEquals("result", 100, result);
+        assertEquals(100, result, "result");
     }
 }

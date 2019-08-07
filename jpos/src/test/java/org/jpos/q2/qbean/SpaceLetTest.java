@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,24 +18,25 @@
 
 package org.jpos.q2.qbean;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 import org.jdom2.Element;
 import org.jpos.space.SpaceError;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SpaceLetTest {
 
     @Test
     public void testConstructor() throws Throwable {
         SpaceLet spaceLet = new SpaceLet();
-        assertNotNull("java default constructor", spaceLet);
+        assertNotNull(spaceLet, "java default constructor");
     }
 
     @Test
@@ -70,10 +71,12 @@ public class SpaceLetTest {
         }
     }
 
-    @Test(expected = SpaceError.class)
+    @Test
     public void testInThrowsSpaceError() throws Throwable {
-        SpaceLet spaceLet = new SpaceLet();
-        spaceLet.in("");
+        assertThrows(SpaceError.class, () -> {
+            SpaceLet spaceLet = new SpaceLet();
+            spaceLet.in("");
+        });
     }
 
     @Test

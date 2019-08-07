@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,26 +23,27 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class NameRegistrarTest {
     private static final boolean WITH_DETAIL = true;
 
-    @Before
+    @BeforeEach
     public void onSetup() {
         NameRegistrar.register("test1", "testValue1");
         NameRegistrar.register("test2", "testValue2");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         NameRegistrar.unregister("test1");
         NameRegistrar.unregister("test2");
@@ -80,9 +81,11 @@ public class NameRegistrarTest {
         assertThat(value, is("testValue1"));
     }
 
-    @Test(expected = NameRegistrar.NotFoundException.class)
+    @Test
     public void testGetThrowsNotFoundException() throws Throwable {
-        NameRegistrar.get("NonexistentKey");
+        assertThrows(NameRegistrar.NotFoundException.class, () -> {
+            NameRegistrar.get("NonexistentKey");
+        });
     }
 
     @Test
@@ -97,12 +100,14 @@ public class NameRegistrarTest {
         assertThat(value, is(nullValue()));
     }
 
-    @Test(expected = NameRegistrar.NotFoundException.class)
+    @Test
     public void testUnregister() throws Exception {
-        NameRegistrar.register("test3", "someTest3Value");
-        assertThat(NameRegistrar.get("test3"), is("someTest3Value"));
-        NameRegistrar.unregister("test3");
-        NameRegistrar.get("test3");
+        assertThrows(NameRegistrar.NotFoundException.class, () -> {
+            NameRegistrar.register("test3", "someTest3Value");
+            assertThat(NameRegistrar.get("test3"), is("someTest3Value"));
+            NameRegistrar.unregister("test3");
+            NameRegistrar.get("test3");
+        });
     }
 
     @Test
@@ -113,6 +118,6 @@ public class NameRegistrarTest {
     @Test
     public void testNotFoundExceptionConstructor1() throws Throwable {
         NameRegistrar.NotFoundException notFoundException = new NameRegistrar.NotFoundException("testNotFoundExceptionDetail");
-        assertEquals("notFoundException.getMessage()", "testNotFoundExceptionDetail", notFoundException.getMessage());
+        assertEquals("testNotFoundExceptionDetail", notFoundException.getMessage(), "notFoundException.getMessage()");
     }
 }

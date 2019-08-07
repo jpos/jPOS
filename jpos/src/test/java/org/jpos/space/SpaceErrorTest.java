@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,11 @@
 
 package org.jpos.space;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SpaceErrorTest {
 
@@ -30,27 +30,27 @@ public class SpaceErrorTest {
     public void testConstructor() throws Throwable {
         Throwable cause = new UnknownError();
         SpaceError spaceError = new SpaceError("testSpaceErrorMessage", cause);
-        assertEquals("spaceError.getMessage()", "testSpaceErrorMessage", spaceError.getMessage());
-        assertSame("spaceError.getCause()", cause, spaceError.getCause());
+        assertEquals("testSpaceErrorMessage", spaceError.getMessage(), "spaceError.getMessage()");
+        assertSame(cause, spaceError.getCause(), "spaceError.getCause()");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         Throwable cause = new SpaceError("testSpaceErrorMessage");
         SpaceError spaceError = new SpaceError(cause);
-        assertEquals("spaceError.getMessage()", "org.jpos.space.SpaceError: testSpaceErrorMessage", spaceError.getMessage());
-        assertSame("spaceError.getCause()", cause, spaceError.getCause());
+        assertEquals("org.jpos.space.SpaceError: testSpaceErrorMessage", spaceError.getMessage(), "spaceError.getMessage()");
+        assertSame(cause, spaceError.getCause(), "spaceError.getCause()");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         SpaceError spaceError = new SpaceError("testSpaceErrorMessage");
-        assertEquals("spaceError.getMessage()", "testSpaceErrorMessage", spaceError.getMessage());
+        assertEquals("testSpaceErrorMessage", spaceError.getMessage(), "spaceError.getMessage()");
     }
 
     @Test
     public void testConstructor3() throws Throwable {
         new SpaceError();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 }

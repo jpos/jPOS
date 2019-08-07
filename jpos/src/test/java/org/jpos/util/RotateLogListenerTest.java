@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,18 +19,21 @@
 package org.jpos.util;
 
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.Properties;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class RotateLogListenerTest {
 
@@ -40,105 +43,85 @@ public class RotateLogListenerTest {
     public void testCheckSizeThrowsNullPointerException() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
         try {
-            rotateLogListener.checkSize();
+            rotateLogListener.openLogFile();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("rotateLogListener.f", rotateLogListener.f);
-            assertNotNull("rotateLogListener.p", rotateLogListener.p);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(rotateLogListener.f, "rotateLogListener.f");
+            assertNotNull(rotateLogListener.p, "rotateLogListener.p");
         }
     }
 
     @Test
-    @Ignore ("test causes problems, closes stdout")
+    @Disabled("test causes problems, closes stdout")
     public void testCloseLogFile() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
         rotateLogListener.closeLogFile();
-        assertNull("rotateLogListener.f", rotateLogListener.f);
+        assertNull(rotateLogListener.f, "rotateLogListener.f");
     }
 
     @Test
     public void testConstructor() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
-        assertNotNull("rotateLogListener.p", rotateLogListener.p);
-    }
-
-    @Test
-    public void testConstructorThrowsNullPointerException() throws Throwable {
-        try {
-            new RotateLogListener(null, 100, 1000, 100L);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            // xpected
-        }
-    }
-
-    @Test
-    public void testConstructorThrowsNullPointerException1() throws Throwable {
-        try {
-            new RotateLogListener(null, 100, 1000);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        assertNotNull(rotateLogListener.p, "rotateLogListener.p");
     }
 
     @Test
     public void testDestroy() throws Throwable {
         RotateLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.destroy();
-        assertNull("(DailyLogListener) dailyLogListener.f", ((DailyLogListener) dailyLogListener).f);
+        assertNull(((DailyLogListener) dailyLogListener).f, "(DailyLogListener) dailyLogListener.f");
     }
 
     @Test
-    @Ignore ("test causes problems, closes stdout")
+    @Disabled("test causes problems, closes stdout")
     public void testLog() throws Throwable {
         RotateLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.close();
         LogEvent ev = new LogEvent();
         LogEvent result = dailyLogListener.log(ev);
-        assertSame("result", ev, result);
-        assertNull("(DailyLogListener) dailyLogListener.p", ((DailyLogListener) dailyLogListener).p);
-        assertEquals("(DailyLogListener) dailyLogListener.msgCount", 1, ((DailyLogListener) dailyLogListener).msgCount);
+        assertSame(ev, result, "result");
+        assertNull(((DailyLogListener) dailyLogListener).p, "(DailyLogListener) dailyLogListener.p");
+        assertEquals(1, ((DailyLogListener) dailyLogListener).msgCount, "(DailyLogListener) dailyLogListener.msgCount");
     }
 
     @Test
-    @Ignore ("test causes problems, closes stdout")
+    @Disabled("test causes problems, closes stdout")
     public void testLog1() throws Throwable {
         RotateLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.close();
         LogEvent result = dailyLogListener.log(null);
-        assertNull("result", result);
-        assertNull("(DailyLogListener) dailyLogListener.p", ((DailyLogListener) dailyLogListener).p);
-        assertEquals("(DailyLogListener) dailyLogListener.msgCount", 1, ((DailyLogListener) dailyLogListener).msgCount);
+        assertNull(result, "result");
+        assertNull(((DailyLogListener) dailyLogListener).p, "(DailyLogListener) dailyLogListener.p");
+        assertEquals(1, ((DailyLogListener) dailyLogListener).msgCount, "(DailyLogListener) dailyLogListener.msgCount");
     }
 
     @Test
     public void testLogDebug() throws Throwable {
         RotateLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.logDebug("testRotateLogListenerMsg");
-        assertNotNull("(DailyLogListener) dailyLogListener.p", ((DailyLogListener) dailyLogListener).p);
+        assertNotNull(((DailyLogListener) dailyLogListener).p, "(DailyLogListener) dailyLogListener.p");
     }
 
     @Test
-    @Ignore ("test causes problems, closes stdout")
+    @Disabled("test causes problems, closes stdout")
     public void testLogDebug1() throws Throwable {
         RotateLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.close();
         dailyLogListener.logDebug("testRotateLogListenerMsg");
-        assertNull("(DailyLogListener) dailyLogListener.p", ((DailyLogListener) dailyLogListener).p);
+        assertNull(((DailyLogListener) dailyLogListener).p, "(DailyLogListener) dailyLogListener.p");
     }
 
     @Test
-    @Ignore ("test causes problems, closes stdout")
+    @Disabled("test causes problems, closes stdout")
     public void testLogRotateThrowsNullPointerException() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
         try {
             rotateLogListener.logRotate();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("rotateLogListener.f", rotateLogListener.f);
-            assertNull("rotateLogListener.p", rotateLogListener.p);
+            assertNull(rotateLogListener.f, "rotateLogListener.f");
+            assertNull(rotateLogListener.p, "rotateLogListener.p");
         }
     }
 
@@ -149,15 +132,15 @@ public class RotateLogListenerTest {
             dailyLogListener.openLogFile();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("(DailyLogListener) dailyLogListener.f", ((DailyLogListener) dailyLogListener).f);
-            assertNotNull("(DailyLogListener) dailyLogListener.p", ((DailyLogListener) dailyLogListener).p);
+            assertNull(((DailyLogListener) dailyLogListener).f, "(DailyLogListener) dailyLogListener.f");
+            assertNotNull(((DailyLogListener) dailyLogListener).p, "(DailyLogListener) dailyLogListener.p");
         }
     }
 
     @Test
     public void testRotateConstructor() throws Throwable {
         new RotateLogListener().new Rotate();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -168,14 +151,14 @@ public class RotateLogListenerTest {
             rotateLogListener.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("rotateLogListener.logName", rotateLogListener.logName);
-            assertEquals("rotateLogListener.sleepTime", 0L, rotateLogListener.sleepTime);
-            assertEquals("rotateLogListener.maxSize", 0L, rotateLogListener.maxSize);
-            assertEquals("rotateLogListener.maxCopies", 0, rotateLogListener.maxCopies);
-            assertNull("rotateLogListener.rotate", rotateLogListener.rotate);
-            assertNull("rotateLogListener.f", rotateLogListener.f);
-            assertNotNull("rotateLogListener.p", rotateLogListener.p);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(rotateLogListener.logName, "rotateLogListener.logName");
+            assertEquals(0L, rotateLogListener.sleepTime, "rotateLogListener.sleepTime");
+            assertEquals(0L, rotateLogListener.maxSize, "rotateLogListener.maxSize");
+            assertEquals(0, rotateLogListener.maxCopies, "rotateLogListener.maxCopies");
+            assertNull(rotateLogListener.rotate, "rotateLogListener.rotate");
+            assertNull(rotateLogListener.f, "rotateLogListener.f");
+            assertNotNull(rotateLogListener.p, "rotateLogListener.p");
         }
     }
 
@@ -193,16 +176,16 @@ public class RotateLogListenerTest {
         listener.log(new LogEvent("Message 2"));
 
         String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
-        assertFalse("Current log file should not contain the first message", currentLogFileContents.contains("Message 1"));
-        assertTrue("Current log file should contain the second message", currentLogFileContents.contains("Message 2"));
-        assertTrue("Logger element should have been opened in the current file", currentLogFileContents.contains("<logger "));
-        assertFalse("Logger element should not have been closed in the current file", currentLogFileContents.contains("</logger>"));
+        assertFalse(currentLogFileContents.contains("Message 1"), "Current log file should not contain the first message");
+        assertTrue(currentLogFileContents.contains("Message 2"), "Current log file should contain the second message");
+        assertTrue(currentLogFileContents.contains("<logger "), "Logger element should have been opened in the current file");
+        assertFalse(currentLogFileContents.contains("</logger>"), "Logger element should not have been closed in the current file");
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        assertTrue("Archived log file should contain the first message", archivedLogFile1Contents.contains("Message 1"));
-        assertFalse("Archived log file should not contain the second message", archivedLogFile1Contents.contains("Message 2"));
-        assertTrue("Logger element should have been opened in the archived file", archivedLogFile1Contents.contains("<logger "));
-        assertTrue("Logger element should have been closed in the archived file", archivedLogFile1Contents.contains("</logger>"));
+        assertTrue(archivedLogFile1Contents.contains("Message 1"), "Archived log file should contain the first message");
+        assertFalse(archivedLogFile1Contents.contains("Message 2"), "Archived log file should not contain the second message");
+        assertTrue(archivedLogFile1Contents.contains("<logger "), "Logger element should have been opened in the archived file");
+        assertTrue(archivedLogFile1Contents.contains("</logger>"), "Logger element should have been closed in the archived file");
 
         // when: another rotation is executed
         listener.logRotate();
@@ -211,30 +194,30 @@ public class RotateLogListenerTest {
         listener.log(new LogEvent("Message 3"));
 
         currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
-        assertFalse("Current log file should not contain the first message", currentLogFileContents.contains("Message 1"));
-        assertFalse("Current log file should not contain the second message", currentLogFileContents.contains("Message 2"));
-        assertTrue("Current log file should contain the third message", currentLogFileContents.contains("Message 3"));
-        assertTrue("Logger element should have been opened in the current file", currentLogFileContents.contains("<logger "));
-        assertFalse("Logger element should not have been closed in the current file", currentLogFileContents.contains("</logger>"));
+        assertFalse(currentLogFileContents.contains("Message 1"), "Current log file should not contain the first message");
+        assertFalse(currentLogFileContents.contains("Message 2"), "Current log file should not contain the second message");
+        assertTrue(currentLogFileContents.contains("Message 3"), "Current log file should contain the third message");
+        assertTrue(currentLogFileContents.contains("<logger "), "Logger element should have been opened in the current file");
+        assertFalse(currentLogFileContents.contains("</logger>"), "Logger element should not have been closed in the current file");
 
         archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        assertTrue("Archived log file should contain the second message", archivedLogFile1Contents.contains("Message 2"));
-        assertFalse("Archived log file should not contain the third message", archivedLogFile1Contents.contains("Message 3"));
-        assertTrue("Logger element should have been opened in the archived file", archivedLogFile1Contents.contains("<logger "));
-        assertTrue("Logger element should have been closed in the archived file", archivedLogFile1Contents.contains("</logger>"));
+        assertTrue(archivedLogFile1Contents.contains("Message 2"), "Archived log file should contain the second message");
+        assertFalse(archivedLogFile1Contents.contains("Message 3"), "Archived log file should not contain the third message");
+        assertTrue(archivedLogFile1Contents.contains("<logger "), "Logger element should have been opened in the archived file");
+        assertTrue(archivedLogFile1Contents.contains("</logger>"), "Logger element should have been closed in the archived file");
 
         String archivedLogFile2Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".2"));
-        assertTrue("Archived log file should contain the first message", archivedLogFile2Contents.contains("Message 1"));
-        assertTrue("Logger element should have been opened in the archived file", archivedLogFile2Contents.contains("<logger "));
-        assertTrue("Logger element should have been closed in the archived file", archivedLogFile2Contents.contains("</logger>"));
+        assertTrue(archivedLogFile2Contents.contains("Message 1"), "Archived log file should contain the first message");
+        assertTrue(archivedLogFile2Contents.contains("<logger "), "Logger element should have been opened in the archived file");
+        assertTrue(archivedLogFile2Contents.contains("</logger>"), "Logger element should have been closed in the archived file");
 
     }
 
     @Test
-    @Ignore("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
+    @Disabled("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
     public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
         String logFileName = "RotateAbortsTestLog";
-        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName);
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, null);
 
         listener.log(new LogEvent("Message 1"));
 
@@ -248,26 +231,83 @@ public class RotateLogListenerTest {
 
         String logFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
         System.out.println("logFileContents = " + logFileContents);
-        assertTrue("Log file should contain first message", logFileContents.contains("Message 1"));
-        assertTrue("Log file should contain second message", logFileContents.contains("Message 2"));
-        assertFalse("Logger element should not have been closed", logFileContents.contains("</logger>"));
+        assertTrue(logFileContents.contains("Message 1"), "Log file should contain first message");
+        assertTrue(logFileContents.contains("Message 2"), "Log file should contain second message");
+        assertFalse(logFileContents.contains("</logger>"), "Logger element should not have been closed");
 
         File archiveFile = logRotationTestDirectory.getFile(logFileName + ".1");
-        assertFalse("Archive file should not exist", archiveFile.exists());
+        assertFalse(archiveFile.exists(), "Archive file should not exist");
+    }
+
+    @Test
+    public void testNoFileNamePatternThenNoReplacement() throws ConfigurationException {
+        String logFileName = "%s-important-log";
+        Properties config = new Properties();
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
+        assertEquals(
+                logRotationTestDirectory.getDirectory().getAbsolutePath() + "/%s-important-log",
+                listener.logName);
+    }
+
+    @Test
+    public void testEmptyFileNamePatternThenNoReplacement() throws ConfigurationException {
+        String logFileName = "%s-important-log";
+        Properties config = new Properties();
+        config.setProperty("file-name-pattern", "");
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
+        assertEquals(
+                logRotationTestDirectory.getDirectory().getAbsolutePath() + "/%s-important-log",
+                listener.logName);
+    }
+
+    @Test
+    public void testFileNamePatternHostNameReplacement() throws ConfigurationException {
+        String hostname;
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            hostname = "#h";
+        }
+        String logFileName = "%s-important-log";
+        Properties config = new Properties();
+        config.setProperty("file-name-pattern", "h");
+
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
+        assertEquals(
+                logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + hostname + "-important-log",
+                listener.logName);
+    }
+
+    @Test
+    public void testEnvironmentCodeParsing() {
+        Map<String, String> env = System.getenv();
+        RotateLogListener listener = new RotateLogListener();
+        Map.Entry<String, String> entry = env.entrySet().iterator().next();
+        String replaced = listener.fileNameFromPattern("%s-log", "e{" + entry.getKey() + "}");
+        assertEquals(entry.getValue() + "-log", replaced);
     }
 
     private RotateLogListener createRotateLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
+        return createRotateLogListenerWithIsoDateFormat(logFileName, null);
+    }
+
+    private RotateLogListener createRotateLogListenerWithIsoDateFormat(
+            String logFileName,
+            Properties customConfig) throws ConfigurationException {
         RotateLogListener listener = new RotateLogListener();
         Properties configuration = new Properties();
         configuration.setProperty("file", logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + logFileName);
         configuration.setProperty("copies", "10");
         configuration.setProperty("maxsize", "1000000");
+        if (customConfig != null) {
+            configuration.putAll(customConfig);
+        }
         logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
         return listener;
     }
 
-    @After
+    @AfterEach
     public void cleanupLogRotateAbortsTestDir() {
         logRotationTestDirectory.delete();
     }

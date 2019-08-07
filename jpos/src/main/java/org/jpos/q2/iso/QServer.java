@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,8 @@ import org.jpos.util.ThreadPool;
 
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * ISO Server wrapper.
  *
@@ -63,7 +65,7 @@ public class QServer
     private String inQueue;
     private String outQueue;
     private String sendMethod;
-
+    AtomicInteger msgn = new AtomicInteger();
     public QServer () {
         super ();
     }
@@ -275,7 +277,8 @@ public class QServer
         Element serverSocketFactoryElement = persist.getChild ("server-socket-factory");
 
         if (serverSocketFactoryElement != null) {
-            ISOServerSocketFactory serverSocketFactory = (ISOServerSocketFactory) factory.newInstance (serverSocketFactoryElement.getAttributeValue ("class"));
+            ISOServerSocketFactory serverSocketFactory = (ISOServerSocketFactory) factory.newInstance (
+                QFactory.getAttributeValue (serverSocketFactoryElement, "class"));
             factory.setLogger        (serverSocketFactory, serverSocketFactoryElement);
             factory.setConfiguration (serverSocketFactory, serverSocketFactoryElement);
             server.setSocketFactory(serverSocketFactory);
@@ -293,7 +296,7 @@ public class QServer
         while (iter.hasNext()) {
             Element l = (Element) iter.next();
             ISORequestListener listener = (ISORequestListener)
-                factory.newInstance (l.getAttributeValue ("class"));
+                factory.newInstance (QFactory.getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
             server.addISORequestListener (listener);
@@ -311,7 +314,7 @@ public class QServer
         while (iter.hasNext()) {
             Element l = (Element) iter.next();
             ISOServerEventListener listener = (ISOServerEventListener)
-                factory.newInstance (l.getAttributeValue ("class"));
+                factory.newInstance (QFactory.getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
             server.addServerEventListener(listener);
@@ -370,6 +373,31 @@ public class QServer
                         } catch (Exception e) {
                             getLog().warn("notify", e);
                         }
+                    }
+                }
+            }
+            else if ("RR".equals(sendMethod)) {
+                String channelNames = getISOChannelNames();
+                int i =0;
+                String[] channelName;
+                if (channelNames != null) {
+                    StringTokenizer tok = new StringTokenizer(channelNames, " ");
+                    channelName = new String[tok.countTokens()];
+                    while (tok.hasMoreTokens()) {
+                        channelName[i] = tok.nextToken();
+                        i++;
+                    }
+                    try {
+                        ISOChannel c = server.getISOChannel(channelName[msgn.incrementAndGet() % channelName.length]);
+                        if (c == null) {
+                            throw new ISOException("Server has no active connections");
+                        }
+                        if (!c.isConnected()) {
+                            throw new ISOException("Client disconnected");
+                        }
+                        c.send(m);
+                    } catch (Exception e) {
+                        getLog().warn("notify", e);
                     }
                 }
             }

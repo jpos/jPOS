@@ -43,7 +43,7 @@ public class Docbook extends DefaultTask
     File stylesheet;
 
     @Input
-    Map<String, Object> parameters = new HashMap<String>();
+    Map<String, Object> parameters = new HashMap<String,Object>();
 
     @OutputDirectory
     File docsDir = new File(project.getBuildDir(), "reference");

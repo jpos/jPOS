@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd `dirname $0`/.. || exit 1
+cd $(dirname $0)/.. || exit 1
 rm -f deploy/shutdown.xml
 
 if [ -f jpos.pid ] && ps -p $(cat jpos.pid) > /dev/null 2>&1

@@ -97,7 +97,8 @@ the +ChannelAdaptor+. These names (+in/out+) are seen from +QServer's+
 perspective. Because a QServer can accept multiple simultaneous connections in
 different sockets, an outgoing message needs to select which socket to use. When using
 this +in/out+ communication queues, QServer selects the latest
-socket (using the +ISOServer.getLastConnectedISOChannel()+ method
+socket (using the +ISOServer.getLastConnectedISOChannel())+ method. It is also possible to use
++send-request+ property to send messages to all connected clients in round-robin fashion.
 (see link:http://jpos.org/doc/javadoc/org/jpos/q2/iso/QServer.html[QServer]).
 
 The configuration looks like this:
@@ -111,6 +112,8 @@ The configuration looks like this:
   <in>your-server-receive</in>
   <out>your-server-send</out>
   <ready>your-server.ready</ready>
+  <!--<send-request>LAST</send-request>--> <!--default last connected -->
+  <send-request>RR</send-request> <!-- round-robin -->
 </qserver>
 ------------
 

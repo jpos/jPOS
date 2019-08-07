@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,41 +18,41 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NullPadderTest {
 
     @Test
     public void testConstructor() throws Throwable {
         new NullPadder();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testPad() throws Throwable {
         String result = NullPadder.INSTANCE.pad("testNullPadderData", 100);
-        assertEquals("result", "testNullPadderData", result);
+        assertEquals("testNullPadderData", result, "result");
     }
 
     @Test
     public void testPad1() throws Throwable {
         String result = new NullPadder().pad(null, 100);
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testUnpad() throws Throwable {
         String result = new NullPadder().unpad(null);
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testUnpad1() throws Throwable {
         String result = new NullPadder().unpad("testNullPadderPaddedData");
-        assertEquals("result", "testNullPadderPaddedData", result);
+        assertEquals("testNullPadderPaddedData", result, "result");
     }
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,19 +18,19 @@
 
 package org.jpos.q2.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.q2.Q2;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TaskAdaptorTest {
     @Mock
     Q2 q2;
@@ -38,15 +38,15 @@ public class TaskAdaptorTest {
     @Test
     public void testConstructor() throws Throwable {
         TaskAdaptor taskAdaptor = new TaskAdaptor();
-        assertEquals("taskAdaptor.getLog().getRealm()", "org.jpos.q2.iso.TaskAdaptor", taskAdaptor.getLog().getRealm());
-        assertEquals("taskAdaptor.getState()", -1, taskAdaptor.getState());
-        assertTrue("taskAdaptor.isModified()", taskAdaptor.isModified());
+        assertEquals("org.jpos.q2.iso.TaskAdaptor", taskAdaptor.getLog().getRealm(), "taskAdaptor.getLog().getRealm()");
+        assertEquals(-1, taskAdaptor.getState(), "taskAdaptor.getState()");
+        assertTrue(taskAdaptor.isModified(), "taskAdaptor.isModified()");
     }
 
     @Test
     public void testGetObject() throws Throwable {
         Object result = new TaskAdaptor().getObject();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -56,9 +56,9 @@ public class TaskAdaptorTest {
             taskAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("taskAdaptor.task", taskAdaptor.task);
-            assertTrue("taskAdaptor.isModified()", taskAdaptor.isModified());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(taskAdaptor.task, "taskAdaptor.task");
+            assertTrue(taskAdaptor.isModified(), "taskAdaptor.isModified()");
         }
     }
 
@@ -71,9 +71,9 @@ public class TaskAdaptorTest {
             taskAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("taskAdaptor.task", taskAdaptor.task);
-            assertFalse("taskAdaptor.isModified()", taskAdaptor.isModified());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(taskAdaptor.task, "taskAdaptor.task");
+            assertFalse(taskAdaptor.isModified(), "taskAdaptor.isModified()");
         }
     }
 
@@ -84,8 +84,8 @@ public class TaskAdaptorTest {
             taskAdaptor.startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertTrue("taskAdaptor.isModified()", taskAdaptor.isModified());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertTrue(taskAdaptor.isModified(), "taskAdaptor.isModified()");
         }
     }
 
@@ -94,8 +94,8 @@ public class TaskAdaptorTest {
         TaskAdaptor taskAdaptor = new TaskAdaptor();
         taskAdaptor.setName("testTaskAdaptorName");
         taskAdaptor.stopService();
-        assertNull("taskAdaptor.task", taskAdaptor.task);
-        assertEquals("taskAdaptor.getName()", "testTaskAdaptorName", taskAdaptor.getName());
+        assertNull(taskAdaptor.task, "taskAdaptor.task");
+        assertEquals("testTaskAdaptorName", taskAdaptor.getName(), "taskAdaptor.getName()");
     }
 
 }

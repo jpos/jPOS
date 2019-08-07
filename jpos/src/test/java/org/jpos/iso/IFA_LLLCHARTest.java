@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,15 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IFA_LLLCHARTest extends TestCase
-{
+public class IFA_LLLCHARTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(12, "ABCD");
@@ -32,6 +34,7 @@ public class IFA_LLLCHARTest extends TestCase
         TestUtils.assertEquals("004ABCD".getBytes(), packager.pack(field));
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = "004ABCD".getBytes();
@@ -41,6 +44,7 @@ public class IFA_LLLCHARTest extends TestCase
         assertEquals("ABCD", (String) field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         String origin = "Abc123:.-";

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jpos.core.Environment;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.install.ModuleUtils;
@@ -109,7 +110,7 @@ public class Q2 implements FileFilter, Runnable {
     private Log log;
     private volatile boolean started;
     private CountDownLatch ready = new CountDownLatch(1);
-    private volatile boolean shutdown;
+    private CountDownLatch shutdown = new CountDownLatch(1);
     private volatile boolean shuttingDown;
     private volatile Thread q2Thread;
     private String[] args;
@@ -128,12 +129,15 @@ public class Q2 implements FileFilter, Runnable {
     private long lastVersionLog;
     private String watchServiceClassname;
     private boolean enableSsh;
+    private boolean disableDeployScan;
+    private boolean disableDynamicClassloader;
     private int sshPort;
     private String sshAuthorizedKeys;
     private String sshUser;
     private String sshHostKeyFile;
     private static String DEPLOY_PREFIX = "META-INF/q2/deploy/";
     private static String CFG_PREFIX = "META-INF/q2/cfg/";
+    private String nameRegistrarKey;
     
     public Q2 (String[] args, BundleContext bundleContext) {
         super();
@@ -166,7 +170,7 @@ public class Q2 implements FileFilter, Runnable {
         this(args, null);
     }
     public void start () {
-        if (shutdown)
+        if (shutdown.getCount() == 0)
             throw new IllegalStateException("Q2 has been stopped");
         new Thread (this).start();
     }
@@ -239,8 +243,12 @@ public class Q2 implements FileFilter, Runnable {
             }
 
             deployInternal();
-            for (int i = 1; !shutdown; i++) {
+            for (int i = 1; shutdown.getCount() > 0; i++) {
                 try {
+                    if (i > 1 && disableDeployScan) {
+                        shutdown.await();
+                        break;
+                    }
                     boolean forceNewClassLoader = scan() && i > 1;
                     QClassLoader oldClassLoader = loader;
                     loader = loader.scan(forceNewClassLoader);
@@ -270,7 +278,8 @@ public class Q2 implements FileFilter, Runnable {
             }
             undeploy();
             try {
-                server.unregisterMBean(loaderName);
+                if (server.isRegistered(loaderName))
+                    server.unregisterMBean(loaderName);
             } catch (InstanceNotFoundException e) {
                 log.error(e);
             }
@@ -293,10 +302,10 @@ public class Q2 implements FileFilter, Runnable {
         shutdown(false);
     }
     public boolean running() {
-        return started && !shutdown;
+        return started && shutdown.getCount() > 0;
     }
     public boolean ready() {
-        return ready.getCount() == 0 && !shutdown;
+        return ready.getCount() == 0 && shutdown.getCount() > 0;
     }
     public boolean ready (long millis) {
         try {
@@ -305,7 +314,8 @@ public class Q2 implements FileFilter, Runnable {
         return ready();
     }
     public void shutdown (boolean join) {
-        shutdown = true;
+        shutdown.countDown();
+        unregisterQ2();
         if (q2Thread != null) {
             log.info ("shutting down");
             q2Thread.interrupt ();
@@ -378,7 +388,7 @@ public class Q2 implements FileFilter, Runnable {
         Iterator<Map.Entry<File,QEntry>> iter = dirMap.entrySet().iterator();
 
         try {
-            while (iter.hasNext() && !shutdown) {
+            while (iter.hasNext() && shutdown.getCount() > 0) {
                 Map.Entry<File,QEntry> entry = iter.next();
                 File   f        = entry.getKey ();
                 QEntry qentry   = entry.getValue ();
@@ -428,7 +438,7 @@ public class Q2 implements FileFilter, Runnable {
             new Thread ("Q2-ShutdownHook") {
                 public void run () {
                     shuttingDown = true;
-                    shutdown = true;
+                    shutdown.countDown();
                     if (q2Thread != null) {
                         log.info ("shutting down (hook)");
                         try {
@@ -572,7 +582,10 @@ public class Q2 implements FileFilter, Runnable {
                 }
             }
             String enabledAttribute = rootElement.getAttributeValue("enabled", "true");
-            if ("true".equalsIgnoreCase(enabledAttribute) || "yes".equalsIgnoreCase(enabledAttribute)) {
+            if ("true".equalsIgnoreCase(enabledAttribute) ||
+                 "yes".equalsIgnoreCase(enabledAttribute) ||
+                enabledAttribute.contains(Environment.getEnvironment().getName()))
+            {
                 if (evt != null)
                     evt.addMessage("deploy: " + f.getCanonicalPath());
                 Object obj = factory.instantiate (this, rootElement);
@@ -628,7 +641,7 @@ public class Q2 implements FileFilter, Runnable {
     }
     public void relax (long sleep) {
         try {
-            Thread.sleep (sleep);
+            shutdown.await(sleep, TimeUnit.MILLISECONDS);
         } catch (InterruptedException ignored) { }
     }
     public void relax () {
@@ -645,7 +658,11 @@ public class Q2 implements FileFilter, Runnable {
                 getLog().warn ("init-system-logger", e);
             }
         }
-        getLog().info("Q2 started, deployDir=" + deployDir.getAbsolutePath());
+        Environment env = Environment.getEnvironment();
+        getLog().info("Q2 started, deployDir=" + deployDir.getAbsolutePath() + ", environment=" + env.getName());
+        if (env.getErrorString() != null)
+            getLog().error(env.getErrorString());
+
     }
     public Log getLog () {
         if (log == null) {
@@ -672,19 +689,24 @@ public class Q2 implements FileFilter, Runnable {
         String appVersionString = getAppVersionString();
         int l = PGPHelper.checkLicense();
         String sl = l > 0 ? " " + Integer.toString(l,16) : "";
-        String vs = null;
+        StringBuilder vs = new StringBuilder();
         if (appVersionString != null) {
-            vs = String.format ("jPOS %s %s/%s%s (%s)%n%s%s",
+            vs.append(
+              String.format ("jPOS %s %s/%s%s (%s)%n%s%s",
                 getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), appVersionString, getLicensee()
+              )
             );
         } else {
-            vs = String.format("jPOS %s %s/%s%s (%s) %s",
+            vs.append(
+              String.format("jPOS %s %s/%s%s (%s) %s",
                     getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), getLicensee()
+              )
             );
         }
 //        if ((l & 0xE0000) > 0)
 //            throw new IllegalAccessError(vs);
-        return vs;
+
+        return vs.toString();
     }
 
     private static String getLicensee() {
@@ -712,10 +734,13 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("p", "pid-file", true, "Store project's pid");
         options.addOption ("n", "name", true, "Optional name (defaults to 'Q2')");
         options.addOption ("s", "ssh", false, "Enable SSH server");
-        options.addOption ("sp", "ssh-port", true, "ssh port (defaults to 2222)");
+        options.addOption ("sp", "ssh-port", true, "SSH port (defaults to 2222)");
         options.addOption ("sa", "ssh-authorized-keys", true, "Path to authorized key file (defaults to 'cfg/authorized_keys')");
-        options.addOption ("su", "ssh-user", true, "ssh user (defaults to 'admin')");
-        options.addOption ("sh", "ssh-host-key-file", true, "ssh host key file, defaults to 'cfg/hostkeys.ser'");
+        options.addOption ("su", "ssh-user", true, "SSH user (defaults to 'admin')");
+        options.addOption ("sh", "ssh-host-key-file", true, "SSH host key file, defaults to 'cfg/hostkeys.ser'");
+        options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
+        options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
+        options.addOption ("E", "environment", true, "Environment name");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -750,6 +775,12 @@ public class Q2 implements FileFilter, Runnable {
                 pidFile = line.getOptionValue("p");
             if (line.hasOption("n"))
                 name = line.getOptionValue("n");
+            if (line.hasOption("E")) {
+                System.setProperty("jpos.env", line.getOptionValue("E"));
+                Environment.getEnvironment();
+            }
+            disableDeployScan = line.hasOption("Ns");
+            disableDynamicClassloader = line.hasOption("Nd");
             enableSsh = line.hasOption("s");
             sshPort = Integer.parseInt(line.getOptionValue("sp", "2222"));
             sshAuthorizedKeys = line.getOptionValue ("sa", "cfg/authorized_keys");
@@ -817,7 +848,7 @@ public class Q2 implements FileFilter, Runnable {
     protected byte[] getKey() {
         return
           ISOUtil.xor(SystemSeed.getSeed(8, 8),
-          ISOUtil.hex2byte("BD653F60F980F788"));
+          ISOUtil.hex2byte(System.getProperty("jpos.deploy.key", "BD653F60F980F788")));
     }
     protected Document encrypt (Document doc)
         throws GeneralSecurityException, IOException
@@ -955,13 +986,13 @@ public class Q2 implements FileFilter, Runnable {
     }
     private void logVersion () {
         long now = System.currentTimeMillis();
-        if (now - lastVersionLog > 3600000L) {
+        if (now - lastVersionLog > 86400000L) {
             LogEvent evt = getLog().createLogEvent("version");
             evt.addMessage(getVersionString());
             Logger.log(evt);
             lastVersionLog = now;
-            while ((PGPHelper.checkLicense() & 0xE0000) != 0)
-                relax();
+            while (running() && (PGPHelper.checkLicense() & 0xF0000) != 0)
+                relax(60000L);
         }
     }
     private void setExit (boolean exit) {
@@ -1008,6 +1039,9 @@ public class Q2 implements FileFilter, Runnable {
         } catch (MissingResourceException ignored) {
             return null;
         }
+    }
+    public boolean isDisableDynamicClassloader() {
+        return disableDynamicClassloader;
     }
     public static class QEntry {
         long deployed;
@@ -1100,6 +1134,11 @@ public class Q2 implements FileFilter, Runnable {
                 );
                 return false; // deploy directory no longer valid
             }
+            try {
+                Environment.reload();
+            } catch (IOException e) {
+                getLog().warn(e);
+            }
         }
         return true;
     }
@@ -1110,10 +1149,21 @@ public class Q2 implements FileFilter, Runnable {
                 String key = name + (i > 0 ? "-" + i : "");
                 if (NameRegistrar.getIfExists(key) == null) {
                     NameRegistrar.register(key, this);
+                    this.nameRegistrarKey = key;
                     break;
                 }
             }
         }
+    }
+
+    private void unregisterQ2() {
+        synchronized (Q2.class) {
+            if (nameRegistrarKey != null) {
+                NameRegistrar.unregister(nameRegistrarKey);
+                nameRegistrarKey = null;
+            }
+        }
+
     }
 
     private void deployInternal() throws IOException, JDOMException, SAXException, ISOException, GeneralSecurityException {

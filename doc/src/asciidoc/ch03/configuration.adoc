@@ -88,3 +88,16 @@ where one can call handy methods like  +String\[\] getAll(String)+.
 throw a +ConfigurationException+ in case a required property is not present or 
 is invalid. 
 
+[TIP]
+=====
+SimpleConfiguration recognizes and de-reference properties with the
+format: `${xxx}` and search for a system property, or operating system
+environment variable under the `xxx` name. 
+
+The format `$sys{xxx}` de-reference just from system properties, and
+`$env{xxx}` just from the operating system environment. 
+
+In the rare case where a value with the format `${...}` is required, the
+`$verb{${...}}` format (verbatim) can be used.
+=====
+

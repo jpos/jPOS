@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,18 +18,21 @@
 
 package org.jpos.transaction;
 
-import junit.framework.*;
 import org.jpos.q2.Q2;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unchecked")
-public class TransactionManagerTestCase extends TestCase {
+public class TransactionManagerTestCase {
     Q2 q2;
     Space sp;
     public static String QUEUE = "TXNMGRTEST";
     public static String QUEUE_EMPTY = "TXNMGRTEST.EMPTY";
 
+    @BeforeEach
     public void setUp () throws Exception {
         sp = SpaceFactory.getSpace("tspace:txnmgrtest");
         q2 = new Q2("build/resources/test/org/jpos/transaction");
@@ -48,12 +51,14 @@ public class TransactionManagerTestCase extends TestCase {
 //        ctx.put ("RETRY", Integer.valueOf(10), true);
 //        sp.out (QUEUE, ctx);
 //    }
+    @Test
     public void testEmptyTM() {
         Context ctx = new Context();
         ctx.put("volatile", "the quick brown empty fox");
         ctx.put("persistent", "jumped over the lazy empty dog", true);
         sp.out(QUEUE_EMPTY, ctx);
     }
+    @AfterEach
     public void tearDown() throws Exception {
         Thread.sleep (5000); // let the thing run
         q2.stop();

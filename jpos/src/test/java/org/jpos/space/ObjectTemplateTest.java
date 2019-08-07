@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,38 +18,38 @@
 
 package org.jpos.space;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ObjectTemplateTest {
     @Test
     public void testConstructor() throws Throwable {
         ObjectTemplate objectTemplate = new ObjectTemplate("", "");
-        assertEquals("objectTemplate.key", "", objectTemplate.key);
-        assertEquals("objectTemplate.value", "", objectTemplate.value);
+        assertEquals("", objectTemplate.key, "objectTemplate.key");
+        assertEquals("", objectTemplate.value, "objectTemplate.value");
     }
 
     @Test
     public void testGetKey() throws Throwable {
         Integer key = Integer.valueOf(0);
         Integer result = (Integer) new ObjectTemplate(key, Integer.valueOf(0)).getKey();
-        assertSame("result", key, result);
+        assertSame(key, result, "result");
     }
 
     @Test
     public void testGetKey1() throws Throwable {
         Integer key = Integer.valueOf(100);
         Integer result = (Integer) new ObjectTemplate(key, "2").getKey();
-        assertSame("result", key, result);
+        assertSame(key, result, "result");
     }
 
     @Test
     public void testGetKey2() throws Throwable {
         String result = (String) new ObjectTemplate("testString", "").getKey();
-        assertEquals("result", "testString", result);
+        assertEquals("testString", result, "result");
     }
 
     @Test
@@ -64,15 +64,15 @@ public class ObjectTemplateTest {
         String value = "someValue";
         ObjectTemplate objectTemplateA = new ObjectTemplate("key", value);
         ObjectTemplate objectTemplateB = new ObjectTemplate("key", value);
-        assertFalse("should only equals on the template value", objectTemplateA.equals(objectTemplateA));
-        assertFalse("should only equals on the template value", objectTemplateA.equals(objectTemplateB));
+        assertFalse(objectTemplateA.equals(objectTemplateA), "should only equals on the template value");
+        assertFalse(objectTemplateA.equals(objectTemplateB), "should only equals on the template value");
     }
 
     @Test
     public void testHaveHashCodeOfValue() {
         String value = "someValue";
         ObjectTemplate objectTemplate = new ObjectTemplate("key", value);
-        assertEquals("Should implement hashCode on the template value", objectTemplate.hashCode(), value.hashCode());
-        assertEquals("objectTemplate hashCode and value hashCode should be same", objectTemplate.hashCode(), value.hashCode());
+        assertEquals(objectTemplate.hashCode(), value.hashCode(), "Should implement hashCode on the template value");
+        assertEquals(objectTemplate.hashCode(), value.hashCode(), "objectTemplate hashCode and value hashCode should be same");
     }
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,12 +50,6 @@ public class SecureDESKey extends SecureVariantKey {
      * Regular expression pattern representing key type string value.
      */
     protected static final Pattern KEY_TYPE_PATTERN = Pattern.compile("([^:;]*)([:;])?([^:;])?([^:;])?");
-
-    /**
-     * The keyCheckValue allows identifying which clear key does this
-     * secure key represent.
-     */
-    protected byte[] keyCheckValue = null;
 
     public SecureDESKey() {
         super();
@@ -123,28 +117,6 @@ public class SecureDESKey extends SecureVariantKey {
     public SecureDESKey (short keyLength, String keyType, byte variant, KeyScheme scheme, String keyHexString,
             String keyCheckValueHexString) {
         this(keyLength, keyType, variant, scheme, ISOUtil.hex2byte(keyHexString), ISOUtil.hex2byte(keyCheckValueHexString));
-    }
-
-    /**
-     * The Key Check Value is typically a 24-bits (3 bytes) formed by encrypting a
-     * block of zeros under the secure key when the secure key is clear
-     * (not in this class, but inside the security module).
-     * This check value allows identifying if two secure keys map to the
-     * same clear key.
-     * @param keyCheckValue
-     */
-    public void setKeyCheckValue (byte[] keyCheckValue) {
-        this.keyCheckValue = keyCheckValue;
-    }
-
-    /**
-     * The Key Check Value is typically a 24-bits (3 bytes) formed by encrypting a
-     * block of zeros under the secure key when the secure key is clear
-     * (not in this class, but inside the security module).
-     * @return the keyCheckValue that was set before by setKeyCheckValue()
-     */
-    public byte[] getKeyCheckValue () {
-        return  keyCheckValue;
     }
 
     @Override

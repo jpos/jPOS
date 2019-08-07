@@ -35,6 +35,16 @@ transaction manager appropriately sets before calling a participant, but *never
 ever* in member variables.  
 ===========
 
+[TIP]
+=====
+Participants usually don't need a reference to their TransactionManager. 
+If required, the participant can implement a method:
+
+`setTransactionManager(TransactionManager tm)` 
+
+that will get called once at initialization time using reflection.
+=====
+
 === TM use of spaces
 
 The TransactionManager uses 3 different spaces for operation.

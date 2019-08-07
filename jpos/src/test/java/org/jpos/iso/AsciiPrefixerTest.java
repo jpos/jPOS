@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,16 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ASCII length Prefixer.
  * @author jonathan.oconnor@xcom
  */
-public class AsciiPrefixerTest extends TestCase
-{
+public class AsciiPrefixerTest {
+    @Test
     public void testEncode() throws Exception
     {
         byte[] b = new byte[2];
@@ -33,6 +35,7 @@ public class AsciiPrefixerTest extends TestCase
         TestUtils.assertEquals(new byte[]{0x32, 0x31}, b);
     }
 
+    @Test
     public void testEncodeShortLength() throws Exception
     {
         byte[] b = new byte[2];
@@ -40,12 +43,14 @@ public class AsciiPrefixerTest extends TestCase
         TestUtils.assertEquals(new byte[]{0x30, 0x33}, b);
     }
 
+    @Test
     public void testDecode() throws Exception
     {
         byte[] b = new byte[]{0x32, 0x35};
         assertEquals(25, AsciiPrefixer.LL.decodeLength(b, 0));
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         int len = 3;

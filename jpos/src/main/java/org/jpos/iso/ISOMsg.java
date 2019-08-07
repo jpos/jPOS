@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,7 +56,7 @@ public class ISOMsg extends ISOComponent
      * Creates an ISOMsg
      */
     public ISOMsg () {
-        fields = new TreeMap<Integer,Object>();
+        fields = new TreeMap<>();
         maxField = -1;
         dirty = true;
         maxFieldDirty=true;
@@ -254,7 +254,7 @@ public class ISOMsg extends ISOComponent
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
         for (;;) {
-            int fldno = Integer.parseInt(st.nextToken());
+            int fldno = parseInt(st.nextToken());
             if (st.hasMoreTokens()) {
                 Object obj = m.getValue(fldno);
                 if (obj instanceof ISOMsg)
@@ -289,7 +289,7 @@ public class ISOMsg extends ISOComponent
          StringTokenizer st = new StringTokenizer (fpath, ".");
          ISOMsg m = this;
          for (;;) {
-             int fldno = Integer.parseInt(st.nextToken());
+             int fldno = parseInt(st.nextToken());
              if (st.hasMoreTokens()) {
                  Object obj = m.getValue(fldno);
                  if (obj instanceof ISOMsg)
@@ -322,7 +322,7 @@ public class ISOMsg extends ISOComponent
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
         for (;;) {
-            int fldno = Integer.parseInt(st.nextToken());
+            int fldno = parseInt(st.nextToken());
             if (st.hasMoreTokens()) {
                 Object obj = m.getValue(fldno);
                 if (obj instanceof ISOMsg)
@@ -387,7 +387,7 @@ public class ISOMsg extends ISOComponent
         int lastfldno ;
         for (;;) {
             lastfldno = fldno;
-            fldno = Integer.parseInt(st.nextToken());
+            fldno = parseInt(st.nextToken());
             if (st.hasMoreTokens()) {
                 Object obj = m.getValue(fldno);
                 if (obj instanceof ISOMsg) {
@@ -508,17 +508,11 @@ public class ISOMsg extends ISOComponent
         if (header instanceof Loggeable)
             ((Loggeable) header).dump (p, newIndent);
 
-        for (int i=0; i<=maxField; i++) {
-            if ((c = (ISOComponent) fields.get (i)) != null)
-                c.dump (p, newIndent);
-            //
-            // Uncomment to include bitmaps within logs
-            //
-            // if (i == 0) {
-            //  if ((c = (ISOComponent) fields.get (new Integer (-1))) != null)
-            //    c.dump (p, newIndent);
-            // }
-            //
+        for (int i : fields.keySet()) {
+            if (i >= 0) {
+                if ((c = (ISOComponent) fields.get(i)) != null)
+                    c.dump(p, newIndent);
+            }
         }
 
         p.println (indent + "</" + XMLPackager.ISOMSG_TAG+">");
@@ -555,7 +549,7 @@ public class ISOMsg extends ISOComponent
         ISOMsg m = this;
         Object obj;
         for (;;) {
-            int fldno = Integer.parseInt(st.nextToken());
+            int fldno = parseInt(st.nextToken());
             obj = m.getValue (fldno);
             if (obj==null){
                 // The user will always get a null value for an incorrect path or path not present in the message
@@ -584,7 +578,7 @@ public class ISOMsg extends ISOComponent
         ISOMsg m = this;
         ISOComponent obj;
         for (;;) {
-            int fldno = Integer.parseInt(st.nextToken());
+            int fldno = parseInt(st.nextToken());
             obj = m.getComponent(fldno);
             if (st.hasMoreTokens()) {
                 if (obj instanceof ISOMsg) {
@@ -717,7 +711,7 @@ public class ISOMsg extends ISOComponent
          StringTokenizer st = new StringTokenizer (fpath, ".");
          ISOMsg m = this;
          for (;;) {
-             int fldno = Integer.parseInt(st.nextToken());
+             int fldno = parseInt(st.nextToken());
              if (st.hasMoreTokens()) {
                  Object obj = m.getValue(fldno);
                  if (obj instanceof ISOMsg) {
@@ -805,13 +799,14 @@ public class ISOMsg extends ISOComponent
      */
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public void merge (ISOMsg m) {
-        for (int i=0; i<=m.getMaxField(); i++)
+        for (int i : m.fields.keySet()) {
             try {
-                if (m.hasField(i))
-                    set (m.getComponent(i));
+                if (i >= 0 && m.hasField(i))
+                    set(m.getComponent(i));
             } catch (ISOException ignored) {
                 // should never happen
             }
+        }
     }
 
     /**
@@ -1108,6 +1103,9 @@ public class ISOMsg extends ISOComponent
     private void writeExternal (ObjectOutput out, char b, ISOComponent c) throws IOException {
         out.writeByte (b);
         ((Externalizable) c).writeExternal (out);
+    }
+    private int parseInt (String s) {
+        return s.startsWith("0x") ? Integer.parseInt(s.substring(2), 16) : Integer.parseInt(s);
     }
 }
 

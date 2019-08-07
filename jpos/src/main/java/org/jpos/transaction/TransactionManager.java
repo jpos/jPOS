@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -60,11 +60,13 @@ public class TransactionManager
     public static final long    MAX_WAIT = 15000L;
     public static final long    TIMER_PURGE_INTERVAL = 1000L;
     protected Map<String,List<TransactionParticipant>> groups;
-    private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<Serializable>();
-    private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
+    private Set<Destroyable> destroyables = new HashSet<>();
+    private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<>();
+    private static final ThreadLocal<Long> tlId = new ThreadLocal<>();
     private Metrics metrics;
     private static ScheduledThreadPoolExecutor loadMonitorExecutor;
     private static Map<TransactionParticipant,String> names = new HashMap<>();
+
 
     Space sp;
     Space psp;
@@ -73,7 +75,7 @@ public class TransactionManager
     String queue;
     String tailLock;
     List<Thread> threads;
-    final List<TransactionStatusListener> statusListeners = new ArrayList<TransactionStatusListener>();
+    final List<TransactionStatusListener> statusListeners = new ArrayList<>();
     boolean hasStatusListeners;
     boolean debug;
     boolean debugContext;
@@ -154,7 +156,7 @@ public class TransactionManager
     }
 
     @Override
-    public void stopService () throws Exception {
+    public void stopService () {
         NameRegistrar.unregister(getName());
         if (loadMonitorExecutor != null)
             loadMonitorExecutor.shutdown();
@@ -174,6 +176,13 @@ public class TransactionManager
             }
         }
         tps.stop();
+        for (Destroyable destroyable : destroyables) {
+            try {
+                destroyable.destroy();
+            } catch (Throwable t) {
+                getLog().warn (t);
+            }
+        }
     }
     public void queue (Serializable context) {
         iisp.out(queue, context);
@@ -753,7 +762,7 @@ public class TransactionManager
         while (iter.hasNext()) {
             final Element e = (Element) iter.next();
             final QFactory factory = getFactory();
-            final TransactionStatusListener listener = (TransactionStatusListener) factory.newInstance (e.getAttributeValue ("class"));
+            final TransactionStatusListener listener = (TransactionStatusListener) factory.newInstance (QFactory.getAttributeValue (e, "class"));
             factory.setConfiguration (listener, config);
             addListener(listener);
         }
@@ -764,7 +773,7 @@ public class TransactionManager
     {
         groups.put (DEFAULT_GROUP,  initGroup (config));
         for (Element e : config.getChildren("group")) {
-            String name = e.getAttributeValue ("name");
+            String name = QFactory.getAttributeValue (e, "name");
             if (name == null) 
                 throw new ConfigurationException ("missing group name");
             if (groups.containsKey(name)) {
@@ -789,17 +798,20 @@ public class TransactionManager
     {
         QFactory factory = getFactory();
         TransactionParticipant participant = (TransactionParticipant) 
-            factory.newInstance (e.getAttributeValue ("class")
+            factory.newInstance (QFactory.getAttributeValue (e, "class")
         );
         factory.setLogger (participant, e);
         QFactory.invoke (participant, "setTransactionManager", this, TransactionManager.class);
         factory.setConfiguration (participant, e);
-        String realm = e.getAttributeValue("realm");
+        String realm = QFactory.getAttributeValue(e, "realm");
         if (realm != null && realm.trim().length() > 0)
             realm = ":" + realm;
         else
             realm = "";
         names.put(participant, Caller.shortClassName(participant.getClass().getName())+realm);
+        if (participant instanceof Destroyable) {
+            destroyables.add((Destroyable) participant);
+        }
         return participant;
     }
 
@@ -1068,8 +1080,8 @@ public class TransactionManager
     public static Serializable getSerializable() {
         return tlContext.get();
     }
-    public static Context getContext() {
-        return (Context) tlContext.get();
+    public static <T extends Serializable> T getContext() {
+        return (T) tlContext.get();
     }
     public static Long getId() {
         return tlId.get();

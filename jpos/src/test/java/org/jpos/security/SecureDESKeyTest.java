@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,15 +18,16 @@
 
 package org.jpos.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SecureDESKeyTest {
 
@@ -76,27 +77,33 @@ public class SecureDESKeyTest {
         assertEquals(KeyScheme.U, key.getScheme());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorExtType_InvalidVariant() throws Throwable {
-        byte[] keyBytes = new byte[2];
-        new SecureDESKey(length, "Key-Type123:JU", keyBytes, kcv);
+        assertThrows(IllegalArgumentException.class, () -> {
+            byte[] keyBytes = new byte[2];
+            new SecureDESKey(length, "Key-Type123:JU", keyBytes, kcv);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorExtType_InvalidScheme() throws Throwable {
-        byte[] keyBytes = new byte[2];
-        new SecureDESKey(length, "Key-Type123:3H", keyBytes, kcv);
+        assertThrows(IllegalArgumentException.class, () -> {
+            byte[] keyBytes = new byte[2];
+            new SecureDESKey(length, "Key-Type123:3H", keyBytes, kcv);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorThrowsNullPointerException() throws Throwable {
-        new SecureDESKey(length, keyType, null, "testSecureDESKeyKeyCheckValueHexString");
+        assertThrows(NullPointerException.class, () -> {
+            new SecureDESKey(length, keyType, null, "testSecureDESKeyKeyCheckValueHexString");
+        });
     }
 
     @Test
     public void testConstructorUnevenHexDigits() throws Throwable {
         new SecureDESKey(length, keyType, keyHEX, kcvHEX);
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -104,19 +111,23 @@ public class SecureDESKeyTest {
         byte[] keyBytes = new byte[1];
         PrintStream p = new PrintStream(new ByteArrayOutputStream());
         new SecureDESKey(length, keyType, keyBytes, kcv).dump(p, "testIndent");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testDumpThrowsNullPointerException() throws Throwable {
-        PrintStream p = new PrintStream(new ByteArrayOutputStream());
-        new SecureDESKey(length, keyType, null, kcv1).dump(p, "");
+        assertThrows(NullPointerException.class, () -> {
+            PrintStream p = new PrintStream(new ByteArrayOutputStream());
+            new SecureDESKey(length, keyType, null, kcv1).dump(p, "");
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testDumpThrowsNullPointerException1() throws Throwable {
-        byte[] keyBytes = new byte[2];
-        new SecureDESKey(length, keyType, keyBytes, kcv).dump(null, "");
+        assertThrows(NullPointerException.class, () -> {
+            byte[] keyBytes = new byte[2];
+            new SecureDESKey(length, keyType, keyBytes, kcv).dump(null, "");
+        });
     }
 
     @Test

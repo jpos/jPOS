@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,16 @@
 
 package org.jpos.space;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 public class SpaceProxyTest {
 
-    @Test(expected=NullPointerException.class)
+    @Test
     public void testConstructor() throws Throwable {
+        assertThrows(NullPointerException.class, () -> {
             new SpaceProxy("Inval*d space: ");
+        });
     }
 }

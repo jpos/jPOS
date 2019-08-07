@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,11 +27,12 @@ import org.jpos.rc.Result;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.jpos.transaction.ContextConstants.*;
 
 public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
-    private static final long serialVersionUID = -764389940148411076L;
+    private static final long serialVersionUID = -6441115276439791245L;
     private transient Map<Object,Object> map; // transient map
     private Map<Object,Object> pmap;          // persistent (serializable) map
     private long timeout;
@@ -153,16 +154,17 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * @param timeout timeout
      * @return object (null on timeout)
      */
-    public synchronized Object get (Object key, long timeout) {
-        Object obj;
+    @SuppressWarnings("unchecked")
+    public synchronized <T> T get (Object key, long timeout) {
+        T obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while ((obj = map.get (key)) == null &&
+        while ((obj = (T) map.get (key)) == null &&
                 (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (end - now);
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException ignored) { }
         }
         return obj;
     }
@@ -242,12 +244,15 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
             map = Collections.synchronizedMap (new LinkedHashMap<>());
         return map;
     }
-    protected void dumpMap (PrintStream p, String indent) {
-        if (map == null)
-            return;
 
-        for (Map.Entry<Object,Object> entry : map.entrySet()) {
-            dumpEntry(p, indent, entry);
+    protected void dumpMap (PrintStream p, String indent) {
+        if (map != null) {
+            Map<Object,Object> cloned;
+            cloned = Collections.synchronizedMap (new LinkedHashMap<>());
+            synchronized(map) {
+                cloned.putAll(map);
+            }
+            cloned.entrySet().forEach(e -> dumpEntry(p, indent, e));
         }
     }
 
@@ -292,7 +297,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * @return LogEvent
      */
     synchronized public LogEvent getLogEvent () {
-        LogEvent evt = (LogEvent) get (LOGEVT.toString());
+        LogEvent evt = get (LOGEVT.toString());
         if (evt == null) {
             evt = new LogEvent ();
             evt.setNoArmor(true);
@@ -305,7 +310,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * @return Profiler object
      */
     synchronized public Profiler getProfiler () {
-        Profiler prof = (Profiler) get (PROFILER.toString());
+        Profiler prof = get (PROFILER.toString());
         if (prof == null) {
             prof = new Profiler();
             put (PROFILER.toString(), prof);
@@ -331,7 +336,8 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * @param msg trace information
      */
     public void log (Object msg) {
-        getLogEvent().addMessage (msg);
+        if (msg != getMap()) // prevent recursive call to dump (and StackOverflow)
+            getLogEvent().addMessage (msg);
     }
     /**
      * add a checkpoint to the profiler

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package org.jpos.transaction.participant;
 import bsh.EvalError;
 import bsh.Interpreter;
 import org.jdom2.Element;
+import org.jpos.q2.QFactory;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -74,11 +75,11 @@ public class BSHMethod {
         if (e == null) {
             return null;
         }
-        String file = e.getAttributeValue("file");
+        String file = QFactory.getAttributeValue(e, "file");
         String bsh;
         if (file != null) {
             boolean cache = false;
-            String cacheAtt = e.getAttributeValue("cache");
+            String cacheAtt = QFactory.getAttributeValue(e, "cache");
             if (cacheAtt != null) {
                 cache = cacheAtt.equalsIgnoreCase("true"); 
             }

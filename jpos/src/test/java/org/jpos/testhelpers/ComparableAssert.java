@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,9 +19,8 @@
 package org.jpos.testhelpers;
 
 
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * A set of assert methods specially targeted to comparable objects.
@@ -41,8 +40,8 @@ public class ComparableAssert {
 	 */
 	static public <T extends Comparable<T>> void assertLesser(String message,
 			T equal1, T actual) {
-		assertNotNull(message, equal1);
-		assertNotNull(message, actual);
+		assertNotNull(equal1, message);
+		assertNotNull(actual, message);
 		if (equal1.compareTo(actual) <= 0) {
 			failLesser(message, equal1, actual);
 		}
@@ -64,8 +63,8 @@ public class ComparableAssert {
 	 */
 	static public <T extends Comparable<T>> void assertNotLesser(
 			String message, T limit, T actual) {
-		assertNotNull(message, limit);
-		assertNotNull(message, actual);
+		assertNotNull(limit, message);
+		assertNotNull(actual, message);
 		if (limit.compareTo(actual) > 0) {
 			failNotLesser(message, limit, actual);
 		}
@@ -88,8 +87,8 @@ public class ComparableAssert {
 	 */
 	static public <T extends Comparable<T>> void assertEquals(String message,
 			T equal1, T actual) {
-		assertNotNull(message, equal1);
-		assertNotNull(message, actual);
+		assertNotNull(equal1, message);
+		assertNotNull(actual, message);
 		if (equal1.compareTo(actual) != 0) {
 			failNotEquals(message, equal1, actual);
 		}
@@ -111,8 +110,8 @@ public class ComparableAssert {
 	 */
 	static public <T extends Comparable<T>> void assertNotEquals(
 			String message, T expected, T actual) {
-		assertNotNull(message, expected);
-		assertNotNull(message, actual);
+		assertNotNull(expected, message);
+		assertNotNull(actual, message);
 		if (expected.compareTo(actual) == 0) {
 			failEquals(message, expected);
 		}
@@ -135,8 +134,8 @@ public class ComparableAssert {
 	 */
 	static public <T extends Comparable<T>> void assertGreater(String message,
 			T less, T actual) {
-		assertNotNull(message, less);
-		assertNotNull(message, actual);
+		assertNotNull(less, message);
+		assertNotNull(actual, message);
 		if (less.compareTo(actual) >= 0) {
 			failGreater(message, less, actual);
 		}
@@ -158,8 +157,8 @@ public class ComparableAssert {
 	 */
 	static public <T extends Comparable<T>> void assertNotGreater(
 			String message, T limit, T actual) {
-		assertNotNull(message, limit);
-		assertNotNull(message, actual);
+		assertNotNull(limit, message);
+		assertNotNull(actual, message);
 		if (limit.compareTo(actual) < 0) {
 			failNotGreater(message, limit, actual);
 		}
@@ -180,7 +179,7 @@ public class ComparableAssert {
 		if (message != null) {
 			formatted = message + " ";
 		}
-		Assert.fail(formatted + "expected greater than:<" + limit
+		fail(formatted + "expected greater than:<" + limit
 				+ "> but was:<" + actual + ">");
 	}
 
@@ -190,7 +189,7 @@ public class ComparableAssert {
 		if (message != null) {
 			formatted = message + " ";
 		}
-		Assert.fail(formatted + "expected not greater than:<" + limit
+		fail(formatted + "expected not greater than:<" + limit
 				+ "> but was:<" + actual + ">");
 	}
 
@@ -199,7 +198,7 @@ public class ComparableAssert {
 		if (message != null) {
 			formatted = message + " ";
 		}
-		Assert.fail(formatted + "expected lesser than:<" + limit
+		fail(formatted + "expected lesser than:<" + limit
 				+ "> but was:<" + actual + ">");
 	}
 
@@ -209,7 +208,7 @@ public class ComparableAssert {
 		if (message != null) {
 			formatted = message + " ";
 		}
-		Assert.fail(formatted + "expected not lesser than:<" + limit
+		fail(formatted + "expected not lesser than:<" + limit
 				+ "> but was:<" + actual + ">");
 	}
 
@@ -219,7 +218,7 @@ public class ComparableAssert {
 		if (message != null) {
 			formatted = message + " ";
 		}
-		Assert.fail(formatted + "expected equals to:<" + expected
+		fail(formatted + "expected equals to:<" + expected
 				+ "> but was:<" + actual + ">");
 	}
 
@@ -228,6 +227,6 @@ public class ComparableAssert {
 		if (message != null) {
 			formatted = message + " ";
 		}
-		Assert.fail(formatted + "expected not equals to:<" + expected + ">");
+		fail(formatted + "expected not equals to:<" + expected + ">");
 	}
 }

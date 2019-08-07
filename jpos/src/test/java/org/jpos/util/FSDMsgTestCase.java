@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,21 @@
 
 package org.jpos.util;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.FileNotFoundException;
-import junit.framework.TestCase;
+
 import org.jpos.iso.FSDISOMsg;
 import org.jpos.iso.ISOUtil;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-public class FSDMsgTestCase extends TestCase {
+public class FSDMsgTestCase {
     private static final String SCHEMA_DIR_URL = "file:build/resources/test/org/jpos/util/";
     private static final String SCHEMA_JAR_URL = "jar:org/jpos/util/";
 
@@ -33,11 +40,13 @@ public class FSDMsgTestCase extends TestCase {
 
     FSDMsg omsg;
 
+    @BeforeEach
     public void setUp() throws Exception {
         imsg = new FSDMsg(SCHEMA_DIR_URL + "msg-");
         omsg = new FSDMsg(SCHEMA_DIR_URL + "msg-");
     }
 
+    @Test
     public void testLeadingBlanks() throws Exception {
         String value = "   123";
         String field = "testafs";
@@ -47,21 +56,23 @@ public class FSDMsgTestCase extends TestCase {
 
         omsg.unpack(imsg.pack().getBytes());
 
-        assertEquals(value, omsg.get(field));
+        Assertions.assertEquals(value, omsg.get(field));
     }
 
+    @Test
     public void testTraillingBlanksDroppedwithFS() throws Exception {
         String value = "123   ";
         String field = "testafs";
         imsg.set(field, value);
-        assertEquals("3132331C", ISOUtil.hexString(imsg
+        Assertions.assertEquals("3132331C", ISOUtil.hexString(imsg
                 .pack().getBytes()));
 
         omsg.unpack(imsg.pack().getBytes());
 
-        assertEquals("123", omsg.get(field));
+        Assertions.assertEquals("123", omsg.get(field));
     }
 
+    @Test
     public void testMixedBlanksLeadingArePreserved() throws Exception {
         String value = "  123 ";
         String field = "testafs";
@@ -71,9 +82,10 @@ public class FSDMsgTestCase extends TestCase {
 
         omsg.unpack(imsg.pack().getBytes());
 
-        assertEquals("  123", omsg.get(field));
+        Assertions.assertEquals("  123", omsg.get(field));
     }
 
+    @Test
     public void testFinalField() throws Exception {
         String value1 = "  123 ";
         String field1 = "testafs";
@@ -81,13 +93,14 @@ public class FSDMsgTestCase extends TestCase {
         String field2 = "finalfield";
         imsg.set(field1, value1);
         imsg.set(field2, value2);
-        assertEquals("20203132331C414243",ISOUtil.hexString(imsg.pack().getBytes()));
+        Assertions.assertEquals("20203132331C414243", ISOUtil.hexString(imsg.pack().getBytes()));
 
         omsg.unpack(imsg.pack().getBytes());
-        assertEquals("  123", omsg.get(field1));
-        assertEquals(value2, omsg.get(field2));
+        Assertions.assertEquals("  123", omsg.get(field1));
+        Assertions.assertEquals(value2, omsg.get(field2));
     }
 
+    @Test
     public void testDummySeparatorAlpha() throws Exception {
         FSDMsg imsg = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
         FSDMsg omsg = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
@@ -96,42 +109,43 @@ public class FSDMsgTestCase extends TestCase {
         String macData = "AbCdEfGh";
         imsg.set("length", "8");
         imsg.set("alphavardata", macData);
-        assertEquals("0008AbCdEfGh",imsg.pack());
+        Assertions.assertEquals("0008AbCdEfGh", imsg.pack());
 
         omsg.unpack(imsg.pack().getBytes());
 
-        assertEquals("0008", omsg.get("length"));
-        assertEquals(macData, omsg.get("alphavardata"));
+        Assertions.assertEquals("0008", omsg.get("length"));
+        Assertions.assertEquals(macData, omsg.get("alphavardata"));
 
         macData = "AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh";
         imsg.set("length", "32");
         imsg.set("alphavardata", macData);
-        assertEquals("Dummy separator long data",
-                "0032AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh", imsg.pack());
+        Assertions.assertEquals("0032AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh",
+                imsg.pack(), "Dummy separator long data");
 
         omsg.unpack(imsg.pack().getBytes());
 
-        assertEquals("0032", omsg.get("length"));
-        assertEquals(macData, omsg.get("alphavardata"));
+        Assertions.assertEquals("0032", omsg.get("length"));
+        Assertions.assertEquals(macData, omsg.get("alphavardata"));
 
         imsg.set("length", "");
         imsg.set("alphavardata", "");
-        assertEquals("Dummy separator no data", "0000", imsg.pack());
+        Assertions.assertEquals("0000", imsg.pack(), "Dummy separator no data");
 
         imsg.set("length", "40"); // Too long data data will be silently
                                   // truncated,
         // not sure I like this behaviour!
         imsg.set("alphavardata", "AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGhXXXXXXXX");
-        assertEquals("Dummy separator truncated data",
-                "0040AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh", imsg.pack());
+        Assertions.assertEquals("0040AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh",
+                imsg.pack(), "Dummy separator truncated data");
 
         omsg.unpack(imsg.pack().getBytes());
 
-        assertEquals("0040", omsg.get("length"));
-        assertEquals("AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh", omsg.get("alphavardata"));
+        Assertions.assertEquals("0040", omsg.get("length"));
+        Assertions.assertEquals("AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh", omsg.get("alphavardata"));
 
     }
 
+    @Test
     public void testDummySeparatorBinary() throws Exception {
         FSDMsg imsg = new FSDMsg(SCHEMA_DIR_URL + "DSmsg-");
         FSDMsg omsg = new FSDMsg(SCHEMA_DIR_URL + "DSmsg-");
@@ -145,28 +159,28 @@ public class FSDMsgTestCase extends TestCase {
         imsg.set("id", id);
         imsg.set("content", macData);
                 
-        assertEquals(binaryID + binaryMacData, imsg.pack());
+        Assertions.assertEquals(binaryID + binaryMacData, imsg.pack());
         
         omsg.unpack(imsg.pack().getBytes());
 
-        assertEquals(id, omsg.get("id"));
-        assertEquals(macData, omsg.get("content"));
+        Assertions.assertEquals(id, omsg.get("id"));
+        Assertions.assertEquals(macData, omsg.get("content"));
 
         macData = "1234567812345678123456781234567812345678123456781234567812345678";
         binaryMacData = new String(ISOUtil.hex2byte(macData), ISOUtil.CHARSET);
         imsg.set("id", id);
         imsg.set("content", macData);
-        assertEquals("Dummy separator long data", binaryID + binaryMacData, imsg
-                .pack());
+        Assertions.assertEquals(binaryID + binaryMacData, imsg
+                .pack(), "Dummy separator long data");
 
         imsg.set("id", id);
         imsg.set("content", "");
-        assertEquals("Dummy separator no data", binaryID, imsg.pack());
+        Assertions.assertEquals(binaryID, imsg.pack(), "Dummy separator no data");
         
         omsg.unpack(imsg.pack().getBytes());
 
-        assertEquals(id, omsg.get("id"));
-        assertEquals("", omsg.get("content"));
+        Assertions.assertEquals(id, omsg.get("id"));
+        Assertions.assertEquals("", omsg.get("content"));
         
         try {
             macData = "1234567890123456789012345678901234567890123456789012345678901234567890123456789099";
@@ -183,6 +197,7 @@ public class FSDMsgTestCase extends TestCase {
 
     }
 
+    @Test
     public void testPackJarSchema() throws Exception {
         FSDMsg fsdm = new FSDMsg(SCHEMA_JAR_URL + "DSmsg-");
 
@@ -194,10 +209,11 @@ public class FSDMsgTestCase extends TestCase {
         fsdm.set("id", id);
         fsdm.set("content", mac);
         String s = fsdm.pack();
-        assertEquals(packedID + packedMAC, s);
+        Assertions.assertEquals(packedID + packedMAC, s);
 
     }
 
+    @Test
     public void testLoadMissingDirSchema() throws Exception {
         FSDMsg fsdm = new FSDMsg(SCHEMA_DIR_URL + "DSmsgX-");
 
@@ -212,6 +228,7 @@ public class FSDMsgTestCase extends TestCase {
         } catch (FileNotFoundException ex) {}
     }
 
+    @Test
     public void testLoadMissingJarSchema() throws Exception {
         FSDMsg fsdm = new FSDMsg(SCHEMA_JAR_URL + "DSmsgX-");
 
@@ -226,6 +243,7 @@ public class FSDMsgTestCase extends TestCase {
         } catch (FileNotFoundException ex) {}
     }
 
+    @Test
     public void testDummySeparatorNumeric() throws Exception {
         FSDMsg m = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
 
@@ -233,35 +251,37 @@ public class FSDMsgTestCase extends TestCase {
         String macData = "12345678";
         m.set("length", "8");
         m.set("alphavardata", macData);
-        assertEquals("000812345678", m.pack());
+        Assertions.assertEquals("000812345678", m.pack());
     
         macData = "12345678123456781234567812345678";
         m.set("length", "32");
         m.set("alphavardata", macData);
-        assertEquals("Dummy separator long data",
-                "003212345678123456781234567812345678", m.pack());
+        Assertions.assertEquals("003212345678123456781234567812345678",
+                m.pack(), "Dummy separator long data");
     
         m.set("length", "");
         m.set("alphavardata", "");
-        assertEquals("Dummy separator no data", "0000", m.pack());
+        Assertions.assertEquals("0000", m.pack(), "Dummy separator no data");
     
         m.set("length", "40"); // Too long data data will be silently truncated,
                                // not sure I like this behaviour!
         m.set("alphavardata", "12345678123456781234567812345678XXXXXXXX");
-        assertEquals("Dummy separator truncated data",
-                "004012345678123456781234567812345678", m.pack());
+        Assertions.assertEquals("004012345678123456781234567812345678",
+                m.pack(), "Dummy separator truncated data");
     
     }
+    @Test
     public void testClone () throws Exception {
         FSDMsg m0 = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
         
         m0.set ("alphavardata", "ABCDE");
         FSDMsg m1 = (FSDMsg) m0.clone();
         m1.set ("alphavardata", "12345"); 
-        assertEquals ("Original alphavardata", "ABCDE", m0.get ("alphavardata"));
-        assertEquals ("Cloned alphavardata", "12345", m1.get ("alphavardata"));
+        Assertions.assertEquals("ABCDE", m0.get("alphavardata"), "Original alphavardata");
+        Assertions.assertEquals("12345", m1.get("alphavardata"), "Cloned alphavardata");
 
     }
+    @Test
     public void testFSDISOMsgClone () throws Exception {
         FSDMsg m0 = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
       
@@ -270,9 +290,10 @@ public class FSDMsgTestCase extends TestCase {
         FSDISOMsg iso1 = (FSDISOMsg) iso0.clone();
         FSDMsg m1 = iso1.getFSDMsg();
         m1.set ("alphavardata", "12345"); 
-        assertEquals ("Original alphavardata", "ABCDE", m0.get ("alphavardata"));
-        assertEquals ("Cloned alphavardata", "12345", m1.get ("alphavardata"));
+        Assertions.assertEquals("ABCDE", m0.get("alphavardata"), "Original alphavardata");
+        Assertions.assertEquals("12345", m1.get("alphavardata"), "Cloned alphavardata");
     }
+    @Test
     public void testFSDISOMsgPartialCloneAndMerge () throws Exception {
         FSDMsg m0 = new FSDMsg(SCHEMA_DIR_URL + "msgiso-");
         m0.set ("0", "0800");
@@ -283,20 +304,21 @@ public class FSDMsgTestCase extends TestCase {
         FSDISOMsg iso1 = (FSDISOMsg) iso0.clone(new int[] { 0, 11, 70 });
         FSDMsg m1 = iso1.getFSDMsg();
 
-        assertEquals ("m0.0", "0800", m0.get ("0"));
-        assertEquals ("m1.0", "0800", m1.get ("0"));
+        Assertions.assertEquals("0800", m0.get("0"), "m0.0");
+        Assertions.assertEquals("0800", m1.get("0"), "m1.0");
         m1.set ("0", "0810");
-        assertEquals ("m0.0", "0800", m0.get ("0"));
-        assertEquals ("m1.0", "0810", m1.get ("0"));
-        assertNull ("m1.41 should be null", m1.get ("41"));
+        Assertions.assertEquals("0800", m0.get("0"), "m0.0");
+        Assertions.assertEquals("0810", m1.get("0"), "m1.0");
+        assertNull(m1.get("41"), "m1.41 should be null");
         iso1.merge (iso0);
-        assertEquals ("m1.41", "29110001", m1.get ("41"));
+        Assertions.assertEquals("29110001", m1.get("41"), "m1.41");
     }
     public void assertEquals(String msg, byte[] b1, byte[] b2) {
-        assertTrue(msg, Arrays.equals(b1, b2));
+        assertTrue(Arrays.equals(b1, b2), msg);
     }
     
     
+    @Test
     public void testFSDMsgDefaultKey () throws Exception {
         FSDMsg m0 = new FSDMsg(SCHEMA_DIR_URL + "fsd-");
         FSDMsg m1 = new FSDMsg(SCHEMA_DIR_URL + "fsd-");
@@ -307,18 +329,18 @@ public class FSDMsgTestCase extends TestCase {
         m0.set("message-id","03");
         m0.set("x","X");
         m0.set("y","WHYWHY03");
-        assertEquals ("Default defined - not used - pack", "000X0300WHYWHY03", m0.pack() );
+        Assertions.assertEquals("000X0300WHYWHY03", m0.pack(), "Default defined - not used - pack");
 
         m1.set("message-id","99");
         m1.set("x","X");
         m1.set("z","DEFAULT");
-        assertEquals ("Default defined - used - pack", "000X99DEFAULT   ", m1.pack() );
+        Assertions.assertEquals("000X99DEFAULT   ", m1.pack(), "Default defined - used - pack");
 
         u0.unpack(m0.packToBytes());
-        assertEquals ("Default defined - not used - unpack", "00WHYWHY03", u0.get("y") );
+        Assertions.assertEquals("00WHYWHY03", u0.get("y"), "Default defined - not used - unpack");
         
         u1.unpack(m1.packToBytes());
-        assertEquals ("Default defined - used - unpack", "DEFAULT   ", u1.get("z") );
+        Assertions.assertEquals("DEFAULT   ", u1.get("z"), "Default defined - used - unpack");
 
     }
     

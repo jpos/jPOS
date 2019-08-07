@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,16 +18,16 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ListIterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ISOVMsgTest {
 
@@ -36,37 +36,37 @@ public class ISOVMsgTest {
         ISOVError FirstError = new ISOVError("testISOVMsgDescription");
         ISOVMsg iSOVMsg = new ISOVMsg(new ISOMsg(100), FirstError);
         boolean result = iSOVMsg.addISOVError(new ISOVError("testISOVMsgDescription1"));
-        assertEquals("iSOVMsg.errors.size()", 2, iSOVMsg.errors.size());
-        assertSame("iSOVMsg.errors.get(0)", FirstError, iSOVMsg.errors.get(0));
-        assertTrue("result", result);
+        assertEquals(2, iSOVMsg.errors.size(), "iSOVMsg.errors.size()");
+        assertSame(FirstError, iSOVMsg.errors.get(0), "iSOVMsg.errors.get(0)");
+        assertTrue(result, "result");
     }
 
     @Test
     public void testConstructor() throws Throwable {
         ISOVMsg iSOVMsg = new ISOVMsg(new ISOMsg("testISOVMsgMti"));
-        assertEquals("iSOVMsg.fields.size()", 1, iSOVMsg.fields.size());
-        assertEquals("iSOVMsg.direction", 0, iSOVMsg.direction);
-        assertEquals("iSOVMsg.errors.size()", 0, iSOVMsg.errors.size());
-        assertNull("iSOVMsg.header", iSOVMsg.header);
-        assertEquals("iSOVMsg.maxField", 0, iSOVMsg.maxField);
-        assertTrue("iSOVMsg.dirty", iSOVMsg.dirty);
-        assertNull("iSOVMsg.packager", iSOVMsg.packager);
-        assertEquals("iSOVMsg.fieldNumber", -1, iSOVMsg.fieldNumber);
-        assertTrue("iSOVMsg.maxFieldDirty", iSOVMsg.maxFieldDirty);
+        assertEquals(1, iSOVMsg.fields.size(), "iSOVMsg.fields.size()");
+        assertEquals(0, iSOVMsg.direction, "iSOVMsg.direction");
+        assertEquals(0, iSOVMsg.errors.size(), "iSOVMsg.errors.size()");
+        assertNull(iSOVMsg.header, "iSOVMsg.header");
+        assertEquals(0, iSOVMsg.maxField, "iSOVMsg.maxField");
+        assertTrue(iSOVMsg.dirty, "iSOVMsg.dirty");
+        assertNull(iSOVMsg.packager, "iSOVMsg.packager");
+        assertEquals(-1, iSOVMsg.fieldNumber, "iSOVMsg.fieldNumber");
+        assertTrue(iSOVMsg.maxFieldDirty, "iSOVMsg.maxFieldDirty");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         ISOVMsg iSOVMsg = new ISOVMsg(new ISOMsg("testISOVMsgMti"), new ISOVError("testISOVMsgDescription", "testISOVMsgRejectCode"));
-        assertEquals("iSOVMsg.fields.size()", 1, iSOVMsg.fields.size());
-        assertEquals("iSOVMsg.direction", 0, iSOVMsg.direction);
-        assertEquals("iSOVMsg.errors.size()", 1, iSOVMsg.errors.size());
-        assertNull("iSOVMsg.header", iSOVMsg.header);
-        assertEquals("iSOVMsg.maxField", 0, iSOVMsg.maxField);
-        assertTrue("iSOVMsg.dirty", iSOVMsg.dirty);
-        assertNull("iSOVMsg.packager", iSOVMsg.packager);
-        assertEquals("iSOVMsg.fieldNumber", -1, iSOVMsg.fieldNumber);
-        assertTrue("iSOVMsg.maxFieldDirty", iSOVMsg.maxFieldDirty);
+        assertEquals(1, iSOVMsg.fields.size(), "iSOVMsg.fields.size()");
+        assertEquals(0, iSOVMsg.direction, "iSOVMsg.direction");
+        assertEquals(1, iSOVMsg.errors.size(), "iSOVMsg.errors.size()");
+        assertNull(iSOVMsg.header, "iSOVMsg.header");
+        assertEquals(0, iSOVMsg.maxField, "iSOVMsg.maxField");
+        assertTrue(iSOVMsg.dirty, "iSOVMsg.dirty");
+        assertNull(iSOVMsg.packager, "iSOVMsg.packager");
+        assertEquals(-1, iSOVMsg.fieldNumber, "iSOVMsg.fieldNumber");
+        assertTrue(iSOVMsg.maxFieldDirty, "iSOVMsg.maxFieldDirty");
     }
 
     @Test
@@ -75,7 +75,7 @@ public class ISOVMsgTest {
             new ISOVMsg(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -85,7 +85,7 @@ public class ISOVMsgTest {
             new ISOVMsg(null, new ISOVError("testISOVMsgDescription"));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -93,15 +93,15 @@ public class ISOVMsgTest {
     public void testErrorListIterator() throws Throwable {
         ISOVMsg iSOVMsg = new ISOVMsg(new ISOMsg("testISOVMsgMti"));
         ListIterator<?> result = iSOVMsg.errorListIterator();
-        assertFalse("result.hasNext()", result.hasNext());
-        assertEquals("iSOVMsg.errors.size()", 0, iSOVMsg.errors.size());
+        assertFalse(result.hasNext(), "result.hasNext()");
+        assertEquals(0, iSOVMsg.errors.size(), "iSOVMsg.errors.size()");
     }
 
     @Test
     public void testErrorListIterator1() throws Throwable {
         ISOVMsg iSOVMsg = new ISOVMsg(new ISOMsg("testISOVMsgMti"), new ISOVError("testISOVMsgDescription", "testISOVMsgRejectCode"));
         ListIterator<?> result = iSOVMsg.errorListIterator();
-        assertTrue("result.hasNext()", result.hasNext());
-        assertEquals("iSOVMsg.errors.size()", 1, iSOVMsg.errors.size());
+        assertTrue(result.hasNext(), "result.hasNext()");
+        assertEquals(1, iSOVMsg.errors.size(), "iSOVMsg.errors.size()");
     }
 }

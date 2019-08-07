@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,11 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.iso.IFA_LLLLCHAR;
 import org.jpos.iso.IFE_CHAR;
@@ -32,25 +33,25 @@ import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOValidator;
 import org.jpos.util.Logger;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CTCSubFieldPackagerTest {
 
     @Test
     public void testConstructor() throws Throwable {
         CTCSubFieldPackager cTCSubFieldPackager = new CTCSubFieldPackager();
-        assertNull("cTCSubFieldPackager.getLogger()", cTCSubFieldPackager.getLogger());
-        assertNull("cTCSubFieldPackager.getRealm()", cTCSubFieldPackager.getRealm());
+        assertNull(cTCSubFieldPackager.getLogger(), "cTCSubFieldPackager.getLogger()");
+        assertNull(cTCSubFieldPackager.getRealm(), "cTCSubFieldPackager.getRealm()");
     }
 
     @Test
     public void testEmitBitMap() throws Throwable {
         CTCSubFieldPackager cTCSubFieldPackager = new CTCSubFieldPackager();
         boolean result = cTCSubFieldPackager.emitBitMap();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -59,7 +60,7 @@ public class CTCSubFieldPackagerTest {
         ISOFieldPackager[] fld = new ISOFieldPackager[1];
         cTCSubFieldPackager.setFieldPackager(fld);
         byte[] result = cTCSubFieldPackager.pack(new ISOField());
-        assertEquals("result.length", 0, result.length);
+        assertEquals(0, result.length, "result.length");
     }
 
     @Test
@@ -68,8 +69,8 @@ public class CTCSubFieldPackagerTest {
             new CTCSubFieldPackager().pack(null);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "null: null", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
+            assertEquals("null: null", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
@@ -79,8 +80,8 @@ public class CTCSubFieldPackagerTest {
             new CTCSubFieldPackager().pack(new ISOBinaryField(100));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "null: null", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
+            assertEquals("null: null", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
@@ -93,8 +94,8 @@ public class CTCSubFieldPackagerTest {
             cTCSubFieldPackager.pack(new ISOMsg("testCTCSubFieldPackagerMti"));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "null: null", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
+            assertEquals("null: null", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
@@ -102,7 +103,7 @@ public class CTCSubFieldPackagerTest {
     public void testUnpack() throws Throwable {
         byte[] b = new byte[0];
         int result = new CTCSubFieldPackager().unpack(new ISOField(), b);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -116,42 +117,52 @@ public class CTCSubFieldPackagerTest {
             cTCSubFieldPackager.unpack(new ISOField(), b);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "org.jpos.iso.IFA_LLLLCHAR: Problem unpacking field 0", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
+            assertEquals("org.jpos.iso.IFA_LLLLCHAR: Problem unpacking field 0", ex.getMessage(), "ex.getMessage()");
+            assertEquals("Invalid character found. Expected digit.", ex.getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testUnpackThrowsNullPointerException() throws Throwable {
-        ISOFieldPackager[] fld = new ISOFieldPackager[4];
-        fld[0] = new IFE_CHAR();
-        CTCSubFieldPackager cTCSubFieldPackager = new CTCSubFieldPackager();
-        cTCSubFieldPackager.setFieldPackager(fld);
-        byte[] b = new byte[2];
-        cTCSubFieldPackager.unpack(null, b);
+        assertThrows(NullPointerException.class, () -> {
+            ISOFieldPackager[] fld = new ISOFieldPackager[4];
+            fld[0] = new IFE_CHAR();
+            CTCSubFieldPackager cTCSubFieldPackager = new CTCSubFieldPackager();
+            cTCSubFieldPackager.setFieldPackager(fld);
+            byte[] b = new byte[2];
+            cTCSubFieldPackager.unpack(null, b);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testUnpackThrowsNullPointerException2() throws Throwable {
-        new CTCSubFieldPackager().unpack(new ISOBinaryField(100), (byte[]) null);
+        assertThrows(NullPointerException.class, () -> {
+            new CTCSubFieldPackager().unpack(new ISOBinaryField(100), (byte[]) null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testValidateThrowsNullPointerException1() throws Throwable {
-        new CTCSubFieldPackager().validate(null);
+        assertThrows(NullPointerException.class, () -> {
+            new CTCSubFieldPackager().validate(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testValidateThrowsNullPointerException2() throws Throwable {
-        new CTCSubFieldPackager().validate(new ISOMsg());
+        assertThrows(NullPointerException.class, () -> {
+            new CTCSubFieldPackager().validate(new ISOMsg());
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testValidateThrowsNullPointerException3() throws Throwable {
-        CTCSubFieldPackager cTCSubFieldPackager = new CTCSubFieldPackager();
-        cTCSubFieldPackager.setLogger(Logger.getLogger(""), "testCTCSubFieldPackagerRealm");
-        ISOValidator[] fvlds = new ISOValidator[2];
-        cTCSubFieldPackager.setFieldValidator(fvlds);
-        cTCSubFieldPackager.validate(new ISOMsg("testCTCSubFieldPackagerMti"));
+        assertThrows(NullPointerException.class, () -> {
+            CTCSubFieldPackager cTCSubFieldPackager = new CTCSubFieldPackager();
+            cTCSubFieldPackager.setLogger(Logger.getLogger(""), "testCTCSubFieldPackagerRealm");
+            ISOValidator[] fvlds = new ISOValidator[2];
+            cTCSubFieldPackager.setFieldValidator(fvlds);
+            cTCSubFieldPackager.validate(new ISOMsg("testCTCSubFieldPackagerMti"));
+        });
     }
 }

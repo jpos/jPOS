@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,9 @@
 
 package  org.jpos.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import org.jpos.iso.ISOUtil;
 
 import java.io.PrintStream;
@@ -31,8 +34,12 @@ import java.util.Collection;
  * @author Hani S. Kirollos
  * @version $Revision$ $Date$
  */
-    public class SimpleMsg
-            implements Loggeable {
+    public class SimpleMsg implements Loggeable {
+
+        static final String STACKTRACE_EXTRA_INDENT = "    ";
+
+        static final String STACKTRACE_TAB_REPLACE  = STACKTRACE_EXTRA_INDENT + STACKTRACE_EXTRA_INDENT;
+
         String tagName;
         String msgName;
         Object msgContent;
@@ -70,6 +77,8 @@ import java.util.Collection;
                 cl = (Collection) msgContent;
             else if (msgContent instanceof Loggeable)
                 cl = Arrays.asList(msgContent);
+            else if (msgContent instanceof Throwable)
+                cl = Arrays.asList(msgContent);
             else if (msgName != null && msgContent == null){
                 p.println("/>");
                 return;
@@ -87,6 +96,8 @@ import java.util.Collection;
                 for (Object o : cl) {
                     if (o instanceof Loggeable)
                         ((Loggeable) o).dump(p, inner);
+                    else if (o instanceof Throwable)
+                        p.print(formatThrowable(indent, (Throwable) o));
                     else
                         p.println(inner + o);
                 }
@@ -95,4 +106,24 @@ import java.util.Collection;
 
             p.println("</" + tagName + ">");
         }
+
+        private String formatThrowable(String indent, Throwable t) {
+            String inde = indent + STACKTRACE_EXTRA_INDENT;
+            try (
+                    OutputStream os = new ByteArrayOutputStream();
+                    PrintStream ps = new PrintStream(os);
+                ) {
+                    // indent stack trace first line
+                    ps.print(inde);
+                    t.printStackTrace(ps);
+
+                    String res = os.toString();
+                    res = res.replace("\n\t", "\n" + inde + STACKTRACE_TAB_REPLACE);
+                    res = res.replace("\nCaused by:", "\n" + inde + "Caused by:");
+                    return res;
+            } catch (IOException ex) {
+                return ""; // it should never occur for ByteArrayOutputStream
+            }
+        }
+
     }

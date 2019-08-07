@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,10 @@
 
 package org.jpos.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Properties;
 
@@ -29,17 +29,17 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.util.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SimpleKeyFileTest {
 
     @Test
     public void testConstructor() throws Throwable {
         SimpleKeyFile simpleKeyFile = new SimpleKeyFile();
-        assertEquals("simpleKeyFile.props.size()", 0, simpleKeyFile.props.size());
-        assertNull("simpleKeyFile.logger", simpleKeyFile.logger);
-        assertEquals("simpleKeyFile.header", "Key File", simpleKeyFile.header);
-        assertNull("simpleKeyFile.realm", simpleKeyFile.realm);
+        assertEquals(0, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
+        assertNull(simpleKeyFile.logger, "simpleKeyFile.logger");
+        assertEquals("Key File", simpleKeyFile.header, "simpleKeyFile.header");
+        assertNull(simpleKeyFile.realm, "simpleKeyFile.realm");
     }
 
     @Test
@@ -48,7 +48,7 @@ public class SimpleKeyFileTest {
             new SimpleKeyFile(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -58,7 +58,7 @@ public class SimpleKeyFileTest {
         SimpleKeyFile simpleKeyFile = new SimpleKeyFile();
         simpleKeyFile.setLogger(logger, "testSimpleKeyFileRealm");
         Logger result = simpleKeyFile.getLogger();
-        assertSame("result", logger, result);
+        assertSame(logger, result, "result");
     }
 
     @Test
@@ -67,16 +67,16 @@ public class SimpleKeyFileTest {
             new SimpleKeyFile().getProperty("testSimpleKeyFileAlias", "testSimpleKeyFileSubName");
             fail("Expected SecureKeyStoreException to be thrown");
         } catch (SecureKeyStore.SecureKeyStoreException ex) {
-            assertEquals("ex.getMessage()",
-                    "Key can't be retrieved. Can't get property: testSimpleKeyFileAlias.testSimpleKeyFileSubName", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Key can't be retrieved. Can't get property: testSimpleKeyFileAlias.testSimpleKeyFileSubName",
+                    ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
     @Test
     public void testGetRealm() throws Throwable {
         String result = new SimpleKeyFile().getRealm();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -84,7 +84,7 @@ public class SimpleKeyFileTest {
         SimpleKeyFile simpleKeyFile = new SimpleKeyFile();
         simpleKeyFile.setLogger(Logger.getLogger("testSimpleKeyFileName"), "testSimpleKeyFileRealm");
         String result = simpleKeyFile.getRealm();
-        assertEquals("result", "testSimpleKeyFileRealm", result);
+        assertEquals("testSimpleKeyFileRealm", result, "result");
     }
 
     @Test
@@ -94,9 +94,9 @@ public class SimpleKeyFileTest {
             simpleKeyFile.init(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("simpleKeyFile.file", simpleKeyFile.file);
-            assertEquals("simpleKeyFile.props.size()", 0, simpleKeyFile.props.size());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(simpleKeyFile.file, "simpleKeyFile.file");
+            assertEquals(0, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
         }
     }
 
@@ -107,8 +107,8 @@ public class SimpleKeyFileTest {
             simpleKeyFile.init(".");
             fail("Expected SecureKeyStoreException to be thrown");
         } catch (SecureKeyStore.SecureKeyStoreException ex) {
-            assertEquals("simpleKeyFile.file.getName()", ".", simpleKeyFile.file.getName());
-            assertEquals("simpleKeyFile.props.size()", 0, simpleKeyFile.props.size());
+            assertEquals(".", simpleKeyFile.file.getName(), "simpleKeyFile.file.getName()");
+            assertEquals(0, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
         }
     }
 
@@ -119,10 +119,10 @@ public class SimpleKeyFileTest {
             simpleKeyFile.load();
             fail("Expected SecureKeyStoreException to be thrown");
         } catch (SecureKeyStore.SecureKeyStoreException ex) {
-            assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertNull("simpleKeyFile.file", simpleKeyFile.file);
-            assertEquals("simpleKeyFile.props.size()", 0, simpleKeyFile.props.size());
+            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertNull(simpleKeyFile.file, "simpleKeyFile.file");
+            assertEquals(0, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
         }
     }
 
@@ -134,9 +134,9 @@ public class SimpleKeyFileTest {
             simpleKeyFile.setConfiguration(cfg);
             fail("Expected ConfigurationException to be thrown");
         } catch (ConfigurationException ex) {
-            assertEquals("simpleKeyFile.file.getName()", "", simpleKeyFile.file.getName());
-            assertEquals("simpleKeyFile.header", "Key File", simpleKeyFile.header);
-            assertEquals("simpleKeyFile.props.size()", 0, simpleKeyFile.props.size());
+            assertEquals("", simpleKeyFile.file.getName(), "simpleKeyFile.file.getName()");
+            assertEquals("Key File", simpleKeyFile.header, "simpleKeyFile.header");
+            assertEquals(0, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
         }
     }
 
@@ -147,10 +147,10 @@ public class SimpleKeyFileTest {
             simpleKeyFile.setKey("testSimpleKeyFileAlias", null);
             fail("Expected SecureKeyStoreException to be thrown");
         } catch (SecureKeyStore.SecureKeyStoreException ex) {
-            assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertEquals("simpleKeyFile.props.size()", 0, simpleKeyFile.props.size());
-            assertNull("simpleKeyFile.file", simpleKeyFile.file);
+            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertEquals(0, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
+            assertNull(simpleKeyFile.file, "simpleKeyFile.file");
         }
     }
 
@@ -159,17 +159,17 @@ public class SimpleKeyFileTest {
         Logger logger = Logger.getLogger("testSimpleKeyFileName");
         SimpleKeyFile simpleKeyFile = new SimpleKeyFile();
         simpleKeyFile.setLogger(logger, "testSimpleKeyFileRealm");
-        assertSame("simpleKeyFile.logger", logger, simpleKeyFile.logger);
-        assertEquals("simpleKeyFile.realm", "testSimpleKeyFileRealm", simpleKeyFile.realm);
+        assertSame(logger, simpleKeyFile.logger, "simpleKeyFile.logger");
+        assertEquals("testSimpleKeyFileRealm", simpleKeyFile.realm, "simpleKeyFile.realm");
     }
 
     @Test
     public void testSetProperty() throws Throwable {
         SimpleKeyFile simpleKeyFile = new SimpleKeyFile();
         simpleKeyFile.setProperty("testSimpleKeyFileAlias", "testSimpleKeyFileSubName", "testSimpleKeyFileValue");
-        assertEquals("simpleKeyFile.props.size()", 1, simpleKeyFile.props.size());
-        assertEquals("simpleKeyFile.props.get(\"testSimpleKeyFileAlias.testSimpleKeyFileSubName\")", "testSimpleKeyFileValue",
-                simpleKeyFile.props.get("testSimpleKeyFileAlias.testSimpleKeyFileSubName"));
+        assertEquals(1, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
+        assertEquals("testSimpleKeyFileValue", simpleKeyFile.props.get("testSimpleKeyFileAlias.testSimpleKeyFileSubName"),
+                "simpleKeyFile.props.get(\"testSimpleKeyFileAlias.testSimpleKeyFileSubName\")");
     }
 
     @Test
@@ -179,8 +179,8 @@ public class SimpleKeyFileTest {
             simpleKeyFile.setProperty("testSimpleKeyFileAlias", "testSimpleKeyFileSubName", null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("simpleKeyFile.props.size()", 0, simpleKeyFile.props.size());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
         }
     }
 
@@ -191,9 +191,9 @@ public class SimpleKeyFileTest {
             simpleKeyFile.store();
             fail("Expected SecureKeyStoreException to be thrown");
         } catch (SecureKeyStore.SecureKeyStoreException ex) {
-            assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertNull("simpleKeyFile.file", simpleKeyFile.file);
+            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertNull(simpleKeyFile.file, "simpleKeyFile.file");
         }
     }
 }

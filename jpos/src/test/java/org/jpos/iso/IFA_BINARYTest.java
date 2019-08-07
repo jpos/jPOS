@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,15 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IFA_BINARYTest extends TestCase
-{
+public class IFA_BINARYTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOBinaryField field = new ISOBinaryField(12, new byte[] {0x12, 0x34});
@@ -32,6 +34,7 @@ public class IFA_BINARYTest extends TestCase
         TestUtils.assertEquals("1234".getBytes(), packager.pack(field));
     }
 
+    @Test
     public void testPackWrongLength() throws Exception
     {
         try
@@ -47,6 +50,7 @@ public class IFA_BINARYTest extends TestCase
         }
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = "1234".getBytes();
@@ -56,6 +60,7 @@ public class IFA_BINARYTest extends TestCase
         TestUtils.assertEquals(new byte[] {0x12, 0x34}, (byte[])field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         byte[] origin = new byte[] {0x12, 0x34, 0x56, 0x78};

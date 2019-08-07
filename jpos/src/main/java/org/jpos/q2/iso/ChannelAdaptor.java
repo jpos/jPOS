@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package org.jpos.q2.iso;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.core.handlers.exception.ExceptionHandlerAware;
 import org.jpos.core.handlers.exception.ExceptionHandlerConfigAware;
 import org.jpos.iso.*;
@@ -190,8 +191,8 @@ public class ChannelAdaptor
     public ISOChannel newChannel (Element e, QFactory f) 
         throws ConfigurationException
     {
-        String channelName  = e.getAttributeValue ("class");
-        String packagerName = e.getAttributeValue ("packager");
+        String channelName  = QFactory.getAttributeValue (e, "class");
+        String packagerName = QFactory.getAttributeValue (e, "packager");
 
         ISOChannel channel   = (ISOChannel) f.newInstance (channelName);
         ISOPackager packager;
@@ -200,7 +201,7 @@ public class ChannelAdaptor
             channel.setPackager (packager);
             f.setConfiguration (packager, e);
         }
-        QFactory.invoke (channel, "setHeader", e.getAttributeValue ("header"));
+        QFactory.invoke (channel, "setHeader", QFactory.getAttributeValue (e, "header"));
         f.setLogger        (channel, e);
         f.setConfiguration (channel, e);
 
@@ -222,11 +223,11 @@ public class ChannelAdaptor
     {
         for (Object o : e.getChildren("filter")) {
             Element f = (Element) o;
-            String clazz = f.getAttributeValue("class");
+            String clazz = QFactory.getAttributeValue(f, "class");
             ISOFilter filter = (ISOFilter) fact.newInstance(clazz);
             fact.setLogger(filter, f);
             fact.setConfiguration(filter, f);
-            String direction = f.getAttributeValue("direction");
+            String direction = QFactory.getAttributeValue(f, "direction");
             if (direction == null)
                 channel.addFilter(filter);
             else if ("incoming".equalsIgnoreCase(direction))
@@ -263,21 +264,21 @@ public class ChannelAdaptor
     protected void initSpaceAndQueues () throws ConfigurationException {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space"));
-        in      = persist.getChildTextTrim ("in");
-        out     = persist.getChildTextTrim ("out");
+        in      = Environment.get(persist.getChildTextTrim ("in"));
+        out     = Environment.get(persist.getChildTextTrim ("out"));
         writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
         if (in == null || (out == null && !writeOnly)) {
             throw new ConfigurationException ("Misconfigured channel. Please verify in/out queues");
         }
-        String s = persist.getChildTextTrim ("reconnect-delay");
+        String s = Environment.get(persist.getChildTextTrim ("reconnect-delay"));
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
-        keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
-        ignoreISOExceptions = "yes".equalsIgnoreCase (persist.getChildTextTrim ("ignore-iso-exceptions"));
-        String t = persist.getChildTextTrim("timeout");
+        keepAlive = "yes".equalsIgnoreCase (Environment.get(persist.getChildTextTrim ("keep-alive")));
+        ignoreISOExceptions = "yes".equalsIgnoreCase (Environment.get(persist.getChildTextTrim ("ignore-iso-exceptions")));
+        String t = Environment.get(persist.getChildTextTrim("timeout"));
         timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
         ready   = getName() + ".ready";
         reconnect = getName() + ".reconnect";
-        waitForWorkersOnStop = "yes".equalsIgnoreCase(persist.getChildTextTrim ("wait-for-workers-on-stop"));
+        waitForWorkersOnStop = "yes".equalsIgnoreCase(Environment.get(persist.getChildTextTrim ("wait-for-workers-on-stop")));
     }
 
     @SuppressWarnings("unchecked")
@@ -335,6 +336,8 @@ public class ChannelAdaptor
                         sp.out (out, m, timeout);
                     else
                         sp.out (out, m);
+                } catch (ISOFilter.VetoException e) {
+                    getLog().warn ("channel-receiver-"+out+"-veto-exception", e.getMessage());
                 } catch (ISOException e) {
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);

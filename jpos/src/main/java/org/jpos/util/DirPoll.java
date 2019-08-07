@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,9 +25,7 @@ import org.jpos.iso.ISOException;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * DirPoll operates on a set of directories which defaults to
@@ -75,6 +73,7 @@ public class DirPoll extends SimpleLogSource
     private String archiveDateFormat;
     private boolean acceptZeroLength = false;
     private boolean regexPriorityMatching = false;
+    private List<String> poolBatchFiles = new ArrayList<>();
 
     public DirPoll () {
         prio = new Vector();
@@ -366,12 +365,28 @@ public class DirPoll extends SimpleLogSource
     }
 
     protected File scan() {
-        for (currentPriority=0; 
-            currentPriority < prio.size(); currentPriority++)
-        {
-            String files[] = requestDir.list(this);
-            if (files != null && files.length > 0)
-                return new File(requestDir, files[0]);
+        if (prio.size() > 1) {
+            for (currentPriority = 0; currentPriority < prio.size(); currentPriority++) {
+                if (poolBatchFiles.isEmpty()) {
+                    String[] files = requestDir.list(this);
+                    if (files != null && files.length > 0) {
+                        poolBatchFiles = new ArrayList(Arrays.asList(files));
+                        return new File(requestDir, poolBatchFiles.remove(0));
+                    }
+                } else {
+                    return new File(requestDir, poolBatchFiles.remove(0));
+                }
+            }
+        } else {
+            if (poolBatchFiles.isEmpty()) {
+                String[] files = requestDir.list();
+                if (files != null && files.length > 0) {
+                    poolBatchFiles = new ArrayList(Arrays.asList(files));
+                    return new File(requestDir, poolBatchFiles.remove(0));
+                }
+            } else {
+                return new File(requestDir, poolBatchFiles.remove(0));
+            }
         }
         return null;
     }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,16 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IFB_LLLHCHARTest extends TestCase
-{
+public class IFB_LLLHCHARTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(10, "ABCDEFGHIJ");
@@ -34,6 +37,7 @@ public class IFB_LLLHCHARTest extends TestCase
             packager.pack(field));
     }
 
+    @Test
     public void testPackagerTooLong() throws Exception
     {
         try
@@ -45,6 +49,7 @@ public class IFB_LLLHCHARTest extends TestCase
         }
     }
 
+    @Test
     public void testPackTooMuch() throws Exception
     {
         ISOField field = new ISOField(10, "ABCDEFGHIJ");
@@ -58,6 +63,7 @@ public class IFB_LLLHCHARTest extends TestCase
         }
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {0x00, 0x0A, 0x41, 0x42, 0x43, 0x44,
@@ -68,6 +74,7 @@ public class IFB_LLLHCHARTest extends TestCase
         assertEquals("ABCDEFGHIJ", (String) field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         String origin = "Abc123:.-";

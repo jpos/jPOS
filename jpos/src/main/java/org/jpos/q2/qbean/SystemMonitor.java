@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package org.jpos.q2.qbean;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
@@ -194,6 +195,7 @@ public class SystemMonitor extends QBeanSupport
           System.getProperty("java.vendor"),
           maxKeyLength == Integer.MAX_VALUE ? "secure" : Integer.toString(maxKeyLength)
         );
+        p.printf ("%s  environment: %s%n", indent, Environment.getEnvironment().getName());
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
         p.printf ("%s    user name: %s%n", indent, System.getProperty("user.name"));
         p.printf ("%s         host: %s%n", indent, getLocalHost());
@@ -268,7 +270,8 @@ public class SystemMonitor extends QBeanSupport
             NameRegistrar.getAsMap().forEach((key, value) -> {
                 if (value instanceof MetricsProvider) {
                     Metrics metrics = ((MetricsProvider) value).getMetrics();
-                    metrics.dumpHistograms(dir, key + "-");
+                    if (metrics != null)
+                        metrics.dumpHistograms(dir, key + "-");
                 }
             });
         }

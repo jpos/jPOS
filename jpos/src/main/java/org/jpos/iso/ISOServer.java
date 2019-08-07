@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -258,7 +258,7 @@ public class ISOServer extends Observable
             if (c != null) {
                 try {
                     c.disconnect ();
-                    fireEvent(new ISOServerClientDisconnectEvent(this));
+                    fireEvent(new ISOServerClientDisconnectEvent(this, c));
                 } catch (IOException e) {
                     Logger.log (new LogEvent (this, "shutdown", e));
                 }
@@ -378,10 +378,10 @@ public class ISOServer extends Observable
             }
             try {
                 channel.disconnect();
-                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this));
+                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
             } catch (IOException ex) {
                 Logger.log (new LogEvent (this, "session-error", ex));
-                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this));
+                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
             }
             Logger.log (new LogEvent (this, "session-end"));
         }
@@ -514,7 +514,7 @@ public class ISOServer extends Observable
                         pool.execute (createSession(channel));
                         setChanged ();
                         notifyObservers (this);
-                        fireEvent(new ISOServerAcceptEvent(this));
+                        fireEvent(new ISOServerAcceptEvent(this, channel));
                         if (channel instanceof Observable) {
                             ((Observable)channel).addObserver (this);
                         }
@@ -795,8 +795,23 @@ public class ISOServer extends Observable
     }
 
     public synchronized void fireEvent(EventObject event) {
-        for (ISOServerEventListener l : serverListeners)
-            l.handleISOServerEvent(event);
+        for (ISOServerEventListener l : serverListeners) {
+            try {
+                l.handleISOServerEvent(event);
+            }
+            catch (Exception ignore) {
+                /*
+                 * Don't want an exception from a handler to exit the loop or
+                 * let it bubble up.
+                 * If it bubbles up it can cause side effects like getting caught
+                 * in the throwable catch leading to server trying to listen on
+                 * the same port.
+                 * We don't want a side effect in jpos caused by custom user
+                 * handler code.
+                 */
+            }
+
+        }
     }
 }
 

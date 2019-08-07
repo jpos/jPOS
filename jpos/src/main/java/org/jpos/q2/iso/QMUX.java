@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2018 jPOS Software SRL
+ * Copyright (C) 2000-2019 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package org.jpos.q2.iso;
 import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
@@ -67,28 +68,29 @@ public class QMUX
         Element e = getPersist ();
         sp        = grabSpace (e.getChild ("space"));
         isp       = cfg.getBoolean("reuse-space", false) ? sp : new TSpace();
-        in        = e.getChildTextTrim ("in");
-        out       = e.getChildTextTrim ("out");
+        in        = Environment.get(e.getChildTextTrim ("in"));
+        out       = Environment.get(e.getChildTextTrim ("out"));
+
         if (in == null || out == null) {
             throw new ConfigurationException ("Misconfigured QMUX. Please verify in/out queues");
         }
-        ignorerc  = e.getChildTextTrim ("ignore-rc");
+        ignorerc  = Environment.get(e.getChildTextTrim ("ignore-rc"));
         key = toStringArray(DEFAULT_KEY, ", ", null);
         returnRejects = cfg.getBoolean("return-rejects", false);
         for (Element keyElement : e.getChildren("key")) {
-            String mtiOverride = keyElement.getAttributeValue("mti");
+            String mtiOverride = QFactory.getAttributeValue(keyElement, "mti");
             if (mtiOverride != null && mtiOverride.length() >= 2) {
                 mtiKey.put (mtiOverride.substring(0,2), toStringArray(keyElement.getTextTrim(), ", ", null));
             } else {
                 key = toStringArray(e.getChildTextTrim("key"), ", ", DEFAULT_KEY);
             }
         }
-        ready     = toStringArray(e.getChildTextTrim ("ready"));
-        mtiMapping = toStringArray(e.getChildTextTrim ("mtimapping"));
+        ready     = toStringArray(Environment.get(e.getChildTextTrim ("ready")));
+        mtiMapping = toStringArray(Environment.get(e.getChildTextTrim ("mtimapping")));
         if (mtiMapping == null || mtiMapping.length != 3) 
             mtiMapping = new String[] { nomap, nomap, "0022446789" };
         addListeners ();
-        unhandled = e.getChildTextTrim ("unhandled");
+        unhandled = Environment.get(e.getChildTextTrim ("unhandled"));
         NameRegistrar.register ("mux."+getName (), this);
     }
     public void startService () {
@@ -197,12 +199,28 @@ public class QMUX
             sp.out (out, m);
         synchronized (this) { tx++; rxPending++; }
     }
+
+    protected boolean isNotifyEligible(ISOMsg msg) {
+        if (returnRejects)
+            return true;
+
+        try {
+            return msg.isResponse();
+        } catch (RuntimeException | ISOException ex) {
+            // * ArrayIndexOutOfBoundsException - It may occur for messages where
+            // MTI is not standard 4 characters (eg. FSDISOMsg), then notification is expected.
+            // * ISOException: When there is no field 0, the error should be logged
+            return true;
+        }
+    }
+
+    @Override
     public void notify (Object k, Object value) {
         Object obj = sp.inp (k);
         if (obj instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) obj;
             try {
-                if (returnRejects || m.isResponse()) {
+                if (isNotifyEligible(m)) {
                     String key = getKey (m);
                     String req = key + ".req";
                     Object r = isp.inp (req);
@@ -308,17 +326,16 @@ public class QMUX
     public String[] getReadyIndicatorNames() {
         return ready;
     }
-    private void addListeners () 
-        throws ConfigurationException
-    {
+
+    private void addListeners() throws ConfigurationException {
+        List<Element> rlisten = getPersist().getChildren("request-listener");
+        if (rlisten.isEmpty())
+            return;
+
         QFactory factory = getFactory ();
-        Iterator iter = getPersist().getChildren (
-            "request-listener"
-        ).iterator();
-        while (iter.hasNext()) {
-            Element l = (Element) iter.next();
+        for (Element l : rlisten) {
             ISORequestListener listener = (ISORequestListener) 
-                factory.newInstance (l.getAttributeValue ("class"));
+                factory.newInstance (QFactory.getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
             addISORequestListener (listener);
