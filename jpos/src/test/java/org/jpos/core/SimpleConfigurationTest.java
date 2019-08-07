@@ -487,12 +487,15 @@ public class SimpleConfigurationTest {
 
     @Test
     public void testReadEnvironmentVariable () {
+        String envVarName = "HOME";
+        if (System.getProperty("os.name").startsWith("Windows")) envVarName = "OS";
+        
         SimpleConfiguration cfg = new SimpleConfiguration();
-        cfg.put("home", "$env{HOME}");
-        assertEquals(System.getenv("HOME"), cfg.get("home"));
-        cfg.put("home", "${HOME}");
-        assertEquals(System.getenv("HOME"), cfg.get("home"));
-        cfg.put("home", "$sys{HOME}");
+        cfg.put("home", "$env{"+envVarName+"}");
+        assertEquals(System.getenv(envVarName), cfg.get("home"));
+        cfg.put("home", "${"+envVarName+"}");
+        assertEquals(System.getenv(envVarName), cfg.get("home"));
+        cfg.put("home", "$sys{"+envVarName+"}");
         assertTrue(cfg.get("home").isEmpty());
     }
 
