@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.1.0'
-        classpath 'org.owasp:dependency-check-gradle:5.0.0-M2'
+        classpath 'org.owasp:dependency-check-gradle:5.2.1'
     }
 }
 apply plugin: 'biz.aQute.bnd.builder'
