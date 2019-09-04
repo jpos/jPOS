@@ -813,7 +813,9 @@ public class ISOMsg extends ISOComponent
             for (String fpath : fpaths) {
                 try {
                     ISOComponent component = getComponent(fpath);
-                    if (component != null) {
+                    if (component instanceof ISOMsg) {
+                        m.set(fpath, (ISOMsg)((ISOMsg)component).clone());
+                    } else if (component != null) {
                         m.set(fpath, component);
                     }
                 } catch (ISOException ignored) {
