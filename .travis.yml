@@ -14,7 +14,7 @@ install: true
 script:
   - java -version
   - ulimit -a
-  - TERM=dumb ./gradlew jpos:assemble jpos:check --info
+  - TERM=dumb ./gradlew jpos:assemble jpos:check --info --no-parallel
 deploy:
   provider: script
   script: bash .travis/update-gh-pages.sh
