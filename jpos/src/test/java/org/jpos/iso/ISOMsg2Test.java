@@ -107,7 +107,7 @@ public class ISOMsg2Test {
     public void testCloneThrowsNullPointerException() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         try {
-            iSOMsg.clone(null);
+            iSOMsg.clone((int[])null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull(ex.getMessage(), "ex.getMessage()");
