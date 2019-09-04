@@ -365,11 +365,12 @@ public class ISOMsg extends ISOComponent
         if (fields.remove (fldno) != null)
             dirty = maxFieldDirty = true;
     }
+
     /**
      * Unsets several fields at once
      * @param flds - array of fields to be unset from this ISOMsg
      */
-    public void unset (int[] flds) {
+    public void unset (int ... flds) {
         for (int fld : flds)
             unset(fld);
     }
@@ -408,6 +409,16 @@ public class ISOMsg extends ISOComponent
         }
     }
 
+    /**
+     * Unset a a set of fields referenced by fpaths if any ot them exist, otherwise ignore.
+     *
+     * @param fpaths dot-separated field paths (i.e. 63.2)
+     */
+    public void unset(String ... fpaths) {
+        for (String fpath : fpaths) {
+            unset(fpath);
+        }
+    }
     /**
      * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
      * getComposite(). A <b>Composite component</b> returns itself and
@@ -771,7 +782,7 @@ public class ISOMsg extends ISOComponent
      * @return new ISOMsg instance
      */
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public Object clone(int[] fields) {
+    public Object clone(int ... fields) {
         try {
             ISOMsg m = (ISOMsg) super.clone();
             m.fields = new TreeMap();
@@ -782,6 +793,33 @@ public class ISOMsg extends ISOComponent
                     } catch (ISOException ignored) {
                         // should never happen
                     }
+                }
+            }
+            return m;
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError();
+        }
+    }
+
+    /**
+     * Partially clone an ISOMsg by field paths
+     * @param fpaths string array of field paths to copy
+     * @return new ISOMsg instance
+     */
+    public ISOMsg clone(String ... fpaths) {
+        try {
+            ISOMsg m = (ISOMsg) super.clone();
+            m.fields = new TreeMap();
+            for (String fpath : fpaths) {
+                try {
+                    ISOComponent component = getComponent(fpath);
+                    if (component instanceof ISOMsg) {
+                        m.set(fpath, (ISOMsg)((ISOMsg)component).clone());
+                    } else if (component != null) {
+                        m.set(fpath, component);
+                    }
+                } catch (ISOException ignored) {
+                    //should never happen
                 }
             }
             return m;
