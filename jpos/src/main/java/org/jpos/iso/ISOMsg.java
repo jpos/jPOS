@@ -778,7 +778,12 @@ public class ISOMsg extends ISOComponent
             for (int field : fields) {
                 if (hasField(field)) {
                     try {
-                        m.set(getComponent(field));
+                        ISOComponent c = getComponent(field);
+                        if (c instanceof ISOMsg) {
+                            m.set((ISOMsg)((ISOMsg)c).clone());
+                        } else {
+                            m.set(c);
+                        }
                     } catch (ISOException ignored) {
                         // should never happen
                     }
