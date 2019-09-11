@@ -25,6 +25,7 @@ import org.jpos.q2.Q2;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -97,6 +98,8 @@ public class Logger implements LogProducer,Configurable
             while (i.hasNext() && evt != null) {
                 try {
                     evt = ((LogListener) i.next()).log(evt);
+                } catch (ConcurrentModificationException e) {
+                    break;
                 } catch (Throwable t) {
                     evt.addMessage (t);
                 }
