@@ -42,16 +42,18 @@ public class CheckFields implements TransactionParticipant, Configurable {
     private Pattern PCODE_PATTERN = Pattern.compile("^[\\d|\\w]{6}$");
     private Pattern TID_PATTERN = Pattern.compile("^[\\w\\s]{1,16}");
     private Pattern MID_PATTERN = Pattern.compile("^[\\w\\s]{1,15}");
-    private Pattern TIMESTAMP_PATTERN = Pattern.compile("^\\d{10}");
+    private Pattern TRANSMISSION_TIMESTAMP_PATTERN = Pattern.compile("^\\d{10}");
+    private Pattern LOCAL_TIMESTAMP_PATTERN = Pattern.compile("^\\d{14}");
     private Pattern CAPTUREDATE_PATTERN = Pattern.compile("^\\d{4}");
     private Pattern ORIGINAL_DATA_ELEMENTS_PATTERN = Pattern.compile("^\\d{30,41}$");
     private boolean ignoreCardValidation = false;
+    private boolean allowExtraFields = false;
 
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
         Result rc = ctx.getResult();
         try {
-            ISOMsg m = (ISOMsg) ctx.get (request);
+            ISOMsg m = ctx.get (request);
             if (m == null) {
                 ctx.getResult().fail(CMF.INVALID_TRANSACTION, Caller.info(), "'%s' not available in Context", request);
                 return ABORTED | NO_JOIN | READONLY;
@@ -59,7 +61,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
             Set<String> validFields = new HashSet<>();
             assertFields (ctx, m, cfg.get ("mandatory", ""), true, validFields, rc);
             assertFields (ctx, m, cfg.get ("optional", ""), false, validFields, rc);
-            assertNoExtraFields (m, validFields, rc);
+            if (!allowExtraFields) assertNoExtraFields (m, validFields, rc);
         } catch (Throwable t) {
             rc.fail(CMF.SYSTEM_ERROR, Caller.info(), t.getMessage());
             ctx.log(t);
@@ -71,6 +73,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
         this.cfg = cfg;
         request = cfg.get ("request", ContextConstants.REQUEST.toString());
         ignoreCardValidation = cfg.getBoolean("ignore-card-validation", false);
+        allowExtraFields = cfg.getBoolean("allow-extra-fields", false);
     }
 
     private void assertFields(Context ctx, ISOMsg m, String fields, boolean mandatory, Set<String> validFields, Result rc) {
@@ -96,10 +99,10 @@ public class CheckFields implements TransactionParticipant, Configurable {
                         putMid(ctx, m, mandatory, validFields, rc);
                         break;
                     case TRANSMISSION_TIMESTAMP:
-                        putTimestamp(ctx, m, TRANSMISSION_TIMESTAMP.toString(), 7, mandatory, validFields, rc);
+                        putTimestamp(ctx, m, TRANSMISSION_TIMESTAMP.toString(), 7, TRANSMISSION_TIMESTAMP_PATTERN, mandatory, validFields, rc);
                         break;
                     case TRANSACTION_TIMESTAMP:
-                        putTimestamp(ctx, m, TRANSACTION_TIMESTAMP.toString(), 12, mandatory, validFields, rc);
+                        putTimestamp(ctx, m, TRANSACTION_TIMESTAMP.toString(), 12, LOCAL_TIMESTAMP_PATTERN, mandatory, validFields, rc);
                         break;
                     case POS_DATA_CODE:
                         putPDC(ctx, m, mandatory, validFields, rc);
@@ -126,7 +129,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
         }
     }
     private void assertNoExtraFields (ISOMsg m, Set validFields, Result rc) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i=1; i<=m.getMaxField(); i++) { // we start at 1, MTI is always valid
             String s = Integer.toString (i);
             if (m.hasField(i) && !validFields.contains (s)) {
@@ -207,11 +210,11 @@ public class CheckFields implements TransactionParticipant, Configurable {
             rc.fail(CMF.MISSING_FIELD, Caller.info(), "MID");
         }
     }
-    private void putTimestamp (Context ctx, ISOMsg m, String key, int fieldNumber, boolean mandatory, Set<String> validFields, Result rc) {
+    private void putTimestamp (Context ctx, ISOMsg m, String key, int fieldNumber, Pattern ptrn, boolean mandatory, Set<String> validFields, Result rc) {
         if (m.hasField(fieldNumber)) {
             String s = m.getString(fieldNumber);
             validFields.add(Integer.toString(fieldNumber));
-            if (TIMESTAMP_PATTERN.matcher(s).matches())
+            if (ptrn.matcher(s).matches())
                 ctx.put (key, ISODate.parseISODate(s));
             else
                 rc.fail(CMF.INVALID_FIELD, Caller.info(), "Invalid %s '%s'", key, s);

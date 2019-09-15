@@ -18,16 +18,16 @@
 
 package org.jpos.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TagsTest {
     @Test
@@ -51,10 +51,10 @@ public class TagsTest {
     @Test
     public void testNullTags() {
         Tags ts = new Tags((String) null);
-        assertEquals("size=0", 0, ts.size());
-        assertEquals("empty tags", new Tags(), ts);
-        assertEquals("empty tags \"\"", new Tags(""), ts);
-        assertEquals("empty tags (blank)", new Tags(" "), ts);
+        assertEquals(0, ts.size(), "size=0");
+        assertEquals(new Tags(), ts, "empty tags");
+        assertEquals(new Tags(""), ts, "empty tags \"\"");
+        assertEquals(new Tags(" "), ts, "empty tags (blank)");
     }
 
     @Test

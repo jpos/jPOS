@@ -27,20 +27,20 @@ import org.jpos.transaction.Context;
 import org.jpos.transaction.ContextConstants;
 import org.jpos.transaction.TransactionConstants;
 import org.jpos.util.NameRegistrar;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QueryHostTest implements TransactionConstants, MUX {
     private QueryHost queryHost;
     private Configuration cfg;
     private long stan;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         cfg = new SimpleConfiguration();
         queryHost = new QueryHost();
@@ -58,7 +58,7 @@ public class QueryHostTest implements TransactionConstants, MUX {
         int action = queryHost.prepare(1L, ctx);
         assertTrue(action == (PREPARED | READONLY | PAUSE | NO_JOIN));
         assertNotNull (ctx.get(ContextConstants.RESPONSE.toString(), 1000));
-        assertFalse ("Should not have failures", ctx.getResult().hasFailures());
+        assertFalse (ctx.getResult().hasFailures(), "Should not have failures");
     }
 
     @Test
@@ -71,7 +71,7 @@ public class QueryHostTest implements TransactionConstants, MUX {
         int action = queryHost.prepare(1L, ctx);
         assertTrue(action == (PREPARED | READONLY | NO_JOIN));
         assertNotNull (ctx.get(ContextConstants.RESPONSE.toString(), 1000));
-        assertFalse ("Should not have failures", ctx.getResult().hasFailures());
+        assertFalse (ctx.getResult().hasFailures(), "Should not have failures");
     }
 
     @Test
@@ -83,7 +83,7 @@ public class QueryHostTest implements TransactionConstants, MUX {
         int action = queryHost.prepare(1L, ctx);
         assertTrue(action == FAIL);
         assertNull (ctx.get(ContextConstants.RESPONSE.toString()));
-        assertTrue ("has Failures", ctx.getResult().hasFailures());
+        assertTrue (ctx.getResult().hasFailures(), "has Failures");
         assertTrue (ctx.getResult().failure().getIrc() == CMF.INVALID_REQUEST);
     }
 
@@ -96,7 +96,7 @@ public class QueryHostTest implements TransactionConstants, MUX {
         int action = queryHost.prepare(1L, ctx);
         assertTrue(action == FAIL);
         assertNull (ctx.get(ContextConstants.RESPONSE.toString()));
-        assertTrue ("has Failures", ctx.getResult().hasFailures());
+        assertTrue (ctx.getResult().hasFailures(), "has Failures");
         assertTrue (ctx.getResult().failure().getIrc() == CMF.MISCONFIGURED_ENDPOINT);
     }
 

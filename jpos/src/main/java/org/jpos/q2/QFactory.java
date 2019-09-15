@@ -115,10 +115,10 @@ public class QFactory {
             if (obj instanceof QBean) 
                 mserver.invoke (objectName, "init",  null, null);
         }
-        catch (ConfigurationException ce) {
+        catch (Throwable t) {
             mserver.unregisterMBean(objectName);
-            ce.fillInStackTrace();
-            throw ce;
+            t.fillInStackTrace();
+            throw t;
         }
 
         return instance;

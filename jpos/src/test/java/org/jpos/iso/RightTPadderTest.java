@@ -18,31 +18,34 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import static org.apache.commons.lang3.JavaVersion.JAVA_1_8;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
+import org.junit.jupiter.api.Test;
 
 public class RightTPadderTest {
 
     @Test
     public void testPad() throws Throwable {
         String result = new RightTPadder(' ').pad("10Characte", 10);
-        assertEquals("result", "10Characte", result);
+        assertEquals("10Characte", result, "result");
     }
 
     @Test
     public void testPad1() throws Throwable {
         String result = RightTPadder.SPACE_PADDER.pad("", 100);
-        assertEquals("result",
-                "                                                                                                    ", result);
+        assertEquals("                                                                                                    ",
+                result, "result");
     }
 
     @Test
     public void testPad2() throws Throwable {
         String result = new RightTPadder(' ').pad("testRightTPadderData", 0);
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
@@ -51,7 +54,7 @@ public class RightTPadderTest {
             new RightTPadder(' ').pad(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -61,7 +64,11 @@ public class RightTPadderTest {
             new RightTPadder(' ').pad("testRightTPadderData", -1);
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "String index out of range: -1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_1_8)) {
+                assertEquals("String index out of range: -1", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("begin 0, end -1, length 20", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 }

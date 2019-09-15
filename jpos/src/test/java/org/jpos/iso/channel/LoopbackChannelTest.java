@@ -18,19 +18,19 @@
 
 package org.jpos.iso.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.packager.GenericPackager;
 import org.jpos.util.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LoopbackChannelTest {
 
@@ -38,33 +38,33 @@ public class LoopbackChannelTest {
     public void testConnect() throws Throwable {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
         loopbackChannel.connect();
-        assertEquals("loopbackChannel.getCounters()[0]", 1, loopbackChannel.getCounters()[0]);
-        assertEquals("loopbackChannel.getCounters().length", 3, loopbackChannel.getCounters().length);
-        assertTrue("loopbackChannel.usable", loopbackChannel.usable);
+        assertEquals(1, loopbackChannel.getCounters()[0], "loopbackChannel.getCounters()[0]");
+        assertEquals(3, loopbackChannel.getCounters().length, "loopbackChannel.getCounters().length");
+        assertTrue(loopbackChannel.usable, "loopbackChannel.usable");
     }
 
     @Test
     public void testConstructor() throws Throwable {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
-        assertEquals("loopbackChannel.getOutgoingFilters().size()", 0, loopbackChannel.getOutgoingFilters().size());
-        assertEquals("loopbackChannel.queue.consumerCount()", 0, loopbackChannel.queue.consumerCount());
-        assertEquals("loopbackChannel.getIncomingFilters().size()", 0, loopbackChannel.getIncomingFilters().size());
-        assertEquals("loopbackChannel.getCounters().length", 3, loopbackChannel.getCounters().length);
-        assertTrue("loopbackChannel.usable", loopbackChannel.usable);
+        assertEquals(0, loopbackChannel.getOutgoingFilters().size(), "loopbackChannel.getOutgoingFilters().size()");
+        assertEquals(0, loopbackChannel.queue.consumerCount(), "loopbackChannel.queue.consumerCount()");
+        assertEquals(0, loopbackChannel.getIncomingFilters().size(), "loopbackChannel.getIncomingFilters().size()");
+        assertEquals(3, loopbackChannel.getCounters().length, "loopbackChannel.getCounters().length");
+        assertTrue(loopbackChannel.usable, "loopbackChannel.usable");
     }
 
     @Test
     public void testDisconnect() throws Throwable {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
         loopbackChannel.disconnect();
-        assertFalse("loopbackChannel.usable", loopbackChannel.usable);
+        assertFalse(loopbackChannel.usable, "loopbackChannel.usable");
     }
 
     @Test
     public void testGetCounters() throws Throwable {
         int[] result = new LoopbackChannel().getCounters();
-        assertEquals("result.length", 3, result.length);
-        assertEquals("result[0]", 0, result[0]);
+        assertEquals(3, result.length, "result.length");
+        assertEquals(0, result[0], "result[0]");
     }
 
     @Test
@@ -73,13 +73,13 @@ public class LoopbackChannelTest {
         Logger logger = new Logger();
         loopbackChannel.setLogger(logger, "testLoopbackChannelRealm");
         Logger result = loopbackChannel.getLogger();
-        assertSame("result", logger, result);
+        assertSame(logger, result, "result");
     }
 
     @Test
     public void testGetPackager() throws Throwable {
         ISOPackager result = new LoopbackChannel().getPackager();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -87,33 +87,33 @@ public class LoopbackChannelTest {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
         loopbackChannel.setLogger(new Logger(), "testLoopbackChannelRealm");
         String result = loopbackChannel.getRealm();
-        assertEquals("result", "testLoopbackChannelRealm", result);
+        assertEquals("testLoopbackChannelRealm", result, "result");
     }
 
     @Test
     public void testGetRealm1() throws Throwable {
         String result = new LoopbackChannel().getRealm();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testIsConnected() throws Throwable {
         boolean result = new LoopbackChannel().isConnected();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testReconnect() throws Throwable {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
         loopbackChannel.reconnect();
-        assertTrue("loopbackChannel.usable", loopbackChannel.usable);
+        assertTrue(loopbackChannel.usable, "loopbackChannel.usable");
     }
 
     @Test
     public void testResetCounters() throws Throwable {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
         loopbackChannel.resetCounters();
-        assertEquals("loopbackChannel.getCounters().length", 3, loopbackChannel.getCounters().length);
+        assertEquals(3, loopbackChannel.getCounters().length, "loopbackChannel.getCounters().length");
     }
 
     @Test
@@ -124,10 +124,10 @@ public class LoopbackChannelTest {
             loopbackChannel.send(new ISOMsg(100));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "unconnected ISOChannel", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
-            assertEquals("loopbackChannel.queue.consumerCount()", 0, loopbackChannel.queue.consumerCount());
-            assertEquals("loopbackChannel.getCounters().length", 3, loopbackChannel.getCounters().length);
+            assertEquals("unconnected ISOChannel", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
+            assertEquals(0, loopbackChannel.queue.consumerCount(), "loopbackChannel.queue.consumerCount()");
+            assertEquals(3, loopbackChannel.getCounters().length, "loopbackChannel.getCounters().length");
         }
     }
 
@@ -138,9 +138,9 @@ public class LoopbackChannelTest {
             loopbackChannel.send((ISOMsg) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("loopbackChannel.queue.consumerCount()", 0, loopbackChannel.queue.consumerCount());
-            assertEquals("loopbackChannel.getCounters().length", 3, loopbackChannel.getCounters().length);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, loopbackChannel.queue.consumerCount(), "loopbackChannel.queue.consumerCount()");
+            assertEquals(3, loopbackChannel.getCounters().length, "loopbackChannel.getCounters().length");
         }
     }
 
@@ -149,28 +149,28 @@ public class LoopbackChannelTest {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
         Logger logger = new Logger();
         loopbackChannel.setLogger(logger, "testLoopbackChannelRealm");
-        assertSame("loopbackChannel.logger", logger, loopbackChannel.logger);
-        assertEquals("loopbackChannel.realm", "testLoopbackChannelRealm", loopbackChannel.realm);
+        assertSame(logger, loopbackChannel.logger, "loopbackChannel.logger");
+        assertEquals("testLoopbackChannelRealm", loopbackChannel.realm, "loopbackChannel.realm");
     }
 
     @Test
     public void testSetName() throws Throwable {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
         loopbackChannel.setName("testLoopbackChannelName");
-        assertEquals("loopbackChannel.name", "testLoopbackChannelName", loopbackChannel.name);
+        assertEquals("testLoopbackChannelName", loopbackChannel.name, "loopbackChannel.name");
     }
 
     @Test
     public void testSetPackager() throws Throwable {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
         loopbackChannel.setPackager(new GenericPackager());
-        assertNull("loopbackChannel.getName()", loopbackChannel.getName());
+        assertNull(loopbackChannel.getName(), "loopbackChannel.getName()");
     }
 
     @Test
     public void testSetUsable() throws Throwable {
         LoopbackChannel loopbackChannel = new LoopbackChannel();
         loopbackChannel.setUsable(false);
-        assertFalse("loopbackChannel.usable", loopbackChannel.usable);
+        assertFalse(loopbackChannel.usable, "loopbackChannel.usable");
     }
 }

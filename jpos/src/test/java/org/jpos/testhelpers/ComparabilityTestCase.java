@@ -19,13 +19,13 @@
 package org.jpos.testhelpers;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import junit.framework.AssertionFailedError;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import org.opentest4j.AssertionFailedError;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Extend me in order to test a class's functional compliance with the
@@ -80,7 +80,7 @@ public abstract class ComparabilityTestCase<T extends Comparable<T>> {
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		less = createLessInstance();
 		equal1 = createEqualInstance();
@@ -88,16 +88,16 @@ public abstract class ComparabilityTestCase<T extends Comparable<T>> {
 		greater = createGreaterInstance();
 		// We want these assertions to yield errors, not failures.
 		try {
-			assertNotNull("createLessInstance() returned null", less);
-			assertNotNull("createEqualInstance() returned null", equal1);
-			assertNotNull("2nd createEqualInstance() returned null", equal2);
-			assertNotNull("createGreaterInstance() returned null", greater);
-			assertEquals("less and equal1 of different classes",
-					less.getClass(), equal1.getClass());
-			assertEquals("less and equal2 of different classes",
-					less.getClass(), equal2.getClass());
-			assertEquals("less and greater of different classes",
-					less.getClass(), greater.getClass());
+			assertNotNull(less, "createLessInstance() returned null");
+			assertNotNull(equal1, "createEqualInstance() returned null");
+			assertNotNull(equal2, "2nd createEqualInstance() returned null");
+			assertNotNull(greater, "createGreaterInstance() returned null");
+			assertEquals(less.getClass(), equal1.getClass(),
+					"less and equal1 of different classes");
+			assertEquals(less.getClass(), equal2.getClass(),
+					"less and equal2 of different classes");
+			assertEquals(less.getClass(), greater.getClass(),
+					"less and greater of different classes");
 			checkForEquality(equal1, equal2);
 		} catch (AssertionFailedError ex) {
 			throw new IllegalArgumentException(ex.getMessage());
@@ -110,8 +110,8 @@ public abstract class ComparabilityTestCase<T extends Comparable<T>> {
 	 * equivalent objects.
 	 */
 	protected void checkForEquality(T c1, T c2) {
-		Assert.assertNotSame("1st equal instance same as 2nd", c1, c2);
-		assertEquals("1st equal not equal to 2nd", equal1, equal2);
+		assertNotSame(c1, c2, "1st equal instance same as 2nd");
+		assertEquals(equal1, equal2, "1st equal not equal to 2nd");
 	}
 
 	/**
@@ -120,18 +120,18 @@ public abstract class ComparabilityTestCase<T extends Comparable<T>> {
 	 */
 	@Test
 	public final void testForReverseSigns() {
-		assertEquals("less vs. equal1", sgn(less.compareTo(equal1)),
-				-sgn(equal1.compareTo(less)));
-		assertEquals("less vs. equal2", sgn(less.compareTo(equal2)),
-				-sgn(equal2.compareTo(less)));
-		assertEquals("less vs. greater", sgn(less.compareTo(greater)),
-				-sgn(greater.compareTo(less)));
-		assertEquals("equal1 vs. equal2", sgn(equal1.compareTo(equal2)),
-				-sgn(equal2.compareTo(equal1)));
-		assertEquals("equal1 vs. greater", sgn(equal1.compareTo(greater)),
-				-sgn(greater.compareTo(equal1)));
-		assertEquals("equal2 vs. greater", sgn(equal2.compareTo(greater)),
-				-sgn(greater.compareTo(equal2)));
+		assertEquals(sgn(less.compareTo(equal1)),
+				-sgn(equal1.compareTo(less)), "less vs. equal1");
+		assertEquals(sgn(less.compareTo(equal2)),
+				-sgn(equal2.compareTo(less)), "less vs. equal2");
+		assertEquals(sgn(less.compareTo(greater)),
+				-sgn(greater.compareTo(less)), "less vs. greater");
+		assertEquals(sgn(equal1.compareTo(equal2)),
+				-sgn(equal2.compareTo(equal1)), "equal1 vs. equal2");
+		assertEquals(sgn(equal1.compareTo(greater)),
+				-sgn(greater.compareTo(equal1)), "equal1 vs. greater");
+		assertEquals(sgn(equal2.compareTo(greater)),
+				-sgn(greater.compareTo(equal2)), "equal2 vs. greater");
 	}
 
 	/**
@@ -140,10 +140,10 @@ public abstract class ComparabilityTestCase<T extends Comparable<T>> {
 	 */
 	@Test
 	public final void testForSameSigns() {
-		assertEquals("equal vs. less", sgn(equal1.compareTo(less)),
-				sgn(equal2.compareTo(less)));
-		assertEquals("equal vs. greater", sgn(equal1.compareTo(greater)),
-				sgn(equal2.compareTo(greater)));
+		assertEquals(sgn(equal1.compareTo(less)),
+				sgn(equal2.compareTo(less)), "equal vs. less");
+		assertEquals(sgn(equal1.compareTo(greater)),
+				sgn(equal2.compareTo(greater)), "equal vs. greater");
 	}
 
 	/**

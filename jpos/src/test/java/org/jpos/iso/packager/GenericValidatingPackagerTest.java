@@ -18,13 +18,16 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.ByteArrayInputStream;
 import java.util.EmptyStackException;
@@ -46,8 +49,8 @@ import org.jpos.iso.validator.ISOVException;
 import org.jpos.iso.validator.MSGTEST;
 import org.jpos.iso.validator.MSGTEST02;
 import org.jpos.iso.validator.TEST0100;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -59,44 +62,44 @@ public class GenericValidatingPackagerTest {
     @Test
     public void testConstructor() throws Throwable {
         GenericValidatingPackager genericValidatingPackager = new GenericValidatingPackager();
-        assertEquals("genericValidatingPackager.bitmapField", 1, genericValidatingPackager.bitmapField);
-        assertNull("genericValidatingPackager.getLogger()", genericValidatingPackager.getLogger());
-        assertEquals("genericValidatingPackager.inc", 500, GenericValidatingPackager.inc);
-        assertEquals("genericValidatingPackager.maxValidField", 128, genericValidatingPackager.maxValidField);
-        assertNull("genericValidatingPackager.getRealm()", genericValidatingPackager.getRealm());
-        assertTrue("genericValidatingPackager.emitBitmap", genericValidatingPackager.emitBitmap);
+        assertEquals(1, genericValidatingPackager.bitmapField, "genericValidatingPackager.bitmapField");
+        assertNull(genericValidatingPackager.getLogger(), "genericValidatingPackager.getLogger()");
+        assertEquals(500, GenericValidatingPackager.inc, "genericValidatingPackager.inc");
+        assertEquals(128, genericValidatingPackager.maxValidField, "genericValidatingPackager.maxValidField");
+        assertNull(genericValidatingPackager.getRealm(), "genericValidatingPackager.getRealm()");
+        assertTrue(genericValidatingPackager.emitBitmap, "genericValidatingPackager.emitBitmap");
     }
 
-    @Ignore("test fails - GenericValidatingPackager to be deprecated")
+    @Disabled("test fails - GenericValidatingPackager to be deprecated")
     @Test
     public void testConstructorThrowsISOException() throws Throwable {
         try {
             new GenericValidatingPackager("testGenericValidatingPackagerFileName");
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl",
-                    ex.getMessage());
-            assertEquals("ex.getNested().getMessage()", "SAX2 driver class org.apache.crimson.parser.XMLReaderImpl not found", ex
-                    .getNested().getMessage());
+            assertEquals("java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl",
+                    ex.getMessage(), "ex.getMessage()");
+            assertEquals("SAX2 driver class org.apache.crimson.parser.XMLReaderImpl not found", ex
+                    .getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
-    @Ignore("test fails - GenericValidatingPackager to be deprecated")
+    @Disabled("test fails - GenericValidatingPackager to be deprecated")
     @Test
     public void testConstructorThrowsISOException1() throws Throwable {
         try {
             new GenericValidatingPackager(new ByteArrayInputStream("x".getBytes()));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "org.xml.sax.SAXParseException: Content is not allowed in prolog.", ex.getMessage());
-            assertEquals("ex.getNested().getMessage()", "Content is not allowed in prolog.", ex.getNested().getMessage());
+            assertEquals("org.xml.sax.SAXParseException: Content is not allowed in prolog.", ex.getMessage(), "ex.getMessage()");
+            assertEquals("Content is not allowed in prolog.", ex.getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
     @Test
     public void testGenericValidatorContentHandlerConstructor() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
-        assertEquals("genericValidatorContentHandler.VALIDATOR_INDEX", -3, GenericValidatingPackager.GenericValidatorContentHandler.VALIDATOR_INDEX);
+        assertEquals(-3, GenericValidatingPackager.GenericValidatorContentHandler.VALIDATOR_INDEX, "genericValidatorContentHandler.VALIDATOR_INDEX");
     }
 
     @Test
@@ -104,7 +107,7 @@ public class GenericValidatingPackagerTest {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
         genericValidatorContentHandler.startDocument();
         genericValidatorContentHandler.endDocument();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -113,7 +116,7 @@ public class GenericValidatingPackagerTest {
             new GenericValidatingPackager().new GenericValidatorContentHandler().endDocument();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -127,7 +130,7 @@ public class GenericValidatingPackagerTest {
             genericValidatorContentHandler.endDocument();
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getException()", ex.getException());
+            assertNull(ex.getException(), "ex.getException()");
         }
     }
 
@@ -159,7 +162,7 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName");
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
+            assertEquals(ClassCastException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -172,7 +175,7 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName");
             fail("Expected EmptyStackException to be thrown");
         } catch (EmptyStackException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -184,7 +187,7 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -196,7 +199,7 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -208,7 +211,7 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -218,7 +221,7 @@ public class GenericValidatingPackagerTest {
             new GenericValidatingPackager().new GenericValidatorContentHandler().error(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -229,12 +232,12 @@ public class GenericValidatingPackagerTest {
             new GenericValidatingPackager().new GenericValidatorContentHandler().error(ex2);
             fail("Expected SAXParseException to be thrown");
         } catch (SAXParseException ex) {
-            assertEquals("ex.getMessage()", "testGenericValidatorContentHandlerParam1", ex.getMessage());
-            assertNull("ex.getPublicId()", ex.getPublicId());
-            assertNull("ex.getSystemId()", ex.getSystemId());
-            assertEquals("ex.getLineNumber()", 0, ex.getLineNumber());
-            assertEquals("ex.getColumnNumber()", 0, ex.getColumnNumber());
-            assertNull("ex.getException()", ex.getException());
+            assertEquals("testGenericValidatorContentHandlerParam1", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getPublicId(), "ex.getPublicId()");
+            assertNull(ex.getSystemId(), "ex.getSystemId()");
+            assertEquals(0, ex.getLineNumber(), "ex.getLineNumber()");
+            assertEquals(0, ex.getColumnNumber(), "ex.getColumnNumber()");
+            assertNull(ex.getException(), "ex.getException()");
         }
     }
 
@@ -244,7 +247,7 @@ public class GenericValidatingPackagerTest {
             new GenericValidatingPackager().new GenericValidatorContentHandler().fatalError(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -255,7 +258,7 @@ public class GenericValidatingPackagerTest {
         Hashtable tab = new Properties();
         tab.put(Integer.valueOf(-4), new IVA_ALPHANUMNOBLANK(true, "testGenericValidatorContentHandlerDescription"));
         ISOFieldValidator[] result = genericValidatorContentHandler.makeFieldValidatorArray(tab);
-        assertEquals("result.length", 1, result.length);
+        assertEquals(1, result.length, "result.length");
     }
 
     @SuppressWarnings("unchecked")
@@ -266,7 +269,7 @@ public class GenericValidatingPackagerTest {
         tab.put(Integer.valueOf(-2), new IVA_ALPHANUMNOBLANK("testGenericValidatorContentHandlerDescription"));
         tab.put(Integer.valueOf(-4), new IVA_ALPHANUMNOBLANK(100, 1000, "testGenericValidatorContentHandlerDescription"));
         ISOFieldValidator[] result = genericValidatorContentHandler.makeFieldValidatorArray(tab);
-        assertEquals("result.length", 2, result.length);
+        assertEquals(2, result.length, "result.length");
     }
 
     @SuppressWarnings("unchecked")
@@ -274,7 +277,7 @@ public class GenericValidatingPackagerTest {
     public void testGenericValidatorContentHandlerMakeFieldValidatorArray4() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
         ISOFieldValidator[] result = genericValidatorContentHandler.makeFieldValidatorArray(new Hashtable(100));
-        assertEquals("result.length", 0, result.length);
+        assertEquals(0, result.length, "result.length");
     }
 
     @SuppressWarnings("unchecked")
@@ -289,8 +292,8 @@ public class GenericValidatingPackagerTest {
             genericValidatorContentHandler.makeFieldValidatorArray(tab);
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
-            assertEquals("tab.size()", 2, tab.size());
+            assertEquals(ClassCastException.class, ex.getClass(), "ex.getClass()");
+            assertEquals(2, tab.size(), "tab.size()");
         }
     }
 
@@ -304,8 +307,8 @@ public class GenericValidatingPackagerTest {
             genericValidatorContentHandler.makeFieldValidatorArray(tab);
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
-            assertEquals("tab.size()", 1, tab.size());
+            assertEquals(ClassCastException.class, ex.getClass(), "ex.getClass()");
+            assertEquals(1, tab.size(), "tab.size()");
         }
     }
 
@@ -316,7 +319,7 @@ public class GenericValidatingPackagerTest {
             genericValidatorContentHandler.makeFieldValidatorArray(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -329,8 +332,8 @@ public class GenericValidatingPackagerTest {
         Hashtable tab = new Hashtable(100);
         tab.put(Integer.valueOf(-3), vector);
         ISOBaseValidator[] result = genericValidatorContentHandler.makeMsgValidatorArray(tab);
-        assertEquals("result.length", 1, result.length);
-        assertNull("result[0]", result[0]);
+        assertEquals(1, result.length, "result.length");
+        assertNull(result[0], "result[0]");
     }
 
     @Test
@@ -340,7 +343,7 @@ public class GenericValidatingPackagerTest {
             genericValidatorContentHandler.makeMsgValidatorArray(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -375,9 +378,13 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertEquals("ex.getMessage()", "null", ex.getMessage());
-            assertEquals("ex.getException().getMessage()", "null", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("null", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NumberFormatException: null", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals("null", ex.getException().getMessage(), "ex.getException().getMessage()");
+            assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
 
@@ -390,9 +397,13 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
 
@@ -405,8 +416,12 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -418,8 +433,12 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -432,8 +451,12 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -445,8 +468,12 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -458,8 +485,12 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -472,9 +503,13 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
 
@@ -486,8 +521,12 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -500,9 +539,13 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
 
@@ -515,8 +558,12 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
         }
     }
 
@@ -529,23 +576,27 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            }
+            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
 
-    @Ignore("test fails - GenericValidatingPackager is an unmaintained and going to be deprecated")
+    @Disabled("test fails - GenericValidatingPackager is an unmaintained and going to be deprecated")
     @Test
     public void testReadFileThrowsISOException() throws Throwable {
         try {
             new GenericValidatingPackager().readFile("testGenericValidatingPackagerFilename");
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl",
-                    ex.getMessage());
-            assertEquals("ex.getNested().getMessage()", "SAX2 driver class org.apache.crimson.parser.XMLReaderImpl not found", ex
-                    .getNested().getMessage());
+            assertEquals("java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl",
+                    ex.getMessage(), "ex.getMessage()");
+            assertEquals("SAX2 driver class org.apache.crimson.parser.XMLReaderImpl not found", ex
+                    .getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
@@ -554,7 +605,7 @@ public class GenericValidatingPackagerTest {
         GenericValidatingPackager genericValidatingPackager = new GenericValidatingPackager();
         ISOFieldValidator[] fvlds = new ISOFieldValidator[1];
         genericValidatingPackager.setFieldValidator(fvlds);
-        assertSame("genericValidatingPackager.fvlds", fvlds, genericValidatingPackager.fvlds);
+        assertSame(fvlds, genericValidatingPackager.fvlds, "genericValidatingPackager.fvlds");
     }
 
     @Test
@@ -562,10 +613,10 @@ public class GenericValidatingPackagerTest {
         Attributes atts = new AttributesImpl();
         GenericValidatingPackager genericValidatingPackager = new GenericValidatingPackager();
         genericValidatingPackager.setGenericPackagerParams(atts);
-        assertEquals("genericValidatingPackager.bitmapField", 1, genericValidatingPackager.bitmapField);
-        assertEquals("genericValidatingPackager.maxValidField", 128, genericValidatingPackager.maxValidField);
-        assertTrue("genericValidatingPackager.emitBitmap", genericValidatingPackager.emitBitmap);
-        assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
+        assertEquals(1, genericValidatingPackager.bitmapField, "genericValidatingPackager.bitmapField");
+        assertEquals(128, genericValidatingPackager.maxValidField, "genericValidatingPackager.maxValidField");
+        assertTrue(genericValidatingPackager.emitBitmap, "genericValidatingPackager.emitBitmap");
+        assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
     }
 
     @Test
@@ -575,10 +626,10 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.setGenericPackagerParams(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("genericValidatingPackager.bitmapField", 1, genericValidatingPackager.bitmapField);
-            assertEquals("genericValidatingPackager.maxValidField", 128, genericValidatingPackager.maxValidField);
-            assertTrue("genericValidatingPackager.emitBitmap", genericValidatingPackager.emitBitmap);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(1, genericValidatingPackager.bitmapField, "genericValidatingPackager.bitmapField");
+            assertEquals(128, genericValidatingPackager.maxValidField, "genericValidatingPackager.maxValidField");
+            assertTrue(genericValidatingPackager.emitBitmap, "genericValidatingPackager.emitBitmap");
         }
     }
 
@@ -587,7 +638,7 @@ public class GenericValidatingPackagerTest {
         GenericValidatingPackager genericValidatingPackager = new GenericValidatingPackager();
         ISOBaseValidator[] msgVlds = new ISOBaseValidator[3];
         genericValidatingPackager.setMsgValidator(msgVlds);
-        assertSame("genericValidatingPackager.mvlds", msgVlds, genericValidatingPackager.mvlds);
+        assertSame(msgVlds, genericValidatingPackager.mvlds, "genericValidatingPackager.mvlds");
     }
 
     @Test
@@ -604,7 +655,7 @@ public class GenericValidatingPackagerTest {
         ISOMsg m = new ISOMsg("testGenericValidatingPackagerMti");
         m.setMTI("testGenericValidatingPackagerMti");
         ISOVMsg result = (ISOVMsg) genericValidatingPackager.validate(m);
-        assertNotNull("result", result);
+        assertNotNull(result, "result");
     }
 
     @Test
@@ -621,7 +672,7 @@ public class GenericValidatingPackagerTest {
         fvlds[0] = new IVA_ALPHANUM("testGenericValidatingPackagerDescription");
         genericValidatingPackager.setFieldValidator(fvlds);
         ISOVMsg result = (ISOVMsg) genericValidatingPackager.validate(new ISOMsg(100));
-        assertNotNull("result", result);
+        assertNotNull(result, "result");
     }
 
     @Test
@@ -637,8 +688,8 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.validate(new ISOMsg());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "MTI not available", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("MTI not available", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -656,10 +707,10 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.validate(new ISOMsg(100));
             fail("Expected ISOVException to be thrown");
         } catch (ISOVException ex) {
-            assertEquals("ex.getMessage()", "Error on msg. ", ex.getMessage());
-            assertFalse("ex.treated()", ex.treated());
-            assertNotNull("ex.getErrComponent()", ex.getErrComponent());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Error on msg. ", ex.getMessage(), "ex.getMessage()");
+            assertFalse(ex.treated(), "ex.treated()");
+            assertNotNull(ex.getErrComponent(), "ex.getErrComponent()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -676,7 +727,7 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.validate(new ISOMsg());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -686,7 +737,7 @@ public class GenericValidatingPackagerTest {
             new GenericValidatingPackager().validate(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -703,7 +754,7 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.validate(new ISOMsg());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -719,7 +770,7 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.validate(new ISOMsg());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

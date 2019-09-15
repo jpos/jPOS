@@ -19,9 +19,9 @@
 package org.jpos.tlv;
 
 import org.jpos.iso.ISOUtil;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TLVMsgTest {
 
@@ -31,7 +31,7 @@ public class TLVMsgTest {
     TLVMsg msg;
     TLVList tl;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         tl = new TLVList();
     }

@@ -18,19 +18,19 @@
 
 package org.jpos.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SecureKeyStoreTest {
 
     @Test
     public void testSecureKeyStoreExceptionConstructor() throws Throwable {
         SecureKeyStore.SecureKeyStoreException secureKeyStoreException = new SecureKeyStore.SecureKeyStoreException();
-        assertNull("secureKeyStoreException.getNested()", secureKeyStoreException.getNested());
+        assertNull(secureKeyStoreException.getNested(), "secureKeyStoreException.getNested()");
     }
 
     @Test
@@ -38,27 +38,27 @@ public class SecureKeyStoreTest {
         Exception nested = new SecureKeyStore.SecureKeyStoreException();
         SecureKeyStore.SecureKeyStoreException secureKeyStoreException = new SecureKeyStore.SecureKeyStoreException(
                 "testSecureKeyStoreExceptionDetail", nested);
-        assertEquals("secureKeyStoreException.getMessage()", "testSecureKeyStoreExceptionDetail",
-                secureKeyStoreException.getMessage());
-        assertSame("secureKeyStoreException.getNested()", nested, secureKeyStoreException.getNested());
+        assertEquals("testSecureKeyStoreExceptionDetail", secureKeyStoreException.getMessage(),
+                "secureKeyStoreException.getMessage()");
+        assertSame(nested, secureKeyStoreException.getNested(), "secureKeyStoreException.getNested()");
     }
 
     @Test
     public void testSecureKeyStoreExceptionConstructor2() throws Throwable {
         SecureKeyStore.SecureKeyStoreException secureKeyStoreException = new SecureKeyStore.SecureKeyStoreException(
                 "testSecureKeyStoreExceptionDetail");
-        assertEquals("secureKeyStoreException.getMessage()", "testSecureKeyStoreExceptionDetail",
-                secureKeyStoreException.getMessage());
-        assertNull("secureKeyStoreException.getNested()", secureKeyStoreException.getNested());
+        assertEquals("testSecureKeyStoreExceptionDetail", secureKeyStoreException.getMessage(),
+                "secureKeyStoreException.getMessage()");
+        assertNull(secureKeyStoreException.getNested(), "secureKeyStoreException.getNested()");
     }
 
     @Test
     public void testSecureKeyStoreExceptionConstructor3() throws Throwable {
         Exception nested = new SecureKeyStore.SecureKeyStoreException();
         SecureKeyStore.SecureKeyStoreException secureKeyStoreException = new SecureKeyStore.SecureKeyStoreException(nested);
-        assertEquals("secureKeyStoreException.getMessage()", "org.jpos.security.SecureKeyStore$SecureKeyStoreException",
-                secureKeyStoreException.getMessage());
-        assertSame("secureKeyStoreException.getNested()", nested, secureKeyStoreException.getNested());
+        assertEquals("org.jpos.security.SecureKeyStore$SecureKeyStoreException",
+                secureKeyStoreException.getMessage(), "secureKeyStoreException.getMessage()");
+        assertSame(nested, secureKeyStoreException.getNested(), "secureKeyStoreException.getNested()");
     }
 
     @Test
@@ -67,7 +67,7 @@ public class SecureKeyStoreTest {
             new SecureKeyStore.SecureKeyStoreException((Exception) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

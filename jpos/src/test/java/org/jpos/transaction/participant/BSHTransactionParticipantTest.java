@@ -21,12 +21,12 @@ package org.jpos.transaction.participant;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.CharConversionException;
 import java.io.EOFException;
@@ -38,7 +38,7 @@ import java.io.UnsupportedEncodingException;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.LogEvent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import bsh.EvalError;
 import bsh.ParseException;
@@ -48,44 +48,44 @@ public class BSHTransactionParticipantTest {
     public void testAbort() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.abort(100L, new EOFException());
-        assertNull("bSHTransactionParticipant.abortMethod", bSHTransactionParticipant.abortMethod);
-        assertFalse("bSHTransactionParticipant.trace", bSHTransactionParticipant.trace);
+        assertNull(bSHTransactionParticipant.abortMethod, "bSHTransactionParticipant.abortMethod");
+        assertFalse(bSHTransactionParticipant.trace, "bSHTransactionParticipant.trace");
     }
 
     @Test
     public void testCommit() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.commit(100L, Boolean.TRUE);
-        assertNull("bSHTransactionParticipant.commitMethod", bSHTransactionParticipant.commitMethod);
-        assertFalse("bSHTransactionParticipant.trace", bSHTransactionParticipant.trace);
+        assertNull(bSHTransactionParticipant.commitMethod, "bSHTransactionParticipant.commitMethod");
+        assertFalse(bSHTransactionParticipant.trace, "bSHTransactionParticipant.trace");
     }
 
     @Test
     public void testConstructor() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
-        assertNull("bSHTransactionParticipant.getRealm()", bSHTransactionParticipant.getRealm());
-        assertNull("bSHTransactionParticipant.getLogger()", bSHTransactionParticipant.getLogger());
+        assertNull(bSHTransactionParticipant.getRealm(), "bSHTransactionParticipant.getRealm()");
+        assertNull(bSHTransactionParticipant.getLogger(), "bSHTransactionParticipant.getLogger()");
     }
 
     @Test
     public void testDefaultAbort() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.defaultAbort(100L, new File("testBSHTransactionParticipantParam1"), new LogEvent());
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testDefaultCommit() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.defaultCommit(100L, Long.valueOf(65L), new LogEvent("testBSHTransactionParticipantTag"));
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testDefaultPrepare() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         int result = bSHTransactionParticipant.defaultPrepare(100L, new CharConversionException(), new LogEvent());
-        assertEquals("result", 129, result);
+        assertEquals(129, result, "result");
     }
 
     @Test
@@ -94,7 +94,7 @@ public class BSHTransactionParticipantTest {
         Object result = bSHTransactionParticipant.executeMethod(new BSHMethod("testBSHTransactionParticipantBshData", false), 100L,
                 new StringBuffer(), new LogEvent("testBSHTransactionParticipantTag", Integer.valueOf(0)),
                 "testBSHTransactionParticipantResultName");
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -102,7 +102,7 @@ public class BSHTransactionParticipantTest {
         BSHTransactionParticipant bSHGroupSelector = new BSHGroupSelector();
         Boolean result = (Boolean) bSHGroupSelector.executeMethod(new BSHMethod("testBSHTransactionParticipantBshData", false),
                 100L, new UnsupportedEncodingException(), new LogEvent("testBSHTransactionParticipantTag"), "bsh.evalOnly");
-        assertTrue("result", result.booleanValue());
+        assertTrue(result.booleanValue(), "result");
     }
 
     @Test
@@ -113,8 +113,8 @@ public class BSHTransactionParticipantTest {
                     new CharConversionException(), new LogEvent(), "sh.evalOnly");
             fail("Expected EvalError to be thrown");
         } catch (EvalError ex) {
-            assertEquals("ex.getMessage()", "Class or variable not found: sh.evalOnly", ex.getMessage());
-            assertEquals("ex.getMessage()", "Class or variable not found: sh.evalOnly", ex.getMessage());
+            assertEquals("Class or variable not found: sh.evalOnly", ex.getMessage(), "ex.getMessage()");
+            assertEquals("Class or variable not found: sh.evalOnly", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -126,7 +126,7 @@ public class BSHTransactionParticipantTest {
                     new LogEvent(source, "testBSHTransactionParticipantTag"), "testBSHTransactionParticipantResultName");
             fail("Expected FileNotFoundException to be thrown");
         } catch (FileNotFoundException ex) {
-            assertEquals("ex.getClass()", FileNotFoundException.class, ex.getClass());
+            assertEquals(FileNotFoundException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -138,7 +138,7 @@ public class BSHTransactionParticipantTest {
                     Integer.valueOf(0)), "testBSHTransactionParticipantResultName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -158,13 +158,13 @@ public class BSHTransactionParticipantTest {
     @Test
     public void testPrepare() throws Throwable {
         int result = new BSHTransactionParticipant().prepare(100L, new NotActiveException());
-        assertEquals("result", 129, result);
+        assertEquals(129, result, "result");
     }
 
     @Test
     public void testPrepareForAbort() throws Throwable {
         int result = new BSHTransactionParticipant().prepareForAbort(100L, Boolean.FALSE);
-        assertEquals("result", 128, result);
+        assertEquals(128, result, "result");
     }
 
     @Test
@@ -172,11 +172,11 @@ public class BSHTransactionParticipantTest {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.setConfiguration(new Element("testBSHTransactionParticipantName",
                 "testBSHTransactionParticipantUri"));
-        assertNull("bSHTransactionParticipant.prepareForAbortMethod", bSHTransactionParticipant.prepareForAbortMethod);
-        assertNull("bSHTransactionParticipant.abortMethod", bSHTransactionParticipant.abortMethod);
-        assertNull("bSHTransactionParticipant.commitMethod", bSHTransactionParticipant.commitMethod);
-        assertNull("bSHTransactionParticipant.prepareMethod", bSHTransactionParticipant.prepareMethod);
-        assertFalse("bSHTransactionParticipant.trace", bSHTransactionParticipant.trace);
+        assertNull(bSHTransactionParticipant.prepareForAbortMethod, "bSHTransactionParticipant.prepareForAbortMethod");
+        assertNull(bSHTransactionParticipant.abortMethod, "bSHTransactionParticipant.abortMethod");
+        assertNull(bSHTransactionParticipant.commitMethod, "bSHTransactionParticipant.commitMethod");
+        assertNull(bSHTransactionParticipant.prepareMethod, "bSHTransactionParticipant.prepareMethod");
+        assertFalse(bSHTransactionParticipant.trace, "bSHTransactionParticipant.trace");
     }
 
     @Test
@@ -186,13 +186,13 @@ public class BSHTransactionParticipantTest {
             bSHTransactionParticipant.setConfiguration(null);
             fail("Expected ConfigurationException to be thrown");
         } catch (ConfigurationException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertNull("bSHTransactionParticipant.prepareForAbortMethod", bSHTransactionParticipant.prepareForAbortMethod);
-            assertNull("bSHTransactionParticipant.abortMethod", bSHTransactionParticipant.abortMethod);
-            assertNull("bSHTransactionParticipant.commitMethod", bSHTransactionParticipant.commitMethod);
-            assertNull("bSHTransactionParticipant.prepareMethod", bSHTransactionParticipant.prepareMethod);
-            assertFalse("bSHTransactionParticipant.trace", bSHTransactionParticipant.trace);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertNull(bSHTransactionParticipant.prepareForAbortMethod, "bSHTransactionParticipant.prepareForAbortMethod");
+            assertNull(bSHTransactionParticipant.abortMethod, "bSHTransactionParticipant.abortMethod");
+            assertNull(bSHTransactionParticipant.commitMethod, "bSHTransactionParticipant.commitMethod");
+            assertNull(bSHTransactionParticipant.prepareMethod, "bSHTransactionParticipant.prepareMethod");
+            assertFalse(bSHTransactionParticipant.trace, "bSHTransactionParticipant.trace");
         }
     }
 }

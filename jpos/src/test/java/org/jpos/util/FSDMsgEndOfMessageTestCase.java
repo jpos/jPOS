@@ -18,27 +18,33 @@
 
 package org.jpos.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.ByteArrayInputStream;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class FSDMsgEndOfMessageTestCase extends TestCase {
+public class FSDMsgEndOfMessageTestCase {
     private static final String SCHEMA_DIR_URL = "file:build/resources/test/org/jpos/util/";
     FSDMsg imsg;
 
     FSDMsg omsg;
 
+    @BeforeEach
     public void setUp() throws Exception {
         imsg = new FSDMsg(SCHEMA_DIR_URL + "eom-");
         omsg = new FSDMsg(SCHEMA_DIR_URL + "eom-");
     }
 
+    @Test
     public void testPack() throws Exception {
         imsg.set("length", "11");
         imsg.set("rest", "ABCDEFGHIJKLMNOPQRST");
         assertEquals("11ABCDEFGHIJKLMNOPQRST", imsg.pack());
     }
 
+    @Test
     public void testUnpack() throws Exception {
     	ByteArrayInputStream is = new ByteArrayInputStream("11ABCDEFGHIJKLMNOPQRST".getBytes());
     	omsg.unpack(is);

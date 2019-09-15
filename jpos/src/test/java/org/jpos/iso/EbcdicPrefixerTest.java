@@ -18,14 +18,16 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the EBCDIC length Prefixer.
  * @author jonathan.oconnor@xcom.de
  */
-public class EbcdicPrefixerTest extends TestCase
-{
+public class EbcdicPrefixerTest {
+    @Test
     public void testEncode() throws Exception
     {
         byte[] b = new byte[2];
@@ -33,12 +35,14 @@ public class EbcdicPrefixerTest extends TestCase
         TestUtils.assertEquals(new byte[]{(byte)0xF2, (byte)0xF1}, b);
     }
 
+    @Test
     public void testDecode() throws Exception
     {
         byte[] b = new byte[]{(byte)0xF2, (byte)0xF5};
         assertEquals(25, EbcdicPrefixer.LL.decodeLength(b, 0));
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         int len = 3;

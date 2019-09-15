@@ -20,8 +20,9 @@ package org.jpos.q2.iso;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 import static org.mockito.Mockito.*;
 
 import java.io.EOFException;
@@ -42,10 +43,10 @@ import org.jpos.iso.ISOPackager;
 import org.jpos.space.Space;
 import org.jpos.space.TSpace;
 import org.jpos.util.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.Stubber;
@@ -72,12 +73,12 @@ public class ChannelAdaptorTest {
     private ChannelAdaptor channelAdaptor;
     private ScheduledExecutorService executorService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         executorService = Executors.newScheduledThreadPool(2);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         executorService.shutdownNow();
         if (channelAdaptor != null) {
@@ -150,7 +151,7 @@ public class ChannelAdaptorTest {
         assertCallToStopCompletes(1);
     }
 
-    @Ignore("Failing and don't really know what this test tries to verify")
+    @Disabled("Failing and don't really know what this test tries to verify")
     @Test
     public void waitForWorkersOnStopDoesNotDeadlockWithUnfortunatelyTimedDisconnectReceivedByReceiver() throws Exception {
         // Ensure no deadlock between Receiver trying to call disconnect() and stop() joining on Receiver.
@@ -173,7 +174,7 @@ public class ChannelAdaptorTest {
         assertCallToStopCompletes(1);
     }
 
-    @Ignore("Failing and don't really know what this test tries to verify")
+    @Disabled("Failing and don't really know what this test tries to verify")
     @Test
     public void waitForWorkersOnStopDoesNotDeadlockWithUnfortunatelyTimedDisconnectReceivedBySender() throws Exception {
         // Ensure no deadlock between Sender trying to call disconnect() and stop() joining on Sender.
@@ -246,8 +247,8 @@ public class ChannelAdaptorTest {
 
     private void assertStopped(int run) {
         Set<Thread> threads = waitForExit(findSendAndReceiveThreads());
-        assertEquals("At run " + run + " both send and receive threads should have exited. Found:\n" + dump(threads), 0, threads.size());
-        assertFalse("At run " + run + " channel should not be connected", channelAdaptor.isConnected());
+        assertEquals(0, threads.size(), "At run " + run + " both send and receive threads should have exited. Found:\n" + dump(threads));
+        assertFalse(channelAdaptor.isConnected(), "At run " + run + " channel should not be connected");
     }
 
     private void waitForSenderAndReceiverToStart() throws InterruptedException {
@@ -413,7 +414,7 @@ public class ChannelAdaptorTest {
 
         public void waitForReceiverToBlockInReceive() {
             try {
-                assertTrue("Receiver did not call receive", receiverWaiting.tryAcquire(1, TimeUnit.SECONDS));
+                assertTrue(receiverWaiting.tryAcquire(1, TimeUnit.SECONDS), "Receiver did not call receive");
             } catch (InterruptedException ignored) {
             }
         }

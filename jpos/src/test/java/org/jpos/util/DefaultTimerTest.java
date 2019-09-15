@@ -18,17 +18,17 @@
 
 package org.jpos.util;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Timer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultTimerTest {
 
     @Test
     public void testGetTimer() throws Throwable {
         Timer result = DefaultTimer.getTimer();
-        assertNotNull("result", result);
+        assertNotNull(result, "result");
     }
 }

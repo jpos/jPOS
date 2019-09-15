@@ -18,15 +18,15 @@
 
 package org.jpos.security.jceadapter;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConsoleTest {
 
     @Test
     public void testConstructor() throws Throwable {
         new Console();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 }

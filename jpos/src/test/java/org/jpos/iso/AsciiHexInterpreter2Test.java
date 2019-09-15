@@ -18,31 +18,34 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
+import org.junit.jupiter.api.Test;
 
 public class AsciiHexInterpreter2Test {
 
     @Test
     public void testConstructor() throws Throwable {
         new AsciiHexInterpreter();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testGetPackedLength() throws Throwable {
         int result = AsciiHexInterpreter.INSTANCE.getPackedLength(0);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testGetPackedLength1() throws Throwable {
         int result = new AsciiHexInterpreter().getPackedLength(100);
-        assertEquals("result", 200, result);
+        assertEquals(200, result, "result");
     }
 
     @Test
@@ -50,7 +53,7 @@ public class AsciiHexInterpreter2Test {
         byte[] b = new byte[1];
         byte[] data = new byte[0];
         new AsciiHexInterpreter().interpret(data, b, 100);
-        assertEquals("b.length", 1, b.length);
+        assertEquals(1, b.length, "b.length");
     }
 
     @Test
@@ -58,7 +61,7 @@ public class AsciiHexInterpreter2Test {
         byte[] data = new byte[1];
         byte[] b = new byte[5];
         AsciiHexInterpreter.INSTANCE.interpret(data, b, 0);
-        assertEquals("b[0]", (byte) 48, b[0]);
+        assertEquals((byte) 48, b[0], "b[0]");
     }
 
     @Test
@@ -69,9 +72,13 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.interpret(data, b, 0);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("b[0]", (byte) 48, b[0]);
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
-            assertEquals("b.length", 1, b.length);
+            assertEquals((byte) 48, b[0], "b[0]");
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("1", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 1 out of bounds for length 1", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(1, b.length, "b.length");
         }
     }
 
@@ -83,8 +90,12 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.interpret(data, b, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
-            assertEquals("b.length", 0, b.length);
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("100", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 100 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(0, b.length, "b.length");
         }
     }
 
@@ -96,9 +107,13 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.interpret(data, b, 0);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("b[0]", (byte) 48, b[0]);
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
-            assertEquals("b.length", 3, b.length);
+            assertEquals((byte) 48, b[0], "b[0]");
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("3", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 3 out of bounds for length 3", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(3, b.length, "b.length");
         }
     }
 
@@ -109,8 +124,8 @@ public class AsciiHexInterpreter2Test {
             new AsciiHexInterpreter().interpret(null, b, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("b.length", 5, b.length);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(5, b.length, "b.length");
         }
     }
 
@@ -126,7 +141,11 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "68", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("68", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 68 out of bounds for length 68", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -141,7 +160,11 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "68", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("68", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 68 out of bounds for length 68", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -156,7 +179,11 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "68", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("68", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 68 out of bounds for length 68", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -169,7 +196,11 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 65, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "67", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("67", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 67 out of bounds for length 67", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -182,7 +213,11 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("2", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 2 out of bounds for length 2", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -195,7 +230,11 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 1, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "5", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("5", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 5 out of bounds for length 5", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -206,7 +245,11 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("1", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 1 out of bounds for length 1", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -218,7 +261,11 @@ public class AsciiHexInterpreter2Test {
             new AsciiHexInterpreter().uninterpret(rawData, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("3", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 3 out of bounds for length 3", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -229,7 +276,11 @@ public class AsciiHexInterpreter2Test {
             new AsciiHexInterpreter().uninterpret(rawData, 100, -1);
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("-1", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -239,7 +290,7 @@ public class AsciiHexInterpreter2Test {
             AsciiHexInterpreter.INSTANCE.uninterpret(null, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

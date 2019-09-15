@@ -20,7 +20,7 @@ package org.jpos.transaction.participant;
 
 import static org.hamcrest.Matchers.is;
 import static org.jpos.transaction.TransactionConstants.PREPARED;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -30,13 +30,13 @@ import java.util.Random;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DelayTest {
     @Mock
     Random random;
@@ -46,15 +46,10 @@ public class DelayTest {
     Serializable context;
     Delay delay;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         delay = new Delay();
         delay.random = random;
-        given(random.nextLong()).willReturn(1L);
-        given(cfg.getLong("prepare-delay")).willReturn(12345L);
-        given(cfg.getLong("commit-delay")).willReturn(54321L);
-        given(cfg.getLong("abort-delay")).willReturn(98765L);
-        given(cfg.getBoolean("random")).willReturn(true);
     }
 
     @Test
@@ -93,7 +88,6 @@ public class DelayTest {
         // "Bad attempt to compute absolute value of signed random long"
         // Math.abs can potentially return a negative number
         // see http://stackoverflow.com/questions/2546078/java-random-long-number-in-0-x-n-range
-        given(random.nextLong()).willReturn(Long.MIN_VALUE);
         delay.sleep(5L);
         // should not throw an IllegalArgumentException (timeout value is negative)
         verify(random, atLeastOnce()).nextDouble(); // check we are using the mock Random

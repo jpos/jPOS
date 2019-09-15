@@ -18,53 +18,63 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
+import org.junit.jupiter.api.Test;
 
 public class SignedEbcdicNumberInterpreter2Test {
 
     @Test
     public void testConstructor() throws Throwable {
         new SignedEbcdicNumberInterpreter();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testGetPackedLength() throws Throwable {
         int result = new SignedEbcdicNumberInterpreter().getPackedLength(100);
-        assertEquals("result", 100, result);
+        assertEquals(100, result, "result");
     }
 
     @Test
     public void testGetPackedLength1() throws Throwable {
         int result = new SignedEbcdicNumberInterpreter().getPackedLength(0);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
-    @Test(expected=ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testInterpret() throws Throwable {
-        new SignedEbcdicNumberInterpreter().interpret("", new byte[1], 100);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+            new SignedEbcdicNumberInterpreter().interpret("", new byte[1], 100);
+        });
     }
 
     @Test
     public void testInterpret1() throws Throwable {
         byte[] targetArray = new byte[3];
         new SignedEbcdicNumberInterpreter().interpret("-\u5483\uD0AF", targetArray, 0);
-        assertEquals("targetArray[0]", (byte) 63, targetArray[0]);
+        assertEquals((byte) 63, targetArray[0], "targetArray[0]");
     }
 
-    @Test(expected=ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testInterpretThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        new SignedEbcdicNumberInterpreter().interpret("testSignedEbcdicNumberInterpreterData", new byte[2], 100);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+            new SignedEbcdicNumberInterpreter().interpret("testSignedEbcdicNumberInterpreterData", new byte[2], 100);
+        });
     }
 
-    @Test(expected=ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testInterpretThrowsArrayIndexOutOfBoundsException1() throws Throwable {
-        new SignedEbcdicNumberInterpreter().interpret("-\u5483\uD0AF", new byte[1], 100);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+            new SignedEbcdicNumberInterpreter().interpret("-\u5483\uD0AF", new byte[1], 100);
+        });
     }
 
     @Test
@@ -73,7 +83,7 @@ public class SignedEbcdicNumberInterpreter2Test {
             new SignedEbcdicNumberInterpreter().interpret("-", null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -84,8 +94,8 @@ public class SignedEbcdicNumberInterpreter2Test {
             new SignedEbcdicNumberInterpreter().interpret(null, targetArray, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("targetArray.length", 1, targetArray.length);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(1, targetArray.length, "targetArray.length");
         }
     }
 
@@ -93,15 +103,17 @@ public class SignedEbcdicNumberInterpreter2Test {
     public void testUninterpret() throws Throwable {
         byte[] rawData = new byte[3];
         String result = new SignedEbcdicNumberInterpreter().uninterpret(rawData, 0, 1);
-        assertEquals("rawData[0]", (byte) -16, rawData[0]);
-        assertEquals("result", "0", result);
+        assertEquals((byte) -16, rawData[0], "rawData[0]");
+        assertEquals("0", result, "result");
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testUninterpretThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        byte[] rawData = new byte[2];
-        rawData[0] = (byte) -48;
-        new SignedEbcdicNumberInterpreter().uninterpret(rawData, -48, 49);
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            byte[] rawData = new byte[2];
+            rawData[0] = (byte) -48;
+            new SignedEbcdicNumberInterpreter().uninterpret(rawData, -48, 49);
+        });
     }
 
     @Test
@@ -111,8 +123,12 @@ public class SignedEbcdicNumberInterpreter2Test {
             new SignedEbcdicNumberInterpreter().uninterpret(rawData, 100, 1000);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1099", ex.getMessage());
-            assertEquals("rawData.length", 3, rawData.length);
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("1099", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 1099 out of bounds for length 3", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(3, rawData.length, "rawData.length");
         }
     }
 
@@ -124,9 +140,9 @@ public class SignedEbcdicNumberInterpreter2Test {
             new SignedEbcdicNumberInterpreter().uninterpret(rawData, 240, -239);
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (IndexOutOfBoundsException ex) {
-            assertEquals("rawData[0]", (byte) -7, rawData[0]);
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("rawData.length", 3, rawData.length);
+            assertEquals((byte) -7, rawData[0], "rawData[0]");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(3, rawData.length, "rawData.length");
         }
     }
 
@@ -136,7 +152,7 @@ public class SignedEbcdicNumberInterpreter2Test {
             new SignedEbcdicNumberInterpreter().uninterpret(null, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

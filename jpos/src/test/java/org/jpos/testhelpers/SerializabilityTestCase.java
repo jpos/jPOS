@@ -19,8 +19,8 @@
 package org.jpos.testhelpers;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,10 +28,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import junit.framework.AssertionFailedError;
+import org.opentest4j.AssertionFailedError;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Extend me in order to test the serializability of a class. Override my
@@ -57,12 +57,12 @@ public abstract class SerializabilityTestCase {
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		obj = createInstance();
 		// We want these assertions to yield errors, not failures.
 		try {
-			assertNotNull("createInstance() returned null", obj);
+			assertNotNull(obj, "createInstance() returned null");
 		} catch (AssertionFailedError ex) {
 			throw new IllegalArgumentException(ex.getMessage());
 		}
@@ -101,6 +101,6 @@ public abstract class SerializabilityTestCase {
 	 */
 	protected void checkThawedObject(Serializable expected, Serializable actual)
 			throws Exception {
-		assertEquals("thawed object comparison", expected, actual);
+		assertEquals(expected, actual, "thawed object comparison");
 	}
 }

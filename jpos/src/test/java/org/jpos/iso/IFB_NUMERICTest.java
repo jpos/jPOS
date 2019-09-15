@@ -18,13 +18,15 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IFB_NUMERICTest extends TestCase
-{
+public class IFB_NUMERICTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(12, "1234");
@@ -32,6 +34,7 @@ public class IFB_NUMERICTest extends TestCase
         TestUtils.assertEquals(new byte[] {0x00, 0x00, 0x00, 0x12, 0x34}, packager.pack(field));
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {0x00, 0x00, 0x00, 0x12, 0x34};
@@ -41,6 +44,7 @@ public class IFB_NUMERICTest extends TestCase
         assertEquals("0000001234", (String) field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         String origin = "1234567890";

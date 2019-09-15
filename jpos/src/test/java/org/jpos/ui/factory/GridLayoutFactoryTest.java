@@ -18,16 +18,16 @@
 
 package org.jpos.ui.factory;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GridLayoutFactoryTest {
 
     @Test
     public void testConstructor() throws Throwable {
         new GridLayoutFactory();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
 }

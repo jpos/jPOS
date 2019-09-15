@@ -23,11 +23,11 @@ import java.io.PrintStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.jpos.iso.ISOUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -50,7 +50,7 @@ public class SecureKeyBlockTest {
 
     SecureKeyBlock instance;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         os = new ByteArrayOutputStream();
         ps = new PrintStream(os);
@@ -79,33 +79,41 @@ public class SecureKeyBlockTest {
     /**
      * Test of setKeyType method, of class SecureKeyBlock.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetKeyType() {
-        instance.setKeyType("");
+        assertThrows(UnsupportedOperationException.class, () -> {
+            instance.setKeyType("");
+        });
     }
 
     /**
      * Test of getKeyType method, of class SecureKeyBlock.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetKeyType() {
-        instance.getKeyType();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            instance.getKeyType();
+        });
     }
 
     /**
      * Test of setKeyLength method, of class SecureKeyBlock.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetKeyLength() {
-        instance.setKeyLength((short) 128);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            instance.setKeyLength((short) 128);
+        });
     }
 
     /**
      * Test of getKeyLength method, of class SecureKeyBlock.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetKeyLength() {
-        instance.getKeyLength();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            instance.getKeyLength();
+        });
     }
 
     /**

@@ -18,14 +18,18 @@
 
 package org.jpos.iso.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
@@ -50,11 +54,11 @@ import org.jpos.iso.packager.PostPackager;
 import org.jpos.iso.packager.XMLPackager;
 import org.jpos.space.Space;
 import org.jpos.util.LogEvent;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class StatefulFilterTest {
 
     StatefulFilter m_statefulFilter2;
@@ -63,16 +67,16 @@ public class StatefulFilterTest {
     @Test
     public void testConstructor() throws Throwable {
 	StatefulFilter statefulFilter = new StatefulFilter();
-	assertEquals("m_statefulFilter.getSavedFields().length", 0,
-		statefulFilter.getSavedFields().length);
-	assertEquals("m_statefulFilter.getIgnoredFields().length", 0,
-		statefulFilter.getIgnoredFields().length);
-	assertEquals("m_statefulFilter.getKey().length", 2,
-		statefulFilter.getKey().length);
-	assertEquals("m_statefulFilter.getTimeout()", 60000L,
-		statefulFilter.getTimeout());
-	assertEquals("m_statefulFilter.getMatchDirection()", 1,
-		statefulFilter.getMatchDirection());
+	assertEquals(0, statefulFilter.getSavedFields().length,
+		"m_statefulFilter.getSavedFields().length");
+	assertEquals(0, statefulFilter.getIgnoredFields().length,
+		"m_statefulFilter.getIgnoredFields().length");
+	assertEquals(2, statefulFilter.getKey().length,
+		"m_statefulFilter.getKey().length");
+	assertEquals(60000L, statefulFilter.getTimeout(),
+		"m_statefulFilter.getTimeout()");
+	assertEquals(1, statefulFilter.getMatchDirection(),
+		"m_statefulFilter.getMatchDirection()");
     }
 
     @Test
@@ -85,7 +89,7 @@ public class StatefulFilterTest {
 	ISOMsg m = new ISOMsg("testStatefulFilterMti");
 	m.setDirection(61);
 	ISOMsg result = statefulFilter.filter(null, m, null);
-	assertSame("result", m, result);
+	assertSame(m, result, "result");
     }
 
     @Test
@@ -94,7 +98,7 @@ public class StatefulFilterTest {
 	m.setDirection(1);
 	ISOMsg result = new StatefulFilter().filter(new NACChannel(), m,
 		new LogEvent());
-	assertSame("result", m, result);
+	assertSame(m, result, "result");
     }
 
     @Test
@@ -109,7 +113,7 @@ public class StatefulFilterTest {
 	given(m.getDirection()).willReturn(58);
 
 	ISOMsg result = statefulFilter.filter(iSOChannel, m, evt);
-	assertSame("result", m, result);
+	assertSame(m, result, "result");
     }
 
     @Test
@@ -126,7 +130,7 @@ public class StatefulFilterTest {
 		.filter(new PostChannel("testStatefulFilterHost", 100,
 			new XMLPackager()), m, new LogEvent(
 			"testStatefulFilterTag", new CTCSubFieldPackager()));
-	assertSame("result", m, result);
+	assertSame(m, result, "result");
     }
 
     @Test
@@ -138,7 +142,7 @@ public class StatefulFilterTest {
 	m.setDirection(1);
 	ISOMsg result = statefulFilter.filter(new LogChannel(), m,
 		new LogEvent("testStatefulFilterTag", new Object()));
-	assertSame("result", m, result);
+	assertSame(m, result, "result");
     }
 
     @Test
@@ -151,7 +155,7 @@ public class StatefulFilterTest {
 	given(m.getString(41)).willReturn(null);
 	given(m.getDirection()).willReturn(0);
 	ISOMsg result = statefulFilter.filter(iSOChannel, m, evt);
-	assertSame("result", m, result);
+	assertSame(m, result, "result");
     }
 
     @Test
@@ -166,7 +170,7 @@ public class StatefulFilterTest {
 		.filter(new PostChannel("testStatefulFilterHost", 100,
 			new XMLPackager()), m, new LogEvent(
 			"testStatefulFilterTag", new CTCSubFieldPackager()));
-	assertEquals("result.getDirection()", 58, result.getDirection());
+	assertEquals(58, result.getDirection(), "result.getDirection()");
     }
 
     @Test
@@ -180,7 +184,7 @@ public class StatefulFilterTest {
 	ISOMsg result = statefulFilter.filter(
 		new PADChannel(new XMLPackager()), m, new LogEvent(
 			new Base1SubFieldPackager(), "testStatefulFilterTag"));
-	assertSame("result", m, result);
+	assertSame(m, result, "result");
     }
 
     @Test
@@ -197,7 +201,7 @@ public class StatefulFilterTest {
 		    100, new GenericSubFieldPackager()), m, new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -215,7 +219,7 @@ public class StatefulFilterTest {
 		    new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -232,7 +236,7 @@ public class StatefulFilterTest {
 		    new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -246,7 +250,7 @@ public class StatefulFilterTest {
 		    new GenericValidatingPackager()), null, new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -263,7 +267,7 @@ public class StatefulFilterTest {
 			    "testStatefulFilterTag", "testString"));
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -280,7 +284,7 @@ public class StatefulFilterTest {
 		    100, new GenericSubFieldPackager()), m, new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -293,7 +297,7 @@ public class StatefulFilterTest {
 		    "testStatefulFilterMti"), new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -306,7 +310,7 @@ public class StatefulFilterTest {
 		    new ISOMsg("testStatefulFilterMti"), new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -320,7 +324,7 @@ public class StatefulFilterTest {
 		    new PostPackager(), "testStatefulFilterTag"));
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -339,7 +343,7 @@ public class StatefulFilterTest {
 		    new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -358,7 +362,7 @@ public class StatefulFilterTest {
 		    100, new GenericSubFieldPackager()), m, new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -374,9 +378,9 @@ public class StatefulFilterTest {
 		    "testStatefulFilterMti"), new LogEvent());
 	    fail("Expected VetoException to be thrown");
 	} catch (ISOFilter.VetoException ex) {
-	    assertEquals("ex.getMessage()", "unmatched iso message",
-		    ex.getMessage());
-	    assertNull("ex.getNested()", ex.getNested());
+	    assertEquals("unmatched iso message",
+		    ex.getMessage(), "ex.getMessage()");
+	    assertNull(ex.getNested(), "ex.getNested()");
 	}
     }
 
@@ -390,9 +394,9 @@ public class StatefulFilterTest {
 	    statefulFilter.filter(null, m, null);
 	    fail("Expected VetoException to be thrown");
 	} catch (ISOFilter.VetoException ex) {
-	    assertEquals("ex.getMessage()", "unmatched iso message",
-		    ex.getMessage());
-	    assertNull("ex.getNested()", ex.getNested());
+	    assertEquals("unmatched iso message",
+		    ex.getMessage(), "ex.getMessage()");
+	    assertNull(ex.getNested(), "ex.getNested()");
 	}
     }
 
@@ -403,7 +407,7 @@ public class StatefulFilterTest {
 	ignoredFields[0] = -19;
 	statefulFilter.setIgnoredFields(ignoredFields);
 	int result = statefulFilter.getIgnoredField(0);
-	assertEquals("result", -19, result);
+	assertEquals(-19, result, "result");
     }
 
     @Test
@@ -413,7 +417,11 @@ public class StatefulFilterTest {
 	    new StatefulFilter().getIgnoredField(100);
 	    fail("Expected ArrayIndexOutOfBoundsException to be thrown");
 	} catch (ArrayIndexOutOfBoundsException ex) {
-	    assertEquals("ex.getMessage()", "100", ex.getMessage());
+		if (isJavaVersionAtMost(JAVA_10)) {
+			assertEquals("100", ex.getMessage(), "ex.getMessage()");
+	    } else {
+			assertEquals("Index 100 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+	    }
 	}
     }
 
@@ -426,7 +434,7 @@ public class StatefulFilterTest {
 	    statefulFilter.getIgnoredField(100);
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -442,7 +450,7 @@ public class StatefulFilterTest {
 	int[] key3 = new int[3];
 	statefulFilter.setKey(key3);
 	int result = statefulFilter.getKey(0);
-	assertEquals("result", 0, result);
+	assertEquals(0, result, "result");
     }
 
     @Test
@@ -470,7 +478,7 @@ public class StatefulFilterTest {
 	statefulFilter2.setIgnoredFields(ignoredFields5);
 	statefulFilter2.setKey(key3);
 	int result = statefulFilter2.getKey(1);
-	assertEquals("result", 19, result);
+	assertEquals(19, result, "result");
     }
 
     @Test
@@ -491,7 +499,11 @@ public class StatefulFilterTest {
 	    statefulFilter.getKey(100);
 	    fail("Expected ArrayIndexOutOfBoundsException to be thrown");
 	} catch (ArrayIndexOutOfBoundsException ex) {
-	    assertEquals("ex.getMessage()", "100", ex.getMessage());
+		if (isJavaVersionAtMost(JAVA_10)) {
+			assertEquals("100", ex.getMessage(), "ex.getMessage()");
+	    } else {
+			assertEquals("Index 100 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+	    }
 	}
     }
 
@@ -501,7 +513,7 @@ public class StatefulFilterTest {
 	int[] savedFields = new int[3];
 	statefulFilter.setSavedFields(savedFields);
 	int result = statefulFilter.getSavedField(0);
-	assertEquals("result", 0, result);
+	assertEquals(0, result, "result");
     }
 
     @Test
@@ -511,7 +523,7 @@ public class StatefulFilterTest {
 	StatefulFilter statefulFilter = new StatefulFilter();
 	statefulFilter.setSavedFields(savedFields);
 	int result = statefulFilter.getSavedField(0);
-	assertEquals("result", -4, result);
+	assertEquals(-4, result, "result");
     }
 
     @Test
@@ -548,7 +560,11 @@ public class StatefulFilterTest {
 	    statefulFilter2.getSavedField(100);
 	    fail("Expected ArrayIndexOutOfBoundsException to be thrown");
 	} catch (ArrayIndexOutOfBoundsException ex) {
-	    assertEquals("ex.getMessage()", "100", ex.getMessage());
+		if (isJavaVersionAtMost(JAVA_10)) {
+			assertEquals("100", ex.getMessage(), "ex.getMessage()");
+	    } else {
+			assertEquals("Index 100 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+	    }
 	}
     }
 
@@ -558,20 +574,20 @@ public class StatefulFilterTest {
 	int[] ignoredFields = new int[0];
 	statefulFilter.setIgnoredFields(ignoredFields);
 	statefulFilter.setConfiguration(new SimpleConfiguration());
-	assertTrue("m_statefulFilter.isOverwriteOriginalFields()",
-		statefulFilter.isOverwriteOriginalFields());
-	assertEquals("m_statefulFilter.getSavedFields().length", 0,
-		statefulFilter.getSavedFields().length);
-	assertEquals("m_statefulFilter.getIgnoredFields().length", 0,
-		statefulFilter.getIgnoredFields().length);
-	assertEquals("m_statefulFilter.getKey().length", 2,
-		statefulFilter.getKey().length);
-	assertFalse("m_statefulFilter.isVetoUnmatched()",
-		statefulFilter.isVetoUnmatched());
-	assertEquals("m_statefulFilter.getMatchDirection()", 1,
-		statefulFilter.getMatchDirection());
-	assertEquals("m_statefulFilter.getTimeout()", 60000L,
-		statefulFilter.getTimeout());
+	assertTrue(statefulFilter.isOverwriteOriginalFields(),
+		"m_statefulFilter.isOverwriteOriginalFields()");
+	assertEquals(0, statefulFilter.getSavedFields().length,
+		"m_statefulFilter.getSavedFields().length");
+	assertEquals(0, statefulFilter.getIgnoredFields().length,
+		"m_statefulFilter.getIgnoredFields().length");
+	assertEquals(2, statefulFilter.getKey().length,
+		"m_statefulFilter.getKey().length");
+	assertFalse(statefulFilter.isVetoUnmatched(),
+		"m_statefulFilter.isVetoUnmatched()");
+	assertEquals(1, statefulFilter.getMatchDirection(),
+		"m_statefulFilter.getMatchDirection()");
+	assertEquals(60000L, statefulFilter.getTimeout(),
+		"m_statefulFilter.getTimeout()");
     }
 
     @Test
@@ -583,21 +599,21 @@ public class StatefulFilterTest {
 	    statefulFilter.setConfiguration(cfg);
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
-	    assertFalse("m_statefulFilter.isOverwriteOriginalFields()",
-		    statefulFilter.isOverwriteOriginalFields());
-	    assertEquals("m_statefulFilter.getSavedFields().length", 0,
-		    statefulFilter.getSavedFields().length);
-	    assertEquals("m_statefulFilter.getIgnoredFields().length", 0,
-		    statefulFilter.getIgnoredFields().length);
-	    assertEquals("m_statefulFilter.getKey().length", 2,
-		    statefulFilter.getKey().length);
-	    assertFalse("m_statefulFilter.isVetoUnmatched()",
-		    statefulFilter.isVetoUnmatched());
-	    assertEquals("m_statefulFilter.getMatchDirection()", 1,
-		    statefulFilter.getMatchDirection());
-	    assertEquals("m_statefulFilter.getTimeout()", 60000L,
-		    statefulFilter.getTimeout());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
+	    assertFalse(statefulFilter.isOverwriteOriginalFields(),
+		    "m_statefulFilter.isOverwriteOriginalFields()");
+	    assertEquals(0, statefulFilter.getSavedFields().length,
+		    "m_statefulFilter.getSavedFields().length");
+	    assertEquals(0, statefulFilter.getIgnoredFields().length,
+		    "m_statefulFilter.getIgnoredFields().length");
+	    assertEquals(2, statefulFilter.getKey().length,
+		    "m_statefulFilter.getKey().length");
+	    assertFalse(statefulFilter.isVetoUnmatched(),
+		    "m_statefulFilter.isVetoUnmatched()");
+	    assertEquals(1, statefulFilter.getMatchDirection(),
+		    "m_statefulFilter.getMatchDirection()");
+	    assertEquals(60000L, statefulFilter.getTimeout(),
+		    "m_statefulFilter.getTimeout()");
 	}
     }
 
@@ -619,9 +635,13 @@ public class StatefulFilterTest {
 	    statefulFilter.setIgnoredField(100, 1000);
 	    fail("Expected ArrayIndexOutOfBoundsException to be thrown");
 	} catch (ArrayIndexOutOfBoundsException ex) {
-	    assertEquals("ex.getMessage()", "100", ex.getMessage());
-	    assertSame("m_statefulFilter.getIgnoredFields()", ignoredFields,
-		    statefulFilter.getIgnoredFields());
+		if (isJavaVersionAtMost(JAVA_10)) {
+			assertEquals("100", ex.getMessage(), "ex.getMessage()");
+	    } else {
+			assertEquals("Index 100 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+	    }
+	    assertSame(ignoredFields,
+		    statefulFilter.getIgnoredFields(), "m_statefulFilter.getIgnoredFields()");
 	}
     }
 
@@ -631,9 +651,9 @@ public class StatefulFilterTest {
 	statefulFilter.setOverwriteOriginalFields(true);
 	int[] key = new int[3];
 	statefulFilter.setKey(key);
-	assertSame("m_statefulFilter.getKey()", key, statefulFilter.getKey());
-	assertEquals("m_statefulFilter.getKey()[0]", 0,
-		statefulFilter.getKey()[0]);
+	assertSame(key, statefulFilter.getKey(), "m_statefulFilter.getKey()");
+	assertEquals(0, statefulFilter.getKey()[0],
+		"m_statefulFilter.getKey()[0]");
     }
 
     @Test
@@ -657,17 +677,17 @@ public class StatefulFilterTest {
 	int[] ignoredFields3 = new int[1];
 	statefulFilter3.setIgnoredFields(ignoredFields3);
 	statefulFilter3.setKey(0, 100);
-	assertEquals("m_statefulFilter3.getKey()[0]", 100,
-		statefulFilter3.getKey()[0]);
-	assertSame("m_statefulFilter3.getKey()", key3, statefulFilter3.getKey());
+	assertEquals(100, statefulFilter3.getKey()[0],
+		"m_statefulFilter3.getKey()[0]");
+	assertSame(key3, statefulFilter3.getKey(), "m_statefulFilter3.getKey()");
     }
 
     @Test
     public void testSetKeyPrefix() throws Throwable {
 	StatefulFilter statefulFilter = new StatefulFilter();
 	statefulFilter.setKeyPrefix("testString");
-	assertEquals("m_statefulFilter.getKeyPrefix()", "testString",
-		statefulFilter.getKeyPrefix());
+	assertEquals("testString", statefulFilter.getKeyPrefix(),
+		"m_statefulFilter.getKeyPrefix()");
     }
 
     @Test
@@ -684,9 +704,13 @@ public class StatefulFilterTest {
 	    statefulFilter.setKey(100, 1000);
 	    fail("Expected ArrayIndexOutOfBoundsException to be thrown");
 	} catch (ArrayIndexOutOfBoundsException ex) {
-	    assertEquals("ex.getMessage()", "100", ex.getMessage());
-	    assertSame("m_statefulFilter.getKey()", key,
-		    statefulFilter.getKey());
+		if (isJavaVersionAtMost(JAVA_10)) {
+			assertEquals("100", ex.getMessage(), "ex.getMessage()");
+	    } else {
+			assertEquals("Index 100 out of bounds for length 1", ex.getMessage(), "ex.getMessage()");
+	    }
+	    assertSame(key, statefulFilter.getKey(),
+		    "m_statefulFilter.getKey()");
 	}
     }
 
@@ -697,8 +721,8 @@ public class StatefulFilterTest {
 	    statefulFilter2.setKey(100, 1000);
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull("ex.getMessage()", ex.getMessage());
-	    assertNull("m_statefulFilter2.getKey()", statefulFilter2.getKey());
+	    assertNull(ex.getMessage(), "ex.getMessage()");
+	    assertNull(statefulFilter2.getKey(), "m_statefulFilter2.getKey()");
 	}
     }
 
@@ -706,8 +730,8 @@ public class StatefulFilterTest {
     public void testSetMatchDirection() throws Throwable {
 	StatefulFilter statefulFilter = new StatefulFilter();
 	statefulFilter.setMatchDirection(100);
-	assertEquals("m_statefulFilter.getMatchDirection()", 100,
-		statefulFilter.getMatchDirection());
+	assertEquals(100, statefulFilter.getMatchDirection(),
+		"m_statefulFilter.getMatchDirection()");
     }
 
     @Test
@@ -715,8 +739,8 @@ public class StatefulFilterTest {
 	StatefulFilter statefulFilter = new StatefulFilter();
 	statefulFilter.setSpace("testStatefulFilterUri");
 	statefulFilter.setOverwriteOriginalFields(true);
-	assertTrue("m_statefulFilter.isOverwriteOriginalFields()",
-		statefulFilter.isOverwriteOriginalFields());
+	assertTrue(statefulFilter.isOverwriteOriginalFields(),
+		"m_statefulFilter.isOverwriteOriginalFields()");
     }
 
     @Test
@@ -724,8 +748,8 @@ public class StatefulFilterTest {
 	StatefulFilter statefulFilter = new StatefulFilter();
 	int[] savedFields = new int[3];
 	statefulFilter.setSavedFields(savedFields);
-	assertSame("m_statefulFilter.getSavedFields()", savedFields,
-		statefulFilter.getSavedFields());
+	assertSame(savedFields, statefulFilter.getSavedFields(),
+		"m_statefulFilter.getSavedFields()");
     }
 
     @Test
@@ -738,25 +762,30 @@ public class StatefulFilterTest {
 	    statefulFilter.setSavedField(100, 1000);
 	    fail("Expected ArrayIndexOutOfBoundsException to be thrown");
 	} catch (ArrayIndexOutOfBoundsException ex) {
-	    assertEquals("ex.getMessage()", "100", ex.getMessage());
-	    assertSame("m_statefulFilter.getSavedFields()", savedFields,
-		    statefulFilter.getSavedFields());
+		if (isJavaVersionAtMost(JAVA_10)) {
+			assertEquals("100", ex.getMessage(), "ex.getMessage()");
+	    } else {
+			assertEquals("Index 100 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
+	    }
+	    assertSame(savedFields, statefulFilter.getSavedFields(),
+		    "m_statefulFilter.getSavedFields()");
 	}
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetSpaceThrowsNullPointerException() throws Throwable {
-	StatefulFilter statefulFilter = new StatefulFilter();
-	statefulFilter.setSpace("Invalid space: ");
-
+	assertThrows(NullPointerException.class, () -> {
+	    StatefulFilter statefulFilter = new StatefulFilter();
+	    statefulFilter.setSpace("Invalid space: ");
+	});
     }
 
     @Test
     public void testSetTimeout() throws Throwable {
 	StatefulFilter statefulFilter = new StatefulFilter();
 	statefulFilter.setTimeout(100L);
-	assertEquals("m_statefulFilter.getTimeout()", 100L,
-		statefulFilter.getTimeout());
+	assertEquals(100L, statefulFilter.getTimeout(),
+		"m_statefulFilter.getTimeout()");
     }
 
     @Test
@@ -765,8 +794,8 @@ public class StatefulFilterTest {
 	int[] ignoredFields = new int[0];
 	statefulFilter.setIgnoredFields(ignoredFields);
 	statefulFilter.setVetoUnmatched(true);
-	assertTrue("m_statefulFilter.isVetoUnmatched()",
-		statefulFilter.isVetoUnmatched());
+	assertTrue(statefulFilter.isVetoUnmatched(),
+		"m_statefulFilter.isVetoUnmatched()");
     }
 
     private StatefulFilter setupStatefulFilterState() {

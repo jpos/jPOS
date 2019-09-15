@@ -18,12 +18,12 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.util.NameRegistrar;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ISOServerTest {
 
@@ -33,7 +33,7 @@ public class ISOServerTest {
             new ISOServer(100, null, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -43,7 +43,7 @@ public class ISOServerTest {
             ISOServer.getServer("testISOServerName");
             fail("Expected NotFoundException to be thrown");
         } catch (NameRegistrar.NotFoundException ex) {
-            assertEquals("ex.getMessage()", "server.testISOServerName", ex.getMessage());
+            assertEquals("server.testISOServerName", ex.getMessage(), "ex.getMessage()");
         }
     }
 }

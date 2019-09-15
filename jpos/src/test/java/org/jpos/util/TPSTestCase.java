@@ -18,36 +18,41 @@
 
 package org.jpos.util;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TPSTestCase extends TestCase {
+import org.junit.jupiter.api.Test;
+
+public class TPSTestCase {
+    @Test
     public void test1000TPSAutoUpdate() throws Exception {
         TPS tps = new TPS(true);
         for (int i=0; i<1000; i++)
             tps.tick();
         Thread.sleep (1050L); // java.util.Timer is not accurate
-        assertEquals("Expected 1000 TPS", 1000, tps.intValue());
-        assertEquals("Still expecting 1000 TPS on a second call", 1000, tps.intValue());
+        assertEquals(1000, tps.intValue(), "Expected 1000 TPS");
+        assertEquals(1000, tps.intValue(), "Still expecting 1000 TPS on a second call");
         Thread.sleep (1000L);
-        assertTrue ("Average should be aprox 0.5 but it's " + tps.getAvg(), tps.getAvg() >= 0.5);
+        assertTrue(tps.getAvg() >= 0.5, "Average should be aprox 0.5 but it's " + tps.getAvg());
         assertEquals(
-            "TPS should be zero but it's "+tps.intValue() + " (" + tps.floatValue() + ")",
-            0, tps.intValue()
+            0, tps.intValue(),
+            "TPS should be zero but it's " + tps.intValue() + " (" + tps.floatValue() + ")"
         );
-        assertEquals ("Peak has to be 1000", 1000, tps.getPeak());
+        assertEquals(1000, tps.getPeak(), "Peak has to be 1000");
         tps.stop();
     }
+    @Test
     public void test1000TPSManualUpdate() throws Exception {
         TPS tps = new TPS();
         for (int i=0; i<1000; i++)
             tps.tick();
         Thread.sleep (1050L);
-        assertTrue("Expected aprox 1000 TPS but was "+ tps.intValue(), tps.intValue() >= 900);
-        assertTrue("Still expecting aprox 1000 TPS on a second call", tps.intValue() >= 900);
+        assertTrue(tps.intValue() >= 900, "Expected aprox 1000 TPS but was " + tps.intValue());
+        assertTrue(tps.intValue() >= 900, "Still expecting aprox 1000 TPS on a second call");
         Thread.sleep (1050L);
         assertEquals(
-            "TPS should be zero but it's "+tps.intValue() + " (" + tps.floatValue() + ")",
-            0, tps.intValue()
+            0, tps.intValue(),
+            "TPS should be zero but it's " + tps.intValue() + " (" + tps.floatValue() + ")"
         );
     }
 }

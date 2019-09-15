@@ -247,9 +247,12 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
 
     protected void dumpMap (PrintStream p, String indent) {
         if (map != null) {
-             synchronized(map) {
-                map.entrySet().forEach(e -> dumpEntry(p, indent, e));
-             }
+            Map<Object,Object> cloned;
+            cloned = Collections.synchronizedMap (new LinkedHashMap<>());
+            synchronized(map) {
+                cloned.putAll(map);
+            }
+            cloned.entrySet().forEach(e -> dumpEntry(p, indent, e));
         }
     }
 
@@ -333,7 +336,8 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * @param msg trace information
      */
     public void log (Object msg) {
-        getLogEvent().addMessage (msg);
+        if (msg != getMap()) // prevent recursive call to dump (and StackOverflow)
+            getLogEvent().addMessage (msg);
     }
     /**
      * add a checkpoint to the profiler

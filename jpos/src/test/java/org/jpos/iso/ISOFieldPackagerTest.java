@@ -18,11 +18,15 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import static org.apache.commons.lang3.JavaVersion.JAVA_1_8;
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,7 +36,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
 import org.jpos.iso.packager.Base1_BITMAP126;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ISOFieldPackagerTest {
 
@@ -40,7 +44,7 @@ public class ISOFieldPackagerTest {
     public void testCreateComponent() throws Throwable {
         ISOField result = (ISOField) new IFB_AMOUNT().createComponent(100);
         assertNotNull(result);
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -58,7 +62,7 @@ public class ISOFieldPackagerTest {
             new IF_ECHAR(100, "testISOFieldPackagerDescription").pack(new ISOField(), out);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -67,15 +71,15 @@ public class ISOFieldPackagerTest {
         ISOFieldPackager iFB_LLHFBINARY = new IFB_LLHFBINARY(100, "testISOFieldPackagerDescription");
         byte[] bytes = new byte[1];
         byte[] result = iFB_LLHFBINARY.readBytes(new ByteArrayInputStream(bytes), 1);
-        assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", (byte) 0, result[0]);
+        assertEquals(1, result.length, "result.length");
+        assertEquals((byte) 0, result[0], "result[0]");
     }
 
     @Test
     public void testReadBytes1() throws Throwable {
         ISOFieldPackager iFB_AMOUNT = new IFB_AMOUNT();
         byte[] result = iFB_AMOUNT.readBytes(new ByteArrayInputStream("testString".getBytes()), 0);
-        assertEquals("result.length", 0, result.length);
+        assertEquals(0, result.length, "result.length");
     }
 
     @Test
@@ -87,8 +91,8 @@ public class ISOFieldPackagerTest {
             iFA_BINARY.readBytes(in, 100);
             fail("Expected EOFException to be thrown");
         } catch (EOFException ex) {
-            assertEquals("ex.getClass()", EOFException.class, ex.getClass());
-            assertEquals("(ByteArrayInputStream) in.available()", 0, in.available());
+            assertEquals(EOFException.class, ex.getClass(), "ex.getClass()");
+            assertEquals(0, in.available(), "(ByteArrayInputStream) in.available()");
         }
     }
 
@@ -100,8 +104,12 @@ public class ISOFieldPackagerTest {
             iFEB_LLLNUM.readBytes(in, -1);
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("(ByteArrayInputStream) in.available()", 10, in.available());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("-1", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(10, in.available(), "(ByteArrayInputStream) in.available()");
         }
     }
 
@@ -112,7 +120,7 @@ public class ISOFieldPackagerTest {
             iFA_FLLCHAR.readBytes(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -120,21 +128,21 @@ public class ISOFieldPackagerTest {
     public void testSetDescription() throws Throwable {
         ISOFieldPackager iFA_LCHAR = new IFA_LCHAR();
         iFA_LCHAR.setDescription("testISOFieldPackagerDescription");
-        assertEquals("(IFA_LCHAR) iFA_LCHAR.getDescription()", "testISOFieldPackagerDescription", iFA_LCHAR.getDescription());
+        assertEquals("testISOFieldPackagerDescription", iFA_LCHAR.getDescription(), "(IFA_LCHAR) iFA_LCHAR.getDescription()");
     }
 
     @Test
     public void testSetLength() throws Throwable {
         ISOFieldPackager iFB_AMOUNT = new IFB_AMOUNT();
         iFB_AMOUNT.setLength(100);
-        assertEquals("(IFB_AMOUNT) iFB_AMOUNT.getLength()", 100, iFB_AMOUNT.getLength());
+        assertEquals(100, iFB_AMOUNT.getLength(), "(IFB_AMOUNT) iFB_AMOUNT.getLength()");
     }
 
     @Test
     public void testSetPad() throws Throwable {
         ISOFieldPackager iFA_BINARY = new IFA_BINARY(100, "testISOFieldPackagerDescription");
         iFA_BINARY.setPad(true);
-        assertTrue("(IFA_BINARY) iFA_BINARY.pad", ((IFA_BINARY) iFA_BINARY).pad);
+        assertTrue(((IFA_BINARY) iFA_BINARY).pad, "(IFA_BINARY) iFA_BINARY.pad");
     }
 
     @SuppressWarnings("deprecation")
@@ -145,7 +153,7 @@ public class ISOFieldPackagerTest {
         byte[] bytes = new byte[0];
         iF_ECHAR.setLength(0);
         iF_ECHAR.unpack(c, new ByteArrayInputStream(bytes));
-        assertEquals("(ISOVField) c.value", "", ((ISOField) c).value);
+        assertEquals("", ((ISOField) c).value, "(ISOVField) c.value");
     }
 
     @Test
@@ -156,8 +164,12 @@ public class ISOFieldPackagerTest {
             new IFEB_LLLNUM().unpack(new ISOMsg("testISOFieldPackagerMti"), in);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
-            assertEquals("(ByteArrayInputStream) in.available()", 0, in.available());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("2", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Index 2 out of bounds for length 2", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(0, in.available(), "(ByteArrayInputStream) in.available()");
         }
     }
 
@@ -172,9 +184,9 @@ public class ISOFieldPackagerTest {
                     "testISOFieldPackagerRejectCode")), in);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "setValue N/A in ISOMsg", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertEquals("(ByteArrayInputStream) in.available()", 2, in.available());
+            assertEquals("setValue N/A in ISOMsg", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertEquals(2, in.available(), "(ByteArrayInputStream) in.available()");
         }
     }
 
@@ -186,8 +198,12 @@ public class ISOFieldPackagerTest {
             new Base1_BITMAP126(-1, "testISOFieldPackagerDescription").unpack(new IFB_AMOUNT().createComponent(100), in);
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("(ByteArrayInputStream) in.available()", 0, in.available());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("-1", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(0, in.available(), "(ByteArrayInputStream) in.available()");
         }
     }
 
@@ -199,7 +215,7 @@ public class ISOFieldPackagerTest {
             iFB_AMOUNT.unpack(new ISOBinaryField(), null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -212,8 +228,12 @@ public class ISOFieldPackagerTest {
             iFB_AMOUNT.unpack(new ISOMsg(), in);
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "String index out of range: 1", ex.getMessage());
-            assertEquals("(ByteArrayInputStream) in.available()", 10, in.available());
+            if (isJavaVersionAtMost(JAVA_1_8)) {
+                assertEquals("String index out of range: 1", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("offset 0, count 1, length 0", ex.getMessage(), "ex.getMessage()");
+            }
+            assertEquals(10, in.available(), "(ByteArrayInputStream) in.available()");
         }
     }
 }

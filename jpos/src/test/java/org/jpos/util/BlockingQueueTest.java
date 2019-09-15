@@ -18,16 +18,16 @@
 
 package org.jpos.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.LinkedList;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BlockingQueueTest {
 
@@ -35,27 +35,27 @@ public class BlockingQueueTest {
     public void testClose() {
         BlockingQueue blockingQueue = new BlockingQueue();
         blockingQueue.close();
-        assertFalse("blockingQueue.ready()", blockingQueue.ready());
+        assertFalse(blockingQueue.ready(), "blockingQueue.ready()");
     }
 
     @Test
     public void testClosedConstructor() {
         BlockingQueue.Closed closed = new BlockingQueue.Closed();
-        assertEquals("closed.getMessage()", "queue-closed", closed.getMessage());
+        assertEquals("queue-closed", closed.getMessage(), "closed.getMessage()");
     }
 
     @Test
     public void testConstructor() throws Throwable {
         BlockingQueue blockingQueue = new BlockingQueue();
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
-        assertTrue("blockingQueue.ready()", blockingQueue.ready());
-        assertEquals("blockingQueue.getQueue().size()", 0, blockingQueue.getQueue().size());
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
+        assertTrue(blockingQueue.ready(), "blockingQueue.ready()");
+        assertEquals(0, blockingQueue.getQueue().size(), "blockingQueue.getQueue().size()");
     }
 
     @Test
     public void testConsumerCount() throws Throwable {
         int result = new BlockingQueue().consumerCount();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @SuppressWarnings("unchecked")
@@ -68,10 +68,10 @@ public class BlockingQueueTest {
         queue.add("");
         blockingQueue.setQueue(queue);
         Boolean result = (Boolean) blockingQueue.dequeue(-1L);
-        assertSame("blockingQueue.getQueue()", queue, blockingQueue.getQueue());
-        assertFalse("blockingQueue.getQueue().get(0) had boolean2 removed", boolean2.equals(blockingQueue.getQueue().get(0)));
-        assertSame("result", true, result);
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertSame(queue, blockingQueue.getQueue(), "blockingQueue.getQueue()");
+        assertFalse(boolean2.equals(blockingQueue.getQueue().get(0)), "blockingQueue.getQueue().get(0) had boolean2 removed");
+        assertSame(true, result, "result");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @SuppressWarnings("unchecked")
@@ -93,10 +93,10 @@ public class BlockingQueueTest {
         Integer o = Integer.valueOf(12);
         blockingQueue.requeue(o);
         Integer result = (Integer) blockingQueue.dequeue();
-        assertSame("blockingQueue.getQueue()", queue2, blockingQueue.getQueue());
-        assertFalse("blockingQueue.getQueue().contains(o)", blockingQueue.getQueue().contains(o));
-        assertSame("result", o, result);
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertSame(queue2, blockingQueue.getQueue(), "blockingQueue.getQueue()");
+        assertFalse(blockingQueue.getQueue().contains(o), "blockingQueue.getQueue().contains(o)");
+        assertSame(o, result, "result");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @SuppressWarnings("unchecked")
@@ -108,10 +108,10 @@ public class BlockingQueueTest {
         BlockingQueue blockingQueue = new BlockingQueue();
         blockingQueue.setQueue(queue);
         Boolean result = (Boolean) blockingQueue.dequeue();
-        assertSame("blockingQueue.getQueue()", queue, blockingQueue.getQueue());
-        assertFalse("blockingQueue.getQueue().contains(boolean2)", blockingQueue.getQueue().contains(false));
-        assertSame("result", false, result);
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertSame(queue, blockingQueue.getQueue(), "blockingQueue.getQueue()");
+        assertFalse(blockingQueue.getQueue().contains(false), "blockingQueue.getQueue().contains(boolean2)");
+        assertSame(false, result, "result");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @Test
@@ -123,10 +123,10 @@ public class BlockingQueueTest {
         queue.add("testString");
         blockingQueue.setQueue(queue);
         Integer result = (Integer) blockingQueue.dequeue(0L);
-        assertSame("blockingQueue.getQueue()", queue, blockingQueue.getQueue());
-        assertFalse("blockingQueue.getQueue().get(0) had integer removed", integer.equals(blockingQueue.getQueue().get(0)));
-        assertSame("result", integer, result);
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertSame(queue, blockingQueue.getQueue(), "blockingQueue.getQueue()");
+        assertFalse(integer.equals(blockingQueue.getQueue().get(0)), "blockingQueue.getQueue().get(0) had integer removed");
+        assertSame(integer, result, "result");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @SuppressWarnings("unchecked")
@@ -145,19 +145,19 @@ public class BlockingQueueTest {
         blockingQueue.setQueue(queue2);
         blockingQueue.dequeue(100L);
         Object result = blockingQueue.dequeue(-1L);
-        assertSame("blockingQueue.getQueue()", queue2, blockingQueue.getQueue());
-        assertFalse("blockingQueue.getQueue().contains(obj)", blockingQueue.getQueue().contains(obj));
-        assertSame("result", obj, result);
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertSame(queue2, blockingQueue.getQueue(), "blockingQueue.getQueue()");
+        assertFalse(blockingQueue.getQueue().contains(obj), "blockingQueue.getQueue().contains(obj)");
+        assertSame(obj, result, "result");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @Test
     public void testDequeue5() throws Throwable {
         BlockingQueue blockingQueue = new BlockingQueue();
         Object result = blockingQueue.dequeue(2L);
-        assertNull("result", result);
-        assertEquals("blockingQueue.getQueue().size()", 0, blockingQueue.getQueue().size());
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertNull(result, "result");
+        assertEquals(0, blockingQueue.getQueue().size(), "blockingQueue.getQueue().size()");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @Test
@@ -166,10 +166,10 @@ public class BlockingQueueTest {
         Integer o = Integer.valueOf(0);
         blockingQueue.enqueue(o);
         Integer result = (Integer) blockingQueue.dequeue(100L);
-        assertEquals("blockingQueue.getQueue().size()", 0, blockingQueue.getQueue().size());
-        assertFalse("blockingQueue.getQueue().contains(o)", blockingQueue.getQueue().contains(o));
-        assertSame("result", o, result);
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertEquals(0, blockingQueue.getQueue().size(), "blockingQueue.getQueue().size()");
+        assertFalse(blockingQueue.getQueue().contains(o), "blockingQueue.getQueue().contains(o)");
+        assertSame(o, result, "result");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @SuppressWarnings("unchecked")
@@ -182,9 +182,9 @@ public class BlockingQueueTest {
         BlockingQueue blockingQueue = new BlockingQueue();
         blockingQueue.setQueue(queue);
         Boolean result = (Boolean) blockingQueue.dequeue(-1L);
-        assertSame("blockingQueue.getQueue()", queue, blockingQueue.getQueue());
-        assertSame("result", false, result);
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertSame(queue, blockingQueue.getQueue(), "blockingQueue.getQueue()");
+        assertSame(false, result, "result");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @SuppressWarnings("unchecked")
@@ -196,10 +196,10 @@ public class BlockingQueueTest {
         queue.add(integer);
         blockingQueue.setQueue(queue);
         Integer result = (Integer) blockingQueue.dequeue(0L);
-        assertSame("blockingQueue.getQueue()", queue, blockingQueue.getQueue());
-        assertFalse("blockingQueue.getQueue().contains(integer)", blockingQueue.getQueue().contains(integer));
-        assertSame("result", integer, result);
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertSame(queue, blockingQueue.getQueue(), "blockingQueue.getQueue()");
+        assertFalse(blockingQueue.getQueue().contains(integer), "blockingQueue.getQueue().contains(integer)");
+        assertSame(integer, result, "result");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @Test
@@ -213,10 +213,10 @@ public class BlockingQueueTest {
         blockingQueue.enqueue("");
         blockingQueue.dequeue(0L);
         String result = (String) blockingQueue.dequeue();
-        assertEquals("blockingQueue.getQueue().size()", 0, blockingQueue.getQueue().size());
-        assertFalse("blockingQueue.getQueue().contains(\"\")", blockingQueue.getQueue().contains(""));
-        assertEquals("result", "", result);
-        assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+        assertEquals(0, blockingQueue.getQueue().size(), "blockingQueue.getQueue().size()");
+        assertFalse(blockingQueue.getQueue().contains(""), "blockingQueue.getQueue().contains(\"\")");
+        assertEquals("", result, "result");
+        assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
     }
 
     @Test
@@ -227,9 +227,9 @@ public class BlockingQueueTest {
             blockingQueue.dequeue(0L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("blockingQueue.getQueue()", blockingQueue.getQueue());
-            assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
+            assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
         }
     }
 
@@ -241,9 +241,9 @@ public class BlockingQueueTest {
             blockingQueue.dequeue(-1L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("blockingQueue.getQueue()", blockingQueue.getQueue());
-            assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
+            assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
         }
     }
 
@@ -255,9 +255,9 @@ public class BlockingQueueTest {
             blockingQueue.dequeue();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("blockingQueue.consumerCount()", 0, blockingQueue.consumerCount());
-            assertNull("blockingQueue.getQueue()", blockingQueue.getQueue());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
+            assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
         }
     }
 
@@ -265,8 +265,8 @@ public class BlockingQueueTest {
     public void testEnqueue() throws Throwable {
         BlockingQueue blockingQueue = new BlockingQueue();
         blockingQueue.enqueue("testString");
-        assertEquals("blockingQueue.getQueue().size()", 1, blockingQueue.getQueue().size());
-        assertEquals("blockingQueue.getQueue().get(0)", "testString", blockingQueue.getQueue().get(0));
+        assertEquals(1, blockingQueue.getQueue().size(), "blockingQueue.getQueue().size()");
+        assertEquals("testString", blockingQueue.getQueue().get(0), "blockingQueue.getQueue().get(0)");
     }
 
     @Test
@@ -277,8 +277,8 @@ public class BlockingQueueTest {
             blockingQueue.enqueue(Integer.valueOf(-32));
             fail("Expected Closed to be thrown");
         } catch (BlockingQueue.Closed ex) {
-            assertEquals("ex.getMessage()", "queue-closed", ex.getMessage());
-            assertEquals("blockingQueue.getQueue().size()", 0, blockingQueue.getQueue().size());
+            assertEquals("queue-closed", ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, blockingQueue.getQueue().size(), "blockingQueue.getQueue().size()");
         }
     }
 
@@ -290,8 +290,8 @@ public class BlockingQueueTest {
             blockingQueue.enqueue("");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("blockingQueue.getQueue()", blockingQueue.getQueue());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
         }
     }
 
@@ -303,7 +303,7 @@ public class BlockingQueueTest {
         queue.add(Integer.valueOf(100));
         blockingQueue.setQueue(queue);
         int result = blockingQueue.pending();
-        assertEquals("result", 1, result);
+        assertEquals(1, result, "result");
     }
 
     @Test
@@ -311,7 +311,7 @@ public class BlockingQueueTest {
         BlockingQueue blockingQueue = new BlockingQueue();
         blockingQueue.dequeue(-2L);
         int result = blockingQueue.pending();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -322,14 +322,14 @@ public class BlockingQueueTest {
             blockingQueue.pending();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testReady() throws Throwable {
         boolean result = new BlockingQueue().ready();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
@@ -337,15 +337,15 @@ public class BlockingQueueTest {
         BlockingQueue blockingQueue = new BlockingQueue();
         blockingQueue.close();
         boolean result = blockingQueue.ready();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
     public void testRequeue() throws Throwable {
         BlockingQueue blockingQueue = new BlockingQueue();
         blockingQueue.requeue("testString");
-        assertEquals("blockingQueue.getQueue().size()", 1, blockingQueue.getQueue().size());
-        assertEquals("blockingQueue.getQueue().get(0)", "testString", blockingQueue.getQueue().get(0));
+        assertEquals(1, blockingQueue.getQueue().size(), "blockingQueue.getQueue().size()");
+        assertEquals("testString", blockingQueue.getQueue().get(0), "blockingQueue.getQueue().get(0)");
     }
 
     @Test
@@ -356,8 +356,8 @@ public class BlockingQueueTest {
             blockingQueue.requeue("");
             fail("Expected Closed to be thrown");
         } catch (BlockingQueue.Closed ex) {
-            assertEquals("ex.getMessage()", "queue-closed", ex.getMessage());
-            assertEquals("blockingQueue.getQueue().size()", 0, blockingQueue.getQueue().size());
+            assertEquals("queue-closed", ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, blockingQueue.getQueue().size(), "blockingQueue.getQueue().size()");
         }
     }
 
@@ -369,8 +369,8 @@ public class BlockingQueueTest {
             blockingQueue.requeue(Integer.valueOf(0));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("blockingQueue.getQueue()", blockingQueue.getQueue());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
         }
     }
 
@@ -380,6 +380,6 @@ public class BlockingQueueTest {
         LinkedList queue = new LinkedList();
         BlockingQueue blockingQueue = new BlockingQueue();
         blockingQueue.setQueue(queue);
-        assertSame("blockingQueue.getQueue()", queue, blockingQueue.getQueue());
+        assertSame(queue, blockingQueue.getQueue(), "blockingQueue.getQueue()");
     }
 }

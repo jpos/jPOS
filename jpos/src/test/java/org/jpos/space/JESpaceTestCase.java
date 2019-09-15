@@ -18,27 +18,36 @@
 
 package org.jpos.space;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jpos.iso.ISOMsg;
 import org.jpos.transaction.Context;
 import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unchecked")
-public class JESpaceTestCase extends TestCase {
+public class JESpaceTestCase {
     public static final int COUNT = 100;
     JESpace<String,Object> sp;
+    @BeforeEach
     public void setUp () {
         sp = (JESpace<String,Object>) 
             JESpace.getSpace ("space-test", "build/resources/test/space-test");
     }
+    @Test
     public void testSimpleOut() throws Exception {
         Object o = Boolean.TRUE;
         sp.out ("testSimpleOut_Key", o);
         Object o1 = sp.in ("testSimpleOut_Key");
         assertTrue (o.equals (o1));
     }
+    @Test
     public void testOutRdpInpRdp() throws Exception {
         Object o = Boolean.TRUE;
         String k = "testOutRdpInpRdp_Key";
@@ -50,6 +59,7 @@ public class JESpaceTestCase extends TestCase {
         assertTrue (sp.rdp (k) == null);
         assertTrue (sp.rd  (k, 100) == null);
     }
+    @Test
     public void testMultiKeyLoad() throws Exception {
         String s = "The quick brown fox jumped over the lazy dog";
         Profiler prof = new Profiler ();
@@ -67,6 +77,7 @@ public class JESpaceTestCase extends TestCase {
         }
         // prof.dump (System.err, "MultiKeyLoad in  >");
     }
+    @Test
     public void testSingleKeyLoad() throws Exception {
         String s = "The quick brown fox jumped over the lazy dog";
         String k = "testSingleKeyLoad_Key";
@@ -86,6 +97,7 @@ public class JESpaceTestCase extends TestCase {
         // prof.dump (System.err, "SingleKeyLoad in  >");
         assertTrue (sp.rdp (k) == null);
     }
+    @Test
     public void testTemplate () throws Exception {
         String key = "TemplateTest_Key";
         sp.out (key, "Value 1");
@@ -100,6 +112,7 @@ public class JESpaceTestCase extends TestCase {
         assertEquals ("Value 1", (String) sp.inp (key));
         assertEquals ("Value 3", (String) sp.inp (key));
     }
+    @Test
     public void testPush() {
         sp.push ("PUSH", "ONE");
         sp.push ("PUSH", "TWO");
@@ -112,37 +125,63 @@ public class JESpaceTestCase extends TestCase {
         assertEquals ("FOUR", sp.inp ("PUSH"));
         assertNull (sp.rdp ("PUSH"));
     }
+    @Test
+    public void testOutExpire() {
+        sp.out ("OUT", "ONE", 1000L);
+        sp.out ("OUT", "TWO", 2000L);
+        sp.out ("OUT", "THREE", 3000L);
+        sp.out  ("OUT", "FOUR", 4000L);
+        assertEquals ("ONE", sp.rdp ("OUT"));
+        ISOUtil.sleep (1500L);
+        assertEquals ("TWO", sp.rdp ("OUT"));
+        ISOUtil.sleep (1000L);
+        assertEquals ("THREE", sp.rdp ("OUT"));
+        assertEquals ("THREE", sp.inp ("OUT"));
+        assertEquals ("FOUR", sp.inp ("OUT"));
+        assertNull (sp.rdp ("OUT"));
+    }
+    @Test
+    public void testPushExpire() {
+        sp.push ("PUSH", "FOUR", 4000L);
+        sp.push ("PUSH", "THREE", 3000L);
+        sp.push ("PUSH", "TWO", 2000L);
+        sp.push  ("PUSH", "ONE", 1000L);
+        assertEquals ("ONE", sp.rdp ("PUSH"));
+        ISOUtil.sleep (1500L);
+        assertEquals ("TWO", sp.rdp ("PUSH"));
+        ISOUtil.sleep (1000L);
+        assertEquals ("THREE", sp.rdp ("PUSH"));
+        assertEquals ("THREE", sp.inp ("PUSH"));
+        assertEquals ("FOUR", sp.inp ("PUSH"));
+        assertNull (sp.rdp ("PUSH"));
+    }
+    @Test
     public void testExist() {
         sp.out ("KEYA", Boolean.TRUE);
         sp.out ("KEYB", Boolean.TRUE);
 
-        assertTrue (
-            "existAny ([KEYA])",
-            sp.existAny (new String[] { "KEYA" })
-        );
+        assertTrue(
+            sp.existAny(new String[]{"KEYA"}),
+            "existAny ([KEYA])");
 
-        assertTrue (
-            "existAny ([KEYB])",
-            sp.existAny (new String[] { "KEYB" })
-        );
-        assertTrue (
-            "existAny ([KEYA,KEYB])",
-            sp.existAny (new String[] { "KEYA", "KEYB" })
-        );
-        assertFalse (
-            "existAny ([KEYC,KEYD])",
-            sp.existAny (new String[] { "KEYC", "KEYD" })
-        );
+        assertTrue(
+            sp.existAny(new String[]{"KEYB"}),
+            "existAny ([KEYB])");
+        assertTrue(
+            sp.existAny(new String[]{"KEYA", "KEYB"}),
+            "existAny ([KEYA,KEYB])");
+        assertFalse(
+            sp.existAny(new String[]{"KEYC", "KEYD"}),
+            "existAny ([KEYC,KEYD])");
     }
+    @Test
     public void testExistWithTimeout() {
-        assertFalse (
-            "existAnyWithTimeout ([KA,KB])",
-            sp.existAny (new String[] { "KA", "KB" })
-        );
-        assertFalse (
-            "existAnyWithTimeout ([KA,KB], delay)",
-            sp.existAny (new String[] { "KA", "KB" }, 1000L)
-        );
+        assertFalse(
+            sp.existAny(new String[]{"KA", "KB"}),
+            "existAnyWithTimeout ([KA,KB])");
+        assertFalse(
+            sp.existAny(new String[]{"KA", "KB"}, 1000L),
+            "existAnyWithTimeout ([KA,KB], delay)");
         new Thread() {
             public void run() {
                 ISOUtil.sleep (1000L);
@@ -150,32 +189,35 @@ public class JESpaceTestCase extends TestCase {
             }
         }.start();
         long now = System.currentTimeMillis();
-        assertTrue (
-            "existAnyWithTimeout ([KA,KB], delay)",
-            sp.existAny (new String[] { "KA", "KB" }, 2000L)
-        );
+        assertTrue(
+            sp.existAny(new String[]{"KA", "KB"}, 2000L),
+            "existAnyWithTimeout ([KA,KB], delay)");
         long elapsed = System.currentTimeMillis() - now;
-        assertTrue ("delay was > 1000", elapsed > 900L);
-        assertNotNull ("Entry should not be null", sp.inp ("KA"));
+        assertTrue(elapsed > 900L, "delay was > 1000");
+        assertNotNull(sp.inp("KA"), "Entry should not be null");
     }
+    @Test
     public void testByteArray() throws Exception {
         String S = "The quick brown fox jumped over the lazy dog";
         sp.out ("ByteArray", S.getBytes());
-        assertEquals (S, new String ((byte[]) sp.inp ("ByteArray")));
+        assertEquals(S, new String((byte[]) sp.inp("ByteArray")));
     }
+    @Test
     public void testGC() throws Exception {
         sp.out ("A", "Entrywithtimeout", 1000L);
         sp.out ("B", "AnotherEntrywithtimeout", 1000L);
         sp.gc();
     }
+    @Test
     public void testPut () {
         sp.out ("PUT", "ONE");
         sp.out ("PUT", "TWO");
         sp.put ("PUT", "ZERO");
-        assertEquals ("ZERO", sp.rdp ("PUT"));
-        assertEquals ("ZERO", sp.inp ("PUT"));
-        assertNull (sp.rdp ("PUT"));
+        assertEquals("ZERO", sp.rdp("PUT"));
+        assertEquals("ZERO", sp.inp("PUT"));
+        assertNull(sp.rdp("PUT"));
     }
+    @Test
     public void testPersistentContext() throws Exception {
         Context ctx = new Context();
         ctx.put("P", "ABC", true);
@@ -183,6 +225,6 @@ public class JESpaceTestCase extends TestCase {
         m.set(11, "000001");
         ctx.put("ISOMSG", m, true);
         sp.out("CTX", ctx);
-        assertNotNull("entry should not be null", sp.in("CTX"));
+        assertNotNull(sp.in("CTX"), "entry should not be null");
     }
 }
