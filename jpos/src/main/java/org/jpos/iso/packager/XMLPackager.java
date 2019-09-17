@@ -79,6 +79,12 @@ public class XMLPackager extends DefaultHandler
         stk = new Stack();
         try {
             reader = createXMLReader();
+
+            // some parser restrictions have been set for security and maybe PCI compliance
+            setXMLParserFeature("http://xml.org/sax/features/validation", false);
+            setXMLParserFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            setXMLParserFeature("http://xml.org/sax/features/external-general-entities", false);
+            setXMLParserFeature("http://xml.org/sax/features/external-parameter-entities", false);
         } catch (Exception e) {
             throw new ISOException (e.toString());
         }
@@ -340,13 +346,14 @@ public class XMLPackager extends DefaultHandler
                 )
             );
         }
-        reader.setFeature ("http://xml.org/sax/features/validation",false);
-        reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
         reader.setContentHandler(this);
         reader.setErrorHandler(this);
         return reader;
+    }
+
+    public void setXMLParserFeature(String fname, boolean val) throws SAXException  {
+        reader.setFeature(fname, val);
     }
 }
 
