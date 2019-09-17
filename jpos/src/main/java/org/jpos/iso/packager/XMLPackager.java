@@ -101,13 +101,13 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
-    public synchronized int unpack (ISOComponent c, byte[] b) 
+    public synchronized int unpack (ISOComponent c, byte[] b)
         throws ISOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
         try {
             if (!(c instanceof ISOMsg))
-                throw new ISOException 
+                throw new ISOException
                     ("Can't call packager on non Composite");
 
             while (!stk.empty())    // purge from possible previous error
@@ -123,7 +123,7 @@ public class XMLPackager extends DefaultHandler
             m.merge (m1);
             m.setHeader (m1.getHeader());
 
-            if (logger != null) 
+            if (logger != null)
                 evt.addMessage (m);
             return b.length;
         } catch (ISOException e) {
@@ -140,13 +140,13 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
-    public synchronized void unpack (ISOComponent c, InputStream in) 
+    public synchronized void unpack (ISOComponent c, InputStream in)
         throws ISOException, IOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
         try {
             if (!(c instanceof ISOMsg))
-                throw new ISOException 
+                throw new ISOException
                     ("Can't call packager on non Composite");
 
             while (!stk.empty())    // purge from possible previous error
@@ -161,7 +161,7 @@ public class XMLPackager extends DefaultHandler
             m.merge (m1);
             m.setHeader (m1.getHeader());
 
-            if (logger != null) 
+            if (logger != null)
                 evt.addMessage (m);
         } catch (ISOException e) {
             evt.addMessage (e);
@@ -174,7 +174,7 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
-    public void startElement 
+    public void startElement
         (String ns, String name, String qName, Attributes atts)
         throws SAXException
     {
@@ -208,7 +208,7 @@ public class XMLPackager extends DefaultHandler
                 ISOComponent ic;
                 if (TYPE_BINARY.equals (type)) {
                     ic = new ISOBinaryField (
-                        fieldNumber, 
+                        fieldNumber,
                             ISOUtil.hex2byte (
                                 value.getBytes(), 0, value.length()/2
                             )
@@ -226,7 +226,7 @@ public class XMLPackager extends DefaultHandler
                 stk.push (bh);
             }
         } catch (ISOException e) {
-            throw new SAXException 
+            throw new SAXException
                 ("ISOException unpacking "+fieldNumber);
         }
     }
@@ -255,13 +255,13 @@ public class XMLPackager extends DefaultHandler
             }
         }
     }
-    public void endElement (String ns, String name, String qname) 
+    public void endElement (String ns, String name, String qname)
         throws SAXException
     {
         if (name.equals (ISOMSG_TAG)) {
             ISOMsg m = (ISOMsg) stk.pop();
             if (stk.empty())
-                stk.push (m); // push outter message
+                stk.push (m); // push outer message
         } else if (ISOFIELD_TAG.equals (name)) {
             stk.pop();
         } else if (HEADER_TAG.equals (name)) {
@@ -296,8 +296,8 @@ public class XMLPackager extends DefaultHandler
             reader = XMLReaderFactory.createXMLReader();
         } catch (SAXException e) {
             reader = XMLReaderFactory.createXMLReader (
-                System.getProperty( 
-                    "org.xml.sax.driver", 
+                System.getProperty(
+                    "org.xml.sax.driver",
                     "org.apache.crimson.parser.XMLReaderImpl"
                 )
             );

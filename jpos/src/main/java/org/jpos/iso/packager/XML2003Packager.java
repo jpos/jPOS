@@ -49,7 +49,7 @@ public class XML2003Packager extends DefaultHandler
     protected String realm = null;
     private ByteArrayOutputStream out;
     private PrintStream p;
-    private XMLReader reader = null;
+    private XMLReader reader;
     private Stack stk;
 
     public static final String ISOMSG_TAG    = "isomsg";
@@ -124,6 +124,7 @@ public class XML2003Packager extends DefaultHandler
             ISOMsg m1 = (ISOMsg) stk.pop();
             m.merge (m1);
             m.setHeader (m1.getHeader());
+
             fixup (m, BINARY_FIELDS);
 
             if (logger != null) 
@@ -187,13 +188,13 @@ public class XML2003Packager extends DefaultHandler
                 try {
                     fieldNumber = Integer.parseInt (id);
                 } catch (NumberFormatException ex) {
-                    throw new SAXException ("Invalid idr " + id);
+                    throw new SAXException ("Invalid id " + id);
                 }
             }
             if (name.equals (ISOMSG_TAG)) {
                 if (fieldNumber >= 0) {
                     if (stk.empty())
-                        throw new SAXException ("inner without outter");
+                        throw new SAXException ("inner without outer");
 
                     ISOMsg inner = new ISOMsg(fieldNumber);
                     ((ISOMsg)stk.peek()).set (inner);
@@ -215,6 +216,7 @@ public class XML2003Packager extends DefaultHandler
                             )
                         )
                     );
+
                 }
                 else if (TYPE_AMOUNT.equals (type)) {
                     ISOAmount amount = new ISOAmount(
@@ -286,7 +288,7 @@ public class XML2003Packager extends DefaultHandler
         }
     }
     private XMLReader createXMLReader () throws SAXException {
-        XMLReader reader = null;
+        XMLReader reader;
         try {
             reader = XMLReaderFactory.createXMLReader();
         } catch (SAXException e) {
