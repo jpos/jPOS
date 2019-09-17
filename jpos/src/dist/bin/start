@@ -2,4 +2,4 @@
 
 cd `dirname $0`
 echo Starting Q2
-nohup ./q2 > /dev/null 2>&1 &
+nohup ./q2 "$@" > /dev/null 2>&1 &
