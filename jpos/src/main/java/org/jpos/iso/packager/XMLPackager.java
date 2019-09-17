@@ -31,6 +31,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.Stack;
 
 /**
@@ -58,6 +59,8 @@ public class XMLPackager extends DefaultHandler
     public static final String TYPE_ATTR     = "type";
     public static final String TYPE_BINARY   = "binary";
     public static final String TYPE_BITMAP   = "bitmap";
+    public static final String TYPE_AMOUNT   = "amount";
+    public static final String CURRENCY_ATTR = "currency";
     public static final String HEADER_TAG    = "header";
     public static final String ENCODING_ATTR = "encoding";
     public static final String ASCII_ENCODING= "ascii";
@@ -184,7 +187,9 @@ public class XMLPackager extends DefaultHandler
             if (id != null) {
                 try {
                     fieldNumber = Integer.parseInt (id);
-                } catch (NumberFormatException ignored) { }
+                } catch (NumberFormatException ex) {
+                    throw new SAXException ("Invalid id " + id);
+                }
             }
             if (name.equals (ISOMSG_TAG)) {
                 if (fieldNumber >= 0) {
@@ -214,6 +219,13 @@ public class XMLPackager extends DefaultHandler
                             )
                         );
 
+                }
+                else if (TYPE_AMOUNT.equals (type)) {
+                    ic =  new ISOAmount(
+                        fieldNumber,
+                        Integer.parseInt (atts.getValue(CURRENCY_ATTR)),
+                        new BigDecimal (value)
+                    );
                 }
                 else {
                     ic = new ISOField (fieldNumber, ISOUtil.stripUnicode(value));
@@ -272,7 +284,7 @@ public class XMLPackager extends DefaultHandler
     }
 
     public String getFieldDescription(ISOComponent m, int fldNumber) {
-        return "<notavailable/>";
+        return "Data element " + fldNumber;
     }
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
