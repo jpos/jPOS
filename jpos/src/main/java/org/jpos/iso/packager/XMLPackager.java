@@ -236,7 +236,6 @@ public class XMLPackager extends DefaultHandler
                                 value.getBytes(), 0, value.length()/2
                             )
                         );
-
                 }
                 else if (TYPE_AMOUNT.equals (type)) {
                     ic =  new ISOAmount(
