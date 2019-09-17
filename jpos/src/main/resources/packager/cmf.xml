@@ -210,10 +210,11 @@
       class="org.jpos.iso.IFB_NUMERIC"/>
   <isofieldpackager
       id="30"
-      length="32"
+      length="16"
       name="Amounts original"
       class="org.jpos.iso.IFB_BINARY"
-      emitBitmap="false" 
+      emitBitmap="false"
+      firstField="0"
       packager="org.jpos.iso.packager.GenericSubFieldPackager">
       <isofield
           id="0"
