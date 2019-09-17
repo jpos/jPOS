@@ -65,6 +65,9 @@ public class XMLPackager extends DefaultHandler
     public static final String ENCODING_ATTR = "encoding";
     public static final String ASCII_ENCODING= "ascii";
 
+    // fields that will be forced to be interpreted as binary data
+    private int[] binaryFields= null;
+
     public XMLPackager() throws ISOException {
         super();
         out = new ByteArrayOutputStream();
@@ -80,6 +83,11 @@ public class XMLPackager extends DefaultHandler
             throw new ISOException (e.toString());
         }
     }
+
+    public void forceBinary(int ... bfields) {
+        binaryFields= bfields;
+    }
+
     public byte[] pack (ISOComponent c) throws ISOException {
         LogEvent evt = new LogEvent (this, "pack");
         try {
@@ -126,6 +134,8 @@ public class XMLPackager extends DefaultHandler
             m.merge (m1);
             m.setHeader (m1.getHeader());
 
+            fixupBinary(m, binaryFields);
+
             if (logger != null)
                 evt.addMessage (m);
             return b.length;
@@ -163,6 +173,8 @@ public class XMLPackager extends DefaultHandler
             ISOMsg m1 = (ISOMsg) stk.pop();
             m.merge (m1);
             m.setHeader (m1.getHeader());
+
+            fixupBinary(m, binaryFields);
 
             if (logger != null)
                 evt.addMessage (m);
@@ -283,6 +295,19 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
+    // we may want to force fome fields to be interpreted as binary data
+    protected void fixupBinary(ISOMsg m, int[] bfields) throws ISOException {
+        if (bfields != null) {
+            for (int f : bfields) {
+                if (m.hasField(f)) {
+                    ISOComponent c = m.getComponent(f);
+                    if (c instanceof ISOField)
+                        m.set(f, ((ISOField) c).getBytes());
+                }
+            }
+        }
+    }
+
     public String getFieldDescription(ISOComponent m, int fldNumber) {
         return "Data element " + fldNumber;
     }
@@ -302,7 +327,8 @@ public class XMLPackager extends DefaultHandler
     public String getDescription () {
         return getClass().getName();
     }
-    private XMLReader createXMLReader () throws SAXException {
+
+    protected XMLReader createXMLReader () throws SAXException {
         XMLReader reader;
         try {
             reader = XMLReaderFactory.createXMLReader();

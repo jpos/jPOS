@@ -125,7 +125,11 @@ public class XMLPackagerTest {
     public void testGetFieldDescription() throws Throwable {
         ISOComponent m = new ISOMsg(100);
         String result = xMLPackager.getFieldDescription(m, 100);
-        assertEquals("<notavailable/>", result, "result");
+        // old version
+        // assertEquals("<notavailable/>", result, "result");
+
+        // new version, inspired in XML2003Packager
+        assertEquals("Data element "+100, result, "result");
     }
 
     @Test
