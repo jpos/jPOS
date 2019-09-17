@@ -31,6 +31,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.Stack;
 
 /**
@@ -58,9 +59,14 @@ public class XMLPackager extends DefaultHandler
     public static final String TYPE_ATTR     = "type";
     public static final String TYPE_BINARY   = "binary";
     public static final String TYPE_BITMAP   = "bitmap";
+    public static final String TYPE_AMOUNT   = "amount";
+    public static final String CURRENCY_ATTR = "currency";
     public static final String HEADER_TAG    = "header";
     public static final String ENCODING_ATTR = "encoding";
     public static final String ASCII_ENCODING= "ascii";
+
+    // fields that will be forced to be interpreted as binary data
+    private int[] binaryFields= null;
 
     public XMLPackager() throws ISOException {
         super();
@@ -73,10 +79,21 @@ public class XMLPackager extends DefaultHandler
         stk = new Stack();
         try {
             reader = createXMLReader();
+
+            // some parser restrictions have been set for security and maybe PCI compliance
+            setXMLParserFeature("http://xml.org/sax/features/validation", false);
+            setXMLParserFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            setXMLParserFeature("http://xml.org/sax/features/external-general-entities", false);
+            setXMLParserFeature("http://xml.org/sax/features/external-parameter-entities", false);
         } catch (Exception e) {
             throw new ISOException (e.toString());
         }
     }
+
+    public void forceBinary(int ... bfields) {
+        binaryFields= bfields;
+    }
+
     public byte[] pack (ISOComponent c) throws ISOException {
         LogEvent evt = new LogEvent (this, "pack");
         try {
@@ -101,13 +118,13 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
-    public synchronized int unpack (ISOComponent c, byte[] b) 
+    public synchronized int unpack (ISOComponent c, byte[] b)
         throws ISOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
         try {
             if (!(c instanceof ISOMsg))
-                throw new ISOException 
+                throw new ISOException
                     ("Can't call packager on non Composite");
 
             while (!stk.empty())    // purge from possible previous error
@@ -123,7 +140,9 @@ public class XMLPackager extends DefaultHandler
             m.merge (m1);
             m.setHeader (m1.getHeader());
 
-            if (logger != null) 
+            fixupBinary(m, binaryFields);
+
+            if (logger != null)
                 evt.addMessage (m);
             return b.length;
         } catch (ISOException e) {
@@ -140,13 +159,13 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
-    public synchronized void unpack (ISOComponent c, InputStream in) 
+    public synchronized void unpack (ISOComponent c, InputStream in)
         throws ISOException, IOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
         try {
             if (!(c instanceof ISOMsg))
-                throw new ISOException 
+                throw new ISOException
                     ("Can't call packager on non Composite");
 
             while (!stk.empty())    // purge from possible previous error
@@ -161,7 +180,9 @@ public class XMLPackager extends DefaultHandler
             m.merge (m1);
             m.setHeader (m1.getHeader());
 
-            if (logger != null) 
+            fixupBinary(m, binaryFields);
+
+            if (logger != null)
                 evt.addMessage (m);
         } catch (ISOException e) {
             evt.addMessage (e);
@@ -174,7 +195,7 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
-    public void startElement 
+    public void startElement
         (String ns, String name, String qName, Attributes atts)
         throws SAXException
     {
@@ -184,7 +205,9 @@ public class XMLPackager extends DefaultHandler
             if (id != null) {
                 try {
                     fieldNumber = Integer.parseInt (id);
-                } catch (NumberFormatException ignored) { }
+                } catch (NumberFormatException ex) {
+                    throw new SAXException ("Invalid id " + id);
+                }
             }
             if (name.equals (ISOMSG_TAG)) {
                 if (fieldNumber >= 0) {
@@ -208,12 +231,18 @@ public class XMLPackager extends DefaultHandler
                 ISOComponent ic;
                 if (TYPE_BINARY.equals (type)) {
                     ic = new ISOBinaryField (
-                        fieldNumber, 
+                        fieldNumber,
                             ISOUtil.hex2byte (
                                 value.getBytes(), 0, value.length()/2
                             )
                         );
-
+                }
+                else if (TYPE_AMOUNT.equals (type)) {
+                    ic =  new ISOAmount(
+                        fieldNumber,
+                        Integer.parseInt (atts.getValue(CURRENCY_ATTR)),
+                        new BigDecimal (value)
+                    );
                 }
                 else {
                     ic = new ISOField (fieldNumber, ISOUtil.stripUnicode(value));
@@ -226,7 +255,7 @@ public class XMLPackager extends DefaultHandler
                 stk.push (bh);
             }
         } catch (ISOException e) {
-            throw new SAXException 
+            throw new SAXException
                 ("ISOException unpacking "+fieldNumber);
         }
     }
@@ -255,13 +284,13 @@ public class XMLPackager extends DefaultHandler
             }
         }
     }
-    public void endElement (String ns, String name, String qname) 
+    public void endElement (String ns, String name, String qname)
         throws SAXException
     {
         if (name.equals (ISOMSG_TAG)) {
             ISOMsg m = (ISOMsg) stk.pop();
             if (stk.empty())
-                stk.push (m); // push outter message
+                stk.push (m); // push outer message
         } else if (ISOFIELD_TAG.equals (name)) {
             stk.pop();
         } else if (HEADER_TAG.equals (name)) {
@@ -271,8 +300,21 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
+    // we may want to force fome fields to be interpreted as binary data
+    protected void fixupBinary(ISOMsg m, int[] bfields) throws ISOException {
+        if (bfields != null) {
+            for (int f : bfields) {
+                if (m.hasField(f)) {
+                    ISOComponent c = m.getComponent(f);
+                    if (c instanceof ISOField)
+                        m.set(f, ((ISOField) c).getBytes());
+                }
+            }
+        }
+    }
+
     public String getFieldDescription(ISOComponent m, int fldNumber) {
-        return "<notavailable/>";
+        return "Data element " + fldNumber;
     }
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
@@ -290,25 +332,27 @@ public class XMLPackager extends DefaultHandler
     public String getDescription () {
         return getClass().getName();
     }
-    private XMLReader createXMLReader () throws SAXException {
+
+    protected XMLReader createXMLReader () throws SAXException {
         XMLReader reader;
         try {
             reader = XMLReaderFactory.createXMLReader();
         } catch (SAXException e) {
             reader = XMLReaderFactory.createXMLReader (
-                System.getProperty( 
-                    "org.xml.sax.driver", 
+                System.getProperty(
+                    "org.xml.sax.driver",
                     "org.apache.crimson.parser.XMLReaderImpl"
                 )
             );
         }
-        reader.setFeature ("http://xml.org/sax/features/validation",false);
-        reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
         reader.setContentHandler(this);
         reader.setErrorHandler(this);
         return reader;
+    }
+
+    public void setXMLParserFeature(String fname, boolean val) throws SAXException  {
+        reader.setFeature(fname, val);
     }
 }
 
