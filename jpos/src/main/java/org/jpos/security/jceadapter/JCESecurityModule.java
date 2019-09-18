@@ -362,7 +362,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return new String(bhc);
     }
 
-    private Key concatKeys(SecureDESKey keyA, SecureDESKey keyB)
+    protected Key concatKeys(SecureDESKey keyA, SecureDESKey keyB)
             throws SMException {
         if ( keyA!=null && keyA.getKeyLength()==SMAdapter.LENGTH_DES
           && keyB!=null && keyB.getKeyLength()==SMAdapter.LENGTH_DES) {
@@ -378,13 +378,13 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return null;
     }
 
-    private String calculateCVV(String accountNo, Key cvk, Date expDate,
+    protected String calculateCVV(String accountNo, Key cvk, Date expDate,
                                 String serviceCode) throws SMException {
         String ed = ISODate.formatDate(expDate, "yyMM");
         return calculateCVD(accountNo, cvk, ed, serviceCode);
     }
 
-    private String calculateCVD(String accountNo, Key cvk, String expDate,
+    protected String calculateCVD(String accountNo, Key cvk, String expDate,
                                 String serviceCode) throws SMException {
         Key udka = jceHandler.formDESKey(SMAdapter.LENGTH_DES
                 ,Arrays.copyOfRange(cvk.getEncoded(), 0, 8));
@@ -719,7 +719,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return derived 16-bytes ICC Master Key with adjusted DES parity
      * @throws JCEHandlerException
      */
-    private Key deriveICCMasterKey(Key imk, byte[] panpsn)
+    protected Key deriveICCMasterKey(Key imk, byte[] panpsn)
             throws JCEHandlerException {
         byte[] l = Arrays.copyOfRange(panpsn, 0, 8);
         //left part of derived key
@@ -737,7 +737,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return jceHandler.formDESKey(SMAdapter.LENGTH_DES3_2KEY, mk);
     }
 
-    private String calculatePVV(EncryptedPIN pinUnderLmk, Key key, int keyIdx
+    protected String calculatePVV(EncryptedPIN pinUnderLmk, Key key, int keyIdx
                                ,List<String> excludes) throws SMException {
         String pin = decryptPINImpl(pinUnderLmk);
         if (excludes!=null && excludes.contains(pin))
@@ -941,7 +941,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * <p>
      * Entry point e.g. for simulator systems
      */
-    byte[] calculateARQC(MKDMethod mkdm, SKDMethod skdm
+    protected byte[] calculateARQC(MKDMethod mkdm, SKDMethod skdm
             ,SecureDESKey imkac, String accountNo, String accntSeqNo, byte[] atc
             ,byte[] upn, byte[] transData) throws SMException {
         if (mkdm==null)
@@ -1049,7 +1049,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * <p>
      * Entry point e.g. for simulator systems
      */
-    byte[] calculateARPC(Key skarpc, byte[] arqc, ARPCMethod arpcMethod
+    protected byte[] calculateARPC(Key skarpc, byte[] arqc, ARPCMethod arpcMethod
              ,byte[] arc, byte[] propAuthData) throws SMException {
         if (arpcMethod == null)
             arpcMethod = ARPCMethod.METHOD_1;
@@ -1308,7 +1308,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return forms an SecureDESKey from two clear components
      * @throws SMException
      */
-    SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
+    protected SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
             String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException {
         SecureDESKey secureDESKey;
         LogEvent evt = new LogEvent(this, "s-m-operation");
@@ -1360,7 +1360,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return the key check value
      * @exception SMException
      */
-    byte[] calculateKeyCheckValue (Key key) throws SMException {
+    protected byte[] calculateKeyCheckValue (Key key) throws SMException {
         byte[] encryptedZeroBlock = jceHandler.encryptData(zeroBlock, key);
         return ISOUtil.trim(encryptedZeroBlock, 3);
     }
@@ -1373,7 +1373,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return secureDESKey
      * @throws SMException
      */
-    private SecureDESKey encryptToLMK (short keyLength, String keyType, Key clearDESKey) throws SMException {
+    protected SecureDESKey encryptToLMK (short keyLength, String keyType, Key clearDESKey) throws SMException {
         Key novar, left, medium, right;
         byte[] clearKeyBytes = jceHandler.extractDESKeyMaterial(keyLength, clearDESKey);
         byte[] bl = new byte[SMAdapter.LENGTH_DES>>3];
@@ -1424,7 +1424,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return clear key
      * @throws SMException
      */
-    private Key decryptFromLMK (SecureDESKey secureDESKey) throws SMException {
+    protected Key decryptFromLMK (SecureDESKey secureDESKey) throws SMException {
         Key left, medium, right;
         byte[] keyBytes = secureDESKey.getKeyBytes();
         byte[] bl = new byte[SMAdapter.LENGTH_DES>>3];
@@ -1500,7 +1500,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @throws SMException
      *
      */
-    private byte[] calculatePINBlock (String pin, byte pinBlockFormat, String accountNumber) throws SMException {
+    protected byte[] calculatePINBlock (String pin, byte pinBlockFormat, String accountNumber) throws SMException {
         byte[] pinBlock = null;
         String oldPin = null;
         if (pinBlockFormat==SMAdapter.FORMAT42){
@@ -1648,7 +1648,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return the pin
      * @throws SMException
      */
-    private String calculatePIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) throws SMException {
+    protected String calculatePIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) throws SMException {
         String pin = null;
         if (isVSDCPinBlockFormat(pinBlockFormat)) {
           if (accountNumber.length() != 16 )
@@ -2028,7 +2028,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      */
     private static final byte[] zeroBlock = ISOUtil.hex2byte("0000000000000000");
 
-    private JCEHandler jceHandler;
+    protected JCEHandler jceHandler;
 
     //--------------------------------------------------------------------------------------------------
     // DUKPT
@@ -2052,7 +2052,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         );
     }
 
-    private byte[] specialEncrypt(byte[] data, byte[] key)
+    protected byte[] specialEncrypt(byte[] data, byte[] key)
             throws JCEHandlerException
     {
         if (key.length == 8)
@@ -2071,7 +2071,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return data;
     }
 
-    private byte[] specialDecrypt(byte[] data, byte[] key)
+    protected byte[] specialDecrypt(byte[] data, byte[] key)
             throws JCEHandlerException
     {
         if (key.length == 8)
@@ -2245,7 +2245,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         }
    }
 
-    private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk, boolean tdes, boolean dataEncryption)
+    protected byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk, boolean tdes, boolean dataEncryption)
             throws SMException
     {
         return tdes?calculateDerivedKeyTDES(ksn,bdk, dataEncryption):calculateDerivedKeySDES(ksn,bdk);
