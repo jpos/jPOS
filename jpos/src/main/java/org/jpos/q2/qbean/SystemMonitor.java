@@ -62,6 +62,8 @@ public class SystemMonitor extends QBeanSupport
     private static final int MB = 1024*1024;
     private String[] scripts;
     private String frozenDump;
+    private String localHost;
+    private String processName;
 
     public void startService() {
         try {
@@ -116,7 +118,10 @@ public class SystemMonitor extends QBeanSupport
     }
 
     public void run() {
+        localHost = getLocalHost();
+        processName = ManagementFactory.getRuntimeMXBean().getName();
         while (running()) {
+            frozenDump = generateFrozenDump ("");
             log.info(this);
             frozenDump = null;
             try {
@@ -126,7 +131,9 @@ public class SystemMonitor extends QBeanSupport
             } catch (InterruptedException ignored) {
             }
         }
+        frozenDump = generateFrozenDump ("");
         log.info(this);
+        frozenDump = null;
     }
     public void dump (PrintStream p, String indent) {
         if (frozenDump == null)
@@ -181,10 +188,8 @@ public class SystemMonitor extends QBeanSupport
         Instant instant = Instant.now();
 
         File cwd = new File(".");
-
         String freeSpace = ISOUtil.readableFileSize(cwd.getFreeSpace());
         String usableSpace = ISOUtil.readableFileSize(cwd.getUsableSpace());
-
         p.printf ("%s           OS: %s (%s)%n", indent, System.getProperty("os.name"), System.getProperty("os.version"));
         int maxKeyLength = 0;
         try {
@@ -196,11 +201,12 @@ public class SystemMonitor extends QBeanSupport
           maxKeyLength == Integer.MAX_VALUE ? "secure" : Integer.toString(maxKeyLength)
         );
         p.printf ("%s  environment: %s%n", indent, Environment.getEnvironment().getName());
-        p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
+        p.printf ("%s process name: %s%n", indent, processName);
         p.printf ("%s    user name: %s%n", indent, System.getProperty("user.name"));
-        p.printf ("%s         host: %s%n", indent, getLocalHost());
+        p.printf ("%s         host: %s%n", indent, localHost);
         p.printf ("%s          cwd: %s%n", indent, System.getProperty("user.dir"));
         p.printf ("%s   free space: %s%n", indent, freeSpace);
+
         if (!freeSpace.equals(usableSpace))
             p.printf ("%s usable space: %s%n", indent, usableSpace);
         p.printf ("%s      version: %s (%s)%n", indent, Q2.getVersion(), getRevision());
