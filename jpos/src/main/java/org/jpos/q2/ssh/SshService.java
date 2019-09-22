@@ -52,7 +52,7 @@ public class SshService extends QBeanSupport implements SshCLIContextMBean
 
         sshd = SshServer.setUpDefaultServer();
         sshd.setPort(port);
-        sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(new File(hostKeys)));
+        sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(new File(hostKeys).toPath()));
 
         CliShellFactory csf = new CliShellFactory(getServer(), prefixes);
         sshd.setShellFactory(csf);

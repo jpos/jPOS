@@ -21,7 +21,11 @@ package org.jpos.q2.ssh;
 import org.apache.sshd.common.Factory;
 import org.apache.sshd.common.SshConstants;
 import org.apache.sshd.server.*;
+import org.apache.sshd.server.channel.ChannelSession;
+import org.apache.sshd.server.command.Command;
+import org.apache.sshd.server.command.CommandFactory;
 import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.server.shell.ShellFactory;
 import org.jpos.q2.CLI;
 import org.jpos.q2.Q2;
 import org.jpos.util.Log;
@@ -30,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class CliShellFactory implements Factory<Command>, CommandFactory {
+public class CliShellFactory implements Factory<Command>, CommandFactory, ShellFactory {
     Q2 q2;
     String[] prefixes;
 
@@ -44,9 +48,12 @@ public class CliShellFactory implements Factory<Command>, CommandFactory {
     }
 
     @Override
-    public Command createCommand(String command) {
+    public Command createCommand(ChannelSession channel, String command) {
         return new JPosCLIShell(command);
     }
+
+    @Override
+    public Command createShell(ChannelSession channel) { return new JPosCLIShell(null); }
 
     public class JPosCLIShell implements Command, SessionAware {
         InputStream in;
@@ -79,7 +86,7 @@ public class CliShellFactory implements Factory<Command>, CommandFactory {
             this.serverSession = serverSession;
         }
 
-        public void start(Environment env) throws IOException {
+        public void start(ChannelSession channel, Environment env) throws IOException {
             cli = new SshCLI(q2, args != null ? null : in, out, args, args == null);
             try {
                 cli.setServerSession(serverSession);
@@ -89,7 +96,7 @@ public class CliShellFactory implements Factory<Command>, CommandFactory {
             }
         }
 
-        public void destroy() {
+        public void destroy(ChannelSession channel) {
             if (cli != null) {
                 cli.stop();
             }

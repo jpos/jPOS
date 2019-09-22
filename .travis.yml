@@ -7,6 +7,7 @@ jdk:
   - openjdk10
   - openjdk11
   - openjdk12
+  - openjdk13
 before_script:
   - echo $JAVA_OPTS
   - export JAVA_OPTS=-Xmx4G
