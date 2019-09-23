@@ -212,12 +212,19 @@ public enum CMF implements IRC {
     USER(90000);
 
     int irc;
+    String ircStr;
+
     boolean success;
     boolean inhibit;
-    private static Map<Integer,IRC> lookup = new HashMap<>();
+
+    private static Map<Integer,IRC> lookupInt = new HashMap<>();
+    private static Map<String,IRC>  lookupStr = new HashMap<>();
     static {
-        for (IRC irc : values())
-            lookup.put(irc.irc(), irc);
+        // This section executes after all the enum instances have been constructed
+        for (IRC irc : values()) {
+            lookupInt.put(irc.irc(), irc);
+            lookupStr.put(irc.ircString(), irc);
+        }
     }
 
     CMF(int irc) {
@@ -228,6 +235,7 @@ public enum CMF implements IRC {
     }
     CMF(int irc, boolean success, boolean inhibit) {
         this.irc = irc;
+        this.ircStr = String.format("%04d", irc);
         this.success = success;
         this.inhibit = inhibit;
     }
@@ -235,6 +243,11 @@ public enum CMF implements IRC {
     @Override
     public int irc() {
         return irc;
+    }
+
+    @Override
+    public String ircString() {
+        return ircStr;
     }
 
     @Override
@@ -248,6 +261,17 @@ public enum CMF implements IRC {
     }
 
     public static IRC valueOf(int i) {
-        return lookup.get(i);
+        return lookupInt.get(i);
+    }
+
+    /**
+     * Returns the {@code CMF} instance that has the given String as its jPOS-CMF Result Code
+     * (usually transmitted in DE-39).
+     *
+     * @param irc a String representing a jPOS-CMF Result Code
+     * @return the corresponding CMF instance or {@code null}
+     */
+    public static CMF fromIsoString(String irc) {
+        return (irc == null) ? null : (CMF)lookupStr.get(irc.trim());
     }
 }

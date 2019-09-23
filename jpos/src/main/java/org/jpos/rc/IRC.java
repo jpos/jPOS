@@ -41,6 +41,15 @@ public interface IRC {
     int irc();
 
     /**
+     * Returns the {@code int irc()} as a left-zero-padded String
+     * This is the default implementation which can be overridden for performance or other reasons.
+     * @return a left-zero-padded String with the integer value of this IRC
+     */
+    default String ircString() {
+        return String.format("%04d" , irc());
+    }
+
+    /**
      * @return true if this IRC can be considered a 'success' (not necessarily an approval, could be a partial approval, advice accepted, etc.)
      */
     boolean success();
