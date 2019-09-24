@@ -70,6 +70,13 @@ public class TaggedFieldPackagerBaseTest {
      */
     private static final String MESSAGE_VALUE3   = "06123456022A10748TagA1A20748TagA2012A100760TagA1";
 
+    /**
+     * Undefined DE48 tag with followed tag.
+     * <p>
+     * Undefined in packager A2 <i>(id 2)</i> and following A3 <i>(id 3)</i>.
+     */
+    private static final String MESSAGE_VALUE4   = "06123456022A20748TagA2A30748TagA3012A100760TagA1";
+
     private static final String REPR_MESSAGE1    = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + MESSAGE_VALUE1;
 
     /**
@@ -81,6 +88,8 @@ public class TaggedFieldPackagerBaseTest {
      * Undefined DE48 tag message representation.
      */
     private static final String REPR_MESSAGE3    = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + MESSAGE_VALUE3;
+
+    private static final String REPR_MESSAGE4    = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + MESSAGE_VALUE4;
 
     private static ISOPackager packager;
 
@@ -147,7 +156,6 @@ public class TaggedFieldPackagerBaseTest {
         );
     }
 
-    @Disabled("It leads to 100% CPU usage")
     @Test
     public void testUnpackUndefinedTag() throws Exception {
         ISOMsg msg = new ISOMsg();
@@ -158,6 +166,21 @@ public class TaggedFieldPackagerBaseTest {
             () -> assertEquals("123456", msg.getString(2)),
             () -> assertEquals("48TagA1", msg.getString("48.1")),
             () -> assertNull(msg.getString("48.2")),
+            () -> assertEquals("60TagA1", msg.getString("60.1"))
+        );
+    }
+
+    @Disabled("Skipping undefined A2 is impossible in current solution so follwing A3 will be lost")
+    @Test
+    public void testUnpackUndefinedTagWithFollowing() throws Exception {
+        ISOMsg msg = new ISOMsg();
+        packager.unpack(msg, toBytes(REPR_MESSAGE4));
+
+        assertAll("Should unpack DE48.3 (A3) and any other standard elements",
+            () -> assertEquals("1100", msg.getString(0)),
+            () -> assertEquals("123456", msg.getString(2)),
+            () -> assertNull(msg.getString("48.2")),
+            () -> assertEquals("48TagA3", msg.getString("48.3")),
             () -> assertEquals("60TagA1", msg.getString("60.1"))
         );
     }

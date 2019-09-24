@@ -27,9 +27,11 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -54,10 +56,37 @@ public class GenericTaggedFieldsPackager extends GenericPackager
       return fieldId;
     }
 
+    private Set<Integer> selectFields() {
+        Map<Integer, ISOFieldPackager> fldMap = new ConcurrentHashMap<>();
+        IntStream.range(getFirstField(), fld.length)
+                .filter(i -> fld[i] != null)
+                .forEach(i -> fldMap.put(i, fld[i]));
+
+        return fldMap.keySet();
+    }
+
+    private int unpackTag(Set<Integer> flds, ISOComponent m, byte[] b, int consumed)
+            throws ISOException {
+
+        for (Integer i : flds) {
+            ISOFieldPackager fpack = fld[i];
+            ISOComponent c = fpack.createComponent(i);
+            int unpacked = fpack.unpack(c, b, consumed);
+            if (unpacked > 0) {
+                m.set(c);
+                // for optimize subsequent iterations
+                flds.remove(i);
+                return unpacked;
+            }
+        }
+
+        // undefined tag - all defined fields was tested
+        return 0;
+    }
+
     @Override
     public int unpack(ISOComponent m, byte[] b) throws ISOException {
         LogEvent evt = new LogEvent(this, "unpack");
-        ISOFieldPackager[] fields = Arrays.copyOf(fld, fld.length);
         try {
             if (m.getComposite() != m)
                 throw new ISOException("Can't call packager on non Composite");
@@ -67,20 +96,12 @@ public class GenericTaggedFieldsPackager extends GenericPackager
                 evt.addMessage(ISOUtil.hexString(b));
 
             int consumed = 0;
-            int maxField = fld.length;
-            while (consumed < b.length) {
-                for (int i = getFirstField(); i < maxField && consumed < b.length; i++) {
-                    if (fields[i] != null) {
-                        ISOComponent c = fields[i].createComponent(i);
-                        int unpacked = fields[i].unpack(c, b, consumed);
-                        consumed = consumed + unpacked;
-                        if (unpacked > 0) {
-                            if (!(fields[i] instanceof TaggedFieldPackagerBase))
-                                fields[i] = null;
-                            m.set(c);
-                        }
-                    }
-                }
+            Set<Integer> flds = selectFields();
+            for (int i : flds) {
+                if (consumed >= b.length)
+                    break;
+
+                consumed += unpackTag(flds, m, b, consumed);
             }
             if (b.length != consumed) {
                 evt.addMessage(
