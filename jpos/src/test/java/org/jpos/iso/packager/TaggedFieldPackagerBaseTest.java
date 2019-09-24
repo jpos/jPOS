@@ -18,111 +18,121 @@
 
 package org.jpos.iso.packager;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.BufferedInputStream;
-
-import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOMsg;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.ISOUtil;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  *
  */
 public class TaggedFieldPackagerBaseTest {
 
+    private static final Path PACKAGERS_LOCATION = FileSystems
+            .getDefault()
+            .getPath("build/resources/test/org/jpos/iso/packagers");
+
+    private static final Path ISO83TLVPACKAGER   = PACKAGERS_LOCATION.resolve("ISO93TLVPackager.xml");
+
+    private static final String MESSAGE_MTI1     = "1100";
+
+    /**
+     * The first bitmap with DE2, DE48 and DE60 set.
+     */
+    private static final byte[] MESSAGE_BITMAP1  = ISOUtil.hex2byte("4000000000010010");
+
+    private static final String MESSAGE_VALUE1   = "06123456022A10748TagA1A30748TagA3012A100760TagA1";
+
+    private static final String REPR_MESSAGE1    = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + MESSAGE_VALUE1;
+
+    private static ISOPackager packager;
+
+    @BeforeAll
+    static void beforeClass() throws Throwable {
+        packager = new GenericPackager(new FileInputStream(ISO83TLVPACKAGER.toFile()));
+    }
+
+    private static String toString(byte[] b) {
+        return new String(b, ISOUtil.CHARSET);
+    }
+
+    private static byte[] toBytes(String str) {
+        return str.getBytes(ISOUtil.CHARSET);
+    }
+
     @Test
     public void testPack() throws Exception {
-        String path = "build/resources/test/org/jpos/iso/packagers/";
-        GenericPackager genericPackager = new GenericPackager(new FileInputStream(path + "ISO93TLVPackager.xml"));
+        ISOMsg msg = new ISOMsg(MESSAGE_MTI1);
+        msg.set(2, "123456");
 
-        ISOMsg msg = new ISOMsg();
-        msg.setMTI("1100");
-        msg.set(new ISOField(2, "123456"));
+        msg.set("48.1", "48TagA1");
+        msg.set("48.3", "48TagA3");
 
-        ISOMsg subFieldsContainer = new ISOMsg(48);
-        ISOField tlvField = new ISOField(1);
-        tlvField.setValue("48TagA1");
-        subFieldsContainer.set(tlvField);
+        msg.set("60.1", "60TagA1");
 
-        ISOField tlvField2 = new ISOField(3);
-        tlvField2.setValue("48TagA3");
-        subFieldsContainer.set(tlvField2);
+        msg.setPackager(packager);
 
-        msg.set(subFieldsContainer);
-
-        ISOMsg subFieldsContainer2 = new ISOMsg(60);
-        ISOField tlvField3 = new ISOField(1);
-        tlvField3.setValue("60TagA1");
-        subFieldsContainer2.set(tlvField3);
-
-        msg.set(subFieldsContainer2);
-
-        msg.setHeader("HEADER   ".getBytes());
-        msg.setPackager(genericPackager);
         byte[] packed = msg.pack();
-        assertNotNull(packed);
 
-        FileOutputStream fos = new FileOutputStream(path + "ISO93TLVPackager.bin");
-        try {
-            fos.write(packed);
-        } finally {
-            fos.close();
-        }
+        String packedAscii = toString(packed);
+        assertAll(
+            () -> assertEquals(REPR_MESSAGE1.length(), packed.length),
+            () -> assertEquals(MESSAGE_MTI1, StringUtils.left(packedAscii, 4)),
+            () -> assertEquals(MESSAGE_VALUE1, StringUtils.right(packedAscii, 48))
+        );
     }
 
     @Test
     public void testUnpack() throws Exception {
-        String path = "build/resources/test/org/jpos/iso/packagers/";
-        GenericPackager genericPackager = new GenericPackager(new FileInputStream(path + "ISO93TLVPackager.xml"));
-
         ISOMsg msg = new ISOMsg();
-        InputStream input = new BufferedInputStream(new FileInputStream(path + "ISO93TLVPackager.bin"));
-        try {
-            genericPackager.unpack(msg, input);
-        } finally {
-            input.close();
-        }
+        packager.unpack(msg, toBytes(REPR_MESSAGE1));
 
-        assertEquals("1100", msg.getMTI());
-        assertEquals("48TagA1", ((ISOField) ((ISOMsg) msg.getComponent(48)).getComponent(1)).getValue());
+        assertAll(
+            () -> assertEquals("1100", msg.getString(0)),
+            () -> assertEquals("123456", msg.getString(2)),
+            () -> assertEquals("48TagA1", msg.getString("48.1")),
+            () -> assertEquals("48TagA3", msg.getString("48.3")),
+            () -> assertEquals("60TagA1", msg.getString("60.1"))
+        );
     }
 
     public static class TagMapperImpl implements TagMapper {
 
-        private static Map<String, Integer> tagToNumberMap = new HashMap<String, Integer>();
-        private static Map<String, String> numberToTagMap = new HashMap<String, String>();
+        private static final Map<String, Integer> MAP_TAG_MUMBER = new HashMap<>();
+        private static final Map<String, String> MAP_NUMBER_TAG = new HashMap<>();
 
         static {
-            tagToNumberMap.put("48.A1", 1);
-            numberToTagMap.put("48.1", "A1");
+            MAP_TAG_MUMBER.put("48.A1", 1);
+            MAP_TAG_MUMBER.put("48.A2", 2);
+            MAP_TAG_MUMBER.put("48.A3", 3);
+            MAP_TAG_MUMBER.put("60.A1", 1);
 
-            tagToNumberMap.put("48.A2", 2);
-            numberToTagMap.put("48.2", "A2");
-
-            tagToNumberMap.put("48.A3", 3);
-            numberToTagMap.put("48.3", "A3");
-
-            tagToNumberMap.put("60.A1", 1);
-            numberToTagMap.put("60.1", "A1");
+            MAP_NUMBER_TAG.put("48.1", "A1");
+            MAP_NUMBER_TAG.put("48.2", "A2");
+            MAP_NUMBER_TAG.put("48.3", "A3");
+            MAP_NUMBER_TAG.put("60.1", "A1");
         }
 
-        public TagMapperImpl() {
-        }
-
+        @Override
         public String getTagForField(int fieldNumber, int subFieldNumber) {
-            return numberToTagMap.get(fieldNumber + "." + subFieldNumber);
+            return MAP_NUMBER_TAG.get(fieldNumber + "." + subFieldNumber);
         }
 
+        @Override
         public Integer getFieldNumberForTag(int fieldNumber, String tag) {
-            return tagToNumberMap.get(fieldNumber + "." + tag);
+            return MAP_TAG_MUMBER.get(fieldNumber + "." + tag);
         }
     }
+
 }
