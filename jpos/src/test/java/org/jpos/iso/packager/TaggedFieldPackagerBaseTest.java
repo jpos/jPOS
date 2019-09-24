@@ -20,6 +20,7 @@ package org.jpos.iso.packager;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.jpos.iso.ISOMsg;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 
 /**
  *
@@ -61,12 +63,24 @@ public class TaggedFieldPackagerBaseTest {
      */
     private static final String MESSAGE_VALUE2   = "06123456022A30748TagA3A10748TagA1012A100760TagA1";
 
+    /**
+     * Undefined DE48 tag.
+     * <p>
+     * After A1 <i>(id 1)</i> followed by undefined in packager A2 <i>(id 2)</i>.
+     */
+    private static final String MESSAGE_VALUE3   = "06123456022A10748TagA1A20748TagA2012A100760TagA1";
+
     private static final String REPR_MESSAGE1    = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + MESSAGE_VALUE1;
 
     /**
      * Unsorted DE48 tags message representation.
      */
     private static final String REPR_MESSAGE2    = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + MESSAGE_VALUE2;
+
+    /**
+     * Undefined DE48 tag message representation.
+     */
+    private static final String REPR_MESSAGE3    = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + MESSAGE_VALUE3;
 
     private static ISOPackager packager;
 
@@ -129,6 +143,21 @@ public class TaggedFieldPackagerBaseTest {
             () -> assertEquals("123456", msg.getString(2)),
             () -> assertEquals("48TagA1", msg.getString("48.1")),
             () -> assertEquals("48TagA3", msg.getString("48.3")),
+            () -> assertEquals("60TagA1", msg.getString("60.1"))
+        );
+    }
+
+    @Disabled("It leads to 100% CPU usage")
+    @Test
+    public void testUnpackUndefinedTag() throws Exception {
+        ISOMsg msg = new ISOMsg();
+        packager.unpack(msg, toBytes(REPR_MESSAGE3));
+
+        assertAll(
+            () -> assertEquals("1100", msg.getString(0)),
+            () -> assertEquals("123456", msg.getString(2)),
+            () -> assertEquals("48TagA1", msg.getString("48.1")),
+            () -> assertNull(msg.getString("48.2")),
             () -> assertEquals("60TagA1", msg.getString("60.1"))
         );
     }

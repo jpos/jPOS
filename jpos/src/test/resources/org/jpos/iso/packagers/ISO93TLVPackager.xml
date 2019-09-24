@@ -154,11 +154,6 @@
           name="Address Verification (AVS) Request Data"
           class="org.jpos.iso.IFA_TTLLCHAR"/>
       <isofield
-          id="2"
-          length="1"
-          name="Address Verification (AVS) Response Data"
-          class="org.jpos.iso.IFA_TTLLCHAR"/>
-      <isofield
           id="3"
           length="8"
           name="Generic Transaction Additional Data"
