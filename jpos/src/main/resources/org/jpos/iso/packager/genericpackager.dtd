@@ -35,3 +35,4 @@
 <!ATTLIST isofieldpackager bitmapField CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager firstField  CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager headerLength  CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager tagMapper     CDATA        #IMPLIED>
