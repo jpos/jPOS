@@ -19,20 +19,23 @@
 package org.jpos.iso.packager;
 
 /**
- * TagMapper provides mappings between two decimal tags
- * {@code TT} and subfields.
- *
- * <p>Example of mappings:
+ * The {@code TagMapper} provides convertions between two decimal tags
+ * {@code TT} and subtags.
+ * <p>
+ * Example of mappings:
  * <ul>
- *   <li>01 &lt;-&gt; 1
- *   <li>23 &lt;-&gt; 23
+ *   <li>'03' &lt;-&gt; 3
+ *   <li>'23' &lt;-&gt; 23
+ *   <li>...
+ *   <li>'99' &lt;-&gt; 99
  * </ul>
  *
  * @author Michał Wiercioch
  */
 public class TTDecimalTagMapper extends DecimalTagMapper {
 
-  public TTDecimalTagMapper() {
-    super(2);
-  }
+    public TTDecimalTagMapper() {
+        super(2);
+    }
+
 }
