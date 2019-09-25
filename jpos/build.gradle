@@ -32,7 +32,7 @@ dependencies {
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert
     testCompile libraries.xmlunit
-    testImplementation libraries.junit_jupiter
+    testImplementation libraries.junit
     testCompile(libraries.mockito) {
         exclude(module: 'hamcrest-core')
     }
