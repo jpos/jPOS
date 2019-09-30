@@ -80,11 +80,51 @@ public class TTDecimalTagMapperTest {
     @Test
     public void testGetTagForFieldWithOutOfRange() {
         thrown = assertThrows(IllegalArgumentException.class,
+            () -> instance.getTagForField(0, 1396)
+        );
+        assertEquals("The subtag id: 1396 of DE0 out of range"
+                , StringUtils.left(thrown.getMessage(), 39)
+        );
+    }
+
+    @Test
+    public void testGetTagForFieldWithFirstIllegal() {
+        thrown = assertThrows(IllegalArgumentException.class,
             () -> instance.getTagForField(0, 100)
         );
-        assertEquals("The subtag id: 100 of DE0 out of range"
-                , StringUtils.left(thrown.getMessage(), 38)
+        assertEquals("The subtag id: 100 of DE0 is illegal", thrown.getMessage());
+    }
+
+    @Test
+    public void testGetTagForFieldWith1036() {
+        thrown = assertThrows(IllegalArgumentException.class,
+            () -> instance.getTagForField(0, 109)
         );
+        assertEquals("The subtag id: 109 of DE0 is illegal", thrown.getMessage());
+    }
+
+    @Test
+    public void testGetTagForFieldWith110() {
+        resTag = instance.getTagForField(0, 110);
+        assertEquals("0A", resTag);
+    }
+
+    @Test
+    public void testGetTagForFieldWith111() {
+        resTag = instance.getTagForField(0, 111);
+        assertEquals("0B", resTag);
+    }
+
+    @Test
+    public void testGetTagForFieldWith146() {
+        resTag = instance.getTagForField(0, 146);
+        assertEquals("1A", resTag);
+    }
+
+    @Test
+    public void testGetTagForFieldWith1395() {
+        resTag = instance.getTagForField(0, 1395);
+        assertEquals("ZZ", resTag);
     }
 
     @Test
@@ -103,6 +143,24 @@ public class TTDecimalTagMapperTest {
     public void testGetFieldNumberForTagWith98() {
         resField = instance.getFieldNumberForTag(Integer.MIN_VALUE, "98");
         assertEquals(98, resField);
+    }
+
+    @Test
+    public void testGetFieldNumberForTagWith0A() {
+        resField = instance.getFieldNumberForTag(0, "0A");
+        assertEquals(110, resField);
+    }
+
+    @Test
+    public void testGetFieldNumberForTagWith9Z() {
+        resField = instance.getFieldNumberForTag(0, "9Z");
+        assertEquals(459, resField);
+    }
+
+    @Test
+    public void testGetFieldNumberForTagWithZZ() {
+        resField = instance.getFieldNumberForTag(0, "ZZ");
+        assertEquals(1395, resField);
     }
 
     @Test
@@ -140,6 +198,36 @@ public class TTDecimalTagMapperTest {
         );
         assertEquals("The subtag id: -1 of DE62 cannot be negative"
                 , thrown.getMessage()
+        );
+    }
+
+    @Test
+    public void testGetFieldNumberForTagWithMinusA() {
+        thrown = assertThrows(IllegalArgumentException.class,
+            () -> instance.getFieldNumberForTag(62, "-A")
+        );
+        assertEquals("The subtag id: -A of DE62 cannot be negative"
+                , thrown.getMessage()
+        );
+    }
+
+    @Test
+    public void testGetFieldNumberForTagMinusWithLowerLetter() {
+        thrown = assertThrows(IllegalArgumentException.class,
+            () -> instance.getFieldNumberForTag(48, "1c")
+        );
+        assertEquals("The subtag '1c' of DE48 cannot be converted"
+                , StringUtils.left(thrown.getMessage(), 43)
+        );
+    }
+
+    @Test
+    public void testGetFieldNumberForTagWithLettersOtherChars() {
+        thrown = assertThrows(IllegalArgumentException.class,
+            () -> instance.getFieldNumberForTag(48, "#A")
+        );
+        assertEquals("The subtag '#A' of DE48 cannot be converted"
+                , StringUtils.left(thrown.getMessage(), 43)
         );
     }
 
