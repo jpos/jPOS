@@ -26,6 +26,7 @@ import java.util.BitSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.xml.sax.Attributes;
 
 /**
  * GenericSubFieldPackager
@@ -39,11 +40,25 @@ import java.util.Map;
  * bitmapField can be specified in the GenericPackager xml config file.
  */
 
-public class GenericSubFieldPackager extends GenericPackager 
+public class GenericSubFieldPackager extends GenericPackager implements ISOSubFieldPackager
 {
+
+    private Integer fieldId = 0;
+
     public GenericSubFieldPackager() throws ISOException
     {
         super();
+    }
+
+    @Override
+    public int getFieldNumber() {
+      return fieldId;
+    }
+
+    @Override
+    protected void setGenericPackagerParams(Attributes atts) {
+        super.setGenericPackagerParams(atts);
+        fieldId = Integer.parseInt(atts.getValue("id"));
     }
 
     @Override

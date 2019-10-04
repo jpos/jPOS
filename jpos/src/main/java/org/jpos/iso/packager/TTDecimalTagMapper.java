@@ -19,20 +19,42 @@
 package org.jpos.iso.packager;
 
 /**
- * TagMapper provides mappings between two decimal tags
- * {@code TT} and subfields.
- *
- * <p>Example of mappings:
+ * The {@code TagMapper} provides convertions between two decimal tags
+ * {@code TT} and subtags.
+ * <p>
+ * Example of mappings:
  * <ul>
- *   <li>01 &lt;-&gt; 1
- *   <li>23 &lt;-&gt; 23
+ *   <li>'03' &lt;-&gt; 3
+ *   <li>'23' &lt;-&gt; 23
+ *   <li>...
+ *   <li>'99' &lt;-&gt; 99
+ * </ul>
+ * and additionally containing upper case letters <i>(based on base 36 with offset 100)</i>
+ * <ul>
+ *   <li>'0A' &lt;-&gt; 110 <i>(100 + 10)</i>
+ *   <li>'0B' &lt;-&gt; 111 <i>(100 + 11)</i>
+ *   <li>...
+ *   <li>'9Z' &lt;-&gt; 424 <i>(100 + 36<sup>1</sup>*9 + 35)</i>
+ *   <li>...
+ *   <li>'ZZ' &lt;-&gt; 1395 <i>(100 + 36<sup>1</sup>*35 + 35)</i>
+ * </ul>
+ * Letters mappings that duplicate decimal mappings are prohibited, eg.:
+ * <ul>
+ *   <li>'00' &lt;-&gt; 100 <i>(100 + 0)</i>
+ *   <li>'01' &lt;-&gt; 101 <i>(100 + 1)</i>
+ *   <li>'09' &lt;-&gt; 109 <i>(100 + 9)</i>
+ *   <li>...
+ *   <li>'10' &lt;-&gt; 136 <i>(100 + 1*36<sup>1</sup> + 0)</i>
+ *   <li>'11' &lt;-&gt; 137 <i>(100 + 1*36<sup>1</sup> + 1)</i>
+ *   <li>...
  * </ul>
  *
  * @author Michał Wiercioch
  */
 public class TTDecimalTagMapper extends DecimalTagMapper {
 
-  public TTDecimalTagMapper() {
-    super(2);
-  }
+    public TTDecimalTagMapper() {
+        super(2);
+    }
+
 }

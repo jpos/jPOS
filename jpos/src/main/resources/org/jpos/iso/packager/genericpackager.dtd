@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!ELEMENT isopackager (isofield+,isofieldpackager*)*>
+<!ELEMENT isopackager (isofield*,isofieldpackager*)*>
 <!ATTLIST isopackager maxValidField     CDATA        #IMPLIED>
 <!ATTLIST isopackager bitmapField       CDATA        #IMPLIED>
 <!ATTLIST isopackager thirdBitmapField  CDATA        #IMPLIED>
@@ -21,7 +21,7 @@
 <!ATTLIST isofield trim (true|false) #IMPLIED>
 
 <!-- isofieldpackager -->
-<!ELEMENT isofieldpackager (isofield+,isofieldpackager*)*>
+<!ELEMENT isofieldpackager (isofield*,isofieldpackager*)*>
 <!ATTLIST isofieldpackager id       CDATA        #REQUIRED>
 <!ATTLIST isofieldpackager name     CDATA        #REQUIRED>
 <!ATTLIST isofieldpackager length   CDATA        #REQUIRED>
@@ -35,3 +35,4 @@
 <!ATTLIST isofieldpackager bitmapField CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager firstField  CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager headerLength  CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager tagMapper     CDATA        #IMPLIED>
