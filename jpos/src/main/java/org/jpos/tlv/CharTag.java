@@ -39,6 +39,8 @@ public class CharTag {
     private final String tagId;
     private final String value;
 
+    private boolean swapTagWithLength;
+
     /**
      * Internal Tag constructor.
      *
@@ -62,6 +64,15 @@ public class CharTag {
     }
 
     /**
+     * Swap tag with length.
+     *
+     * @param swap indicates if tag element will be swapped with length element
+     */
+    protected void withTagLengthSwap(boolean swap) {
+        swapTagWithLength = swap;
+    }
+
+    /**
      * Form TLV for this tag.
      *
      * @return TLV string
@@ -71,7 +82,13 @@ public class CharTag {
         if (value != null)
             vLen = value.length();
 
-        String tlv = tagId + ISOUtil.zeropad(vLen, lengthSize);
+        String length = ISOUtil.zeropad(vLen, lengthSize);
+        String tlv;
+        if (swapTagWithLength)
+            tlv = length + tagId;
+        else
+            tlv = tagId + length;
+
         if (vLen == 0)
             return tlv;
 

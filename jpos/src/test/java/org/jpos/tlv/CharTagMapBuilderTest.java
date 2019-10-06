@@ -71,6 +71,23 @@ public class CharTagMapBuilderTest {
     }
 
     @Test
+    public void testBuildSwapped() {
+        CharTagMap tm = instance
+                .withTagLengthSwap(true)
+                .build();
+
+        tm.unpack("019XYThe quick brown fox007KVFoo Bar");
+        assertEquals("The quick brown fox", tm.getTagValue("XY"));
+        assertEquals("Foo Bar", tm.getTagValue("KV"));
+
+        String result = tm.pack();
+        tm.clear();
+        tm.unpack(result);
+        assertEquals("The quick brown fox", tm.getTagValue("XY"));
+        assertEquals("Foo Bar", tm.getTagValue("KV"));
+    }
+
+    @Test
     public void testBuildLongTagSize() {
         thrown = assertThrows(IllegalArgumentException.class,
             () -> instance.withTagSize(5)

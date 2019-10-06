@@ -19,7 +19,10 @@
 package org.jpos.tlv;
 
 /**
- * Builder to create TLV tag maps stored as sequence of characters.
+ * Builder to create TLV/LTV tag maps stored as sequence of characters.
+ * <p>
+ * Using {@code withTagLengthSwap(true)} while creating the builder causes
+ * switchs {@code CharTagMap} in LTV mode.
  *
  * @author Robert Demski <drdemsey@gmail.com>
  */
@@ -27,6 +30,8 @@ public class CharTagMapBuilder {
 
     protected Integer tagSize;
     protected Integer lengthSize;
+
+    protected boolean swapTagWithLength;
 
     /**
      * Constructs a new instance of the builder.
@@ -58,6 +63,17 @@ public class CharTagMapBuilder {
     }
 
     /**
+     * Swap Tag with Length.
+     *
+     * @param swap indicates if tag element will be swapped with length element
+     * @return this, for chaining, not {@code null}
+     */
+    public CharTagMapBuilder withTagLengthSwap(boolean swap) {
+        swapTagWithLength = swap;
+        return this;
+    }
+
+    /**
      * Completes this builder by creating the {@code CharTagMap}.
      *
      * @return the created tag map, not {@code null}
@@ -70,6 +86,8 @@ public class CharTagMapBuilder {
 
         if (lengthSize != null)
             tm.setLengthSize(lengthSize);
+
+        tm.withTagLengthSwap(swapTagWithLength);
 
         return tm;
     }

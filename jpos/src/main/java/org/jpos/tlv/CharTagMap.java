@@ -42,6 +42,8 @@ public class CharTagMap extends HashMap<String, CharTag> {
     private int tagLen = 0x02;
     private int lenLen = 0x03;
 
+    private boolean swapTagWithLength;
+
     /**
      * Creates new empty instance of text TLV tag map.
      * <p>
@@ -90,6 +92,15 @@ public class CharTagMap extends HashMap<String, CharTag> {
             throw new IllegalArgumentException("The size of the length should be less than 5");
 
         lenLen = size;
+    }
+
+    /**
+     * Sets size of length element.
+     *
+     * @param swap indicates if tag element will be swapped with length element
+     */
+    protected void withTagLengthSwap(boolean swap) {
+        swapTagWithLength = swap;
     }
 
     /**
@@ -159,6 +170,7 @@ public class CharTagMap extends HashMap<String, CharTag> {
 
         CharTag tag = new CharTag(tagId, value);
         tag.setLengthSize(lenLen);
+        tag.withTagLengthSwap(swapTagWithLength);
         return tag;
     }
 
@@ -218,8 +230,16 @@ public class CharTagMap extends HashMap<String, CharTag> {
     }
 
     private CharTag getTLVMsg(CharBuffer buffer) throws IllegalArgumentException {
-        String tagId = stripTagId(buffer);
-        int len = stripLength(buffer);
+        String tagId;
+        int len;
+        if (swapTagWithLength) {
+            len = stripLength(buffer);
+            tagId = stripTagId(buffer);
+        } else {
+            tagId = stripTagId(buffer);
+            len = stripLength(buffer);
+        }
+
         if (buffer.remaining() < len)
             throw new IllegalArgumentException(
                 String.format("%s tag '%s' length '%03d' exceeds available"
