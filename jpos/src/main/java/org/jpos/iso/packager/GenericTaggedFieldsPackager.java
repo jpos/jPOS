@@ -19,6 +19,9 @@
 package org.jpos.iso.packager;
 
 import org.jpos.iso.*;
+import org.jpos.tlv.CharTag;
+import org.jpos.tlv.CharTagMap;
+import org.jpos.tlv.CharTagMapBuilder;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.xml.sax.Attributes;
@@ -26,9 +29,6 @@ import org.xml.sax.Attributes;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.IntStream;
 
 /**
  *
@@ -43,6 +43,10 @@ public class GenericTaggedFieldsPackager extends GenericPackager
 
     private TagMapper tagMapper = null;
     private Integer fieldId = 0;
+    private CharTagMapBuilder tagMapBuilder;
+    private int     tagSize;
+    private int     lenSize;
+    private boolean swapTagAndLen;
 
     public GenericTaggedFieldsPackager() throws ISOException {
         super();
@@ -53,32 +57,10 @@ public class GenericTaggedFieldsPackager extends GenericPackager
       return fieldId;
     }
 
-    private Set<Integer> selectFields() {
-        Map<Integer, ISOFieldPackager> fldMap = new ConcurrentHashMap<>();
-        IntStream.range(getFirstField(), fld.length)
-                .filter(i -> fld[i] != null)
-                .forEach(i -> fldMap.put(i, fld[i]));
-
-        return fldMap.keySet();
-    }
-
-    private int unpackTag(Set<Integer> flds, ISOComponent m, byte[] b, int consumed)
-            throws ISOException {
-
-        for (Integer i : flds) {
-            ISOFieldPackager fpack = fld[i];
-            ISOComponent c = fpack.createComponent(i);
-            int unpacked = fpack.unpack(c, b, consumed);
-            if (unpacked > 0) {
-                m.set(c);
-                // for optimize subsequent iterations
-                flds.remove(i);
-                return unpacked;
-            }
-        }
-
-        // undefined tag - all defined fields was tested
-        return 0;
+    protected CharTagMap unpackTLV(byte[] b) {
+        CharTagMap tm = tagMapBuilder.build();
+        tm.unpack(new String(b, ISOUtil.CHARSET));
+        return tm;
     }
 
     @Override
@@ -93,12 +75,23 @@ public class GenericTaggedFieldsPackager extends GenericPackager
                 evt.addMessage(ISOUtil.hexString(b));
 
             int consumed = 0;
-            Set<Integer> flds = selectFields();
-            for (int i : flds) {
-                if (consumed >= b.length)
-                    break;
+            CharTagMap tm = unpackTLV(b);
+            for (CharTag tag : tm.values()) {
+                Integer i =  tagMapper.getFieldNumberForTag(fieldId, tag.getTagId());
+                if (i == null)
+                    // skip unmapped
+                    continue;
 
-                consumed += unpackTag(flds, m, b, consumed);
+                if (fld[i] == null) {
+                    consumed += tagSize + lenSize + tag.getValue().length();
+                    m.set(new ISOField(i, tag.getValue()));
+                } else {
+                    ISOComponent c = fld[i].createComponent(i);
+                    byte[] bb = tag.getTLV().getBytes(ISOUtil.CHARSET);
+                    int unpacked = fld[i].unpack(c, bb, 0);
+                    consumed += unpacked;
+                    m.set(c);
+                }
             }
             if (b.length != consumed) {
                 evt.addMessage(
@@ -193,6 +186,24 @@ public class GenericTaggedFieldsPackager extends GenericPackager
             Class<? extends TagMapper> clazz = Class.forName(atts.getValue("tagMapper")).asSubclass(TagMapper.class);
             tagMapper = clazz.newInstance();
             fieldId = Integer.parseInt(atts.getValue("id"));
+
+            if (atts.getValue("tagSize") == null)
+                throw new IllegalArgumentException("The 'tagSize' attribute is required");
+            tagSize = Integer.parseInt(atts.getValue("tagSize"));
+
+            if (atts.getValue("lenSize") == null)
+                throw new IllegalArgumentException("The 'lenSize' attribute is required");
+            lenSize = Integer.parseInt(atts.getValue("lenSize"));
+
+            swapTagAndLen = false;
+            if (atts.getValue("swapTagAndLen") != null)
+                swapTagAndLen = Boolean.valueOf(atts.getValue("swapTagAndLen"));
+
+            tagMapBuilder = new CharTagMapBuilder()
+                .withTagSize(tagSize)
+                .withLengthSize(lenSize)
+                .withTagLengthSwap(swapTagAndLen);
+
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {

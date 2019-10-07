@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE isopackager SYSTEM "genericpackager.dtd">
+<!DOCTYPE isopackager PUBLIC
+        "-//jPOS/jPOS Generic Packager DTD 1.0//EN"
+        "http://jpos.org/dtd/generic-packager-1.0.dtd">
 
 <!-- ISO 8583:1993 (ASCII) field descriptions for GenericPackager -->
 
@@ -145,7 +147,7 @@
       length="999"
       name="Additional Data Private Use"
       class="org.jpos.iso.IFA_LLLCHAR"
-      emitBitmap="false"
+      tagSize="2" lenSize="2"
       tagMapper="org.jpos.iso.packager.TaggedFieldPackagerBaseTest$TagMapperImpl"
       packager="org.jpos.iso.packager.GenericTaggedFieldsPackager">
       <isofield
@@ -200,7 +202,7 @@
       length="999"
       name="Reserved National – 1 - Transaction Environment Data"
       class="org.jpos.iso.IFA_LLLCHAR"
-      emitBitmap="false"
+      tagSize="2" lenSize="3"
       tagMapper="org.jpos.iso.packager.TaggedFieldPackagerBaseTest$TagMapperImpl"
       packager="org.jpos.iso.packager.GenericTaggedFieldsPackager">
       <isofield

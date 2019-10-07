@@ -34,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 
 /**
  *
@@ -165,12 +164,29 @@ public class TaggedFieldPackagerBaseTest {
             () -> assertEquals("1100", msg.getString(0)),
             () -> assertEquals("123456", msg.getString(2)),
             () -> assertEquals("48TagA1", msg.getString("48.1")),
-            () -> assertNull(msg.getString("48.2")),
+            () -> assertEquals("48TagA2", msg.getString("48.2")),
             () -> assertEquals("60TagA1", msg.getString("60.1"))
         );
     }
 
-    @Disabled("Skipping undefined A2 is impossible in current solution so follwing A3 will be lost")
+    @Test
+    public void testUnpackUndefinedAndUnmappedTag() throws Exception {
+        ISOMsg msg = new ISOMsg();
+        String msgValue = "06123456022A00748TagA0A30748TagA3012A100760TagA1";
+        String reprMessage = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + msgValue;
+        packager.unpack(msg, toBytes(reprMessage));
+
+        assertAll(
+            () -> assertEquals("1100", msg.getString(0)),
+            () -> assertEquals("123456", msg.getString(2)),
+            () -> assertNull(msg.getString("48.0")),
+            () -> assertNull(msg.getString("48.1")),
+            () -> assertNull(msg.getString("48.2")),
+            () -> assertEquals("48TagA3", msg.getString("48.3")),
+            () -> assertEquals("60TagA1", msg.getString("60.1"))
+        );
+    }
+
     @Test
     public void testUnpackUndefinedTagWithFollowing() throws Exception {
         ISOMsg msg = new ISOMsg();
@@ -179,7 +195,7 @@ public class TaggedFieldPackagerBaseTest {
         assertAll("Should unpack DE48.3 (A3) and any other standard elements",
             () -> assertEquals("1100", msg.getString(0)),
             () -> assertEquals("123456", msg.getString(2)),
-            () -> assertNull(msg.getString("48.2")),
+            () -> assertEquals("48TagA2", msg.getString("48.2")),
             () -> assertEquals("48TagA3", msg.getString("48.3")),
             () -> assertEquals("60TagA1", msg.getString("60.1"))
         );
