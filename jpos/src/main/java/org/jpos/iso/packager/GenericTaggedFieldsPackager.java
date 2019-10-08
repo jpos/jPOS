@@ -28,7 +28,9 @@ import org.xml.sax.Attributes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -126,20 +128,29 @@ public class GenericTaggedFieldsPackager extends GenericPackager
         LogEvent evt = new LogEvent(this, "pack");
         try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             ISOComponent c;
-            Map fields = m.getChildren();
+            byte[] b;
 
-            for (int i = getFirstField(); i <= m.getMaxField(); i++) {
-                c = (ISOComponent) fields.get(i);
-                if (c != null) {
-                    try {
-                        byte[] b = fld[i].pack(c);
-                        bout.write(b);
-                    } catch (Exception e) {
-                        evt.addMessage("error packing subfield " + i);
-                        evt.addMessage(c);
-                        evt.addMessage(e);
-                        throw e;
-                    }
+            @SuppressWarnings("unchecked")
+            Map<Integer, ISOComponent> fields = (Map<Integer, ISOComponent>) m.getChildren();
+            List<Integer> keys = fields.keySet().stream()
+                    .filter(i -> i >= 0) // skip bitmap
+                    .sorted()
+                    .collect(Collectors.toList());
+
+            for (int i : keys) {
+                c = fields.get(i);
+                if (fld[i] == null)
+                    // skip undefined
+                    continue;
+
+                try {
+                    b = fld[i].pack(c);
+                    bout.write(b);
+                } catch (ISOException | RuntimeException ex) {
+                    evt.addMessage("error packing subfield " + i);
+                    evt.addMessage(c);
+                    evt.addMessage(ex);
+                    throw ex;
                 }
             }
 
