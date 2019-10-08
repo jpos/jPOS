@@ -24,8 +24,6 @@ import org.jpos.util.Logger;
 import org.xml.sax.Attributes;
 
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
@@ -119,59 +117,9 @@ public class GenericTaggedFieldsPackager extends GenericPackager
     }
 
     @Override
-    public void unpack(ISOComponent m, InputStream in) throws IOException, ISOException {
-        LogEvent evt = new LogEvent(this, "unpack");
-        try {
-            if (m.getComposite() != m)
-                throw new ISOException("Can't call packager on non Composite");
-
-            // if ISOMsg and headerLength defined
-            if (m instanceof ISOMsg && ((ISOMsg) m).getHeader() == null && headerLength > 0) {
-                byte[] h = new byte[headerLength];
-                in.read(h, 0, headerLength);
-                ((ISOMsg) m).setHeader(h);
-            }
-
-            if (!(fld[0] instanceof ISOMsgFieldPackager) &&
-                    !(fld[0] instanceof ISOBitMapPackager)) {
-                ISOComponent mti = fld[0].createComponent(0);
-                fld[0].unpack(mti, in);
-                m.set(mti);
-            }
-
-            int maxField = fld.length;
-            for (int i = getFirstField(); i < maxField; i++) {
-                if (fld[i] == null)
-                    continue;
-
-                ISOComponent c = fld[i].createComponent(i);
-                fld[i].unpack(c, in);
-                if (logger != null) {
-                    evt.addMessage("<unpack fld=\"" + i
-                            + "\" packager=\""
-                            + fld[i].getClass().getName() + "\">");
-                    if (c.getValue() instanceof ISOMsg)
-                        evt.addMessage(c.getValue());
-                    else
-                        evt.addMessage("  <value>"
-                                + c.getValue().toString()
-                                + "</value>");
-                    evt.addMessage("</unpack>");
-                }
-                m.set(c);
-
-            }
-        } catch (ISOException e) {
-            evt.addMessage(e);
-            throw e;
-        } catch (EOFException e) {
-            throw e;
-        } catch (Exception e) {
-            evt.addMessage(e);
-            throw new ISOException(e);
-        } finally {
-            Logger.log(evt);
-        }
+    public void unpack(ISOComponent m, InputStream in) {
+        // This method is not called anywhere so is usless
+        throw new UnsupportedOperationException("The on InputStream is not supported");
     }
 
     /**
