@@ -139,9 +139,25 @@ public class GenericTaggedFieldsPackager extends GenericPackager
 
             for (int i : keys) {
                 c = fields.get(i);
-                if (fld[i] == null)
-                    // skip undefined
+                if (fld[i] == null) {
+                    // process undefined in packager
+                    if (!(c instanceof ISOField))
+                        // skip other than character fields
+                        continue;
+
+                    String tag = tagMapper.getTagForField(fieldId, i);
+                    if (tag == null)
+                        // skip when undefined and unmapped
+                        continue;
+
+                    CharTagMap tm = tagMapBuilder.build();
+                    @SuppressWarnings("unchecked")
+                    String value = (String) c.getValue();
+                    tm.addTag(tag, value);
+                    b = tm.pack().getBytes(ISOUtil.CHARSET);
+                    bout.write(b);
                     continue;
+                }
 
                 try {
                     b = fld[i].pack(c);
