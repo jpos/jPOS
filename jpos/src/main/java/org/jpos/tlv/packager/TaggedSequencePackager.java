@@ -18,6 +18,7 @@
 
 package org.jpos.tlv.packager;
 
+import java.io.ByteArrayOutputStream;
 import org.jpos.iso.IF_CHAR;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
@@ -47,7 +48,7 @@ import java.util.TreeMap;
 public class TaggedSequencePackager extends GenericPackager {
 
     protected ISOFieldPackager tagPackager;
-    protected Map<String, TaggedFieldPackager> packagerMap = new TreeMap<String, TaggedFieldPackager>();
+    protected Map<String, TaggedFieldPackager> packagerMap = new TreeMap<>();
     protected String tag;
     protected int length;
 
@@ -132,12 +133,11 @@ public class TaggedSequencePackager extends GenericPackager {
     /**
      * Pack the subfield into a byte array
      */
-
+    @Override
     public byte[] pack(ISOComponent m) throws ISOException {
         LogEvent evt = new LogEvent(this, "pack");
-        try {
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             ISOComponent c;
-            List<byte[]> l = new ArrayList<byte[]>();
             Map fields = m.getChildren();
             fields.remove(new Integer(-1));
             int len = 0;
@@ -176,12 +176,12 @@ public class TaggedSequencePackager extends GenericPackager {
                                 break;
                             }
                             len += b.length;
-                            l.add(b);
+                            bout.write(b);
                         }
                     } else if (!tagsStarted && fld.length > (Integer) c.getKey() && fld[(Integer) c.getKey()] != null) {
                         b = fld[(Integer) c.getKey()].pack(c);
                         len += b.length;
-                        l.add(b);
+                        bout.write(b);
                     } else {
                         int tagNumber = (Integer) c.getKey();
                         String tag = ISOUtil.padleft(String.valueOf(tagNumber), this.tag.length(), '0');
@@ -202,19 +202,15 @@ public class TaggedSequencePackager extends GenericPackager {
                             }
                         }
                         len += b.length;
-                        l.add(b);
+                        bout.write(b);
                     }
                 }
                 if (m instanceof OffsetIndexedComposite) {
                     ((OffsetIndexedComposite) m).incOffset();
                 }
             }
-            int k = 0;
-            byte[] d = new byte[len];
-            for (byte[] b : l) {
-                System.arraycopy(b, 0, d, k, b.length);
-                k += b.length;
-            }
+
+            byte[] d = bout.toByteArray();
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage(ISOUtil.hexString(d));
             return d;

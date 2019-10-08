@@ -23,11 +23,10 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.xml.sax.Attributes;
 
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -184,19 +183,16 @@ public class GenericTaggedFieldsPackager extends GenericPackager
     @Override
     public byte[] pack(ISOComponent m) throws ISOException {
         LogEvent evt = new LogEvent(this, "pack");
-        try {
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             ISOComponent c;
-            List<byte[]> l = new ArrayList<byte[]>();
             Map fields = m.getChildren();
-            int len = 0;
 
             for (int i = getFirstField(); i <= m.getMaxField(); i++) {
                 c = (ISOComponent) fields.get(i);
                 if (c != null) {
                     try {
                         byte[] b = fld[i].pack(c);
-                        len += b.length;
-                        l.add(b);
+                        bout.write(b);
                     } catch (Exception e) {
                         evt.addMessage("error packing subfield " + i);
                         evt.addMessage(c);
@@ -205,21 +201,17 @@ public class GenericTaggedFieldsPackager extends GenericPackager
                     }
                 }
             }
-            int k = 0;
-            byte[] d = new byte[len];
-            for (byte[] b : l) {
-                System.arraycopy(b, 0, d, k, b.length);
-                k += b.length;
-            }
+
+            byte[] d = bout.toByteArray();
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage(ISOUtil.hexString(d));
             return d;
-        } catch (ISOException e) {
-            evt.addMessage(e);
-            throw e;
-        } catch (Exception e) {
-            evt.addMessage(e);
-            throw new ISOException(e);
+        } catch (ISOException ex) {
+            evt.addMessage(ex);
+            throw ex;
+        } catch (Exception ex) {
+            evt.addMessage(ex);
+            throw new ISOException(ex);
         } finally {
             Logger.log(evt);
         }

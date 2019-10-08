@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
-import java.util.Vector;
+import java.io.ByteArrayOutputStream;
 
 import org.jpos.iso.ISOBitMap;
 import org.jpos.iso.ISOComponent;
@@ -116,8 +116,9 @@ public class VISA1PackagerTest {
         int[] sequence = new int[0];
         VISA1Packager vISA1Packager = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode",
                 "testVISA1PackagerOkPattern");
-        Vector v = new Vector(100, 1000);
-        int result = vISA1Packager.handleSpecialField35(new ISOMsg(100), v);
+        ByteArrayOutputStream bout = new ByteArrayOutputStream(100);
+
+        int result = vISA1Packager.handleSpecialField35(new ISOMsg(100), bout);
         assertEquals(0, result, "result");
     }
 
@@ -127,13 +128,14 @@ public class VISA1PackagerTest {
         int[] sequence = new int[0];
         VISA1Packager vISA1Packager = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode",
                 "testVISA1PackagerOkPattern");
-        Vector v = new Vector(100);
+        ByteArrayOutputStream bout = new ByteArrayOutputStream(100);
+
         try {
-            vISA1Packager.handleSpecialField35(null, v);
+            vISA1Packager.handleSpecialField35(null, bout);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull(ex.getMessage(), "ex.getMessage()");
-            assertEquals(0, v.size(), "v.size()");
+            assertEquals(0, bout.toByteArray().length);
         }
     }
 

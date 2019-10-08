@@ -22,9 +22,8 @@ import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
+import java.io.ByteArrayOutputStream;
 import java.util.BitSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.xml.sax.Attributes;
 
@@ -119,25 +118,22 @@ public class GenericSubFieldPackager extends GenericPackager implements ISOSubFi
 
     /**
      * Pack the subfield into a byte array
-     */ 
-
-    public byte[] pack (ISOComponent m) throws ISOException 
+     */
+    @Override
+    public byte[] pack(ISOComponent m) throws ISOException
     {
         LogEvent evt = new LogEvent (this, "pack");
-        try 
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100))
         {
             ISOComponent c;
-            List<byte[]> l = new ArrayList<byte[]>();
             Map fields = m.getChildren();
-            int len = 0;
 
             if (emitBitMap()) 
             {
                 // BITMAP (-1 in HashTable)
                 c = (ISOComponent) fields.get (-1);
                 byte[] b = getBitMapfieldPackager().pack(c);
-                len += b.length;
-                l.add(b);
+                bout.write(b);
             }
 
             for (int i=getFirstField(); i<=m.getMaxField(); i++) 
@@ -149,8 +145,7 @@ public class GenericSubFieldPackager extends GenericPackager implements ISOSubFi
                     try 
                     {
                         byte[] b = fld[i].pack(c);
-                        len += b.length;
-                        l.add(b);
+                        bout.write(b);
                     } 
                     catch (Exception e) 
                     {
@@ -161,12 +156,8 @@ public class GenericSubFieldPackager extends GenericPackager implements ISOSubFi
                     }
                 }
             }
-            int k = 0;
-            byte[] d = new byte[len];
-            for (byte[] b :l) {
-                System.arraycopy(b, 0, d, k, b.length);
-                k += b.length;
-            }
+
+            byte[] d = bout.toByteArray();
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.hexString (d));
             return d;
