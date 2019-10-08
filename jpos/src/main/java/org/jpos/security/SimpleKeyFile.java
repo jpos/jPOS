@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -69,25 +69,28 @@ public class SimpleKeyFile
         }
     }
 
+    @Override
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm = realm;
     }
 
+    @Override
     public Logger getLogger () {
         return  logger;
     }
 
+    @Override
     public String getRealm () {
         return  realm;
     }
-
 
     /**
      *
      * @param cfg configuration object
      * @throws ConfigurationException
      */
+    @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         try {
             init(cfg.get("key-file"));
@@ -97,6 +100,7 @@ public class SimpleKeyFile
         }
     }
 
+    @Override
     public synchronized SecureKey getKey (String alias) throws SecureKeyStoreException {
         SecureKey secureKey = null;
         LogEvent evt = logger != null ? new LogEvent(this, "get-key") : null;
@@ -129,6 +133,7 @@ public class SimpleKeyFile
         return  secureKey;
     }
 
+    @Override
     public synchronized void setKey (String alias, SecureKey secureKey) throws SecureKeyStoreException {
         LogEvent evt = new LogEvent(this, "set-key");
         evt.addMessage("alias", alias);
@@ -198,8 +203,9 @@ public class SimpleKeyFile
         props.setProperty(key, value);
     }
 
-    public Map<String,SecureKey> getKeys() throws SecureKeyStoreException {
-        Map<String,SecureKey> keys = new Hashtable<String,SecureKey>();
+    @Override
+    public Map<String, SecureKey> getKeys() throws SecureKeyStoreException {
+        Map<String, SecureKey> keys = new HashMap<>();
         for (Object k : props.keySet()) {
             String keyStr = (String) k;
             String alias = keyStr.substring(0, keyStr.lastIndexOf('.'));

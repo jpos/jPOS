@@ -21,9 +21,12 @@ package org.jpos.security;
 import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 /**
  * Cryptographic Service Message (CSM for short).
@@ -40,8 +43,8 @@ import java.util.Vector;
 
 @SuppressWarnings("unchecked")
 public class CryptographicServiceMessage implements Loggeable {
-    Hashtable fields = new Hashtable();
-    Vector orderedTags = new Vector();
+    Map<String, String> fields = new HashMap<>();
+    List<String> orderedTags = new ArrayList<>();
     String mcl;
 
     public static final String MCL_RSI = "RSI";
@@ -94,6 +97,8 @@ public class CryptographicServiceMessage implements Loggeable {
      * @throws NullPointerException if tag or content is null
      */
     public void addField(String tag, String content) {
+        Objects.requireNonNull(tag, "The tag is required");
+        Objects.requireNonNull(content, "The content is required");
         tag = tag.toUpperCase();
         fields.put(tag, content);
         orderedTags.add(tag);
@@ -105,7 +110,7 @@ public class CryptographicServiceMessage implements Loggeable {
      * @return field Field Content, or null if tag not found
      */
     public String getFieldContent(String tag) {
-        return (String) fields.get(tag.toUpperCase());
+        return fields.get(tag.toUpperCase());
     }
 
 
@@ -114,13 +119,13 @@ public class CryptographicServiceMessage implements Loggeable {
      * This is the inverse of parse
      * @return the CSM in string format
      */
+    @Override
     public String toString() {
         StringBuilder csm = new StringBuilder();
         csm.append("CSM(MCL/");
         csm.append(getMCL());
         csm.append(" ");
-        for (Object tagObject : orderedTags) {
-            String tag = (String) tagObject;
+        for (String tag : orderedTags) {
             csm.append(tag);
             csm.append("/");
             csm.append(getFieldContent(tag));
@@ -138,13 +143,13 @@ public class CryptographicServiceMessage implements Loggeable {
      * @param indent indention string, usually suppiled by Logger
      * @see org.jpos.util.Loggeable
      */
+    @Override
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
         p.print(indent + "<csm");
         p.print(" class=\"" + getMCL() + "\"");
         p.println(">");
-        for (Object tagObject : orderedTags) {
-            String tag = (String) tagObject;
+        for (String tag : orderedTags) {
             p.println(inner + "<field tag=\"" + tag + "\" value=\"" + getFieldContent(tag) + "\"/>");
         }
         p.println(indent + "</csm>");

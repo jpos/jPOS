@@ -29,8 +29,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /** This is a log listener that reads its actions from Bean Shell scripts.
  * You can define many scripts, and the order in wich they are called, also you
@@ -91,11 +92,12 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     /**Holds the configuration for this object*/
     protected Configuration cfg;
     protected static final String[] patterns = {"tag", "realm"};
-    protected Map<String,ScriptInfo> scripts = new Hashtable<String,ScriptInfo>();
+    protected Map<String, ScriptInfo> scripts = new HashMap<>();
     /** Creates a new instance of BSHLogListener */
     public BSHLogListener() {
     }
-    
+
+    @Override
     public void setConfiguration(org.jpos.core.Configuration cfg) {
         this.cfg = cfg;
     }
@@ -122,6 +124,8 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         }
         return ret;
     }
+
+    @Override
     public LogEvent log(LogEvent ev) {
         LogEvent ret = ev;
         boolean processed = false;
@@ -192,11 +196,14 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         }
         return buf.toString();
     }
-    
+
     protected ScriptInfo getScriptInfo(String filename){
+        Objects.requireNonNull(filename, "The script file name cannot be null");
         return scripts.get(filename);
     }
+
     protected void addScriptInfo(String filename, String code, long lastModified){
+        Objects.requireNonNull(filename, "The script file name cannot be null");
         scripts.put(filename, new ScriptInfo(code, lastModified));
     }
     protected static class ScriptInfo{

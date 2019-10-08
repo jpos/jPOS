@@ -46,7 +46,7 @@ package org.jpos.util;
  * @version $Id$
  */
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
@@ -54,7 +54,7 @@ public class SimpleLockManager implements LockManager {
     Map locks;
 
     public SimpleLockManager () {
-        locks = new Hashtable();
+        locks = new HashMap();
     }
 
     public class SimpleTicket implements Ticket {

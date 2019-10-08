@@ -24,7 +24,8 @@ import org.jpos.core.ConfigurationException;
 
 import java.io.PrintStream;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -39,16 +40,15 @@ import java.util.Hashtable;
 public class FilterLogListener implements LogListener,Configurable
 {
 
-    private static Hashtable levels;
+    private static final Map<String, Integer> LEVELS = new HashMap<>();
 
-    static{
-            levels = new Hashtable(6);
-            levels.put(Log.TRACE, 1);
-            levels.put(Log.DEBUG, 2);
-            levels.put(Log.INFO, 3);
-            levels.put(Log.WARN, 4);
-            levels.put(Log.ERROR, 5);
-            levels.put(Log.FATAL, 6);
+    static {
+            LEVELS.put(Log.TRACE, 1);
+            LEVELS.put(Log.DEBUG, 2);
+            LEVELS.put(Log.INFO, 3);
+            LEVELS.put(Log.WARN, 4);
+            LEVELS.put(Log.ERROR, 5);
+            LEVELS.put(Log.FATAL, 6);
     }
 
     private String priority = Log.INFO;
@@ -64,12 +64,13 @@ public class FilterLogListener implements LogListener,Configurable
         setPrintStream(p);
     }
 
+    @Override
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException
     {
         try {
             String log_priority = cfg.get("priority");
-            if ( log_priority != null && !log_priority.trim().equals("") && levels.containsKey(log_priority) ) {
+            if ( log_priority != null && !log_priority.trim().equals("") && LEVELS.containsKey(log_priority) ) {
                 priority = log_priority;
             }
         } catch (Exception e) {
@@ -98,18 +99,18 @@ public class FilterLogListener implements LogListener,Configurable
         this.priority = priority;
     }
 
-    public boolean permitLogging(String tagLevel)
-    {
-        Integer I = (Integer)levels.get(tagLevel);
+    public boolean permitLogging(String tagLevel) {
+        Integer i = LEVELS.get(tagLevel);
 
-        if (I == null)
-            I = (Integer)levels.get(Log.INFO);
+        if (i == null)
+            i = LEVELS.get(Log.INFO);
 
-        Integer J = (Integer)levels.get(priority);
+        Integer j = LEVELS.get(priority);
 
-        return I >= J;
+        return i >= j;
     }
 
+    @Override
     public synchronized LogEvent log(LogEvent ev) {
         if (p != null && permitLogging(ev.getTag())) {
             Date d = new Date();

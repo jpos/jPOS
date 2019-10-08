@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Hashtable;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -101,11 +101,11 @@ public abstract class ISOComponent implements Cloneable {
         return 0;
     }
     /**
-     * dummy behaviour - return 0 elements Hashtable
+     * dummy behaviour - return empty map
      * @return children (in this case 0 children)
      */
     public Map getChildren() {
-        return new Hashtable();
+        return Collections.emptyMap();
     }
     /**
      * changes this Component field number<br>

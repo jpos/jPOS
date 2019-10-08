@@ -30,9 +30,12 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Should run in it's own thread. Starts another Receiver thread
@@ -51,8 +54,8 @@ public class ISOMUX implements Runnable, LogSource, MUX,
 {
     private ISOChannel channel;
     private Thread rx = null, tx = null;
-    private Vector txQueue;
-    private Hashtable rxQueue;
+    private List txQueue;
+    private Map rxQueue;
     private int traceNumberField = 11;
     private volatile boolean terminate = false;
     private String name;
@@ -101,8 +104,8 @@ public class ISOMUX implements Runnable, LogSource, MUX,
         doConnect = true;
         channel = c;
         rx = null;
-        txQueue = new Vector();
-        rxQueue = new Hashtable();
+        txQueue = new ArrayList();
+        rxQueue = new HashMap();
         cnt = new int[SIZEOF_CNT];
         requestListener = null;
         rx = new Thread (new Receiver(this),"ISOMUX-Receiver");
@@ -155,7 +158,7 @@ public class ISOMUX implements Runnable, LogSource, MUX,
      * get rid of expired requests
      */
     private void purgeRxQueue() {
-        Enumeration e = rxQueue.keys();
+        Enumeration e = Collections.enumeration(rxQueue.keySet());
         while (e.hasMoreElements()) {
             Object key = e.nextElement();
             ISORequest r = (ISORequest) rxQueue.get(key);
@@ -321,7 +324,7 @@ public class ISOMUX implements Runnable, LogSource, MUX,
 
     private void doTransmit() throws ISOException, IOException {
         while (txQueue.size() > 0) {
-            Object o = txQueue.firstElement();
+            Object o = txQueue.get(0);
             ISOMsg m = null;
 
             if (o instanceof ISORequest) {
@@ -347,8 +350,7 @@ public class ISOMUX implements Runnable, LogSource, MUX,
                     Logger.log (new LogEvent (this, "error", e));
                 }
             }
-            txQueue.removeElement(o);
-            txQueue.trimToSize();
+            txQueue.remove(o);
         }
     }
     public void run () {
@@ -437,7 +439,7 @@ public class ISOMUX implements Runnable, LogSource, MUX,
      * queue an ISORequest
      */
     synchronized public void queue(ISORequest r) {
-        txQueue.addElement(r);
+        txQueue.add(r);
         this.notify();
     }
     /**
@@ -445,7 +447,7 @@ public class ISOMUX implements Runnable, LogSource, MUX,
      * response from an ISORequestListener
      */
     synchronized public void send(ISOMsg m) {
-        txQueue.addElement(m);
+        txQueue.add(m);
         this.notify();
     }
 
@@ -458,7 +460,7 @@ public class ISOMUX implements Runnable, LogSource, MUX,
         terminate = true;
         synchronized(this) {
             if (hard) {
-                txQueue.removeAllElements();
+                txQueue.clear();
                 rxQueue.clear();
             }
             this.notify();
