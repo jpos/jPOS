@@ -23,9 +23,9 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogSource;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author apr@cs.com.uy
@@ -64,44 +64,46 @@ public class VISA1Packager
     public void setVISA1ResponseFilter (VISA1ResponseFilter filter) {
         this.filter = filter;
     }
-    protected int handleSpecialField35 (ISOMsg m, List l) 
-        throws ISOException
+
+    protected int handleSpecialField35 (ISOMsg m, ByteArrayOutputStream bout)
+        throws ISOException, IOException
     {
         int len = 0;
         byte[] entryMode = new byte[1];
         if (m.hasField (35)) {
             entryMode[0] = (byte) '\001';
             byte[] value = m.getString(35).getBytes();
-            l.add (entryMode);
-            l.add (value);
-            l.add (FS);
+            bout.write(entryMode);
+            bout.write(value);
+            bout.write(FS);
             len += value.length+2;
         } else if (m.hasField (2) && m.hasField (14)) {
             entryMode[0] = (byte) '\000';
             String simulatedTrack2 = m.getString(2) + "=" + m.getString(14);
-            l.add (entryMode);
-            l.add (simulatedTrack2.getBytes());
-            l.add (FS);
+            bout.write(entryMode);
+            bout.write(simulatedTrack2.getBytes());
+            bout.write(FS);
             len += simulatedTrack2.length()+2;
         }
         return len;
     }
+
+    @Override
     public byte[] pack (ISOComponent c) throws ISOException
     {
         LogEvent evt = new LogEvent (this, "pack");
-        try {
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100))
+        {
             if (!(c instanceof ISOMsg))
                 throw new ISOException
                     ("Can't call VISA1 packager on non ISOMsg");
-        
+
             ISOMsg m = (ISOMsg) c;
 
-            int len  = 0;
-            List<byte[]> l = new ArrayList();
             for (int i=0; i<sequence.length; i++) {
                 int fld = sequence[i];
-                if (fld == 35) 
-                    len += handleSpecialField35 (m, l);
+                if (fld == 35)
+                    handleSpecialField35(m, bout);
                 else if (m.hasField(fld)) {
                     byte[] value;
                     if (fld == 4) {
@@ -110,27 +112,23 @@ public class VISA1Packager
                     }
                     else
                         value = m.getString(fld).getBytes();
-                    l.add(value);
-                    len += value.length;
+                    bout.write(value);
                     if (i < sequence.length-1) {
-                        l.add(FS);
-                        len++;
+                        bout.write(FS);
                     }
                 }
             }
 
-            int k = 0;
-            byte[] d = new byte[len];
-            for (byte[] b :l) {
-                System.arraycopy(b, 0, d, k, b.length);
-                k += b.length;
-            }
+            byte[] d = bout.toByteArray();
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.dumpString (d));
             return d;
-        } catch (ISOException e) {
-            evt.addMessage (e);
-            throw e;
+        } catch (ISOException ex) {
+            evt.addMessage(ex);
+            throw ex;
+        } catch (IOException ex) {
+            evt.addMessage(ex);
+            throw new ISOException(ex);
         } finally {
             Logger.log(evt);
         }
@@ -152,6 +150,7 @@ public class VISA1Packager
         return buf.toString();
     }
 
+    @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException
     {
         String response = new String (b);

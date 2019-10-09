@@ -22,9 +22,9 @@ import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -55,13 +55,11 @@ public class EuroSubFieldPackager extends ISOBasePackager
     @Override
     public byte[] pack (ISOComponent c) throws ISOException {
         LogEvent evt = new LogEvent (this, "pack");
-        try {
-            int len =0;
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             Map tab = c.getChildren();
-            List<byte[]> l = new ArrayList();
 
-            for (Map.Entry ent: (Set<Map.Entry>)tab.entrySet()){
-                Integer i = (Integer)ent.getKey();
+            for (Entry ent : (Set<Entry>) tab.entrySet()) {
+                Integer i = (Integer) ent.getKey();
                 if (i < 0)
                     continue;
                 if (fld[i] == null)
@@ -70,8 +68,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
                     try {
                         ISOComponent f = (ISOComponent) ent.getValue();
                         byte[] b = fld[i].pack(f);
-                        len += b.length;
-                        l.add (b);
+                        bout.write(b);
                     } catch (Exception e) {
                         evt.addMessage ("error packing subfield "+i);
                         evt.addMessage (c);
@@ -79,12 +76,8 @@ public class EuroSubFieldPackager extends ISOBasePackager
                         throw e;
                     }
             }
-            int k=0;
-            byte[] d = new byte[len];
-            for (byte[] b :l) {
-                System.arraycopy(b, 0, d, k, b.length);
-                k += b.length;
-            }
+
+            byte[] d = bout.toByteArray();
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.hexString (d));
             return d;

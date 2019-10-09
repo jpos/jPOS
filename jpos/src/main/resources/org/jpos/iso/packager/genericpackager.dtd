@@ -36,3 +36,6 @@
 <!ATTLIST isofieldpackager firstField  CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager headerLength  CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager tagMapper     CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager tagSize       CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager lenSize       CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager swapTagAndLen (true|false) #IMPLIED>

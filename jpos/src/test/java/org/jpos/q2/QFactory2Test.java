@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
-import java.util.Hashtable;
-
 import javax.management.ObjectName;
 
 import org.jdom2.Attribute;
@@ -88,11 +86,11 @@ public class QFactory2Test {
     @Test
     public void testDestroyQBeanThrowsNullPointerException1() throws Throwable {
         String[] args = new String[0];
-        Hashtable<String, String> hashtable = new Hashtable<String, String>(100, 100.0F);
-        hashtable.put("testString", "testString");
+        String keyParam = "testString";
+        String valueParam = "testString";
         Q2 q2 = new Q2(args);
         try {
-            new QFactory(ObjectName.getInstance("testQFactoryParam1", hashtable), null).destroyQBean(q2, new ObjectName(
+            new QFactory(ObjectName.getInstance("testQFactoryParam1", keyParam, valueParam), null).destroyQBean(q2, new ObjectName(
                     "testQFactoryParam1", "testQFactoryParam2", "testQFactoryParam3"), new ChannelAdaptor());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {

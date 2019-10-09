@@ -19,8 +19,6 @@
 package org.jpos.tlv.packager.bertlv;
 
 
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
 import org.jpos.emv.UnknownTagNumberException;
 import org.jpos.iso.AsciiInterpreter;
 import org.jpos.iso.BCDInterpreter;
@@ -40,10 +38,9 @@ import org.jpos.tlv.TLVDataFormat;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 
@@ -86,6 +83,7 @@ public abstract class BERTLVPackager extends GenericPackager {
     /**
      * Pack the sub-field into a byte array
      */
+    @Override
     public byte[] pack(ISOComponent m) throws ISOException {
         return pack(m, false, getFirstField(), m.getMaxField());
     }
@@ -93,11 +91,9 @@ public abstract class BERTLVPackager extends GenericPackager {
     public byte[] pack(ISOComponent m, boolean nested, int startIdx, int endIdx)
             throws ISOException {
         LogEvent evt = new LogEvent(this, "pack");
-        try {
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             ISOComponent c;
-            List<byte[]> l = new ArrayList<byte[]>();
             Map fields = m.getChildren();
-            int len = 0;
             for (int i = startIdx; i <= endIdx; i++) {
                 c = (ISOComponent) fields.get(i);
                 if (c != null) {
@@ -123,8 +119,7 @@ public abstract class BERTLVPackager extends GenericPackager {
                                                 " should be configured for the same");
                             }
                         }
-                        len += b.length;
-                        l.add(b);
+                        bout.write(b);
                     } catch (Exception e) {
                         evt.addMessage("error packing sub-field " + i);
                         evt.addMessage(c);
@@ -133,12 +128,8 @@ public abstract class BERTLVPackager extends GenericPackager {
                     }
                 }
             }
-            int k = 0;
-            byte[] d = new byte[len];
-            for (byte[] b : l) {
-                System.arraycopy(b, 0, d, k, b.length);
-                k += b.length;
-            }
+
+            byte[] d = bout.toByteArray();
             if (logger != null) // save a few CPU cycle if no logger available
                 evt.addMessage(ISOUtil.hexString(d));
             return d;

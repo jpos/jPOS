@@ -34,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 
 /**
  *
@@ -129,6 +128,77 @@ public class TaggedFieldPackagerBaseTest {
     }
 
     @Test
+    public void testPackWithUndefied() throws Exception {
+        ISOMsg msg = new ISOMsg(MESSAGE_MTI1);
+        msg.set(2, "123456");
+
+        msg.set("48.1", "48TagA1");
+        msg.set("48.2", "48TagA2"); // undefined in packager
+        msg.set("48.3", "48TagA3");
+
+        msg.set("60.1", "60TagA1");
+
+        msg.setPackager(packager);
+        String expected = "06123456033A10748TagA1A20748TagA2A30748TagA3012A100760TagA1";
+        int expectedLength = MESSAGE_MTI1.length() + MESSAGE_BITMAP1.length + expected.length();
+
+        byte[] packed = msg.pack();
+
+        String packedAscii = toString(packed);
+        assertAll(
+            () -> assertEquals(expectedLength, packed.length),
+            () -> assertEquals(MESSAGE_MTI1, StringUtils.left(packedAscii, 4)),
+            () -> assertEquals(expected, StringUtils.right(packedAscii, expected.length()))
+        );
+    }
+
+    @Test
+    public void testPackWithUndefiedBinary() throws Exception {
+        ISOMsg msg = new ISOMsg(MESSAGE_MTI1);
+        msg.set(2, "123456");
+
+        msg.set("48.1", "48TagA1");
+        msg.set("48.2", "48TagA2".getBytes(ISOUtil.CHARSET)); // undefined in packager
+        msg.set("48.3", "48TagA3");
+
+        msg.set("60.1", "60TagA1");
+
+        msg.setPackager(packager);
+
+        byte[] packed = msg.pack();
+
+        String packedAscii = toString(packed);
+        assertAll(
+            () -> assertEquals(REPR_MESSAGE1.length(), packed.length),
+            () -> assertEquals(MESSAGE_MTI1, StringUtils.left(packedAscii, 4)),
+            () -> assertEquals(MESSAGE_VALUE1, StringUtils.right(packedAscii, 48))
+        );
+    }
+
+    @Test
+    public void testPackWithUndefiedAndUnmapped() throws Exception {
+        ISOMsg msg = new ISOMsg(MESSAGE_MTI1);
+        msg.set(2, "123456");
+
+        msg.set("48.0", "48TagA0"); // undefined in packager and unmapped
+        msg.set("48.1", "48TagA1");
+        msg.set("48.3", "48TagA3");
+
+        msg.set("60.1", "60TagA1");
+
+        msg.setPackager(packager);
+
+        byte[] packed = msg.pack();
+
+        String packedAscii = toString(packed);
+        assertAll(
+            () -> assertEquals(REPR_MESSAGE1.length(), packed.length),
+            () -> assertEquals(MESSAGE_MTI1, StringUtils.left(packedAscii, 4)),
+            () -> assertEquals(MESSAGE_VALUE1, StringUtils.right(packedAscii, 48))
+        );
+    }
+
+    @Test
     public void testUnpack() throws Exception {
         ISOMsg msg = new ISOMsg();
         packager.unpack(msg, toBytes(REPR_MESSAGE1));
@@ -165,12 +235,29 @@ public class TaggedFieldPackagerBaseTest {
             () -> assertEquals("1100", msg.getString(0)),
             () -> assertEquals("123456", msg.getString(2)),
             () -> assertEquals("48TagA1", msg.getString("48.1")),
-            () -> assertNull(msg.getString("48.2")),
+            () -> assertEquals("48TagA2", msg.getString("48.2")),
             () -> assertEquals("60TagA1", msg.getString("60.1"))
         );
     }
 
-    @Disabled("Skipping undefined A2 is impossible in current solution so follwing A3 will be lost")
+    @Test
+    public void testUnpackUndefinedAndUnmappedTag() throws Exception {
+        ISOMsg msg = new ISOMsg();
+        String msgValue = "06123456022A00748TagA0A30748TagA3012A100760TagA1";
+        String reprMessage = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + msgValue;
+        packager.unpack(msg, toBytes(reprMessage));
+
+        assertAll(
+            () -> assertEquals("1100", msg.getString(0)),
+            () -> assertEquals("123456", msg.getString(2)),
+            () -> assertNull(msg.getString("48.0")),
+            () -> assertNull(msg.getString("48.1")),
+            () -> assertNull(msg.getString("48.2")),
+            () -> assertEquals("48TagA3", msg.getString("48.3")),
+            () -> assertEquals("60TagA1", msg.getString("60.1"))
+        );
+    }
+
     @Test
     public void testUnpackUndefinedTagWithFollowing() throws Exception {
         ISOMsg msg = new ISOMsg();
@@ -179,7 +266,7 @@ public class TaggedFieldPackagerBaseTest {
         assertAll("Should unpack DE48.3 (A3) and any other standard elements",
             () -> assertEquals("1100", msg.getString(0)),
             () -> assertEquals("123456", msg.getString(2)),
-            () -> assertNull(msg.getString("48.2")),
+            () -> assertEquals("48TagA2", msg.getString("48.2")),
             () -> assertEquals("48TagA3", msg.getString("48.3")),
             () -> assertEquals("60TagA1", msg.getString("60.1"))
         );

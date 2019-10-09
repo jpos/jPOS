@@ -30,12 +30,11 @@ import static org.apache.commons.lang3.JavaVersion.JAVA_10;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
 
 import org.jpos.iso.ISOBaseValidator;
 import org.jpos.iso.ISOException;
@@ -255,8 +254,8 @@ public class GenericValidatingPackagerTest {
     @Test
     public void testGenericValidatorContentHandlerMakeFieldValidatorArray1() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
-        Hashtable tab = new Properties();
-        tab.put(Integer.valueOf(-4), new IVA_ALPHANUMNOBLANK(true, "testGenericValidatorContentHandlerDescription"));
+        Map tab = new HashMap();
+        tab.put(-4, new IVA_ALPHANUMNOBLANK(true, "testGenericValidatorContentHandlerDescription"));
         ISOFieldValidator[] result = genericValidatorContentHandler.makeFieldValidatorArray(tab);
         assertEquals(1, result.length, "result.length");
     }
@@ -265,9 +264,9 @@ public class GenericValidatingPackagerTest {
     @Test
     public void testGenericValidatorContentHandlerMakeFieldValidatorArray2() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
-        Hashtable tab = new Hashtable(100);
-        tab.put(Integer.valueOf(-2), new IVA_ALPHANUMNOBLANK("testGenericValidatorContentHandlerDescription"));
-        tab.put(Integer.valueOf(-4), new IVA_ALPHANUMNOBLANK(100, 1000, "testGenericValidatorContentHandlerDescription"));
+        Map tab = new HashMap();
+        tab.put(-2, new IVA_ALPHANUMNOBLANK("testGenericValidatorContentHandlerDescription"));
+        tab.put(-4, new IVA_ALPHANUMNOBLANK(100, 1000, "testGenericValidatorContentHandlerDescription"));
         ISOFieldValidator[] result = genericValidatorContentHandler.makeFieldValidatorArray(tab);
         assertEquals(2, result.length, "result.length");
     }
@@ -276,18 +275,16 @@ public class GenericValidatingPackagerTest {
     @Test
     public void testGenericValidatorContentHandlerMakeFieldValidatorArray4() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
-        ISOFieldValidator[] result = genericValidatorContentHandler.makeFieldValidatorArray(new Hashtable(100));
+        ISOFieldValidator[] result = genericValidatorContentHandler.makeFieldValidatorArray(new HashMap());
         assertEquals(0, result.length, "result.length");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGenericValidatorContentHandlerMakeFieldValidatorArrayThrowsClassCastException1() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
-        Map hashMap = new HashMap();
-        hashMap.put("", "testString");
-        Hashtable tab = new Hashtable(hashMap);
-        tab.put(Integer.valueOf(100), new IVA_ALPHANUMNOZERO_NOBLANK(true, "testGenericValidatorContentHandlerDescription"));
+        Map tab = new HashMap();
+        tab.put("", "testString");
+        tab.put(100, new IVA_ALPHANUMNOZERO_NOBLANK(true, "testGenericValidatorContentHandlerDescription"));
         try {
             genericValidatorContentHandler.makeFieldValidatorArray(tab);
             fail("Expected ClassCastException to be thrown");
@@ -301,7 +298,7 @@ public class GenericValidatingPackagerTest {
     @Test
     public void testGenericValidatorContentHandlerMakeFieldValidatorArrayThrowsClassCastException2() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
-        Hashtable tab = new Hashtable(100);
+        Map tab = new HashMap();
         tab.put("testString", new Object());
         try {
             genericValidatorContentHandler.makeFieldValidatorArray(tab);
@@ -327,10 +324,10 @@ public class GenericValidatingPackagerTest {
     @Test
     public void testGenericValidatorContentHandlerMakeMsgValidatorArray() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
-        Vector vector = new Vector();
-        vector.add(null);
-        Hashtable tab = new Hashtable(100);
-        tab.put(Integer.valueOf(-3), vector);
+        List list = new ArrayList();
+        list.add(null);
+        Map tab = new HashMap();
+        tab.put(-3, list);
         ISOBaseValidator[] result = genericValidatorContentHandler.makeMsgValidatorArray(tab);
         assertEquals(1, result.length, "result.length");
         assertNull(result[0], "result[0]");

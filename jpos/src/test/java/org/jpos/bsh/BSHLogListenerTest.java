@@ -54,8 +54,8 @@ public class BSHLogListenerTest {
             bSHLogListener.addScriptInfo(null, "testBSHLogListenerCode", 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-            assertEquals(0, bSHLogListener.scripts.size(), "bSHLogListener.scripts.size()");
+            assertEquals("The script file name cannot be null", ex.getMessage());
+            assertEquals(0, bSHLogListener.scripts.size());
         }
     }
 
@@ -89,8 +89,8 @@ public class BSHLogListenerTest {
             bSHLogListener.getScriptInfo(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-            assertEquals(0, bSHLogListener.scripts.size(), "bSHLogListener.scripts.size()");
+            assertEquals("The script file name cannot be null", ex.getMessage());
+            assertEquals(0, bSHLogListener.scripts.size());
         }
     }
 
