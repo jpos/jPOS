@@ -39,12 +39,6 @@ subprojects {
       } 
     }
 
-    if (JavaVersion.current().isJava8Compatible()) {
-        tasks.withType(Javadoc) {
-          options.addStringOption('Xdoclint:none', '-quiet')
-        }
-    }
-
     def pomConfig = {
         name 'jPOS Project'
         description """
@@ -104,6 +98,23 @@ subprojects {
             }
         }
     }
+
+    javadoc {
+        configure(options) {
+            windowTitle = "jPOS ${project.version}"
+            header = "<b>jPOS ${project.version}</b>"
+            linkSource = true
+            links(
+                'https://docs.oracle.com/javase/8/docs/api'
+            )
+            tags(
+                'apiNote:a:API Note:',
+                'implSpec:a:Implementation Requirements:',
+                'implNote:a:Implementation Note:'
+            )
+        }
+    }
+
     test {
         useJUnitPlatform()
         testLogging {
