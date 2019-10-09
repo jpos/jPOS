@@ -58,7 +58,8 @@ public class CharTagMap extends HashMap<String, CharTag> {
      *      encoded characters represents tag value
      *   </li>
      * </ul>
-     * @return
+     *
+     * @return new default sized instance of {@code CharTagMap}
      */
     public static CharTagMap getInstance() {
         return new CharTagMap();
