@@ -20,6 +20,7 @@ package org.jpos.util;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.util.log.format.LogFormatFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -159,6 +160,8 @@ public class DailyLogListener extends RotateLogListener{
             setLastDate(getDateFmt().format(new Date()));
             compress(dest);
         };
+
+        setBaseLogFormat(LogFormatFactory.getLogFormat(cfg.get("format","xml")));
 
         super.setConfiguration(cfg);
     }

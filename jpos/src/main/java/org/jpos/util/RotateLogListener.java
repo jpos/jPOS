@@ -21,6 +21,8 @@ package org.jpos.util;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.util.log.format.BaseLogFormat;
+import org.jpos.util.log.format.LogFormatFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,12 +55,22 @@ public class RotateLogListener extends SimpleLogListener
     Rotate rotate;
     public static final int CHECK_INTERVAL = 100;
     public static final long DEFAULT_MAXSIZE = 10000000;
+    private BaseLogFormat baseLogFormat;
 
     ScheduleTimer timer = null;
     RotationAlgo rotationAlgo = null;
 
+    protected BaseLogFormat getBaseLogFormat() {
+        return baseLogFormat;
+    }
+
+    protected void setBaseLogFormat(BaseLogFormat baseLogFormat) {
+        this.baseLogFormat = baseLogFormat;
+    }
+
     public RotateLogListener () {
         super();
+        setBaseLogFormat(LogFormatFactory.getLogFormat("xml"));
     }
 
    /**
@@ -154,11 +166,10 @@ public class RotateLogListener extends SimpleLogListener
             f.close();
         f = new FileOutputStream (logName, true);
         setPrintStream (new PrintStream(f));
-        //p.println ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        //p.println ("<logger class=\"" + getClass().getName() + "\">");
+        baseLogFormat.openLogFile(p);
     }
     protected synchronized void closeLogFile() throws IOException {
-        //p.println ("</logger>");
+        baseLogFormat.closeLogFile(p);
         if (f != null)
             f.close();
         f = null;
@@ -182,9 +193,7 @@ public class RotateLogListener extends SimpleLogListener
 
     protected synchronized void logDebug (String msg) {
         if (p != null) {
-            p.println ("<log realm=\"rotate-log-listener\" at=\""+new Date().toString() +"\">");
-            p.println ("   "+msg);
-            p.println ("</log>");
+           baseLogFormat.logDebug(p,msg);
         }
     }
     protected void checkSize() {

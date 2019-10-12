@@ -173,44 +173,43 @@ public class RotateLogListenerTest {
         listener.logRotate();
 
         // then: new events should end up in the current file and old events in the archived file
-        //listener.log(new LogEvent("Message 2"));
+        listener.log(new LogEvent("Message 2"));
 
         String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
         assertFalse(currentLogFileContents.contains("Message 1"), "Current log file should not contain the first message");
-        //assertTrue(currentLogFileContents.contains("Message 2"), "Current log file should contain the second message");
-        //assertTrue(currentLogFileContents.contains("<logger "), "Logger element should have been opened in the current file");
-        //assertFalse(currentLogFileContents.contains("</logger>"), "Logger element should not have been closed in the current file");
+        assertTrue(currentLogFileContents.contains("Message 2"), "Current log file should contain the second message");
+        assertTrue(currentLogFileContents.contains("<logger "), "Logger element should have been opened in the current file");
+        assertFalse(currentLogFileContents.contains("</logger>"), "Logger element should not have been closed in the current file");
 
-        //String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        //assertTrue(archivedLogFile1Contents.contains("Message 1"), "Archived log file should contain the first message");
-        //assertFalse(archivedLogFile1Contents.contains("Message 2"), "Archived log file should not contain the second message");
-        //assertTrue(archivedLogFile1Contents.contains("<logger "), "Logger element should have been opened in the archived file");
-        //assertTrue(archivedLogFile1Contents.contains("</logger>"), "Logger element should have been closed in the archived file");
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        assertTrue(archivedLogFile1Contents.contains("Message 1"), "Archived log file should contain the first message");
+        assertFalse(archivedLogFile1Contents.contains("Message 2"), "Archived log file should not contain the second message");
+        assertTrue(archivedLogFile1Contents.contains("<logger "), "Logger element should have been opened in the archived file");
+        assertTrue(archivedLogFile1Contents.contains("</logger>"), "Logger element should have been closed in the archived file");
 
         // when: another rotation is executed
-        //listener.logRotate();
+        listener.logRotate();
 
         // then: new events should end up in the current file and old events in the archived files
-        //listener.log(new LogEvent("Message 3"));
+        listener.log(new LogEvent("Message 3"));
 
-        //currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
-        //assertFalse(currentLogFileContents.contains("Message 1"), "Current log file should not contain the first message");
-        //assertFalse(currentLogFileContents.contains("Message 2"), "Current log file should not contain the second message");
-        //assertTrue(currentLogFileContents.contains("Message 3"), "Current log file should contain the third message");
-        //assertTrue(currentLogFileContents.contains("<logger "), "Logger element should have been opened in the current file");
-        //assertFalse(currentLogFileContents.contains("</logger>"), "Logger element should not have been closed in the current file");
+        currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
+        assertFalse(currentLogFileContents.contains("Message 1"), "Current log file should not contain the first message");
+        assertFalse(currentLogFileContents.contains("Message 2"), "Current log file should not contain the second message");
+        assertTrue(currentLogFileContents.contains("Message 3"), "Current log file should contain the third message");
+        assertTrue(currentLogFileContents.contains("<logger "), "Logger element should have been opened in the current file");
+        assertFalse(currentLogFileContents.contains("</logger>"), "Logger element should not have been closed in the current file");
 
-        //archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        //assertTrue(archivedLogFile1Contents.contains("Message 2"), "Archived log file should contain the second message");
-        //assertFalse(archivedLogFile1Contents.contains("Message 3"), "Archived log file should not contain the third message");
-        //assertTrue(archivedLogFile1Contents.contains("<logger "), "Logger element should have been opened in the archived file");
-        //assertTrue(archivedLogFile1Contents.contains("</logger>"), "Logger element should have been closed in the archived file");
+        archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        assertTrue(archivedLogFile1Contents.contains("Message 2"), "Archived log file should contain the second message");
+        assertFalse(archivedLogFile1Contents.contains("Message 3"), "Archived log file should not contain the third message");
+        assertTrue(archivedLogFile1Contents.contains("<logger "), "Logger element should have been opened in the archived file");
+        assertTrue(archivedLogFile1Contents.contains("</logger>"), "Logger element should have been closed in the archived file");
 
-        //String archivedLogFile2Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".2"));
-        //assertTrue(archivedLogFile2Contents.contains("Message 1"), "Archived log file should contain the first message");
-        //assertTrue(archivedLogFile2Contents.contains("<logger "), "Logger element should have been opened in the archived file");
-        //assertTrue(archivedLogFile2Contents.contains("</logger>"), "Logger element should have been closed in the archived file");
-
+        String archivedLogFile2Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".2"));
+        assertTrue(archivedLogFile2Contents.contains("Message 1"), "Archived log file should contain the first message");
+        assertTrue(archivedLogFile2Contents.contains("<logger "), "Logger element should have been opened in the archived file");
+        assertTrue(archivedLogFile2Contents.contains("</logger>"), "Logger element should have been closed in the archived file");
     }
 
     @Test
@@ -309,7 +308,7 @@ public class RotateLogListenerTest {
 
     @AfterEach
     public void cleanupLogRotateAbortsTestDir() {
-        System.out.println(">>>> " + logRotationTestDirectory.getDirectory().getAbsolutePath());
-        //logRotationTestDirectory.delete();
+        //System.out.println(">>>> " + logRotationTestDirectory.getDirectory().getAbsolutePath());
+        logRotationTestDirectory.delete();
     }
 }
