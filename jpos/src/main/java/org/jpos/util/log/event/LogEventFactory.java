@@ -8,7 +8,7 @@ import static org.jpos.util.log.format.JSON.JSON_LABEL;
 public class LogEventFactory {
     public static BaseLogEvent getLogEvent(String format){
         if(JSON_LABEL.equals(format)){
-            return null;
+            return new JSONLogEvent();
         }
         return new XMLLogEvent();
     }
