@@ -38,6 +38,8 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static org.jpos.util.log.format.XML.XML_LABEL;
+
 /**
  * Rotates log daily and compress the previous log.
  * @author <a href="mailto:alcarraz@jpos.org">Andr&eacute;s Alcarraz</a>
@@ -161,7 +163,7 @@ public class DailyLogListener extends RotateLogListener{
             compress(dest);
         };
 
-        setBaseLogFormat(LogFormatFactory.getLogFormat(cfg.get("format","xml")));
+        setBaseLogFormat(LogFormatFactory.getLogFormat(cfg.get("format",XML_LABEL)));
 
         super.setConfiguration(cfg);
     }

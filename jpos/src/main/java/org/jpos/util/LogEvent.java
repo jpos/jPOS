@@ -21,6 +21,8 @@ package org.jpos.util;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jpos.util.log.event.BaseLogEvent;
+import org.jpos.util.log.event.LogEventFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,6 +33,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+
+import static org.jpos.util.log.format.XML.XML_LABEL;
 
 /**
  * @author @apr
@@ -43,12 +47,14 @@ public class LogEvent {
     private Instant dumpedAt;
     private boolean honorSourceLogger;
     private boolean noArmor;
+    private BaseLogEvent baseLogEvent;
 
     public LogEvent (String tag) {
         super();
         this.tag = tag;
         createdAt = Instant.now();
         this.payLoad = Collections.synchronizedList (new ArrayList<>());
+        this.baseLogEvent = LogEventFactory.getLogEvent(XML_LABEL);
     }
 
     public LogEvent () {
@@ -90,103 +96,21 @@ public class LogEvent {
     public void setNoArmor (boolean noArmor) {
         this.noArmor = noArmor;
     }
+    public BaseLogEvent getBaseLogEvent() {
+        return baseLogEvent;
+    }
+    public void setBaseLogEvent(BaseLogEvent baseLogEvent) {
+        this.baseLogEvent = baseLogEvent;
+    }
     protected String dumpHeader (PrintStream p, String indent) {
-        if (noArmor) {
-            p.println("");
-        } else {
-            if (dumpedAt == null)
-                dumpedAt = Instant.now();
-            StringBuilder sb = new StringBuilder(indent);
-            sb.append ("<log realm=\"");
-            sb.append (getRealm());
-            sb.append("\" at=\"");
-            sb.append(LocalDateTime.ofInstant(dumpedAt, ZoneId.systemDefault()));
-            sb.append ('"');
-            long elapsed = Duration.between(createdAt, dumpedAt).toMillis();
-            if (elapsed > 0) {
-                sb.append (" lifespan=\"");
-                sb.append (elapsed);
-                sb.append ("ms\"");
-            }
-            sb.append ('>');
-            p.println (sb.toString());
-        }
-        return indent + "  ";
+        return baseLogEvent.dumpHeader(p,indent,getRealm(),dumpedAt,createdAt,noArmor);
     }
     protected void dumpTrailer (PrintStream p, String indent) {
-        if (!noArmor)
-            p.println (indent + "</log>");
+        baseLogEvent.dumpTrailer(p,indent,noArmor);
     }
-    public void dump (PrintStream p, String outer) {
-        try {
-            String indent = dumpHeader (p, outer);
-            if (payLoad.isEmpty()) {
-                if (tag != null)
-                    p.println (indent + "<" + tag + "/>");
-            }
-            else {
-                String newIndent;
-                if (tag != null) {
-                    if (!tag.isEmpty())
-                        p.println (indent + "<" + tag + ">");
-                    newIndent = indent + "  ";
-                }
-                else
-                    newIndent = "";
-                synchronized (payLoad) {
-                    for (Object o : payLoad) {
-                        if (o instanceof Loggeable)
-                            ((Loggeable) o).dump(p, newIndent);
-                        else if (o instanceof SQLException) {
-                            SQLException e = (SQLException) o;
-                            p.println(newIndent + "<SQLException>"
-                              + e.getMessage() + "</SQLException>");
-                            p.println(newIndent + "<SQLState>"
-                              + e.getSQLState() + "</SQLState>");
-                            p.println(newIndent + "<VendorError>"
-                              + e.getErrorCode() + "</VendorError>");
-                            ((Throwable) o).printStackTrace(p);
-                        } else if (o instanceof Throwable) {
-                            p.println(newIndent + "<exception name=\""
-                              + ((Throwable) o).getMessage() + "\">");
-                            p.print(newIndent);
-                            ((Throwable) o).printStackTrace(p);
-                            p.println(newIndent + "</exception>");
-                        } else if (o instanceof Object[]) {
-                            Object[] oa = (Object[]) o;
-                            p.print(newIndent + "[");
-                            for (int j = 0; j < oa.length; j++) {
-                                if (j > 0)
-                                    p.print(",");
-                                p.print(oa[j].toString());
-                            }
-                            p.println("]");
-                        } else if (o instanceof Element) {
-                            p.println("");
-                            XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
-                            out.getFormat().setLineSeparator("\n");
-                            try {
-                                out.output((Element) o, p);
-                            } catch (IOException ex) {
-                                ex.printStackTrace(p);
-                            }
-                            p.println("");
-                        } else if (o != null) {
-                            p.println(newIndent + o.toString());
-                        } else {
-                            p.println(newIndent + "null");
-                        }
-                    }
-                }
-                if (tag != null && !tag.isEmpty())
-                    p.println (indent + "</" + tag + ">");
-            }
-        } catch (Throwable t) {
-            t.printStackTrace(p);
 
-        } finally {
-            dumpTrailer (p, outer);
-        }
+    public void dump (PrintStream p, String outer) {
+        baseLogEvent.dump(p,outer,getRealm(),dumpedAt,createdAt,payLoad,noArmor,tag);
     }
     public String getRealm() {
         return source != null ? source.getRealm() : "";

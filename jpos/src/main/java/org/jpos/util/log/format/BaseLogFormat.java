@@ -9,4 +9,5 @@ public interface BaseLogFormat {
     void openLogFile(PrintStream p);
     void closeLogFile(PrintStream p);
     void logDebug(PrintStream p, String message);
+    String getType();
 }

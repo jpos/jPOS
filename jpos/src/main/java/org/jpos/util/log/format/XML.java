@@ -7,6 +7,9 @@ import java.util.Date;
  * Created by erlangga on 2019-10-12.
  */
 public class XML implements BaseLogFormat {
+
+    public static final String XML_LABEL = "xml";
+
     @Override
     public void openLogFile(PrintStream p) {
         p.println ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -23,5 +26,10 @@ public class XML implements BaseLogFormat {
         p.println ("<log realm=\"rotate-log-listener\" at=\""+new Date().toString() +"\">");
         p.println ("   "+msg);
         p.println ("</log>");
+    }
+
+    @Override
+    public String getType() {
+        return XML_LABEL;
     }
 }

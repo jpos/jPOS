@@ -21,6 +21,7 @@ package org.jpos.util;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.util.log.event.LogEventFactory;
 import org.jpos.util.log.format.BaseLogFormat;
 import org.jpos.util.log.format.LogFormatFactory;
 
@@ -33,6 +34,8 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static org.jpos.util.log.format.XML.XML_LABEL;
 
 /**
  * Rotates logs
@@ -70,7 +73,7 @@ public class RotateLogListener extends SimpleLogListener
 
     public RotateLogListener () {
         super();
-        setBaseLogFormat(LogFormatFactory.getLogFormat("xml"));
+        setBaseLogFormat(LogFormatFactory.getLogFormat(XML_LABEL));
     }
 
    /**
@@ -159,6 +162,7 @@ public class RotateLogListener extends SimpleLogListener
             msgCount = 0;
         }
 
+        ev.setBaseLogEvent(LogEventFactory.getLogEvent(baseLogFormat.getType()));
         return super.log (ev);
     }
     protected synchronized void openLogFile() throws IOException {
