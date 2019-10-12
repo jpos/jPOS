@@ -163,8 +163,6 @@ public class DailyLogListener extends RotateLogListener{
             compress(dest);
         };
 
-        setBaseLogFormat(LogFormatFactory.getLogFormat(cfg.get("format",XML_LABEL)));
-
         super.setConfiguration(cfg);
     }
 

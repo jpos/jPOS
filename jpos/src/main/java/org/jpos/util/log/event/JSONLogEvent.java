@@ -1,6 +1,11 @@
 package org.jpos.util.log.event;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,19 +30,19 @@ public class JSONLogEvent implements BaseLogEvent {
             StringBuilder sb = new StringBuilder(indent);
             sb.append ("\"log\":{\n");
             sb.append ("\"realm\":"+ "\""+realm+"\",\n");
-            sb.append("\"at=\"");
-            sb.append("\""+LocalDateTime.ofInstant(dumpedAt, ZoneId.systemDefault())+"\"\n");
+            sb.append("\"at\":");
+            sb.append("\""+LocalDateTime.ofInstant(dumpedAt, ZoneId.systemDefault())+"\"");
 
-            /*
             long elapsed = Duration.between(createdAt, dumpedAt).toMillis();
             if (elapsed > 0) {
-                sb.append (" lifespan=\"");
+                sb.append(",\n");
+                sb.append ("\"lifespan\":\"");
                 sb.append (elapsed);
                 sb.append ("ms\"");
             }
-            */
 
-            p.println (sb.toString());
+            sb.append ("\n}");
+            p.print(sb.toString());
         }
         return indent + "  ";
     }
@@ -50,6 +55,12 @@ public class JSONLogEvent implements BaseLogEvent {
 
     @Override
     public void dump(PrintStream p, String outer, String realm, Instant dumpedAt, Instant createdAt, List<Object> payLoad, boolean noArmor, String tag) {
+        try{
+            String indent = dumpHeader (p, outer, realm,dumpedAt,createdAt, noArmor);
+            p.println(indent);
+        }finally {
+            dumpTrailer(p,outer,noArmor);
+        }
 
     }
 }

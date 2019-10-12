@@ -153,6 +153,8 @@ public class RotateLogListener extends SimpleLogListener
             };
         }
 
+        setBaseLogFormat(LogFormatFactory.getLogFormat(cfg.get("format",XML_LABEL)));
+
         runPostConfiguration();
     }
 
