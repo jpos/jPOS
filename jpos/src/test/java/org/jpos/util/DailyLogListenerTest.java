@@ -457,6 +457,8 @@ public class DailyLogListenerTest {
 
     @AfterEach
     public void cleanupLogRotateAbortsTestDir() {
-        logRotationTestDirectory.delete();
+        File f = logRotationTestDirectory.getDirectory();
+        System.out.println(">>> " + f.getAbsolutePath());
+        //logRotationTestDirectory.delete();
     }
 }

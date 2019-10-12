@@ -24,7 +24,9 @@ ext {
         slf4j_api: "org.slf4j:slf4j-api:1.7.28",
         slf4j_nop: "org.slf4j:slf4j-nop:1.7.28",
         hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.11',
-        yaml: "org.yaml:snakeyaml:1.25"
+        yaml: "org.yaml:snakeyaml:1.25",
+        jacksonDatabind: 'com.fasterxml.jackson.core:jackson-databind:2.9.5',
+        jsonsimple: 'com.googlecode.json-simple:json-simple:1.1.1'    
     ]
 }
 

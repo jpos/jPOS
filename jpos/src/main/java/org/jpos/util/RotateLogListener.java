@@ -154,11 +154,11 @@ public class RotateLogListener extends SimpleLogListener
             f.close();
         f = new FileOutputStream (logName, true);
         setPrintStream (new PrintStream(f));
-        p.println ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        p.println ("<logger class=\"" + getClass().getName() + "\">");
+        //p.println ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        //p.println ("<logger class=\"" + getClass().getName() + "\">");
     }
     protected synchronized void closeLogFile() throws IOException {
-        p.println ("</logger>");
+        //p.println ("</logger>");
         if (f != null)
             f.close();
         f = null;
