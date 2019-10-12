@@ -19,9 +19,11 @@
 package org.jpos.util;
 
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
+import static org.jpos.util.log.format.JSON.JSON_LABEL;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -31,6 +33,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
+import org.jpos.util.log.format.JSON;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -104,6 +107,14 @@ public class RotateLogListenerTest {
     }
 
     @Test
+    public void testJsonLogDebug(){
+        RotateLogListener dailyLogListener = new DailyLogListener();
+        dailyLogListener.setBaseLogFormat(new JSON());
+        dailyLogListener.logDebug("testRotateLogListenerMsg");
+        assertNotNull(((DailyLogListener) dailyLogListener).p, "(DailyLogListener) dailyLogListener.p");
+    }
+
+    @Test
     @Disabled("test causes problems, closes stdout")
     public void testLogDebug1() throws Throwable {
         RotateLogListener dailyLogListener = new DailyLogListener();
@@ -160,6 +171,49 @@ public class RotateLogListenerTest {
             assertNull(rotateLogListener.f, "rotateLogListener.f");
             assertNotNull(rotateLogListener.p, "rotateLogListener.p");
         }
+    }
+
+    @Test
+    public void testJsonLogRotationWorks() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        listener.log(new LogEvent("Message 1"));
+
+        // when: a rotation is executed
+        listener.logRotate();
+
+        // then: new events should end up in the current file and old events in the archived file
+        listener.log(new LogEvent("Message 2"));
+
+        String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
+        System.out.println(currentLogFileContents);
+        assertFalse(currentLogFileContents.contains("Message 1"), "Current log file should not contain the first message");
+        assertTrue(currentLogFileContents.contains("Message 2"), "Current log file should contain the second message");
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        assertTrue(archivedLogFile1Contents.contains("Message 1"), "Archived log file should contain the first message");
+        assertFalse(archivedLogFile1Contents.contains("Message 2"), "Archived log file should not contain the second message");
+
+        listener.logRotate();
+
+        // then: new events should end up in the current file and old events in the archived files
+        listener.log(new LogEvent("Message 3"));
+
+        currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
+        assertFalse(currentLogFileContents.contains("Message 1"), "Current log file should not contain the first message");
+        assertFalse(currentLogFileContents.contains("Message 2"), "Current log file should not contain the second message");
+        assertTrue(currentLogFileContents.contains("Message 3"), "Current log file should contain the third message");
+
+        archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        assertTrue(archivedLogFile1Contents.contains("Message 2"), "Archived log file should contain the second message");
+        assertFalse(archivedLogFile1Contents.contains("Message 3"), "Archived log file should not contain the third message");
+
+        String archivedLogFile2Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".2"));
+        assertTrue(archivedLogFile2Contents.contains("Message 1"), "Archived log file should contain the first message");
     }
 
     @Test
@@ -308,7 +362,7 @@ public class RotateLogListenerTest {
 
     @AfterEach
     public void cleanupLogRotateAbortsTestDir() {
-        //System.out.println(">>>> " + logRotationTestDirectory.getDirectory().getAbsolutePath());
-        logRotationTestDirectory.delete();
+        System.out.println(">>>> " + logRotationTestDirectory.getDirectory().getAbsolutePath());
+        //logRotationTestDirectory.delete();
     }
 }

@@ -1,9 +1,7 @@
 package org.jpos.util.log.event;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jpos.util.Loggeable;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.time.Duration;
 import java.time.Instant;
@@ -28,23 +26,22 @@ public class JSONLogEvent implements BaseLogEvent {
                 dumpedAt = Instant.now();
 
             StringBuilder sb = new StringBuilder(indent);
-            sb.append ("\"log\":{\n");
-            sb.append ("\"realm\":"+ "\""+realm+"\",\n");
-            sb.append("\"at\":");
+            sb.append (" "+"\"log\":{\n");
+            sb.append ("  "+"\"realm\":"+ "\""+realm+"\",\n");
+            sb.append("  "+"\"at\":");
             sb.append("\""+LocalDateTime.ofInstant(dumpedAt, ZoneId.systemDefault())+"\"");
 
             long elapsed = Duration.between(createdAt, dumpedAt).toMillis();
             if (elapsed > 0) {
                 sb.append(",\n");
-                sb.append ("\"lifespan\":\"");
+                sb.append ("  "+"\"lifespan\":\"");
                 sb.append (elapsed);
                 sb.append ("ms\"");
             }
 
-            sb.append ("\n}");
             p.print(sb.toString());
         }
-        return indent + "  ";
+        return indent + " ";
     }
 
     @Override
@@ -57,7 +54,31 @@ public class JSONLogEvent implements BaseLogEvent {
     public void dump(PrintStream p, String outer, String realm, Instant dumpedAt, Instant createdAt, List<Object> payLoad, boolean noArmor, String tag) {
         try{
             String indent = dumpHeader (p, outer, realm,dumpedAt,createdAt, noArmor);
-            p.println(indent);
+            if (payLoad.isEmpty()) {
+                if (tag != null)
+                    p.println (indent + ",\n  \"" + tag + "\":{}");
+            }else {
+                String newIndent;
+                if (tag != null) {
+                    if (!tag.isEmpty())
+                        p.println (indent + "{" + tag);
+                    newIndent = indent + "  ";
+                }else
+                    newIndent = "";
+                synchronized (payLoad) {
+                    for (Object o : payLoad) {
+                        if (o instanceof Loggeable)
+                            ((Loggeable) o).dump(p, newIndent);
+                        else if (o != null) {
+                            p.println(newIndent + o.toString());
+                        } else {
+                            p.println(newIndent + "null");
+                        }
+                    }
+                }
+                if (tag != null && !tag.isEmpty())
+                    p.println (indent + "}");
+            }
         }finally {
             dumpTrailer(p,outer,noArmor);
         }
