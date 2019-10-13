@@ -60,8 +60,9 @@ public class JSONLogEvent implements BaseLogEvent {
             }else {
                 if (tag != null) {
                     if (!tag.isEmpty())
-                        p.print (indent + ",\n  \"" + tag+"\" : ");
-                }else
+                        p.print (indent + ",\n  \"" + tag+"\":");
+                }
+
                 synchronized (payLoad) {
                     StringBuilder stringBuilder = null;
                     if(!payLoad.isEmpty()){
@@ -80,8 +81,6 @@ public class JSONLogEvent implements BaseLogEvent {
                         p.println("\"");
                     }
                 }
-                if (tag != null && !tag.isEmpty())
-                    p.println (indent + "}");
             }
         }finally {
             dumpTrailer(p,outer,noArmor);
