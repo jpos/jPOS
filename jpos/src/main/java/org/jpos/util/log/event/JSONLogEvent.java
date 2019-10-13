@@ -76,8 +76,6 @@ public class JSONLogEvent implements BaseLogEvent {
                             }else {
                                 stringBuilder.append("\""+o.toString()+" ");
                             }
-                        } else {
-                            stringBuilder.append("null"+ " ");
                         }
                     }
                     p.print(stringBuilder.toString().trim());

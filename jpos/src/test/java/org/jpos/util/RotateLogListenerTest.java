@@ -212,6 +212,24 @@ public class RotateLogListenerTest {
     }
 
     @Test
+    public void testJsonLogDump2() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent("testLogEventTag", null);
+        logEvent.setBaseLogEvent(new JSONLogEvent());
+        logEvent.addMessage("testString", "1s");
+
+        listener.log(logEvent);
+
+        // when: a rotation is executed
+        listener.logRotate();
+    }
+
+    @Test
     public void testJsonLogRotationWorks() throws ConfigurationException, IOException {
         Properties configuration = new Properties();
         configuration.setProperty("format", JSON_LABEL);
