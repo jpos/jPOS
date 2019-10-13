@@ -85,7 +85,7 @@ public class LogEvent {
         payLoad.add (msg);
     }
     public void addMessage (String tagname, String message) {
-        payLoad.add ("<"+tagname+">"+message+"</"+tagname+">");
+        payLoad.add (baseLogEvent.addMessage(tagname,message));
     }
     public LogSource getSource() {
         return source;

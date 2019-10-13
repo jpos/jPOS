@@ -122,4 +122,9 @@ public class XMLLogEvent implements BaseLogEvent {
             dumpTrailer (p, outer, noArmor);
         }
     }
+
+    @Override
+    public String addMessage(String tagname, String message) {
+        return "<"+tagname+">"+message+"</"+tagname+">";
+    }
 }

@@ -65,19 +65,23 @@ public class JSONLogEvent implements BaseLogEvent {
 
                 synchronized (payLoad) {
                     StringBuilder stringBuilder = null;
-                    if(!payLoad.isEmpty()){
-                        p.print("\"");
-                        stringBuilder = new StringBuilder();
-                    }
+                    stringBuilder = new StringBuilder();
+                    boolean isJson = false;
                     for (Object o : payLoad) {
                         if (o != null) {
-                            stringBuilder.append(o.toString()+" ");
+                            String value = o.toString();
+                            if(value.startsWith("{")){
+                                isJson = true;
+                                stringBuilder.append(o.toString()+" ");
+                            }else {
+                                stringBuilder.append("\""+o.toString()+" ");
+                            }
                         } else {
                             stringBuilder.append("null"+ " ");
                         }
                     }
                     p.print(stringBuilder.toString().trim());
-                    if(!payLoad.isEmpty()){
+                    if(!payLoad.isEmpty() && !isJson){
                         p.println("\"");
                     }
                 }
@@ -86,5 +90,14 @@ public class JSONLogEvent implements BaseLogEvent {
             dumpTrailer(p,outer,noArmor);
         }
 
+    }
+
+    @Override
+    public String addMessage(String tagname, String message) {
+        String json = "{\n" +
+                "\"" + tagname + "\":" +
+                "\"" + message + "\"\n" +
+                "}";
+        return json;
     }
 }

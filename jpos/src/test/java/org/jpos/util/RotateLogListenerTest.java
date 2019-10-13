@@ -33,6 +33,8 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
+import org.jpos.iso.packager.ISO87APackagerBBitmap;
+import org.jpos.util.log.event.JSONLogEvent;
 import org.jpos.util.log.format.JSON;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
@@ -171,6 +173,42 @@ public class RotateLogListenerTest {
             assertNull(rotateLogListener.f, "rotateLogListener.f");
             assertNotNull(rotateLogListener.p, "rotateLogListener.p");
         }
+    }
+
+    @Test
+    public void testJsonLogAddMessage() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent(new ISO87APackagerBBitmap(), "testLogEventTag", Integer.valueOf(-2));
+        logEvent.setBaseLogEvent(new JSONLogEvent());
+        logEvent.addMessage("false");
+
+        listener.log(logEvent);
+
+        // when: a rotation is executed
+        listener.logRotate();
+    }
+
+    @Test
+    public void testJsonLogAddMessage1() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent(new Log(), "testString");
+        logEvent.setBaseLogEvent(new JSONLogEvent());
+        logEvent.addMessage("#>", "testString");
+
+        listener.log(logEvent);
+
+        // when: a rotation is executed
+        listener.logRotate();
     }
 
     @Test
@@ -362,6 +400,8 @@ public class RotateLogListenerTest {
 
     @AfterEach
     public void cleanupLogRotateAbortsTestDir() {
-        logRotationTestDirectory.delete();
+        File file = logRotationTestDirectory.getDirectory();
+        System.out.println(">>>> " + file.getAbsolutePath());
+        //logRotationTestDirectory.delete();
     }
 }
