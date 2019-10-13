@@ -41,7 +41,7 @@ public class JSONLogEvent implements BaseLogEvent {
 
             p.print(sb.toString());
         }
-        return indent + " ";
+        return indent;
     }
 
     @Override
@@ -58,22 +58,26 @@ public class JSONLogEvent implements BaseLogEvent {
                 if (tag != null)
                     p.println (indent + ",\n  \"" + tag + "\":{}");
             }else {
-                String newIndent;
                 if (tag != null) {
                     if (!tag.isEmpty())
-                        p.println (indent + "{" + tag);
-                    newIndent = indent + "  ";
+                        p.print (indent + ",\n  \"" + tag+"\" : ");
                 }else
-                    newIndent = "";
                 synchronized (payLoad) {
+                    StringBuilder stringBuilder = null;
+                    if(!payLoad.isEmpty()){
+                        p.print("\"");
+                        stringBuilder = new StringBuilder();
+                    }
                     for (Object o : payLoad) {
-                        if (o instanceof Loggeable)
-                            ((Loggeable) o).dump(p, newIndent);
-                        else if (o != null) {
-                            p.println(newIndent + o.toString());
+                        if (o != null) {
+                            stringBuilder.append(o.toString()+" ");
                         } else {
-                            p.println(newIndent + "null");
+                            stringBuilder.append("null"+ " ");
                         }
+                    }
+                    p.print(stringBuilder.toString().trim());
+                    if(!payLoad.isEmpty()){
+                        p.println("\"");
                     }
                 }
                 if (tag != null && !tag.isEmpty())
