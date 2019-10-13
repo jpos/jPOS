@@ -362,7 +362,6 @@ public class RotateLogListenerTest {
 
     @AfterEach
     public void cleanupLogRotateAbortsTestDir() {
-        System.out.println(">>>> " + logRotationTestDirectory.getDirectory().getAbsolutePath());
-        //logRotationTestDirectory.delete();
+        logRotationTestDirectory.delete();
     }
 }
