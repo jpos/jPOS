@@ -83,6 +83,28 @@ public class JsonRotateListenerTest {
         assertTrue(isJSONValidJackson(archivedLogFile1Contents));
     }
 
+    @Test
+    public void testAddMessageThrowable() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent("receive");
+        logEvent.addMessage(new IndexOutOfBoundsException());
+
+        listener.log(logEvent);
+
+        // when: a rotation is executed
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(">>> " + archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
+        assertTrue(isJSONValidJackson(archivedLogFile1Contents));
+    }
+
     private boolean isJSONValidJackson(String jsonInString ) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
@@ -106,10 +128,6 @@ public class JsonRotateListenerTest {
             }
         }
         return true;
-    }
-
-    private RotateLogListener createRotateLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
-        return createRotateLogListenerWithIsoDateFormat(logFileName, null);
     }
 
     private RotateLogListener createRotateLogListenerWithIsoDateFormat(

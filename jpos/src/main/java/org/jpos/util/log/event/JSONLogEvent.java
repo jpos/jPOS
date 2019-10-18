@@ -5,9 +5,7 @@ import org.jpos.util.Loggeable;
 import org.json.JSONObject;
 import org.json.XML;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -15,6 +13,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,7 +61,7 @@ public class JSONLogEvent implements BaseLogEvent {
     @Override
     public void dump(PrintStream p, String outer, String realm, Instant dumpedAt, Instant createdAt, List<Object> payLoad, boolean noArmor, String tag) {
         try{
-            String indent = dumpHeader (p, outer, realm,dumpedAt,createdAt, noArmor);
+            dumpHeader (p, outer, realm,dumpedAt,createdAt, noArmor);
             if (payLoad.isEmpty()) {
                 if (tag != null)
                     p.print (", \"" + tag + "\":{}");
@@ -96,7 +95,7 @@ public class JSONLogEvent implements BaseLogEvent {
                         } else if (o instanceof Throwable) {
                             p.print("{ \"exception\" : { \"name\":\"" + ((Throwable) o).getMessage()+"\",");
                             p.print("\"stackTrace\":\"");
-                            ((Throwable) o).printStackTrace(p);
+                            p.print(Arrays.toString(((Throwable)o).getStackTrace()));
                             p.print("\"}");
 
                             isClosedBracket = true;
