@@ -93,6 +93,7 @@ public class JSONLogEvent implements BaseLogEvent {
                         } else if (o instanceof SQLException) {
                             p.print("SQLException");
                         } else if (o instanceof Throwable) {
+                            // TODO: Fetch n lines
                             p.print("{ \"exception\" : { \"name\":\"" + ((Throwable) o).getMessage()+"\",");
                             p.print("\"stackTrace\":\"");
                             p.print(Arrays.toString(((Throwable)o).getStackTrace()));
@@ -106,10 +107,6 @@ public class JSONLogEvent implements BaseLogEvent {
                             p.print("Element");
                         } else if (o != null) {
                             if(stringBuilder.length()==0){
-                                /*
-                                    for handling
-                                    "connect":"Try 0 127.0.0.1:6990  Connection refused (Connection refused)Unable to connect"}}
-                                 */
                                 isOpenQuote = true;
                                 stringBuilder.append("\"");
                             }

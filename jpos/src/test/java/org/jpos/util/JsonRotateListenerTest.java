@@ -83,6 +83,16 @@ public class JsonRotateListenerTest {
         assertTrue(isJSONValidJackson(archivedLogFile1Contents));
     }
 
+    /*
+        {"log": {"realm" : "channel/127.0.0.1:1990","at" : "2019-10-18T11:55:18.053","lifespan" : "141 ms", "receive":{ "exception" : { "name":"null","stackTrace":"java.lang.IndexOutOfBoundsException
+            at java.io.BufferedInputStream.read(BufferedInputStream.java:338)
+            at java.io.DataInputStream.read(DataInputStream.java:149)
+            at org.jpos.iso.channel.Base24CustomChannel.getMessageLength(Base24CustomChannel.java:51)
+            at org.jpos.iso.BaseChannel.receive(BaseChannel.java:712)
+            at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:331)
+            at java.lang.Thread.run(Thread.java:748)
+        "}}}}
+     */
     @Test
     public void testAddMessageThrowable() throws ConfigurationException, IOException {
         Properties configuration = new Properties();
@@ -93,6 +103,42 @@ public class JsonRotateListenerTest {
 
         LogEvent logEvent = new LogEvent("receive");
         logEvent.addMessage(new IndexOutOfBoundsException());
+
+        listener.log(logEvent);
+
+        // when: a rotation is executed
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(">>> " + archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
+        assertTrue(isJSONValidJackson(archivedLogFile1Contents));
+    }
+
+    /*
+        {"log": {"realm" : "org.jpos.q2.iso.ChannelAdaptor","at" : "2019-10-18T11:55:18.054","lifespan" : "1 ms", "warn":{ "exception" : { "name":"unexpected exception","stackTrace":"java.io.IOException: unexpected exception
+            at org.jpos.iso.BaseChannel.receive(BaseChannel.java:787)
+            at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:331)
+            at java.lang.Thread.run(Thread.java:748)
+        Caused by: java.lang.IndexOutOfBoundsException
+            at java.io.BufferedInputStream.read(BufferedInputStream.java:338)
+            at java.io.DataInputStream.read(DataInputStream.java:149)
+            at org.jpos.iso.channel.Base24CustomChannel.getMessageLength(Base24CustomChannel.java:51)
+            at org.jpos.iso.BaseChannel.receive(BaseChannel.java:712)
+            ... 2 more
+        "},"text":"channel-receiver-BCAChannel_101-receive"}}}
+     */
+    @Test
+    public void testAddMessageTagAndThrowable() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent("warn");
+        logEvent.addMessage(new IOException());
+        logEvent.addMessage("channel-receiver-BCAChannel_101-receive");
 
         listener.log(logEvent);
 
