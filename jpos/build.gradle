@@ -29,6 +29,9 @@ dependencies {
     compile libraries.yaml;
     compile libraries.jacksonDatabind
 
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.5.3'
+    implementation 'org.json:json:20140107'
+
     testCompile libraries.commons_lang3
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert

@@ -1,13 +1,21 @@
 package org.jpos.util.log.event;
 
+import org.jdom2.Element;
 import org.jpos.util.Loggeable;
+import org.json.JSONObject;
+import org.json.XML;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,23 +28,22 @@ public class JSONLogEvent implements BaseLogEvent {
     @Override
     public String dumpHeader(PrintStream p, String indent, String realm, Instant dumpedAt, Instant createdAt, boolean noArmor) {
         if (noArmor) {
-            p.println("");
+            p.println();
         } else {
             if (dumpedAt == null)
                 dumpedAt = Instant.now();
 
-            StringBuilder sb = new StringBuilder(indent);
-            sb.append (" "+"\"log\":{\n");
-            sb.append ("  "+"\"realm\":"+ "\""+realm+"\",\n");
-            sb.append("  "+"\"at\":");
+            StringBuilder sb = new StringBuilder();
+            sb.append("{"+"\"log\": {");
+            sb.append("\"realm\" : "+ "\""+realm+"\",");
+            sb.append("\"at\" : ");
             sb.append("\""+LocalDateTime.ofInstant(dumpedAt, ZoneId.systemDefault())+"\"");
 
             long elapsed = Duration.between(createdAt, dumpedAt).toMillis();
             if (elapsed > 0) {
-                sb.append(",\n");
-                sb.append ("  "+"\"lifespan\":\"");
+                sb.append (",\"lifespan\" : \"");
                 sb.append (elapsed);
-                sb.append ("ms\"");
+                sb.append (" ms\"");
             }
 
             p.print(sb.toString());
@@ -46,8 +53,10 @@ public class JSONLogEvent implements BaseLogEvent {
 
     @Override
     public void dumpTrailer(PrintStream p, String indent, boolean noArmor) {
-        if (!noArmor)
-            p.println (indent + "}");
+        if (!noArmor) {
+            p.print ("}"+"}");
+            p.println();
+        }
     }
 
     @Override
@@ -56,46 +65,98 @@ public class JSONLogEvent implements BaseLogEvent {
             String indent = dumpHeader (p, outer, realm,dumpedAt,createdAt, noArmor);
             if (payLoad.isEmpty()) {
                 if (tag != null)
-                    p.println (indent + ",\n  \"" + tag + "\":{}");
+                    p.print (", \"" + tag + "\":{}");
             }else {
                 if (tag != null) {
-                    if (!tag.isEmpty())
-                        p.print (indent + ",\n  \"" + tag+"\":");
+                    if (!tag.isEmpty()){
+                        p.print (", \"" + tag +"\":");
+                    }
                 }
+                boolean isOpenQuote = false;
+                boolean isClosedBracket = false;
+                boolean isExceptionOccured = false;
 
                 synchronized (payLoad) {
                     StringBuilder stringBuilder = null;
                     stringBuilder = new StringBuilder();
-                    boolean isJson = false;
                     for (Object o : payLoad) {
-                        if (o != null) {
-                            String value = o.toString();
-                            if(value.startsWith("{")){
-                                isJson = true;
-                                stringBuilder.append(o.toString()+" ");
-                            }else {
-                                stringBuilder.append("\""+o.toString()+" ");
+                        if (o instanceof Loggeable) {
+                            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            try (PrintStream ps = new PrintStream(baos, true, "UTF-8")) {
+                                ((Loggeable) o).dump(ps, "");
+                                String json = convertXmlToJson(new String(baos.toByteArray(), StandardCharsets.UTF_8));
+                                if(json!=null){
+                                    p.print(json);
+                                }
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
                             }
+                        } else if (o instanceof SQLException) {
+                            p.print("SQLException");
+                        } else if (o instanceof Throwable) {
+                            p.print("{ \"exception\" : { \"name\":\"" + ((Throwable) o).getMessage()+"\",");
+                            p.print("\"stackTrace\":\"");
+                            ((Throwable) o).printStackTrace(p);
+                            p.print("\"}");
+
+                            isClosedBracket = true;
+                            isExceptionOccured = true;
+                        } else if (o instanceof Object[]) {
+                            p.print("Object[]");
+                        } else if (o instanceof Element) {
+                            p.print("Element");
+                        } else if (o != null) {
+                            if(stringBuilder.length()==0){
+                                /*
+                                    for handling
+                                    "connect":"Try 0 127.0.0.1:6990  Connection refused (Connection refused)Unable to connect"}}
+                                 */
+                                isOpenQuote = true;
+                                stringBuilder.append("\"");
+                            }
+                            stringBuilder.append(o.toString());
                         }
                     }
-                    p.print(stringBuilder.toString().trim());
-                    if(!payLoad.isEmpty() && !isJson){
-                        p.println("\"");
+                    if(isExceptionOccured && stringBuilder.length()>0){
+                        p.print(",\"text\":");
+                    }
+                    p.print(stringBuilder.toString());
+                    if(!payLoad.isEmpty() && isOpenQuote){
+                        p.print("\"");
+                    }
+                    if(isClosedBracket){
+                        p.print("}");
                     }
                 }
             }
-        }finally {
+        } finally {
             dumpTrailer(p,outer,noArmor);
         }
-
     }
 
     @Override
     public String addMessage(String tagname, String message) {
-        String json = "{\n" +
+        String json = "{" +
                 "\"" + tagname + "\":" +
-                "\"" + message + "\"\n" +
+                "\"" + message + "\"" +
                 "}";
+        return json;
+    }
+
+    private String convertXmlToJson(String xmlString) {
+        JSONObject jsonObject = XML.toJSONObject(xmlString);
+        Iterator<String> keys = jsonObject.keys();
+        while(keys.hasNext()) {
+            String key = keys.next();
+            if(jsonObject.get(key) instanceof String){
+                String str = jsonObject.getString(key);
+                if(str.isEmpty()){
+                    return null;
+                }
+            }
+        }
+
+        String json = jsonObject.toString();
         return json;
     }
 }
