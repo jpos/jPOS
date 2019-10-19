@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
@@ -148,6 +148,27 @@ public class JsonRotateListenerTest {
         LogEvent logEvent = new LogEvent("warn");
         logEvent.addMessage(new IOException());
         logEvent.addMessage("channel-receiver-BCAChannel_101-receive");
+
+        listener.log(logEvent);
+
+        // when: a rotation is executed
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(">>> " + archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
+    }
+
+    @Test
+    public void testAddMessageAndSqlException() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent("receive");
+        logEvent.addMessage(new SQLException());
 
         listener.log(logEvent);
 

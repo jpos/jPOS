@@ -89,7 +89,16 @@ public class JSONLogEvent implements BaseLogEvent {
                                 }
                             }
                         } else if (o instanceof SQLException) {
-                            p.print("SQLException");
+                            SQLException e = (SQLException) o;
+                            p.print("{ \"exception\" : { \"SQLException\":\"" + e.getMessage()+"\",");
+                            p.print("\"SQLState\":\""+ e.getSQLState()+"\",");
+                            p.print("\"VendorError\":\""+ e.getErrorCode()+"\",");
+                            p.print("\"stackTrace\":\"");
+                            p.print(Arrays.toString(((Throwable)o).getStackTrace()));
+                            p.print("\"}");
+
+                            isClosedBracket = true;
+                            isExceptionOccured = true;
                         } else if (o instanceof Throwable) {
                             p.print("{ \"exception\" : { \"name\":\"" + ((Throwable) o).getMessage()+"\",");
                             p.print("\"stackTrace\":\"");
