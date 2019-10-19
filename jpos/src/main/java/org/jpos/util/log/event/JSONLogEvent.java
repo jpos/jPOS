@@ -81,14 +81,12 @@ public class JSONLogEvent implements BaseLogEvent {
                     for (Object o : payLoad) {
                         if (o instanceof Loggeable) {
                             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            try (PrintStream ps = new PrintStream(baos, true, "UTF-8")) {
+                            try (PrintStream ps = new PrintStream(baos, true)) {
                                 ((Loggeable) o).dump(ps, "");
                                 String json = convertXmlToJson(new String(baos.toByteArray(), StandardCharsets.UTF_8));
                                 if(json!=null){
                                     p.print(json);
                                 }
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
                             }
                         } else if (o instanceof SQLException) {
                             p.print("SQLException");

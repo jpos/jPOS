@@ -11,6 +11,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
@@ -161,6 +163,34 @@ public class JsonRotateListenerTest {
     public void testParseXmlToJson(){
         String json = XML.toJSONObject(XML_SOURCE).toString();
         assertTrue(isJSONValid(json));
+    }
+
+    @Test
+    public void testAddMessageLoggeable() throws ConfigurationException, IOException {
+        SimpleMsg simpleMsg = new SimpleMsg(null,null){
+            @Override
+            public void dump(PrintStream p, String indent) {
+                p.println(XML_SOURCE);
+            }
+        };
+
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent();
+        logEvent.addMessage(simpleMsg);
+
+        listener.log(logEvent);
+
+        // when: a rotation is executed
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(">>> " + archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
     private boolean isJSONValid(String test) {

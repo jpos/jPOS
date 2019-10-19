@@ -12,12 +12,10 @@ public class JSON implements BaseLogFormat {
 
     @Override
     public void openLogFile(PrintStream p) {
-        //p.println ("{");
     }
 
     @Override
     public void closeLogFile(PrintStream p) {
-        //p.println ("}");
     }
 
     @Override
