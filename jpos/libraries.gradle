@@ -26,7 +26,8 @@ ext {
         hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.11',
         yaml: "org.yaml:snakeyaml:1.25",
         jacksonDatabind: 'com.fasterxml.jackson.core:jackson-databind:2.9.5',
-        jsonsimple: 'com.googlecode.json-simple:json-simple:1.1.1'    
+        jsonsimple: 'com.googlecode.json-simple:json-simple:1.1.1',
+        json: 'org.json:json:20140107'    
     ]
 }
 

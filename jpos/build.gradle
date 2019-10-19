@@ -28,8 +28,7 @@ dependencies {
     compile libraries.hdrhistogram
     compile libraries.yaml;
     compile libraries.jacksonDatabind
-
-    implementation 'org.json:json:20140107'
+    compile libraries.json
 
     testCompile libraries.commons_lang3
     testCompile libraries.hamcrest

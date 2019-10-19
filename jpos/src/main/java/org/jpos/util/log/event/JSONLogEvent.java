@@ -1,11 +1,11 @@
 package org.jpos.util.log.event;
 
-import org.jdom2.Element;
 import org.jpos.util.Loggeable;
 import org.json.JSONObject;
 import org.json.XML;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -108,9 +108,14 @@ public class JSONLogEvent implements BaseLogEvent {
                             isClosedBracket = true;
                             isExceptionOccured = true;
                         } else if (o instanceof Object[]) {
-                            p.print("Object[]");
-                        } else if (o instanceof Element) {
-                            p.print("Element");
+                            Object[] oa = (Object[]) o;
+                            p.print("\"[");
+                            for (int j = 0; j < oa.length; j++) {
+                                if (j > 0)
+                                    p.print(",");
+                                p.print(oa[j].toString());
+                            }
+                            p.print("]\"");
                         } else if (o != null) {
                             if(stringBuilder.length()==0){
                                 isOpenQuote = true;

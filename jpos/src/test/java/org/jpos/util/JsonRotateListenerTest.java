@@ -214,6 +214,31 @@ public class JsonRotateListenerTest {
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
+    @Test
+    public void testAddMessageObjectArray() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        Object[] array = new Object[3];
+        array[0] = "1";
+        array[1] = "2";
+        array[2] = "3";
+
+        LogEvent logEvent = new LogEvent("array");
+        logEvent.addMessage(array);
+        listener.log(logEvent);
+
+        // when: a rotation is executed
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(">>> " + archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
+    }
+
     private boolean isJSONValid(String test) {
         try {
             new JSONObject(test);
