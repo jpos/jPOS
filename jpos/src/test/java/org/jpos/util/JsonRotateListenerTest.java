@@ -1,13 +1,12 @@
 package org.jpos.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.fest.assertions.Assert;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.util.log.format.JSON;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.XML;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +15,8 @@ import java.util.Properties;
 
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
 import static org.jpos.util.log.format.JSON.JSON_LABEL;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by erlangga on 2019-10-19.
@@ -24,6 +24,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JsonRotateListenerTest {
 
     private final LogRotationTestDirectory logRotationTestDirectory = new LogRotationTestDirectory();
+
+    private static final String XML_SOURCE = "<isomsg direction=\"outgoing\">\n" +
+            "              <!-- org.jpos.iso.packager.GenericPackager[cfg/packager/iso87ascii.XML_SOURCE] -->\n" +
+            "              <header>49534F303036303030303636</header>\n" +
+            "              <field id=\"0\" value=\"0800\"/>\n" +
+            "              <field id=\"3\" value=\"990000\"/>\n" +
+            "              <field id=\"7\" value=\"1019150454\"/>\n" +
+            "              <field id=\"11\" value=\"000000\"/>\n" +
+            "              <field id=\"70\" value=\"301\"/>\n" +
+            "            </isomsg>";
 
     @Test
     public void testJsonLogDebug(){
@@ -56,7 +66,6 @@ public class JsonRotateListenerTest {
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
         System.out.print(">>> " + archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
-        assertTrue(isJSONValidJackson(archivedLogFile1Contents));
     }
 
     /*
@@ -80,7 +89,6 @@ public class JsonRotateListenerTest {
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
         System.out.print(">>> " + archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
-        assertTrue(isJSONValidJackson(archivedLogFile1Contents));
     }
 
     /*
@@ -112,7 +120,6 @@ public class JsonRotateListenerTest {
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
         System.out.print(">>> " + archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
-        assertTrue(isJSONValidJackson(archivedLogFile1Contents));
     }
 
     /*
@@ -148,17 +155,12 @@ public class JsonRotateListenerTest {
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
         System.out.print(">>> " + archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
-        assertTrue(isJSONValidJackson(archivedLogFile1Contents));
     }
 
-    private boolean isJSONValidJackson(String jsonInString ) {
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            mapper.readTree(jsonInString);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+    @Test
+    public void testParseXmlToJson(){
+        String json = XML.toJSONObject(XML_SOURCE).toString();
+        assertTrue(isJSONValid(json));
     }
 
     private boolean isJSONValid(String test) {

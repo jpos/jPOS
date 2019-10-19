@@ -93,7 +93,6 @@ public class JSONLogEvent implements BaseLogEvent {
                         } else if (o instanceof SQLException) {
                             p.print("SQLException");
                         } else if (o instanceof Throwable) {
-                            // TODO: Fetch n lines
                             p.print("{ \"exception\" : { \"name\":\"" + ((Throwable) o).getMessage()+"\",");
                             p.print("\"stackTrace\":\"");
                             p.print(Arrays.toString(((Throwable)o).getStackTrace()));
