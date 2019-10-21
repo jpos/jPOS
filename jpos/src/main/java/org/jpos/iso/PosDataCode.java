@@ -25,7 +25,6 @@ import org.jpos.util.Loggeable;
 @SuppressWarnings("unused")
 public class PosDataCode implements Loggeable {
 
-
     public interface Flag {
         int getOffset();
         int intValue();
@@ -241,12 +240,27 @@ public class PosDataCode implements Loggeable {
     public byte[] getBytes() {
         return b;
     }
+    public boolean isEMV() {
+        return hasReadingMethod(ReadingMethod.ICC) || hasReadingMethod(ReadingMethod.CONTACTLESS);
+    }
+    public boolean isManualEntry() {
+        return hasReadingMethod(ReadingMethod.PHYSICAL);
+    }
+    public boolean isSwiped() {
+        return hasReadingMethod(ReadingMethod.MAGNETIC_STRIPE);
+    }
+    public boolean isRecurring() {
+        return hasPosEnvironment(POSEnvironment.RECURRING);
+    }
+    public boolean isECommerce() {
+        return hasPosEnvironment(POSEnvironment.E_COMMERCE);
+    }
     public String toString() {
         return super.toString() + "[" + ISOUtil.hexString (getBytes())+ "]";
     }
     public static PosDataCode valueOf (byte[] b) {
         return new PosDataCode(b);  // we create new objects for now, but may return cached instances in the future
-    }
+    }    
     public void dump(PrintStream p, String indent) {
         String inner = indent + "  ";
         StringBuilder sb = new StringBuilder();

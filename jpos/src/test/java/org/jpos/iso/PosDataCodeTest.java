@@ -1,20 +1,22 @@
 package org.jpos.iso;
 
+import static org.jpos.iso.PosDataCode.POSEnvironment.M_COMMERCE;
+import static org.jpos.iso.PosDataCode.POSEnvironment.RECURRING;
+import static org.jpos.iso.PosDataCode.ReadingMethod.BARCODE;
+import static org.jpos.iso.PosDataCode.ReadingMethod.CONTACTLESS;
+import static org.jpos.iso.PosDataCode.ReadingMethod.PHYSICAL;
+import static org.jpos.iso.PosDataCode.SecurityCharacteristic.PKI_ENCRYPTION;
+import static org.jpos.iso.PosDataCode.SecurityCharacteristic.PRIVATE_ALG_ENCRYPTION;
+import static org.jpos.iso.PosDataCode.VerificationMethod.OFFLINE_PIN_IN_CLEAR;
+import static org.jpos.iso.PosDataCode.VerificationMethod.ONLINE_PIN;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.jpos.iso.PosDataCode.POSEnvironment;
 import org.jpos.iso.PosDataCode.ReadingMethod;
 import org.jpos.iso.PosDataCode.SecurityCharacteristic;
 import org.jpos.iso.PosDataCode.VerificationMethod;
 import org.junit.jupiter.api.Test;
-
-
-import static org.jpos.iso.PosDataCode.POSEnvironment.M_COMMERCE;
-import static org.jpos.iso.PosDataCode.POSEnvironment.RECURRING;
-import static org.jpos.iso.PosDataCode.ReadingMethod.*;
-import static org.jpos.iso.PosDataCode.SecurityCharacteristic.PKI_ENCRYPTION;
-import static org.jpos.iso.PosDataCode.SecurityCharacteristic.PRIVATE_ALG_ENCRYPTION;
-import static org.jpos.iso.PosDataCode.VerificationMethod.OFFLINE_PIN_IN_CLEAR;
-import static org.jpos.iso.PosDataCode.VerificationMethod.ONLINE_PIN;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PosDataCodeTest {
 
@@ -146,5 +148,65 @@ public class PosDataCodeTest {
         assertTrue(pdc.hasSecurityCharacteristics(PRIVATE_ALG_ENCRYPTION.intValue()),
                 "PRIVATE_ALG_ENCRYPTION should be present");
    }
+
+    @Test
+    public void checkIsEMV() {
+        pdc.setSecurityCharacteristics(PRIVATE_ALG_ENCRYPTION, PKI_ENCRYPTION);
+        pdc.unsetSecurityCharacteristics(PKI_ENCRYPTION);
+        pdc.setReadingMethods(ReadingMethod.ICC);
+        
+        assertTrue(pdc.isEMV());
+        assertFalse(pdc.isManualEntry());
+        assertFalse(pdc.isSwiped());        
+   }
+
+   @Test
+   public void checkIsManualEntry() {
+        pdc.setSecurityCharacteristics(PRIVATE_ALG_ENCRYPTION, PKI_ENCRYPTION);
+        pdc.unsetSecurityCharacteristics(PKI_ENCRYPTION);
+        pdc.setReadingMethods(ReadingMethod.PHYSICAL);
+        
+        assertFalse(pdc.isEMV());
+        assertTrue(pdc.isManualEntry());
+        assertFalse(pdc.isSwiped());        
+   }
+   
+   @Test
+   public void checkIsSwiped() {
+        pdc.setSecurityCharacteristics(PRIVATE_ALG_ENCRYPTION, PKI_ENCRYPTION);
+        pdc.unsetSecurityCharacteristics(PKI_ENCRYPTION);
+        pdc.setReadingMethods(ReadingMethod.MAGNETIC_STRIPE);
+        
+        assertFalse(pdc.isEMV());
+        assertFalse(pdc.isManualEntry());
+        assertTrue(pdc.isSwiped());        
+   }
+      
+   @Test
+   public void checkIsECommerce() {
+        pdc.setSecurityCharacteristics(PRIVATE_ALG_ENCRYPTION, PKI_ENCRYPTION);
+        pdc.unsetSecurityCharacteristics(PKI_ENCRYPTION);
+        pdc.setPOSEnvironments(POSEnvironment.E_COMMERCE);
+        pdc.setReadingMethods(ReadingMethod.PHYSICAL);
+        
+        assertFalse(pdc.isEMV());
+        assertTrue(pdc.isManualEntry());
+        assertTrue(pdc.isECommerce());
+        assertFalse(pdc.isSwiped());        
+   }   
+
+   @Test
+   public void checkIsRecurring() {
+        pdc.setSecurityCharacteristics(PRIVATE_ALG_ENCRYPTION, PKI_ENCRYPTION);
+        pdc.unsetSecurityCharacteristics(PKI_ENCRYPTION);
+        pdc.setPOSEnvironments(POSEnvironment.RECURRING);
+        pdc.setReadingMethods(ReadingMethod.PHYSICAL);
+        
+        assertFalse(pdc.isEMV());
+        assertTrue(pdc.isManualEntry());
+        assertFalse(pdc.isECommerce());
+        assertTrue(pdc.isRecurring());
+        assertFalse(pdc.isSwiped());        
+   }   
 
 }
