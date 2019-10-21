@@ -23,8 +23,6 @@ import java.util.stream.Stream;
  */
 public class JSONLogEvent implements BaseLogEvent {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
     @Override
     public String dumpHeader(PrintStream p, String indent, String realm, Instant dumpedAt, Instant createdAt, boolean noArmor) {
         if (noArmor) {

@@ -27,7 +27,6 @@ dependencies {
     compile libraries.javassist
     compile libraries.hdrhistogram
     compile libraries.yaml;
-    compile libraries.jacksonDatabind
     compile libraries.json
 
     testCompile libraries.commons_lang3
