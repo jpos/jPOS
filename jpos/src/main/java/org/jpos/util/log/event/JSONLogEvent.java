@@ -108,13 +108,13 @@ public class JSONLogEvent implements BaseLogEvent {
                             isExceptionOccured = true;
                         } else if (o instanceof Object[]) {
                             Object[] oa = (Object[]) o;
-                            p.print("\"[");
+                            p.print("[");
                             for (int j = 0; j < oa.length; j++) {
                                 if (j > 0)
                                     p.print(",");
-                                p.print(oa[j].toString());
+                                p.print("\""+oa[j].toString()+"\"");
                             }
-                            p.print("]\"");
+                            p.print("]");
                         } else if (o != null) {
                             if(stringBuilder.length()==0){
                                 isOpenQuote = true;
