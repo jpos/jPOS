@@ -12,7 +12,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +21,8 @@ import java.util.stream.Stream;
  * Created by erlangga on 2019-10-12.
  */
 public class JSONLogEvent implements BaseLogEvent {
+
+    private static final String XML_TAG = "(?s).*(<(\\w+)[^>]*>.*</\\2>|<(\\w+)[^>]*/>).*";
 
     @Override
     public String dumpHeader(PrintStream p, String indent, String realm, Instant dumpedAt, Instant createdAt, boolean noArmor) {
@@ -116,11 +117,21 @@ public class JSONLogEvent implements BaseLogEvent {
                             }
                             p.print("]");
                         } else if (o != null) {
-                            if(stringBuilder.length()==0){
+                            String data = o.toString();
+                            boolean isContainsXml = data.matches(XML_TAG);
+
+                            if(stringBuilder.length()==0 && !isContainsXml){
                                 isOpenQuote = true;
                                 stringBuilder.append("\"");
                             }
-                            stringBuilder.append(o.toString());
+                            if(isContainsXml){
+                                String json = convertXmlToJson(new String(data.getBytes(), StandardCharsets.UTF_8));
+                                if(json!=null){
+                                    stringBuilder.append(json);
+                                }
+                            }else {
+                                stringBuilder.append(data);
+                            }
                         }
                     }
                     if(isExceptionOccured && stringBuilder.length()>0){
