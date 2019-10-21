@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,7 +23,9 @@ import java.util.stream.Stream;
  */
 public class JSONLogEvent implements BaseLogEvent {
 
-    private static final String XML_TAG = "(?s).*(<(\\w+)[^>]*>.*</\\2>|<(\\w+)[^>]*/>).*";
+    private static final String XML_TAG_PATTERN = "(?s).*(<(\\w+)[^>]*>.*</\\2>|<(\\w+)[^>]*/>).*";
+    private static final String STACK_TRACE_TAG_PATTERN = "(?m)^.*?Exception.*(?:\\R+^\\s*at .*)+";
+    private static final Pattern STACK_TRACE_REGEX = Pattern.compile(STACK_TRACE_TAG_PATTERN, Pattern.MULTILINE);
 
     @Override
     public String dumpHeader(PrintStream p, String indent, String realm, Instant dumpedAt, Instant createdAt, boolean noArmor) {
@@ -118,9 +121,11 @@ public class JSONLogEvent implements BaseLogEvent {
                             p.print("]");
                         } else if (o != null) {
                             String data = o.toString();
-                            boolean isContainsXml = data.matches(XML_TAG);
 
-                            if(stringBuilder.length()==0 && !isContainsXml){
+                            boolean isContainsXml = data.matches(XML_TAG_PATTERN);
+                            boolean isContainsStackTrace = STACK_TRACE_REGEX.matcher(data).find();
+
+                            if(stringBuilder.length()==0 && (!isContainsXml)){
                                 isOpenQuote = true;
                                 stringBuilder.append("\"");
                             }
@@ -129,6 +134,8 @@ public class JSONLogEvent implements BaseLogEvent {
                                 if(json!=null){
                                     stringBuilder.append(json);
                                 }
+                            }else if(isContainsStackTrace){
+                                stringBuilder.append(data.replaceAll("[\r\n]+", " "));
                             }else {
                                 stringBuilder.append(data);
                             }

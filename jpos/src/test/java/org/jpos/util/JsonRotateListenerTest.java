@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
 import static org.jpos.util.log.format.JSON.JSON_LABEL;
@@ -268,6 +270,11 @@ public class JsonRotateListenerTest {
                 "      <value type='binary'>600070000002003038458020E5901C000000000000002283099933001558200958120901062000376019002000008773D2204120845151023500003030303030323335303035303030373530333432202020474F4B414E4120544550414E204A616B617274612053656C61744A414B494420202020202020202000154130303030303030303030303633330010FFFF98010003388003A003606195A424FD3AF33C000631303030313100154A414B415254412053454C4154414E0006313030303132</value>\n" +
                 "    </unpack>";
 
+        Pattern regex = Pattern.compile("(?s).*(<(\\w+)[^>]*>.*</\\2>|<(\\w+)[^>]*/>).*");
+        Matcher regexMatcher = regex.matcher(unpack);
+        assertTrue(regexMatcher.find());
+        assertTrue(regexMatcher.matches());
+
         Properties configuration = new Properties();
         configuration.setProperty("format", JSON_LABEL);
 
@@ -276,6 +283,44 @@ public class JsonRotateListenerTest {
 
         LogEvent logEvent = new LogEvent("unpack");
         logEvent.addMessage(unpack);
+        listener.log(logEvent);
+
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(">>> " + archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
+    }
+
+    @Test
+    public void testAddMessageStackTrace() throws ConfigurationException, IOException {
+        String stackTrace = "java.security.spec.InvalidKeySpecException: java.security.InvalidKeyException: IOException: Detect premature EOF\n" +
+                "\tat sun.security.rsa.RSAKeyFactory.engineGeneratePublic(RSAKeyFactory.java:205)\n" +
+                "\tat java.security.KeyFactory.generatePublic(KeyFactory.java:334)\n" +
+                "\tat com.spots.hsm.client.RSAUtil.getPublicKeyFromString(RSAUtil.java:178)\n" +
+                "\tat com.spots.gayoswc.Switcher.HSMClientQBean.encryptRsaV2(HSMClientQBean.java:281)\n" +
+                "\tat com.spots.gayoswc.transaction.RsaEncryptParticipant.doEncrypt(RsaEncryptParticipant.java:49)\n" +
+                "\tat com.spots.gayoswc.transaction.RsaEncryptParticipant.prepareForAbort(RsaEncryptParticipant.java:64)\n" +
+                "\tat org.jpos.transaction.TransactionManager.prepareForAbort(TransactionManager.java:559)\n" +
+                "\tat org.jpos.transaction.TransactionManager.prepare(TransactionManager.java:629)\n" +
+                "\tat org.jpos.transaction.TransactionManager.run(TransactionManager.java:308)\n" +
+                "\tat java.lang.Thread.run(Thread.java:748)\n" +
+                "Caused by: java.security.InvalidKeyException: IOException: Detect premature EOF\n" +
+                "\tat sun.security.x509.X509Key.decode(X509Key.java:398)\n" +
+                "\tat sun.security.x509.X509Key.decode(X509Key.java:403)\n" +
+                "\tat sun.security.rsa.RSAPublicKeyImpl.<init>(RSAPublicKeyImpl.java:86)\n" +
+                "\tat sun.security.rsa.RSAKeyFactory.generatePublic(RSAKeyFactory.java:298)\n" +
+                "\tat sun.security.rsa.RSAKeyFactory.engineGeneratePublic(RSAKeyFactory.java:201)\n" +
+                "\t... 9 more";
+
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent("error");
+        logEvent.addMessage(stackTrace);
         listener.log(logEvent);
 
         listener.logRotate();
