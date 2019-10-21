@@ -13,9 +13,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by erlangga on 2019-10-12.
@@ -93,17 +94,17 @@ public class JSONLogEvent implements BaseLogEvent {
                             p.print("{ \"exception\" : { \"SQLException\":\"" + e.getMessage()+"\",");
                             p.print("\"SQLState\":\""+ e.getSQLState()+"\",");
                             p.print("\"VendorError\":\""+ e.getErrorCode()+"\",");
-                            p.print("\"stackTrace\":\"");
-                            p.print(Arrays.toString(((Throwable)o).getStackTrace()));
-                            p.print("\"}");
+                            p.print("\"stackTrace\":");
+                            p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace()));
+                            p.print("}");
 
                             isClosedBracket = true;
                             isExceptionOccured = true;
                         } else if (o instanceof Throwable) {
                             p.print("{ \"exception\" : { \"name\":\"" + ((Throwable) o).getMessage()+"\",");
-                            p.print("\"stackTrace\":\"");
-                            p.print(Arrays.toString(((Throwable)o).getStackTrace()));
-                            p.print("\"}");
+                            p.print("\"stackTrace\":");
+                            p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace()));
+                            p.print("}");
 
                             isClosedBracket = true;
                             isExceptionOccured = true;
@@ -148,6 +149,10 @@ public class JSONLogEvent implements BaseLogEvent {
                 "\"" + message + "\"" +
                 "}";
         return json;
+    }
+
+    private String getCurrentStackTraceString(StackTraceElement[] stackTrace){
+        return Stream.of(stackTrace).map((a) -> "\"" + a.toString() + "\"").collect(Collectors.joining(",\n","[", "]"));
     }
 
     private String convertXmlToJson(String xmlString) {
