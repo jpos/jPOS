@@ -293,6 +293,33 @@ public class JsonRotateListenerTest {
     }
 
     @Test
+    public void testAddMessageUnpack2() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent("unpack");
+        logEvent.addMessage("08002020010000870008450000000282062030303030303233350046DF9003084341383836363832DF900405312E302E35DF90080B3030303031363636363635DF90170630303030303601297B22706F705F6964223A2232626332633035332D366261652D343564642D616630352D666565363932663266353730222C2273617564616761725F6964223A2247373035353633363431222C227472616E73616374696F6E5F6964223A2232376365303534662D70732D6E766E642D396238322D4B626F623237494C313932227D0010FFFF98010003388003A00190600070000002003020458020E5901C00000000000002200000000158120901062000376019002000008773D2204120845151023500003030303030323335303035303030373530333432202020474F4B414E4120544550414E204A616B617274612053656C61744A414B494420202020202020202000154130303030303030303030303633330010FFFF98010003388003A003606195A424FD3AF33C000630303030303300154A414B415254412053454C4154414E000730303030303131");
+        logEvent.addMessage("<bitmap>{3, 11, 24, 41, 46, 47, 48, 61}</bitmap>");
+        logEvent.addMessage("<unpack fld=\"3\" packager=\"org.jpos.iso.IFB_NUMERIC\">");
+        logEvent.addMessage("<value>450000</value>");
+        logEvent.addMessage("</unpack>");
+        logEvent.addMessage("<unpack fld=\"46\" packager=\"org.jpos.iso.IFB_LLLBINARY\">");
+        logEvent.addMessage("<value type='binary'>DF9003084341383836363832DF900405312E302E35DF90080B3030303031363636363635DF901706303030303036</value>");
+        logEvent.addMessage("</unpack>");
+
+        listener.log(logEvent);
+
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(">>> " + archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
+    }
+
+    @Test
     public void testAddMessageStackTrace() throws ConfigurationException, IOException {
         String stackTrace = "java.security.spec.InvalidKeySpecException: java.security.InvalidKeyException: IOException: Detect premature EOF\n" +
                 "\tat sun.security.rsa.RSAKeyFactory.engineGeneratePublic(RSAKeyFactory.java:205)\n" +

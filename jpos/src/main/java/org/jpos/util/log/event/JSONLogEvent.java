@@ -74,13 +74,12 @@ public class JSONLogEvent implements BaseLogEvent {
                         p.print (", \"" + tag +"\":");
                     }
                 }
-                boolean isOpenQuote = false;
+
                 boolean isClosedBracket = false;
                 boolean isExceptionOccured = false;
 
                 synchronized (payLoad) {
                     StringBuilder stringBuilder = null;
-                    stringBuilder = new StringBuilder();
                     for (Object o : payLoad) {
                         if (o instanceof Loggeable) {
                             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -122,31 +121,26 @@ public class JSONLogEvent implements BaseLogEvent {
                         } else if (o != null) {
                             String data = o.toString();
 
-                            boolean isContainsXml = data.matches(XML_TAG_PATTERN);
-                            boolean isContainsStackTrace = STACK_TRACE_REGEX.matcher(data).find();
-
-                            if(stringBuilder.length()==0 && (!isContainsXml)){
-                                isOpenQuote = true;
+                            if(stringBuilder==null){
+                                stringBuilder = new StringBuilder();
                                 stringBuilder.append("\"");
                             }
-                            if(isContainsXml){
-                                String json = convertXmlToJson(new String(data.getBytes(), StandardCharsets.UTF_8));
-                                if(json!=null){
-                                    stringBuilder.append(json);
-                                }
-                            }else if(isContainsStackTrace){
-                                stringBuilder.append(data.replaceAll("[\r\n]+", " "));
-                            }else {
-                                stringBuilder.append(data);
-                            }
+
+                            stringBuilder.append(data);
                         }
                     }
-                    if(isExceptionOccured && stringBuilder.length()>0){
+                    if(isExceptionOccured && stringBuilder!=null && stringBuilder.length()>0){
                         p.print(",\"text\":");
                     }
-                    p.print(stringBuilder.toString());
-                    if(!payLoad.isEmpty() && isOpenQuote){
-                        p.print("\"");
+                    if(stringBuilder!=null && stringBuilder.length()>0){
+                        String data = stringBuilder.toString();
+                        if(data.matches(XML_TAG_PATTERN)){
+                            p.print(convertXmlToJson(stringBuilder.toString()));
+                        }else if(STACK_TRACE_REGEX.matcher(data).find()){
+                            p.print(data.replaceAll("[\r\n]+", " ")+"\"");
+                        }else {
+                            p.print(data+"\"");
+                        }
                     }
                     if(isClosedBracket){
                         p.print("}");
