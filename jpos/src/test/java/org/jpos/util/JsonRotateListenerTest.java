@@ -71,7 +71,7 @@ public class JsonRotateListenerTest {
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
@@ -87,11 +87,10 @@ public class JsonRotateListenerTest {
         logEvent.addMessage("Mux :Mux_200Echo Interval :10000");
         listener.log(logEvent);
 
-        // when: a rotation is executed
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
@@ -108,11 +107,10 @@ public class JsonRotateListenerTest {
 
         listener.log(logEvent);
 
-        // when: a rotation is executed
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
@@ -133,7 +131,7 @@ public class JsonRotateListenerTest {
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 

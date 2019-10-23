@@ -25,7 +25,6 @@ public class JSONLogEvent implements BaseLogEvent {
 
     private static final String XML_TAG_PATTERN = "(?s).*(<(\\w+)[^>]*>.*</\\2>|<(\\w+)[^>]*/>).*";
     private static final String STACK_TRACE_TAG_PATTERN = "(^\\d+\\) .+)|(^.+Exception: .+)|(^\\s+at .+)|(^\\s+... \\d+ more)|(^\\s*Caused by:.+)";
-
     private static final Pattern STACK_TRACE_REGEX = Pattern.compile(STACK_TRACE_TAG_PATTERN, Pattern.MULTILINE);
 
     @Override
@@ -37,14 +36,17 @@ public class JSONLogEvent implements BaseLogEvent {
                 dumpedAt = Instant.now();
 
             StringBuilder sb = new StringBuilder();
-            sb.append("{"+"\"log\": {");
-            sb.append("\"realm\" : "+ "\""+realm+"\",");
-            sb.append("\"at\" : ");
+            sb.append("{\n");
+            indent+=indent(2,indent,'+');
+            sb.append(indent+"\"log\": {\n");
+            indent = indent(2,indent,'+');
+            sb.append(indent+"\"realm\" : "+ "\""+realm+"\",\n");
+            sb.append(indent+"\"at\" : ");
             sb.append("\""+LocalDateTime.ofInstant(dumpedAt, ZoneId.systemDefault())+"\"");
 
             long elapsed = Duration.between(createdAt, dumpedAt).toMillis();
             if (elapsed > 0) {
-                sb.append (",\"lifespan\" : \"");
+                sb.append (",\n"+indent+"\"lifespan\" : \"");
                 sb.append (elapsed);
                 sb.append (" ms\"");
             }
@@ -57,22 +59,22 @@ public class JSONLogEvent implements BaseLogEvent {
     @Override
     public void dumpTrailer(PrintStream p, String indent, boolean noArmor) {
         if (!noArmor) {
-            p.print ("}"+"}");
-            p.println();
+            p.print ("\n}");
         }
     }
 
     @Override
     public void dump(PrintStream p, String outer, String realm, Instant dumpedAt, Instant createdAt, List<Object> payLoad, boolean noArmor, String tag) {
+        String indent = "";
         try{
-            dumpHeader (p, outer, realm,dumpedAt,createdAt, noArmor);
+            indent = dumpHeader (p, outer, realm,dumpedAt,createdAt, noArmor);
             if (payLoad.isEmpty()) {
                 if (tag != null)
-                    p.print (", \"" + tag + "\":{}");
+                    p.print (", \"" + tag + "\": {}");
             }else {
                 if (tag != null) {
                     if (!tag.isEmpty()){
-                        p.print (", \"" + tag +"\":");
+                        p.print (", \n"+indent+"\"" + tag +"\": ");
                     }
                 }
 
@@ -97,16 +99,22 @@ public class JSONLogEvent implements BaseLogEvent {
                             p.print("\"SQLState\":\""+ e.getSQLState()+"\",");
                             p.print("\"VendorError\":\""+ e.getErrorCode()+"\",");
                             p.print("\"stackTrace\":");
-                            p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace()));
+                            p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace(),indent));
                             p.print("}");
 
                             isClosedBracket = true;
                             isExceptionOccured = true;
                         } else if (o instanceof Throwable) {
-                            p.print("{ \"exception\" : { \"name\":\"" + ((Throwable) o).getMessage()+"\",");
-                            p.print("\"stackTrace\":");
-                            p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace()));
-                            p.print("}");
+                            p.print("{\n");
+
+                            indent = indent(2,indent,'+');
+                            p.print(indent+"\"exception\" : {\n");
+
+                            indent = indent(2,indent,'+');
+                            p.print(indent+"\"name\":\"" + ((Throwable) o).getMessage()+"\",\n");
+                            p.print(indent+"\"stackTrace\":");
+                            p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace(),indent)+"\n");
+                            p.print(indent+"}");
 
                             isClosedBracket = true;
                             isExceptionOccured = true;
@@ -131,12 +139,12 @@ public class JSONLogEvent implements BaseLogEvent {
                         }
                     }
                     if(isExceptionOccured && stringBuilder!=null && stringBuilder.length()>0){
-                        p.print(",\"text\":");
+                        p.print(",\n"+indent+"\"text\":");
                     }
                     if(stringBuilder!=null && stringBuilder.length()>0){
                         String data = stringBuilder.toString();
                         if(data.matches(XML_TAG_PATTERN)){
-                            p.print(convertXmlToJson(stringBuilder.toString()));
+                            p.print(convertXmlToJson(data));
                         }else if(STACK_TRACE_REGEX.matcher(data).find()){
                             p.print(data.replaceAll("[\r\n]+", " ")+"\"");
                         }else {
@@ -144,11 +152,13 @@ public class JSONLogEvent implements BaseLogEvent {
                         }
                     }
                     if(isClosedBracket){
-                        p.print("}");
+                        indent = indent(2,indent,'-');
+                        p.print("\n"+indent+"}");
                     }
                 }
             }
         } finally {
+            p.print("\n"+indent(2,indent,'-')+"}");
             dumpTrailer(p,outer,noArmor);
         }
     }
@@ -162,8 +172,8 @@ public class JSONLogEvent implements BaseLogEvent {
         return json;
     }
 
-    private String getCurrentStackTraceString(StackTraceElement[] stackTrace){
-        return Stream.of(stackTrace).map((a) -> "\"" + a.toString() + "\"").collect(Collectors.joining(",\n","[", "]"));
+    private String getCurrentStackTraceString(StackTraceElement[] stackTrace, String indent){
+        return Stream.of(stackTrace).map((a) -> "\"" + a.toString() + "\"").collect(Collectors.joining(",\n"+indent,"[", "]"));
     }
 
     private String convertXmlToJson(String xmlString) {
@@ -181,5 +191,22 @@ public class JSONLogEvent implements BaseLogEvent {
 
         String json = jsonObject.toString();
         return json;
+    }
+
+    private String indent(int n, String indent, char symbol) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (symbol == '+') {
+            stringBuilder.append(indent);
+            for (int i = 0; i < n; i++) {
+                stringBuilder.append(" ");
+            }
+            return stringBuilder.toString();
+        }
+
+        int length = indent.length();
+        for (int i = 0; i < (length-n); i++) {
+            stringBuilder.append(" ");
+        }
+        return stringBuilder.toString();
     }
 }
