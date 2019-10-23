@@ -95,12 +95,18 @@ public class JSONLogEvent implements BaseLogEvent {
                             }
                         } else if (o instanceof SQLException) {
                             SQLException e = (SQLException) o;
-                            p.print("{ \"exception\" : { \"SQLException\":\"" + e.getMessage()+"\",");
-                            p.print("\"SQLState\":\""+ e.getSQLState()+"\",");
-                            p.print("\"VendorError\":\""+ e.getErrorCode()+"\",");
-                            p.print("\"stackTrace\":");
-                            p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace(),indent));
-                            p.print("}");
+                            p.print("{\n");
+
+                            indent = indent(2,indent,'+');
+                            p.print(indent+"\"exception\" : { \n");
+
+                            indent = indent(2,indent,'+');
+                            p.print(indent+"\"sqlexception\":\"" + e.getMessage()+"\",\n");
+                            p.print(indent+"\"sqlstate\":\""+ e.getSQLState()+"\",\n");
+                            p.print(indent+"\"vendorerror\":\""+ e.getErrorCode()+"\",\n");
+                            p.print(indent+"\"stacktrace\":");
+                            p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace(),indent)+"\n");
+                            p.print(indent+"}");
 
                             isClosedBracket = true;
                             isExceptionOccured = true;
@@ -112,7 +118,7 @@ public class JSONLogEvent implements BaseLogEvent {
 
                             indent = indent(2,indent,'+');
                             p.print(indent+"\"name\":\"" + ((Throwable) o).getMessage()+"\",\n");
-                            p.print(indent+"\"stackTrace\":");
+                            p.print(indent+"\"stacktrace\":");
                             p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace(),indent)+"\n");
                             p.print(indent+"}");
 

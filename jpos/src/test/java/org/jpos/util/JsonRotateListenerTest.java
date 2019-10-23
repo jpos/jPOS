@@ -151,7 +151,7 @@ public class JsonRotateListenerTest {
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
