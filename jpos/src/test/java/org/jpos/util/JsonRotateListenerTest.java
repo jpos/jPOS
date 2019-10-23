@@ -18,6 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
+import static org.jpos.util.log.event.JSONLogEvent.STACK_TRACE_REGEX;
+import static org.jpos.util.log.event.JSONLogEvent.XML_TAG_PATTERN;
 import static org.jpos.util.log.format.JSON.JSON_LABEL;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,9 +49,6 @@ public class JsonRotateListenerTest {
         assertNotNull(((DailyLogListener) dailyLogListener).p, "(DailyLogListener) dailyLogListener.p");
     }
 
-    /*
-       {"log": {"realm" : "channel","at" : "2019-10-16T09:55:20.180","lifespan" : "16 ms", "connect":"Try 0 127.0.0.1:1990  Connection refused (Connection refused)Unable to connect"}}
-     */
     @Test
     public void testAddMessage() throws ConfigurationException, IOException {
         Properties configuration = new Properties();
@@ -72,9 +71,6 @@ public class JsonRotateListenerTest {
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
-    /*
-        {"log": {"realm" : "org.jpos.q2.iso.QMUXCustom","at" : "2019-10-16T09:55:20.263","lifespan" : "1 ms", "info":"Mux :BCAMux_200Echo Interval :10000"}}
-     */
     @Test
     public void testAddMessage2() throws ConfigurationException, IOException {
         Properties configuration = new Properties();
@@ -126,19 +122,6 @@ public class JsonRotateListenerTest {
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
-    /*
-        {"log": {"realm" : "org.jpos.q2.iso.ChannelAdaptor","at" : "2019-10-18T11:55:18.054","lifespan" : "1 ms", "warn":{ "exception" : { "name":"unexpected exception","stackTrace":"java.io.IOException: unexpected exception
-            at org.jpos.iso.BaseChannel.receive(BaseChannel.java:787)
-            at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:331)
-            at java.lang.Thread.run(Thread.java:748)
-        Caused by: java.lang.IndexOutOfBoundsException
-            at java.io.BufferedInputStream.read(BufferedInputStream.java:338)
-            at java.io.DataInputStream.read(DataInputStream.java:149)
-            at org.jpos.iso.channel.Base24CustomChannel.getMessageLength(Base24CustomChannel.java:51)
-            at org.jpos.iso.BaseChannel.receive(BaseChannel.java:712)
-            ... 2 more
-        "},"text":"channel-receiver-BCAChannel_101-receive"}}}
-     */
     @Test
     public void testAddMessageTagAndThrowable() throws ConfigurationException, IOException {
         Properties configuration = new Properties();
@@ -153,7 +136,6 @@ public class JsonRotateListenerTest {
 
         listener.log(logEvent);
 
-        // when: a rotation is executed
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
@@ -174,7 +156,6 @@ public class JsonRotateListenerTest {
 
         listener.log(logEvent);
 
-        // when: a rotation is executed
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
@@ -208,7 +189,6 @@ public class JsonRotateListenerTest {
 
         listener.log(logEvent);
 
-        // when: a rotation is executed
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
@@ -270,7 +250,7 @@ public class JsonRotateListenerTest {
                 "      <value type='binary'>600070000002003038458020E5901C000000000000002283099933001558200958120901062000376019002000008773D2204120845151023500003030303030323335303035303030373530333432202020474F4B414E4120544550414E204A616B617274612053656C61744A414B494420202020202020202000154130303030303030303030303633330010FFFF98010003388003A003606195A424FD3AF33C000631303030313100154A414B415254412053454C4154414E0006313030303132</value>\n" +
                 "    </unpack>";
 
-        Pattern regex = Pattern.compile("(?s).*(<(\\w+)[^>]*>.*</\\2>|<(\\w+)[^>]*/>).*");
+        Pattern regex = Pattern.compile(XML_TAG_PATTERN);
         Matcher regexMatcher = regex.matcher(unpack);
         assertTrue(regexMatcher.find());
         assertTrue(regexMatcher.matches());
@@ -320,14 +300,63 @@ public class JsonRotateListenerTest {
     }
 
     @Test
+    public void testAddMessageError() throws ConfigurationException, IOException {
+        String error = "com.ranggalabs.swc.exception.UnLogonException: UnLogon \tat org.jpos.q2.iso.QMUXCustom.request(QMUXCustom.java:93) \tat org.jpos.q2.iso.MUXPool.request(MUXPool.java:79) \tat com.ranggalabs.swc.Switcher.SessionManagerBean.keyExchange(SessionManagerBean.java:117) \tat com.ranggalabs.swc.Switcher.SessionManagerBean.doCheckZpk(SessionManagerBean.java:88) \tat com.ranggalabs.swc.Switcher.SessionManagerBean.sessionManaging(SessionManagerBean.java:80) \tat com.ranggalabs.swc.Switcher.SessionManagerBean.access$000(SessionManagerBean.java:25) \tat com.ranggalabs.swc.Switcher.SessionManagerBean$1.run(SessionManagerBean.java:65) \tat java.lang.Thread.run(Thread.java:748) ";
+
+        Matcher regexMatcher = STACK_TRACE_REGEX.matcher(error);
+        assertTrue(regexMatcher.find());
+        assertTrue(STACK_TRACE_REGEX.matcher(error).find());
+
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent("error");
+        logEvent.addMessage(error);
+        listener.log(logEvent);
+
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(">>> " + archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
+    }
+
+    @Test
+    public void testAddMessageError2() throws ConfigurationException, IOException {
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent("error");
+        logEvent.addMessage("com.ranggalabs.swc.exception.UnLogonException: UnLogon ");
+        logEvent.addMessage("at org.jpos.q2.iso.QMUXCustom.request(QMUXCustom.java:93) ");
+        logEvent.addMessage("at org.jpos.q2.iso.MUXPool.request(MUXPool.java:79) ");
+        logEvent.addMessage("at com.ranggalabs.swc.Switcher.SessionManagerBean.keyExchange(SessionManagerBean.java:117) ");
+        logEvent.addMessage("at com.ranggalabs.swc.Switcher.SessionManagerBean.sessionManaging(SessionManagerBean.java:80) ");
+
+        listener.log(logEvent);
+
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(">>> " + archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
+    }
+
+    @Test
     public void testAddMessageStackTrace() throws ConfigurationException, IOException {
         String stackTrace = "java.security.spec.InvalidKeySpecException: java.security.InvalidKeyException: IOException: Detect premature EOF\n" +
                 "\tat sun.security.rsa.RSAKeyFactory.engineGeneratePublic(RSAKeyFactory.java:205)\n" +
                 "\tat java.security.KeyFactory.generatePublic(KeyFactory.java:334)\n" +
-                "\tat com.spots.hsm.client.RSAUtil.getPublicKeyFromString(RSAUtil.java:178)\n" +
-                "\tat com.spots.gayoswc.Switcher.HSMClientQBean.encryptRsaV2(HSMClientQBean.java:281)\n" +
-                "\tat com.spots.gayoswc.transaction.RsaEncryptParticipant.doEncrypt(RsaEncryptParticipant.java:49)\n" +
-                "\tat com.spots.gayoswc.transaction.RsaEncryptParticipant.prepareForAbort(RsaEncryptParticipant.java:64)\n" +
+                "\tat com.ranggalabs.hsm.client.RSAUtil.getPublicKeyFromString(RSAUtil.java:178)\n" +
+                "\tat com.ranggalabs.swc.Switcher.HSMClientQBean.encryptRsaV2(HSMClientQBean.java:281)\n" +
+                "\tat com.ranggalabs.swc.transaction.RsaEncryptParticipant.doEncrypt(RsaEncryptParticipant.java:49)\n" +
+                "\tat com.ranggalabs.swc.transaction.RsaEncryptParticipant.prepareForAbort(RsaEncryptParticipant.java:64)\n" +
                 "\tat org.jpos.transaction.TransactionManager.prepareForAbort(TransactionManager.java:559)\n" +
                 "\tat org.jpos.transaction.TransactionManager.prepare(TransactionManager.java:629)\n" +
                 "\tat org.jpos.transaction.TransactionManager.run(TransactionManager.java:308)\n" +
