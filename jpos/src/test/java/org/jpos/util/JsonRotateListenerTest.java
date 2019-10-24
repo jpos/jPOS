@@ -205,11 +205,10 @@ public class JsonRotateListenerTest {
         logEvent.addMessage(array);
         listener.log(logEvent);
 
-        // when: a rotation is executed
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
@@ -220,26 +219,8 @@ public class JsonRotateListenerTest {
                 "    <unpack fld=\"3\" packager=\"org.jpos.iso.IFB_NUMERIC\">\n" +
                 "      <value>450000</value>\n" +
                 "    </unpack>\n" +
-                "    <unpack fld=\"11\" packager=\"org.jpos.iso.IFB_NUMERIC\">\n" +
-                "      <value>000282</value>\n" +
-                "    </unpack>\n" +
-                "    <unpack fld=\"24\" packager=\"org.jpos.iso.IFB_NUMERIC\">\n" +
-                "      <value>620</value>\n" +
-                "    </unpack>\n" +
-                "    <unpack fld=\"41\" packager=\"org.jpos.iso.IF_CHAR\">\n" +
-                "      <value>00000235</value>\n" +
-                "    </unpack>\n" +
                 "    <unpack fld=\"46\" packager=\"org.jpos.iso.IFB_LLLBINARY\">\n" +
                 "      <value type='binary'>DF9003084341383836363832DF900405312E302E35DF90080B3030303031363636363635DF901706303030303036</value>\n" +
-                "    </unpack>\n" +
-                "    <unpack fld=\"47\" packager=\"org.jpos.iso.IFB_LLLBINARY\">\n" +
-                "      <value type='binary'>7B22706F705F6964223A2232626332633035332D366261652D343564642D616630352D666565363932663266353730222C2273617564616761725F6964223A2247373035353633363431222C227472616E73616374696F6E5F6964223A2232376365303534662D70732D6E766E642D396238322D4B626F623237494C313932227D</value>\n" +
-                "    </unpack>\n" +
-                "    <unpack fld=\"48\" packager=\"org.jpos.iso.IFB_LLLBINARY\">\n" +
-                "      <value type='binary'>FFFF98010003388003A0</value>\n" +
-                "    </unpack>\n" +
-                "    <unpack fld=\"61\" packager=\"org.jpos.iso.IFB_LLLBINARY\">\n" +
-                "      <value type='binary'>600070000002003038458020E5901C000000000000002283099933001558200958120901062000376019002000008773D2204120845151023500003030303030323335303035303030373530333432202020474F4B414E4120544550414E204A616B617274612053656C61744A414B494420202020202020202000154130303030303030303030303633330010FFFF98010003388003A003606195A424FD3AF33C000631303030313100154A414B415254412053454C4154414E0006313030303132</value>\n" +
                 "    </unpack>";
 
         Pattern regex = Pattern.compile(XML_TAG_PATTERN);
@@ -260,7 +241,7 @@ public class JsonRotateListenerTest {
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
@@ -287,7 +268,7 @@ public class JsonRotateListenerTest {
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
@@ -344,7 +325,7 @@ public class JsonRotateListenerTest {
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
@@ -367,7 +348,7 @@ public class JsonRotateListenerTest {
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
@@ -398,7 +379,7 @@ public class JsonRotateListenerTest {
         listener.logRotate();
 
         String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
-        System.out.print(">>> " + archivedLogFile1Contents);
+        System.out.print(archivedLogFile1Contents);
         assertTrue(isJSONValid(archivedLogFile1Contents));
     }
 
