@@ -22,10 +22,10 @@ public class JSON implements BaseLogFormat {
     public void logDebug(PrintStream p, String message) {
         p.println("{");
         p.println("\"log\" : {");
-        p.println("\"realm\" : \"rotate-log-listener\",");
-        p.println("\"at\" : \""+ new Date().toString() +"\",");
-        p.println("\"message\" : \""+ message +"\"");
-        p.println ("}");
+        p.println("     \"realm\" : \"rotate-log-listener\",");
+        p.println("     \"at\" : \""+ new Date().toString() +"\",");
+        p.println("     \"message\" : \""+ message +"\"");
+        p.println("   }");
         p.println("}");
     }
 
