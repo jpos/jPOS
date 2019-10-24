@@ -59,7 +59,7 @@ public class JSONLogEvent implements BaseLogEvent {
     @Override
     public void dumpTrailer(PrintStream p, String indent, boolean noArmor) {
         if (!noArmor) {
-            p.print ("\n}");
+            p.print ("\n}\n");
         }
     }
 
