@@ -178,10 +178,6 @@ public class JSONLogEvent implements BaseLogEvent {
         return json;
     }
 
-    private String getCurrentStackTraceString(StackTraceElement[] stackTrace, String indent){
-        return Stream.of(stackTrace).map((a) -> "\"" + a.toString() + "\"").collect(Collectors.joining(",\n"+indent,"[", "]"));
-    }
-
     private String convertXmlToJson(String xmlString) {
         JSONObject jsonObject = XML.toJSONObject(xmlString);
         Iterator<String> keys = jsonObject.keys();
