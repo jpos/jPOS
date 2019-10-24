@@ -118,8 +118,8 @@ public class JSONLogEvent implements BaseLogEvent {
 
                             indent = indent(2,indent,'+');
                             p.print(indent+"\"name\":\"" + ((Throwable) o).getMessage()+"\",\n");
-                            p.print(indent+"\"stacktrace\":");
-                            p.print(getCurrentStackTraceString(((Throwable)o).getStackTrace(),indent)+"\n");
+                            p.print(indent+"\"stacktrace\": [ ");
+                            p.print(extrapolateStackTrace((Exception) o,indent)+" ]\n");
                             p.print(indent+"}");
 
                             isClosedBracket = true;
@@ -195,6 +195,24 @@ public class JSONLogEvent implements BaseLogEvent {
             }
         }
         return jsonObject.toString(4);
+    }
+
+    private String extrapolateStackTrace(Exception ex, String indent) {
+        Throwable e = ex;
+        String trace ="\""+e.toString() + "\",\n"+indent;
+        for (StackTraceElement e1 : e.getStackTrace()) {
+            trace += "\"at " + e1.toString() + "\",\n"+indent;
+        }
+        while (e.getCause() != null) {
+            e = e.getCause();
+            trace += "\"Cause by: " + e.toString() + "\",\n"+indent;
+            for (StackTraceElement e1 : e.getStackTrace()) {
+                trace += "\"at " + e1.toString() + "\",\n"+indent;
+            }
+        }
+
+        trace = trace.trim();
+        return trace.substring(0,trace.length()-1);
     }
 
     private String indent(int n, String indent, char symbol) {
