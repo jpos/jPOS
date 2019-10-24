@@ -194,9 +194,7 @@ public class JSONLogEvent implements BaseLogEvent {
                 }
             }
         }
-
-        String json = jsonObject.toString();
-        return json;
+        return jsonObject.toString(4);
     }
 
     private String indent(int n, String indent, char symbol) {
