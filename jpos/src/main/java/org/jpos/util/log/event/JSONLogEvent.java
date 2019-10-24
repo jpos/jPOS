@@ -88,10 +88,7 @@ public class JSONLogEvent implements BaseLogEvent {
                             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             try (PrintStream ps = new PrintStream(baos, true)) {
                                 ((Loggeable) o).dump(ps, "");
-                                String json = convertXmlToJson(new String(baos.toByteArray(), StandardCharsets.UTF_8));
-                                if(json!=null){
-                                    p.print(json);
-                                }
+                                stringBuilder = new StringBuilder(new String(baos.toByteArray(), StandardCharsets.UTF_8));
                             }
                         } else if (o instanceof SQLException) {
                             SQLException e = (SQLException) o;
@@ -140,7 +137,6 @@ public class JSONLogEvent implements BaseLogEvent {
                                 stringBuilder = new StringBuilder();
                                 stringBuilder.append("\"");
                             }
-
                             stringBuilder.append(data);
                         }
                     }

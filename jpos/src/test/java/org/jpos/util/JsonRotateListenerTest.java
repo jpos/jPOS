@@ -189,6 +189,45 @@ public class JsonRotateListenerTest {
     }
 
     @Test
+    public void testAddMessageLoggeableAndData() throws ConfigurationException, IOException {
+        SimpleMsg simpleMsg = new SimpleMsg(null,null){
+            @Override
+            public void dump(PrintStream p, String indent) {
+                p.println(XML_SOURCE);
+            }
+        };
+
+        String error = "<ERROR>java.io.IOException: unexpected exception\n" +
+                "\tat org.jpos.iso.BaseChannel.applyIncomingFilters(BaseChannel.java:971)\n" +
+                "\tat org.jpos.iso.BaseChannel.receive(BaseChannel.java:749)\n" +
+                "\tat org.jpos.iso.ISOServer$Session.run(ISOServer.java:344)\n" +
+                "\tat org.jpos.util.ThreadPool$PooledThread.run(ThreadPool.java:76)\n" +
+                "Caused by: java.lang.RuntimeException: Failed to Decrypt\n" +
+                "\tat org.jpos.iso.BaseChannel.applyOutgoingFilters(BaseChannel.java:956)\n" +
+                "\tat org.jpos.iso.BaseChannel.send(BaseChannel.java:592)\n" +
+                "\t... 8 more\n" +
+                "</ERROR>";
+
+        Properties configuration = new Properties();
+        configuration.setProperty("format", JSON_LABEL);
+
+        String logFileName = "JsonRotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, configuration);
+
+        LogEvent logEvent = new LogEvent();
+        logEvent.addMessage(simpleMsg);
+        logEvent.addMessage(error);
+
+        listener.log(logEvent);
+
+        listener.logRotate();
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        System.out.print(archivedLogFile1Contents);
+        assertTrue(isJSONValid(archivedLogFile1Contents));
+    }
+
+    @Test
     public void testAddMessageObjectArray() throws ConfigurationException, IOException {
         Properties configuration = new Properties();
         configuration.setProperty("format", JSON_LABEL);
