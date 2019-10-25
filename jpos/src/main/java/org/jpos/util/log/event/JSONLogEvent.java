@@ -1,7 +1,6 @@
 package org.jpos.util.log.event;
 
 import org.jpos.util.Loggeable;
-import org.json.JSONObject;
 import org.json.XML;
 
 import java.io.ByteArrayOutputStream;
@@ -12,11 +11,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by erlangga on 2019-10-12.
@@ -175,35 +171,24 @@ public class JSONLogEvent implements BaseLogEvent {
     }
 
     private String convertXmlToJson(String xmlString) {
-        JSONObject jsonObject = XML.toJSONObject(xmlString);
-        Iterator<String> keys = jsonObject.keys();
-        while(keys.hasNext()) {
-            String key = keys.next();
-            if(jsonObject.get(key) instanceof String){
-                String str = jsonObject.getString(key);
-                if(str.isEmpty()){
-                    return null;
-                }
-            }
-        }
-        return jsonObject.toString(4);
+        return XML.toJSONObject(xmlString).toString(4);
     }
 
     private String extrapolateStackTrace(Exception ex, String indent) {
         Throwable e = ex;
-        String trace ="\""+e.toString() + "\",\n"+indent;
+        StringBuilder stringBuilder = new StringBuilder("\""+e.toString() + "\",\n"+indent);
         for (StackTraceElement e1 : e.getStackTrace()) {
-            trace += "   "+"\"at " + e1.toString() + "\",\n"+indent;
+            stringBuilder.append("   "+"\"at " + e1.toString() + "\",\n"+indent);
         }
         while (e.getCause() != null) {
             e = e.getCause();
-            trace += "\"Cause by: " + e.toString() + "\",\n"+indent;
+            stringBuilder.append("\"Cause by: " + e.toString() + "\",\n"+indent);
             for (StackTraceElement e1 : e.getStackTrace()) {
-                trace += "   "+"\"at " + e1.toString() + "\",\n"+indent;
+                stringBuilder.append("   "+"\"at " + e1.toString() + "\",\n"+indent);
             }
         }
 
-        trace = trace.trim();
+        String trace = stringBuilder.toString().trim();
         return trace.substring(0,trace.length()-1);
     }
 
