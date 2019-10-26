@@ -11,7 +11,7 @@ public class JSON implements BaseLogFormat {
     public static final String JSON_LABEL = "json";
 
     @Override
-    public void openLogFile(PrintStream p) {
+    public void openLogFile(PrintStream p,String className) {
     }
 
     @Override

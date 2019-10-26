@@ -11,9 +11,9 @@ public class XML implements BaseLogFormat {
     public static final String XML_LABEL = "xml";
 
     @Override
-    public void openLogFile(PrintStream p) {
+    public void openLogFile(PrintStream p, String className) {
         p.println ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        p.println ("<logger class=\"" + getClass().getName() + "\">");
+        p.println ("<logger class=\"" + className + "\">");
     }
 
     @Override

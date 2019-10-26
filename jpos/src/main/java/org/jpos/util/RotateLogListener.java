@@ -172,7 +172,7 @@ public class RotateLogListener extends SimpleLogListener
             f.close();
         f = new FileOutputStream (logName, true);
         setPrintStream (new PrintStream(f));
-        baseLogFormat.openLogFile(p);
+        baseLogFormat.openLogFile(p,getClass().getName());
     }
     protected synchronized void closeLogFile() throws IOException {
         baseLogFormat.closeLogFile(p);
