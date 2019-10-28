@@ -33,9 +33,9 @@ public class JSONLogEvent implements BaseLogEvent {
 
             StringBuilder sb = new StringBuilder();
             sb.append("{\n");
-            indent+=indent(2,indent,'+');
+            indent+=indent(indent,'+');
             sb.append(indent+"\"log\": {\n");
-            indent = indent(2,indent,'+');
+            indent = indent(indent,'+');
             sb.append(indent+"\"realm\" : "+ "\""+realm+"\",\n");
             sb.append(indent+"\"at\" : ");
             sb.append("\""+LocalDateTime.ofInstant(dumpedAt, ZoneId.systemDefault())+"\"");
@@ -89,11 +89,10 @@ public class JSONLogEvent implements BaseLogEvent {
                         } else if (o instanceof SQLException) {
                             SQLException e = (SQLException) o;
                             p.print("{\n");
-
-                            indent = indent(2,indent,'+');
+                            indent = indent(indent,'+');
                             p.print(indent+"\"exception\" : { \n");
 
-                            indent = indent(2,indent,'+');
+                            indent = indent(indent,'+');
                             p.print(indent+"\"sqlexception\":\"" + e.getMessage()+"\",\n");
                             p.print(indent+"\"sqlstate\":\""+ e.getSQLState()+"\",\n");
                             p.print(indent+"\"vendorerror\":\""+ e.getErrorCode()+"\",\n");
@@ -106,10 +105,10 @@ public class JSONLogEvent implements BaseLogEvent {
                         } else if (o instanceof Throwable) {
                             p.print("{\n");
 
-                            indent = indent(2,indent,'+');
+                            indent = indent(indent,'+');
                             p.print(indent+"\"exception\" : {\n");
 
-                            indent = indent(2,indent,'+');
+                            indent = indent(indent,'+');
                             p.print(indent+"\"name\":\"" + ((Throwable) o).getMessage()+"\",\n");
                             p.print(indent+"\"stacktrace\": [");
                             p.print(extrapolateStackTrace((Exception) o,indent)+"]\n");
@@ -150,13 +149,13 @@ public class JSONLogEvent implements BaseLogEvent {
                         }
                     }
                     if(isClosedBracket){
-                        indent = indent(2,indent,'-');
+                        indent = indent(indent,'-');
                         p.print("\n"+indent+"}");
                     }
                 }
             }
         } finally {
-            p.print("\n"+indent(2,indent,'-')+"}");
+            p.print("\n"+indent(indent,'-')+"}");
             dumpTrailer(p,outer,noArmor);
         }
     }
@@ -173,7 +172,7 @@ public class JSONLogEvent implements BaseLogEvent {
     private String convertXmlToJson(String xmlString) {
         return XML.toJSONObject(xmlString).toString(4);
     }
-
+    
     private String extrapolateStackTrace(Exception ex, String indent) {
         Throwable e = ex;
         StringBuilder stringBuilder = new StringBuilder("\""+e.toString() + "\",\n"+indent);
@@ -192,20 +191,12 @@ public class JSONLogEvent implements BaseLogEvent {
         return trace.substring(0,trace.length()-1);
     }
 
-    private String indent(int n, String indent, char symbol) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (symbol == '+') {
-            stringBuilder.append(indent);
-            for (int i = 0; i < n; i++) {
-                stringBuilder.append(" ");
-            }
-            return stringBuilder.toString();
+    private String indent(String indent, char symbol) {
+        if(symbol=='+'){
+            indent = indent+ "  ";
+        }else if(symbol=='-'){
+            indent = indent.substring(0,2);
         }
-
-        int length = indent.length();
-        for (int i = 0; i < (length-n); i++) {
-            stringBuilder.append(" ");
-        }
-        return stringBuilder.toString();
+        return indent;
     }
 }
