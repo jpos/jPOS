@@ -88,7 +88,7 @@ public class QMUX
         ready     = toStringArray(Environment.get(e.getChildTextTrim ("ready")));
         mtiMapping = toStringArray(Environment.get(e.getChildTextTrim ("mtimapping")));
         if (mtiMapping == null || mtiMapping.length != 3) 
-            mtiMapping = new String[] { nomap, nomap, "0022446789" };
+            mtiMapping = new String[] { nomap, nomap, "0022446689" };
         addListeners ();
         unhandled = Environment.get(e.getChildTextTrim ("unhandled"));
         NameRegistrar.register ("mux."+getName (), this);
