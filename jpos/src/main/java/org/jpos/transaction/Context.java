@@ -282,7 +282,17 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
             p.println("");
             p.println(ISOUtil.hexdump(b));
             p.print(indent);
-        } else if (value instanceof LogEvent) {
+        }
+        else if (value instanceof short[]) {
+            p.print (Arrays.toString((short[]) value));
+        } else if (value instanceof int[]) {
+            p.print(Arrays.toString((int[]) value));
+        } else if (value instanceof long[]) {
+            p.print(Arrays.toString((long[]) value));
+        } else if (value instanceof Object[]) {
+            p.print (ISOUtil.normalize(Arrays.toString((Object[]) value), true));
+        }
+        else if (value instanceof LogEvent) {
             ((LogEvent) value).dump(p, indent);
             p.print(indent);
         } else if (value != null) {
