@@ -105,6 +105,17 @@ public class FSDMsgTest {
     }
 
     @Test
+    void testCopyWithDefault() throws Throwable {
+        FSDMsg original = new FSDMsg("testFSDMsgBasePath");
+        FSDMsg copy = new FSDMsg("testFSDMsgBasePath");
+        original.set("testfield", "avalue");
+        copy.copy("testfield", original, "default");
+        copy.copy("notset", original, "default");
+        assertEquals("avalue", copy.get("testfield"));
+        assertEquals("default", copy.get("notset"));
+    }
+
+    @Test
     public void testCopyThrowsNullPointerException() throws Throwable {
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath", "testFSDMsgBaseSchema");
         try {

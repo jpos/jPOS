@@ -553,6 +553,9 @@ public class FSDMsg implements Loggeable, Cloneable {
     public void copy (String fieldName, FSDMsg msg) {
         fields.put (fieldName, msg.get (fieldName));
     }
+    public void copy (String fieldName, FSDMsg msg, String def) {
+        fields.put (fieldName, msg.get(fieldName, def));
+    }
     public byte[] getHexBytes (String name) {
         String s = get (name);
         return s == null ? null : ISOUtil.hex2byte (s);
