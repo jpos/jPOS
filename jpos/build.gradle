@@ -222,10 +222,10 @@ class GitRevisionTask extends DefaultTask
     @Input 
     boolean gotHead
 
-    @InputFile
-    File getRefFile()
-    {
-        return new File(gitHead.parent,gitHead.text.replace('ref: ', '').trim())
+    @InputFile @Optional
+    File getRefFile() {
+        File rf = new File(gitHead.parent,gitHead.text.replace('ref: ', '').trim())
+        return rf.exists() ? rf : gitHead
     }
 
     @OutputFile
@@ -237,7 +237,7 @@ class GitRevisionTask extends DefaultTask
         Properties props=new Properties()
         if (gotHead) {
             File ref=getRefFile()
-            if (ref.exists()) {
+            if (ref != null && ref.exists()) {
                 props.put("branch",ref.getName())
                 props.put("revision",ref.text.substring(0,7))
             } else {
