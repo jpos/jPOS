@@ -29,7 +29,7 @@ subprojects {
     targetCompatibility = 1.8
     repositories {
         mavenCentral()
-        maven { url 'http://jpos.org/maven' }
+        maven { url 'https://jpos.org/maven' }
         mavenLocal()
     }
     if (project.hasProperty("lint")) {
