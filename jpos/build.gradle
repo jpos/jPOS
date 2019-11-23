@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.1.0'
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.3.1'
         classpath 'org.owasp:dependency-check-gradle:5.2.1'
     }
 }
@@ -13,30 +13,30 @@ apply plugin: 'org.owasp.dependencycheck'
 import aQute.bnd.gradle.Bundle
 
 dependencies {
-    compile libraries.jdom
-    compile libraries.jdbm
-    compile libraries.sleepycat_je
-    compile libraries.commons_cli
-    compile libraries.jline
-    compile libraries.beanshell
-    compile libraries.javatuples
-    compile libraries.osgi_core
-    compile libraries.bouncycastle
-    compile libraries.sshd
-    compile libraries.slf4j_api
-    compile libraries.javassist
-    compile libraries.hdrhistogram
-    compile libraries.yaml;
+    api libraries.jdom
+    api libraries.javatuples
+    implementation libraries.commons_cli
+    implementation libraries.jline
+    implementation libraries.beanshell
+    implementation libraries.osgi_core
+    implementation libraries.bouncycastle
+    implementation libraries.sshd
+    implementation libraries.slf4j_api
+    implementation libraries.javassist
+    implementation libraries.hdrhistogram
+    implementation libraries.yaml;
+    implementation libraries.jdbm
+    implementation libraries.sleepycat_je
 
-    testCompile libraries.commons_lang3
-    testCompile libraries.hamcrest
-    testCompile libraries.fest_assert
-    testCompile libraries.xmlunit
+    testImplementation libraries.commons_lang3
+    testImplementation libraries.hamcrest
+    testImplementation libraries.fest_assert
+    testImplementation libraries.xmlunit
     testImplementation libraries.junit
-    testCompile(libraries.mockito) {
+    testImplementation (libraries.mockito) {
         exclude(module: 'hamcrest-core')
     }
-    testCompile libraries.mockito_jupiter
+    testImplementation libraries.mockito_jupiter
 
     //  JSONPackager on hold
     //    compile (libraries.jsonsimple) {
@@ -82,7 +82,7 @@ def jposCopySpec = copySpec {
     from(file("${project.buildDir}/${project.libsDirName}/${q2ArchiveJarName}"))
 
     into("lib") {
-        from(configurations.runtime)
+        from(configurations.runtimeClasspath)
     }
 }
 
@@ -107,9 +107,8 @@ task listJars {
 
 jar () {
     manifest {
-        def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
-                   'Implementation-Version': version,
+                   'Implementation-Version': project.version,
                    'Automatic-Module-Name': moduleName
     }
     bnd (
@@ -128,11 +127,9 @@ task q2jar (type: Bundle) {
     classifier = 'q2'
     from sourceSets.main.output.classesDirs, sourceSets.main.output.resourcesDir
     manifest {
-        // classesDir = new File(buildDir, 'classes/java/main') // sourceSets.main.output.classesDir deprecated
-        // classpath = sourceSets.main.runtimeClasspath
-        def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
+        def manifestClasspath = configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
-                   'Implementation-Version': version,
+                   'Implementation-Version': project.version,
                    'Automatic-Module-Name': moduleName,
                    'Main-Class': 'org.jpos.q2.Q2',
                    'Class-Path': manifestClasspath
@@ -145,7 +142,7 @@ task q2jar (type: Bundle) {
         'Bundle-Activator': bundleActivator,
         'Import-Package': bundleImportPackage,
         'Export-Package': bundleExportPackage,
-        'Include-Resource': configurations.runtime.collect { '-lib/' + it.getName() }.join(' ')
+        'Include-Resource': configurations.runtimeClasspath.collect { '-lib/' + it.getName() }.join(' ')
     )
 }
 
@@ -154,11 +151,9 @@ task bundleFull (type: Bundle) {
     classifier = 'bundle-full'
     from sourceSets.main.output.classesDirs, sourceSets.main.output.resourcesDir
     manifest {
-        // classesDir = new File(buildDir, 'classes/java/main') // sourceSets.main.output.classesDir deprecated
-        // classpath = sourceSets.main.runtimeClasspath
-        def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
+        def manifestClasspath = configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
-                   'Implementation-Version': version,
+                   'Implementation-Version': project.version,
                    'Automatic-Module-Name': moduleName,
                    'Main-Class': 'org.jpos.q2.Q2',
                    'Class-Path': manifestClasspath
@@ -171,10 +166,10 @@ task bundleFull (type: Bundle) {
             'Bundle-Activator': bundleActivator,
             'Import-Package': bundleImportPackage,
             'Export-Package': bundleExportPackage,
-            'Include-Resource': configurations.runtime.collect { '-lib/' + it.getName() }.join(' ')
+            'Include-Resource': configurations.runtimeClasspath.collect { '-lib/' + it.getName() }.join(' ')
     )
     into ('lib') {
-        from configurations.runtime {
+        from configurations.runtimeClasspath {
             exclude 'org.osgi.core*.jar'
         }
     }
@@ -200,8 +195,8 @@ task dist (type: Tar) {
     compression = Compression.GZIP
     includeEmptyDirs true
     with jposCopySpec
-    into "jpos-$version"
-    extension "tar.gz"
+    into "jpos-$project.version"
+    archiveExtension="tar.gz"
 }
 
 task zip (type: Zip) { 
@@ -209,25 +204,28 @@ task zip (type: Zip) {
     includeEmptyDirs true
     includeEmptyDirs true
     with jposCopySpec
-    into "jpos-$version"
+    into "jpos-$project.version"
 }
 
 task version (type: JavaExec, dependsOn: classes) {
     description = "Display jPOS Version"
     main = 'org.jpos.q2.Q2'
     args = "--version".split().toList()
-    classpath sourceSets.main.runtimeClasspath, configurations.runtime
+    classpath sourceSets.main.runtimeClasspath
 }
 
 class GitRevisionTask extends DefaultTask
 {
     @InputFile @Optional
     File gitHead
+
+    @Input 
     boolean gotHead
 
-    File getRefFile()
-    {
-        return new File(gitHead.parent,gitHead.text.replace('ref: ', '').trim())
+    @InputFile @Optional
+    File getRefFile() {
+        File rf = new File(gitHead.parent,gitHead.text.replace('ref: ', '').trim())
+        return rf.exists() ? rf : gitHead
     }
 
     @OutputFile
@@ -239,7 +237,7 @@ class GitRevisionTask extends DefaultTask
         Properties props=new Properties()
         if (gotHead) {
             File ref=getRefFile()
-            if (ref.exists()) {
+            if (ref != null && ref.exists()) {
                 props.put("branch",ref.getName())
                 props.put("revision",ref.text.substring(0,7))
             } else {
@@ -255,7 +253,7 @@ class GitRevisionTask extends DefaultTask
 }
 
 class BuildTimestampTask extends DefaultTask {
-    // We don't want to declare @OutputFile, we need a fresh timestamp on every run
+    @OutputFile
     File outputFile
 
     @TaskAction

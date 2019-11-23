@@ -1,6 +1,6 @@
 dependencies {
-    compile "commons-cli:commons-cli:1.2"
-    compile 'org.apache.felix:org.apache.felix.framework:5.4.0'
+    implementation "commons-cli:commons-cli:1.2"
+    implementation 'org.apache.felix:org.apache.felix.framework:5.4.0'
     // compile( "org.osgi:org.osgi.core:4.3.1" )
 }
 
@@ -30,7 +30,7 @@ def jposCopySpec = copySpec {
         rename archiveJarName, "${cfg.jarname}"
     }
     into("lib") {
-        from(configurations.runtime)
+        from(configurations.runtimeClasspath)
     }
 }
 
@@ -42,9 +42,9 @@ task listJars {
  
 jar () {
     manifest {
-        def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
+        def manifestClasspath = configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
-                   'Implementation-Version': version,
+                   'Implementation-Version': project.version,
                    'Main-Class': 'org.jpos.qnode.QNode',
                    'Class-Path': manifestClasspath
     }
@@ -69,7 +69,7 @@ task dist (type: Tar) {
     compression = Compression.GZIP
     includeEmptyDirs true
     with jposCopySpec
-    into "jpos-$version"
+    into "jpos-$project.version"
 }
 
 task version (type: JavaExec, dependsOn: classes) {
