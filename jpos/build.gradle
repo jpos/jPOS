@@ -15,18 +15,19 @@ import aQute.bnd.gradle.Bundle
 dependencies {
     api libraries.jdom
     api libraries.javatuples
-    implementation libraries.commons_cli
-    implementation libraries.jline
-    implementation libraries.beanshell
+    api libraries.jline
+    api libraries.beanshell
+    api libraries.commons_cli
+    api libraries.bouncycastle
+    api libraries.slf4j_api
+    api libraries.hdrhistogram
+
     implementation libraries.osgi_core
-    implementation libraries.bouncycastle
-    implementation libraries.sshd
-    implementation libraries.slf4j_api
     implementation libraries.javassist
-    implementation libraries.hdrhistogram
     implementation libraries.yaml;
     implementation libraries.jdbm
     implementation libraries.sleepycat_je
+    implementation libraries.sshd
 
     testImplementation libraries.commons_lang3
     testImplementation libraries.hamcrest
