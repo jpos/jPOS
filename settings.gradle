@@ -1,5 +1,4 @@
-include 'jpos',
-        'qnode'
+include 'jpos'
 
 rootProject.name = 'jpos'
 
