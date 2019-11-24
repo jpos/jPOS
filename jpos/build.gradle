@@ -125,7 +125,7 @@ jar () {
 
 task q2jar (type: Bundle) {
     dependsOn jar
-    classifier = 'q2'
+    archiveClassifier.set('q2')
     from sourceSets.main.output.classesDirs, sourceSets.main.output.resourcesDir
     manifest {
         def manifestClasspath = configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' ') 
@@ -149,7 +149,7 @@ task q2jar (type: Bundle) {
 
 task bundleFull (type: Bundle) {
     dependsOn jar
-    classifier = 'bundle-full'
+    archiveClassifier.set('bundle-full')
     from sourceSets.main.output.classesDirs, sourceSets.main.output.resourcesDir
     manifest {
         def manifestClasspath = configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' ') 
@@ -177,13 +177,13 @@ task bundleFull (type: Bundle) {
 }
 
 task sourceJar( type: Jar ) {
-    classifier = "sources"
+    archiveClassifier.set("sources")
     from sourceSets.main.allSource
 }
 
 
 task javadocJar (type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from new File(project.buildDir, 'docs/javadoc')
 }
 
