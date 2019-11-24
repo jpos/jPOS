@@ -266,7 +266,7 @@ that will change the behavior of the running QTest QBean.
 
 The screen will look something like this:
 
-image:images/qtest_interval_jconsole.png[width="50%",alt="QTest/jConsole"]
+image:images/qtest_interval_jconsole.png[width="400px",alt="QTest/jConsole"]
 
 [NOTE]
 ====

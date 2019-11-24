@@ -3,7 +3,7 @@
 
 [role='license']
 ======================================================
-Copyright (C) 1998-2017 by jPOS Software SRL, Uruguay.
+Copyright (C) 1998-2019 by jPOS Software SRL, Uruguay.
 All rights reserved. No part of this book may be reproduced in any form or by
 any electronic or mechanical means, including information storage and retrieval
 systems, without permission in writing from jPOS Software SRL, except by a

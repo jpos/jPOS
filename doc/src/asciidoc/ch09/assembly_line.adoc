@@ -125,17 +125,17 @@ modifier).
 Here is a diagram for a situation where all participants return just `PREPARED`
 (meaning they DO want to join the transaction, so commit gets called).
 
-image:images/tm_prepared.png[width="75%",alt="PREPARED"]
+image:images/tm_prepared.png[width="400px",alt="PREPARED"]
 
 When a participant adds the `NO_JOIN` modifier (by returning 
 `PREPARED | NO_JOIN`), then the TM skips calling that participant's
 `commit` method as shown in the following diagram.
 
-image:images/tm_no_join.png[width="75%",alt="PREPARED | NO_JOIN"]
+image:images/tm_no_join.png[width="400px",alt="PREPARED | NO_JOIN"]
 
 If a participant returns `ABORT`, then the TM calls the `abort` operation
 in those participants already called that where `PREPARED` and did not return
 the `NO_JOIN` modifier so that they can take corrective action if required.
 
-image:images/tm_abort.png[width="75%",alt="ABORTED"]
+image:images/tm_abort.png[width="400px",alt="ABORTED"]
 

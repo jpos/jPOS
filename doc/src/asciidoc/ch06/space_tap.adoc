@@ -8,7 +8,7 @@ Once a SpaceTap is created, it register itself as a listener in the
 source LocalSpace and copies all new entries to a destination space.  
 
 .Space Tap
-image:images/SpaceTap.jpg[width="75%",alt="SpaceTap"]
+image:images/SpaceTap.jpg[width="400px",alt="SpaceTap"]
 
 If you have a source LocalSpace +ssp+ and a destination LocalSpace +dsp+ and
 you want to monitor an entry called "ERRORS", we can use code like this: 

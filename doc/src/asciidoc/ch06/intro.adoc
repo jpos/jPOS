@@ -1,4 +1,4 @@
-the jPOS Space is a general-purpose coordination component inspired 
+The jPOS Space is a general-purpose coordination component inspired 
 after *The Linda Coordination Language.* footnote:[ See http://www.cs.yale.edu/Linda/linda-lang.html ] 
 
 While jPOS's Space *is not* a Linda implementation, we highly recommend learning about 
@@ -32,17 +32,18 @@ basic operations, but could have used easier to remember names such as:
 After two consecutive 'out' operations using the same 'key' value, the
 Space would look like this (first entry is printed as a blue circle while
 the second one is red):
-image:images/space-out.jpg[width="75%",alt="SpaceOut"]
+
+image:images/space-out.jpg[width="500px",alt="SpaceOut"]
 
 Then an 'rd' operation would return the first entry (the blue one), without
 removing it from the space. The space remains with two entries for that particular
 key.
-image:images/space-rd.jpg[width="75%",alt="SpaceOut"]
+image:images/space-rd.jpg[width="400px",alt="SpaceOut"]
 
 The 'in' operation on the other hand, takes the first entry (the blue one) off the
 Space, leaving the red one.
 
-image:images/space-in.jpg[width="75%",alt="SpaceOut"]
+image:images/space-in.jpg[width="400px",alt="SpaceOut"]
 
 At this point, a new 'rd' operation will return the second entry (the red one)
 and an 'in' operation would return the red one as well, leaving the space empty

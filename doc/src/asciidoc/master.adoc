@@ -1,12 +1,21 @@
 jPOS Programmer's Guide
 =======================
-:author: Alejandro Revilla
+:doctype: book
+:author: jPOS Software SRL
 :email: apr@jpos.org
 :revdate: {localdate}
-:revnumber: 2.0.1
-:jpos_version: 2.0.10
-:jpos_snapshot_version: 2.1.0-SNAPSHOT
+:revnumber: 2.1.3
+:jpos_version: 2.1.3
+:jpos_snapshot_version: 2.1.4-SNAPSHOT
 :toc:
+:source-highlighter: rouge
+:listing-caption: Listing
+:pdf-page-size: A4
+:icons: font
+:pdf-theme: jposbook
+:pdf-themesdir: {docdir}
+:sectnums:
+:sectnumlevels: 3
 
 :leveloffset: 1
 include::legal/copyright.adoc[]

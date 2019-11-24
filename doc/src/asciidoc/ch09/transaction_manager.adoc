@@ -16,13 +16,13 @@ The following image shows a typical scenario:
 * The +TransactionManager+ picks the entry from the space (using a regular +in+ operation) 
   and runs the previously described two-phase commit protocol on the configured participants.
 
-image:images/tm_example.png[width="75%",alt="TransactionManager Example"]
+image:images/tm_example.png[width="400px",alt="TransactionManager Example"]
 
 Each participant is instantiated and configured just once by the TransactionManager at
 init time, they use the _Flyweight pattern_, but the TransactionManager uses several
 simultaneous sessions to handle transactions.
 
-image:images/tm_sessions.png[width="75%",alt="TransactionManager Sessions"]
+image:images/tm_sessions.png[width="400px",alt="TransactionManager Sessions"]
 
 [IMPORTANT]
 ===========

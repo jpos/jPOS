@@ -46,7 +46,7 @@ A QMUX configuration looks like this:
     has to match that name. If a +<ready>+ element isn't present, 
     +MUX.isConnected()+ will always return true.
 
-image:images/qmux.png[width="75%",alt="QMUX",align="center"] 
+image:images/qmux.png[width="400px",alt="QMUX",align="center"] 
 
 QMUX is registered in the NameRegistrar under the name provided in the qbean
 configuration file using the +"mux."+ prefix, ("mux.mymux" in our example) 

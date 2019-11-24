@@ -51,5 +51,5 @@ If you see the previous diagram, when participant 3 returns `ABORTED`, the last
 participant doesn't get called. If participant number four implements this
 `AbortParticipant` interface, the diagram would look like this:
 
-image:images/tm_abort_participant.png[width="75%",alt="AbortParticipant"]
+image:images/tm_abort_participant.png[width="400px",alt="AbortParticipant"]
 

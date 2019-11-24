@@ -20,7 +20,7 @@ For additional resources, you can visit the link:http://jpos.org/resources[jPOS 
 
 .jPOS Team
 ======
-image:images/team.jpg[width="70%",alt="jPOS Team",align="center"] 
+image:images/team.jpg[width="400px",alt="jPOS Team",align="center"] 
 ======
 
 See the link:https://github.com/jpos/jPOS/blob/master/CREDITS[CREDITS] page for

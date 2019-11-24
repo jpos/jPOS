@@ -51,8 +51,7 @@ a field of an outer ISOMsg.
 
 The following diagram shows how some ISOComponents interact with each other. 
 
-image:images/isomsg.jpg[width="75%",alt="ISOMsg",align="center"] 
-
+image:images/isomsg.jpg[width="400px",alt="ISOMsg",align="center"] 
 
 The following code can be used to create an internal representation of our 0800
 message (described in <<iso8583,An ISO-8583 primer>>).  
