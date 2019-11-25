@@ -24,7 +24,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.util.SimpleLogSource;
 
 import javax.net.ssl.*;
-import javax.security.cert.X509Certificate;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,6 +32,10 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
@@ -251,19 +255,27 @@ public class GenericSSLSocketFactory
         }
 
 
-        X509Certificate[] certs = session.getPeerCertificateChain();
-        if (certs==null || certs.length==0) 
+        Certificate[] certs = session.getPeerCertificates();
+        if (certs==null || certs.length==0)
             throw new SSLPeerUnverifiedException("No server certificates found");
 
-        //get the servers DN in its string representation
-        String dn = certs[0].getSubjectDN().getName();
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            ByteArrayInputStream bais = new ByteArrayInputStream(certs[0].getEncoded());
+            X509Certificate cert = (X509Certificate) cf.generateCertificate(bais);
 
-        //get the common name from the first cert
-        String cn = getCN(dn);
-        if (!serverName.equalsIgnoreCase(cn)) {
-            throw new SSLPeerUnverifiedException("Invalid SSL server name. "+
-                                                 "Expected '" + serverName +
-                                                 "', got '" + cn + "'");
+            //get the servers DN in its string representation
+            String dn = cert.getSubjectDN().getName();
+
+            //get the common name from the first cert
+            String cn = getCN(dn);
+            if (!serverName.equalsIgnoreCase(cn)) {
+                throw new SSLPeerUnverifiedException("Invalid SSL server name. "+
+                        "Expected '" + serverName +
+                        "', got '" + cn + "'");
+            }
+        } catch (CertificateException e) {
+            throw new SSLPeerUnverifiedException(e.getMessage());
         }
     }
 
