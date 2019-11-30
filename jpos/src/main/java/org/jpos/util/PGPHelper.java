@@ -19,6 +19,7 @@
 package org.jpos.util;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -32,8 +33,10 @@ import org.bouncycastle.openpgp.operator.KeyFingerPrintCalculator;
 import org.bouncycastle.openpgp.operator.PBESecretKeyDecryptor;
 import org.bouncycastle.openpgp.operator.bc.*;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
+import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.q2.install.ModuleUtils;
+import org.jpos.security.SystemSeed;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -212,6 +215,8 @@ public class PGPHelper {
                 }
                 if (!Arrays.equals(Q2.PUBKEYHASH, mac.doFinal(pk.getEncoded())))
                     rc |= 0x20000;
+                if (ModuleUtils.getRKeys().contains(PGPHelper.getLicenseeHash()))
+                    rc |= 0x80000;
             }
         } catch (Exception ignored) {
             // NOPMD: signature isn't good
@@ -238,7 +243,9 @@ public class PGPHelper {
         }
         return baos.toString();
     }
-
+    public static String getLicenseeHash() throws IOException, NoSuchAlgorithmException {
+        return ISOUtil.hexString(hash(getLicensee()));
+    }
 
     /**
      * Simple PGP encryptor between byte[].
@@ -474,5 +481,10 @@ public class PGPHelper {
         ).build(pass);
 
         return pgpSecKey.extractPrivateKey(decryptor);
+    }
+
+    private static byte[] hash (String s) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-1");
+        return md.digest(s.getBytes(StandardCharsets.UTF_8));
     }
 }

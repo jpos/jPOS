@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 public class ModuleUtils
 {
     private static final String MODULES_UUID_DIR = "META-INF/modules/uuids/";
+    private static final String MODULES_RKEYS_DIR = "META-INF/modules/rkeys/";
 
     public static List<String> getModuleEntries(String prefix) throws IOException
     {
@@ -67,6 +68,14 @@ public class ModuleUtils
           .stream()
           .sorted()
           .map(p -> p.substring(MODULES_UUID_DIR.length()))
+          .collect(Collectors.toList());
+    }
+
+    public static List<String> getRKeys () throws IOException {
+        return ModuleUtils.getModuleEntries(MODULES_RKEYS_DIR)
+          .stream()
+          .sorted()
+          .map(p -> p.substring(MODULES_RKEYS_DIR.length()))
           .collect(Collectors.toList());
     }
 
