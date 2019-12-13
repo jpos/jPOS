@@ -581,7 +581,7 @@ public class Q2 implements FileFilter, Runnable {
                     return false;
                 }
             }
-            String enabledAttribute = rootElement.getAttributeValue("enabled", "true");
+            String enabledAttribute = Environment.get(rootElement.getAttributeValue("enabled", "true"));
             if ("true".equalsIgnoreCase(enabledAttribute) ||
                  "yes".equalsIgnoreCase(enabledAttribute) ||
                 enabledAttribute.contains(Environment.getEnvironment().getName()))
