@@ -36,7 +36,7 @@ import org.jpos.transaction.Context;
 @SuppressWarnings("unused")
 public class QueryHost implements TransactionParticipant, ISOResponseListener, Configurable {
     private static final long DEFAULT_TIMEOUT = 30000L;
-    private static final long DEFAULT_WAIT_TIMEOUT = 12000L;
+    private static final long DEFAULT_WAIT_TIMEOUT = 1000L;
 
     private long timeout;
     private long waitTimeout;
