@@ -39,6 +39,9 @@ public class ISODate {
     public static final long ONE_YEAR = 365L*86400L*1000L;
    /**
     * Formats a date object, using the default time zone for this host
+    *
+    * WARNING: See <a href="https://jpos.org/faq/isodate_pattern.html">important issue</a> related to date pattern.
+    *
     * @param d date object to be formatted
     * @param pattern to be used for formatting
     */
@@ -48,6 +51,11 @@ public class ISODate {
     /**
      * You should use this version of formatDate() if you want a specific 
      * timeZone to calculate the date on.
+     *
+     * WARNING: See <a href="https://jpos.org/faq/isodate_pattern.html">important issue</a> related to date pattern.
+     *
+     * @param d date object to be formatted
+     * @param pattern to be used for formatting
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
      */
