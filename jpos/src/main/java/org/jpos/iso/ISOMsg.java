@@ -28,7 +28,7 @@ import java.util.*;
 
 /**
  * implements <b>Composite</b>
- * whithin a <b>Composite pattern</b>
+ * within a <b>Composite pattern</b>
  *
  * @author apr@cs.com.uy
  * @version $Id$
@@ -66,7 +66,7 @@ public class ISOMsg extends ISOComponent
     }
     /**
      * Creates a nested ISOMsg
-     * @param fieldNumber (in the outter ISOMsg) of this nested message
+     * @param fieldNumber (in the outer ISOMsg) of this nested message
      */
     public ISOMsg (int fieldNumber) {
         this();
@@ -124,7 +124,7 @@ public class ISOMsg extends ISOComponent
     /**
      * Sets optional trailer data.
      * <p/>
-     * Note: The trailer data requires a customised channel that explicitily handles the trailer data from the ISOMsg.
+     * Note: The trailer data requires a customised channel that explicitly handles the trailer data from the ISOMsg.
      *
      * @param trailer The trailer data.
      * @see BaseChannel#getMessageTrailer(ISOMsg).
@@ -137,7 +137,7 @@ public class ISOMsg extends ISOComponent
     /**
      * Get optional trailer image.
      *
-     * @return message trailer imange (may be null)
+     * @return message trailer image (may be null)
      */
     public byte[] getTrailer() {
         return this.trailer;
@@ -596,7 +596,7 @@ public class ISOMsg extends ISOComponent
                     m = (ISOMsg) obj;
                 }
                 else
-                    break; // 'Quick' exit if hierachy is not present.
+                    break; // 'Quick' exit if hierarchy is not present.
             } else
                 break;
         }
@@ -968,7 +968,7 @@ public class ISOMsg extends ISOComponent
         return getMTI().charAt(3) == '1';
     }
     /**
-     * sets an appropiate response MTI.
+     * sets an appropriate response MTI.
      *
      * i.e. 0100 becomes 0110<br>
      * i.e. 0201 becomes 0210<br>
@@ -999,7 +999,7 @@ public class ISOMsg extends ISOComponent
         );
     }
     /**
-     * sets an appropiate retransmission MTI<br>
+     * sets an appropriate retransmission MTI<br>
      * @exception ISOException on MTI not set or it is not a request
      */
     public void setRetransmissionMTI() throws ISOException {

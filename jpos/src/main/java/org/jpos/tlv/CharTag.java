@@ -30,7 +30,7 @@ import org.jpos.iso.ISOUtil;
  *   <li><tt>VAL</tt> - the value of the tag or missing if length is 0</li>
  * </ul>
  *
- * @author Robert Demski <drdemsey@gmail.com>
+ * @author Robert Demski &lt;drdemsey@gmail.com>
  */
 public class CharTag {
 
@@ -57,7 +57,7 @@ public class CharTag {
     /**
      * Sets size of length element.
      *
-     * @param size size of length elament
+     * @param size size of length element
      */
     protected void setLengthSize(int size) {
         lengthSize = size;
