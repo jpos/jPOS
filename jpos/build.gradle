@@ -123,6 +123,10 @@ jar () {
     )
 }
 
+java {
+   withSourcesJar()
+}
+
 task q2jar (type: Bundle) {
     dependsOn jar
     archiveClassifier.set('q2')
