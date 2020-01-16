@@ -19,16 +19,15 @@
 package org.jpos.q2.qbean;
 
 import org.jdom2.Element;
-import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.XmlConfigurable;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.util.LogEventOutputStream;
 import org.jpos.util.LogListener;
 import org.jpos.util.Logger;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintStream;
 
 public class LoggerAdaptor extends QBeanSupport {
     private Logger logger;
@@ -74,23 +73,8 @@ public class LoggerAdaptor extends QBeanSupport {
     {
         QFactory factory = getServer().getFactory();
         String clazz  = e.getAttributeValue ("class");
-        LogListener listener = (LogListener) factory.newInstance (clazz);
-        if (listener instanceof Configurable) {
-            try {
-                ((Configurable) listener).setConfiguration (
-                    factory.getConfiguration (e)
-                );
-            } catch (ConfigurationException ex) {
-                throw new ConfigurationException (ex);
-            }
-        }
-        if (listener instanceof XmlConfigurable) {
-            try {
-                ((XmlConfigurable) listener).setConfiguration (e);
-            } catch (ConfigurationException ex) {
-                throw new ConfigurationException (ex);
-            }
-        }
+        LogListener listener = factory.newInstance (clazz);
+        factory.setConfiguration(listener, e);
         logger.addListener (listener);
     }
 }
