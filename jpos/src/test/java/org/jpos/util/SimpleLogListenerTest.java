@@ -18,14 +18,16 @@
 
 package org.jpos.util;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import org.jdom2.Element;
+import org.jpos.core.ConfigurationException;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class SimpleLogListenerTest {
 
@@ -77,4 +79,74 @@ public class SimpleLogListenerTest {
         assertSame(p, simpleLogListener.p, "simpleLogListener.p");
     }
 
+    @Test
+    void testSetConfigurationShouldNotCreateAndSetWriterIfNotPresent() throws ConfigurationException {
+        SimpleLogListener simpleLogListener = new SimpleLogListener();
+        Element root = new Element("root");
+        simpleLogListener.setConfiguration(root);
+        assertNull(simpleLogListener.writer);
+    }
+
+    @Test
+    void testSetConfigurationShouldThrowConfigurationExceptionOnNewInstanceFailure() {
+        SimpleLogListener simpleLogListener = new SimpleLogListener();
+        Element root = new Element("root");
+        Element we = new Element("writer");
+        Element prop = new Element("property");
+        we.setAttribute("class", "org.jpos.util.FakeLogEventWriter");
+        we.addContent(prop);
+        root.addContent(we);
+        assertThrows(ConfigurationException.class, () -> simpleLogListener.setConfiguration(root));
+    }
+
+    @Test
+    void testSetConfigurationShouldThrowConfigurationExceptionWhenWriterClassAttributeMissing() {
+        SimpleLogListener simpleLogListener = new SimpleLogListener();
+        Element root = new Element("root");
+        Element we = new Element("writer");
+        root.addContent(we);
+        assertThrows(ConfigurationException.class, () -> simpleLogListener.setConfiguration(root));
+    }
+
+    @Test
+    void testShouldClosePrintStreamOnNonNullWriter() {
+        SimpleLogListener simpleLogListener = new SimpleLogListener();
+        LogEventWriter logEventWriter = mock(LogEventWriter.class);
+        simpleLogListener.accept(logEventWriter);
+        simpleLogListener.setPrintStream(new PrintStream(System.out));
+        assertNotNull(simpleLogListener.p);
+        simpleLogListener.close();
+        verify(logEventWriter).close();
+        assertNull(simpleLogListener.p);
+    }
+
+    @Test
+    void testSetPrintStreamShouldSetPrintStreamOnNonNullWriter() {
+        SimpleLogListener simpleLogListener = new SimpleLogListener();
+        LogEventWriter logEventWriter = mock(LogEventWriter.class);
+        PrintStream printStream = new PrintStream(System.out);
+        simpleLogListener.accept(logEventWriter);
+        simpleLogListener.setPrintStream(printStream);
+        verify(logEventWriter).setPrintStream(printStream);
+    }
+
+    @Test
+    void testShouldLogUsingWriter() {
+        SimpleLogListener simpleLogListener = new SimpleLogListener();
+        LogEventWriter writer = mock(LogEventWriter.class);
+        simpleLogListener.accept(writer);
+        LogEvent ev = new LogEvent();
+        simpleLogListener.log(ev);
+        verify(writer).write(ev);
+    }
+
+    @Test
+    void testShouldDumpDirectlyOnEventWhenWriterNull() {
+        SimpleLogListener simpleLogListener = new SimpleLogListener();
+        simpleLogListener.setPrintStream(System.out);
+        LogEvent ev = mock(LogEvent.class);
+        assertNull(simpleLogListener.writer);
+        simpleLogListener.log(ev);
+        verify(ev).dump(System.out, "");
+    }
 }
