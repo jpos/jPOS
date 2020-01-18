@@ -183,7 +183,6 @@ public class PosDataCode implements Loggeable {
     {
         super();
 
-
         b[0]  = (byte) readingMethod;
         b[1]  = (byte) (readingMethod >>> 8);
         b[2]  = (byte) (readingMethod >>> 16);
@@ -205,8 +204,12 @@ public class PosDataCode implements Loggeable {
         b[15] = (byte) (securityCharacteristic >>> 24);
     }
 
-    private PosDataCode (byte[] b) {
-        this.b = b;
+    public PosDataCode (byte[] b) {
+        if (b != null) {
+            // will always use our own internal copy of array
+            int copyLen= Math.min(b.length, 16);
+            System.arraycopy(b, 0, this.b, 0, copyLen);
+        }
     }
 
     public boolean hasReadingMethods (int readingMethods) {
