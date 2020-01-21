@@ -204,7 +204,7 @@ public class PosDataCode implements Loggeable {
         b[15] = (byte) (securityCharacteristic >>> 24);
     }
 
-    public PosDataCode (byte[] b) {
+    private PosDataCode (byte[] b) {
         if (b != null) {
             // will always use our own internal copy of array
             int copyLen= Math.min(b.length, 16);
@@ -261,9 +261,11 @@ public class PosDataCode implements Loggeable {
     public String toString() {
         return super.toString() + "[" + ISOUtil.hexString (getBytes())+ "]";
     }
+
     public static PosDataCode valueOf (byte[] b) {
         return new PosDataCode(b);  // we create new objects for now, but may return cached instances in the future
-    }    
+    }
+
     public void dump(PrintStream p, String indent) {
         String inner = indent + "  ";
         StringBuilder sb = new StringBuilder();
