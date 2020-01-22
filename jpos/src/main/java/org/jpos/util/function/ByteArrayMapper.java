@@ -16,23 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.util;
+package org.jpos.util.function;
 
-import org.junit.jupiter.api.Test;
+import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-public class ProtectedLogListenerTest {
-
-    @Test
-    public void testLogThrowsNullPointerException() {
-        try {
-            new ProtectedLogListener().log(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-        }
-    }
-
+/**
+ * @author Alwyn Schoeman
+ * @since 2.1.4
+ */
+public interface ByteArrayMapper extends Function<byte[], byte[]> {
 }

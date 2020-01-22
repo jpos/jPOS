@@ -21,10 +21,7 @@ package org.jpos.util;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOUtil;
-import java.util.List;
+import org.jpos.util.function.ProtectLogEvent;
 
 /**
  * Protects selected fields from LogEvents.
@@ -60,14 +57,10 @@ import java.util.List;
  */
 public class ProtectedLogListener implements LogListener, Configurable
 {
-    String[] protectFields = null;
-    String[] wipeFields    = null;
-    Configuration cfg   = null;
-    public static final String WIPED = "[WIPED]";
-    public static final byte[] BINARY_WIPED = ISOUtil.hex2byte ("AA55AA55");
+    ProtectLogEvent protectFunction;
 
     public ProtectedLogListener () {
-        super();
+        protectFunction = new ProtectLogEvent();
     }
 
    /**
@@ -83,79 +76,14 @@ public class ProtectedLogListener implements LogListener, Configurable
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException
     {
-        this.cfg = cfg;
-        protectFields = ISOUtil.toStringArray (cfg.get ("protect", ""));
-        wipeFields    = ISOUtil.toStringArray (cfg.get ("wipe", ""));
+        protectFunction.setConfiguration(cfg);
     }
+
     public LogEvent log (LogEvent ev) {
-        synchronized (ev.getPayLoad()) {
-            final List<Object> payLoad = ev.getPayLoad();
-            int size = payLoad.size();
-            for (int i=0; i<size; i++) {
-                Object obj = payLoad.get (i);
-                if (obj instanceof ISOMsg) {
-                    ISOMsg m = (ISOMsg) ((ISOMsg) obj).clone();
-                    try {
-                        checkProtected (m);
-                        checkHidden (m);
-                    } catch (ISOException e) {
-                        ev.addMessage (e);
-                    }
-                    payLoad.set (i, m);
-                } else if (obj instanceof SimpleMsg){
-                    try {
-                        checkProtected((SimpleMsg) obj);
-                    } catch (ISOException e) {
-                        ev.addMessage (e);
-                    }
-               }
-            }
-        }
-        return ev;
+        return protectFunction.apply(ev);
     }
-    private void checkProtected (ISOMsg m) throws ISOException {
-        for (String f : protectFields) {
-            Object v = null;
-            try {
-                v = m.getValue(f);
-            } catch (ISOException ignored) {
-                // NOPMD: nothing to do
-            }
-            if (v != null) {
-                if (v instanceof String)
-                    m.set(f, ISOUtil.protect((String) v));
-                else
-                    m.set(f, BINARY_WIPED);
-            }
-        }
-    }
-    private void checkProtected(SimpleMsg sm) throws ISOException {
-        if (sm.msgContent instanceof SimpleMsg[])
-            for (SimpleMsg sMsg : (SimpleMsg[]) sm.msgContent)
-                checkProtected(sMsg);
-        else if (sm.msgContent instanceof SimpleMsg)
-            checkProtected((SimpleMsg) sm.msgContent);
-        else if (sm.msgContent instanceof ISOMsg) {
-            ISOMsg m = (ISOMsg) ((ISOMsg) sm.msgContent).clone();
-            checkProtected(m);
-            checkHidden(m);
-            sm.msgContent = m;
-        }
-    }
-    private void checkHidden (ISOMsg m) throws ISOException {
-        for (String f : wipeFields) {
-            Object v = null;
-            try {
-                v = m.getValue(f);
-            } catch (ISOException ignored) {
-                // NOPMD: nothing to do
-            }
-            if (v != null) {
-                if (v instanceof String)
-                    m.set(f, WIPED);
-                else
-                    m.set(f, BINARY_WIPED);
-            }
-        }
+
+    public ProtectLogEvent getProtectFunction() {
+        return protectFunction;
     }
 }

@@ -15,24 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.jpos.util.function;
 
-package org.jpos.util;
+import org.jpos.util.LogEvent;
 
-import org.junit.jupiter.api.Test;
+import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-public class ProtectedLogListenerTest {
-
-    @Test
-    public void testLogThrowsNullPointerException() {
-        try {
-            new ProtectedLogListener().log(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-        }
-    }
-
+/**
+ * @author Alwyn Schoeman
+ * @since 2.1.4
+ */
+public interface LogEventMapper extends Function<LogEvent, LogEvent> {
 }

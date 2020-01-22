@@ -126,4 +126,11 @@ import java.util.Collection;
             }
         }
 
+    public void setMsgContent(Object msgContent) {
+        this.msgContent = msgContent;
     }
+
+    public Object getMsgContent() {
+        return msgContent;
+    }
+}
