@@ -4,11 +4,37 @@ import org.junit.jupiter.api.Test;
 
 import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class BaseLogEventWriterTest {
+
+    @Test
+    void testSetPrintStreamShouldCallCloseWhenNullArgument() {
+        TestLogEventWriter writer = spy(new TestLogEventWriter());
+        writer.setPrintStream(null);
+        verify(writer).close();
+        assertNull(writer.p);
+    }
+
+    @Test
+    void testSetPrintStreamShouldCallCloseOnDifferentArgument() {
+        TestLogEventWriter writer = spy(new TestLogEventWriter());
+        writer.p = new PrintStream(System.out);
+        PrintStream newP = new PrintStream(System.out);
+        writer.setPrintStream(newP);
+        verify(writer).close();
+        assertEquals(newP, writer.p);
+    }
+
+    @Test
+    void testSetPrintStreamShouldNOTCallCloseWhenSetSameOrFirstTime() {
+        TestLogEventWriter writer = spy(new TestLogEventWriter());
+        PrintStream printStream = new PrintStream(System.out);
+        writer.setPrintStream(printStream);
+        writer.setPrintStream(printStream);
+        verify(writer, never()).close();
+    }
 
     @Test
     void testShouldClosePrintStreamOnClose() {

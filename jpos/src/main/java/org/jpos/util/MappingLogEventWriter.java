@@ -57,28 +57,23 @@ import java.util.List;
 public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConfigurable {
     List<LogEventMapper> eventMappers;
     List<ByteArrayMapper> outputMappers;
-    ByteArrayOutputStream captureStream;
-    PrintStream originalPrintStream;
+    ByteArrayOutputStream captureOutputStream;
+    PrintStream capturePrintStream;
 
     @Override
     public void setPrintStream(PrintStream p) {
         super.setPrintStream(p);
-        configurePrintStreams();
+        if (p != null && capturePrintStream == null) {
+            configureCaptureStreams();
+        }
     }
 
     @Override
     public synchronized void close() {
-        if (captureStream != null) {
-            try {
-                captureStream.close();
-            } catch (IOException ignored) {
-            } finally {
-                captureStream = null;
-            }
-        }
-        if (originalPrintStream != null) {
-            originalPrintStream.close();
-            originalPrintStream = null;
+        if (capturePrintStream != null) {
+            capturePrintStream.close();
+            capturePrintStream = null;
+            captureOutputStream = null;
         }
         super.close();
     }
@@ -86,17 +81,19 @@ public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConf
     @Override
     public void write(LogEvent ev) {
         ev = mapEvents(ev);
-        delegateWriteToSuper(ev);
-        if (outputMappers != null && captureStream != null) {
+        if (capturePrintStream != null) {
+            writeToCaptureStream(ev);
             try {
-                byte[] output = mapOutput(captureStream.toByteArray());
-                originalPrintStream.write(output);
+                byte[] output = mapOutput(captureOutputStream.toByteArray());
+                p.write(output);
             } catch (IOException e) {
-                e.printStackTrace(originalPrintStream);
+                e.printStackTrace(p);
             } finally {
-                originalPrintStream.flush();
-                captureStream.reset();
+                p.flush();
+                captureOutputStream.reset();
             }
+        } else {
+            delegateWriteToSuper(ev);
         }
     }
 
@@ -106,11 +103,10 @@ public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConf
         configureOutputMappers(e);
     }
 
-    protected void configurePrintStreams() {
+    protected void configureCaptureStreams() {
         if (outputMappers != null && !outputMappers.isEmpty()) {
-            originalPrintStream = p;
-            captureStream = new ByteArrayOutputStream();
-            this.p = new PrintStream(captureStream);
+            captureOutputStream = new ByteArrayOutputStream();
+            capturePrintStream = new PrintStream(captureOutputStream);
         }
     }
 
@@ -192,9 +188,20 @@ public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConf
      * This method exists and is used so that we can verify the order of instructions
      * during a call to write in unit tests.
      *
-     * @param ev LogEvent
+     * @param ev LogEvent to write.
      */
     protected void delegateWriteToSuper(LogEvent ev) {
         super.write(ev);
+    }
+
+    /**
+     * Write to capture print stream when defined.
+     * @param ev LogEvent to write.
+     */
+    protected void writeToCaptureStream(LogEvent ev) {
+        if (capturePrintStream != null && ev != null) {
+            ev.dump(capturePrintStream, "");
+            capturePrintStream.flush();
+        }
     }
 }

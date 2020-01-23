@@ -42,6 +42,21 @@ import static org.mockito.Mockito.*;
 public class MappingLogEventWriterTest {
 
     @Test
+    void testSetPrintStreamShouldConfigurePrintStreamsWhenCapturePrintStreamNull() {
+        MappingLogEventWriter writer = spy(new MappingLogEventWriter());
+        writer.setPrintStream(new PrintStream(System.out));
+        verify(writer).configureCaptureStreams();
+    }
+
+    @Test
+    void testSetPrintStreamShouldNOTConfigurePrintStreamsWhenCapturePrintStreamNOTNull() {
+        MappingLogEventWriter writer = spy(new MappingLogEventWriter());
+        writer.capturePrintStream = new PrintStream(System.out);
+        writer.setPrintStream(new PrintStream(System.out));
+        verify(writer, never()).configureCaptureStreams();
+    }
+
+    @Test
     void testMapEventsShouldCallEventMappersInOrderAndReturnFinalResult() {
         MappingLogEventWriter writer = new MappingLogEventWriter();
         List<LogEventMapper> mappers = new ArrayList<>();
@@ -101,9 +116,10 @@ public class MappingLogEventWriterTest {
         mappers.add(b -> b);
         PrintStream printStream = new PrintStream(System.out);
         writer.setPrintStream(printStream);
-        assertEquals(writer.originalPrintStream, printStream);
-        assertNotNull(writer.captureStream);
-        assertNotEquals(writer.originalPrintStream, writer.p);
+        assertEquals(writer.p, printStream);
+        assertNotNull(writer.captureOutputStream);
+        assertNotNull(writer.capturePrintStream);
+        assertNotEquals(writer.capturePrintStream, writer.p);
         printStream.close();
     }
 
@@ -115,16 +131,16 @@ public class MappingLogEventWriterTest {
         writer.setPrintStream(printStream);
         writer.setConfiguration(root);
         assertEquals(printStream, writer.p);
-        assertNull(writer.captureStream);
-        assertNull(writer.originalPrintStream);
+        assertNull(writer.captureOutputStream);
+        assertNull(writer.capturePrintStream);
 
         writer = new MappingLogEventWriter();
         writer.outputMappers = new ArrayList<>();
         writer.setPrintStream(printStream);
         writer.setConfiguration(root);
         assertEquals(printStream, writer.p);
-        assertNull(writer.captureStream);
-        assertNull(writer.originalPrintStream);
+        assertNull(writer.captureOutputStream);
+        assertNull(writer.capturePrintStream);
         printStream.close();
     }
 
@@ -160,27 +176,24 @@ public class MappingLogEventWriterTest {
         writer.setConfiguration(root);
         writer.close();
         assertNull(writer.p);
-        assertNull(writer.originalPrintStream);
-        assertNull(writer.captureStream);
+        assertNull(writer.capturePrintStream);
+        assertNull(writer.captureOutputStream);
 
         PrintStream p1 = mock(PrintStream.class);
         PrintStream p2 = mock(PrintStream.class);
-        ByteArrayOutputStream baos = mock(ByteArrayOutputStream.class);
         writer.p = p1;
-        writer.originalPrintStream = p2;
-        writer.captureStream = baos;
+        writer.capturePrintStream = p2;
         writer.close();
         verify(p1).close();
         verify(p2).close();
-        verify(baos).close();
     }
 
     @Test
     void testShouldNotTryToCloseAnyStreamsThatAreNull() {
         MappingLogEventWriter writer = new MappingLogEventWriter();
         writer.p = null;
-        writer.captureStream = null;
-        writer.originalPrintStream = null;
+        writer.captureOutputStream = null;
+        writer.capturePrintStream = null;
         assertDoesNotThrow(writer::close);
     }
 
@@ -213,17 +226,35 @@ public class MappingLogEventWriterTest {
     }
 
     @Test
-    void testWriteShouldMapEventsThenWriteOnSuperThenMapOutput() {
+    void testWriteShouldMapEventsThenWriteOnSuperWhenNoOutputMappers() {
         MappingLogEventWriter spy = spy(new MappingLogEventWriter());
         spy.outputMappers = new ArrayList<>();
-        spy.captureStream = new ByteArrayOutputStream();
-        spy.originalPrintStream = mock(PrintStream.class);
+        spy.captureOutputStream = new ByteArrayOutputStream();
+        spy.p = mock(PrintStream.class);
         LogEvent ev = new LogEvent();
         spy.write(ev);
         InOrder inOrder = inOrder(spy);
         inOrder.verify(spy).mapEvents(ev);
         inOrder.verify(spy).delegateWriteToSuper(ev);
-        inOrder.verify(spy).mapOutput(spy.captureStream.toByteArray());
+        verify(spy, never()).writeToCaptureStream(ev);
+        verify(spy, never()).mapOutput(any());
+    }
+
+    @Test
+    void testWriteShouldMapEventsThenMapOutputThenWriteToMainPrintStream() throws IOException {
+        MappingLogEventWriter spy = spy(new MappingLogEventWriter());
+        spy.outputMappers = new ArrayList<>();
+        spy.outputMappers.add(b -> b);
+        PrintStream printStream = mock(PrintStream.class);
+        spy.setPrintStream(printStream);
+        LogEvent ev = new LogEvent();
+        spy.write(ev);
+        InOrder inOrder = inOrder(spy, printStream);
+        inOrder.verify(spy).mapEvents(ev);
+        inOrder.verify(spy).writeToCaptureStream(ev);
+        inOrder.verify(spy).mapOutput(any());
+        inOrder.verify(printStream).write(any());
+        verify(spy, never()).delegateWriteToSuper(ev);
     }
 
     @Test
@@ -243,7 +274,7 @@ public class MappingLogEventWriterTest {
         List<ByteArrayMapper> outputMappers = new ArrayList<>();
         outputMappers.add(b -> b);
         writer.outputMappers = outputMappers;
-        writer.configurePrintStreams();
+        writer.configureCaptureStreams();
         LogEvent e1 = new LogEvent("1");
         e1.setNoArmor(true);
         e1.addMessage("1");
