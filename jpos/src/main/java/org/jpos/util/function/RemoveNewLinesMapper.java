@@ -47,7 +47,7 @@ public class RemoveNewLinesMapper implements ByteArrayMapper, Configurable {
     boolean combineSpaces = false;
     boolean newLineAtEnd = true;
     final byte SPACE = ' ';
-    final byte NEWLINE = '\n';
+    byte[] NEWLINE_SEPARATORS = System.lineSeparator().getBytes();
 
     @Override
     public byte[] apply(byte[] bytes) {
@@ -65,7 +65,7 @@ public class RemoveNewLinesMapper implements ByteArrayMapper, Configurable {
                     buffer.put(SPACE);
                     prevSpace = false;
                 }
-                if (aByte != NEWLINE) {
+                if (!isNewLine(aByte)) {
                     buffer.put(aByte);
                 }
             }
@@ -75,7 +75,7 @@ public class RemoveNewLinesMapper implements ByteArrayMapper, Configurable {
             buffer.put(SPACE);
         }
         if (newLineAtEnd) {
-            buffer.put(NEWLINE);
+            buffer.put(NEWLINE_SEPARATORS);
         }
         buffer.flip();
         byte[] result = new byte[buffer.limit()];
@@ -89,4 +89,14 @@ public class RemoveNewLinesMapper implements ByteArrayMapper, Configurable {
         newLineAtEnd = cfg.getBoolean("newline-at-end", true);
     }
 
+    private boolean isNewLine(byte aByte) {
+        boolean isNewLine = false;
+        for (byte b : NEWLINE_SEPARATORS) {
+            if (aByte == b) {
+                isNewLine = true;
+                break;
+            }
+        }
+        return isNewLine;
+    }
 }
