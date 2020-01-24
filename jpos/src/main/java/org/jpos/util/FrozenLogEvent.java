@@ -23,6 +23,10 @@ import java.io.Serializable;
 
 public class FrozenLogEvent extends LogEvent implements Serializable {
     private String frozen;
+
+    public FrozenLogEvent(String frozen) {
+        this.frozen = frozen;
+    }
     public FrozenLogEvent (LogEvent evt) {
         super(evt.getSource(), evt.getTag(), evt.getRealm());
         frozen = evt.toString();
