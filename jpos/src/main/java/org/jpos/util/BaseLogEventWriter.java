@@ -37,6 +37,12 @@ public abstract class BaseLogEventWriter implements LogEventWriter {
 
     @Override
     public void setPrintStream(PrintStream p) {
+        if (p == null) {
+            close();
+            return;
+        }
+        if (this.p == p) return;
+        if (this.p != null) close();
         this.p = p;
     }
 

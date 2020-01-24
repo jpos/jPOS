@@ -16,30 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.util;
+package org.jpos.util.function;
 
-import java.io.PrintStream;
-import java.io.Serializable;
+import org.jpos.util.LogEvent;
 
-public class FrozenLogEvent extends LogEvent implements Serializable {
-    private String frozen;
-
-    public FrozenLogEvent(String frozen) {
-        this.frozen = frozen;
-    }
-    public FrozenLogEvent (LogEvent evt) {
-        super(evt.getSource(), evt.getTag(), evt.getRealm());
-        frozen = evt.toString();
-    }
+/**
+ * Test LogEventMapper for testing setConfiguration calls.
+ */
+public class TestLogEventMapper implements LogEventMapper {
     @Override
-    public void dump (PrintStream ps, String indent) {
-        ps.print (frozen);
+    public LogEvent apply(LogEvent event) {
+        return event;
     }
-
-    @Override
-    public String toString () {
-        return frozen;
-    }
-
-    private static final long serialVersionUID = -8672445411081885024L;
 }

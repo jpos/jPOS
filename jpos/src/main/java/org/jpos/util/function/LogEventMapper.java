@@ -15,31 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.jpos.util.function;
 
-package org.jpos.util;
+import org.jpos.util.LogEvent;
 
-import java.io.PrintStream;
-import java.io.Serializable;
+import java.util.function.Function;
 
-public class FrozenLogEvent extends LogEvent implements Serializable {
-    private String frozen;
-
-    public FrozenLogEvent(String frozen) {
-        this.frozen = frozen;
-    }
-    public FrozenLogEvent (LogEvent evt) {
-        super(evt.getSource(), evt.getTag(), evt.getRealm());
-        frozen = evt.toString();
-    }
-    @Override
-    public void dump (PrintStream ps, String indent) {
-        ps.print (frozen);
-    }
-
-    @Override
-    public String toString () {
-        return frozen;
-    }
-
-    private static final long serialVersionUID = -8672445411081885024L;
+/**
+ * @author Alwyn Schoeman
+ * @since 2.1.4
+ */
+public interface LogEventMapper extends Function<LogEvent, LogEvent> {
 }
