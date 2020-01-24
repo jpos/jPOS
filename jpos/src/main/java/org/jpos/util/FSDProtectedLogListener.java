@@ -21,7 +21,10 @@ package org.jpos.util;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.util.function.FSDProtectLogEvent;
+import org.jpos.iso.FSDISOMsg;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOUtil;
+import java.util.List;
 
 /**
  * Protects selected fields from LogEvents.
@@ -53,8 +56,7 @@ import org.jpos.util.function.FSDProtectLogEvent;
  * dump protected ones (for selected fields)
  *
  * @author Alejandro P. Revilla
- * @author Dave Bergert
- * @author Alwyn Schoeman
+ * @author Dave Bergert 
  * @version $Revision$ 
  * @see org.jpos.core.Configurable
  * @since jPOS 1.6.5
@@ -63,10 +65,15 @@ import org.jpos.util.function.FSDProtectLogEvent;
 @SuppressWarnings ("unused")
 public class FSDProtectedLogListener implements LogListener, Configurable
 {
-    FSDProtectLogEvent protectFunction;
+    String[] protectFields = null;
+    String[] wipeFields    = null;
+    String[] truncateFields    = null;
+    Configuration cfg   = null;
+    public static final String WIPED = "[WIPED]";
+    public static final byte[] BINARY_WIPED = ISOUtil.hex2byte ("AA55AA55");
 
     public FSDProtectedLogListener () {
-        protectFunction = new FSDProtectLogEvent();
+        super();
     }
 
    /**
@@ -83,11 +90,84 @@ public class FSDProtectedLogListener implements LogListener, Configurable
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException
     {
-        protectFunction.setConfiguration(cfg);
+        this.cfg = cfg;
+        truncateFields  = ISOUtil.toStringArray (cfg.get ("truncate", ""));
+        protectFields   = ISOUtil.toStringArray (cfg.get ("protect", ""));
+        wipeFields      = ISOUtil.toStringArray (cfg.get ("wipe", ""));
     }
     public synchronized LogEvent log (LogEvent ev) {
-        return protectFunction.apply(ev);
+        synchronized (ev.getPayLoad()) {
+            final List<Object> payLoad = ev.getPayLoad();
+            int size = payLoad.size();
+            for (int i=0; i<size; i++) {
+                Object obj = payLoad.get (i);
+                if (obj instanceof FSDISOMsg) {
+                    FSDISOMsg m = (FSDISOMsg) ((FSDISOMsg) obj).clone();
+                    try {
+                        checkTruncated (m);
+                        checkProtected (m);
+                        checkHidden (m);
+                    } catch (ISOException e) {
+                        ev.addMessage (e);
+                    }
+                    payLoad.set (i, m);
+                }
+            }
+        }
+        return ev;
     }
-
+    private void checkTruncated (FSDISOMsg m) throws ISOException {
+         for (String truncateField : truncateFields) {
+             String truncate[] = truncateField.split(":");
+             if (truncate.length == 2) {
+                 String f = truncate[0];
+                 int len = Integer.parseInt(truncate[1]);
+                 Object v = null;
+                 try {
+                     v = m.getFSDMsg().get(f);
+                 } catch (Exception ignored) {
+                     // NOPMD: NOP
+                 }
+                 if (v instanceof String) {
+                     String x = (String) v;
+                     if (x.length() > len) {
+                         m.getFSDMsg().set(f, x.substring(0, len));
+                     }
+                 }
+             }
+         }
+    }
+    private void checkProtected (FSDISOMsg m) throws ISOException {
+        for (String f : protectFields) {
+            Object v = null;
+            try {
+                v = m.getFSDMsg().get(f);
+            } catch (Exception ignored) {
+                // NOPMD: ignore error
+            }
+            if (v != null) {
+                if (v instanceof String)
+                    m.getFSDMsg().set (f, ISOUtil.protect((String) v));
+                else
+                    m.getFSDMsg().set (f, new String(BINARY_WIPED));
+            }
+        }
+    }
+    private void checkHidden (FSDISOMsg m) throws ISOException {
+        for (String f : wipeFields) {
+            Object v = null;
+            try {
+                v = m.getFSDMsg().get (f);
+            } catch (Exception ignored) {
+                // NOPMD ignore error
+            }
+            if (v != null) {
+                if (v instanceof String)
+                    m.getFSDMsg().set (f, WIPED);
+                else
+                    m.getFSDMsg().set (f, new String(BINARY_WIPED));
+            }
+        }
+    }
 }
                                                                             

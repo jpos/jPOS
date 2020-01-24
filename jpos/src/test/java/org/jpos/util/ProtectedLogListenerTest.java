@@ -18,15 +18,28 @@
 
 package org.jpos.util;
 
-import org.junit.jupiter.api.Test;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import org.jpos.core.Configuration;
+import org.jpos.core.SimpleConfiguration;
+import org.jpos.core.SubConfiguration;
+import org.junit.jupiter.api.Test;
 
 public class ProtectedLogListenerTest {
 
     @Test
-    public void testLogThrowsNullPointerException() {
+    public void testConstructor() throws Throwable {
+        ProtectedLogListener protectedLogListener = new ProtectedLogListener();
+        assertNull(protectedLogListener.wipeFields, "protectedLogListener.wipeFields");
+        assertNull(protectedLogListener.protectFields, "protectedLogListener.protectFields");
+        assertNull(protectedLogListener.cfg, "protectedLogListener.cfg");
+    }
+
+    @Test
+    public void testLogThrowsNullPointerException() throws Throwable {
         try {
             new ProtectedLogListener().log(null);
             fail("Expected NullPointerException to be thrown");
@@ -35,4 +48,28 @@ public class ProtectedLogListenerTest {
         }
     }
 
+    @Test
+    public void testSetConfiguration() throws Throwable {
+        ProtectedLogListener protectedLogListener = new ProtectedLogListener();
+        Configuration cfg = new SimpleConfiguration();
+        protectedLogListener.setConfiguration(cfg);
+        assertEquals(0, protectedLogListener.protectFields.length, "protectedLogListener.protectFields.length");
+        assertEquals(0, protectedLogListener.wipeFields.length, "protectedLogListener.wipeFields.length");
+        assertSame(cfg, protectedLogListener.cfg, "protectedLogListener.cfg");
+    }
+
+    @Test
+    public void testSetConfigurationThrowsNullPointerException() throws Throwable {
+        ProtectedLogListener protectedLogListener = new ProtectedLogListener();
+        Configuration cfg = new SubConfiguration();
+        try {
+            protectedLogListener.setConfiguration(cfg);
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException ex) {
+            assertSame(cfg, protectedLogListener.cfg, "protectedLogListener.cfg");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(protectedLogListener.wipeFields, "protectedLogListener.wipeFields");
+            assertNull(protectedLogListener.protectFields, "protectedLogListener.protectFields");
+        }
+    }
 }
