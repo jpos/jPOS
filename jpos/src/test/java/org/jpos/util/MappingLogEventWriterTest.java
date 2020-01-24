@@ -21,8 +21,8 @@ import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.function.ByteArrayMapper;
 import org.jpos.util.function.LogEventMapper;
-import org.jpos.util.function.ProtectLogEvent;
 import org.jpos.util.function.RemoveNewLinesMapper;
+import org.jpos.util.function.TestLogEventMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
@@ -201,14 +201,14 @@ public class MappingLogEventWriterTest {
     void testShouldAddEventMapperWhenConfigured() throws ConfigurationException {
         Element root = new Element("root");
         Element em = new Element("event-mapper");
-        em.setAttribute("class", "org.jpos.util.function.ProtectLogEvent");
+        em.setAttribute("class", "org.jpos.util.function.TestLogEventMapper");
         root.addContent(em);
         MappingLogEventWriter writer = new MappingLogEventWriter();
         assertNull(writer.eventMappers);
         writer.setConfiguration(root);
         assertNotNull(writer.eventMappers);
         assertEquals(1, writer.eventMappers.size());
-        assertTrue(writer.eventMappers.get(0) instanceof ProtectLogEvent);
+        assertTrue(writer.eventMappers.get(0) instanceof TestLogEventMapper);
     }
 
     @Test
