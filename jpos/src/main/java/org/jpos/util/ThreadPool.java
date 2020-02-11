@@ -163,7 +163,6 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         p.println (inner  + "<jobs>" + getJobCount() + "</jobs>");
         p.println (inner  + "<size>" + getPoolSize() + "</size>");
         p.println (inner  + "<max>"  + getMaxPoolSize() + "</max>");
-        p.println (inner  + "<active>" + getActiveCount() + "</active>");
         p.println (inner  + "<idle>"  + getIdleCount() + "</idle>");
         p.println (inner  + "<active>"  + getActiveCount() + "</active>");
         p.println (inner  + "<pending>" + getPendingCount() + "</pending>");
