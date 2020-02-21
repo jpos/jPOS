@@ -1,0 +1,150 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+jPOS Project          
+Contributor License Agreement V1.0
+based on http://www.apache.org/licenses/
+
+Thank you for your interest in the jPOS project by jPOS Software SRL (Uruguayan
+company #217 883 210 018 - jPOS.org). In order to clarify the intellectual property
+license granted with Contributions from any person or entity, jPOS Software SRL
+must have a Contributor License Agreement ("CLA") that has been signed by each
+Contributor, indicating agreement to the license terms below. This license is
+for your protection as a Contributor as well as the protection of jPOS.org and
+its users; it does not change your rights to use your own Contributions for any
+other purpose.  
+
+If you have not already done so, please complete this agreement and
+commit it to the jPOS repository at
+https://github.com/jpos/jPOS/tree/master/legal at legal/cla-USERNAME.txt using
+your authenticated Github login. If you do not have commit
+privilege to the repository, please email the file to license@jpos.org.
+If possible, digitally sign the committed file, otherwise also send a
+signed Agreement to jPOS.org.
+
+Please read this document carefully before signing and keep a copy for
+your records.
+
+  Full name: Daniel Cricco
+  E-Mail:   dcricco@fintech.works
+  Mailing Address: Aviadores del Chaco 2050, World Trade Center Torre 3 Piso 11, 
+                   Asunción, Paraguay
+
+You accept and agree to the following terms and conditions for Your
+present and future Contributions submitted to jPOS.org. In return,
+jPOS.org shall not use Your Contributions in a way that is
+contrary to the software license in effect at the time of the
+Contribution.  Except for the license granted herein to jPOS.org
+and recipients of software distributed by jPOS.org, You reserve
+all right, title, and interest in and to Your Contributions.
+
+1. Definitions.
+
+   "You" (or "Your") shall mean the copyright owner or legal entity
+   authorized by the copyright owner that is making this Agreement
+   with jPOS.org. For legal entities, the entity making a
+   Contribution and all other entities that control, are controlled
+   by, or are under common control with that entity are considered to
+   be a single Contributor. For the purposes of this definition,
+   "control" means (i) the power, direct or indirect, to cause the
+   direction or management of such entity, whether by contract or
+   otherwise, or (ii) ownership of fifty percent (50%) or more of the
+   outstanding shares, or (iii) beneficial ownership of such entity.
+
+   "Contribution" shall mean any original work of authorship,
+   including any modifications or additions to an existing work, that
+   is intentionally submitted by You to jPOS.org for inclusion
+   in, or documentation of, any of the products owned or managed by
+   jPOS.org (the "Work"). For the purposes of this definition,
+   "submitted" means any form of electronic, verbal, or written
+   communication sent to jPOS.org or its representatives,
+   including but not limited to communication on electronic mailing
+   lists, source code control systems, and issue tracking systems that
+   are managed by, or on behalf of, jPOS.org for the purpose of
+   discussing and improving the Work, but excluding communication that
+   is conspicuously marked or otherwise designated in writing by You
+   as "Not a Contribution."
+
+2. Grant of Copyright License. Subject to the terms and conditions of
+   this Agreement, You hereby grant to jPOS.org and to
+   recipients of software distributed by jPOS.org a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   copyright license to reproduce, prepare derivative works of,
+   publicly display, publicly perform, sublicense, and distribute Your
+   Contributions and such derivative works.
+
+3. Grant of Patent License. Subject to the terms and conditions of
+   this Agreement, You hereby grant to jPOS.org and to
+   recipients of software distributed by jPOS.org a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   (except as stated in this section) patent license to make, have
+   made, use, offer to sell, sell, import, and otherwise transfer the
+   Work, where such license applies only to those patent claims
+   licensable by You that are necessarily infringed by Your
+   Contribution(s) alone or by combination of Your Contribution(s)
+   with the Work to which such Contribution(s) was submitted. If any
+   entity institutes patent litigation against You or any other entity
+   (including a cross-claim or counterclaim in a lawsuit) alleging
+   that your Contribution, or the Work to which you have contributed,
+   constitutes direct or contributory patent infringement, then any
+   patent licenses granted to that entity under this Agreement for
+   that Contribution or Work shall terminate as of the date such
+   litigation is filed.
+
+4. You represent that you are legally entitled to grant the above
+   license. If your employer(s) has rights to intellectual property
+   that you create that includes your Contributions, you represent
+   that you have received permission to make Contributions on behalf
+   of that employer, that your employer has waived such rights for
+   your Contributions to jPOS.org, or that your employer has
+   executed a separate Corporate CLA with jPOS.org.
+
+5. You represent that each of Your Contributions is Your original
+   creation (see section 7 for submissions on behalf of others).  You
+   represent that Your Contribution submissions include complete
+   details of any third-party license or other restriction (including,
+   but not limited to, related patents and trademarks) of which you
+   are personally aware and which are associated with any part of Your
+   Contributions.
+
+6. You are not expected to provide support for Your Contributions,
+   except to the extent You desire to provide support. You may provide
+   support for free, for a fee, or not at all. Unless required by
+   applicable law or agreed to in writing, You provide Your
+   Contributions on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+   OF ANY KIND, either express or implied, including, without
+   limitation, any warranties or conditions of TITLE, NON-
+   INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
+
+7. Should You wish to submit work that is not Your original creation,
+   You may submit it to jPOS.org separately from any
+   Contribution, identifying the complete details of its source and of
+   any license or other restriction (including, but not limited to,
+   related patents, trademarks, and license agreements) of which you
+   are personally aware, and conspicuously marking the work as
+   "Submitted on behalf of a third-party: [named here]".
+
+8. You agree to notify jPOS.org of any facts or circumstances of
+   which you become aware that would make these representations
+   inaccurate in any respect.
+
+Date: 2020-02-21
+Please sign: Daniel Cricco
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJKBAEBCgA0FiEEtwR8nJUWGyx41/sAu4g0y0pksCMFAl5QLSwWHGRjcmljY29A
+ZmludGVjaC53b3JrcwAKCRC7iDTLSmSwIyV3D/9v8vb7en6ArYt/pbdOJRfiyaoZ
+UDwqrlSEfV1DrkiGQYE9+rgiLp47DuUfWTs5Q1omtR6245toTShvFoSQH0cPEmrA
+wuxOTWAu7G204WaWvdZ5WMWFZJ/p7UhycpLZQ0KBknpOTjFrbxoAUmEGc7M/rPZr
+sm3lwtzT+afoRiIXHZXGhWpbHDJmUA1zj9JyzVEONM9MJdbrEapgFiE76w7ey3CR
+l7suxRLPOZoPrMMOF0UHu/RqJJSVHbTF3AriTCvwoYmOxRpedpEKoimhOYvHfsve
+C1R2d+tr5s1/714vepbEdZdqkncZHrU43lkoWeWlIVA6KGfCMuetL6MFCfseEQ4w
+63AwnAqLs34Ht6KQ8KNVGm8XRkFcaE/uTEAijjMNzev9bdOs6Gl5y0tbijhrne/y
+Axy7nW3uhLKO3DFZJgp8LtCYQSx7EiSpZpbC3cFxyXpnNV6rBCxYDsoEHjctikd/
+Uc5v4+t/DYZBWk95vD9aX+SCeLth0lhxCeArQccquYcyaEp7x2JXU6yUVMMh7Cyx
+DtKzwcdZaBhtTqEpHscglZ4qzlKzJM0FC30PmQPIuzf0Ai1G2viwWqpEES6ghDtL
+NMazWUbfVufppNunmBtxcAz+EObi2AVyBEbrL+HHPwEMjNSHq3AUM9on2VYmWsKp
+MI0P6UMRN17kqwiZCg==
+=1jsu
+-----END PGP SIGNATURE-----
