@@ -24,6 +24,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.NameRegistrar;
 
 import java.util.Date;
+import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 /**
@@ -34,8 +35,8 @@ import java.util.TimeZone;
 public class MacroFilter implements ISOFilter, Configurable {
     Sequencer seq;
     Configuration cfg;
-    int[] unsetFields  = new int[0];
-    int[] validFields  = new int[0];
+    String[] unsetFields  = new String[0];
+    String[] validFields  = new String[0];
     public MacroFilter () {
         super();
     }
@@ -55,10 +56,10 @@ public class MacroFilter implements ISOFilter, Configurable {
         this.cfg = cfg;
         try {
             String seqName  = cfg.get ("sequencer", null);
-            unsetFields     = ISOUtil.toIntArray (cfg.get ("unset", ""));
-            validFields     = ISOUtil.toIntArray (cfg.get ("valid", ""));
+            unsetFields     = ISOUtil.toStringArray(cfg.get ("unset", ""));
+            validFields     = ISOUtil.toStringArray(cfg.get ("valid", ""));
             if (seqName != null) {
-                seq = (Sequencer) NameRegistrar.get (
+                seq = NameRegistrar.get (
                     "sequencer."+cfg.get("sequencer")
                 );
             } else if (seq == null) {
@@ -75,7 +76,7 @@ public class MacroFilter implements ISOFilter, Configurable {
         try {
             applyProps (m);
             if (validFields.length > 0) 
-                m = (ISOMsg) m.clone (validFields);
+                m = m.clone (validFields);
             if (unsetFields.length > 0)
                 m.unset (unsetFields);
         } catch (ISOException e) {
@@ -114,5 +115,6 @@ public class MacroFilter implements ISOFilter, Configurable {
             }
         }
     }
+
 }
 
