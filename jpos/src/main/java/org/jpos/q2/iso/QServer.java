@@ -262,6 +262,11 @@ public class QServer
     public String getISOChannelNames() {
         return server.getISOChannelNames();
     }
+
+    public ISOServer getISOServer() {
+        return server;
+    }
+    
     @Override
     public String getCountersAsString () {
         return server.getCountersAsString ();
