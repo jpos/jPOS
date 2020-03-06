@@ -136,7 +136,7 @@ public class PackagerTestCase {
     }
     @Test
     public void testXMLPackager () throws Exception {
-        doTest (xmlPackager, "XMLPackager", "XMLPackager");
+        doTest (xmlPackager, "XMLPackager", "XMLPackager", true);
     }
 
     @Test
@@ -212,6 +212,11 @@ public class PackagerTestCase {
     private void doTest (ISOPackager packager, String msg, String img)
         throws Exception
     {
+        doTest(packager, msg, img, false);
+    }
+    private void doTest (ISOPackager packager, String msg, String img, boolean removeCRLF)
+        throws Exception
+    {
         // Logger logger = new Logger();
         // logger.addListener (new SimpleLogListener (System.out));
         // packager.setLogger (logger, msg + "-m");
@@ -227,19 +232,53 @@ public class PackagerTestCase {
         writeImage (img, p);
 
         byte[] b = getImage (img);
-        TestUtils.assertEquals(b, p);
+        if (removeCRLF) {
+            TestUtils.assertEquals(removeAllCRLF(b), removeAllCRLF(p));
+        } else {
+            TestUtils.assertEquals(b, p);
+        }
 
         ISOMsg m1 = new ISOMsg ();
         // packager.setLogger (logger, msg + "-m1");
         m1.setPackager (packager);
         m1.unpack (b);
-        TestUtils.assertEquals(b, m1.pack());
+        if (removeCRLF) {
+            TestUtils.assertEquals(removeAllCRLF(b), removeAllCRLF(m1.pack()));
+        } else {
+            TestUtils.assertEquals(b, m1.pack());
+        }
 
         ISOMsg m2 = new ISOMsg ();
         m2.setPackager (packager);
         // packager.setLogger (logger, msg + "-m2");
         m2.unpack (new ByteArrayInputStream (out.toByteArray()));
-        TestUtils.assertEquals(b, m2.pack());
+        if (removeCRLF) {
+            TestUtils.assertEquals(removeAllCRLF(b), removeAllCRLF(m2.pack()));
+        } else {
+            TestUtils.assertEquals(b, m2.pack());
+        }
+    }
+
+    /**
+     * Used specifically when testing XmlPackager.  When messages are generated
+     * on Windows they include a carriage return (CR) and is then compared against
+     * a version that was generated on Unix.
+     *
+     * This function is used to remove CR and LF before comparison.
+     *
+     * @param in Byte array to modify.
+     * @return Modified byte array.
+     */
+    private byte[] removeAllCRLF(byte[] in) {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(in);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        while (byteArrayInputStream.available() > 0) {
+            int b = byteArrayInputStream.read();
+            if (b != 10 && b != 13) {
+                byteArrayOutputStream.write(b);
+            }
+        }
+        return byteArrayOutputStream.toByteArray();
     }
 
     /*
