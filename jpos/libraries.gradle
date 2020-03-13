@@ -8,23 +8,23 @@ ext {
         jline: 'org.jline:jline:3.14.0',
         beanshell: 'org.apache-extras.beanshell:bsh:2.0b6',
         javatuples: 'org.javatuples:javatuples:1.2',
-        javassist: 'org.javassist:javassist:3.25.0-GA',
+        javassist: 'org.javassist:javassist:3.26.0-GA',
         osgi_core: 'org.osgi:org.osgi.core:6.0.0',
-        mockito: 'org.mockito:mockito-core:3.0.0',
-        mockito_jupiter: 'org.mockito:mockito-junit-jupiter:3.0.0',
+        mockito: 'org.mockito:mockito-core:3.3.3',
+        mockito_jupiter: 'org.mockito:mockito-junit-jupiter:3.3.3',
         fest_assert: 'org.easytesting:fest-assert:1.4',
         xmlunit: 'xmlunit:xmlunit:1.6',
-        junit: 'org.junit.jupiter:junit-jupiter:5.5.2',
+        junit: 'org.junit.jupiter:junit-jupiter:5.6.0',
         bouncycastle: [
-            'org.bouncycastle:bcprov-jdk15on:1.63',
-            'org.bouncycastle:bcpg-jdk15on:1.63'
+            'org.bouncycastle:bcprov-jdk15on:1.64',
+            'org.bouncycastle:bcpg-jdk15on:1.64'
         ],
-        hamcrest: 'org.hamcrest:hamcrest:2.1',
-        sshd: 'org.apache.sshd:sshd-core:2.3.0',
-        slf4j_api: "org.slf4j:slf4j-api:1.7.28",
-        slf4j_nop: "org.slf4j:slf4j-nop:1.7.28",
-        hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.11',
-        yaml: "org.yaml:snakeyaml:1.25"
+        hamcrest: 'org.hamcrest:hamcrest:2.2',
+        sshd: 'org.apache.sshd:sshd-core:2.4.0',
+        slf4j_api: "org.slf4j:slf4j-api:1.7.30",
+        slf4j_nop: "org.slf4j:slf4j-nop:1.7.30",
+        hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.12',
+        yaml: "org.yaml:snakeyaml:1.26"
     ]
 }
 

@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_13;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import javax.crypto.spec.SecretKeySpec;
 
 import org.javatuples.Pair;
@@ -886,7 +889,11 @@ public class JCESecurityModuleTest {
                         ,serviceCode, atc, MKDMethod.OPTION_A);
             fail("Expected SMException to be thrown");
         } catch (SMException ex){
-            assertEquals("String index out of range: -4", ex.getNested().getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_13)) {
+                assertEquals("String index out of range: -4", ex.getNested().getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("begin 4, end 0, length 0", ex.getNested().getMessage(), "ex.getMessage()");
+            }
         }
     }
 

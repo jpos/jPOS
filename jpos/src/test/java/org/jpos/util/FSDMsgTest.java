@@ -28,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_13;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -183,7 +186,11 @@ public class FSDMsgTest {
             fSDMsg.dump(p, "testFSDMsgIndent");
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: -2", ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_13)) {
+                assertEquals("String index out of range: -2", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("begin 2, end 0, length 0", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
         }
     }
@@ -364,7 +371,11 @@ public class FSDMsgTest {
             fSDMsg.getHexHeader();
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: -2", ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_13)) {
+                assertEquals("String index out of range: -2", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("begin 2, end 0, length 0", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -956,7 +967,11 @@ public class FSDMsgTest {
             fSDMsg.toXML();
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: -2", ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_13)) {
+                assertEquals("String index out of range: -2", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("begin 2, end 0, length 0", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
         }
     }
