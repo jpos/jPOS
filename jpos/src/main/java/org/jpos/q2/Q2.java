@@ -934,8 +934,12 @@ public class Q2 implements FileFilter, Runnable {
         while (rename.exists()){
             rename = new File(rename.getAbsolutePath()+"."+extension);
         }
-        getLog().warn("Tidying "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It will be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
-        f.renameTo(rename);
+        if (f.renameTo(rename)){
+            getLog().warn("Tidying "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It will be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
+        }
+        else {
+            getLog().warn("Error Tidying. Could not tidy  "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It could not be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
+        }
     }
 
     private void deleteFile (File f, String iuuid) {
