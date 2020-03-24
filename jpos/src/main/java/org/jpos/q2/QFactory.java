@@ -440,4 +440,15 @@ public class QFactory {
             );
         }
     }
+
+    public static boolean isEnabled (Element e) {
+        String enabledAttribute = getEnabledAttribute(e);
+        return "true".equalsIgnoreCase(enabledAttribute) ||
+          "yes".equalsIgnoreCase(enabledAttribute) ||
+          enabledAttribute.contains(Environment.getEnvironment().getName());
+    }
+
+    public static String getEnabledAttribute (Element e) {
+       return Environment.get(e.getAttributeValue("enabled", "true"));
+    }
 }

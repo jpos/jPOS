@@ -581,11 +581,7 @@ public class Q2 implements FileFilter, Runnable {
                     return false;
                 }
             }
-            String enabledAttribute = Environment.get(rootElement.getAttributeValue("enabled", "true"));
-            if ("true".equalsIgnoreCase(enabledAttribute) ||
-                 "yes".equalsIgnoreCase(enabledAttribute) ||
-                enabledAttribute.contains(Environment.getEnvironment().getName()))
-            {
+            if (QFactory.isEnabled(rootElement)) {
                 if (evt != null)
                     evt.addMessage("deploy: " + f.getCanonicalPath());
                 Object obj = factory.instantiate (this, rootElement);
@@ -596,7 +592,7 @@ public class Q2 implements FileFilter, Runnable {
                 );
                 qentry.setInstance (instance);
             } else if (evt != null) {
-                evt.addMessage("deploy ignored (enabled='" + enabledAttribute + "'): " + f.getCanonicalPath());
+                evt.addMessage("deploy ignored (enabled='" + QFactory.getEnabledAttribute(rootElement) + "'): " + f.getCanonicalPath());
             }
         } 
         catch (InstanceAlreadyExistsException e) {
