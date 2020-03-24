@@ -22,6 +22,7 @@ import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
@@ -787,9 +788,13 @@ public class TransactionManager
     protected List<TransactionParticipant> initGroup (Element e) 
         throws ConfigurationException
     {
-        List group = new ArrayList ();
+        List<TransactionParticipant> group = new ArrayList<>();
         for (Element el : e.getChildren ("participant")) {
-            group.add(createParticipant(el));
+            if (QFactory.isEnabled(el)) {
+                group.add(createParticipant(el));
+            } else {
+                getLog().warn ("participant ignored (enabled='" + QFactory.getEnabledAttribute(e) + "'): " + el.getAttributeValue("class") + "/" + el.getAttributeValue("realm"));
+            }
         }
         return group;
     }
@@ -797,7 +802,7 @@ public class TransactionManager
         throws ConfigurationException
     {
         QFactory factory = getFactory();
-        TransactionParticipant participant = (TransactionParticipant) 
+        TransactionParticipant participant =
             factory.newInstance (QFactory.getAttributeValue (e, "class")
         );
         factory.setLogger (participant, e);
