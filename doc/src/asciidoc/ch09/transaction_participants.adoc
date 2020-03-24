@@ -3,6 +3,13 @@
 jPOS comes with some general purpose transaction participant implementations that
 can be used as-is or used as a reference to write your own.
 
+[TIP]
+=====
+The `<participant ...>` element supports an optional `enabled` attribute
+that can be used disable participants at runtime. The `enabled` value can
+either be 'yes/no/true/false` or a list of environment names (i.e.: `prod, staging`).
+=====
+
 include::participants/switch.adoc[]
 include::participants/check_fields.adoc[]
 include::participants/select_destination.adoc[]
