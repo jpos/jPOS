@@ -139,7 +139,7 @@ public class GenericSSLSocketFactory
             KeyManager[] kma = km.getKeyManagers();
             TrustManager[] tma = getTrustManagers( ks );
             SSLContext sslc = SSLContext.getInstance( "SSL" ); 
-            sslc.init( kma, tma, SecureRandom.getInstance( "SHA1PRNG" ) ); 
+            sslc.init( kma, tma, new SecureRandom() );
             return sslc;
         } catch(Exception e) {
             throw new ISOException (e);
