@@ -168,13 +168,4 @@ public class SslChannelIntegrationTest {
         };
     }
 
-    @BeforeAll
-    public static void avoidNeedingToMoveTheMouseToMakeTheTestRunRepeatablyOnLinux() {
-        // See http://bugs.sun.com/view_bug.do?bug_id=6202721 for why this is not just /dev/urandom
-        // Without setting this property running tests repeatedly without moving the mouse will result in SSL sockets
-        // not being created until the mouse is moved (at least on Linux creating SecureRandom does a blocking read
-        // from /dev/random by default).
-        System.setProperty("java.security.egd", "file:/dev/./urandom");
-    }
-
 }
