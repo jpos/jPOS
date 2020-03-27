@@ -82,7 +82,7 @@ public class SslChannelIntegrationTest {
 
     private XMLChannel newClientChannel() throws IOException, ISOException {
         XMLChannel clientChannel = new XMLChannel(new XMLPackager());
-        clientChannel.setSocketFactory(new SunJSSESocketFactory());
+        clientChannel.setSocketFactory(new GenericSSLSocketFactory());
         clientChannel.setConfiguration(clientConfiguration());
         clientChannel.setLogger(logger, "client.channel");
         clientChannel.setHost("localhost", PORT);
@@ -94,7 +94,7 @@ public class SslChannelIntegrationTest {
         clientSide.setLogger(logger, "server.channel");
 
         ISOServer isoServer = new ISOServer(PORT, clientSide, new ThreadPool());
-        isoServer.setSocketFactory(new SunJSSESocketFactory());
+        isoServer.setSocketFactory(new GenericSSLSocketFactory());
         isoServer.setConfiguration(serverConfiguration());
         isoServer.setLogger(logger, "server");
         isoServer.addISORequestListener(new TestListener());

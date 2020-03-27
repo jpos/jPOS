@@ -35,10 +35,7 @@ import java.net.ServerSocket;
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOPackager;
-import org.jpos.iso.ISOVMsg;
-import org.jpos.iso.SunJSSESocketFactory;
+import org.jpos.iso.*;
 import org.jpos.iso.header.BASE1Header;
 import org.jpos.iso.header.BaseHeader;
 import org.jpos.iso.packager.Base1Packager;
@@ -228,7 +225,7 @@ public class VAPChannelTest {
     @Test
     public void testSetConfiguration() throws Throwable {
         VAPChannel vAPChannel = new VAPChannel(new Base1Packager());
-        vAPChannel.setSocketFactory(new SunJSSESocketFactory());
+        vAPChannel.setSocketFactory(new GenericSSLSocketFactory());
         vAPChannel.setConfiguration(new SimpleConfiguration());
         assertEquals("000000", vAPChannel.srcid, "vAPChannel.srcid");
         assertEquals("000000", vAPChannel.dstid, "vAPChannel.dstid");
