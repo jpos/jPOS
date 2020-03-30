@@ -1,5 +1,8 @@
 sudo: required
 dist: xenial
+addons:
+  apt:
+    packages: haveged
 language: java
 jdk:
   - openjdk8
