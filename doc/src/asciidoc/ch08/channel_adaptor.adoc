@@ -112,7 +112,7 @@ properties are +storepassword+, +keypassword+ and +keystore+.
 The configuration would look like this:
 
 ------
- <property name="socketFactory" value="org.jpos.iso.SunJSSESocketFactory" />
+ <property name="socketFactory" value="org.jpos.iso.GenericSSLSocketFactory" />
  <property name="storepassword" value="password" />
  <property name="keypassword"   value="password" />
  <property name="keystore" value="cfg/mykeystore.ks" />

@@ -28,7 +28,9 @@ import java.security.Security;
  * @author  Bharavi Gade
  * @author Alwyn Schoeman
  * @since   1.3.3
+ * @deprecated use GenericSSLSocketFactory()
  */
+@Deprecated
 public class SunJSSESocketFactory extends GenericSSLSocketFactory {
     static {
         try {

@@ -638,7 +638,7 @@ public class BaseChannelTest {
 
     @Test
     public void testGetSocketFactory() throws Throwable {
-        ISOClientSocketFactory socketFactory = new SunJSSESocketFactory();
+        ISOClientSocketFactory socketFactory = new GenericSSLSocketFactory();
         BaseChannel gZIPChannel = new GZIPChannel();
         gZIPChannel.setSocketFactory(socketFactory);
         ISOClientSocketFactory result = gZIPChannel.getSocketFactory();
@@ -902,7 +902,7 @@ public class BaseChannelTest {
     @Test
     public void testSetConfiguration() throws Throwable {
         BaseChannel gZIPChannel = new GZIPChannel(new ISO93BPackager(), null);
-        gZIPChannel.setSocketFactory(new SunJSSESocketFactory());
+        gZIPChannel.setSocketFactory(new GenericSSLSocketFactory());
         gZIPChannel.setConfiguration(new SimpleConfiguration());
         assertEquals(300000, gZIPChannel.getTimeout(), "(GZIPChannel) gZIPChannel.getTimeout()");
         assertEquals(100000, gZIPChannel.getMaxPacketLength(), "(GZIPChannel) gZIPChannel.getMaxPacketLength()");
@@ -1098,7 +1098,7 @@ public class BaseChannelTest {
     @Test
     public void testSetSocketFactory() throws Throwable {
         BaseChannel x25Channel = new X25Channel();
-        ISOClientSocketFactory socketFactory = new SunJSSESocketFactory();
+        ISOClientSocketFactory socketFactory = new GenericSSLSocketFactory();
         x25Channel.setSocketFactory(socketFactory);
         assertSame(socketFactory, ((X25Channel) x25Channel).socketFactory, "(X25Channel) x25Channel.socketFactory");
     }
