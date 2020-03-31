@@ -38,7 +38,10 @@ subprojects {
         options.compilerArgs << "-Xlint" 
       } 
     }
-
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
     publishing {
         publications {
             mavenJava(MavenPublication) {
@@ -49,6 +52,7 @@ subprojects {
     library/framework that can be customized and 
     extended in order to implement financial interchanges.
   """
+                    url = "http://jpos.org"
                     organization {
                         name = 'jPOS.org'
                         url = 'http://jpos.org'
