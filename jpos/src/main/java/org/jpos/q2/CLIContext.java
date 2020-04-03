@@ -31,19 +31,32 @@ public class CLIContext {
     private OutputStream err;
     private InputStream in;
     private LineReader reader;
-    private Map userData;
+    private Map<Object, Object> userData;
     private CLI cli;
+    private String activeSubSystem = null;
 
     @SuppressWarnings("unused")
     private CLIContext() { }
 
-    private CLIContext(CLI cli, OutputStream out, OutputStream err, InputStream in, LineReader reader, Map userData) {
+    private CLIContext(CLI cli, OutputStream out, OutputStream err, InputStream in, LineReader reader, Map<Object, Object> userData) {
         this.cli = cli;
         this.out = out;
         this.err = err;
         this.in = in;
         this.reader = reader;
         this.userData = userData;
+    }
+
+    public String getActiveSubSystem() {
+        return activeSubSystem;
+    }
+
+    public void setActiveSubSystem(String subSystem) {
+        String activeSubSystem = getActiveSubSystem();
+        if (subSystem == null && activeSubSystem != null) {
+            getUserData().remove(activeSubSystem);
+        }
+        this.activeSubSystem = subSystem;
     }
 
     public boolean isStopped() {
@@ -74,7 +87,7 @@ public class CLIContext {
         return in;
     }
 
-    public Map getUserData() {
+    public Map<Object,Object> getUserData() {
         return userData;
     }
 
@@ -84,6 +97,13 @@ public class CLIContext {
 
     public CLI getCLI() {
         return cli;
+    }
+
+    public void printUserData() {
+        getUserData().forEach((k,v) -> {
+            println("Key: " + k.toString());
+            println("Value: " + v.toString());
+        });
     }
 
     public void printThrowable(Throwable t) {
@@ -119,6 +139,9 @@ public class CLIContext {
         return "yes".equalsIgnoreCase(getReader().readLine(prompt));
     }
 
+    public String readSecurely(String prompt) {
+        return getReader().readLine(prompt, '*');
+    }
 
     public static Builder builder() {
         return new Builder();
