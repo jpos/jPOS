@@ -16,9 +16,10 @@ public class FK extends SsmActionBase {
     @Override
     protected boolean checkUsage(CLIContext cli, String[] strings) {
         // This doesn't cover all combinations, but it is assumed the operation will fail elsewhere.
-        if (strings.length < 5) {
+        if (strings.length == 4) {
             if (!strings[3].equals("-prompt")) {
                 cli.println("Usage: FK KeyLength keyType -prompt");
+                cli.println("Usage: FK KeyLength keyType component1 component2 component3");
                 return false;
             } else {
                 prompt = true;
@@ -26,6 +27,7 @@ public class FK extends SsmActionBase {
             }
         }
         if (strings.length < 6) {
+            cli.println("Usage: FK KeyLength keyType -prompt");
             cli.println("Usage: FK KeyLength keyType component1 component2 component3");
             return false;
         }
