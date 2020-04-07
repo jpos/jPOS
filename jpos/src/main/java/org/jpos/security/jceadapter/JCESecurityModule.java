@@ -1308,8 +1308,12 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return forms an SecureDESKey from two clear components
      * @throws SMException
      */
-    protected SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
-            String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException {
+    public SecureDESKey formKEYfromThreeClearComponents(
+            short keyLength,
+            String keyType,
+            String clearComponent1HexString,
+            String clearComponent2HexString,
+            String clearComponent3HexString) throws SMException {
         SecureDESKey secureDESKey;
         LogEvent evt = new LogEvent(this, "s-m-operation");
 

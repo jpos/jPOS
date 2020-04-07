@@ -31,7 +31,7 @@ public class ENABLE implements CLICommand {
     @Override
     public void exec(CLIContext ctx, String[] args) throws Exception {
         if (args.length < 2) {
-            ctx.println("Usage: enable <xml_file(no extenssion)>");
+            ctx.println("Usage: enable <xml_file(no extension)>");
             return;
         }
         File deployDir = ctx.getCLI().getQ2().getDeployDir();
