@@ -1,0 +1,42 @@
+SSM (Software security subsystem)
+
+To enter the SSM subsystem, use the ssm command.
+To exit the SSM subsystem, use the exit command.
+
+Commands of the SSM subsystem:
+
+INIT <options>
+where options include:
+    -lmk <filename>
+                  to specify the Local Master Keys file.
+    -rebuildlmk   to rebuild new Local Master Keys
+                  WARNING: old Local Master Keys gets overwritten.
+    -jce <provider classname>
+                  to specify a JavaTM Cryptography Extension 1.2.1 provider.
+
+
+GC <keyLength>
+              to generate a clear key component.
+
+FK <keyLength> <keyType> <component1> <component2> <component3>
+              to form a key from three clear components.
+              and returns the key encrypted under LMK
+              Odd parity is be forced before encryption under LMK.
+
+FK <keyLength> <keyType> -prompt
+              exact same functionality as the previous FK command
+              except that you are prompted on the console for the
+              individual key components.
+
+CK <keyLength> <keyType> <KEYunderLMK>
+              to generate a key check value for a key encrypted under LMK.
+
+IK <keyLength> <keyType> <KEYunderKEK>
+   <kekLength> <kekType> <KEKunderLMK> <KEKcheckValue>
+              to import a key from encryption under KEK (eg. ZMK,TMK) to encryption under LMK
+              Odd parity is be forced before encryption under LMK.
+
+KE <keyLength> <keyType> <KEYunderLMK> <KEYcheckValue>
+   <kekLength> <kekType> <KEKunderLMK> <KEKcheckValue>
+              to translate (export) a key from encryption under LMK
+              to encryption under KEK (eg. ZMK,TMK).
