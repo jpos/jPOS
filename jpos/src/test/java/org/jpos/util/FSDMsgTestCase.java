@@ -341,8 +341,19 @@ public class FSDMsgTestCase {
         
         u1.unpack(m1.packToBytes());
         Assertions.assertEquals("DEFAULT   ", u1.get("z"), "Default defined - used - unpack");
-
     }
-    
-    
+
+    @Test
+    public void testFSDBinary() throws Exception {
+        FSDMsg m0 = new FSDMsg(SCHEMA_DIR_URL + "fsd-");
+        FSDMsg u0 = new FSDMsg(SCHEMA_DIR_URL + "fsd-");
+
+        m0.set("message-id","04");
+        m0.set("x","X");
+        m0.set("y", ISOUtil.hexString("12345678".getBytes()));
+        Assertions.assertEquals("000X0412345678", m0.pack());
+
+        u0.unpack(m0.packToBytes());
+        Assertions.assertEquals(ISOUtil.hexString("12345678".getBytes()), u0.get("y"));
+    }
 }

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema id='04'>
+ <field id='y' type='B' length='8' />
+</schema>
