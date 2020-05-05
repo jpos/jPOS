@@ -22,7 +22,6 @@ import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.Environment;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
@@ -689,7 +688,8 @@ public class TransactionManager
                         metrics.record(getName(p) + "-selector", c.lap());
                 }
                 if (evt != null) {
-                    evt.addMessage ("       selector: " + groupName);
+                    evt.addMessage ("       selector: '" + groupName +"'" +
+                      (groupName != null && groups.get (groupName) == null ? " (not configured)" : ""));
                 }
                 if (groupName != null) {
                     StringTokenizer st = new StringTokenizer (groupName, " ,");
@@ -738,8 +738,9 @@ public class TransactionManager
     }
     protected List<TransactionParticipant> getParticipants (String groupName) {
         List<TransactionParticipant> participants = groups.get (groupName);
-        if (participants == null)
+        if (participants == null) {
             participants = new ArrayList();
+        }
         return participants;
     }
     protected List<TransactionParticipant> getParticipants (long id) {
