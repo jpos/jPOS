@@ -697,7 +697,7 @@ public class TransactionManager
                         String grp = st.nextToken();
                         addGroup (id, grp);
                         if (evt != null && groups.get(grp) == null)
-                            evt.addMessage ("WARNING: Group '" + grp + "' not configured");
+                            evt.addMessage ("                 WARNING: group '" + grp + "' not configured");
                         participants.addAll (getParticipants (grp));
                     }
                     while (iter.hasNext())
