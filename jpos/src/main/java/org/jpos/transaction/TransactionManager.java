@@ -688,8 +688,7 @@ public class TransactionManager
                         metrics.record(getName(p) + "-selector", c.lap());
                 }
                 if (evt != null) {
-                    evt.addMessage ("       selector: '" + groupName +"'" +
-                      (groupName != null && groups.get (groupName) == null ? " (not configured)" : ""));
+                    evt.addMessage ("       selector: '" + groupName +"'");
                 }
                 if (groupName != null) {
                     StringTokenizer st = new StringTokenizer (groupName, " ,");
@@ -697,6 +696,8 @@ public class TransactionManager
                     while (st.hasMoreTokens ()) {
                         String grp = st.nextToken();
                         addGroup (id, grp);
+                        if (evt != null && groups.get(grp) == null)
+                            evt.addMessage ("WARNING: Group '" + grp + "' not configured");
                         participants.addAll (getParticipants (grp));
                     }
                     while (iter.hasNext())
