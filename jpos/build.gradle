@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.3.1'
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:5.0.1'
         classpath 'org.owasp:dependency-check-gradle:5.3.2.1'
     }
 }
