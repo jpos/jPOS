@@ -89,20 +89,6 @@ subprojects {
         }
         repositories {
             maven {
-                def releasesRepoUrl = mavenCentralRepo
-                def snapshotsRepoUrl = 'file:///opt/local/maven'
-                url = isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
-                if (!isSnapshot) {
-                    credentials {
-                        if (project.hasProperty("mavenCentralUsername"))
-                            username = mavenCentralUsername
-                        if (project.hasProperty("mavenCentralPassword"))
-                            password = mavenCentralPassword
-                    }
-                }
-            }
-
-            maven {
                 def releasesRepoUrl = 's3://hextremelabsmavenrepo/release'
                 def snapshotsRepoUrl = 's3://hextremelabsmavenrepo/snapshot'
                 url = isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
