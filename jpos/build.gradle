@@ -213,6 +213,10 @@ task version (type: JavaExec, dependsOn: classes) {
     classpath sourceSets.main.runtimeClasspath
 }
 
+// just an alias to keep the old install task name
+task install(dependsOn: publishToMavenLocal) {}
+
+
 class GitRevisionTask extends DefaultTask
 {
     @InputFile @Optional
