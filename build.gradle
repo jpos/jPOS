@@ -101,6 +101,16 @@ subprojects {
                     }
                 }
             }
+
+            maven {
+                def releasesRepoUrl = 's3://hextremelabsmavenrepo/release'
+                def snapshotsRepoUrl = 's3://hextremelabsmavenrepo/snapshot'
+                url = isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
+                credentials(AwsCredentials) {
+                    accessKey System.getenv('AWS_ACCESS_KEY_ID')
+                    secretKey System.getenv('AWS_SECRET_ACCESS_KEY')
+                }
+            }
         }
     }
 

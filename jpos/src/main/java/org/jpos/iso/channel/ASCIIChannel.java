@@ -110,7 +110,7 @@ public class ASCIIChannel extends BaseChannel {
         while (l == 0) {
             serverIn.readFully(b, 0, lengthDigits);
             try {
-                if ((l=Integer.parseInt(new String(b))) == 0) {
+                if ((l = ((b[0] & 0xff) << 8 | b[1] & 0xff)) == 0) {
                     serverOut.write(b);
                     serverOut.flush();
                 }
