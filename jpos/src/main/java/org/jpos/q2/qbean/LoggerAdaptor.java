@@ -72,9 +72,11 @@ public class LoggerAdaptor extends QBeanSupport {
         throws ConfigurationException
     {
         QFactory factory = getServer().getFactory();
-        String clazz  = e.getAttributeValue ("class");
-        LogListener listener = factory.newInstance (clazz);
-        factory.setConfiguration(listener, e);
-        logger.addListener (listener);
+        if (QFactory.isEnabled(e)) {
+            String clazz = e.getAttributeValue("class");
+            LogListener listener = factory.newInstance(clazz);
+            factory.setConfiguration(listener, e);
+            logger.addListener(listener);
+        }
     }
 }
