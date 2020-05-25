@@ -93,12 +93,13 @@ public class EuroSubFieldPackager extends ISOBasePackager
     {
         LogEvent evt = new LogEvent (this, "unpack");
         int consumed = 0;
-        ISOComponent c;
+        ISOComponent c = null;
 
         // Unpack the fields
         while (consumed < b.length) {
-            //Determine current tag
-            int i = consumed==0&&fld[0]!=null?0:tagPrefixer.decodeLength(b, consumed);
+            //If this is first iteration and there is a packager for SE 0 then i=0, i.e. use field packager for SE 0
+            //Else determine current tag
+            int i = c == null && fld[0] != null ? 0 : tagPrefixer.decodeLength(b, consumed);
 
             if (i >= fld.length || fld[i] == null)
                 throw new ISOException("Unsupported sub-field " + i + " unpacking field " + m.getKey());
