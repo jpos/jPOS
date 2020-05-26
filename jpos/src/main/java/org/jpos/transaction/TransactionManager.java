@@ -795,7 +795,7 @@ public class TransactionManager
             if (QFactory.isEnabled(el)) {
                 group.add(createParticipant(el));
             } else {
-                getLog().warn ("participant ignored (enabled='" + QFactory.getEnabledAttribute(e) + "'): " + el.getAttributeValue("class") + "/" + el.getAttributeValue("realm"));
+                getLog().warn ("participant ignored (enabled='" + QFactory.getEnabledAttribute(el) + "'): " + el.getAttributeValue("class") + "/" + el.getAttributeValue("realm"));
             }
         }
         return group;
