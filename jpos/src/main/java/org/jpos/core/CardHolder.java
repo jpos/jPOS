@@ -141,7 +141,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
             exp = s.substring(separatorIndex+1, separatorIndex+1+4);
             trailer = s.substring(separatorIndex+1+4);
         } else 
-            throw new InvalidCardException ("invalid track2");
+            throw new InvalidCardException ("Invalid track2 format");
     }
 
     /**
@@ -251,7 +251,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         throws InvalidCardException
     { 
         if (pan.length() < MINPANLEN)
-            throw new InvalidCardException ("pan too short");
+            throw new InvalidCardException ("PAN length smaller than min required");
         this.pan = pan;
     }
 
@@ -279,7 +279,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         throws InvalidCardException
     { 
         if (exp.length() != 4)
-            throw new InvalidCardException ("exp length not 4");
+            throw new InvalidCardException ("Invalid Exp length, must be 4");
         this.exp = exp;
     }
 
