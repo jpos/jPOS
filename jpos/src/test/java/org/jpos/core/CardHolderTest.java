@@ -18,12 +18,6 @@
 
 package org.jpos.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -31,6 +25,8 @@ import org.jpos.iso.ISOBitMap;
 import org.jpos.iso.ISOMsg;
 import org.jpos.testhelpers.EqualsHashCodeTestCase;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CardHolderTest extends EqualsHashCodeTestCase {
     @Test
@@ -62,87 +58,30 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
     }
 
     @Test
-    public void testConstructorThrowsInvalidCardException() throws Throwable {
-        try {
-            new CardHolder("11Character", "3Ch");
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("exp length not 4", ex.getMessage(), "ex.getMessage()");
-        }
+    public void testConstructorThrowsInvalidCardException() {
+        assertThrows(InvalidCardException.class, () -> new CardHolder("11Character", "3Ch"));
     }
 
     @Test
-    public void testConstructorThrowsInvalidCardException1() throws Throwable {
-        try {
-            new CardHolder("11Character", "5Char");
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("exp length not 4", ex.getMessage(), "ex.getMessage()");
-        }
+    public void testConstructorThrowsInvalidCardException1() {
+        assertThrows(InvalidCardException.class, () -> new CardHolder("11Character", "5Char"));
     }
 
     @Test
-    public void testConstructorThrowsInvalidCardException2() throws Throwable {
-        try {
-            new CardHolder("9Characte", "testCardHolderExp");
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("pan too short", ex.getMessage(), "ex.getMessage()");
-        }
+    public void testConstructorThrowsInvalidCardException2() {
+        assertThrows(InvalidCardException.class, () -> new CardHolder("9Characte", "testCardHolderExp"));
     }
 
     @Test
-    public void testConstructorThrowsInvalidCardException3() throws Throwable {
-        try {
-            new CardHolder("testCardHolderTrack2");
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("invalid track2", ex.getMessage(), "ex.getMessage()");
-        }
+    public void testConstructorThrowsInvalidCardException3() {
+        assertThrows(InvalidCardException.class, () -> new CardHolder("testCardHolderTrack2"));
     }
 
     @Test
-    public void testConstructorThrowsInvalidCardException4() throws Throwable {
+    public void testConstructorThrowsInvalidCardException4() {
         ISOMsg m = new ISOMsg(100);
-        try {
-            new CardHolder(m);
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("required fields not present", ex.getMessage(), "ex.getMessage()");
-            assertEquals(0, m.getDirection(), "m.getDirection()");
-        }
-    }
-
-    @Test
-    public void testConstructorFieldsTwoBitmapThrowsNullPointerException() throws Throwable {
-        ISOMsg m = new ISOMsg("testCardHolderMti");
-        m.set(new ISOBitMap(2));
-        try {
-            new CardHolder(m);
-            fail("Expected InvalidCardException to be thrown");
-        } catch (NullPointerException ex) {
-            assertEquals(0, m.getDirection(), "m.getDirection()");
-        }
-    }
-
-    @Test
-    public void testConstructorThrowsNullPointerException() throws Throwable {
-        try {
-            new CardHolder("11Character", null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-        }
-    }
-
-    @Test
-    public void testConstructorThrowsNullPointerException1() throws Throwable {
-        try {
-            new CardHolder((ISOMsg) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-        }
+        assertThrows(InvalidCardException.class, () -> new CardHolder(m));
+        assertEquals(0, m.getDirection(), "m.getDirection()");
     }
 
     @Test
@@ -539,29 +478,19 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
     @Test
     public void testParseTrack2ThrowsInvalidCardException() throws Throwable {
         CardHolder cardHolder = new CardHolder("testCardHolderPan", "4Cha");
-        try {
-            cardHolder.parseTrack2("D0");
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("invalid track2", ex.getMessage(), "ex.getMessage()");
-            assertEquals("4Cha", cardHolder.exp, "cardHolder.exp");
-            assertEquals("testCardHolderPan", cardHolder.pan, "cardHolder.pan");
-            assertNull(cardHolder.trailer, "cardHolder.trailler");
-        }
+        assertThrows(InvalidCardException.class, () -> cardHolder.parseTrack2("D0"));
+        assertEquals("4Cha", cardHolder.exp, "cardHolder.exp");
+        assertEquals("testCardHolderPan", cardHolder.pan, "cardHolder.pan");
+        assertNull(cardHolder.trailer, "cardHolder.trailler");
     }
 
     @Test
     public void testParseTrack2ThrowsInvalidCardException1() throws Throwable {
         CardHolder cardHolder = new CardHolder();
-        try {
-            cardHolder.parseTrack2("testCardHolders");
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("invalid track2", ex.getMessage(), "ex.getMessage()");
-            assertNull(cardHolder.exp, "cardHolder.exp");
-            assertNull(cardHolder.pan, "cardHolder.pan");
-            assertNull(cardHolder.trailer, "cardHolder.trailler");
-        }
+        assertThrows(InvalidCardException.class, () -> cardHolder.parseTrack2("testCardHolders"));
+        assertNull(cardHolder.exp, "cardHolder.exp");
+        assertNull(cardHolder.pan, "cardHolder.pan");
+        assertNull(cardHolder.trailer, "cardHolder.trailler");
     }
 
     @Test
@@ -610,25 +539,15 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
     @Test
     public void testSetEXPThrowsInvalidCardException() throws Throwable {
         CardHolder cardHolder = new CardHolder("testCardHolderPan", "4Cha");
-        try {
-            cardHolder.setEXP("5Char");
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("exp length not 4", ex.getMessage(), "ex.getMessage()");
-            assertEquals("4Cha", cardHolder.exp, "cardHolder.exp");
-        }
+        assertThrows(InvalidCardException.class, () -> cardHolder.setEXP("5Char"));
+        assertEquals("4Cha", cardHolder.exp, "cardHolder.exp");
     }
 
     @Test
     public void testSetEXPThrowsInvalidCardException1() throws Throwable {
         CardHolder cardHolder = new CardHolder("testCardHolderPan", "4Cha");
-        try {
-            cardHolder.setEXP("3Ch");
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("exp length not 4", ex.getMessage(), "ex.getMessage()");
-            assertEquals("4Cha", cardHolder.exp, "cardHolder.exp");
-        }
+        assertThrows(InvalidCardException.class, () -> cardHolder.setEXP("3Ch"));
+        assertEquals("4Cha", cardHolder.exp, "cardHolder.exp");
     }
 
     @Test
@@ -660,13 +579,8 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
     @Test
     public void testSetPANThrowsInvalidCardException() throws Throwable {
         CardHolder cardHolder = new CardHolder("k'X9|DH:!;uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,");
-        try {
-            cardHolder.setPAN("9Characte");
-            fail("Expected InvalidCardException to be thrown");
-        } catch (InvalidCardException ex) {
-            assertEquals("pan too short", ex.getMessage(), "ex.getMessage()");
-            assertEquals("k'X9|", cardHolder.pan, "cardHolder.pan");
-        }
+        assertThrows(InvalidCardException.class, () -> cardHolder.setPAN("9Characte"));
+        assertEquals("k'X9|", cardHolder.pan, "cardHolder.pan");
     }
 
     @Test
