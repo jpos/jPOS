@@ -501,23 +501,6 @@ public abstract class BaseChannel extends Observable
         else if (header != null) 
             serverOut.write(header);
     }
-    /**
-     * @deprecated use sendMessageTrailer(ISOMsg m, byte[] b) instead.
-     * @param m a reference to the ISOMsg
-     * @param len the packed image length
-     * @throws IOException on error
-     */
-    protected void sendMessageTrailler(ISOMsg m, int len) throws IOException
-    {
-    }
-
-    /**
-     * @deprecated use sendMessageTrailer(ISOMsg m, byte[] b instead.
-     */
-    @SuppressWarnings ("deprecation")
-    protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException  {
-        sendMessageTrailler (m, b.length);
-    }
 
     /**
      * Send a Message trailer.
@@ -525,16 +508,7 @@ public abstract class BaseChannel extends Observable
      * @param m The unpacked ISOMsg.
      * @param b The packed ISOMsg image.
      */
-    @SuppressWarnings("deprecation")
     protected void sendMessageTrailer(ISOMsg m, byte[] b) throws IOException {
-        sendMessageTrailler(m, b);
-    }
-
-
-    /**
-     * @deprecated use getMessageTrailer(ISOMsg m) instead.
-     */
-    protected void getMessageTrailler() throws IOException {
     }
 
     /**
@@ -543,9 +517,7 @@ public abstract class BaseChannel extends Observable
      * @param m The ISOMessage to store the trailer data.
      * @see ISOMsg#setTrailer(byte[]).
      */
-    @SuppressWarnings("deprecation")
     protected void getMessageTrailer(ISOMsg m) throws IOException {
-        getMessageTrailler();
     }
 
     protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException { 

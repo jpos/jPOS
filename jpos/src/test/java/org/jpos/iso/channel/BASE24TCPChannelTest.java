@@ -138,7 +138,7 @@ public class BASE24TCPChannelTest {
         BASE24TCPChannel bASE24TCPChannel = new BASE24TCPChannel();
 
         try {
-            bASE24TCPChannel.sendMessageTrailler(m, 100);
+            bASE24TCPChannel.sendMessageTrailer(m, new byte[100]);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull(ex.getMessage(), "ex.getMessage()");
