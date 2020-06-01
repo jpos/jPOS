@@ -119,8 +119,11 @@ public class CLIContext {
     }
 
     public void print(String s) {
-        if (isInteractive())
-            getReader().getTerminal().writer().print(s);
+        if (isInteractive()) {
+            PrintWriter writer = getReader().getTerminal().writer();
+            writer.print(s);
+            writer.flush();
+        }
         else {
             try {
                 out.write(s.getBytes());
