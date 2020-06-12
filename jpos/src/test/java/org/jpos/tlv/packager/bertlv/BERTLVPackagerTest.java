@@ -39,4 +39,17 @@ public class BERTLVPackagerTest {
         byte[] b = p.pack(m, true, 1, 1);
         assertArrayEquals(b, ISOUtil.hex2byte("394630323030"));
     }
+
+    @Test
+    public void testUnpackingZeroLength() {
+        try {
+            BERTLVPackager p = new BERTLVBinaryPackager();
+            p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+            ISOMsg m = new ISOMsg(55);
+            p.unpack(m, ISOUtil.hex2byte("9F3400"));
+        } catch (ISOException e) {
+            fail("Unexpected java.lang.ArithmeticException: divide by zero", e);
+        }
+    }
 }
