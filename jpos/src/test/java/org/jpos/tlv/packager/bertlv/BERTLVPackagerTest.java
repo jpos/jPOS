@@ -52,4 +52,17 @@ public class BERTLVPackagerTest {
             fail("Unexpected java.lang.ArithmeticException: divide by zero", e);
         }
     }
+
+    @Test
+    public void testUnpackingDate() throws ISOException {
+
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOMsg m = new ISOMsg(55);
+        p.unpack(m, ISOUtil.hex2byte("9A03020618"));
+
+        assertEquals("020618", m.getComponent("1").getValue());
+    }
 }
+
