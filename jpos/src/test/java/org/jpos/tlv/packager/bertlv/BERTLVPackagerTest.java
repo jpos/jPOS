@@ -54,17 +54,14 @@ public class BERTLVPackagerTest {
     }
 
     @Test
-    public void testUnpackingDate() {
-        try {
-            BERTLVPackager p = new BERTLVBinaryPackager();
-            p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+    public void testUnpackingDate() throws ISOException {
 
-            ISOMsg m = new ISOMsg(55);
-            p.unpack(m, ISOUtil.hex2byte("9A03020618"));
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
 
-            assertEquals("020618", m.getComponent("1").getValue());
-        } catch (ISOException e) {
-            fail("Unexpected exception", e);
-        }
+        ISOMsg m = new ISOMsg(55);
+        p.unpack(m, ISOUtil.hex2byte("9A03020618"));
+
+        assertEquals("020618", m.getComponent("1").getValue());
     }
 }
