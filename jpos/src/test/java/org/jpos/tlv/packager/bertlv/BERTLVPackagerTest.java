@@ -62,6 +62,31 @@ public class BERTLVPackagerTest {
         ISOMsg m = new ISOMsg(55);
         p.unpack(m, ISOUtil.hex2byte("9A03020618"));
 
+        // Unpacking is dropping the leading 0
         assertEquals("020618", m.getComponent("1").getValue());
+    }
+
+    @Test
+    public void testTruncatedNumber() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOMsg m = new ISOMsg(55);
+        p.unpack(m, ISOUtil.hex2byte("5F2A020840"));
+
+        // Unpacking is dropping the leading 0
+        assertEquals("0840", m.getComponent("1").getValue());
+    }
+
+    @Test
+    public void testTruncatedAmount() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOMsg m = new ISOMsg(55);
+        p.unpack(m, ISOUtil.hex2byte("9F0206000000000033"));
+
+        // Unpacking is dropping the leading 0
+        assertEquals("000000000033", m.getComponent("1").getValue());
     }
 }
