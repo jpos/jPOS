@@ -29,7 +29,8 @@ import org.jpos.util.NameRegistrar;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /** A class for preallocating, recycling, and managing
  *  JDBC connections.
@@ -50,7 +51,8 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
     private String driver, url, username, password;
     private int maxConnections;
     private boolean waitIfBusy;
-    private Vector availableConnections, busyConnections;
+    private List<Connection> availableConnections;
+    private List<Connection> busyConnections;
     private boolean connectionPending = false;
 
    /**
@@ -60,6 +62,7 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
         super();
     }
 
+    @Override
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException
     {
@@ -89,11 +92,11 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
         if (initialConnections > maxConnections) {
             initialConnections = maxConnections;
         }
-        availableConnections = new Vector(initialConnections);
-        busyConnections = new Vector();
-        for(int i=0; i<initialConnections; i++) {
+        availableConnections = new ArrayList<>();
+        busyConnections = new ArrayList<>();
+        for(int i=0; i < initialConnections; i++) {
             try {
-                availableConnections.addElement(makeNewConnection());
+                availableConnections.add(makeNewConnection());
             } catch(SQLException e) {
                 throw new ConfigurationException(e);
             }
@@ -119,10 +122,10 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
         if (initialConnections > maxConnections) {
             initialConnections = maxConnections;
         }
-        availableConnections = new Vector(initialConnections);
-        busyConnections = new Vector();
+        availableConnections = new ArrayList<>();
+        busyConnections = new ArrayList<>();
         for(int i=0; i<initialConnections; i++) {
-            availableConnections.addElement(makeNewConnection());
+            availableConnections.add(makeNewConnection());
         }
     }
 
@@ -130,10 +133,9 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
         throws SQLException
     {
         if (!availableConnections.isEmpty()) {
-            Connection existingConnection =
-                (Connection)availableConnections.lastElement();
             int lastIndex = availableConnections.size() - 1;
-            availableConnections.removeElementAt(lastIndex);
+            Connection existingConnection = availableConnections.get(lastIndex);
+            availableConnections.remove(lastIndex);
             // If connection on available list is closed (e.g.,
             // it timed out), then remove it from available list
             // and repeat the process of obtaining a connection.
@@ -143,7 +145,7 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
                 notifyAll(); // Freed up a spot for anybody waiting
                 return getConnection();
             } else {
-                busyConnections.addElement(existingConnection);
+                busyConnections.add(existingConnection);
                 return existingConnection;
             }
         } else {
@@ -198,7 +200,7 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
             try {
                 connection = makeNewConnection();
                 synchronized(this) {
-                    availableConnections.addElement(connection);
+                    availableConnections.add(connection);
                     connectionPending = false;
                     notifyAll();
                 }
@@ -238,8 +240,8 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
     }
 
     public synchronized void free(Connection connection) {
-        if(busyConnections.removeElement(connection)) {
-            availableConnections.addElement(connection);
+        if(busyConnections.remove(connection)) {
+            availableConnections.add(connection);
         }
         // Wake up threads that are waiting for a connection
         notifyAll();
@@ -264,24 +266,23 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
 
     public synchronized void closeAllConnections() {
         closeConnections(availableConnections);
-        availableConnections = new Vector();
+        availableConnections = new ArrayList<>();
         closeConnections(busyConnections);
-        busyConnections = new Vector();
+        busyConnections = new ArrayList<>();
     }
 
-    private void closeConnections(Vector connections) {
+    private void closeConnections(List<Connection> connections) {
         try {
-            for(int i=0; i<connections.size(); i++) {
-                Connection connection = (Connection)connections.elementAt(i);
-                if (!connection.isClosed()) {
+            for(Connection connection : connections) {
+                if (!connection.isClosed())
                     connection.close();
-                }
-            }
+             }
         } catch(SQLException sqle) {
             // Ignore errors; garbage collect anyhow
         }
     }
 
+    @Override
     public synchronized String toString() {
         String info =
             "ConnectionPool(" + url + "," + username + ")" +
@@ -291,13 +292,18 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
         return info;
     }
 
+    @Override
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
     }
+
+    @Override
     public String getRealm () {
         return realm;
     }
+
+    @Override
     public Logger getLogger() {
         return logger;
     }

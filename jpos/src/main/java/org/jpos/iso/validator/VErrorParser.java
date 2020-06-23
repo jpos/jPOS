@@ -24,8 +24,10 @@ import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,16 +42,19 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class VErrorParser implements LogSource, Loggeable  {
 
+    protected Logger logger;
+    protected String realm;
+    private List<ISOVError> errors;
+
     /**
      * Parse an ISOComponent and get an error vector.
      * @param c Component to parse.
      * @return error vector.
      */
-    public Vector getVErrors( ISOComponent c ) {
-        Vector v = new Vector();
-        _getErr( c, v, "" );
-        _errors = v;
-        return _errors;
+    public List<ISOVError> getVErrors(ISOComponent c) {
+        errors = new ArrayList<>();
+        getErr(c, errors, "");
+        return Collections.unmodifiableList(errors);
     }
 
     public String parseXMLErrorList(){
@@ -57,13 +62,18 @@ public class VErrorParser implements LogSource, Loggeable  {
         return "";
     }
 
+    @Override
     public void setLogger(Logger logger, String realm) {
         this.logger = logger;
         this.realm = realm;
     }
+
+    @Override
     public String getRealm() {
         return realm;
     }
+
+    @Override
     public Logger getLogger() {
         return logger;
     }
@@ -90,6 +100,7 @@ public class VErrorParser implements LogSource, Loggeable  {
      * @param p output stream
      * @param indent indent character
      */
+    @Override
     public void dump(PrintStream p, String indent) {
         /** @todo !!!!!!!!! */
     }
@@ -98,41 +109,38 @@ public class VErrorParser implements LogSource, Loggeable  {
      * Free errors memory.
      */
     public void resetErrors(){
-        _errors = null;
+        errors = null;
     }
 
     /**
      * Recursive method to get the errors.
      */
-    private void _getErr ( ISOComponent c, Vector list, String id ) {
-        if ( c instanceof ISOVField ){
-            Iterator iter = ((ISOVField)c).errorListIterator();
+    private void getErr(ISOComponent c, List<ISOVError> list, String id) {
+        if (c instanceof ISOVField ) {
+            Iterator<ISOVError> iter = ((ISOVField) c).errorListIterator();
             while (iter.hasNext()) {
-                ISOVError error = (ISOVError)iter.next();
-                error.setId( id );
-                list.add( error );
+                ISOVError error = iter.next();
+                error.setId(id);
+                list.add(error);
             }
         }
-        else if ( c instanceof ISOMsg ){
-            if ( c instanceof ISOVMsg ){
+        else if (c instanceof ISOMsg ) {
+            if (c instanceof ISOVMsg ) {
                 /** Msg level error **/
-                Iterator iter = ((ISOVMsg)c).errorListIterator();
+                Iterator<ISOVError> iter = ((ISOVMsg) c).errorListIterator();
                 while (iter.hasNext()) {
-                    ISOVError error = (ISOVError)iter.next();
+                    ISOVError error = iter.next();
                     error.setId( id );
-                    list.add( error );
+                    list.add(error);
                 }
             }
             /** recursively in childs **/
-            Map fields = c.getChildren();
+            Map<Integer, ISOComponent> fields = c.getChildren();
             int max = c.getMaxField();
             for (int i = 0; i <= max ; i++)
-                if ((c=(ISOComponent) fields.get (i)) != null )
-                    _getErr( c, list, id +  Integer.toString(i) + " " );
+                if ((c = fields.get(i)) != null)
+                    getErr(c, list, id + Integer.toString(i) + " ");
         }
     }
 
-    protected Logger logger = null;
-    protected String realm=null;
-    private Vector _errors = null;
 }
