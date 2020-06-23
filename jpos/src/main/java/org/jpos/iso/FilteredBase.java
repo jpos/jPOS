@@ -22,13 +22,13 @@ import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.util.LogEvent;
 
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Filtered Channel Base
- * 
+ * Filtered Channel Base.
+ *
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @see FilteredChannel
@@ -38,12 +38,15 @@ import java.util.Vector;
 public abstract class FilteredBase extends Observable
     implements FilteredChannel, Cloneable
 {
-    protected Vector incomingFilters, outgoingFilters;
+
+    protected List<ISOFilter> incomingFilters;
+
+    protected List<ISOFilter> outgoingFilters;
 
     public FilteredBase () {
         super();
-        incomingFilters = new Vector();
-        outgoingFilters = new Vector();
+        incomingFilters = new CopyOnWriteArrayList<>();
+        outgoingFilters = new CopyOnWriteArrayList<>();
     }
 
     /**
@@ -67,12 +70,14 @@ public abstract class FilteredBase extends Observable
     /**
      * @param filter incoming filter to add
      */
+    @Override
     public void addIncomingFilter (ISOFilter filter) {
         addFilter (filter, ISOMsg.INCOMING);
     }
     /**
      * @param filter outgoing filter to add
      */
+    @Override
     public void addOutgoingFilter (ISOFilter filter) {
         addFilter (filter, ISOMsg.OUTGOING);
     }
@@ -80,6 +85,7 @@ public abstract class FilteredBase extends Observable
     /**
      * @param filter filter to add (both directions, incoming/outgoing)
      */
+    @Override
     public void addFilter (ISOFilter filter) {
         addFilter (filter, 0);
     }
@@ -104,66 +110,79 @@ public abstract class FilteredBase extends Observable
     /**
      * @param filter filter to remove (both directions)
      */
+    @Override
     public void removeFilter (ISOFilter filter) {
         removeFilter (filter, 0);
     }
     /**
      * @param filter incoming filter to remove
      */
+    @Override
     public void removeIncomingFilter (ISOFilter filter) {
         removeFilter (filter, ISOMsg.INCOMING);
     }
     /**
      * @param filter outgoing filter to remove
      */
+    @Override
     public void removeOutgoingFilter (ISOFilter filter) {
         removeFilter (filter, ISOMsg.OUTGOING);
     }
-    protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt) 
+    protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt)
         throws VetoException
     {
-        Iterator iter  = outgoingFilters.iterator();
-        while (iter.hasNext()) {
+        for (ISOFilter f : outgoingFilters) {
             m.setDirection(ISOMsg.OUTGOING);
-            m = ((ISOFilter) iter.next()).filter (this, m, evt);
+            f.filter(this, m, evt);
         }
+
         m.setDirection(ISOMsg.OUTGOING);
         setChanged ();
         notifyObservers (m);
         return m;
     }
-    protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
+    protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt)
         throws VetoException
     {
-        Iterator iter  = incomingFilters.iterator();
-        while (iter.hasNext()) {
+        for (ISOFilter f : incomingFilters) {
             m.setDirection(ISOMsg.INCOMING);
-            m = ((ISOFilter) iter.next()).filter (this, m, evt);
+            f.filter(this, m, evt);
         }
+
         m.setDirection(ISOMsg.INCOMING);
         setChanged ();
         notifyObservers (m);
         return m;
     }
+
+    @Override
     public Collection getIncomingFilters() {
         return incomingFilters;
     }
+
+    @Override
     public Collection getOutgoingFilters() {
         return outgoingFilters;
     }
-    public void setIncomingFilters (Collection filters) {
-        incomingFilters = new Vector (filters);
+
+    @Override
+    public void setIncomingFilters(Collection filters) {
+        incomingFilters = new CopyOnWriteArrayList<>(filters);
     }
-    public void setOutgoingFilters (Collection filters) {
-        outgoingFilters = new Vector (filters);
+
+    @Override
+    public void setOutgoingFilters(Collection filters) {
+        outgoingFilters = new CopyOnWriteArrayList<>(filters);
     }
-    
-    public Object clone(){
+
+    @Override
+    public Object clone() {
       try {
         return super.clone();
       } catch (CloneNotSupportedException e) {
         throw new InternalError();
       }
     }
+
 }
 
