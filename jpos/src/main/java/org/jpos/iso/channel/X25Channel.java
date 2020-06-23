@@ -21,15 +21,15 @@ package org.jpos.iso.channel;
 import org.jpos.iso.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Vector;
 
 /**
- * Implements an ISOChannel suitable to be used to connect to an X.25 PAD. 
+ * Implements an ISOChannel suitable to be used to connect to an X.25 PAD.
  * It waits a limited amount of time to decide when a packet is ready
  * to be unpacked.
  *
@@ -81,7 +81,7 @@ public class X25Channel extends BaseChannel {
      * @exception IOException
      * @see ISOPackager
      */
-    public X25Channel (ISOPackager p, ServerSocket serverSocket) 
+    public X25Channel (ISOPackager p, ServerSocket serverSocket)
         throws IOException
     {
         super(p, serverSocket);
@@ -90,66 +90,73 @@ public class X25Channel extends BaseChannel {
      * @return a byte array with the received message
      * @exception IOException
      */
+    @Override
     protected byte[] streamReceive() throws IOException {
-        int c, k=0, len = 1;
-        Vector v = new Vector();
+        ByteArrayOutputStream bout = new ByteArrayOutputStream(100);
 
-        c = serverIn.read();
+        int c = serverIn.read();
         if (c == -1)
             throw new EOFException ("connection closed");
         byte[] b = new byte[1];
         b[0] = (byte) c;
-        v.addElement (b);
+        bout.write(b);
 
         // Wait for packets until timeout
         while ((c = serverIn.available()) > 0) {
             b = new byte[c];
             if (serverIn.read (b) != c)
                 throw new EOFException ("connection closed");
-            v.addElement (b);
-            len += c;
-            try {
-                Thread.sleep (50);
-            } catch (InterruptedException e) { }
+
+            bout.write(b);
+            ISOUtil.sleep(50);
         }
 
-        byte[] d = new byte[len];
-        for (int i=0; i<v.size(); i++) {
-            b = (byte[]) v.elementAt(i);
-            System.arraycopy (b, 0, d, k, b.length);
-            k += b.length;
-        }
-        return d;
+        return bout.toByteArray();
     }
+
+    @Override
     protected void connect (Socket socket) throws IOException {
         super.connect (socket);
         reader = new BufferedReader (new InputStreamReader (serverIn));
     }
+
+    @Override
     public void disconnect () throws IOException {
         super.disconnect ();
         reader = null;
     }
-    protected int getHeaderLength() { 
+
+    @Override
+    protected int getHeaderLength() {
         return header != null ? header.length : 0;
     }
+
+    @Override
     public void setHeader (byte[] header) {
         this.header = header;
     }
+
     /**
      * @param header Hex representation of header
      */
+    @Override
     public void setHeader (String header) {
         setHeader (
             ISOUtil.hex2byte (header.getBytes(), 0, header.getBytes().length / 2)
         );
     }
+
+    @Override
     public byte[] getHeader () {
         return header;
     }
-    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
+
+    @Override
+    protected void sendMessageHeader(ISOMsg m, int len) throws IOException {
         if (m.getHeader() != null)
             serverOut.write(m.getHeader());
-        else if (header != null) 
+        else if (header != null)
             serverOut.write(header);
     }
+
 }
