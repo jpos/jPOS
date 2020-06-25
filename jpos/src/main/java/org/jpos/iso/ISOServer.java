@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -70,14 +70,16 @@ public class ISOServer extends Observable
     int port;
     private InetAddress bindAddr;
 
-    private Map<String,Boolean> specificIPPerms= new HashMap<>();   // TRUE means allow; FALSE means deny
+    private final Map<String, Boolean> specificIPPerms = new HashMap<>();   // TRUE means allow; FALSE means deny
     private List<String> wildcardAllow;
     private List<String> wildcardDeny;
     private PermLogPolicy ipPermLogPolicy= PermLogPolicy.ALLOW_NOLOG;
 
     protected ISOChannel clientSideChannel;
     ISOPackager clientPackager;
-    protected Collection clientOutgoingFilters, clientIncomingFilters, listeners;
+    protected Collection<ISOFilter> clientOutgoingFilters;
+    protected Collection<ISOFilter> clientIncomingFilters;
+    protected Collection<ISORequestListener> listeners;
     ThreadPool pool;
     public static final int DEFAULT_MAX_THREADS = 100;
     public static final String LAST = ":last";
@@ -97,7 +99,7 @@ public class ISOServer extends Observable
     private ServerSocket serverSocket;
     private Map channels;
     protected boolean ignoreISOExceptions;
-    protected List<ISOServerEventListener> serverListeners = null;
+    protected List<ISOServerEventListener> serverListeners;
 
    /**
     * @param port port to listen
@@ -116,11 +118,11 @@ public class ISOServer extends Observable
         }
         this.pool = pool == null ?
             new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
-        listeners = new Vector();
+        listeners = new CopyOnWriteArrayList<>();
         name = "";
         channels = new HashMap();
         cnt = new int[SIZEOF_CNT];
-        serverListeners = new ArrayList<ISOServerEventListener>();
+        serverListeners = new CopyOnWriteArrayList<>();
     }
 
 
@@ -343,24 +345,19 @@ public class ISOServer extends Observable
                     try {
                         ISOMsg m = channel.receive();
                         lastTxn = System.currentTimeMillis();
-                        Iterator iter = listeners.iterator();
-                        while (iter.hasNext()) {
-                            if (((ISORequestListener)iter.next()).process
-                                (channel, m)) {
+                        for (ISORequestListener l : listeners) {
+                            if (l.process(channel, m))
                                 break;
-                            }
                         }
                     }
                     catch (ISOFilter.VetoException e) {
                         Logger.log (new LogEvent (this, "VetoException", e.getMessage()));
                     }
                     catch (ISOException e) {
-                        if (ignoreISOExceptions) {
-                            Logger.log (new LogEvent (this, "ISOException", e.getMessage()));
-                        }
-                        else {
+                        if (!ignoreISOExceptions)
                             throw e;
-                        }
+
+                        Logger.log (new LogEvent (this, "ISOException", e.getMessage()));
                     }
                 }
             } catch (EOFException e) {
