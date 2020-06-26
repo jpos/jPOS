@@ -28,6 +28,7 @@ dependencies {
     implementation libraries.jdbm
     implementation libraries.sleepycat_je
     implementation libraries.sshd
+    implementation libraries.eddsa
 
     testImplementation libraries.commons_lang3
     testImplementation libraries.hamcrest
