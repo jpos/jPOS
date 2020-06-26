@@ -463,10 +463,13 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
             }
         }
     }
+
+    @Override
     public void run () {
         try {
             gc();
-        } catch (Exception e) {
+        } catch (Exception | SpaceError e) {
+            // this happens when e.g. the jdbm file is corrupt
             e.printStackTrace(); // this should never happen
         }
     }
