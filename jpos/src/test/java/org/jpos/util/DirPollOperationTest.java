@@ -90,11 +90,12 @@ public class DirPollOperationTest {
         dirPoll.setArchiveDateFormat(DATE_FORMAT_STRING);
         dirPoll.setShouldTimestampArchive(true);
         testIncomingFile = new File(absolutePathTo(RELATIVE_REQUEST_DIR, filename));
+        assertThat(testIncomingFile.exists(), is(false));
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
-		fileOutputStream.close();
-        assertThat(testIncomingFile.exists(), is(true));
+        fileOutputStream.getFD().sync();
+        fileOutputStream.close();
 
         File badDirectory = new File(absolutePathTo(RELATIVE_BAD_DIR));
         waitForFileProcessed();
@@ -111,11 +112,12 @@ public class DirPollOperationTest {
         dirPoll.setArchiveDateFormat(DATE_FORMAT_STRING);
         dirPoll.setShouldTimestampArchive(true);
         testIncomingFile = new File(absolutePathTo(RELATIVE_REQUEST_DIR, filename));
+        assertThat(testIncomingFile.exists(), is(false));
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
-		fileOutputStream.close();
-        assertThat(testIncomingFile.exists(), is(true));
+        fileOutputStream.getFD().sync();
+        fileOutputStream.close();
 
         File archiveDirectory = new File(absolutePathTo(RELATIVE_ARCHIVE_DIR));
         waitForFileProcessed();
@@ -133,11 +135,12 @@ public class DirPollOperationTest {
         dirPoll.setArchiveDateFormat(DATE_FORMAT_STRING);
         dirPoll.setShouldTimestampArchive(false);
         testIncomingFile = new File(absolutePathTo(RELATIVE_REQUEST_DIR, filename));
+        assertThat(testIncomingFile.exists(), is(false));
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
-		fileOutputStream.close();
-        assertThat(testIncomingFile.exists(), is(true));
+        fileOutputStream.getFD().sync();
+        fileOutputStream.close();
 
         File archiveDirectory = new File(absolutePathTo(RELATIVE_ARCHIVE_DIR));
         waitForFileProcessed();
@@ -150,11 +153,12 @@ public class DirPollOperationTest {
     public void testDoNotArchiveFile() throws IOException, InterruptedException {
         dirPoll.setShouldArchive(false);
         testIncomingFile = new File(absolutePathTo(RELATIVE_REQUEST_DIR, "dodgyTestFile2.test"));
+        assertThat(testIncomingFile.exists(), is(false));
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
-		fileOutputStream.close();
-        assertThat(testIncomingFile.exists(), is(true));
+        fileOutputStream.getFD().sync();
+        fileOutputStream.close();
 
         waitForFileProcessed();
         Thread.sleep(200);
@@ -169,11 +173,12 @@ public class DirPollOperationTest {
         dirPoll.setShouldArchive(true);
         dirPoll.setShouldTimestampArchive(false);
         testIncomingFile = new File(absolutePathTo(RELATIVE_REQUEST_DIR, filename));
+        assertThat(testIncomingFile.exists(), is(false));
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
-		fileOutputStream.close();
-        assertThat(testIncomingFile.exists(), is(true));
+        fileOutputStream.getFD().sync();
+        fileOutputStream.close();
 
 
         waitForFileProcessed();
@@ -189,11 +194,12 @@ public class DirPollOperationTest {
         dirPoll.setShouldArchive(false);
         dirPoll.pause();
         testIncomingFile = new File(absolutePathTo(RELATIVE_REQUEST_DIR, "dodgyTestFile3.test"));
+        assertThat(testIncomingFile.exists(), is(false));
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
+        fileOutputStream.getFD().sync();
         fileOutputStream.close();
-        assertThat(testIncomingFile.exists(), is(true));
 
         // Sleep for enough time for dirpoll to pick up the file, if it wasn't paused
         Thread.sleep(DIRPOLL_CHECK_INTERVAL);
