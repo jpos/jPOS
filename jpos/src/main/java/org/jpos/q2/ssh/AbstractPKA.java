@@ -18,6 +18,7 @@
 
 package org.jpos.q2.ssh;
 
+import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import org.apache.sshd.server.auth.pubkey.PublickeyAuthenticator;
 import org.apache.sshd.server.session.ServerSession;
 import org.jpos.q2.Q2;
@@ -25,8 +26,14 @@ import org.jpos.util.Log;
 
 import java.security.PublicKey;
 import java.security.interfaces.DSAPublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+
+import static org.apache.sshd.common.config.keys.KeyUtils.compareECParams;
+import static org.apache.sshd.common.util.security.eddsa.EdDSASecurityProviderUtils.compareEDDSAKeyParams;
 
 public abstract class AbstractPKA  implements PublickeyAuthenticator
 {
@@ -70,6 +77,18 @@ public abstract class AbstractPKA  implements PublickeyAuthenticator
         {
             return compare((DSAPublicKey) o1, o2);
         }
+        else if (o1 instanceof ECPublicKey)
+        {
+            return compare((ECPublicKey) o1, o2);
+        }
+        else if (o1 instanceof EdDSAPublicKey)
+        {
+            return compare((EdDSAPublicKey) o1, o2);
+        } else {
+            Log.getLog(Q2.LOGGER_NAME, "sshd").error(
+                    "Unsupported ssh key type: " + o1.getClass().getSimpleName()
+            );
+        }
         return false;
     }
 
@@ -109,5 +128,39 @@ public abstract class AbstractPKA  implements PublickeyAuthenticator
                && k.getParams().getG().equals(other.getParams().getG())
                && k.getParams().getP().equals(other.getParams().getP())
                && k.getParams().getQ().equals(other.getParams().getQ());
+    }
+
+    private boolean compare(ECPublicKey k, Object o)
+    {
+        if (o == k)
+        {
+            return true;
+        }
+
+        if (!(o instanceof ECPublicKey))
+        {
+            return false;
+        }
+
+        ECPublicKey ko = (ECPublicKey) o;
+        return Objects.equals(k.getW(), ko.getW())
+                && compareECParams(k.getParams(), ko.getParams());
+    }
+
+    private boolean compare(EdDSAPublicKey k, Object o)
+    {
+        if (o == k)
+        {
+            return true;
+        }
+
+        if (!(o instanceof EdDSAPublicKey))
+        {
+            return false;
+        }
+
+        EdDSAPublicKey edo = (EdDSAPublicKey) o;
+        return Arrays.equals(k.getAbyte(), edo.getAbyte())
+                && compareEDDSAKeyParams(k.getParams(), edo.getParams());
     }
 }

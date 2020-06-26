@@ -20,14 +20,28 @@ package org.jpos.q2.ssh;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PublicKey;
-import java.security.spec.DSAPublicKeySpec;
-import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
+import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
+import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
+import org.apache.sshd.common.cipher.ECCurves;
+import org.apache.sshd.common.config.keys.KeyUtils;
+import org.apache.sshd.common.keyprovider.KeyPairProvider;
+import org.apache.sshd.common.util.buffer.BufferUtils;
+import org.apache.sshd.common.util.security.SecurityUtils;
 import org.bouncycastle.util.encoders.Base64;
+
+import static org.apache.sshd.common.config.keys.impl.ECDSAPublicKeyEntryDecoder.MAX_ALLOWED_POINT_SIZE;
+import static org.apache.sshd.common.config.keys.impl.ECDSAPublicKeyEntryDecoder.MAX_CURVE_NAME_LENGTH;
+import static org.apache.sshd.common.util.security.eddsa.Ed25519PublicKeyDecoder.MAX_ALLOWED_SEED_LEN;
+import static org.apache.sshd.common.util.security.eddsa.EdDSASecurityProviderUtils.CURVE_ED25519_SHA512;
 
 public class AuthorizedKeysFileBasedPKA extends AbstractPKA
 {
@@ -96,25 +110,53 @@ public class AuthorizedKeysFileBasedPKA extends AbstractPKA
             }
 
             String type = decodeType();
-            if (type.equals("ssh-rsa"))
-            {
+            if (KeyPairProvider.SSH_RSA.equals(type)) {
                 BigInteger e = decodeBigInt();
                 BigInteger m = decodeBigInt();
-                RSAPublicKeySpec spec = new RSAPublicKeySpec(m, e);
-                return KeyFactory.getInstance("RSA").generatePublic(spec);
-            }
-            else if (type.equals("ssh-dss"))
-            {
+                KeyFactory keyFactory = SecurityUtils.getKeyFactory(KeyUtils.RSA_ALGORITHM);
+                return keyFactory.generatePublic(new RSAPublicKeySpec(m, e));
+            } else if (KeyPairProvider.SSH_DSS.equals(type)) {
                 BigInteger p = decodeBigInt();
                 BigInteger q = decodeBigInt();
                 BigInteger g = decodeBigInt();
                 BigInteger y = decodeBigInt();
-                DSAPublicKeySpec spec = new DSAPublicKeySpec(y, p, q, g);
-                return KeyFactory.getInstance("DSA").generatePublic(spec);
-            }
-            else
-            {
-                throw new IllegalArgumentException("unknown type " + type);
+                KeyFactory keyFactory = SecurityUtils.getKeyFactory(KeyUtils.DSS_ALGORITHM);
+                return keyFactory.generatePublic(new DSAPublicKeySpec(y, p, q, g));
+            } else if (KeyPairProvider.SSH_ED25519.equals(type)) {
+                byte[] seed = readRLEBytes(MAX_ALLOWED_SEED_LEN);
+                EdDSAParameterSpec params = EdDSANamedCurveTable.getByName(CURVE_ED25519_SHA512);
+                KeyFactory keyFactory = SecurityUtils.getKeyFactory(SecurityUtils.EDDSA);
+                return keyFactory.generatePublic(new EdDSAPublicKeySpec(seed, params));
+            } else {
+                ECCurves curve = ECCurves.fromKeyType(type);
+                if (curve == null) {
+                    throw new IllegalArgumentException("unknown type " + type);
+                }
+                String keyCurveName = curve.getName();
+                String encCurveName = decodeString(MAX_CURVE_NAME_LENGTH);
+                if (!keyCurveName.equals(encCurveName)) {
+                    throw new IllegalArgumentException(
+                            "Mismatched key curve name (" + keyCurveName + ") vs. encoded one (" + encCurveName + ")");
+                }
+                byte[] octets = readRLEBytes(MAX_ALLOWED_POINT_SIZE);
+                ECPoint w;
+                try {
+                    w = ECCurves.octetStringToEcPoint(octets);
+                    if (w == null) {
+                        throw new IllegalArgumentException(
+                                "No ECPoint generated for curve=" + curve.getName()
+                                        + " from octets=" + BufferUtils.toHex(':', octets));
+                    }
+                } catch (RuntimeException e) {
+                    throw new IllegalArgumentException(
+                            "Failed (" + e.getClass().getSimpleName() + ")"
+                                    + " to generate ECPoint for curve=" + curve.getName()
+                                    + " from octets=" + BufferUtils.toHex(':', octets)
+                                    + ": " + e.getMessage());
+                }
+                ECParameterSpec params = curve.getParameters();
+                KeyFactory keyFactory = SecurityUtils.getKeyFactory(KeyUtils.EC_ALGORITHM);
+                return keyFactory.generatePublic(new ECPublicKeySpec(w, params));
             }
         }
 
@@ -139,6 +181,28 @@ public class AuthorizedKeysFileBasedPKA extends AbstractPKA
             System.arraycopy(bytes, pos, bigIntBytes, 0, len);
             pos += len;
             return new BigInteger(bigIntBytes);
+        }
+
+        private byte[] readRLEBytes(int maxAllowed)
+        {
+            int len = decodeInt();
+            if (len > maxAllowed) {
+                throw new IllegalArgumentException(
+                        "Requested block length (" + len + ") exceeds max. allowed (" + maxAllowed + ")");
+            }
+            if (len < 0) {
+                throw new IllegalArgumentException("Negative block length requested: " + len);
+            }
+            byte[] RLEBytes = new byte[len];
+            System.arraycopy(bytes, pos, RLEBytes, 0, len);
+            pos += len;
+            return RLEBytes;
+        }
+
+        private String decodeString(int maxChars)
+        {
+            byte[] result = readRLEBytes(maxChars * 4);
+            return new String(result, StandardCharsets.UTF_8);
         }
     }
 }
