@@ -12,9 +12,7 @@ else
     -Xmx1G \
     -Xloggc:log/gc.log \
     -Djava.net.preferIPv4Stack=true \
-    -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses \
     -XX:+UseConcMarkSweepGC  \
-    -XX:+AggressiveOpts \
     -XX:+ParallelRefProcEnabled \
     -XX:ParallelGCThreads=2 \
     -XX:+TieredCompilation \
