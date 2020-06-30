@@ -767,8 +767,11 @@ public class Q2 implements FileFilter, Runnable {
                 deployBundle (new File (line.getOptionValue ("e")), true);
             if (line.hasOption("O"))
                 startOSGI = true;
-            if (line.hasOption("p"))
+            if (line.hasOption("p")) {
                 pidFile = line.getOptionValue("p");
+            } else {
+                pidFile = System.getProperty("pid", null);
+            }
             if (line.hasOption("n"))
                 name = line.getOptionValue("n");
             if (line.hasOption("E")) {
