@@ -256,8 +256,6 @@ public abstract class BERTLVPackager extends GenericPackager {
                             valueInterpreter.uninterpret(value, 0, uninterpretLength);
 
                     tlvSubFieldData = unpackValue(tag, rawValueBytes, subFieldNumber, length);
-
-
                     consumed = consumed + length;
                     ISOTaggedField tlv = new ISOTaggedField(tag, tlvSubFieldData);
                     m.set(tlv);
@@ -405,10 +403,6 @@ public abstract class BERTLVPackager extends GenericPackager {
             case PACKED_NUMERIC_TIME_HHMMSS:
                 uninterpretLength = getUninterpretLength(dataLength, bcdInterpreterLeftPaddedZero);
                 unpackedValue = bcdInterpreterLeftPaddedZero.uninterpret(tlvData, 0, uninterpretLength);
-
-                if (unpackedValue.length() > 1 && unpackedValue.charAt(0) == '0') {
-                    unpackedValue = unpackedValue.substring(1);
-                }
                 value = new ISOField(subFieldNumber, unpackedValue);
                 break;
             case ASCII_NUMERIC:
