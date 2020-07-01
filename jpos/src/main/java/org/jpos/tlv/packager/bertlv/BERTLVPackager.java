@@ -399,6 +399,13 @@ public abstract class BERTLVPackager extends GenericPackager {
                 value = new ISOField(subFieldNumber, unpackedValue);
                 break;
             case PACKED_NUMERIC:
+                uninterpretLength = getUninterpretLength(dataLength, bcdInterpreterLeftPaddedZero);
+                unpackedValue = bcdInterpreterLeftPaddedZero.uninterpret(tlvData, 0, uninterpretLength);
+                if (unpackedValue.length() > 1 && unpackedValue.charAt(0) == '0') {
+                    unpackedValue = unpackedValue.substring(1);
+                }
+                value = new ISOField(subFieldNumber, unpackedValue);
+                break;
             case PACKED_NUMERIC_DATE_YYMMDD:
             case PACKED_NUMERIC_TIME_HHMMSS:
                 uninterpretLength = getUninterpretLength(dataLength, bcdInterpreterLeftPaddedZero);
