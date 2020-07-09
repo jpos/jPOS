@@ -18,14 +18,12 @@
 
 package org.jpos.tlv.packager;
 
-import org.jpos.emv.EMVStandardTagType;
-import org.jpos.emv.EMVTagSequence;
-import org.jpos.emv.LiteralEMVTag;
-import org.jpos.emv.UnknownTagNumberException;
+import org.jpos.emv.*;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.jpos.iso.packager.GenericPackager;
+import org.jpos.iso.packager.ISO87BPackager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -118,4 +116,19 @@ public class EMVTagSequenceTest {
         Assertions.assertEquals("3032365a08999999123456789f9f12044a504f53500251325f2a020840", ISOUtil.byte2hex(field48Packed), "Pack error");
     }
 
+    @Test
+    public void testARPC() throws ISOException, FileNotFoundException {
+        String arpcResponse = "283f473f613b3f3f0012";
+        ISOMsg m = new ISOMsg();
+        ISOMsg field55 = new ISOMsg(48);
+        EMVTagSequence field55Tags = new EMVTagSequence();
+        byte[] arpc = ISOUtil.hex2byte(arpcResponse);
+        field55Tags.add(new BinaryEMVTag(EMVStandardTagType.ISSUER_AUTHENTICATION_DATA_0x91, arpc));
+        field55Tags.writeTo(field55);
+        m.set(field55);
+        m.dump (System.out, "");
+        GenericPackager packager = new GenericPackager(new FileInputStream("build/resources/test/org/jpos/tlv/emv-tlv-packager.xml"));
+        m.setPackager(packager);
+        System.out.printf(ISOUtil.hexdump (m.pack()));
+    }
 }

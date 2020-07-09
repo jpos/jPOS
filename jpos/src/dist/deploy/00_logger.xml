@@ -2,6 +2,7 @@
 
 <logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor">
   <property name="redirect" value="stdout, stderr" />
+  <!-- log-listener class="org.jpos.util.FlatLogListener" /-->
   <log-listener class="org.jpos.util.SimpleLogListener" />
 
   <log-listener class="org.jpos.util.DailyLogListener">
