@@ -23,11 +23,11 @@ public interface ISOServerSocketFactory {
 
 as well as a provider that implements both of them: +org.jpos.iso.GenericSSLSocketFactory+
 
-Q2 services (actually the ChannelAdaptor and QServer qbeans), accept an
-optional 'socketFactory' property in the channel configuration,
+The ChannelAdaptor accepts an optional 'socketFactory' property in the
+channel configuration, and the QServer accepts an 'server-socket-factory'
+child element.
 
-
-.SocketFactory configuration
+.SocketFactory configuration in a ChannelAdaptor
 ====
 [source,xml]
 ----
@@ -45,6 +45,21 @@ optional 'socketFactory' property in the channel configuration,
  <out>sslreceive</out>
  <reconnect-delay>10000</reconnect-delay>
 </channel-adaptor>
+----
+====
+
+.SocketFactory configuration in a QServer
+====
+[source,xml]
+----
+<server name="server"
+    class="org.jpos.q2.iso.QServer" logger="Q2">
+   <attr name="port" type="java.lang.Integer">5000</attr>
+   <server-socket-factory class="org.jpos.iso.GenericSSLSocketFactory" />
+   <channel class="org.jpos.iso.channel.NACChannel" logger="Q2"
+      packager="org.jpos.iso.packager.ISO87BPackager">
+   </channel>
+</server>
 ----
 ====
 
