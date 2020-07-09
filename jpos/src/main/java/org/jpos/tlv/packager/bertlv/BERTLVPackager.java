@@ -19,6 +19,7 @@
 package org.jpos.tlv.packager.bertlv;
 
 
+import org.jpos.emv.EMVStandardTagType;
 import org.jpos.emv.UnknownTagNumberException;
 import org.jpos.iso.AsciiInterpreter;
 import org.jpos.iso.BCDInterpreter;
@@ -337,16 +338,18 @@ public abstract class BERTLVPackager extends GenericPackager {
         if (c.getComposite() == null) {
             if (c.getValue() instanceof String) {
                 tagValue = (String) c.getValue();
+                EMVStandardTagType tagType = EMVStandardTagType.forHexCode(tagNameHex);
+                int length = Math.max(tagValue.length(), tagType.getDataLength().getMinLength());
                 switch (dataFormat) {
                     case COMPRESSED_NUMERIC:
-                        packedValue = new byte[bcdInterpreterRightPaddedF.getPackedLength(tagValue.length())];
+                        packedValue = new byte[bcdInterpreterRightPaddedF.getPackedLength(length)];
                         bcdInterpreterRightPaddedF.interpret(tagValue, packedValue, 0);
                         break;
                     case PACKED_NUMERIC:
                     case PACKED_NUMERIC_DATE_YYMMDD:
                     case PACKED_NUMERIC_TIME_HHMMSS:
-                        packedValue = new byte[bcdInterpreterLeftPaddedZero.getPackedLength(tagValue.length())];
-                        bcdInterpreterLeftPaddedZero.interpret(tagValue, packedValue, 0);
+                        packedValue = new byte[bcdInterpreterLeftPaddedZero.getPackedLength(length)];
+                        bcdInterpreterLeftPaddedZero.interpret(ISOUtil.zeropad(tagValue, length), packedValue, 0);
                         break;
                     case ASCII_NUMERIC:
                     case ASCII_ALPHA:
@@ -393,18 +396,12 @@ public abstract class BERTLVPackager extends GenericPackager {
             case COMPRESSED_NUMERIC:
                 uninterpretLength = getUninterpretLength(dataLength, bcdInterpreterRightPaddedF);
                 unpackedValue = bcdInterpreterRightPaddedF.uninterpret(tlvData, 0, uninterpretLength);
-                if (unpackedValue.length() > 1 && unpackedValue.charAt(unpackedValue.length() - 1) == 'F') {
-                    unpackedValue = unpackedValue.substring(0, unpackedValue.length() - 1);
-                }
-                value = new ISOField(subFieldNumber, unpackedValue);
+                value = new ISOField(subFieldNumber, ISOUtil.unPadRight(unpackedValue, 'F'));
                 break;
             case PACKED_NUMERIC:
                 uninterpretLength = getUninterpretLength(dataLength, bcdInterpreterLeftPaddedZero);
                 unpackedValue = bcdInterpreterLeftPaddedZero.uninterpret(tlvData, 0, uninterpretLength);
-                if (unpackedValue.length() > 1 && unpackedValue.charAt(0) == '0') {
-                    unpackedValue = unpackedValue.substring(1);
-                }
-                value = new ISOField(subFieldNumber, unpackedValue);
+                value = new ISOField(subFieldNumber, ISOUtil.unPadLeft(unpackedValue, '0'));
                 break;
             case PACKED_NUMERIC_DATE_YYMMDD:
             case PACKED_NUMERIC_TIME_HHMMSS:

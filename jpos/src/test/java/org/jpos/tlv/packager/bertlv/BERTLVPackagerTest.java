@@ -29,15 +29,17 @@ public class BERTLVPackagerTest {
 
     @Test
     public void testZeroLength() throws ISOException {
+        // APPLICATION_FILE_LOCATOR_0x94 supports zero length
         BERTLVPackager p = new BERTLVAsciiHexPackager();
-        ISOTaggedField t = new ISOTaggedField(EMVStandardTagType.AMOUNT_AUTHORISED_NUMERIC_0x9F02.getTagNumberHex(),
+        ISOTaggedField t = new ISOTaggedField(
+          EMVStandardTagType.APPLICATION_FILE_LOCATOR_0x94.getTagNumberHex(),
           new ISOField(0, ""));
         t.setFieldNumber(1);
 
         ISOMsg m = new ISOMsg(55);
         m.set(t);
         byte[] b = p.pack(m, true, 1, 1);
-        assertArrayEquals(b, ISOUtil.hex2byte("394630323030"));
+        assertArrayEquals(ISOUtil.hex2byte("39343030"), b, ISOUtil.hexString(b));
     }
 
     @Test
