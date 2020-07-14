@@ -394,7 +394,7 @@ public class TransactionManager
                     if (prof != null)
                         evt.addMessage (prof);
                     try {
-                        Logger.log(new FrozenLogEvent(evt));
+                        Logger.log(prepareForLog(evt));
                     } catch (Throwable t) {
                         getLog().error(t);
                     }
@@ -990,6 +990,18 @@ public class TransactionManager
             retryTask = new RetryTask();
             new Thread(retryTask).start();
         }
+    }
+
+    /**
+     * This method gives the opportunity to decorate a LogEvent right before
+     * it gets logged. When overriding it, unless you know what you're doing,
+     * you should return a FrozenLogEvent in order to prevent concurrency issues.
+     * 
+     * @param evt current LogEvent
+     * @return FrozenLogEvent
+     */
+    protected LogEvent prepareForLog (LogEvent evt) {
+        return new FrozenLogEvent(evt);
     }
 
     public static class PausedMonitor extends TimerTask {
