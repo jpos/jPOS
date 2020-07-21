@@ -48,6 +48,8 @@ public class CheckFields implements TransactionParticipant, Configurable {
     private Pattern ORIGINAL_DATA_ELEMENTS_PATTERN = Pattern.compile("^\\d{30,41}$");
     private boolean ignoreCardValidation = false;
     private boolean allowExtraFields = false;
+    private Pattern track1Pattern = null;
+    private Pattern track2Pattern = null;
 
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
@@ -74,6 +76,14 @@ public class CheckFields implements TransactionParticipant, Configurable {
         request = cfg.get ("request", ContextConstants.REQUEST.toString());
         ignoreCardValidation = cfg.getBoolean("ignore-card-validation", false);
         allowExtraFields = cfg.getBoolean("allow-extra-fields", false);
+        String t1 = cfg.get("track1-pattern", null);
+        if (t1 != null) {
+            track1Pattern = Pattern.compile(t1);
+        }
+        String t2 = cfg.get("track2-pattern", null);
+        if (t2 != null) {
+            track2Pattern = Pattern.compile(t1);
+        }
     }
 
     private void assertFields(Context ctx, ISOMsg m, String fields, boolean mandatory, Set<String> validFields, Result rc) {
@@ -148,7 +158,12 @@ public class CheckFields implements TransactionParticipant, Configurable {
             return; // nothing to do, card is optional
 
         try {
-            Card.Builder cb = Card.builder().isomsg(m);
+            Card.Builder cb = Card.builder();
+            if (track1Pattern != null)
+                cb.withTrack1Builder(Track1.builder().pattern(track1Pattern));
+            if (track2Pattern != null)
+                cb.withTrack2Builder(Track2.builder().pattern(track2Pattern));
+            cb.isomsg(m);
             if (ignoreCardValidation)
                 cb.validator(null);
             Card card = cb.build();

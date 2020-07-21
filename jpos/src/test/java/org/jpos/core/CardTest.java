@@ -22,6 +22,7 @@ import org.jpos.iso.ISOMsg;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -116,5 +117,25 @@ public class CardTest  {
         assertEquals("4561", c.getTrack2().getCvv(), "t2.cvv");
         assertEquals("1234567890", c.getTrack1().getDiscretionaryData(), "discretionaryData");
         assertEquals("2345678901", c.getTrack2().getDiscretionaryData(), "discretionaryData");
+    }
+
+    @Test
+    public void testOverrideTrack1Pattern() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .pattern(Pattern.compile("^[%]?[A-Z]+([0-9]{1,19})\\^([^\\^]{2,28})\\^([0-9]{4})([0-9]{3})([0-9]{4})?([0-9]{1,10})?"))
+          .track("B4111111111111111^ALPHAMERDADO PRUEBA         ^201110100026.000.003-6    000").build();
+        Track2 t2 = Track2.builder()
+          .track("4111111111111111=201110145612345678901").build();
+        Card c = Card.builder()
+          .pan("4111111111111111")
+          .exp("2011")
+          .cvv("123")
+          .cvv2("4567")
+          .serviceCode("101")
+          .track1(t1)
+          .track2(t2)
+          .build();
+
+        assertEquals(false, c.isExpired(new Date()), "not expired");
     }
 }

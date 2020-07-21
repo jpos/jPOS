@@ -151,6 +151,8 @@ public class Card {
         private String serviceCode;
         private Track1 track1;
         private Track2 track2;
+        private Track1.Builder track1Builder = Track1.builder();
+        private Track2.Builder track2Builder = Track2.builder();
         private CardValidator validator = DEFAULT_CARD_VALIDATOR;
 
         private Builder () { }
@@ -163,7 +165,14 @@ public class Card {
             this.validator = validator;
             return this;
         }
-
+        public Builder withTrack1Builder (Track1.Builder track1Builder) {
+            this.track1Builder = track1Builder;
+            return this;
+        }
+        public Builder withTrack2Builder (Track2.Builder track2Builder) {
+            this.track2Builder = track2Builder;
+            return this;
+        }
         public Builder track1 (Track1 track1) {
             this.track1 = track1;
             return this;
@@ -178,9 +187,9 @@ public class Card {
             if (m.hasField(14))
                 exp(m.getString(14));
             if (m.hasField(35))
-                track2(Track2.builder().track(m.getString(35)).build());
+                track2(track2Builder.track(m.getString(35)).build());
             if (m.hasField(45))
-                track1(Track1.builder().track(m.getString(45)).build());
+                track1(track1Builder.track(m.getString(45)).build());
             if (pan == null && track2 != null)
                 pan (track2.getPan());
             if (pan == null && track1 != null)
