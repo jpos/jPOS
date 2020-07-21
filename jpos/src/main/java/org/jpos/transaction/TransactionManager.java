@@ -394,7 +394,7 @@ public class TransactionManager
                     if (prof != null)
                         evt.addMessage (prof);
                     try {
-                        Logger.log(prepareForLog(evt));
+                        Logger.log(prepareForLog(context, evt));
                     } catch (Throwable t) {
                         getLog().error(t);
                     }
@@ -996,11 +996,12 @@ public class TransactionManager
      * This method gives the opportunity to decorate a LogEvent right before
      * it gets logged. When overriding it, unless you know what you're doing,
      * you should return a FrozenLogEvent in order to prevent concurrency issues.
-     * 
+     *
+     * @param context current Context
      * @param evt current LogEvent
      * @return FrozenLogEvent
      */
-    protected LogEvent prepareForLog (LogEvent evt) {
+    protected LogEvent prepareForLog (Serializable context, LogEvent evt) {
         return new FrozenLogEvent(evt);
     }
 
