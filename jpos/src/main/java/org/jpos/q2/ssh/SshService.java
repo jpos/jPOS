@@ -36,9 +36,6 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Collections;
 import java.util.Set;
 
-import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
-import static java.nio.file.attribute.PosixFilePermission.*;
-
 public class SshService extends QBeanSupport implements SshCLIContextMBean
 {
     SshServer sshd = null;
@@ -103,14 +100,8 @@ public class SshService extends QBeanSupport implements SshCLIContextMBean
         PosixFileAttributes attrs =
           Files.getFileAttributeView(file, PosixFileAttributeView.class)
           .readAttributes();
-        int uid = (int) new com.sun.security.auth.module.UnixSystem().getUid();
-        int fileUid = (int) Files.getAttribute(file,"unix:uid", NOFOLLOW_LINKS);
-        if (uid != fileUid)
-            throw new IllegalArgumentException(
-                    String.format ("Invalid ownership '%s' for file '%s'", attrs.owner().getName(), s)
-            );
         Set<PosixFilePermission> perms =  attrs.permissions();
-        if (perms.contains(GROUP_WRITE) || perms.contains(OTHERS_WRITE))
+        if (perms.size() != 1 || !perms.contains(PosixFilePermission.OWNER_READ))
             throw new IllegalArgumentException(
               String.format ("Invalid permissions '%s' for file '%s'", PosixFilePermissions.toString(perms), s)
             );
