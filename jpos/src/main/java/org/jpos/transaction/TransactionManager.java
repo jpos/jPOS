@@ -394,7 +394,7 @@ public class TransactionManager
                     if (prof != null)
                         evt.addMessage (prof);
                     try {
-                        Logger.log(prepareForLog(context, evt));
+                        Logger.log(prepareForLog(context, evt, prof));
                     } catch (Throwable t) {
                         getLog().error(t);
                     }
@@ -999,9 +999,10 @@ public class TransactionManager
      *
      * @param context current Context
      * @param evt current LogEvent
+     * @param prof profiler (may be null)
      * @return FrozenLogEvent
      */
-    protected LogEvent prepareForLog (Serializable context, LogEvent evt) {
+    protected LogEvent prepareForLog (Serializable context, LogEvent evt, Profiler prof) {
         return new FrozenLogEvent(evt);
     }
 
