@@ -26,6 +26,8 @@ import org.jpos.q2.QBeanSupport;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,6 +37,9 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Collections;
 import java.util.Set;
+
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
+import static java.nio.file.attribute.PosixFilePermission.*;
 
 public class SshService extends QBeanSupport implements SshCLIContextMBean
 {
@@ -100,11 +105,29 @@ public class SshService extends QBeanSupport implements SshCLIContextMBean
         PosixFileAttributes attrs =
           Files.getFileAttributeView(file, PosixFileAttributeView.class)
           .readAttributes();
-        Set<PosixFilePermission> perms =  attrs.permissions();
-        if (perms.size() != 1 || !perms.contains(PosixFilePermission.OWNER_READ))
-            throw new IllegalArgumentException(
-              String.format ("Invalid permissions '%s' for file '%s'", PosixFilePermissions.toString(perms), s)
-            );
+        try {
+            Class<?> c = Class.forName("com.sun.security.auth.module.UnixSystem");
+            Object o = c.getDeclaredConstructor().newInstance();
+            Method method = c.getDeclaredMethod("getUid");
+            int uid = ((Number)method.invoke(o)).intValue();
+            int fileUid = (int) Files.getAttribute(file,"unix:uid", NOFOLLOW_LINKS);
+            if (uid != fileUid)
+                throw new IllegalArgumentException(
+                        String.format ("Invalid ownership '%s' for file '%s'", attrs.owner().getName(), s)
+                );
+            Set<PosixFilePermission> perms =  attrs.permissions();
+            if (perms.contains(GROUP_WRITE) || perms.contains(OTHERS_WRITE))
+                throw new IllegalArgumentException(
+                        String.format ("Invalid permissions '%s' for file '%s'", PosixFilePermissions.toString(perms), s)
+                );
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException |
+                NoSuchMethodException | InvocationTargetException e) {
+            Set<PosixFilePermission> perms =  attrs.permissions();
+            if (perms.size() != 1 || !perms.contains(PosixFilePermission.OWNER_READ))
+                throw new IllegalArgumentException(
+                        String.format ("Invalid permissions '%s' for file '%s'", PosixFilePermissions.toString(perms), s)
+                );
+        }
     }
 
     public static Element createDescriptor (int port, String username, String authorizedKeysFile, String hostKeyFile) {
