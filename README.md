@@ -22,4 +22,3 @@ Commercial-friendly licensing available: [Contact form](http://jpos.org/main/con
 [badge-travis-url]: https://travis-ci.org/jpos/jPOS
 [badge-travis-image]: https://api.travis-ci.org/jpos/jPOS.svg
 [![Gitter](https://badges.gitter.im/jpos/jPOS.svg)](https://gitter.im/jpos/jPOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
