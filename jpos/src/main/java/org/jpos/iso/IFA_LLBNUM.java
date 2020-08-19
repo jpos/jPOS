@@ -68,7 +68,7 @@ public class IFA_LLBNUM extends ISOFieldPackager {
                 "invalid len "+len +" packing IFA_LLBNUM field " + c.getKey()
             );
 
-        byte[] b = new byte[3 + (len >> 1)];
+        byte[] b = new byte[2 + ((len+1) >> 1)];
         prefixer.encodeLength(len + 1 >> 1 << 1, b);
         interpreter.interpret(s, b, 2);
         return b;
