@@ -42,16 +42,16 @@ import org.junit.jupiter.api.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Q2Test {
-    String[] m_args = new String[0];
-    Q2 m_q2;
+    static String[] m_args = new String[0];
+    static Q2 m_q2;
 
     @BeforeAll
-    public void setUp() {
+    public static void setUp() {
         m_q2 = new Q2(m_args);
     }
 
     @AfterAll
-    public void tearDown() throws Exception {
+    public static void tearDown() throws Exception {
         m_q2.shutdown(true);
     }
 

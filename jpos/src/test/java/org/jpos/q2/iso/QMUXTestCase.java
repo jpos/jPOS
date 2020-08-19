@@ -40,15 +40,15 @@ import java.lang.reflect.Field;
 @SuppressWarnings("unchecked")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class QMUXTestCase implements ISOResponseListener {
-    Q2 q2;
-    Space sp;
-    MUX mux;
+    static Q2 q2;
+    static Space sp;
+    static MUX mux;
     boolean expiredCalled;
     ISOMsg responseMsg;
-    Object receivedHandback;
+    static Object receivedHandback;
 
     @BeforeAll
-    public void setUp() throws Exception {
+    public static void setUp() throws Exception {
         sp = SpaceFactory.getSpace();
         q2 = new Q2("build/resources/test/org/jpos/q2/iso");
         q2.start();
@@ -96,7 +96,7 @@ public class QMUXTestCase implements ISOResponseListener {
     }
 
     @AfterAll
-    public void tearDown() throws Exception {
+    public static void tearDown() throws Exception {
         Thread.sleep(2000L); // let the thing run
         q2.shutdown(true);
         Thread.sleep(2000L);
