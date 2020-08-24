@@ -58,9 +58,18 @@ public class TransactionManagerTestCase {
         ctx.put("persistent", "jumped over the lazy empty dog", true);
         sp.out(QUEUE_EMPTY, ctx);
     }
+
+    @Test
+    public void testFastAbort() {
+        Context ctx = new Context();
+        ctx.put("volatile", "the quick brown fox");
+        ctx.put("persistent", "jumped over the lazy dog", true);
+        sp.out(QUEUE, ctx);
+    }
+
     @AfterEach
     public void tearDown() throws Exception {
-        Thread.sleep (5000); // let the thing run
-        q2.stop();
+        Thread.sleep(5000);
+        q2.shutdown(true);
     }
 }

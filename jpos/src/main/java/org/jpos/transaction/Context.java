@@ -364,8 +364,12 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
         }
     }
     public PausedTransaction getPausedTransaction() {
-        return (PausedTransaction) get (PAUSED_TRANSACTION.toString());
+        return get (PAUSED_TRANSACTION.toString());
     }
+    public PausedTransaction getPausedTransaction(long timeout) {
+        return get (PAUSED_TRANSACTION.toString(), timeout);
+    }
+    
     public void setTimeout (long timeout) {
         this.timeout = timeout;
     }

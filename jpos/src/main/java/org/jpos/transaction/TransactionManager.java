@@ -1016,7 +1016,7 @@ public class TransactionManager
         public void run() {
             cancel();
             PausedTransaction paused = context.getPausedTransaction();
-            if (paused.getTransactionManager().abortOnPauseTimeout)
+            if (paused != null && paused.getTransactionManager().abortOnPauseTimeout)
                 paused.forceAbort();
             context.resume();
         }

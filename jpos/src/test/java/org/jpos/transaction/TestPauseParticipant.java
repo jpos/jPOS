@@ -18,23 +18,20 @@
 
 package org.jpos.transaction;
 
-import org.jpos.core.Configuration;
 import org.jpos.iso.ISOUtil;
-
 import java.io.Serializable;
 
 public class TestPauseParticipant implements TransactionParticipant {
-    Configuration cfg;
     TransactionManager txnmgr;
 
     public int prepare (long id, Serializable o) { 
         final Context ctx = (Context) o;
-        new Thread() {
-            public void run() {
-                ISOUtil.sleep (1000);
-                txnmgr.queue (ctx);   // re-inject paused transaction
-            }
-        }.start();
+        new Thread(() -> {
+            ctx.getPausedTransaction(200).forceAbort();
+            // ISOUtil.sleep (1000);
+            ctx.resume();
+        }).start();
+        ISOUtil.sleep(100); // force race condition
         return PREPARED | PAUSE;
     }
     public void commit (long id, Serializable o) { 
