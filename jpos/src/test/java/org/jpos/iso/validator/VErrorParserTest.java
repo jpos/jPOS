@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Vector;
+import java.util.List;
 
 import org.jpos.iso.ISOBinaryField;
 import org.jpos.iso.ISOComponent;
@@ -35,219 +35,201 @@ import org.jpos.iso.ISOVError;
 import org.jpos.iso.ISOVField;
 import org.jpos.iso.ISOVMsg;
 import org.jpos.util.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class VErrorParserTest {
 
+    Throwable thrown;
+
+    List<ISOVError> result;
+
+    VErrorParser vErrorParser;
+
+    @BeforeEach
+    void setUp() {
+        vErrorParser = new VErrorParser();
+    }
+
     @Test
-    public void testConstructor() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testConstructor() {
         assertNull(vErrorParser.realm, "vErrorParser.realm");
         assertNull(vErrorParser.logger, "vErrorParser.logger");
     }
 
     @Test
-    public void testDump() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testDump() {
         vErrorParser.dump(new PrintStream(new ByteArrayOutputStream(), true), "testVErrorParserIndent");
         assertNull(vErrorParser.getRealm(), "vErrorParser.getRealm()");
     }
 
     @Test
-    public void testGetLogger() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetLogger() {
         Logger logger = new Logger();
         vErrorParser.setLogger(logger, "testVErrorParserRealm");
-        Logger result = vErrorParser.getLogger();
-        assertSame(logger, result, "result");
+
+        assertSame(logger, vErrorParser.getLogger());
     }
 
     @Test
-    public void testGetRealm() throws Throwable {
-        String result = new VErrorParser().getRealm();
-        assertNull(result, "result");
+    void testGetRealm() {
+        assertNull(vErrorParser.getRealm());
     }
 
     @Test
-    public void testGetRealm1() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetRealm1() {
         vErrorParser.setLogger(new Logger(), "testVErrorParserRealm");
-        String result = vErrorParser.getRealm();
-        assertEquals("testVErrorParserRealm", result, "result");
+
+        assertEquals("testVErrorParserRealm", vErrorParser.getRealm());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
-        Vector result = vErrorParser.getVErrors(new ISOVMsg(new ISOMsg("testVErrorParserMti")));
+    void testGetVErrors() {
+        result = vErrorParser.getVErrors(new ISOVMsg(new ISOMsg("testVErrorParserMti")));
         assertEquals(0, result.size(), "result.size()");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors1() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrors1() {
         ISOVError FirstError = new ISOVError("testVErrorParserDescription");
         ISOComponent c = new ISOVField(new ISOField(), FirstError);
-        Vector result = vErrorParser.getVErrors(c);
+        result = vErrorParser.getVErrors(c);
         assertEquals(1, result.size(), "result.size()");
         assertSame(FirstError, result.get(0), "result.get(0)");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors10() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrors10() {
         ISOComponent c = new ISOMsg("testVErrorParserMti");
-        Vector result = vErrorParser.getVErrors(c);
+        result = vErrorParser.getVErrors(c);
         assertEquals(0, result.size(), "result.size()");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors2() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrors2() {
         ISOVError FirstError = new ISOVError("testVErrorParserDescription", "testVErrorParserRejectCode");
         ISOComponent c = new ISOVMsg(new ISOMsg("testVErrorParserMti"), FirstError);
-        Vector result = vErrorParser.getVErrors(c);
+        result = vErrorParser.getVErrors(c);
         assertEquals(1, result.size(), "result.size()");
         assertSame(FirstError, result.get(0), "result.get(0)");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors3() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrors3() {
         ISOMsg c = new ISOMsg();
         c.set(100, "testVErrorParserValue");
-        Vector result = vErrorParser.getVErrors(c);
+        result = vErrorParser.getVErrors(c);
         assertEquals(0, result.size(), "result.size()");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors4() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrors4() {
         ISOComponent c = new ISOMsg();
-        Vector result = vErrorParser.getVErrors(c);
+        result = vErrorParser.getVErrors(c);
+
         assertEquals(0, c.getMaxField(), "(ISOMsg) c.getMaxField()");
         assertEquals(0, result.size(), "result.size()");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors5() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
-        Vector result = vErrorParser.getVErrors(new ISOVMsg(new ISOMsg()));
+    void testGetVErrors5() {
+        result = vErrorParser.getVErrors(new ISOVMsg(new ISOMsg()));
+
         assertEquals(0, result.size(), "result.size()");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors6() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrors6() {
         ISOMsg Source = new ISOVMsg(new ISOMsg(), new ISOVError("testVErrorParserDescription"));
         Source.set(100, "testVErrorParserValue");
-        Vector result = vErrorParser.getVErrors(new ISOVMsg(Source));
+        result = vErrorParser.getVErrors(new ISOVMsg(Source));
+
         assertEquals(0, result.size(), "result.size()");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors7() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
-        Vector result = vErrorParser.getVErrors(new ISOVField(new ISOField(100)));
+    void testGetVErrors7() {
+        result = vErrorParser.getVErrors(new ISOVField(new ISOField(100)));
+
         assertEquals(0, result.size(), "result.size()");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors8() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrors8() {
         ISOVError FirstError = new ISOVError("testVErrorParserDescription");
         ISOComponent c = new ISOVMsg(new ISOMsg(), FirstError);
-        Vector result = vErrorParser.getVErrors(c);
+        result = vErrorParser.getVErrors(c);
+
         assertEquals(1, result.size(), "result.size()");
         assertSame(FirstError, result.get(0), "result.get(0)");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testGetVErrors9() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
-        Vector result = vErrorParser.getVErrors(new ISOBinaryField());
+    void testGetVErrors9() {
+        result = vErrorParser.getVErrors(new ISOBinaryField());
+
         assertEquals(0, result.size(), "result.size()");
     }
 
     @Test
-    public void testGetVErrorsThrowsNullPointerException() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrorsThrowsNullPointerException() {
         ISOVMsg c = new ISOVMsg(new ISOMsg(), new ISOVError("testVErrorParserDescription"));
         c.addISOVError(null);
-        try {
-            vErrorParser.getVErrors(c);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-        }
+
+        thrown = assertThrows(NullPointerException.class,
+            () -> vErrorParser.getVErrors(c)
+        );
+        assertNull(thrown.getMessage());
     }
 
     @Test
-    public void testGetVErrorsThrowsNullPointerException1() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
-        try {
-            vErrorParser.getVErrors(new ISOVMsg(new ISOMsg(), null));
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-        }
+    void testGetVErrorsThrowsNullPointerException1() {
+        thrown = assertThrows(NullPointerException.class,
+            () -> vErrorParser.getVErrors(new ISOVMsg(new ISOMsg(), null))
+        );
+        assertNull(thrown.getMessage());
     }
 
     @Test
-    public void testGetVErrorsThrowsNullPointerException2() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrorsThrowsNullPointerException2() {
         ISOVField c = new ISOVField(new ISOField(), new ISOVError("testVErrorParserDescription"));
         c.addISOVError(null);
-        try {
-            vErrorParser.getVErrors(c);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-        }
+
+        thrown = assertThrows(NullPointerException.class,
+            () -> vErrorParser.getVErrors(c)
+        );
+        assertNull(thrown.getMessage());
     }
 
     @Test
-    public void testGetVErrorsThrowsNullPointerException3() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testGetVErrorsThrowsNullPointerException3() {
         ISOVField c = new ISOVField(new ISOField(100, "testVErrorParserv"));
         c.addISOVError(null);
-        try {
-            vErrorParser.getVErrors(c);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-        }
+
+        thrown = assertThrows(NullPointerException.class,
+            () -> vErrorParser.getVErrors(c)
+        );
+        assertNull(thrown.getMessage());
     }
 
     @Test
-    public void testParseXMLErrorList() throws Throwable {
-        String result = new VErrorParser().parseXMLErrorList();
-        assertEquals("", result, "result");
+    void testParseXMLErrorList() {
+        assertEquals("", vErrorParser.parseXMLErrorList());
     }
 
     @Test
-    public void testResetErrors() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testResetErrors() {
         vErrorParser.resetErrors();
     }
 
     @Test
-    public void testSetLogger() throws Throwable {
-        VErrorParser vErrorParser = new VErrorParser();
+    void testSetLogger() {
         Logger logger = new Logger();
         vErrorParser.setLogger(logger, "testVErrorParserRealm");
         assertSame(logger, vErrorParser.logger, "vErrorParser.logger");
         assertEquals("testVErrorParserRealm", vErrorParser.realm, "vErrorParser.realm");
     }
+
 }

@@ -29,7 +29,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.util.Vector;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Called from ISOChannelPanel when you click on it's ISOMeter.
@@ -47,10 +48,12 @@ public class ISOMsgPanel extends JPanel {
      * @serial
      */
     ISOMsg m;
+
     /**
      * @serial
      */
-    Vector validFields;
+    List<Integer> validFields;
+
     public ISOMsgPanel(ISOMsg m, boolean withDump) {
         super();
         this.m = m;
@@ -65,10 +68,10 @@ public class ISOMsgPanel extends JPanel {
         this(m, false);
     }
     private void setValidFields() {
-        validFields = new Vector();
+        validFields = new CopyOnWriteArrayList<>();
         for (int i=0; i<=m.getMaxField(); i++)
             if (m.hasField(i))
-                validFields.addElement(i);
+                validFields.add(i);
     }
     private JComponent createISOMsgTable() {
         TableModel dataModel = new AbstractTableModel() {
@@ -103,9 +106,9 @@ public class ISOMsgPanel extends JPanel {
             public Object getValueAt(int row, int col) {
                 switch (col) {
                     case 0 :
-                        return validFields.elementAt(row);
+                        return validFields.get(row);
                     case 1 :
-                        int index = (Integer) validFields.elementAt(row);
+                        int index = validFields.get(row);
 
                         Object obj = m.getValue(index);
                         if (obj instanceof String) {
@@ -127,7 +130,7 @@ public class ISOMsgPanel extends JPanel {
                             return "<ISOMsg>";
                         break;
                     case 2 :
-                        int i = (Integer) validFields.elementAt(row);
+                        int i = validFields.get(row);
                         ISOPackager p = m.getPackager();
                         return p.getFieldDescription(m,i);
                 }
@@ -150,8 +153,7 @@ public class ISOMsgPanel extends JPanel {
                     (ListSelectionModel)e.getSource();
                 if (!lsm.isSelectionEmpty()) {
                     int selectedRow = lsm.getMinSelectionIndex();
-                    int index = (Integer)
-                            validFields.elementAt(selectedRow);
+                    int index = validFields.get(selectedRow);
 
                     Object obj = m.getValue(index);
                     if (obj instanceof ISOMsg) {

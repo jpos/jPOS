@@ -33,13 +33,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
-import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -70,14 +71,16 @@ public class ISOServer extends Observable
     int port;
     private InetAddress bindAddr;
 
-    private Map<String,Boolean> specificIPPerms= new HashMap<>();   // TRUE means allow; FALSE means deny
+    private final Map<String, Boolean> specificIPPerms = new HashMap<>();   // TRUE means allow; FALSE means deny
     private List<String> wildcardAllow;
     private List<String> wildcardDeny;
     private PermLogPolicy ipPermLogPolicy= PermLogPolicy.ALLOW_NOLOG;
 
     protected ISOChannel clientSideChannel;
     ISOPackager clientPackager;
-    protected Collection clientOutgoingFilters, clientIncomingFilters, listeners;
+    protected Collection<ISOFilter> clientOutgoingFilters;
+    protected Collection<ISOFilter> clientIncomingFilters;
+    protected Collection<ISORequestListener> listeners;
     ThreadPool pool;
     public static final int DEFAULT_MAX_THREADS = 100;
     public static final String LAST = ":last";
@@ -95,9 +98,9 @@ public class ISOServer extends Observable
     protected Configuration cfg;
     private boolean shutdown = false;
     private ServerSocket serverSocket;
-    private Map channels;
+    private final Map<String, WeakReference<ISOChannel>> channels;
     protected boolean ignoreISOExceptions;
-    protected List<ISOServerEventListener> serverListeners = null;
+    protected List<ISOServerEventListener> serverListeners;
 
    /**
     * @param port port to listen
@@ -116,11 +119,11 @@ public class ISOServer extends Observable
         }
         this.pool = pool == null ?
             new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
-        listeners = new Vector();
+        listeners = new CopyOnWriteArrayList<>();
         name = "";
-        channels = new HashMap();
+        channels = new ConcurrentHashMap<>();
         cnt = new int[SIZEOF_CNT];
-        serverListeners = new ArrayList<ISOServerEventListener>();
+        serverListeners = new CopyOnWriteArrayList<>();
     }
 
 
@@ -249,31 +252,30 @@ public class ISOServer extends Observable
             Logger.log (new LogEvent (this, "shutdown", e));
         }
     }
+
     private void shutdownChannels () {
-        Iterator iter = channels.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c != null) {
-                try {
-                    c.disconnect ();
-                    fireEvent(new ISOServerClientDisconnectEvent(this, c));
-                } catch (IOException e) {
-                    Logger.log (new LogEvent (this, "shutdown", e));
+        channels.values().stream()
+            .map(ref -> ref.get())
+            .filter(c -> c != null)
+            .forEach(
+                c -> {
+                    try {
+                        c.disconnect();
+                        fireEvent(new ISOServerClientDisconnectEvent(this, c));
+                    } catch (IOException e) {
+                        Logger.log (new LogEvent (this, "shutdown", e));
+                    };
                 }
-            }
-        }
+             );
     }
+
     private void purgeChannels () {
-        Iterator iter = channels.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c == null || !c.isConnected()) {
-                iter.remove ();
-            }
+        for (String key : channels.keySet()) {
+            ISOChannel c = channels.get(key).get();
+            if (c != null && c.isConnected())
+                continue;
+
+            channels.remove(key);
         }
     }
 
@@ -343,24 +345,19 @@ public class ISOServer extends Observable
                     try {
                         ISOMsg m = channel.receive();
                         lastTxn = System.currentTimeMillis();
-                        Iterator iter = listeners.iterator();
-                        while (iter.hasNext()) {
-                            if (((ISORequestListener)iter.next()).process
-                                (channel, m)) {
+                        for (ISORequestListener l : listeners) {
+                            if (l.process(channel, m))
                                 break;
-                            }
                         }
                     }
                     catch (ISOFilter.VetoException e) {
                         Logger.log (new LogEvent (this, "VetoException", e.getMessage()));
                     }
                     catch (ISOException e) {
-                        if (ignoreISOExceptions) {
-                            Logger.log (new LogEvent (this, "ISOException", e.getMessage()));
-                        }
-                        else {
+                        if (!ignoreISOExceptions)
                             throw e;
-                        }
+
+                        Logger.log (new LogEvent (this, "ISOException", e.getMessage()));
                     }
                 }
             } catch (EOFException e) {
@@ -657,31 +654,23 @@ public class ISOServer extends Observable
      * @return ISOChannel under the given name
      */
     public ISOChannel getISOChannel (String name) {
-        WeakReference ref = (WeakReference) channels.get (name);
-        if (ref != null) {
-            return (ISOChannel) ref.get ();
-        }
-        return null;
-    }
+        WeakReference<ISOChannel> ref = channels.get(name);
+        if (ref == null)
+            return null;
 
+        return ref.get();
+    }
 
     @Override
     public String getISOChannelNames () {
-        StringBuilder sb = new StringBuilder ();
-        Iterator iter = channels.entrySet().iterator();
-        for (int i=0; iter.hasNext(); i++) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
-                if (i > 0) {
-                    sb.append (' ');
-                }
-                sb.append (entry.getKey());
-            }
-        }
-        return sb.toString();
+        return channels.entrySet().stream()
+                .filter(ent -> !LAST.equals(ent.getKey()))
+                .filter(ent -> ent.getValue().get() != null)
+                .filter(ent -> ent.getValue().get().isConnected())
+                .map(ent -> ent.getKey())
+                .collect(Collectors.joining(" "));
     }
+
     public String getCountersAsString () {
         StringBuilder sb = new StringBuilder ();
         int cnt[] = getCounters();
@@ -703,22 +692,21 @@ public class ISOServer extends Observable
 
     public int[] getCounters()
     {
-        Iterator iter = channels.entrySet().iterator();
         int[] cnt = new int[3];
-        cnt[2] = 0;
-        for (int i=0; iter.hasNext(); i++) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
-                cnt[2]++;
-                if (c instanceof BaseChannel) {
-                    int[] cc = ((BaseChannel)c).getCounters();
-                    cnt[0] += cc[ISOChannel.RX];
-                    cnt[1] += cc[ISOChannel.TX];
+        channels.entrySet().stream()
+            .filter(ent -> !LAST.equals(ent.getKey()))
+            .filter(ent -> ent.getValue().get().isConnected())
+            .map(ent -> ent.getValue().get())
+            .forEach(
+                ch -> {
+                    cnt[2]++;
+                    if (ch instanceof BaseChannel) {
+                        int[] cc = ((BaseChannel) ch).getCounters();
+                        cnt[0] += cc[ISOChannel.RX];
+                        cnt[1] += cc[ISOChannel.TX];
+                    }
                 }
-            }
-        }
+            );
         return cnt;
     }
 
@@ -761,27 +749,24 @@ public class ISOServer extends Observable
     @Override
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());
-        Iterator iter = channels.entrySet().iterator();
         String inner = indent + "  ";
-        for (int i=0; iter.hasNext(); i++) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected() && c instanceof BaseChannel) {
-                StringBuilder sb = new StringBuilder ();
-                int[] cc = ((BaseChannel)c).getCounters();
-                sb.append (inner);
-                sb.append (entry.getKey());
-                sb.append (": rx=");
-                sb.append (Integer.toString (cc[ISOChannel.RX]));
-                sb.append (", tx=");
-                sb.append (Integer.toString (cc[ISOChannel.TX]));
-                sb.append (", last=");
-                sb.append (Long.toString(lastTxn));
-                p.println (sb.toString());
-            }
-        }
+        channels.entrySet().stream()
+            .filter(ent -> !LAST.equals(ent.getKey()))
+            .filter(ent -> ent.getValue().get() instanceof BaseChannel)
+            .filter(ent -> ent.getValue().get().isConnected())
+            .forEach(
+                ent -> {
+                    int[] cc = ((BaseChannel) ent.getValue().get()).getCounters();
+                    StringBuilder sb = new StringBuilder()
+                        .append(inner).append(ent.getKey())
+                        .append(": rx=").append(cc[ISOChannel.RX])
+                        .append(", tx=").append(cc[ISOChannel.TX])
+                        .append(", last=").append(lastTxn);
+                    p.println(sb.toString());
+                }
+            );
     }
+
     private void append (StringBuffer sb, String name, int value) {
         sb.append (name);
         sb.append (value);

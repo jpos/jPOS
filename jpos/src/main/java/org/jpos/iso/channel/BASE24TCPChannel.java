@@ -27,7 +27,7 @@ import java.net.ServerSocket;
 
 /**
  * Implements an ISOChannel able to exchange messages with
- * ACI's BASE24 over a TCP link, modified from BASE24ISOChannel 
+ * ACI's BASE24 over a TCP link, modified from BASE24ISOChannel
  * by Victor A. Salaman (salaman@teknos.com) .<br>
  * An instance of this class exchanges messages by means of an
  * intermediate 'port server' as described in the
@@ -41,9 +41,8 @@ import java.net.ServerSocket;
  * @see ISOException
  * @see ISOChannel
  */
-
-@SuppressWarnings("deprecation")
 public class BASE24TCPChannel extends BaseChannel {
+
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -81,20 +80,26 @@ public class BASE24TCPChannel extends BaseChannel {
     {
         super(p, serverSocket);
     }
+
     /**
      * @param m the Message to send (in this case it is unused)
-     * @param len   message len (ignored)
+     * @param b The packed iso message image <i>(ignored)</i>.
      * @exception IOException
      */
-    protected void sendMessageTrailler(ISOMsg m, int len) throws IOException {
+    @Override
+    protected void sendMessageTrailer(ISOMsg m, byte[] b) throws IOException {
         serverOut.write (3);
     }
+
+    @Override
     protected void sendMessageLength(int len) throws IOException {
         len++;  // one byte trailler
         serverOut.write (len >> 8);
         serverOut.write (len);
     }
-    protected int getMessageLength() throws IOException, ISOException {
+
+    @Override
+    protected int getMessageLength() throws IOException {
         int l = 0;
         byte[] b = new byte[2];
         Logger.log (new LogEvent (this, "get-message-length"));
@@ -109,11 +114,14 @@ public class BASE24TCPChannel extends BaseChannel {
         Logger.log (new LogEvent (this, "got-message-length", Integer.toString(l)));
         return l - 1;   // trailler length
     }
-    protected void getMessageTrailler() throws IOException {
+
+    @Override
+    protected void getMessageTrailer(ISOMsg m) throws IOException {
         Logger.log (new LogEvent (this, "get-message-trailler"));
         byte[] b = new byte[1];
         serverIn.readFully(b,0,1);
         Logger.log (new LogEvent (this, "got-message-trailler", ISOUtil.hexString(b)));
     }
+
 }
 

@@ -32,7 +32,7 @@ import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @SuppressWarnings("unchecked")
 public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneable {
@@ -41,24 +41,27 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     protected Logger logger;
     protected String realm;
     Configuration cfg = null;
-    List pool;
+    List<ISOChannel> pool;
     ISOChannel current;
 
     public ChannelPool () {
         super ();
-        pool = new Vector ();
+        pool = new CopyOnWriteArrayList<>();
     }
+
+    @Override
     public void setPackager(ISOPackager p) {
         // nothing to do
     }
-    public synchronized void connect () throws IOException {
+
+    @Override
+    public synchronized void connect() throws IOException {
         current = null;
         LogEvent evt = new LogEvent (this, "connect");
         evt.addMessage ("pool-size=" + Integer.toString (pool.size()));
-        for (int i=0; i<pool.size(); i++) {
+        for (ISOChannel c : pool) {
             try {
-                evt.addMessage ("pool-" + Integer.toString (i));
-                ISOChannel c = (ISOChannel) pool.get (i);
+                evt.addMessage ("pool-" + Integer.toString(pool.indexOf(c)));
                 c.connect ();
                 if (c.isConnected()) {
                     current = c;
@@ -76,12 +79,13 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
             throw new IOException ("unable to connect");
         }
     }
-    public synchronized void disconnect () throws IOException {
+
+    @Override
+    public synchronized void disconnect() {
         current = null;
         LogEvent evt = new LogEvent (this, "disconnect");
-        for (Object aPool : pool) {
+        for (ISOChannel c : pool) {
             try {
-                ISOChannel c = (ISOChannel) aPool;
                 c.disconnect();
             } catch (IOException e) {
                 evt.addMessage(e);
@@ -89,10 +93,14 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
         }
         Logger.log (evt);
     }
+
+    @Override
     public synchronized void reconnect() throws IOException {
         disconnect ();
         connect ();
     }
+
+    @Override
     public synchronized boolean isConnected() {
         try {
             return getCurrent().isConnected ();
@@ -100,39 +108,61 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
             return false;
         }
     }
+
+    @Override
     public ISOMsg receive() throws IOException, ISOException {
         return getCurrent().receive ();
     }
-    public void send (ISOMsg m) throws IOException, ISOException {
+
+    @Override
+    public void send(ISOMsg m) throws IOException, ISOException {
         getCurrent().send (m);
     }
-    public void send (byte[] b) throws IOException, ISOException {
+
+    @Override
+    public void send(byte[] b) throws IOException, ISOException {
         getCurrent().send (b);
     }
+
+    @Override
     public void setUsable(boolean b) {
         this.usable = b;
     }
-    public void setName (String name) {
+
+    @Override
+    public void setName(String name) {
         this.name = name;
         NameRegistrar.register ("channel."+name, this);
     }
+
+    @Override
     public String getName() {
         return this.name;
     }
-    public ISOPackager getPackager () {
+
+    @Override
+    public ISOPackager getPackager() {
         return null;
     }
-    public void setLogger (Logger logger, String realm) {
+
+    @Override
+    public void setLogger(Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
     }
-    public String getRealm () {
+
+    @Override
+    public String getRealm() {
         return realm;
     }
+
+    @Override
     public Logger getLogger() {
         return logger;
     }
-    public synchronized void setConfiguration (Configuration cfg) 
+
+    @Override
+    public synchronized void setConfiguration(Configuration cfg)
         throws ConfigurationException
     {
         this.cfg = cfg;
@@ -157,7 +187,9 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
         pool.remove (channel);
     }
     public void removeChannel (String name) throws NameRegistrar.NotFoundException {
-        pool.remove (NameRegistrar.get ("channel."+name));
+        @SuppressWarnings("unchecked")
+        ISOChannel ch = (ISOChannel) NameRegistrar.get("channel."+name);
+        pool.remove(ch);
     }
     public int size() {
         return pool.size();
@@ -170,13 +202,15 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
 
         return current;
     }
-    
-    public Object clone(){
+
+    @Override
+    public Object clone() {
       try {
         return super.clone();
       } catch (CloneNotSupportedException e) {
         throw new InternalError();
       }
     }
+
 }
 
