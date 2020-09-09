@@ -5,7 +5,7 @@
 *org.jpos.core.Configuration* is a general purpose property container 
 extensively used by jPOS components. 
 
-The Configuration interface looks like this: 
+The Configuration interface looks like this:
 
 [source,java]
 ----
@@ -36,11 +36,11 @@ Having our own Configuration interface lets us implement it in different ways.
 We have a very little class called SimpleConfiguration backed by a
 java.util.Properties, but nothing prevents us from creating a more
 sophisticated Configuration object capable of providing dynamic data (such as
-an SQLConfiguration, JavaSpacesConfiguration and the like). 
+an SQLConfiguration, JavaSpacesConfiguration and the like).
 
 jPOS-EE implements a SysConfigConfiguration that reads objects from its +sysconfig+ SQL table.
 
-We also have a very simple interface called Configurable: 
+We also have a very simple interface called Configurable:
 
 [source,java]
 ----
@@ -48,10 +48,10 @@ We also have a very simple interface called Configurable:
    package org.jpos.core;
 
    public interface Configuration {
-     public void setConfiguration (Configuration cfg) 
+     public void setConfiguration (Configuration cfg)
         throws ConfigurationException;
    }
-  
+
 ----
 
 Later, while looking at the Q2 application we'll see that Q2 pushes a
@@ -66,10 +66,10 @@ configuration object by calling the +setConfiguration+ method on
 ----
 
 Should +com.mycompany.MyObject"+ implement +Configurable+, Q2 would call its  +setConfiguration()+ method 
-providing access to the underlying +myProperty+ property. 
+providing access to the underlying +myProperty+ property.
 
 It's interesting to note that Q2 provides the ability to have array of
-properties under the same name, i.e: 
+properties under the same name, i.e:
 
 [source,xml]
 ----
@@ -79,23 +79,26 @@ properties under the same name, i.e:
      <property name="myProperty" value="Value B" />
      <property name="myProperty" value="Value C" />
     </object>
-  
+
 ----
 
 where one can call handy methods like  +String\[\] getAll(String)+. 
 
 +setConfiguration(Configuration cfg)+ can check the Configuration object and might 
 throw a +ConfigurationException+ in case a required property is not present or 
-is invalid. 
+is invalid.
 
 [TIP]
 =====
 SimpleConfiguration recognizes and de-reference properties with the
 format: `${xxx}` and search for a system property, or operating system
-environment variable under the `xxx` name. 
+environment variable under the `xxx` name.
+
+You can add a default value within the expression, using the `:` (colon) separator.
+For example `${xxx:def_value}`. If the property is not found, the default value will be used.
 
 The format `$sys{xxx}` de-reference just from system properties, and
-`$env{xxx}` just from the operating system environment. 
+`$env{xxx}` just from the operating system environment.
 
 In the rare case where a value with the format `${...}` is required, the
 `$verb{${...}}` format (verbatim) can be used.

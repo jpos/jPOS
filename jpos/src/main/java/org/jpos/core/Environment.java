@@ -31,7 +31,13 @@ import java.util.regex.Pattern;
 public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
-    private static Pattern valuePattern = Pattern.compile("^([\\w\\W]*)(\\$)([\\w\\W]*)?\\{([\\w\\W]+)\\}([\\w\\W]*)$");
+
+    // older pattern, not supporting defaults, left for reference (delete if not needed anymore)
+    // private static Pattern valuePattern = Pattern.compile("^([\\w\\W]*)(\\$)([\\w\\W]*)?\\{([\\w\\W]+)\\}([\\w\\W]*)$");
+
+    private static Pattern valuePattern = Pattern.compile("^(.*)(\\$)([\\w]*)\\{([-\\w.]+)(:(.+?))?\\}(.*)$");
+    // make groups easier to read :-)                       11112222233333333   444444444455666665    7777
+
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
     private static Environment INSTANCE;
     private String name;
@@ -129,12 +135,19 @@ public class Environment implements Loggeable {
                             return s; // do nothing - unknown prefix
                         }
                 }
+
+                if (r == null) {
+                    String defValue = m.group(6);
+                    if (defValue != null)
+                        r = defValue;
+                }
+
                 if (r != null) {
                     if (m.group(1) != null) {
                         r = m.group(1) + r;
                     }
-                    if (m.group(5) != null)
-                        r = r + m.group(5);
+                    if (m.group(7) != null)
+                        r = r + m.group(7);
                     m = valuePattern.matcher(r);
                 }
                 else
