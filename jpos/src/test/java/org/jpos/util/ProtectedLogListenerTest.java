@@ -18,6 +18,8 @@
 
 package org.jpos.util;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -44,7 +46,11 @@ public class ProtectedLogListenerTest {
             new ProtectedLogListener().log(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.util.LogEvent.getPayLoad()\" because \"ev\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -67,7 +73,11 @@ public class ProtectedLogListenerTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertSame(cfg, protectedLogListener.cfg, "protectedLogListener.cfg");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String, String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(protectedLogListener.wipeFields, "protectedLogListener.wipeFields");
             assertNull(protectedLogListener.protectFields, "protectedLogListener.protectFields");
         }

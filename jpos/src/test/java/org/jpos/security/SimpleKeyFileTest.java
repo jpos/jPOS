@@ -18,6 +18,8 @@
 
 package org.jpos.security;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -119,8 +121,13 @@ public class SimpleKeyFileTest {
             simpleKeyFile.load();
             fail("Expected SecureKeyStoreException to be thrown");
         } catch (SecureKeyStore.SecureKeyStoreException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.io.File.canRead()\" because \"this.file\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.io.File.canRead()\" because \"this.file\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertNull(simpleKeyFile.file, "simpleKeyFile.file");
             assertEquals(0, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
         }
@@ -147,8 +154,13 @@ public class SimpleKeyFileTest {
             simpleKeyFile.setKey("testSimpleKeyFileAlias", null);
             fail("Expected SecureKeyStoreException to be thrown");
         } catch (SecureKeyStore.SecureKeyStoreException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"Object.getClass()\" because \"secureKey\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"Object.getClass()\" because \"secureKey\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertEquals(0, simpleKeyFile.props.size(), "simpleKeyFile.props.size()");
             assertNull(simpleKeyFile.file, "simpleKeyFile.file");
         }
@@ -191,8 +203,13 @@ public class SimpleKeyFileTest {
             simpleKeyFile.store();
             fail("Expected SecureKeyStoreException to be thrown");
         } catch (SecureKeyStore.SecureKeyStoreException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.io.File.canWrite()\" because \"this.file\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.io.File.canWrite()\" because \"this.file\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertNull(simpleKeyFile.file, "simpleKeyFile.file");
         }
     }

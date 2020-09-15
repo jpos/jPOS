@@ -18,6 +18,8 @@
 
 package org.jpos.space;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -58,7 +60,11 @@ public class SpaceUtilTest {
             SpaceUtil.inpAll(null, "");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.Space.inp(Object)\" because \"sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -88,7 +94,11 @@ public class SpaceUtilTest {
             SpaceUtil.nextLong(null, "");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot enter synchronized block because \"sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -106,7 +116,11 @@ public class SpaceUtilTest {
             SpaceUtil.wipe(null, "");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.Space.inp(Object)\" because \"sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 }

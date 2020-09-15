@@ -18,6 +18,8 @@
 
 package org.jpos.transaction.participant;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -70,8 +72,13 @@ public class BSHGroupSelectorTest {
             bSHGroupSelector.setConfiguration(null);
             fail("Expected ConfigurationException to be thrown");
         } catch (ConfigurationException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChild(String)\" because \"e\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChild(String)\" because \"e\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertNull(bSHGroupSelector.prepareForAbortMethod, "bSHGroupSelector.prepareForAbortMethod");
             assertNull(bSHGroupSelector.selectMethod, "bSHGroupSelector.selectMethod");
             assertNull(bSHGroupSelector.commitMethod, "bSHGroupSelector.commitMethod");

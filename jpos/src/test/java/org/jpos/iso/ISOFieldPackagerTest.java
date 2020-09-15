@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_1_8;
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.ByteArrayInputStream;
@@ -62,7 +63,11 @@ public class ISOFieldPackagerTest {
             new IF_ECHAR(100, "testISOFieldPackagerDescription").pack(new ISOField(), out);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -120,7 +125,11 @@ public class ISOFieldPackagerTest {
             iFA_FLLCHAR.readBytes(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.InputStream.read(byte[], int, int)\" because \"in\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -215,7 +224,11 @@ public class ISOFieldPackagerTest {
             iFB_AMOUNT.unpack(new ISOBinaryField(), null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.InputStream.read(byte[], int, int)\" because \"in\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 

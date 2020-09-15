@@ -18,6 +18,8 @@
 
 package org.jpos.bsh;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -88,7 +90,11 @@ public class BSHRequestListenerTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertSame(cfg, bSHRequestListener.cfg, "bSHRequestListener.cfg");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getAll(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(bSHRequestListener.whitelist, "bSHRequestListener.whitelist");
             assertNull(bSHRequestListener.bshSource, "bSHRequestListener.bshSource");
         }

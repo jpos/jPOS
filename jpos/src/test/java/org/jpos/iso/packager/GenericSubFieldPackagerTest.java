@@ -18,6 +18,8 @@
 
 package org.jpos.iso.packager;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -46,8 +48,13 @@ public class GenericSubFieldPackagerTest {
             new GenericSubFieldPackager().pack(new ISOMsg());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot load from object array because \"this.fld\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot load from object array because \"this.fld\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -57,8 +64,13 @@ public class GenericSubFieldPackagerTest {
             new GenericSubFieldPackager().pack(null);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"org.jpos.iso.ISOComponent.getChildren()\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOComponent.getChildren()\" because \"m\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -73,7 +85,11 @@ public class GenericSubFieldPackagerTest {
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
             assertEquals("org.jpos.iso.IFA_LCHAR: Problem packing field unknown", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOComponent.getValue()\" because \"c\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -99,8 +115,13 @@ public class GenericSubFieldPackagerTest {
             new GenericSubFieldPackager().unpack(new ISOMsg(), b);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot read the array length because \"this.fld\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot read the array length because \"this.fld\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -128,8 +149,13 @@ public class GenericSubFieldPackagerTest {
             genericSubFieldPackager.unpack(new ISOMsg(), (byte[]) null);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot read the array length because \"b\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot read the array length because \"b\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -140,8 +166,13 @@ public class GenericSubFieldPackagerTest {
             new GenericSubFieldPackager().unpack(null, b);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"org.jpos.iso.ISOComponent.getComposite()\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOComponent.getComposite()\" because \"m\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 

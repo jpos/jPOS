@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.ByteArrayOutputStream;
@@ -91,7 +92,11 @@ public class BaseChannelTest {
             xMLChannel.accept(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.net.ServerSocket.accept()\" because \"s\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((XMLChannel) xMLChannel).logger, "(XMLChannel) xMLChannel.logger");
             assertNull(((XMLChannel) xMLChannel).originalRealm, "(XMLChannel) xMLChannel.originalRealm");
             assertNull(((XMLChannel) xMLChannel).serverIn, "(XMLChannel) xMLChannel.serverIn");
@@ -225,7 +230,11 @@ public class BaseChannelTest {
             cSChannel.applyIncomingFilters(null, header, "testString".getBytes(), new LogEvent());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOMsg.getMaxField()\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -286,7 +295,11 @@ public class BaseChannelTest {
             bASE24TCPChannel.connect(socket);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.net.InetAddress.getHostAddress()\" because the return value of \"java.net.Socket.getInetAddress()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((BASE24TCPChannel) bASE24TCPChannel).serverIn, "(BASE24TCPChannel) bASE24TCPChannel.serverIn");
             assertNull(((BASE24TCPChannel) bASE24TCPChannel).serverOut, "(BASE24TCPChannel) bASE24TCPChannel.serverOut");
             assertSame(socket, bASE24TCPChannel.getSocket(), "(BASE24TCPChannel) bASE24TCPChannel.getSocket()");
@@ -308,7 +321,11 @@ public class BaseChannelTest {
             gZIPChannel.connect(socket);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.net.InetAddress.getHostAddress()\" because the return value of \"java.net.Socket.getInetAddress()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((GZIPChannel) gZIPChannel).serverIn, "(GZIPChannel) gZIPChannel.serverIn");
             assertNull(((GZIPChannel) gZIPChannel).serverOut, "(GZIPChannel) gZIPChannel.serverOut");
             assertSame(socket, gZIPChannel.getSocket(), "(GZIPChannel) gZIPChannel.getSocket()");
@@ -338,7 +355,11 @@ public class BaseChannelTest {
             cSChannel.createMsg();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOPackager.createISOMsg()\" because \"this.packager\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((CSChannel) cSChannel).packager, "(CSChannel) cSChannel.packager");
         }
     }
@@ -360,7 +381,11 @@ public class BaseChannelTest {
             nACChannel.createMsg();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOPackager.createISOMsg()\" because \"this.packager\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((NACChannel) nACChannel).packager, "(NACChannel) nACChannel.packager");
         }
     }
@@ -441,7 +466,11 @@ public class BaseChannelTest {
             rawChannel.getBytes(b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.DataInputStream.read(byte[])\" because \"this.serverIn\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((RawChannel) rawChannel).serverIn, "(RawChannel) rawChannel.serverIn");
         }
     }
@@ -575,7 +604,11 @@ public class BaseChannelTest {
             logChannel.getHeaderLength((ISOMsg) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOMsg.getHeader()\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -593,7 +626,11 @@ public class BaseChannelTest {
             rawChannel.getMessage(b, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.DataInputStream.readFully(byte[], int, int)\" because \"this.serverIn\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((RawChannel) rawChannel).serverIn, "(RawChannel) rawChannel.serverIn");
         }
     }
@@ -709,7 +746,11 @@ public class BaseChannelTest {
             aSCIIChannel.readHeader(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.DataInputStream.readFully(byte[], int, int)\" because \"this.serverIn\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((ASCIIChannel) aSCIIChannel).serverIn, "(ASCIIChannel) aSCIIChannel.serverIn");
         }
     }
@@ -721,7 +762,11 @@ public class BaseChannelTest {
             x25Channel.receive();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOPackager.createISOMsg()\" because \"this.packager\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((X25Channel) x25Channel).packager, "(X25Channel) x25Channel.packager");
             assertNull(((X25Channel) x25Channel).serverIn, "(X25Channel) x25Channel.serverIn");
             assertNull(x25Channel.getSocket(), "(X25Channel) x25Channel.getSocket()");
@@ -799,7 +844,11 @@ public class BaseChannelTest {
             new X25Channel("testBaseChannelHost", 100, new XMLPackager()).sendKeepAlive();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.DataOutputStream.flush()\" because \"this.serverOut\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -809,7 +858,11 @@ public class BaseChannelTest {
             new GZIPChannel().sendKeepAlive();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.DataOutputStream.write(int)\" because \"this.serverOut\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -833,7 +886,11 @@ public class BaseChannelTest {
             logChannel.sendMessageHeader(m, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.DataOutputStream.write(byte[])\" because \"this.serverOut\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((LogChannel) logChannel).serverOut, "(LogChannel) logChannel.serverOut");
             assertEquals(0, m.getDirection(), "m.getDirection()");
         }
@@ -846,7 +903,11 @@ public class BaseChannelTest {
             bASE24Channel.sendMessageHeader(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOMsg.getHeader()\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((BASE24Channel) bASE24Channel).serverOut, "(BASE24Channel) bASE24Channel.serverOut");
         }
     }
@@ -867,7 +928,11 @@ public class BaseChannelTest {
             logChannel.sendMessage(b, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.DataOutputStream.write(byte[], int, int)\" because \"this.serverOut\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((LogChannel) logChannel).serverOut, "(LogChannel) logChannel.serverOut");
         }
     }
@@ -895,7 +960,11 @@ public class BaseChannelTest {
             bASE24TCPChannel.sendMessageTrailer(new ISOMsg(), b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.DataOutputStream.write(int)\" because \"this.serverOut\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -926,7 +995,11 @@ public class BaseChannelTest {
             x25Channel.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Properties.get(Object)\" because \"this.props\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(100000, x25Channel.getMaxPacketLength(), "(X25Channel) x25Channel.getMaxPacketLength()");
             assertEquals(0, x25Channel.getPort(), "(X25Channel) x25Channel.getPort()");
             assertEquals(0, x25Channel.getTimeout(), "(X25Channel) x25Channel.getTimeout()");
@@ -958,7 +1031,11 @@ public class BaseChannelTest {
             cSChannel.setHeader((String) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.getBytes()\" because \"header\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((CSChannel) cSChannel).header, "(CSChannel) cSChannel.header");
         }
     }
@@ -993,7 +1070,11 @@ public class BaseChannelTest {
             hEXChannel.setIncomingFilters(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, ((HEXChannel) hEXChannel).incomingFilters.size(), "(HEXChannel) hEXChannel.incomingFilters.size()");
         }
     }
@@ -1057,7 +1138,11 @@ public class BaseChannelTest {
             cSChannel.setOutgoingFilters(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, ((CSChannel) cSChannel).outgoingFilters.size(), "(CSChannel) cSChannel.outgoingFilters.size()");
         }
     }

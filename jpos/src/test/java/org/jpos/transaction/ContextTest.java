@@ -18,6 +18,8 @@
 
 package org.jpos.transaction;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -181,7 +183,11 @@ public class ContextTest {
             context.get("", 49L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Map.get(Object)\" because \"this.map\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -247,7 +253,11 @@ public class ContextTest {
             context.readExternal(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.ObjectInput.readByte()\" because \"in\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -279,7 +289,11 @@ public class ContextTest {
             context.writeExternal(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.ObjectOutput.writeByte(int)\" because \"out\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 

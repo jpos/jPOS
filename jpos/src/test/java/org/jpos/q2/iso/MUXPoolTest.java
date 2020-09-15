@@ -18,6 +18,8 @@
 
 package org.jpos.q2.iso;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -35,7 +37,11 @@ public class MUXPoolTest {
             mUXPool.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildTextTrim(String)\" because \"e\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(mUXPool.isModified(), "mUXPool.isModified()");
             assertNull(mUXPool.muxName, "mUXPool.muxName");
             assertNull(mUXPool.mux, "mUXPool.mux");
@@ -51,7 +57,11 @@ public class MUXPoolTest {
             mUXPool.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getBoolean(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(mUXPool.mux, "mUXPool.mux");
             assertFalse(mUXPool.isModified(), "mUXPool.isModified()");
             assertEquals(0, mUXPool.strategy, "mUXPool.strategy");
@@ -65,7 +75,11 @@ public class MUXPoolTest {
             new MUXPool().isConnected();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read the array length because \"<local2>\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -76,7 +90,11 @@ public class MUXPoolTest {
             mUXPool.request(new ISOMsg("testMUXPoolMti"), 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read the array length because \"<local4>\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 

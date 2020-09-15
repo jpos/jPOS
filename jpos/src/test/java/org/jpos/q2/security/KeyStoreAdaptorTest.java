@@ -18,6 +18,8 @@
 
 package org.jpos.q2.security;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -60,7 +62,11 @@ public class KeyStoreAdaptorTest {
             keyStoreAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.QFactory.newInstance(String)\" because \"factory\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(keyStoreAdaptor.isModified(), "keyStoreAdaptor.isModified()");
             assertNull(keyStoreAdaptor.ks, "keyStoreAdaptor.ks");
         }
@@ -73,7 +79,11 @@ public class KeyStoreAdaptorTest {
             keyStoreAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.Q2.getFactory()\" because the return value of \"org.jpos.q2.security.KeyStoreAdaptor.getServer()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(keyStoreAdaptor.isModified(), "keyStoreAdaptor.isModified()");
             assertNull(keyStoreAdaptor.ks, "keyStoreAdaptor.ks");
         }

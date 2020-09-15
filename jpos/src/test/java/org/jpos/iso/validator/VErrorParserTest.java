@@ -18,6 +18,8 @@
 
 package org.jpos.iso.validator;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -189,7 +191,11 @@ public class VErrorParserTest {
             vErrorParser.getVErrors(c);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOVError.setId(String)\" because \"error\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -200,7 +206,11 @@ public class VErrorParserTest {
             vErrorParser.getVErrors(new ISOVMsg(new ISOMsg(), null));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOVError.setId(String)\" because \"error\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -213,7 +223,11 @@ public class VErrorParserTest {
             vErrorParser.getVErrors(c);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOVError.setId(String)\" because \"error\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -226,7 +240,11 @@ public class VErrorParserTest {
             vErrorParser.getVErrors(c);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOVError.setId(String)\" because \"error\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 

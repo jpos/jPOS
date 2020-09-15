@@ -18,6 +18,8 @@
 
 package org.jpos.transaction;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -108,7 +110,11 @@ public class TransactionManagerTest {
                     evt, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"Object.getClass()\" because \"p\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(1, members.size(), "(ArrayList) members.size()");
         }
     }
@@ -120,7 +126,11 @@ public class TransactionManagerTest {
             transactionManager.abort(1, 100L, new File("testTransactionManagerParam1"), null, true, evt, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.List.iterator()\" because \"members\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -143,7 +153,11 @@ public class TransactionManagerTest {
             transactionManager.checkTail();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.Space.in(Object)\" because \"this.sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.sp, "transactionManager.sp");
             assertEquals(0L, transactionManager.tail, "transactionManager.tail");
             assertNull(transactionManager.psp, "transactionManager.psp");
@@ -200,7 +214,11 @@ public class TransactionManagerTest {
             transactionManager.commit(1, 100L, "testString", members, members.add(null), evt, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"Object.getClass()\" because \"p\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(1, members.size(), "(ArrayList) members.size()");
         }
     }
@@ -212,7 +230,11 @@ public class TransactionManagerTest {
             transactionManager.commit(1, 100L, new SerializablePermission("testTransactionManagerParam1"), null, true, evt, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.List.iterator()\" because \"members\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -239,7 +261,11 @@ public class TransactionManagerTest {
             transactionManager.getKey(null, 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -255,7 +281,11 @@ public class TransactionManagerTest {
             transactionManager.getParticipants("testTransactionManagerGroupName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Map.get(Object)\" because \"this.groups\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.groups, "transactionManager.groups");
         }
     }
@@ -272,7 +302,11 @@ public class TransactionManagerTest {
             transactionManager.initCounter("testTransactionManagerName", 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.Space.rdp(Object)\" because \"this.psp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }
@@ -284,7 +318,11 @@ public class TransactionManagerTest {
             transactionManager.initParticipants(config);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Map.put(Object, Object)\" because \"this.groups\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.groups, "transactionManager.groups");
             assertEquals("testTransactionManagerName", config.getName(), "config.getName()");
         }
@@ -318,7 +356,11 @@ public class TransactionManagerTest {
             transactionManager.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String, String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.queue, "transactionManager.queue");
             assertNull(transactionManager.getConfiguration(), "transactionManager.getConfiguration()");
             assertEquals(0L, transactionManager.tail, "transactionManager.tail");
@@ -337,7 +379,11 @@ public class TransactionManagerTest {
             transactionManager.initTailLock();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.Space.put(Object, Object)\" because \"this.sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.sp, "transactionManager.sp");
         }
     }
@@ -348,7 +394,11 @@ public class TransactionManagerTest {
             transactionManager.nextId();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot enter synchronized block because \"this.psp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertEquals(0L, transactionManager.head, "transactionManager.head");
         }
@@ -431,7 +481,11 @@ public class TransactionManagerTest {
             assertEquals(1, evt.getPayLoad().size(), "evt.payLoad.size()");
             assertEquals("        prepare: org.jpos.transaction.participant.Forward ABORTED", evt.getPayLoad()
                     .get(0), "evt.payLoad.get(0)");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertNull(transactionManager.groups, "transactionManager.groups");
             assertEquals(0, members.size(), "(ArrayList) members.size()");
@@ -450,7 +504,11 @@ public class TransactionManagerTest {
         } catch (NullPointerException ex) {
             assertEquals(1, evt.getPayLoad().size(), "evt.payLoad.size()");
             assertEquals("prepareForAbort: org.jpos.transaction.participant.Trace", evt.getPayLoad().get(0), "evt.payLoad.get(0)");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertNull(transactionManager.groups, "transactionManager.groups");
             assertEquals(0, members.size(), "(ArrayList) members.size()");
@@ -464,7 +522,11 @@ public class TransactionManagerTest {
             transactionManager.prepare(1, 100L, new UnsupportedEncodingException(), members, null, true, evt, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Iterator.hasNext()\" because \"iter\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertNull(transactionManager.groups, "transactionManager.groups");
             assertEquals(0, members.size(), "(ArrayList) members.size()");
@@ -477,7 +539,11 @@ public class TransactionManagerTest {
             transactionManager.purge(100L, true);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }
@@ -488,7 +554,11 @@ public class TransactionManagerTest {
             transactionManager.recover(1, 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertNull(transactionManager.groups, "transactionManager.groups");
         }
@@ -500,7 +570,11 @@ public class TransactionManagerTest {
             transactionManager.recover();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot enter synchronized block because \"this.psp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertEquals(0L, transactionManager.tail, "transactionManager.tail");
             assertNull(transactionManager.groups, "transactionManager.groups");
@@ -530,7 +604,11 @@ public class TransactionManagerTest {
             transactionManager.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getBoolean(String, boolean)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(transactionManager.debug, "transactionManager.debug");
             assertSame(cfg, transactionManager.getConfiguration(), "transactionManager.getConfiguration()");
             assertEquals(0L, transactionManager.pauseTimeout, "transactionManager.pauseTimeout");
@@ -544,7 +622,11 @@ public class TransactionManagerTest {
             transactionManager.setState(100L, Integer.valueOf(-1));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }
@@ -555,7 +637,11 @@ public class TransactionManagerTest {
             transactionManager.snapshot(100L, "testString", Integer.valueOf(-100));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }
@@ -566,7 +652,11 @@ public class TransactionManagerTest {
             transactionManager.snapshot(100L, new Comment("testTransactionManagerText"));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }
@@ -578,7 +668,11 @@ public class TransactionManagerTest {
             transactionManager.startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot enter synchronized block because \"this.psp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertNull(transactionManager.threads, "transactionManager.threads");
             assertNull(transactionManager.getConfiguration(), "transactionManager.getConfiguration()");
@@ -593,7 +687,11 @@ public class TransactionManagerTest {
             transactionManager.tailDone();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }

@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.util.BitSet;
@@ -85,7 +86,11 @@ public class Base1_BITMAP126Test {
             new Base1_BITMAP126(100, "testBase1_BITMAP126Description").pack(new ISOBinaryField());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.BitSet.length()\" because \"b\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -114,7 +119,11 @@ public class Base1_BITMAP126Test {
             base1_BITMAP126.unpack(c, null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot load from byte/boolean array because \"b\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(((ISOBinaryField) c).getBytes(), "(ISOBinaryField) c.getBytes()");
         }
     }

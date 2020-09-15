@@ -18,6 +18,8 @@
 
 package org.jpos.q2.iso;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -125,7 +127,11 @@ public class DirPollAdaptorTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals(".", dirPollAdaptor.dirPoll.getPath(), "dirPollAdaptor.dirPoll.getPath()");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.QFactory.getConfiguration(org.jdom2.Element)\" because \"factory\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
         }
     }
@@ -142,7 +148,11 @@ public class DirPollAdaptorTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals(".", dirPollAdaptor.dirPoll.getPath(), "dirPollAdaptor.dirPoll.getPath()");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.QFactory.getConfiguration(org.jdom2.Element)\" because \"factory\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
         }
     }
@@ -154,7 +164,11 @@ public class DirPollAdaptorTest {
             dirPollAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.Q2.getFactory()\" because the return value of \"org.jpos.q2.iso.DirPollAdaptor.getServer()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(dirPollAdaptor.dirPoll, "dirPollAdaptor.dirPoll");
             assertTrue(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
         }
@@ -217,7 +231,11 @@ public class DirPollAdaptorTest {
             dirPollAdaptor.stopService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.util.DirPoll.destroy()\" because \"this.dirPoll\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(dirPollAdaptor.dirPoll, "dirPollAdaptor.dirPoll");
         }
     }

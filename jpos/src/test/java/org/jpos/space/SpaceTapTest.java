@@ -18,6 +18,8 @@
 
 package org.jpos.space;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -88,7 +90,11 @@ public class SpaceTapTest {
             new SpaceTap(ssp, ssp, null, "", 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"Object.equals(Object)\" because \"key\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -98,7 +104,11 @@ public class SpaceTapTest {
             new SpaceTap(null, "", "testString", 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.LocalSpace.addListener(Object, org.jpos.space.SpaceListener)\" because \"ssp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 

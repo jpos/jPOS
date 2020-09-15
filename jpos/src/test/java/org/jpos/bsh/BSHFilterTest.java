@@ -18,10 +18,9 @@
 
 package org.jpos.bsh;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
@@ -80,7 +79,11 @@ public class BSHFilterTest {
             bSHFilter.filter(new CSChannel("testBSHFilterHost", 100, new PostPackager()), new ISOMsg("testBSHFilterMti"), evt);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getAll(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(bSHFilter.cfg, "bSHFilter.cfg");
         }
     }

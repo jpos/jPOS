@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import org.jpos.iso.IFA_AMOUNT;
@@ -96,8 +97,13 @@ public class CTCSubElementPackagerTest {
             new CTCSubElementPackager().pack(null);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("null:null", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("null:null", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("null:Cannot invoke \"org.jpos.iso.ISOComponent.getChildren()\" because \"c\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOComponent.getChildren()\" because \"c\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -107,8 +113,13 @@ public class CTCSubElementPackagerTest {
             new CTCSubElementPackager().pack(new ISOBinaryField(100));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("null:null", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("null:null", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("null:Cannot read the array length because \"this.fld\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot read the array length because \"this.fld\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -185,7 +196,11 @@ public class CTCSubElementPackagerTest {
             new CTCSubElementPackager().unpack(new ISOField(100), b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot load from object array because \"this.fld\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -195,7 +210,11 @@ public class CTCSubElementPackagerTest {
             new CTCSubElementPackager().unpack(new ISOMsg(), (byte[]) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read the array length because \"b\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -211,7 +230,11 @@ public class CTCSubElementPackagerTest {
             cTCSubElementPackager.unpack(m, b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOFieldPackager.createComponent(int)\" because \"this.fld[i]\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 

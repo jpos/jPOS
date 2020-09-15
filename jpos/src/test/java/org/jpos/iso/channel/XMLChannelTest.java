@@ -18,6 +18,8 @@
 
 package org.jpos.iso.channel;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -47,7 +49,11 @@ public class XMLChannelTest {
             xMLChannel.connect(socket);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.net.InetAddress.getHostAddress()\" because the return value of \"java.net.Socket.getInetAddress()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(xMLChannel.getLogger(), "xMLChannel.getLogger()");
             assertEquals("org.jpos.iso.channel.XMLChannel", xMLChannel.getOriginalRealm(), "xMLChannel.getOriginalRealm()");
             assertNull(xMLChannel.reader, "xMLChannel.reader");
@@ -68,7 +74,11 @@ public class XMLChannelTest {
             xMLChannel.connect(socket);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.net.InetAddress.getHostAddress()\" because the return value of \"java.net.Socket.getInetAddress()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(xMLChannel.getLogger(), "xMLChannel.getLogger()");
             assertEquals("org.jpos.iso.channel.XMLChannel", xMLChannel.getOriginalRealm(), "xMLChannel.getOriginalRealm()");
             assertNull(xMLChannel.reader, "xMLChannel.reader");

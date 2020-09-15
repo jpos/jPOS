@@ -18,6 +18,8 @@
 
 package org.jpos.iso.packager;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -69,8 +71,13 @@ public class CTCSubFieldPackagerTest {
             new CTCSubFieldPackager().pack(null);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("null: null", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("null: null", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("null: Cannot invoke \"org.jpos.iso.ISOComponent.getChildren()\" because \"c\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOComponent.getChildren()\" because \"c\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -80,8 +87,13 @@ public class CTCSubFieldPackagerTest {
             new CTCSubFieldPackager().pack(new ISOBinaryField(100));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("null: null", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("null: null", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("null: Cannot read the array length because \"this.fld\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot read the array length because \"this.fld\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -94,8 +106,13 @@ public class CTCSubFieldPackagerTest {
             cTCSubFieldPackager.pack(new ISOMsg("testCTCSubFieldPackagerMti"));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("null: null", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("null: null", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("null: Cannot invoke \"org.jpos.iso.ISOFieldPackager.pack(org.jpos.iso.ISOComponent)\" because \"this.fld[i]\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOFieldPackager.pack(org.jpos.iso.ISOComponent)\" because \"this.fld[i]\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 

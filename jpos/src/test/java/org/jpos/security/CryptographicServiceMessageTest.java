@@ -18,6 +18,8 @@
 
 package org.jpos.security;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -108,7 +110,11 @@ public class CryptographicServiceMessageTest {
         thrown = assertThrows(NullPointerException.class,
             () -> instance.dump(null, "testIndent")
         );
-        assertNull(thrown.getMessage());
+        if (isJavaVersionAtMost(JAVA_14)) {
+            assertNull(thrown.getMessage());
+        } else {
+            assertEquals("Cannot invoke \"java.io.PrintStream.print(String)\" because \"p\" is null", thrown.getMessage());
+        }
     }
 
     @Test
@@ -124,7 +130,11 @@ public class CryptographicServiceMessageTest {
         thrown = assertThrows(NullPointerException.class,
             () -> instance.getFieldContent(null)
         );
-        assertNull(thrown.getMessage());
+        if (isJavaVersionAtMost(JAVA_14)) {
+            assertNull(thrown.getMessage());
+        } else {
+            assertEquals("Cannot invoke \"String.toUpperCase()\" because \"tag\" is null", thrown.getMessage());
+        }
     }
 
     @Test
@@ -167,7 +177,11 @@ public class CryptographicServiceMessageTest {
         thrown = assertThrows(NullPointerException.class,
             () -> CryptographicServiceMessage.parse(null)
         );
-        assertNull(thrown.getMessage());
+        if (isJavaVersionAtMost(JAVA_14)) {
+            assertNull(thrown.getMessage());
+        } else {
+            assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", thrown.getMessage());
+        }
     }
 
     @Test

@@ -24,6 +24,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,7 +65,11 @@ public class SMAdaptorTest {
             sMAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.QFactory.newInstance(String)\" because \"factory\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(sMAdaptor.sm, "sMAdaptor.sm");
             assertFalse(sMAdaptor.isModified(), "sMAdaptor.isModified()");
         }
@@ -76,7 +82,11 @@ public class SMAdaptorTest {
             sMAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.Q2.getFactory()\" because the return value of \"org.jpos.q2.security.SMAdaptor.getServer()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(sMAdaptor.sm, "sMAdaptor.sm");
             assertFalse(sMAdaptor.isModified(), "sMAdaptor.isModified()");
         }

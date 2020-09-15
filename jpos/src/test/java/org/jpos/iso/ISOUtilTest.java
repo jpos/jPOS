@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.math.BigDecimal;
@@ -132,7 +133,11 @@ public class ISOUtilTest {
             ISOUtil.asciiToEbcdic((String) null, e, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.lang.CharSequence.length()\" because \"csq\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(3, e.length, "e.length");
         }
     }
@@ -843,7 +848,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(bmap, null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read the array length because \"b\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(128, bmap.size(), "bmap.size()");
         }
     }
@@ -2931,7 +2940,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(bmap, null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read the array length because \"b\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(64, bmap.size(), "bmap.size()");
         }
     }

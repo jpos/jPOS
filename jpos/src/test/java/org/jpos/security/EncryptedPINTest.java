@@ -18,6 +18,8 @@
 
 package org.jpos.security;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -95,7 +97,11 @@ public class EncryptedPINTest {
             new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"s\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -106,7 +112,11 @@ public class EncryptedPINTest {
             new EncryptedPIN(pinBlock, (byte) 0, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"s\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -129,7 +139,11 @@ public class EncryptedPINTest {
             new EncryptedPIN().dump(null, "testEncryptedPINIndent");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.PrintStream.print(String)\" because \"p\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -143,7 +157,11 @@ public class EncryptedPINTest {
             encryptedPIN.dump(p, "testEncryptedPINIndent");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read the array length because \"b\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -171,7 +189,11 @@ public class EncryptedPINTest {
             EncryptedPIN.extractAccountNumberPart(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"s\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -256,7 +278,11 @@ public class EncryptedPINTest {
             encryptedPIN.setAccountNumber(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"extractedAccountNumber\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals("AccountNumbe", encryptedPIN.accountNumber, "encryptedPIN.accountNumber");
         }
     }

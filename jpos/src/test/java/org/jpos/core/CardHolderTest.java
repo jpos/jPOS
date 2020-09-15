@@ -21,11 +21,12 @@ package org.jpos.core;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.jpos.iso.ISOBitMap;
 import org.jpos.iso.ISOMsg;
 import org.jpos.testhelpers.EqualsHashCodeTestCase;
 import org.junit.jupiter.api.Test;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CardHolderTest extends EqualsHashCodeTestCase {
@@ -157,7 +158,11 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             new CardHolder("k'X9|DH:!;uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,").dump(null, "testCardHolderIndent");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.PrintStream.print(String)\" because \"p\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -175,7 +180,11 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             new CardHolder().getBIN();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.substring(int, int)\" because \"this.pan\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -452,7 +461,11 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             new CardHolder().isValidCRC();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"p\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -462,7 +475,11 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             CardHolder.isValidCRC(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"p\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -557,7 +574,11 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             cardHolder.setEXP(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"exp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals("4Cha", cardHolder.exp, "cardHolder.exp");
         }
     }
@@ -590,7 +611,11 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             cardHolder.setPAN(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"pan\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals("k'X9|", cardHolder.pan, "cardHolder.pan");
         }
     }

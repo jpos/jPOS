@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.security.Key;
@@ -74,8 +75,13 @@ public class JCEHandlerTest {
             jCEHandler.decryptData(encryptedData, key);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertEquals("DESede", key.getAlgorithm(), "(SecretKeySpec) key.getAlgorithm()");
         }
     }
@@ -86,7 +92,11 @@ public class JCEHandlerTest {
             new JCEHandler((Provider) null).decryptData("testString".getBytes(), null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.security.Key.getAlgorithm()\" because \"key\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -101,8 +111,13 @@ public class JCEHandlerTest {
             jCEHandler.decryptDESKey((short) 100, encryptedDESKey, encryptingKey, true);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertEquals("DESede", encryptingKey.getAlgorithm(), "(SecretKeySpec) encryptingKey.getAlgorithm()");
         }
     }
@@ -114,7 +129,11 @@ public class JCEHandlerTest {
             new JCEHandler((Provider) null).decryptDESKey((short) 100, encryptedDESKey, null, true);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.security.Key.getAlgorithm()\" because \"key\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -128,8 +147,13 @@ public class JCEHandlerTest {
             jCEHandler.doCryptStuff(data, key, 100);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertEquals("testJCEHandlerParam2", key.getAlgorithm(), "(SecretKeySpec) key.getAlgorithm()");
         }
     }
@@ -144,8 +168,13 @@ public class JCEHandlerTest {
             jCEHandler2.doCryptStuff(data, key, 100);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertEquals("DESede", key.getAlgorithm(), "(SecretKeySpec) key.getAlgorithm()");
         }
     }
@@ -157,7 +186,11 @@ public class JCEHandlerTest {
             jCEHandler.doCryptStuff(data, null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.security.Key.getAlgorithm()\" because \"key\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -172,8 +205,13 @@ public class JCEHandlerTest {
             jCEHandler.encryptData(data, key);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertEquals("DESede", key.getAlgorithm(), "(SecretKeySpec) key.getAlgorithm()");
         }
     }
@@ -185,7 +223,11 @@ public class JCEHandlerTest {
             new JCEHandler((Provider) null).encryptData(data, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.security.Key.getAlgorithm()\" because \"key\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -232,7 +274,11 @@ public class JCEHandlerTest {
             new JCEHandler((Provider) null).encryptDESKey((short) 100, null, encryptingKey);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.security.Key.getAlgorithm()\" because \"clearDESKey\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals("testJCEHandlerParam2", encryptingKey.getAlgorithm(),
                     "(SecretKeySpec) encryptingKey.getAlgorithm()");
         }
@@ -292,7 +338,11 @@ public class JCEHandlerTest {
             jCEHandler.extractDESKeyMaterial((short) 100, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.security.Key.getAlgorithm()\" because \"clearDESKey\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -365,8 +415,13 @@ public class JCEHandlerTest {
             new JCEHandler((Provider) null).generateDESKey((short) 63);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -376,8 +431,13 @@ public class JCEHandlerTest {
             new JCEHandler((Provider) null).generateDESKey((short) 64);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 
@@ -387,8 +447,13 @@ public class JCEHandlerTest {
             new JCEHandler((Provider) null).generateDESKey((short) 65);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
         }
     }
 

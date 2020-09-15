@@ -18,6 +18,8 @@
 
 package org.jpos.transaction.participant;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
@@ -219,7 +221,11 @@ public class BSHMethodTest {
             new BSHMethod(null, false).execute(arguments, returnNames);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.endsWith(String)\" because \"statements\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, arguments.size(), "(HashMap) arguments.size()");
             assertEquals(0, returnNames.size(), "(ArrayList) returnNames.size()");
         }
@@ -231,7 +237,11 @@ public class BSHMethodTest {
             new BSHMethod("testBSHMethodBshData", false).execute(arguments, (Collection) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Collection.iterator()\" because \"returnNames\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, arguments.size(), "(HashMap) arguments.size()");
         }
     }
@@ -343,7 +353,11 @@ public class BSHMethodTest {
             bSHMethod.initInterpreter(arguments);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.endsWith(String)\" because \"statements\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, arguments.size(), "(HashMap) arguments.size()");
         }
     }
@@ -355,7 +369,11 @@ public class BSHMethodTest {
             bSHMethod.initInterpreter(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Map.entrySet()\" because \"arguments\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 

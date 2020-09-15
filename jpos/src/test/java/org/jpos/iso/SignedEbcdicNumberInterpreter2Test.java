@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import org.junit.jupiter.api.Test;
@@ -94,7 +95,11 @@ public class SignedEbcdicNumberInterpreter2Test {
             new SignedEbcdicNumberInterpreter().interpret(null, targetArray, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.startsWith(String)\" because \"data\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(1, targetArray.length, "targetArray.length");
         }
     }
@@ -152,7 +157,11 @@ public class SignedEbcdicNumberInterpreter2Test {
             new SignedEbcdicNumberInterpreter().uninterpret(null, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot load from byte/boolean array because \"rawData\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 }

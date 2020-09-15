@@ -18,6 +18,8 @@
 
 package org.jpos.util;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -227,7 +229,11 @@ public class BlockingQueueTest {
             blockingQueue.dequeue(0L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.LinkedList.size()\" because \"this.queue\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
             assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
         }
@@ -241,7 +247,11 @@ public class BlockingQueueTest {
             blockingQueue.dequeue(-1L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.LinkedList.size()\" because \"this.queue\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
             assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
         }
@@ -255,7 +265,11 @@ public class BlockingQueueTest {
             blockingQueue.dequeue();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.LinkedList.size()\" because \"this.queue\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, blockingQueue.consumerCount(), "blockingQueue.consumerCount()");
             assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
         }
@@ -290,7 +304,11 @@ public class BlockingQueueTest {
             blockingQueue.enqueue("");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.LinkedList.addLast(Object)\" because \"this.queue\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
         }
     }
@@ -322,7 +340,11 @@ public class BlockingQueueTest {
             blockingQueue.pending();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.LinkedList.size()\" because \"this.queue\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -369,7 +391,11 @@ public class BlockingQueueTest {
             blockingQueue.requeue(Integer.valueOf(0));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.LinkedList.addFirst(Object)\" because \"this.queue\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(blockingQueue.getQueue(), "blockingQueue.getQueue()");
         }
     }
