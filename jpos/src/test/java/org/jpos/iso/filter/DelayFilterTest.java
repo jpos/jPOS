@@ -18,6 +18,8 @@
 
 package org.jpos.iso.filter;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -97,7 +99,11 @@ public class DelayFilterTest {
             new DelayFilter(0).filter(new NACChannel(), new ISOMsg("testDelayFilterMti"), null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.util.LogEvent.addMessage(Object)\" because \"evt\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -116,7 +122,11 @@ public class DelayFilterTest {
             delayFilter.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getInt(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(100, delayFilter.delay, "delayFilter.delay");
         }
     }

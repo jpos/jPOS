@@ -18,6 +18,8 @@
 
 package org.jpos.q2.ui;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -43,7 +45,11 @@ public class UITest {
             new UI().newInstance("testUIClazz");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.Q2.getFactory()\" because the return value of \"org.jpos.q2.QBeanSupport.getServer()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -55,7 +61,11 @@ public class UITest {
             uI.startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.Q2.getFactory()\" because the return value of \"org.jpos.q2.QBeanSupport.getServer()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(uI.isModified(), "uI.isModified()");
             assertNull(uI.ui, "uI.ui");
         }
@@ -68,7 +78,11 @@ public class UITest {
             uI.startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getAttributeValue(String, String)\" because \"config\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(uI.isModified(), "uI.isModified()");
             assertNull(uI.ui, "uI.ui");
         }

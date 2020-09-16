@@ -18,6 +18,8 @@
 
 package org.jpos.iso.filter;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,8 +62,13 @@ public class XSLTFilterTest {
             xSLTFilter.filter(new PADChannel(new CTCSubFieldPackager()), null, new LogEvent("testXSLTFilterTag"));
             fail("Expected VetoException to be thrown");
         } catch (ISOFilter.VetoException ex) {
-            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"org.jpos.iso.ISOMsg.setPackager(org.jpos.iso.ISOPackager)\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOMsg.setPackager(org.jpos.iso.ISOPackager)\" because \"m\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertNull(xSLTFilter.tfactory.getURIResolver(), "xSLTFilter.tfactory.getURIResolver()");
             assertNull(xSLTFilter.transformer, "xSLTFilter.transformer");
         }

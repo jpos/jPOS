@@ -18,6 +18,8 @@
 
 package org.jpos.q2.qbean;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -45,7 +47,11 @@ public class SpaceProxyTest {
             new SpaceProxyAdaptor().getKeys();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.SpaceProxy.getKeySet()\" because \"this.sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -66,7 +72,11 @@ public class SpaceProxyTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals("testSpaceProxyAdaptorSpaceName", spaceProxyAdaptor.getSpaceName(), "spaceProxyAdaptor.getSpaceName()");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because the return value of \"org.jpos.q2.QBeanSupport.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(spaceProxyAdaptor.isModified(), "spaceProxyAdaptor.isModified()");
         }
     }
@@ -78,7 +88,11 @@ public class SpaceProxyTest {
             spaceProxyAdaptor.stopService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.SpaceProxy.shutdown()\" because \"this.sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 }

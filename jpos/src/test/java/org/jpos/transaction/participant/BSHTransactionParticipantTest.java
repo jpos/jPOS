@@ -18,6 +18,8 @@
 
 package org.jpos.transaction.participant;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
@@ -138,7 +140,11 @@ public class BSHTransactionParticipantTest {
                     Integer.valueOf(0)), "testBSHTransactionParticipantResultName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.transaction.participant.BSHMethod.execute(java.util.Map, String)\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -186,8 +192,13 @@ public class BSHTransactionParticipantTest {
             bSHTransactionParticipant.setConfiguration(null);
             fail("Expected ConfigurationException to be thrown");
         } catch (ConfigurationException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChild(String)\" because \"e\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChild(String)\" because \"e\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertNull(bSHTransactionParticipant.prepareForAbortMethod, "bSHTransactionParticipant.prepareForAbortMethod");
             assertNull(bSHTransactionParticipant.abortMethod, "bSHTransactionParticipant.abortMethod");
             assertNull(bSHTransactionParticipant.commitMethod, "bSHTransactionParticipant.commitMethod");

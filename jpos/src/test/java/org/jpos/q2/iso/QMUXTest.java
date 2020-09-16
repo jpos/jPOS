@@ -18,6 +18,8 @@
 
 package org.jpos.q2.iso;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -63,7 +65,11 @@ public class QMUXTest {
             qMUX.getKey(m);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
@@ -131,7 +137,11 @@ public class QMUXTest {
             qMUX.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChild(String)\" because \"e\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(qMUX.unhandled, "qMUX.unhandled");
             assertNull(qMUX.out, "qMUX.out");
             assertNull(qMUX.in, "qMUX.in");
@@ -156,7 +166,11 @@ public class QMUXTest {
             qMUX.notify("", Integer.valueOf(2));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.LocalSpace.inp(Object)\" because \"this.sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(qMUX.sp, "qMUX.sp");
             assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
         }
@@ -188,7 +202,11 @@ public class QMUXTest {
             qMUX.processUnhandled(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOMsg.getSource()\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(qMUX.sp, "qMUX.sp");
             assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
         }
@@ -221,7 +239,11 @@ public class QMUXTest {
             qMUX.request(m, 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(qMUX.sp, "qMUX.sp");
             assertEquals(0, m.getDirection(), "m.getDirection()");
         }
@@ -235,7 +257,11 @@ public class QMUXTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals("testQMUXIn", qMUX.in, "qMUX.in");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChild(String)\" because the return value of \"org.jpos.q2.iso.QMUX.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(qMUX.isModified(), "qMUX.isModified()");
         }
     }
@@ -248,7 +274,11 @@ public class QMUXTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals("testQMUXOut", qMUX.out, "qMUX.out");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChild(String)\" because the return value of \"org.jpos.q2.iso.QMUX.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(qMUX.isModified(), "qMUX.isModified()");
         }
     }
@@ -261,7 +291,11 @@ public class QMUXTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals("testQMUXUnhandled", qMUX.unhandled, "qMUX.unhandled");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChild(String)\" because the return value of \"org.jpos.q2.iso.QMUX.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(qMUX.isModified(), "qMUX.isModified()");
         }
     }
@@ -274,7 +308,11 @@ public class QMUXTest {
             qMUX.startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot enter synchronized block because \"this.sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(qMUX.sp, "qMUX.sp");
         }
     }
@@ -286,7 +324,11 @@ public class QMUXTest {
             qMUX.stopService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.space.LocalSpace.removeListener(Object, org.jpos.space.SpaceListener)\" because \"this.sp\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(qMUX.sp, "qMUX.sp");
         }
     }

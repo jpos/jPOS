@@ -18,6 +18,8 @@
 
 package org.jpos.q2.iso;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -56,7 +58,11 @@ public class TaskAdaptorTest {
             taskAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.Q2.getFactory()\" because the return value of \"org.jpos.q2.iso.TaskAdaptor.getServer()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(taskAdaptor.task, "taskAdaptor.task");
             assertTrue(taskAdaptor.isModified(), "taskAdaptor.isModified()");
         }
@@ -71,7 +77,11 @@ public class TaskAdaptorTest {
             taskAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildTextTrim(String)\" because \"e\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(taskAdaptor.task, "taskAdaptor.task");
             assertFalse(taskAdaptor.isModified(), "taskAdaptor.isModified()");
         }
@@ -84,7 +94,11 @@ public class TaskAdaptorTest {
             taskAdaptor.startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.q2.Q2.getFactory()\" because the return value of \"org.jpos.q2.iso.TaskAdaptor.getServer()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertTrue(taskAdaptor.isModified(), "taskAdaptor.isModified()");
         }
     }

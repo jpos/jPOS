@@ -18,6 +18,8 @@
 
 package org.jpos.q2.iso;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -57,7 +59,11 @@ public class QServerTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals("testQServerChannel", qServer.getChannel(), "qServer.getChannel()");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because the return value of \"org.jpos.q2.QBeanSupport.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
@@ -78,7 +84,11 @@ public class QServerTest {
             qServer.setMaxSessions(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because the return value of \"org.jpos.q2.QBeanSupport.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(100, qServer.getMaxSessions(), "qServer.getMaxSessions()");
             assertFalse(qServer.isModified(), "qServer.isModified()");
         }
@@ -101,7 +111,11 @@ public class QServerTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals(100, qServer.getMinSessions(), "qServer.getMinSessions()");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because the return value of \"org.jpos.q2.QBeanSupport.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
@@ -123,7 +137,11 @@ public class QServerTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals("testQServerPackager", qServer.getPackager(), "qServer.getPackager()");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because the return value of \"org.jpos.q2.QBeanSupport.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
@@ -145,7 +163,11 @@ public class QServerTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals(100, qServer.getPort(), "qServer.getPort()");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because the return value of \"org.jpos.q2.QBeanSupport.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
@@ -167,7 +189,11 @@ public class QServerTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertEquals("testQServerSFactory", qServer.getSocketFactory(), "qServer.getSocketFactory()");
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because the return value of \"org.jpos.q2.QBeanSupport.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }

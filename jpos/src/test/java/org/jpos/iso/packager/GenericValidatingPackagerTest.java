@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.ByteArrayInputStream;
@@ -115,7 +116,11 @@ public class GenericValidatingPackagerTest {
             new GenericValidatingPackager().new GenericValidatorContentHandler().endDocument();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Stack.isEmpty()\" because \"this.fieldStack\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -186,7 +191,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Stack.pop()\" because \"this.validatorStack\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -198,7 +207,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Stack.pop()\" because \"this.fieldStack\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -210,7 +223,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.equals(Object)\" because \"localName\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -220,7 +237,11 @@ public class GenericValidatingPackagerTest {
             new GenericValidatingPackager().new GenericValidatorContentHandler().error(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot throw exception because \"ex\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -246,7 +267,11 @@ public class GenericValidatingPackagerTest {
             new GenericValidatingPackager().new GenericValidatorContentHandler().fatalError(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot throw exception because \"ex\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -316,7 +341,11 @@ public class GenericValidatingPackagerTest {
             genericValidatorContentHandler.makeFieldValidatorArray(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Map.entrySet()\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -340,7 +369,11 @@ public class GenericValidatingPackagerTest {
             genericValidatorContentHandler.makeMsgValidatorArray(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Map.get(Object)\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -415,10 +448,16 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
+            } else if (isJavaVersionAtMost(JAVA_14)) {
                 assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.util.Stack.push(Object)\" because \"this.fieldStack\" is null", ex.getMessage(), "ex.getMessage()");
             }
-            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Stack.push(Object)\" because \"this.fieldStack\" is null", ex.getException().getMessage(), "ex.getException().getMessage()");
+            }
         }
     }
 
@@ -432,10 +471,16 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
+            } else if (isJavaVersionAtMost(JAVA_14)) {
                 assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getMessage(), "ex.getMessage()");
             }
-            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getException().getMessage(), "ex.getException().getMessage()");
+            }
         }
     }
 
@@ -450,10 +495,16 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
+            } else if (isJavaVersionAtMost(JAVA_14)) {
                 assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"String.equals(Object)\" because \"localName\" is null", ex.getMessage(), "ex.getMessage()");
             }
-            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.equals(Object)\" because \"localName\" is null", ex.getException().getMessage(), "ex.getException().getMessage()");
+            }
         }
     }
 
@@ -467,10 +518,16 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
+            } else if (isJavaVersionAtMost(JAVA_14)) {
                 assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getMessage(), "ex.getMessage()");
             }
-            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getException().getMessage(), "ex.getException().getMessage()");
+            }
         }
     }
 
@@ -484,10 +541,16 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
+            } else if (isJavaVersionAtMost(JAVA_14)) {
                 assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getMessage(), "ex.getMessage()");
             }
-            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getException().getMessage(), "ex.getException().getMessage()");
+            }
         }
     }
 
@@ -520,10 +583,16 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
+            } else if (isJavaVersionAtMost(JAVA_14)) {
                 assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getMessage(), "ex.getMessage()");
             }
-            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getException().getMessage(), "ex.getException().getMessage()");
+            }
         }
     }
 
@@ -557,10 +626,16 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
+            } else if (isJavaVersionAtMost(JAVA_14)) {
                 assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getMessage(), "ex.getMessage()");
             }
-            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getException().getMessage(), "ex.getException().getMessage()");
+            }
         }
     }
 
@@ -575,10 +650,16 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
+            } else if (isJavaVersionAtMost(JAVA_14)) {
                 assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.util.Stack.peek()\" because \"this.validatorStack\" is null", ex.getMessage(), "ex.getMessage()");
             }
-            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.util.Stack.peek()\" because \"this.validatorStack\" is null", ex.getException().getMessage(), "ex.getException().getMessage()");
+            }
             assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
@@ -623,7 +704,11 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.setGenericPackagerParams(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(1, genericValidatingPackager.bitmapField, "genericValidatingPackager.bitmapField");
             assertEquals(128, genericValidatingPackager.maxValidField, "genericValidatingPackager.maxValidField");
             assertTrue(genericValidatingPackager.emitBitmap, "genericValidatingPackager.emitBitmap");
@@ -724,7 +809,11 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.validate(new ISOMsg());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.endsWith(String)\" because the return value of \"org.jpos.iso.ISOMsg.getString(int)\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -734,7 +823,11 @@ public class GenericValidatingPackagerTest {
             new GenericValidatingPackager().validate(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOComponent.getChildren()\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -751,7 +844,11 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.validate(new ISOMsg());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOFieldValidator.getFieldId()\" because \"val\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -767,7 +864,11 @@ public class GenericValidatingPackagerTest {
             genericValidatingPackager.validate(new ISOMsg());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOBaseValidator.validate(org.jpos.iso.ISOComponent)\" because \"mval\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 }

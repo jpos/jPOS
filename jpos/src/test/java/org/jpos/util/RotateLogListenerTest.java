@@ -18,6 +18,8 @@
 
 package org.jpos.util;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -151,7 +153,11 @@ public class RotateLogListenerTest {
             rotateLogListener.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getInt(String, int)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(rotateLogListener.logName, "rotateLogListener.logName");
             assertEquals(0L, rotateLogListener.sleepTime, "rotateLogListener.sleepTime");
             assertEquals(0L, rotateLogListener.maxSize, "rotateLogListener.maxSize");

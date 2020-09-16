@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.File;
@@ -322,7 +323,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"src[i]\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -354,7 +359,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"src[i]\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -375,7 +384,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"src[i]\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -395,7 +408,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read field \"value\" because \"tgtStr\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -410,7 +427,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read field \"value\" because \"tgtStr\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -425,7 +446,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read field \"value\" because \"tgtStr\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -439,7 +464,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read field \"value\" because \"tgtStr\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -453,7 +482,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"src[i]\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -465,7 +498,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(null, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot read the array length because \"src\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -478,7 +515,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"src[i]\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 

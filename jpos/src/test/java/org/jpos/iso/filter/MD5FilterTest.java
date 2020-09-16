@@ -18,6 +18,8 @@
 
 package org.jpos.iso.filter;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -102,7 +104,11 @@ public class MD5FilterTest {
             mD5Filter.filter(new GZIPChannel(new XMLPackager()), m, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.util.LogEvent.addMessage(Object)\" because \"evt\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
@@ -118,7 +124,11 @@ public class MD5FilterTest {
             mD5Filter.filter(new PostChannel(new CTCSubFieldPackager()), null, evt);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOMsg.hasField(int)\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -131,7 +141,11 @@ public class MD5FilterTest {
             mD5Filter.filter(new ASCIIChannel(new GenericValidatingPackager()), m, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.util.LogEvent.addMessage(Object)\" because \"evt\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
@@ -148,7 +162,11 @@ public class MD5FilterTest {
             mD5Filter.filter(new GZIPChannel(new XMLPackager()), m, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.util.LogEvent.addMessage(Object)\" because \"evt\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
@@ -162,7 +180,11 @@ public class MD5FilterTest {
             mD5Filter.filter(new BASE24TCPChannel(), null, evt);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.iso.ISOMsg.getDirection()\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -318,7 +340,11 @@ public class MD5FilterTest {
             mD5Filter.getKey();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.getBytes()\" because \"this.key\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -338,7 +364,11 @@ public class MD5FilterTest {
             mD5Filter.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(mD5Filter.key, "mD5Filter.key");
             assertNull(mD5Filter.fields, "mD5Filter.fields");
         }

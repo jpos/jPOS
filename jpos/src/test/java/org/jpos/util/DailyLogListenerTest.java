@@ -18,6 +18,8 @@
 
 package org.jpos.util;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.jpos.util.LogFileTestUtils.getStringFromCompressedFile;
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,7 +79,11 @@ public class DailyLogListenerTest {
             dailyLogListener.closeCompressedOutputStream(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.OutputStream.close()\" because \"os\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
     }
 
@@ -166,7 +172,11 @@ public class DailyLogListenerTest {
             dailyLogListener.logDebugEx("testDailyLogListenerMsg", null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.lang.Throwable.printStackTrace(java.io.PrintStream)\" because \"e\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNotNull(dailyLogListener.p, "dailyLogListener.p");
         }
     }
@@ -229,7 +239,11 @@ public class DailyLogListenerTest {
             dailyLogListener.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getLong(String, long)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(dailyLogListener.rotate, "dailyLogListener.rotate");
             assertEquals(131072, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
             assertNotNull(dailyLogListener.p, "dailyLogListener.p");

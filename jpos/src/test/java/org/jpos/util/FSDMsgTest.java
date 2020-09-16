@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_13;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.ByteArrayInputStream;
@@ -125,7 +126,11 @@ public class FSDMsgTest {
             fSDMsg.copy("testFSDMsgFieldName", null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.util.FSDMsg.get(String)\" because \"msg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
         }
     }
@@ -171,7 +176,11 @@ public class FSDMsgTest {
             fSDMsg.dump(null, "testFSDMsgIndent");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.PrintStream.println(String)\" because \"p\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
         }
     }
@@ -472,7 +481,11 @@ public class FSDMsgTest {
             fSDMsg.get("testString", null, 100, "testFSDMsgDefValue", null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.toUpperCase()\" because \"type\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(1, fSDMsg.fields.size(), "fSDMsg.fields.size()");
         }
     }
@@ -484,7 +497,11 @@ public class FSDMsgTest {
             fSDMsg.get("testFSDMsgId", null, 100, "testFSDMsgDefValue", null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.toUpperCase()\" because \"type\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
         }
     }
@@ -735,7 +752,11 @@ public class FSDMsgTest {
             fSDMsg.pack();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
             assertEquals("testFSDMsgBaseSchema", fSDMsg.baseSchema, "fSDMsg.baseSchema");
         }
@@ -749,7 +770,11 @@ public class FSDMsgTest {
             fSDMsg.pack(null, sb);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because \"schema\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
             assertEquals("", sb.toString(), "sb.toString()");
         }
@@ -812,7 +837,11 @@ public class FSDMsgTest {
             fSDMsg.readField(null, "testFSDMsgFieldName", 100, "2C", null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.InputStreamReader.read(char[])\" because \"r\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
         }
     }
@@ -1027,7 +1056,11 @@ public class FSDMsgTest {
             fSDMsg.unpack(b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
             assertEquals("testFSDMsgBaseSchema", fSDMsg.baseSchema, "fSDMsg.baseSchema");
             assertEquals(1, b.length, "b.length");
@@ -1043,7 +1076,11 @@ public class FSDMsgTest {
             fSDMsg.unpack(r, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because \"schema\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
             assertEquals(0, is.available(), "(ByteArrayInputStream) is.available()");
         }
@@ -1058,7 +1095,11 @@ public class FSDMsgTest {
             fSDMsg.unpack(is);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
             assertEquals("testFSDMsgBaseSchema", fSDMsg.baseSchema, "fSDMsg.baseSchema");
             assertEquals(3, is.available(), "(ByteArrayInputStream) is.available()");

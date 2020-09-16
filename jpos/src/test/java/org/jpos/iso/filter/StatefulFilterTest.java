@@ -29,6 +29,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import org.jpos.core.Configuration;
@@ -201,7 +202,11 @@ public class StatefulFilterTest {
 		    100, new GenericSubFieldPackager()), m, new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.space.Space.out(Object, Object, long)\" because the return value of \"org.jpos.iso.filter.StatefulFilter.getSpace()\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -219,7 +224,11 @@ public class StatefulFilterTest {
 		    new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.space.Space.out(Object, Object, long)\" because the return value of \"org.jpos.iso.filter.StatefulFilter.getSpace()\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -236,7 +245,11 @@ public class StatefulFilterTest {
 		    new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.space.Space.out(Object, Object, long)\" because the return value of \"org.jpos.iso.filter.StatefulFilter.getSpace()\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -250,7 +263,11 @@ public class StatefulFilterTest {
 		    new GenericValidatingPackager()), null, new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.iso.ISOMsg.getString(int)\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -267,7 +284,11 @@ public class StatefulFilterTest {
 			    "testStatefulFilterTag", "testString"));
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.space.Space.inp(Object)\" because the return value of \"org.jpos.iso.filter.StatefulFilter.getSpace()\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -284,7 +305,11 @@ public class StatefulFilterTest {
 		    100, new GenericSubFieldPackager()), m, new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.space.Space.out(Object, Object, long)\" because the return value of \"org.jpos.iso.filter.StatefulFilter.getSpace()\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -297,7 +322,11 @@ public class StatefulFilterTest {
 		    "testStatefulFilterMti"), new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.space.Space.inp(Object)\" because the return value of \"org.jpos.iso.filter.StatefulFilter.getSpace()\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -310,7 +339,11 @@ public class StatefulFilterTest {
 		    new ISOMsg("testStatefulFilterMti"), new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -324,7 +357,11 @@ public class StatefulFilterTest {
 		    new PostPackager(), "testStatefulFilterTag"));
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot read the array length because \"<local7>\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -343,7 +380,11 @@ public class StatefulFilterTest {
 		    new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.space.Space.out(Object, Object, long)\" because the return value of \"org.jpos.iso.filter.StatefulFilter.getSpace()\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -362,7 +403,11 @@ public class StatefulFilterTest {
 		    100, new GenericSubFieldPackager()), m, new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.space.Space.out(Object, Object, long)\" because the return value of \"org.jpos.iso.filter.StatefulFilter.getSpace()\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -434,7 +479,11 @@ public class StatefulFilterTest {
 	    statefulFilter.getIgnoredField(100);
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot load from int array because \"this.ignoredFields\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	}
     }
 
@@ -599,7 +648,11 @@ public class StatefulFilterTest {
 	    statefulFilter.setConfiguration(cfg);
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot invoke \"org.jpos.core.Configuration.getBoolean(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	    assertFalse(statefulFilter.isOverwriteOriginalFields(),
 		    "m_statefulFilter.isOverwriteOriginalFields()");
 	    assertEquals(0, statefulFilter.getSavedFields().length,
@@ -721,7 +774,11 @@ public class StatefulFilterTest {
 	    statefulFilter2.setKey(100, 1000);
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-	    assertNull(ex.getMessage(), "ex.getMessage()");
+		if (isJavaVersionAtMost(JAVA_14)) {
+			assertNull(ex.getMessage(), "ex.getMessage()");
+		} else {
+			assertEquals("Cannot store to int array because \"this.key\" is null", ex.getMessage(), "ex.getMessage()");
+		}
 	    assertNull(statefulFilter2.getKey(), "m_statefulFilter2.getKey()");
 	}
     }

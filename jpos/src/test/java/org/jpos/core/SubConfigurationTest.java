@@ -18,6 +18,8 @@
 
 package org.jpos.core;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -89,7 +91,11 @@ public class SubConfigurationTest {
             subConfiguration.getAll("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getAll(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -129,7 +135,11 @@ public class SubConfigurationTest {
             subConfiguration.getBoolean("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getBoolean(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -141,7 +151,11 @@ public class SubConfigurationTest {
             subConfiguration.getBoolean("testSubConfigurationPropertyName", true);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getBoolean(String, boolean)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -181,7 +195,11 @@ public class SubConfigurationTest {
             subConfiguration.getDouble("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getDouble(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -194,7 +212,11 @@ public class SubConfigurationTest {
             subConfiguration.getDouble("testSubConfigurationPropertyName", 100.0);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getDouble(String, double)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -262,7 +284,11 @@ public class SubConfigurationTest {
             subConfiguration.getInt("testSubConfigurationPropertyName", 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getInt(String, int)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -275,7 +301,11 @@ public class SubConfigurationTest {
             subConfiguration.getInt("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getInt(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -344,7 +374,11 @@ public class SubConfigurationTest {
             subConfiguration.getLong("testSubConfigurationPropertyName", 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getLong(String, long)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -356,7 +390,11 @@ public class SubConfigurationTest {
             subConfiguration.getLong("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.getLong(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -401,7 +439,11 @@ public class SubConfigurationTest {
             assertEquals(
                     "Error trying to create an object from property testSubConfigurationPrefixtestSubConfigurationPropertyName",
                     ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String)\" because \"this.cfg\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -414,7 +456,11 @@ public class SubConfigurationTest {
             subConfiguration.get("testSubConfigurationPropertyName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -426,7 +472,11 @@ public class SubConfigurationTest {
             subConfiguration.get("testSubConfigurationPropertyName", "testSubConfigurationDefaultValue");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String, String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertNull(subConfiguration.cfg, "subConfiguration.cfg");
         }
     }
@@ -448,7 +498,11 @@ public class SubConfigurationTest {
             subConfiguration.put("testSubConfigurationName", "testString");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jpos.core.Configuration.put(String, Object)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
+            }
             assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         }
     }

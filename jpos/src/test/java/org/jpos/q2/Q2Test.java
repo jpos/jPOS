@@ -18,6 +18,8 @@
 
 package org.jpos.q2;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -75,7 +77,11 @@ public class Q2Test {
             q2.accept(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.File.canRead()\" because \"f\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         } finally {
             q2.stop();
         }
@@ -121,7 +127,11 @@ public class Q2Test {
             q2.decrypt(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"org.jdom2.Document.getRootElement()\" because \"doc\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         }
         q2.stop();
     }
