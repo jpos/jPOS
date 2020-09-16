@@ -65,11 +65,7 @@ public class QMUXTest {
             qMUX.getKey(m);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Misconfigured QMUX. Please verify out queue is not null.", ex.getMessage(), "ex.getMessage()");
             assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
@@ -239,11 +235,7 @@ public class QMUXTest {
             qMUX.request(m, 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Misconfigured QMUX. Please verify out queue is not null.", ex.getMessage(), "ex.getMessage()");
             assertNull(qMUX.sp, "qMUX.sp");
             assertEquals(0, m.getDirection(), "m.getDirection()");
         }

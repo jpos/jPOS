@@ -752,11 +752,7 @@ public class FSDMsgTest {
             fSDMsg.pack();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("basePath can not be null", ex.getMessage(), "ex.getMessage()");
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
             assertEquals("testFSDMsgBaseSchema", fSDMsg.baseSchema, "fSDMsg.baseSchema");
         }
@@ -1056,11 +1052,7 @@ public class FSDMsgTest {
             fSDMsg.unpack(b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("basePath can not be null", ex.getMessage(), "ex.getMessage()");
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
             assertEquals("testFSDMsgBaseSchema", fSDMsg.baseSchema, "fSDMsg.baseSchema");
             assertEquals(1, b.length, "b.length");
@@ -1095,11 +1087,7 @@ public class FSDMsgTest {
             fSDMsg.unpack(is);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("basePath can not be null", ex.getMessage(), "ex.getMessage()");
             assertEquals(0, fSDMsg.fields.size(), "fSDMsg.fields.size()");
             assertEquals("testFSDMsgBaseSchema", fSDMsg.baseSchema, "fSDMsg.baseSchema");
             assertEquals(3, is.available(), "(ByteArrayInputStream) is.available()");

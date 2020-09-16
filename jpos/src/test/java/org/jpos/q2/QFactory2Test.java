@@ -126,11 +126,7 @@ public class QFactory2Test {
             new QFactory(new ObjectName(""), null).getAttributeName(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("attribute name can not be null", ex.getMessage(), "ex.getMessage()");
         }
     }
 

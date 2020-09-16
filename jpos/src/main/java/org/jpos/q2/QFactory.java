@@ -287,6 +287,8 @@ public class QFactory {
      */
     public String getAttributeName(String name)
     {
+        if (name == null)
+            throw new NullPointerException("attribute name can not be null");
         StringBuilder tmp = new StringBuilder(name);
         if (tmp.length() > 0)
             tmp.setCharAt(0,name.toUpperCase().charAt(0)) ;
