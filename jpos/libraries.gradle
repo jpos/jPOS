@@ -11,7 +11,7 @@ ext {
         javassist: 'org.javassist:javassist:3.27.0-GA',
         osgi_core: 'org.osgi:org.osgi.core:6.0.0',
         mockito: 'org.mockito:mockito-core:3.3.3',
-        mockito_jupiter: 'org.mockito:mockito-junit-jupiter:3.3.3',
+        mockito_jupiter: 'org.mockito:mockito-junit-jupiter:3.5.10',
         fest_assert: 'org.easytesting:fest-assert:1.4',
         xmlunit: 'xmlunit:xmlunit:1.6',
         junit: 'org.junit.jupiter:junit-jupiter:5.7.0',
