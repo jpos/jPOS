@@ -30,15 +30,20 @@ import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.IOException;
+import java.nio.file.Path;
 
 @SuppressWarnings("unchecked")
 public class JESpaceTestCase {
     public static final int COUNT = 100;
     JESpace<String,Object> sp;
     @BeforeEach
-    public void setUp () {
-        sp = (JESpace<String,Object>) 
-            JESpace.getSpace ("space-test", "build/resources/test/space-test");
+    public void setUp (TestInfo testInfo, @TempDir Path spaceTestDir) throws IOException {
+        sp = (JESpace<String,Object>)
+            JESpace.getSpace (testInfo.getDisplayName(), spaceTestDir.toString());
     }
     @Test
     public void testSimpleOut() throws Exception {
