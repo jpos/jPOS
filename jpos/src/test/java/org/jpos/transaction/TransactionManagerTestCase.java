@@ -24,6 +24,13 @@ import org.jpos.space.SpaceFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @SuppressWarnings("unchecked")
 public class TransactionManagerTestCase {
@@ -33,9 +40,10 @@ public class TransactionManagerTestCase {
     public static String QUEUE_EMPTY = "TXNMGRTEST.EMPTY";
 
     @BeforeEach
-    public void setUp () throws Exception {
+    public void setUp (@TempDir Path deployDir) throws Exception {
         sp = SpaceFactory.getSpace("tspace:txnmgrtest");
-        q2 = new Q2("build/resources/test/org/jpos/transaction");
+        Files.copy(Paths.get("build/resources/test/org/jpos/transaction"), deployDir, REPLACE_EXISTING);
+        q2 = new Q2(deployDir.toString());
         q2.start();
     }
 //    public void testSimpleTransaction() {
