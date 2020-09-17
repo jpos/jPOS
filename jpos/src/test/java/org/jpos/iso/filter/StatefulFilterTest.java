@@ -339,11 +339,7 @@ public class StatefulFilterTest {
 		    new ISOMsg("testStatefulFilterMti"), new LogEvent());
 	    fail("Expected NullPointerException to be thrown");
 	} catch (NullPointerException ex) {
-		if (isJavaVersionAtMost(JAVA_14)) {
-			assertNull(ex.getMessage(), "ex.getMessage()");
-		} else {
-			assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-		}
+		assertEquals("key prefix can not be null", ex.getMessage(), "ex.getMessage()");
 	}
     }
 
@@ -360,7 +356,7 @@ public class StatefulFilterTest {
 		if (isJavaVersionAtMost(JAVA_14)) {
 			assertNull(ex.getMessage(), "ex.getMessage()");
 		} else {
-			assertEquals("Cannot read the array length because \"<local7>\" is null", ex.getMessage(), "ex.getMessage()");
+			assertEquals("Cannot read the array length because \"<local8>\" is null", ex.getMessage(), "ex.getMessage()");
 		}
 	}
     }

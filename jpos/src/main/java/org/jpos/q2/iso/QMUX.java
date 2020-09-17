@@ -244,6 +244,8 @@ public class QMUX
     }
 
     public String getKey (ISOMsg m) throws ISOException {
+        if (out == null)
+            throw new NullPointerException ("Misconfigured QMUX. Please verify out queue is not null.");
         StringBuilder sb = new StringBuilder (out);
         sb.append ('.');
         sb.append (mapMTI(m.getMTI()));

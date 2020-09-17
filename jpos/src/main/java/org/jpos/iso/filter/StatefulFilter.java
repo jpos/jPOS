@@ -157,7 +157,10 @@ public class StatefulFilter implements ISOFilter, Configurable{
         throws ISOFilter.VetoException 
     {
         int[] key = getKey();
-        StringBuilder b = new StringBuilder(getKeyPrefix());
+        String keyPrefix = getKeyPrefix();
+        if (keyPrefix == null)
+            throw new NullPointerException("key prefix can not be null");
+        StringBuilder b = new StringBuilder(keyPrefix);
         for (int aKey : key) {
             b.append("|");
             b.append(m.getString(aKey));

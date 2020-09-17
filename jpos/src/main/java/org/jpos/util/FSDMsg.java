@@ -601,6 +601,8 @@ public class FSDMsg implements Loggeable, Cloneable {
     }
     protected Element getSchema (String prefix, String suffix, String defSuffix)
         throws JDOMException, IOException {
+        if (basePath == null)
+            throw new NullPointerException("basePath can not be null");
         StringBuilder sb = new StringBuilder (basePath);
         sb.append (prefix);
         prefix = sb.toString(); // little hack, we'll reuse later with defSuffix
