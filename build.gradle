@@ -131,6 +131,7 @@ subprojects {
             events "passed", "skipped", "failed"
         }
         systemProperty 'user.language', 'en'
+        maxParallelForks = Runtime.runtime.availableProcessors()
     }
     jacoco {
         toolVersion = '0.8.6'
