@@ -40,16 +40,22 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class DailyLogListenerTest {
 
-    private final LogRotationTestDirectory logRotationTestDirectory = new LogRotationTestDirectory();
+    private LogRotationTestDirectory logRotationTestDirectory;
+
+    @BeforeEach
+    public void createLogRotateAbortsTestDir(@TempDir Path tempDir) {
+        logRotationTestDirectory = new LogRotationTestDirectory(tempDir);
+    }
 
     @Test
-    public void testCheckSize() throws Throwable {
+    public void testCheckSize() {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.checkSize();
         assertNull(dailyLogListener.f, "dailyLogListener.f");
@@ -446,14 +452,14 @@ public class DailyLogListenerTest {
 		Thread.sleep(1000); // to allow compressor thread to run
 		listener.destroy();
 		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		File archiveFile = logRotationTestDirectory.getFile(logFileName + ".log." + date + ".gz");
-		assertFalse(archiveFile.exists(), "Archive file should not exist");
+		Path archiveFile = logRotationTestDirectory.getFile(logFileName + ".log." + date + ".gz");
+		assertFalse(Files.exists(archiveFile), "Archive file should not exist");
 	}
 
-    private DailyLogListener createCompressingDailyLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
+    private DailyLogListener createCompressingDailyLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException, IOException {
         DailyLogListener listener = new DailyLogListener();
         Properties configuration = new Properties();
-        configuration.setProperty("prefix", logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + logFileName);
+        configuration.setProperty("prefix", logRotationTestDirectory.getDirectory().toAbsolutePath() + "/" + logFileName);
         configuration.setProperty("date-format", ".yyyy-MM-dd");
         configuration.setProperty("compression-format", "gzip");
         configuration.setProperty("maxsize", "1000000");
@@ -463,14 +469,9 @@ public class DailyLogListenerTest {
     }
 
 	private File createEmptyFile(String fileName) throws IOException {
-		File emptyFile = new File(logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + fileName);
+		File emptyFile = new File(logRotationTestDirectory.getDirectory().toAbsolutePath() + "/" + fileName);
 		emptyFile.getParentFile().mkdirs();
 		emptyFile.createNewFile();
 		return emptyFile;
 	}
-
-    @AfterEach
-    public void cleanupLogRotateAbortsTestDir() {
-        logRotationTestDirectory.delete();
-    }
 }
