@@ -32,17 +32,13 @@ import static org.apache.commons.lang3.JavaVersion.JAVA_13;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.space.SpaceFactory;
@@ -1232,5 +1228,23 @@ public class FSDMsgTest {
         b = fSDMsg.get("name").getBytes(charset);
         assertArrayEquals(expected, b, "FSDMsg.unpack(b) don't properly handle character encodings");
 
+    }
+
+    @Test
+    public void testLLVAR() throws JDOMException, IOException, ISOException {
+        Element schema = createSchema();
+        appendField(schema, "header", "A", null, 3);
+        appendField(schema, "llfield", "LLA", null, 99);
+        appendField(schema, "lllfield", "LLLA", null, 999);
+        FSDMsg msg = new FSDMsg(SCHEMA_PREFIX);
+        msg.set("header", "ISO");
+        msg.set("llfield", "ABCDE");
+        msg.set("lllfield", "123456789A");
+        String packed = msg.pack();
+        assertEquals("ISO05ABCDE010123456789A", packed);
+
+        FSDMsg msg1 = new FSDMsg(SCHEMA_PREFIX);
+        msg1.unpack(packed.getBytes());
+        assertEquals(msg, msg1);
     }
 }
