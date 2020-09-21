@@ -261,7 +261,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 } // else Leave value unpadded.
                 break;
             case 'A':
-                if (!isSeparated(separator)) {
+                if (!isSeparated(separator) && lengthLength == 0) {
                     value = ISOUtil.strpad (value, length);
                 } // else Leave value unpadded.
                 if (value.length() > length)
@@ -291,10 +291,11 @@ public class FSDMsg implements Loggeable, Cloneable {
         if (lengthLength == 0 && (!isSeparated(separator) || isBinary(type) || EOM_SEPARATOR.equals(separator)))
           return value;
         else {
-            value = ISOUtil.blankUnPad(value);
             if (lengthLength > 0) {
                 String format = String.format("%%0%dd%%s", lengthLength);
                 value = String.format(format, value.length(), value);
+            } else {
+                value = ISOUtil.blankUnPad(value);
             }
         }
         return value;
