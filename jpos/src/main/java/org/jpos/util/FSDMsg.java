@@ -27,14 +27,9 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
+
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -252,7 +247,12 @@ public class FSDMsg implements Loggeable, Cloneable {
         if (value == null)
             value = defValue == null ? "" : defValue;
 
-        type   = type.toUpperCase ();
+        type = type.toUpperCase ();
+        int lengthLength = 0;
+        while (type.charAt(0) == 'L') {
+            lengthLength++;
+            type = type.substring(1);
+        }
 
         switch (type.charAt (0)) {
             case 'N':
@@ -261,7 +261,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 } // else Leave value unpadded.
                 break;
             case 'A':
-                if (!isSeparated(separator)) {
+                if (!isSeparated(separator) && lengthLength == 0) {
                     value = ISOUtil.strpad (value, length);
                 } // else Leave value unpadded.
                 if (value.length() > length)
@@ -288,10 +288,17 @@ public class FSDMsg implements Loggeable, Cloneable {
                 break;
         }
 
-        if (!isSeparated(separator) || isBinary(type) || EOM_SEPARATOR.equals(separator))
+        if (lengthLength == 0 && (!isSeparated(separator) || isBinary(type) || EOM_SEPARATOR.equals(separator)))
           return value;
-
-        return ISOUtil.blankUnPad(value);
+        else {
+            if (lengthLength > 0) {
+                String format = String.format("%%0%dd%%s", lengthLength);
+                value = String.format(format, value.length(), value);
+            } else {
+                value = ISOUtil.blankUnPad(value);
+            }
+        }
+        return value;
     }
 
     private boolean isSeparated(String separator) {
@@ -334,7 +341,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     }
 
     private String getSeparatorType(String type) {
-        if (type.length() > 2) {
+        if (type.length() > 2 && !(type.charAt(0) == 'L')) {
             return type.substring(1);
         }
         return null;
@@ -414,7 +421,6 @@ public class FSDMsg implements Loggeable, Cloneable {
         String keyOff = "";
         String defaultKey = "";
         for (Element elem : schema.getChildren("field")) {
-
             String id    = elem.getAttributeValue ("id");
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
             String type  = elem.getAttributeValue ("type").toUpperCase();
@@ -482,6 +488,19 @@ public class FSDMsg implements Loggeable, Cloneable {
                 sb.append(c[0]);
             }
         } else {
+            int lengthLength = 0;
+            if (type != null && type.startsWith("L")) {
+                while (type.charAt(0) == 'L') {
+                    lengthLength++;
+                    type = type.substring(1);
+                }
+                if (lengthLength > 0) {
+                    char[] ll = new char[lengthLength];
+                    if (r.read(ll) != lengthLength)
+                        throw new EOFException();
+                    len = Integer.parseInt(new String(ll));
+                }
+            }
             for (int i = 0; i < len; i++) {
                 if (r.read(c) < 0) {
                     if (!"EOF".equals(separator))
@@ -696,5 +715,25 @@ public class FSDMsg implements Loggeable, Cloneable {
     public void merge (FSDMsg m) {
         for (Entry<String,String> entry: m.fields.entrySet())
              set (entry.getKey(), entry.getValue());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FSDMsg fsdMsg = (FSDMsg) o;
+        return Objects.equals(fields, fsdMsg.fields) &&
+          Objects.equals(separators, fsdMsg.separators) &&
+          Objects.equals(baseSchema, fsdMsg.baseSchema) &&
+          Objects.equals(basePath, fsdMsg.basePath) &&
+          Arrays.equals(header, fsdMsg.header) &&
+          Objects.equals(charset, fsdMsg.charset);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(fields, separators, baseSchema, basePath, charset);
+        result = 31 * result + Arrays.hashCode(header);
+        return result;
     }
 }
