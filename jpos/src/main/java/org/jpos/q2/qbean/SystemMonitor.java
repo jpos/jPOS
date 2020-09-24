@@ -35,6 +35,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -205,6 +206,10 @@ public class SystemMonitor extends QBeanSupport
         p.printf ("%s    user name: %s%n", indent, System.getProperty("user.name"));
         p.printf ("%s         host: %s%n", indent, localHost);
         p.printf ("%s          cwd: %s%n", indent, System.getProperty("user.dir"));
+        Path pid = getServer().getPidPath();
+        if (pid != null) {
+            p.printf ("%s     pid file: %s%n", indent, pid.toAbsolutePath().toString());
+        }
         p.printf ("%s   free space: %s%n", indent, freeSpace);
 
         if (!freeSpace.equals(usableSpace))

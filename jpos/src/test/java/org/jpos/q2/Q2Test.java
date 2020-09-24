@@ -30,6 +30,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
@@ -74,13 +75,13 @@ public class Q2Test {
         args[0] = "";
         Q2 q2 = new Q2(args);
         try {
-            q2.accept(null);
+            q2.accept((Path) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             if (isJavaVersionAtMost(JAVA_14)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("Cannot invoke \"java.io.File.canRead()\" because \"f\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.nio.file.Path.getFileSystem()\" because \"path\" is null", ex.getMessage(), "ex.getMessage()");
             }
         } finally {
             q2.stop();
