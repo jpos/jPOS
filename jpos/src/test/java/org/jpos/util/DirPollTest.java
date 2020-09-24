@@ -18,6 +18,9 @@
 
 package org.jpos.util;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.WRITE;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,14 +31,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousFileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SubConfiguration;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class DirPollTest {
 
@@ -379,15 +387,16 @@ public class DirPollTest {
     }
 
     @Test
-    public void testRetry() throws IOException {
-        Q2 q2 = new Q2("build/resources/test/org/jpos/util/dirpoll_retry/deploy");
+    public void testRetry(@TempDir Path deployDir) throws IOException {
+        Files.copy(Paths.get("build/resources/test/org/jpos/util/dirpoll_retry"), deployDir, REPLACE_EXISTING);
+        Q2 q2 = new Q2(deployDir.resolve("deploy").toString());
         q2.start();
         ISOUtil.sleep(5000L);
-        createTestFile("build/resources/test/org/jpos/util/dirpoll_retry/request/REQ1", "RETRYME");
+        createTestFile(deployDir.resolve("request/REQ1"), "RETRYME");
         ISOUtil.sleep(5000L);
         q2.stop();
         ISOUtil.sleep(2000L);
-        assertTrue(new File("build/resources/test/org/jpos/util/dirpoll_retry/request/REQ1").canRead(), "Can't read request");
+        assertTrue(Files.isReadable(deployDir.resolve("request/REQ1")), "Can't read request");
     }
     public static class RetryTest implements DirPoll.Processor {
         public byte[] process(String name, byte[] request) throws DirPoll.DirPollException {
@@ -399,10 +408,10 @@ public class DirPollTest {
             return new byte[0];
         }
     }
-    private void createTestFile (String path, String content) throws IOException {
-        File tmp = new File(path);
-        FileOutputStream out = new FileOutputStream(tmp);
-        out.write(content.getBytes());
+    private void createTestFile (Path path, String content) throws IOException {
+        Files.createDirectories(path.getParent());
+        AsynchronousFileChannel out = AsynchronousFileChannel.open(path, WRITE, CREATE);
+        out.write(ByteBuffer.wrap(content.getBytes()), 0);
         out.close();
     }
 }
