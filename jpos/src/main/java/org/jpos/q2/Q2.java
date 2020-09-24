@@ -60,20 +60,20 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import java.io.*;
 import java.lang.management.ManagementFactory;
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
+import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousFileChannel;
+import java.nio.file.*;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.nio.file.StandardOpenOption.*;
 import static java.util.ResourceBundle.getBundle;
 
 /**
@@ -83,7 +83,7 @@ import static java.util.ResourceBundle.getBundle;
  * @author <a href="mailto:vsalaman@vmantek.com">Victor Salaman</a>
  */
 @SuppressWarnings("unchecked")
-public class Q2 implements FileFilter, Runnable {
+public class Q2 implements DirectoryStream.Filter<Path>, FileFilter, Runnable {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
     public static final String LOGGER_NAME         = "Q2";
@@ -102,8 +102,8 @@ public class Q2 implements FileFilter, Runnable {
     public static final long SHUTDOWN_TIMEOUT         = 60000;
 
     private MBeanServer server;
-    private File deployDir, libDir;
-    private Map<File,QEntry> dirMap;
+    private Path deployDir, libDir;
+    private Map<Path,QEntry> dirMap;
     private QFactory factory;
     private QClassLoader loader;
     private ClassLoader mainClassLoader;
@@ -125,6 +125,7 @@ public class Q2 implements FileFilter, Runnable {
     private boolean startOSGI = false;
     private BundleContext bundleContext;
     private String pidFile;
+    private Path pidFilePath;
     private String name = JMX_NAME;
     private long lastVersionLog;
     private String watchServiceClassname;
@@ -145,9 +146,16 @@ public class Q2 implements FileFilter, Runnable {
         startTime = Instant.now();
         instanceId = UUID.randomUUID();
         parseCmdLine (args);
-        libDir     = new File (deployDir, "lib");
+        libDir     = deployDir.resolve("lib");
         dirMap     = new TreeMap<>();
-        deployDir.mkdirs ();
+        try {
+            Files.createDirectories(deployDir);
+        } catch (IOException e) {
+            if (log != null)
+                log.error (e);
+            else
+                e.printStackTrace();
+        }
         mainClassLoader = getClass().getClassLoader();
         this.bundleContext = bundleContext;
         try {
@@ -181,7 +189,7 @@ public class Q2 implements FileFilter, Runnable {
         started = true;
         Thread.currentThread().setName ("Q2-"+getInstanceId().toString());
 
-        Path dir = Paths.get(deployDir.getAbsolutePath());
+        Path dir = deployDir.toAbsolutePath();
         FileSystem fs = dir.getFileSystem();
         try (WatchService service = fs.newWatchService()) {
             watchServiceClassname = service.getClass().getName();
@@ -211,7 +219,7 @@ public class Q2 implements FileFilter, Runnable {
                 loader = (QClassLoader) java.security.AccessController.doPrivileged(
                         new java.security.PrivilegedAction() {
                             public Object run() {
-                                return new QClassLoader(server, libDir, loaderName, mainClassLoader);
+                                return new QClassLoader(server, libDir.toFile(), loaderName, mainClassLoader);
                             }
                         }
                 );
@@ -340,13 +348,18 @@ public class Q2 implements FileFilter, Runnable {
     public String[] getCommandLineArgs() {
         return args;
     }
-    public boolean accept (File f) {
-        return f.canRead() && 
+    public boolean accept (Path f) {
+        return Files.isReadable(f) &&
             (isXml(f) || isBundle(f) ||
-                    recursive && f.isDirectory() && !"lib".equalsIgnoreCase (f.getName()));
+                    recursive && Files.isDirectory(f) && !"lib".equalsIgnoreCase (f.getFileName().toString()));
+    }
+    public boolean accept (File f) {
+        if (f == null)
+            throw new NullPointerException("Cannot invoke \"org.jpos.q2.Q2.accept()\" because \"f\" is null");
+        return accept(f.toPath());
     }
     public File getDeployDir () {
-        return deployDir;
+        return deployDir.toFile();
     }
 
     public String getWatchServiceClassname() {
@@ -360,21 +373,21 @@ public class Q2 implements FileFilter, Runnable {
         return (Q2) NameRegistrar.get(JMX_NAME, timeout);
     }
 
-    private boolean isXml(File f) {
-        return f != null && f.getName().toLowerCase().endsWith(".xml");
+    private boolean isXml(Path f) {
+        return f != null && f.getFileName().toString().toLowerCase().endsWith(".xml");
     }
-    private boolean isBundle(File f) {
-        return osgiFramework != null && f != null && f.getName().toLowerCase().endsWith(".jar");
+    private boolean isBundle(Path f) {
+        return osgiFramework != null && f != null && f.getFileName().toString().toLowerCase().endsWith(".jar");
     }
-    private boolean scan () {
+    private boolean scan () throws IOException {
         boolean rc = false;
-        File file[] = deployDir.listFiles (this);
+        DirectoryStream<Path> file = Files.newDirectoryStream(deployDir,this);
         // Arrays.sort (file); --apr not required - we use TreeMap
         if (file == null) {
             // Shutting down might be best, how to trigger from within?
-            throw new Error("Deploy directory \""+deployDir.getAbsolutePath()+"\" is not available");
+            throw new Error("Deploy directory \""+deployDir.toAbsolutePath().toString()+"\" is not available");
         } else {
-            for (File f : file) {
+            for (Path f : file) {
                 if (register(f))
                     rc = true;
             }
@@ -383,36 +396,36 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     private void deploy () {
-        List<ObjectInstance> startList = new ArrayList<ObjectInstance>();
-        List<File> osgiBundelList = new ArrayList<File>();
-        Iterator<Map.Entry<File,QEntry>> iter = dirMap.entrySet().iterator();
+        List<ObjectInstance> startList = new ArrayList<>();
+        List<Path> osgiBundelList = new ArrayList<>();
+        Iterator<Map.Entry<Path,QEntry>> iter = dirMap.entrySet().iterator();
 
         try {
             while (iter.hasNext() && shutdown.getCount() > 0) {
-                Map.Entry<File,QEntry> entry = iter.next();
-                File   f        = entry.getKey ();
+                Map.Entry<Path,QEntry> entry = iter.next();
+                Path f          = entry.getKey ();
                 QEntry qentry   = entry.getValue ();
                 long deployed   = qentry.getDeployed ();
                 if (deployed == 0) {
                     if (qentry.isOSGIBundle()) {
                         osgiBundelList.add(f);
-                        qentry.setDeployed (f.lastModified ());
+                        qentry.setDeployed (Files.getLastModifiedTime(f).toMillis());
                     }
                     else if (deploy(f)) {
                         if (qentry.isQBean ())
                             startList.add (qentry.getInstance());
-                        qentry.setDeployed (f.lastModified ());
+                        qentry.setDeployed (Files.getLastModifiedTime(f).toMillis());
                     } else {
                         // deploy failed, clean up.
                         iter.remove();
                     }
-                } else if (deployed != f.lastModified ()) {
+                } else if (deployed != Files.getLastModifiedTime(f).toMillis()) {
                     undeploy (f);
                     iter.remove ();
                     loader.forceNewClassLoaderOnNextScan();
                 }
             }
-            for (File f : osgiBundelList)
+            for (Path f : osgiBundelList)
                 registerOSGIBundle(f);
             for (ObjectInstance instance : startList)
                 start(instance);
@@ -428,7 +441,7 @@ public class Q2 implements FileFilter, Runnable {
 
         while (l-- > 0) {
             Map.Entry entry = (Map.Entry) set[l];
-            File   f  = (File) entry.getKey ();
+            Path   f  = (Path) entry.getKey ();
             undeploy (f);
         }
     }
@@ -458,11 +471,11 @@ public class Q2 implements FileFilter, Runnable {
         );
     }
 
-    private void checkModified () {
+    private void checkModified () throws IOException {
         Iterator iter = dirMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
-            File   f        = (File)   entry.getKey ();
+            Path   f        = (Path)   entry.getKey ();
             QEntry qentry   = (QEntry) entry.getValue ();
             if (qentry.isQBean() && qentry.isQPersist()) {
                 ObjectName name = qentry.getObjectName ();
@@ -495,8 +508,8 @@ public class Q2 implements FileFilter, Runnable {
         }
         return modified;
     }
-    private long persist (File f, ObjectName name) {
-        long deployed = f.lastModified ();
+    private long persist (Path f, ObjectName name) throws IOException {
+        long deployed = Files.getLastModifiedTime(f).toMillis();
         try {
             Element e = (Element) server.getAttribute (name, "Persist");
             if (e != null) {
@@ -504,16 +517,15 @@ public class Q2 implements FileFilter, Runnable {
                 Document doc = new Document ();
                 e.detach();
                 doc.setRootElement (e);
-                File tmp = new File (f.getAbsolutePath () + ".tmp");
-                Writer writer = new BufferedWriter(new FileWriter(tmp));
+                Path tmp = f.getParent().resolve(f.getFileName() + ".tmp");
+                Writer writer = new BufferedWriter(new FileWriter(tmp.toFile()));
                 try {
                     out.output (doc, writer);
                 } finally {
                     writer.close ();
                 }
-                f.delete();
-                tmp.renameTo (f);
-                deployed = f.lastModified ();
+                Files.move(tmp, f, REPLACE_EXISTING);
+                deployed = Files.getLastModifiedTime(f).toMillis();
             }
         } catch (Exception ex) {
             log.warn ("persist", ex);
@@ -521,32 +533,32 @@ public class Q2 implements FileFilter, Runnable {
         return deployed;
     }
 
-    private void undeploy (File f) {
+    private void undeploy (Path f) {
         QEntry qentry = (QEntry) dirMap.get (f);
         try {
             if (log != null)
-                log.trace ("undeploying:" + f.getCanonicalPath());
+                log.trace ("undeploying:" + f.toAbsolutePath().normalize());
 
             if (qentry.isQBean()) {
                 Object obj      = qentry.getObject ();
                 ObjectName name = qentry.getObjectName ();
                 factory.destroyQBean (this, name, obj);
             } else if (qentry.isOSGIBundle()) {
-                getLog().warn("OSGI bundle " + f.getName() + " no longer available in deploy directory");
+                getLog().warn("OSGI bundle " + f.getFileName() + " no longer available in deploy directory");
             }
             if (log != null)
-                log.info ("undeployed:" + f.getCanonicalPath());
+                log.info ("undeployed:" + f.toAbsolutePath().normalize());
 
         } catch (Exception e) {
             getLog().warn ("undeploy", e);
         }
     }
 
-    private boolean register (File f) {
+    private boolean register (Path f) throws IOException {
         boolean rc = false;
-        if (f.isDirectory()) {
-            File file[] = f.listFiles (this);
-            for (File aFile : file) {
+        if (Files.isDirectory(f)) {
+            DirectoryStream<Path> file = Files.newDirectoryStream(f, this);
+            for (Path aFile : file) {
                 if (register(aFile))
                     rc = true;
             }
@@ -557,19 +569,19 @@ public class Q2 implements FileFilter, Runnable {
         return rc;
     }
 
-    private boolean deploy (File f) {
+    private boolean deploy (Path f) throws IOException {
         LogEvent evt = log != null ? log.createInfo() : null;
         try {
             QEntry qentry = dirMap.get (f);
             SAXBuilder builder = createSAXBuilder();
             Document doc;
-            if(decorator!=null && !f.getName().equals(LOGGER_CONFIG))
+            if(decorator!=null && !f.getFileName().toString().equals(LOGGER_CONFIG))
             {
-                doc=decrypt(builder.build(new StringReader(decorator.decorateFile(f))));
+                doc=decrypt(builder.build(new StringReader(decorator.decorateFile(f.toFile()))));
             }
             else
             {
-                doc=decrypt(builder.build(f));
+                doc=decrypt(builder.build(f.toFile()));
             }
 
             Element rootElement = doc.getRootElement();
@@ -583,7 +595,7 @@ public class Q2 implements FileFilter, Runnable {
             }
             if (QFactory.isEnabled(rootElement)) {
                 if (evt != null)
-                    evt.addMessage("deploy: " + f.getCanonicalPath());
+                    evt.addMessage("deploy: " + f.toAbsolutePath().normalize());
                 Object obj = factory.instantiate (this, rootElement);
                 qentry.setObject (obj);
 
@@ -592,7 +604,7 @@ public class Q2 implements FileFilter, Runnable {
                 );
                 qentry.setInstance (instance);
             } else if (evt != null) {
-                evt.addMessage("deploy ignored (enabled='" + QFactory.getEnabledAttribute(rootElement) + "'): " + f.getCanonicalPath());
+                evt.addMessage("deploy ignored (enabled='" + QFactory.getEnabledAttribute(rootElement) + "'): " + f.toAbsolutePath().normalize());
             }
         } 
         catch (InstanceAlreadyExistsException e) {
@@ -644,8 +656,8 @@ public class Q2 implements FileFilter, Runnable {
         relax (1000);
     }
     private void initSystemLogger () {
-        File loggerConfig = new File (deployDir, LOGGER_CONFIG);
-        if (loggerConfig.canRead()) {
+        Path loggerConfig = deployDir.resolve(LOGGER_CONFIG);
+        if (Files.isReadable(loggerConfig)) {
             hasSystemLogger = true;
             try {
                 register (loggerConfig);
@@ -655,7 +667,7 @@ public class Q2 implements FileFilter, Runnable {
             }
         }
         Environment env = Environment.getEnvironment();
-        getLog().info("Q2 started, deployDir=" + deployDir.getAbsolutePath() + ", environment=" + env.getName());
+        getLog().info("Q2 started, deployDir=" + deployDir.toAbsolutePath().toString() + ", environment=" + env.getName());
         if (env.getErrorString() != null)
             getLog().error(env.getErrorString());
 
@@ -760,11 +772,11 @@ public class Q2 implements FileFilter, Runnable {
             } else if (cli != null)
                 dir = dir + "-" + "cli";
             recursive = line.hasOption ("r");
-            this.deployDir  = new File (dir);
+            this.deployDir  = Paths.get(dir);
             if (line.hasOption ("C"))
-                deployBundle (new File (line.getOptionValue ("C")), false);
+                deployBundle (Paths.get(line.getOptionValue ("C")), false);
             if (line.hasOption ("e"))
-                deployBundle (new File (line.getOptionValue ("e")), true);
+                deployBundle (Paths.get(line.getOptionValue ("e")), true);
             if (line.hasOption("O"))
                 startOSGI = true;
             if (line.hasOption("p"))
@@ -793,12 +805,12 @@ public class Q2 implements FileFilter, Runnable {
             System.exit (1);
         }
     }
-    private void deployBundle (File bundle, boolean encrypt) 
+    private void deployBundle (Path bundle, boolean encrypt)
         throws JDOMException, IOException, 
                 ISOException, GeneralSecurityException
     {
         SAXBuilder builder = createSAXBuilder();
-        Document doc = builder.build (bundle);
+        Document doc = builder.build (bundle.toFile());
         Iterator iter = doc.getRootElement().getChildren ().iterator ();
         for (int i=1; iter.hasNext (); i ++) {
             Element e = (Element) iter.next();
@@ -817,15 +829,15 @@ public class Q2 implements FileFilter, Runnable {
         XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
         Document doc = new Document ();
         doc.setRootElement(e);
-        File qbean = new File (deployDir, fileName);
+        Path qbean = deployDir.resolve(fileName);
         if (isTransient) {
             e.setAttribute("instance", getInstanceId().toString());
-            qbean.deleteOnExit();
+            qbean.toFile().deleteOnExit();
         }
         if (encrypt) {
             doc = encrypt (doc);
         }
-        try (Writer writer = new BufferedWriter(new FileWriter(qbean))) {
+        try (Writer writer = new BufferedWriter(new FileWriter(qbean.toFile()))) {
             out.output(doc, writer);
         }
     }
@@ -899,11 +911,11 @@ public class Q2 implements FileFilter, Runnable {
             getLog().warn("OSGI framework not found");
         }
     }
-    private boolean registerOSGIBundle (File f) {
+    private boolean registerOSGIBundle (Path f) {
         BundleContext context = osgiFramework.getBundleContext();
-        LogEvent evt = getLog().createLogEvent("osgi", f.getName());
+        LogEvent evt = getLog().createLogEvent("osgi", f.getFileName());
         try {
-            Bundle bundle = context.installBundle("file:" + f.getAbsolutePath());
+            Bundle bundle = context.installBundle("file:" + f.toAbsolutePath().normalize());
             evt.addMessage("registered");
             bundle.start();
             evt.addMessage("started");
@@ -925,22 +937,22 @@ public class Q2 implements FileFilter, Runnable {
             }
         }
     }
-    private void tidyFileAway (File f, String extension) {
-        File rename = new File(f.getAbsolutePath()+"."+extension);
-        while (rename.exists()){
-            rename = new File(rename.getAbsolutePath()+"."+extension);
+    private void tidyFileAway (Path f, String extension) throws IOException {
+        Path rename = f.getParent().resolve(f.getFileName()+"."+extension);
+        while (Files.exists(rename)){
+            rename = rename.getParent().resolve(rename.getFileName()+"."+extension);
         }
-        if (f.renameTo(rename)){
-            getLog().warn("Tidying "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It will be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
-        }
-        else {
-            getLog().warn("Error Tidying. Could not tidy  "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It could not be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
+        try {
+            Files.move(f, rename);
+            getLog().warn("Tidying "+f.toAbsolutePath()+" out of the way, by adding ."+extension,"It will be called: "+rename.toAbsolutePath()+" see log above for detail of problem.");
+        } catch (IOException e) {
+            getLog().warn("Error (" + e.getMessage() + ") Tidying. Could not tidy  "+f.toAbsolutePath()+" out of the way, by adding ."+extension,"It could not be called: "+rename.toAbsolutePath()+" see log above for detail of problem.");
         }
     }
 
-    private void deleteFile (File f, String iuuid) {
-        f.delete();
-        getLog().info(String.format("Deleted transient descriptor %s (%s)", f.getAbsolutePath(), iuuid));
+    private void deleteFile (Path f, String iuuid) throws IOException {
+        Files.delete(f);
+        getLog().info(String.format("Deleted transient descriptor %s (%s)", f.toAbsolutePath(), iuuid));
     }
 
     private void initConfigDecorator()
@@ -954,7 +966,7 @@ public class Q2 implements FileFilter, Runnable {
                 String ccdClass=bundle.getString("config-decorator-class");
                 if(log!=null) log.info("Initializing config decoration provider: "+ccdClass);
                 decorator= (ConfigDecorationProvider) Q2.class.getClassLoader().loadClass(ccdClass).newInstance();
-                decorator.initialize(getDeployDir());
+                decorator.initialize(deployDir.toFile());
             }
         }
         catch (IOException ignored)
@@ -1088,28 +1100,41 @@ public class Q2 implements FileFilter, Runnable {
             return obj instanceof QPersist;
         }
     }
-
+    public Path getPidPath() {
+        if (pidFilePath != null)
+            return pidFilePath;
+        return null;
+    }
     private void writePidFile() {
         if (pidFile == null)
             return;
 
-        File f = new File(pidFile);
-        try {
-            if (f.isDirectory()) {
-                System.err.printf("Q2: pid-file (%s) is a directory%n", pidFile);
-                System.exit(21); // EISDIR
+        pidFilePath = Paths.get(pidFile);
+        if (Files.isDirectory(pidFilePath)) {
+            System.err.printf("Q2: pid-file (%s) is a directory%n", pidFile);
+            System.exit(21); // EISDIR
+        }
+
+        byte[] mxbean =ManagementFactory.getRuntimeMXBean().getName().split("@")[0].getBytes();
+        byte[] linesep= System.lineSeparator().getBytes();
+        int len = mxbean.length + linesep.length;
+        ByteBuffer buf = ByteBuffer.allocate(len);
+        buf.put(mxbean);
+        buf.put(linesep);
+        buf.flip();
+        pidFilePath.toFile().deleteOnExit();
+        try (AsynchronousFileChannel pidFileChannel = AsynchronousFileChannel.open(pidFilePath, WRITE, CREATE, DSYNC)) {
+            try {
+                int write = pidFileChannel.write(buf, 0).get();
+                if (write != len) {
+                    throw new IOException ("Failed to write " + len + " bytes to pid-file, return: " + write);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                throw new IOException (e.getMessage());
             }
-            if (!f.createNewFile()) {
-                System.err.printf("Q2: Unable to write pid-file (%s)%n", pidFile);
-                System.exit(17); // EEXIST
-            }
-            f.deleteOnExit();
-            FileOutputStream fow = new FileOutputStream(f);
-            fow.write(ManagementFactory.getRuntimeMXBean().getName().split("@")[0].getBytes());
-            fow.write(System.lineSeparator().getBytes());
-            fow.close();
         } catch (IOException e) {
-            throw new IllegalArgumentException(String.format("Unable to write pid-file (%s)", pidFile), e);
+            System.err.printf("Q2: Unable to open pid-file (%s), (%s),%n", pidFile, e.getMessage());
+            System.exit(17); // EEXIST
         }
     }
 
@@ -1119,18 +1144,18 @@ public class Q2 implements FileFilter, Runnable {
             LogEvent evt = getLog().createInfo();
             for (WatchEvent<?> ev : key.pollEvents()) {
                 if (ev.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-                    evt.addMessage(String.format ("created %s/%s", deployDir.getName(), ev.context()));
+                    evt.addMessage(String.format ("created %s/%s", deployDir.getFileName(), ev.context()));
                 } else if (ev.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
-                    evt.addMessage(String.format ("removed %s/%s", deployDir.getName(), ev.context()));
+                    evt.addMessage(String.format ("removed %s/%s", deployDir.getFileName(), ev.context()));
                 } else if (ev.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
-                    evt.addMessage(String.format ("modified %s/%s", deployDir.getName(), ev.context()));
+                    evt.addMessage(String.format ("modified %s/%s", deployDir.getFileName(), ev.context()));
                 }
             }
             Logger.log(evt);
             if (!key.reset()) {
                 getLog().warn(String.format (
                   "deploy directory '%s' no longer valid",
-                  deployDir.getAbsolutePath())
+                  deployDir.toAbsolutePath())
                 );
                 return false; // deploy directory no longer valid
             }
@@ -1172,10 +1197,11 @@ public class Q2 implements FileFilter, Runnable {
     }
     private void extractCfg() throws IOException {
         List<String> resources = ModuleUtils.getModuleEntries(CFG_PREFIX);
+        Path cfg = Paths.get("cfg");
         if (resources.size() > 0)
-            new File("cfg").mkdirs();
+            Files.createDirectories(cfg);
         for (String resource : resources)
-            copyResourceToFile(resource, new File("cfg", resource.substring(CFG_PREFIX.length())));
+            copyResourceToFile(resource, cfg.resolve(resource.substring(CFG_PREFIX.length())));
     }
     private void extractDeploy() throws IOException, JDOMException, SAXException, ISOException, GeneralSecurityException {
         List<String> qbeans = ModuleUtils.getModuleEntries(DEPLOY_PREFIX);
@@ -1183,30 +1209,48 @@ public class Q2 implements FileFilter, Runnable {
             if (resource.toLowerCase().endsWith(".xml"))
                 deployResource(resource);
             else
-                copyResourceToFile(resource, new File("cfg", resource.substring(DEPLOY_PREFIX.length())));
+                copyResourceToFile(resource, Paths.get("cfg").resolve(resource.substring(DEPLOY_PREFIX.length())));
 
         }
     }
 
-    private void copyResourceToFile(String resource, File destination) throws IOException {
+    private void copyResourceToFile(String resource, Path destination) throws IOException {
         // taken from @vsalaman's Install using human readable braces as God mandates
-        try (InputStream source = getClass().getClassLoader().getResourceAsStream(resource)) {
-            try (FileOutputStream output = new FileOutputStream(destination)) {
-                int n;
-                byte[] buffer = new byte[4096];
-                while (-1 != (n = source.read(buffer))) {
-                    output.write(buffer, 0, n);
-                }
+        Path rpath;
+        try {
+            rpath = Paths.get(getClass().getClassLoader().getResource(resource).toURI());
+        } catch (URISyntaxException e) {
+            throw new IOException (e.getMessage());
+        }
+        try (AsynchronousFileChannel source = AsynchronousFileChannel.open(rpath, READ)) {
+            int size = (int) source.size();
+            ByteBuffer buffer = ByteBuffer.allocate(size);
+            int read = 0;
+            while (read < size) {
+                read += source.read(buffer, read).get();
             }
+            buffer.flip();
+            try (AsynchronousFileChannel output = AsynchronousFileChannel.open(destination, WRITE, CREATE, SYNC)) {
+                int write = output.write(buffer, 0).get();
+                if (write != size) {
+                    throw new IOException ("Failed to write " + size + " byte resource, return: " + write);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                throw new IOException (e.getMessage());
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new IOException (e.getMessage());
         }
     }
     private void deployResource(String resource)
-      throws IOException, SAXException, JDOMException, GeneralSecurityException, ISOException
+      throws IOException, JDOMException, GeneralSecurityException
     {
         SAXBuilder builder = new SAXBuilder();
         try (InputStream source = getClass().getClassLoader().getResourceAsStream(resource)) {
             Document doc = builder.build(source);
             deployElement (doc.getRootElement(), resource.substring(DEPLOY_PREFIX.length()), false,true);
+        } catch (ISOException e) {
+            throw new IOException(e.getMessage());
         }
     }
 }
