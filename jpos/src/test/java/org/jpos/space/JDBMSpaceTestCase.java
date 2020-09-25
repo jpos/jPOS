@@ -28,14 +28,17 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.util.Profiler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Path;
 
 @SuppressWarnings("unchecked")
 public class JDBMSpaceTestCase {
     public static final int COUNT = 100;
     JDBMSpace<String,Object> sp;
     @BeforeEach
-    public void setUp () {
-        sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace ("build/resources/test/jdbm-space-test");
+    public void setUp (@TempDir Path filename) {
+        sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace ("jdbm-space-test", filename.toString());
     }
     @Test
     public void testSimpleOut() throws Exception {
