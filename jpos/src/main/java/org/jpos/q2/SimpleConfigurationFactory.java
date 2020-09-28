@@ -25,11 +25,13 @@ import org.jpos.core.SimpleConfiguration;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 public class SimpleConfigurationFactory implements ConfigurationFactory {
-    public Configuration getConfiguration(Element e) throws ConfigurationException {
+    private Properties getElementProps(Element e) throws ConfigurationException {
         Properties props = new Properties ();
         Iterator iter = e.getChildren ("property").iterator();
         while (iter.hasNext()) {
@@ -60,6 +62,18 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
                     props.put (name, value);
             }
         }
-        return new SimpleConfiguration(props);
+        return props;
+    }
+
+    public Map<String, Object> getElementMap(Element e) throws ConfigurationException {
+        Map<String, Object> map = new HashMap<>();
+        Properties properties = getElementProps(e);
+        for (final String name: properties.stringPropertyNames())
+            map.put(name, properties.getProperty(name));
+        return map;
+    }
+
+    public Configuration getConfiguration(Element e) throws ConfigurationException {
+        return new SimpleConfiguration(getElementProps(e));
     }
 }
