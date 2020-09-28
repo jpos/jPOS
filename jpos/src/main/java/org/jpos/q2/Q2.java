@@ -31,6 +31,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.core.Environment;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
@@ -52,12 +54,7 @@ import org.osgi.framework.launch.FrameworkFactory;
 import org.xml.sax.SAXException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import javax.management.ObjectInstance;
-import javax.management.ObjectName;
+import javax.management.*;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.nio.file.FileSystem;
@@ -73,6 +70,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import static java.util.ResourceBundle.getBundle;
 
@@ -358,6 +356,84 @@ public class Q2 implements FileFilter, Runnable {
     }
     public static Q2 getQ2(long timeout) {
         return (Q2) NameRegistrar.get(JMX_NAME, timeout);
+    }
+
+    public Map<String, Object> getXmlConfigMap() throws Exception {
+        Iterator iter = dirMap.entrySet().iterator();
+        Map<String, Object> config = new HashMap<>();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            File   f        = (File)   entry.getKey ();
+            QEntry qentry   = (QEntry) entry.getValue ();
+            if (qentry.isQBean() && qentry.isQPersist() && isXml(f)) {
+                String fname = f.getName();
+                fname = fname.substring(0, fname.length() - 4);
+                ObjectName qname = qentry.getObjectName ();
+                Element e = (Element) server.getAttribute (qname, "Persist");
+                config.put(fname, getElementMap(e));
+            }
+        }
+        return config;
+    }
+
+    private Map<String, Object> getElementMap(Element e) {
+        Map<String, Object> map = new HashMap<>();
+        String className = e.getAttributeValue("class");
+        if (className != null) {
+            map.put("class", className);
+        }
+        List<Element> children = e.getChildren();
+        Map<String, Object> props = parseProperty(e);
+        Map<String, Object> attr = parseAttr(e);
+        for(Element child: children){
+            String key = child.getName();
+            if (!Stream.of("property", "attr").anyMatch(key::equals)) {
+                if (!map.containsKey(key)) {
+                    map.put(key, new ArrayList<>());
+                }
+                ArrayList<Object> alist = (ArrayList<Object>) map.get(key);
+                alist.add(getElementMap(child));
+            }
+        }
+        if (props != null) {
+            map.put("property", props);
+        }
+        if (attr != null) {
+            map.put("attr", attr);
+        }
+        Map<String, Object> emap = new HashMap<>();
+        emap.put(e.getName(), map);
+        return emap;
+    }
+
+    private Map<String, Object> parseProperty(Element e) {
+        Map<String, Object> map = null;
+        try {
+            Configuration simpleConfig = factory.getConfiguration(e);
+            for (String key: simpleConfig.keySet()) {
+                if (map == null)
+                    map = new HashMap<>();
+                map.put(key, simpleConfig.get(key));
+            }
+        } catch (ConfigurationException configurationException) {
+            return null;
+        }
+        return map;
+    }
+
+    private Map<String, Object> parseAttr(Element e) {
+        Map<String, Object> map = null;
+        try {
+            AttributeList attributeList = factory.getAttributeList(e);
+            for (Attribute key: attributeList.asList()) {
+                if (map == null)
+                    map = new HashMap<>();
+                map.put(key.getName(), key.getValue());
+            }
+        } catch (ConfigurationException configurationException) {
+            return null;
+        }
+        return map;
     }
 
     private boolean isXml(File f) {
