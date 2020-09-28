@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 public class SimpleConfigurationFactory implements ConfigurationFactory {
-    public Configuration getConfiguration(Element e) throws ConfigurationException {
+    public Properties getElementProps(Element e) throws ConfigurationException {
         Properties props = new Properties ();
         Iterator iter = e.getChildren ("property").iterator();
         while (iter.hasNext()) {
@@ -60,6 +60,10 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
                     props.put (name, value);
             }
         }
-        return new SimpleConfiguration(props);
+        return props;
+    }
+
+    public Configuration getConfiguration(Element e) throws ConfigurationException {
+        return new SimpleConfiguration(getElementProps(e));
     }
 }
