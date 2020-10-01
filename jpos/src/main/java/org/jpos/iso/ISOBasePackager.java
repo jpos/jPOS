@@ -399,7 +399,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 if (evt != null)
                     evt.addMessage ("<bitmap>"+bmap.toString()+"</bitmap>");
                 m.set (bitmap);
-             maxField = Math.min(maxField, bmap.size());
+                maxField = Math.min(maxField, bmap.size());
             }
 
             for (int i=getFirstField(); i<maxField; i++) {
