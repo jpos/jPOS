@@ -40,7 +40,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     protected int thirdBitmapField= -999;       // for implementations where the tertiary bitmap is inside a Data Element
 
     protected Logger logger = null;
-    protected boolean logFieldName= false;
+    protected boolean logFieldName= true;
     protected String realm = null;
     protected int headerLength = 0;
 

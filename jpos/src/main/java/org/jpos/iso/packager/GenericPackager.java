@@ -152,7 +152,8 @@ public class GenericPackager
                 setLogger(Logger.getLogger (loggerName),
                            cfg.get ("packager-realm"));
 
-            logFieldName= cfg.getBoolean("packager-log-fieldname"); // inherited protected logFieldName
+            // inherited protected logFieldName
+            logFieldName= cfg.getBoolean("packager-log-fieldname", logFieldName);
 
             readFile(filename);
         } catch (ISOException e)
