@@ -31,19 +31,18 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jolokia.converter.json.JsonConvertOptions;
+import org.jolokia.converter.json.ObjectToJsonConverter;
+import org.jolokia.converter.object.StringToObjectConverter;
 import org.jpos.core.Environment;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.install.ModuleUtils;
 import org.jpos.q2.ssh.SshService;
 import org.jpos.security.SystemSeed;
-import org.jpos.util.Log;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
-import org.jpos.util.NameRegistrar;
-import org.jpos.util.PGPHelper;
-import org.jpos.util.SimpleLogListener;
+import org.jpos.util.*;
 import org.jpos.util.slf4j.Slf4JDynamicBinder;
+import org.json.JSONObject;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -102,6 +101,7 @@ public class Q2 implements FileFilter, Runnable {
     public static final long SHUTDOWN_TIMEOUT         = 60000;
 
     private MBeanServer server;
+    private ObjectToJsonConverter converter = new ObjectToJsonConverter(new StringToObjectConverter(), new JPOSElementSimplifier());
     private File deployDir, libDir;
     private Map<File,QEntry> dirMap;
     private QFactory factory;
@@ -244,6 +244,8 @@ public class Q2 implements FileFilter, Runnable {
 
             deployInternal();
             for (int i = 1; shutdown.getCount() > 0; i++) {
+                Map<String, Object> config = getJsonConfigMap();
+                log.info(new JSONObject(config).toString(4));
                 try {
                     if (i > 1 && disableDeployScan) {
                         shutdown.await();
@@ -358,6 +360,30 @@ public class Q2 implements FileFilter, Runnable {
     }
     public static Q2 getQ2(long timeout) {
         return (Q2) NameRegistrar.get(JMX_NAME, timeout);
+    }
+
+    public Map<String, Object> getJsonConfigMap() throws Exception {
+        Iterator iter = dirMap.entrySet().iterator();
+        Map<String, Object> config = new HashMap<>();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            File   f        = (File)   entry.getKey ();
+            QEntry qentry   = (QEntry) entry.getValue ();
+            if (qentry.isQBean() && qentry.isQPersist() && isXml(f)) {
+                String fname = f.getName();
+                fname = fname.substring(0, fname.length() - 4);
+                ObjectName qname = qentry.getObjectName ();
+                Element e = (Element) server.getAttribute (qname, "Persist");
+                Map<String, Object> jentry = new HashMap();
+                try {
+                    jentry = (Map) converter.convertToJson(e, null, JsonConvertOptions.DEFAULT);
+                } catch (Exception ex) {
+                    log.info(ex.fillInStackTrace());
+                }
+                config.put(fname, jentry);
+            }
+        }
+        return config;
     }
 
     private boolean isXml(File f) {

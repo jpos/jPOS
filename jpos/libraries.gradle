@@ -2,6 +2,8 @@ ext {
     libraries = [
         jdom: 'org.jdom:jdom2:2.0.6',
         jdbm: 'jdbm:jdbm:1.0',
+        json: 'org.json:json:20200518',
+        jolokia_jmx: 'org.jolokia:jolokia-jmx:1.6.2',
         sleepycat_je: 'com.sleepycat:je:18.3.12',
         commons_cli: 'commons-cli:commons-cli:1.4',
         commons_lang3: 'org.apache.commons:commons-lang3:3.11',
