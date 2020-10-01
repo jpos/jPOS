@@ -40,9 +40,10 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     protected int thirdBitmapField= -999;       // for implementations where the tertiary bitmap is inside a Data Element
 
     protected Logger logger = null;
+    protected boolean logFieldName= true;
     protected String realm = null;
     protected int headerLength = 0;
-    
+
     public void setFieldPackager (ISOFieldPackager[] fld) {
         this.fld = fld;
     }
@@ -63,7 +64,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     }
 
     /**
-     * usually 2 for normal fields, 1 for bitmap-less or ANSI X9.2 
+     * usually 2 for normal fields, 1 for bitmap-less or ANSI X9.2
      * @return first valid field
      */
     protected int getFirstField() {
@@ -304,7 +305,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                         ISOComponent c = fld[i].createComponent(i);
                         consumed += fld[i].unpack (c, b, consumed);
                         if (evt != null)
-                            fieldUnpackLogger(evt, i, c, fld);
+                            fieldUnpackLogger(evt, i, c, fld[i], logFieldName);
                         m.set(c);
 
                         if (i == thirdBitmapField && fld.length > 129 &&          // fld[128] is at pos 129
@@ -364,23 +365,23 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
         }
     }
 
-    public void unpack (ISOComponent m, InputStream in) 
-        throws IOException, ISOException 
+    public void unpack (ISOComponent m, InputStream in)
+        throws IOException, ISOException
     {
         LogEvent evt = logger != null ? new LogEvent (this, "unpack") : null;
         try {
-            if (m.getComposite() != m) 
+            if (m.getComposite() != m)
                 throw new ISOException ("Can't call packager on non Composite");
 
-            // if ISOMsg and headerLength defined 
-            if (m instanceof ISOMsg && ((ISOMsg) m).getHeader()==null && headerLength>0) 
+            // if ISOMsg and headerLength defined
+            if (m instanceof ISOMsg && ((ISOMsg) m).getHeader()==null && headerLength>0)
             {
             	byte[] h = new byte[headerLength];
             	in.read(h, 0, headerLength);
             	((ISOMsg) m).setHeader(h);
-            }            
-            
-            
+            }
+
+
             if (!(fld[0] instanceof ISOMsgFieldPackager) &&
                 !(fld[0] instanceof ISOBitMapPackager))
             {
@@ -400,7 +401,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 m.set (bitmap);
                 maxField = Math.min(maxField, bmap.size());
             }
-                
+
             for (int i=getFirstField(); i<maxField; i++) {
                 if (bmap == null && fld[i] == null)
                     continue;
@@ -412,7 +413,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     ISOComponent c = fld[i].createComponent(i);
                     fld[i].unpack (c, in);
                     if (evt != null)
-                        fieldUnpackLogger(evt, i, c, fld);
+                        fieldUnpackLogger(evt, i, c, fld[i], logFieldName);
                     m.set(c);
                 }
             }
@@ -425,7 +426,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                         ISOComponent c = fld[i+128].createComponent(i);
                         fld[i+128].unpack (c, in);
                         if (evt != null)
-                            fieldUnpackLogger(evt, i+128, c, fld);
+                            fieldUnpackLogger(evt, i+128, c, fld[i+128], logFieldName);
                         m.set(c);
                     }
                 }
@@ -451,10 +452,14 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * Internal helper logging function.
      * Assumes evt is not null.
      */
-    private static void fieldUnpackLogger(LogEvent evt, int fldno, ISOComponent c, ISOFieldPackager fld[]) throws ISOException
+    private static void fieldUnpackLogger(LogEvent evt, int fldno, ISOComponent c, ISOFieldPackager fld, boolean logFieldName) throws ISOException
     {
         evt.addMessage ("<unpack fld=\""+fldno
-            +"\" packager=\""+fld[fldno].getClass().getName()+ "\">");
+            +"\" packager=\""+fld.getClass().getName()+ "\">");
+
+        if (logFieldName)
+            evt.addMessage("  <!-- "+fld.getDescription()+" -->");
+
         if (c.getValue() instanceof ISOMsg)
             evt.addMessage (c.getValue());
         else if (c.getValue() instanceof byte[]) {
@@ -488,8 +493,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @param   fldNumber the Field Number
      * @param   fieldPackager the Field Packager
      */
-    public void setFieldPackager 
-        (int fldNumber, ISOFieldPackager fieldPackager) 
+    public void setFieldPackager
+        (int fldNumber, ISOFieldPackager fieldPackager)
     {
         fld[fldNumber] = fieldPackager;
     }
