@@ -385,10 +385,9 @@ public class TransactionManager
                         evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
                     }
                     evt.addMessage (
-                        String.format (" in-transit=%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
-                            getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
-                            getActiveSessions(), maxSessions,
-                            tps.toString(), prof != null ? prof.getElapsedInMillis() : -1
+                        String.format (" %s, elapsed=%dms",
+                            tmInfo(),
+                            prof != null ? prof.getElapsedInMillis() : -1
                         )
                     );
                     if (prof != null)
@@ -504,12 +503,7 @@ public class TransactionManager
 
     @Override
     public void dump (PrintStream ps, String indent) {
-        ps.printf ("%sin-transit=%d/%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d%s%n",
-          indent,
-          getActiveTransactions(), getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
-          getActiveSessions(), maxSessions,
-          (tps != null ? ", " + tps.toString() : "")
-        );
+        ps.printf ("%s%s%n", indent, tmInfo());
         if (metrics != null) {
             metrics.dump(ps, indent);
         }
@@ -1135,5 +1129,13 @@ public class TransactionManager
     private String getName(TransactionParticipant p) {
         String name;
         return ((name = names.get(p)) != null) ? name : p.getClass().getName();
+    }
+
+    private String tmInfo() {
+        return String.format ("in-transit=%d/%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d%s",
+          getActiveTransactions(), getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
+          getActiveSessions(), maxSessions,
+          (tps != null ? ", " + tps.toString() : "")
+        );
     }
 }
