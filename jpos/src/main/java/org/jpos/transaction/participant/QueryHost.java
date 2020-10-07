@@ -47,6 +47,7 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
     private Configuration cfg;
     private String request;
     private boolean ignoreUnreachable;
+    private boolean checkConnected= true;
 
     public QueryHost () {
         super();
@@ -121,10 +122,11 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
         destination = cfg.get ("destination", ContextConstants.DESTINATION.toString());
         continuations = cfg.getBoolean("continuations", true);
         ignoreUnreachable = cfg.getBoolean("ignore-host-unreachable", false);
+        checkConnected = cfg.getBoolean("check-connected", checkConnected);
     }
 
     protected boolean isConnected (MUX mux) {
-        if (mux.isConnected())
+        if (!checkConnected || mux.isConnected())
             return true;
         long timeout = System.currentTimeMillis() + waitTimeout;
         while (System.currentTimeMillis() < timeout) {
