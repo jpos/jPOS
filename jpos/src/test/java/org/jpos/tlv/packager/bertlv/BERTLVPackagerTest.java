@@ -18,10 +18,18 @@
 
 package org.jpos.tlv.packager.bertlv;
 
+import org.jpos.emv.BinaryEMVTag;
 import org.jpos.emv.EMVStandardTagType;
+import org.jpos.emv.EMVTagSequence;
+import org.jpos.emv.LiteralEMVTag;
 import org.jpos.iso.*;
 import org.jpos.tlv.ISOTaggedField;
+import org.jpos.util.Logger;
+import org.jpos.util.SimpleLogListener;
 import org.junit.jupiter.api.Test;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,6 +76,31 @@ public class BERTLVPackagerTest {
         } catch (ISOException e) {
             fail("Unexpected exception", e);
         }
+    }
+
+    @Test
+    public void bug349() throws ISOException {
+        ISOMsg msg = new ISOMsg("0600");
+
+        msg.set(11, Integer.toString(123));
+        msg.set(12, new SimpleDateFormat("HHmmss").format(Calendar.getInstance().getTime()));
+        msg.set(13, new SimpleDateFormat("MMYY").format(Calendar.getInstance().getTime()));
+
+        ISOMsg field55 = new ISOMsg(55);
+        EMVTagSequence sequence = new EMVTagSequence();
+        sequence.add(new BinaryEMVTag(Bug349TagType.BMP55_SF14, Bug349TagType.BMP55_SF14.getTagNumber(), new byte[] {0x01, 0x02, 0x03}));
+        sequence.add(new LiteralEMVTag(Bug349TagType.BMP55_SF99, Bug349TagType.BMP55_SF99.getTagNumber(), Integer.toString(0)));
+        sequence.writeTo(field55);
+        msg.set(field55); // ICC data
+
+        Bug349BinaryPackager packager = new Bug349BinaryPackager();
+        Logger logger = new Logger();
+        logger.addListener(new SimpleLogListener(System.err));
+        packager.setLogger(logger, "bug349");
+        msg.setPackager(packager);
+
+        byte[] out = msg.pack();
+        System.out.println("bin msg: " + out);
     }
 }
 
