@@ -338,8 +338,14 @@ public abstract class BERTLVPackager extends GenericPackager {
         if (c.getComposite() == null) {
             if (c.getValue() instanceof String) {
                 tagValue = (String) c.getValue();
-                EMVStandardTagType tagType = EMVStandardTagType.forHexCode(tagNameHex);
-                int length = Math.max(tagValue.length(), tagType.getDataLength().getMinLength());
+                EMVStandardTagType tagType;
+                int length;
+                if (EMVStandardTagType.isProprietaryTag(Integer.parseInt(tagNameHex, 16))) {
+                    length = tagValue.length();
+                } else {
+                    tagType = EMVStandardTagType.forHexCode(tagNameHex);
+                    length = Math.max(tagValue.length(), tagType.getDataLength().getMinLength());
+                }
                 switch (dataFormat) {
                     case COMPRESSED_NUMERIC:
                         packedValue = new byte[bcdInterpreterRightPaddedF.getPackedLength(length)];
