@@ -104,3 +104,43 @@ In the rare case where a value with the format `${...}` is required, the
 `$verb{${...}}` format (verbatim) can be used.
 =====
 
+The jPOS `Environment` has a ServiceLoader based plugin mechanism that support 
+`EnvironmentProviders`. jPOS comes with two stock providers:
+
+  - `FileEnvironmentProvider` (prefix `file:`).
+  - `ObfEnvironmentProvider` (prefix `obf:`).
+
+A YAML file (i.e. `cfg/default.yml`) containing an entry like this:
+
+[source,yaml]
+-------------
+db:
+    pass: file:/var/secure/dbpass.txt
+-------------
+
+Would obtain the `${db.pass}` property `/var/secure/dbpass.txt` file.
+
+
+Likewise, an obfuscated entry like this:
+
+[source,yaml]
+-------------
+db:
+    pass: obf:Ir8LYtvCYsaXANchMMrBqq5Gs2DnMEstYAAAAA
+-------------
+
+would de-obfuscate the base64 encoded secret.
+
+[WARNING]
+=========
+Obfuscation is that, just obfuscation, not encryption.
+It's used to prevent secrets from leaking to ocassional observers and
+to demonstrate the use of the EnvironmentProviders. For production
+deployments, HSM based EnvironmentProvider should be used instead.
+=========
+
+[TIP]
+=====
+The `obf` CLI command can be used to create these obfuscated entries.
+=====
+

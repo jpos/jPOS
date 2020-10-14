@@ -45,7 +45,7 @@ public class Environment implements Loggeable {
     private static String SP_PREFIX = "system.property.";
     private static int SP_PREFIX_LENGTH = SP_PREFIX.length();
     private String errorString;
-
+    private ServiceLoader<EnvironmentProvider> serviceLoader;
 
     static {
         try {
@@ -60,6 +60,7 @@ public class Environment implements Loggeable {
         name = System.getProperty ("jpos.env");
         name = name == null ? "default" : name;
         readConfig ();
+        serviceLoader = ServiceLoader.load(EnvironmentProvider.class);
     }
 
     public String getName() {
@@ -154,6 +155,12 @@ public class Environment implements Loggeable {
                     m = null;
             }
         }
+        for (EnvironmentProvider p : serviceLoader) {
+            int l = p.prefix().length();
+            if (r != null && r.length() > l && r.startsWith(p.prefix())) {
+                r = p.get(r.substring(l));
+            }
+        }
         return r;
     }
 
@@ -244,7 +251,14 @@ public class Environment implements Loggeable {
             Properties properties = propRef.get();
             properties.stringPropertyNames().stream().
               forEachOrdered(prop -> { sb.append(String.format ("  %s=%s%n", prop, properties.getProperty(prop)));
-              });
+            });
+            if (serviceLoader.iterator().hasNext()) {
+                sb.append ("  providers:");
+                sb.append (System.lineSeparator());
+                for (EnvironmentProvider provider : serviceLoader) {
+                    sb.append(String.format("    %s%n", provider.getClass().getCanonicalName()));
+                }
+            }
         }
         return sb.toString();
     }
