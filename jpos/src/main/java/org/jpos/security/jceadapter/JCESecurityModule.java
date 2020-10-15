@@ -21,6 +21,7 @@ package  org.jpos.security.jceadapter;
 import org.javatuples.Pair;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
@@ -1947,6 +1948,11 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
                 lmkProps.load(in);
             } finally {
                 in.close();
+            }
+            Enumeration<?> e = lmkProps.propertyNames();
+            while (e.hasMoreElements()) {
+                String propName = (String) e.nextElement();
+                lmkProps.put(propName, Environment.get(lmkProps.getProperty(propName)));
             }
             byte[] lmkData;
             for (int i = 0; i <= LMK_PAIRS_NO; i++) {
