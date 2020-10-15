@@ -34,7 +34,7 @@ public class ObfEnvironmentProvider implements EnvironmentProvider {
     public String get(String config) {
         ByteBuffer buf = ByteBuffer.wrap(Base64.getDecoder().decode(config));
         int i = buf.getInt();
-        byte[] b = new byte[buf.remaining()-4];
+        byte[] b = new byte[buf.remaining()];
         buf.get(b);
         return new String(ISOUtil.xor(b, SystemSeed.getSeed(i, b.length)));
     }
