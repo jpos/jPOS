@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 public class FileEnvironmentProvider implements EnvironmentProvider {
     @Override
     public String prefix() {
-        return "file:";
+        return "file::";
     }
 
     @Override
@@ -35,7 +35,7 @@ public class FileEnvironmentProvider implements EnvironmentProvider {
         try {
             return String.join(System.lineSeparator(), Files.readAllLines(path));
         } catch (IOException e) {
-            return e.toString();
+            return config;
         }
     }
 }
