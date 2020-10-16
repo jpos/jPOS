@@ -27,7 +27,7 @@ import java.util.Base64;
 public class ObfEnvironmentProvider implements EnvironmentProvider {
     @Override
     public String prefix() {
-        return "obf:";
+        return "obf::";
     }
 
     @Override

@@ -37,7 +37,7 @@ public class OBF implements CLICommand {
             usage(cli);
             return;
         }
-        cli.println (String.format("obf:%s", obf(args[1])));
+        cli.println (String.format("obf::%s", obf(args[1])));
     }
     public void usage(CLIContext cli) {
         cli.println("Usage: obf \"secret\"");

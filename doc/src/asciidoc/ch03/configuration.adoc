@@ -107,8 +107,8 @@ In the rare case where a value with the format `${...}` is required, the
 The jPOS `Environment` has a ServiceLoader based plugin mechanism that support 
 `EnvironmentProviders`. jPOS comes with two stock providers:
 
-  - `FileEnvironmentProvider` (prefix `file:`).
-  - `ObfEnvironmentProvider` (prefix `obf:`).
+  - `FileEnvironmentProvider` (prefix `file::`).
+  - `ObfEnvironmentProvider` (prefix `obf::`).
 
 A YAML file (i.e. `cfg/default.yml`) containing an entry like this:
 
