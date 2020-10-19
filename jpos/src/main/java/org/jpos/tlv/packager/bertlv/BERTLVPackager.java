@@ -54,7 +54,7 @@ import java.util.Map;
 public abstract class BERTLVPackager extends GenericPackager {
 
     private static final int MAX_LENGTH_BYTES = 5;
-    private static final int MAX_TAG_BYTES = 2;
+    private static final int MAX_TAG_BYTES = 3;
 
     private static final LiteralInterpreter literalInterpreter = LiteralInterpreter.INSTANCE;
     private static final AsciiInterpreter asciiInterpreter = AsciiInterpreter.INSTANCE;
