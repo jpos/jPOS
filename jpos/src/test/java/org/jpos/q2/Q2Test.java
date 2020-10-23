@@ -74,10 +74,14 @@ public class Q2Test {
         args[0] = "";
         Q2 q2 = new Q2(args);
         try {
-            q2.accept((File)null);
+            q2.accept(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("Cannot invoke \"org.jpos.q2.Q2.accept()\" because \"f\" is null", ex.getMessage(), "ex.getMessage()");
+            if (isJavaVersionAtMost(JAVA_14)) {
+                assertNull(ex.getMessage(), "ex.getMessage()");
+            } else {
+                assertEquals("Cannot invoke \"java.io.File.canRead()\" because \"f\" is null", ex.getMessage(), "ex.getMessage()");
+            }
         } finally {
             q2.stop();
         }
