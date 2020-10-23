@@ -262,4 +262,57 @@ public class Environment implements Loggeable {
         }
         return sb.toString();
     }
+
+    /**
+     * Helper method to load properties from an input stream and replace their values according to
+     * {@link #getProperty(String)} syntax
+     * @param stream from where to load the properties
+     * @return loaded properties with values replaced according to {@link #getProperty(String)} syntax
+     * @throws IOException if an exception is encounter by {@link Properties#load(InputStream)}
+     */
+    public static Properties loadProperties(InputStream stream) throws IOException {
+        Properties props = new Properties();
+        props.load(stream);
+        replaceValues(props);
+        return props;
+    }
+
+    /**
+     * Helper method to load properties from {@link Reader} and replace their values according to
+     * {@link #getProperty(String)} syntax
+     * @param reader from where to load the properties
+     * @return loaded properties with values replaced according to {@link #getProperty(String)} syntax
+     * @throws IOException if an exception is encounter by {@link Properties#load(InputStream)}
+     */
+    public static Properties loadProperties(Reader reader) throws IOException {
+        Properties props = new Properties();
+        props.load(reader);
+        replaceValues(props);
+        return props;
+    }
+
+    /**
+     * Helper method to load properties from an input stream and replace their values according to
+     * {@link #getProperty(String)} syntax
+     * @param file from where to load the properties
+     * @return loaded properties with values replaced according to {@link #getProperty(String)} syntax
+     * @throws IOException if an exception is encounter by {@link Properties#load(InputStream)}
+     * @throws FileNotFoundException if file cannot be opened.
+     */
+    public static Properties loadProperties(String file) throws IOException {
+        return loadProperties(new FileInputStream(file));
+    }
+
+    /**
+     * Helper method to replace {@link Properties} values according to
+     * {@link #getProperty(String)} syntax
+     * @param props {@link Properties} to replace.
+     */
+    public static void replaceValues(Properties props) {
+        for (Map.Entry entry : props.entrySet()) {
+            String k = (String) entry.getKey();
+            String v = get((String) entry.getValue(), "");
+            props.setProperty(k,v);
+        }
+    }
 }
