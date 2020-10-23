@@ -381,15 +381,16 @@ public class Q2 implements DirectoryStream.Filter<Path>, FileFilter, Runnable {
     }
     private boolean scan () throws IOException {
         boolean rc = false;
-        DirectoryStream<Path> file = Files.newDirectoryStream(deployDir,this);
-        // Arrays.sort (file); --apr not required - we use TreeMap
-        if (file == null) {
-            // Shutting down might be best, how to trigger from within?
-            throw new Error("Deploy directory \""+deployDir.toAbsolutePath().toString()+"\" is not available");
-        } else {
-            for (Path f : file) {
-                if (register(f))
-                    rc = true;
+        try (DirectoryStream<Path> file = Files.newDirectoryStream(deployDir,this)) {
+            // Arrays.sort (file); --apr not required - we use TreeMap
+            if (file == null) {
+                // Shutting down might be best, how to trigger from within?
+                throw new Error("Deploy directory \"" + deployDir.toAbsolutePath().toString() + "\" is not available");
+            } else {
+                for (Path f : file) {
+                    if (register(f))
+                        rc = true;
+                }
             }
         }
         return rc;
@@ -557,10 +558,11 @@ public class Q2 implements DirectoryStream.Filter<Path>, FileFilter, Runnable {
     private boolean register (Path f) throws IOException {
         boolean rc = false;
         if (Files.isDirectory(f)) {
-            DirectoryStream<Path> file = Files.newDirectoryStream(f, this);
-            for (Path aFile : file) {
-                if (register(aFile))
-                    rc = true;
+            try (DirectoryStream<Path> file = Files.newDirectoryStream(f, this)) {
+                for (Path aFile : file) {
+                    if (register(aFile))
+                        rc = true;
+                }
             }
         } else if (dirMap.get (f) == null) {
             dirMap.put (f, new QEntry (isBundle(f)));
