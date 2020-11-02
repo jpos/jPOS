@@ -4,9 +4,9 @@ jPOS Programmer's Guide
 :author: jPOS Software SRL
 :email: apr@jpos.org
 :revdate: {localdate}
-:revnumber: 2.1.3
-:jpos_version: 2.1.3
-:jpos_snapshot_version: 2.1.4-SNAPSHOT
+:revnumber: 2.1.5
+:jpos_version: 2.1.4
+:jpos_snapshot_version: 2.1.5-SNAPSHOT
 :toc:
 :source-highlighter: rouge
 :listing-caption: Listing
