@@ -192,7 +192,7 @@ public class Environment implements Loggeable {
                 Yaml yaml = new Yaml();
                 Iterable<Object> document = yaml.loadAll(fis);
                 document.forEach(d -> {
-                    flat(properties, null, (Map<String, Object>) d);
+                    flat(properties, null, (Map<String, Object>) d, false);
                 });
                 propRef.set(properties);
                 return true;
@@ -221,14 +221,15 @@ public class Environment implements Loggeable {
     }
 
     @SuppressWarnings("unchecked")
-    private void flat (Properties properties, String prefix, Map<String,Object> c) {
+    public static void flat (Properties properties, String prefix, Map<String,Object> c, boolean dereference) {
         for (Object o : c.entrySet()) {
             Map.Entry<String,Object> entry = (Map.Entry<String,Object>) o;
             String p = prefix == null ? entry.getKey() : (prefix + "." + entry.getKey());
             if (entry.getValue() instanceof Map) {
-                flat(properties, p, (Map) entry.getValue());
+                flat(properties, p, (Map) entry.getValue(), dereference);
             } else {
-                properties.put (p, "" + entry.getValue());
+                Object obj = entry.getValue();
+                properties.put (p, "" + (dereference && obj instanceof String ? Environment.get((String) obj) : entry.getValue()));
             }
         }
     }

@@ -419,6 +419,12 @@ and then add a file +src/dist/cfg/myconfig.cfg+, e.g.:
 debug=false
 ----
 
+
+[TIP]
+=====
+If the file name ends in `.yml`, Q2 handles it as a YAML file.
+=====
+
 The files in the +src/dist+ directory get copied to +build/install+ when
 we call +gradle installApp+ or to the +build/distributions+ when we call
 +gradle dist+ and are subject to property expansion.

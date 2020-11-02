@@ -21,11 +21,16 @@ package org.jpos.q2;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.core.SimpleConfiguration;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 public class SimpleConfigurationFactory implements ConfigurationFactory {
@@ -39,7 +44,11 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
             String file  = property.getAttributeValue("file");
             if (file != null)
                 try {
-                    props.load (new FileInputStream(new File(file)));
+                    if (file.endsWith(".yml")) {
+                        readYAML (props, file);
+                    } else {
+                        props.load (new FileInputStream(new File(file)));
+                    }
                 } catch (Exception ex) {
                     throw new ConfigurationException (file, ex);
                 }
@@ -61,5 +70,20 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
             }
         }
         return new SimpleConfiguration(props);
+    }
+
+    private void readYAML (Properties props, String fileName) throws IOException {
+        File f = new File(fileName);
+        if (f.exists() && f.canRead()) {
+            try (InputStream fis = new FileInputStream(f)) {
+                Yaml yaml = new Yaml();
+                Iterable<Object> document = yaml.loadAll(fis);
+                document.forEach(d -> {
+                    Environment.flat(props, null, (Map<String, Object>) d, true);
+                });
+            }
+        } else {
+            throw new IOException ("Invalid file '" + fileName + "'");
+        }
     }
 }
