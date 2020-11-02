@@ -21,7 +21,6 @@ dependencies {
     api libraries.bouncycastle
     api libraries.slf4j_api
     api libraries.hdrhistogram
-    api libraries.vfs2
 
     implementation libraries.osgi_core
     implementation libraries.javassist
