@@ -171,6 +171,7 @@ public class Environment implements Loggeable {
                 readCfg();
 
             extractSystemProperties();
+            propRef.get().put ("jpos.env", name);
         }
     }
 
@@ -248,7 +249,7 @@ public class Environment implements Loggeable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (name != null) {
-            sb.append(String.format("jpos.env=%s%n", name));
+            sb.append(String.format("[%s]%n", name));
             Properties properties = propRef.get();
             properties.stringPropertyNames().stream().
               forEachOrdered(prop -> { sb.append(String.format ("  %s=%s%n", prop, properties.getProperty(prop)));

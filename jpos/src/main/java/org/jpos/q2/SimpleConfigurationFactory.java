@@ -42,16 +42,18 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
             String name  = property.getAttributeValue("name");
             String value = property.getAttributeValue("value");
             String file  = property.getAttributeValue("file");
-            if (file != null)
+            if (file != null) {
+                file = Environment.get(file);
                 try {
                     if (file.endsWith(".yml")) {
-                        readYAML (props, file);
+                        readYAML(props, file);
                     } else {
-                        props.load (new FileInputStream(new File(file)));
+                        props.load(new FileInputStream(new File(file)));
                     }
                 } catch (Exception ex) {
-                    throw new ConfigurationException (file, ex);
+                    throw new ConfigurationException(file, ex);
                 }
+            }
             else if (name != null && value != null) {
                 Object obj = props.get (name);
                 if (obj instanceof String[]) {
