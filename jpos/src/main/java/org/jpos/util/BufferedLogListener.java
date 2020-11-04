@@ -23,6 +23,8 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class BufferedLogListener implements LogListener, Configurable, LogProducer {
     int maxSize;
@@ -30,6 +32,7 @@ public class BufferedLogListener implements LogListener, Configurable, LogProduc
     public static final int DEFAULT_SIZE = 100;
     List<LogListener> listeners = new ArrayList<LogListener>();
     final List<LogEvent> events = new ArrayList<LogEvent>();
+    private ScheduledExecutorService logService;
 
     public LogEvent log(LogEvent ev) {
         synchronized (events) {
@@ -50,8 +53,14 @@ public class BufferedLogListener implements LogListener, Configurable, LogProduc
     }
     public void addListener (final LogListener listener) {
         synchronized (events) {
-            for (LogEvent ev : events) {
-                listener.log(ev);
+            if (listeners.size() == 0)
+                logService = Executors.newScheduledThreadPool(1);
+            for (LogEvent evt : events) {
+                logService.execute(() -> {
+                    try {
+                        listener.log(evt);
+                    } catch (Throwable ignored) { }
+                });
             }
             listeners.add (listener);
         }
@@ -59,22 +68,30 @@ public class BufferedLogListener implements LogListener, Configurable, LogProduc
     public void removeListener (LogListener listener) {
         synchronized (events) {
             listeners.remove (listener);
+            if (listeners.size() == 0)
+                logService.shutdown();
         }
     }
 
     public void removeAllListeners() {
         synchronized (events) {
             listeners.clear();
+            logService.shutdown();
         }
     }
 
     public int getMaxSize() {
         return maxSize;
     }
+
     private void notifyListeners (LogEvent evt) {
         synchronized (events) {
             for (LogListener listener : listeners) {
-                listener.log(evt);
+                logService.execute(() -> {
+                    try {
+                        listener.log(evt);
+                    } catch (Throwable ignored) { }
+                });
             }
         }
     }
