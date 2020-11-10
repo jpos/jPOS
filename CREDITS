@@ -1,116 +1,116 @@
 Developers
 ----------
-Alejandro Pablo Revilla <apr@jpos.org>
-Daniel Fernando Larrosa <dflc@cs.com.uy>
-Victor A. Salaman <salaman@teknos.com>
-Eoin Flood <eoin.flood@orbiscom.com>
-Arun Kumar U <bksys@vsnl.com>
-Bharavi Gade <bharavi@mchek.com>
-Rajal Shah <rshah@enstage.com>
-Hani S. Kirollos <h.samuel@egyptianbanks.net>
-Jonathan O'Connor <Jonathan.O'Connor@xcom.de>
-Cameron Young <cn_young@attcanada.ca>
-Alireza Taherkordi <taherkordy@dpi2.dpi.net.ir>
-Alcarraz, Andrés <alcarraz@jpos.org>
-Alwyn Schoeman <alwyn.schoeman@gmail.com>
-Carlos Quiroz <carlos.quiroz@welho.com>
-Kris Leite <yahoo@imcsoftware.com>
-Luar Roji <luar@cs.com.uy>
-Dave Bergert <dbergert@users.sourceforge.net>
-Jeff Gordy <jgordy@users.sourceforge.net>
-Thomas L. Kjeldsen <tlk@mayi.dk>
-Adrian Marques <amarques@cabal.com.uy>
-Anthony Schexnaildre <anthony@duocash.com>
-Mark Salter <marksalter@dsl.pipex.com>
-Andy Orrock <orrock@olsdallas.com>
-Ansar Ansari <ansaransari@users.sourceforge.net>
-Tushar Vaish <tusharvaish@users.sourceforge.net>
-Manoj Krishna <manojkrishnak@users.sourceforge.net>
-Vishnu Pillai <vishnu_pillai@users.sourceforge.net>
-Robert Demski <drdemsey@gmail.com>
-John Overland <john@johnoverland.com>
-Mike Trank <mike@netcomsa.com>
-Jonathan Easterling <Jonathan_Easterling@s2systems.com>
-Matías Salvador <mhs@sisa.com.ar>
-Julien Moebs <julien.moebs@paybox.net>
-Zhiyu Tang <tangzhiyu@resoft.css.com.cn>
-Henry Chan <q8e192@yahoo.com>
-Jose Eduardo Leon <jeduardo@cimex.com.cu>
-Christopher Harris <Christopher.Harris@retail-logic.com>
-Bernardinus <bbernard@cbn.net.id>
-Niclas Hedhman <niclas@hedhman.org>
-Stefano Arosio <stefano.arosio@mobilmat.it>
-Robert Demski <drdemsey@gmail.com>
-Jeronimo Paoletti <jeronimo.paoletti@gmail.com>
-Onwuka "bugzee" Emeka <eonwuka@parkwayprojects.com>
-Federico Gonzalez <fgonbri@gmail.com>
-George McKinney <george@tantalus.com>
-Vincent Green <Vincent.Greene@amo.com>
-Leonard Thomas <leonard@rhinosystemsinc.com>
-Bassam Al Arab <b_arab@yahoo.com>
-Murtuza Chhil <chhil@hotmail.com>
-Mladen Mrkic <mmrkic@arius.co.yu>
-Hitesh Sharma <h_sha_2000@yahoo.com>
-Doron <doronf@xor-t.com>
-Chris Lemper <clemper@ponicard.com>
-Andrew R. Rothwell <arothwel@moneyswitch.net>
-Matthew Milliss <mmilliss@moneyswitch.net>
-Morgan Hankins <morganhankins@yahoo.com>
-Ozzy Espaillat <ozzypaji@gmail.com>
-Alexei Gladkov <alex@abgcard.ru>
-Alexander Fedorenko <afedoren@yahoo.com>
-Nathan Brice Mcafee <mcafeen@wam.umd.edu>
-Bülent Erdemir <buler@kocbank.com.tr>
-Nigel Smith <nsmith@moneyswitch.net>
-Paul W. Cowan <pcowan@usatech.com>
-Norbert Kroemeke <N.Kroemeke@actosoft.de>
-Robbie Robinson <robbierobinson@m2-corp.com>
-Sebastián Zeballos <sebaze@gmail.com>
-Alan Honczar <alan@appi.com.br>
-V.Goldin <vgoldin@gmail.com>
-Daniel Walsh <walsh94022@gmail.com>
-Alexander Yakovlev <alexander.v.yakovlev@gmail.com>
-Christopher Barham <cbarham@pobox.com>
-John Overland <john@johnoverland.com>
-Alexander Sahler <alexander.sahler@brodos.de>
-Leonardo Zabaleta <lzabaleta@uruware.com>
-Björn Östmyren <bjorn.ostmyren@netgiro.com>
-Damien Grandemange <damien.grandemange@gmail.com>
-Barham, Chris <cbarham@tnsi.com>
-Geoff Chiang <geoffchiang@gmail.com>
-Jason Smith <jsmith@marqeta.com>
-Will Currie <wscurrie@gmail.com>
-Graham Lea <graham@grahamlea.com>
+Alejandro Pablo Revilla <apr-at-jpos.org>
+Daniel Fernando Larrosa <dflc-at-cs.com.uy>
+Victor A. Salaman <salaman-at-teknos.com>
+Eoin Flood <eoin.flood-at-orbiscom.com>
+Arun Kumar U <bksys-at-vsnl.com>
+Bharavi Gade <bharavi-at-mchek.com>
+Rajal Shah <rshah-at-enstage.com>
+Hani S. Kirollos <h.samuel-at-egyptianbanks.net>
+Jonathan O'Connor <Jonathan.O'Connor-at-xcom.de>
+Cameron Young <cn_young-at-attcanada.ca>
+Alireza Taherkordi <taherkordy-at-dpi2.dpi.net.ir>
+Alcarraz, Andrés <alcarraz-at-jpos.org>
+Alwyn Schoeman <alwyn.schoeman-at-gmail.com>
+Carlos Quiroz <carlos.quiroz-at-welho.com>
+Kris Leite <yahoo-at-imcsoftware.com>
+Luar Roji <luar-at-cs.com.uy>
+Dave Bergert <dbergert-at-users.sourceforge.net>
+Jeff Gordy <jgordy-at-users.sourceforge.net>
+Thomas L. Kjeldsen <tlk-at-mayi.dk>
+Adrian Marques <amarques-at-cabal.com.uy>
+Anthony Schexnaildre <anthony-at-duocash.com>
+Mark Salter <marksalter-at-dsl.pipex.com>
+Andy Orrock <orrock-at-olsdallas.com>
+Ansar Ansari <ansaransari-at-users.sourceforge.net>
+Tushar Vaish <tusharvaish-at-users.sourceforge.net>
+Manoj Krishna <manojkrishnak-at-users.sourceforge.net>
+Vishnu Pillai <vishnu_pillai-at-users.sourceforge.net>
+Robert Demski <drdemsey-at-gmail.com>
+John Overland <john-at-johnoverland.com>
+Mike Trank <mike-at-netcomsa.com>
+Jonathan Easterling <Jonathan_Easterling-at-s2systems.com>
+Matías Salvador <mhs-at-sisa.com.ar>
+Julien Moebs <julien.moebs-at-paybox.net>
+Zhiyu Tang <tangzhiyu-at-resoft.css.com.cn>
+Henry Chan <q8e192-at-yahoo.com>
+Jose Eduardo Leon <jeduardo-at-cimex.com.cu>
+Christopher Harris <Christopher.Harris-at-retail-logic.com>
+Bernardinus <bbernard-at-cbn.net.id>
+Niclas Hedhman <niclas-at-hedhman.org>
+Stefano Arosio <stefano.arosio-at-mobilmat.it>
+Robert Demski <drdemsey-at-gmail.com>
+Jeronimo Paoletti <jeronimo.paoletti-at-gmail.com>
+Onwuka "bugzee" Emeka <eonwuka-at-parkwayprojects.com>
+Federico Gonzalez <fgonbri-at-gmail.com>
+George McKinney <george-at-tantalus.com>
+Vincent Green <Vincent.Greene-at-amo.com>
+Leonard Thomas <leonard-at-rhinosystemsinc.com>
+Bassam Al Arab <b_arab-at-yahoo.com>
+Murtuza Chhil <chhil-at-hotmail.com>
+Mladen Mrkic <mmrkic-at-arius.co.yu>
+Hitesh Sharma <h_sha_2000-at-yahoo.com>
+Doron <doronf-at-xor-t.com>
+Chris Lemper <clemper-at-ponicard.com>
+Andrew R. Rothwell <arothwel-at-moneyswitch.net>
+Matthew Milliss <mmilliss-at-moneyswitch.net>
+Morgan Hankins <morganhankins-at-yahoo.com>
+Ozzy Espaillat <ozzypaji-at-gmail.com>
+Alexei Gladkov <alex-at-abgcard.ru>
+Alexander Fedorenko <afedoren-at-yahoo.com>
+Nathan Brice Mcafee <mcafeen-at-wam.umd.edu>
+Bülent Erdemir <buler-at-kocbank.com.tr>
+Nigel Smith <nsmith-at-moneyswitch.net>
+Paul W. Cowan <pcowan-at-usatech.com>
+Norbert Kroemeke <N.Kroemeke-at-actosoft.de>
+Robbie Robinson <robbierobinson-at-m2-corp.com>
+Sebastián Zeballos <sebaze-at-gmail.com>
+Alan Honczar <alan-at-appi.com.br>
+V.Goldin <vgoldin-at-gmail.com>
+Daniel Walsh <walsh94022-at-gmail.com>
+Alexander Yakovlev <alexander.v.yakovlev-at-gmail.com>
+Christopher Barham <cbarham-at-pobox.com>
+John Overland <john-at-johnoverland.com>
+Alexander Sahler <alexander.sahler-at-brodos.de>
+Leonardo Zabaleta <lzabaleta-at-uruware.com>
+Björn Östmyren <bjorn.ostmyren-at-netgiro.com>
+Damien Grandemange <damien.grandemange-at-gmail.com>
+Barham, Chris <cbarham-at-tnsi.com>
+Geoff Chiang <geoffchiang-at-gmail.com>
+Jason Smith <jsmith-at-marqeta.com>
+Will Currie <wscurrie-at-gmail.com>
+Graham Lea <graham-at-grahamlea.com>
 Muhammad Edwin <edwinkun at gmail dot com>
-Chris Robson <crobson@tyro.com>
-Pugazhendhi T <pugazhendhiobs@gmail.com>
-Juan Pablo Torres <torresj@cabal.coop>
-Bjarne Henriksen <bjarne.henriksen@gmail.com>
-MichaÅ‚ Wiercioch <michal.wiercioch@gmail.com>
-Grzegorz Wieczorek <grw1@wp.pl>
-Martin Muguiro <muguiro@olsdallas.com>
-Bhavik Kumar <bhavikk@datacom.co.nz>
-Luca Menegus <luca.menegus@dbmsrl.com>
-Fernando Amaral <fernandoluizjr@gmail.com>
-Barzilai Spinak <barspi@transactility.com>
-Luiz Felipph <luizfelipph@gmail.com>
-Haris Kurniawan <haris.kurniawan@gmail.com>
-Sridhar Jena <sjena@aurusinc.com>
-Mouslih Abdelhakim <mouslih.abdelhakim@gmail.com>
-Gregorio Osorio <gregorioosorio16687@gmail.com>
-Igor Skljar <dn240884sii@gmail.com>
-Mauro Ferrari <ferrari@olsdallas.com>
-Ing. Josefina Revilla <jr@jpos.org>
-Ing. Santiago Revilla <spr@jpos.org>
-Mikolaj Sosna @gitmik
-Alex Charles <alexcharles@gmail.com>
-James Hilliard <james.hilliard1@gmail.com>
-Karl Muscat <karl.muscat@digitalpayments.group>
-Galih Lasahido <galih.lasahido@gmail.com>
-Arturo Volpe <avolpe@fintech.works>
-Matias Peyroti <mpeyroti@midinero.com.uy>
+Chris Robson <crobson-at-tyro.com>
+Pugazhendhi T <pugazhendhiobs-at-gmail.com>
+Juan Pablo Torres <torresj-at-cabal.coop>
+Bjarne Henriksen <bjarne.henriksen-at-gmail.com>
+MichaÅ‚ Wiercioch <michal.wiercioch-at-gmail.com>
+Grzegorz Wieczorek <grw1-at-wp.pl>
+Martin Muguiro <muguiro-at-olsdallas.com>
+Bhavik Kumar <bhavikk-at-datacom.co.nz>
+Luca Menegus <luca.menegus-at-dbmsrl.com>
+Fernando Amaral <fernandoluizjr-at-gmail.com>
+Barzilai Spinak <barspi-at-transactility.com>
+Luiz Felipph <luizfelipph-at-gmail.com>
+Haris Kurniawan <haris.kurniawan-at-gmail.com>
+Sridhar Jena <sjena-at-aurusinc.com>
+Mouslih Abdelhakim <mouslih.abdelhakim-at-gmail.com>
+Gregorio Osorio <gregorioosorio16687-at-gmail.com>
+Igor Skljar <dn240884sii-at-gmail.com>
+Mauro Ferrari <ferrari-at-olsdallas.com>
+Ing. Josefina Revilla <jr-at-jpos.org>
+Ing. Santiago Revilla <spr-at-jpos.org>
+Mikolaj Sosna -at-gitmik
+Alex Charles <alexcharles-at-gmail.com>
+James Hilliard <james.hilliard1-at-gmail.com>
+Karl Muscat <karl.muscat-at-digitalpayments.group>
+Galih Lasahido <galih.lasahido-at-gmail.com>
+Arturo Volpe <avolpe-at-fintech.works>
+Matias Peyroti <mpeyroti-at-midinero.com.uy>
 
 Contributors from other OpenSource projects
 -------------------------------------------
-RXTX: http://www.rxtx.org/ Trent Jarvi <trentjarvi@yahoo.com>
+RXTX: http://www.rxtx.org/ Trent Jarvi <trentjarvi-at-yahoo.com>
 
