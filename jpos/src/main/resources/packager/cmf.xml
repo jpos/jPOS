@@ -989,6 +989,16 @@
           name="Network Name"
           class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
+              id="52"
+              length="8"
+              name="New PIN Block"
+              class="org.jpos.iso.IFB_BINARY"/>
+      <isofield
+              id="53"
+              length="48"
+              name="KSN for new PIN Block"
+              class="org.jpos.iso.IFB_LLBINARY"/>
+      <isofield
           id="63"
           length="9999"
           name="Additional Data - reserved for private use"
