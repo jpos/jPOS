@@ -32,7 +32,7 @@ public class CVV extends SsmActionBase {
     @Override
     protected boolean checkUsage(CLIContext cli, String[] strings) {
         if (strings.length < 9) {
-            cli.println("Usage: cvv keyLength PVK-A-underLMK KeyCheck-A PVK-B-underLMK KeyCheck-B PAN EXP ServiceCode");
+            cli.println("Usage: cvv keyLength CVK-A-underLMK KeyCheck-A CVK-B-underLMK KeyCheck-B PAN EXP ServiceCode");
             return false;
         }
         return true;
@@ -40,11 +40,11 @@ public class CVV extends SsmActionBase {
 
     @Override
     protected void doCommand(CLIContext cli, JCESecurityModule sm, short keyLength, String[] args) throws SMException {
-        SecureDESKey pvkAUnderLmk = new SecureDESKey (keyLength, "CVK", args[2], args[3]);
-        SecureDESKey pvkBUnderLmk = new SecureDESKey (keyLength, "CVK", args[4], args[5]);
+        SecureDESKey cvkAUnderLmk = new SecureDESKey (keyLength, "CVK", args[2], args[3]);
+        SecureDESKey cvkBUnderLmk = new SecureDESKey (keyLength, "CVK", args[4], args[5]);
         String pan = args[6];
         String exp = args[7];
         String serviceCode = args[8];
-        sm.calculateCVV(pan, pvkAUnderLmk, pvkBUnderLmk, ISODate.parseISODate(exp + "01000000"), serviceCode);
+        sm.calculateCVV(pan, cvkAUnderLmk, cvkBUnderLmk, ISODate.parseISODate(exp + "01000000"), serviceCode);
     }
 }
