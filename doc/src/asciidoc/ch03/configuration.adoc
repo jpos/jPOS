@@ -102,6 +102,10 @@ The format `$sys{xxx}` de-reference just from system properties, and
 
 In the rare case where a value with the format `${...}` is required, the
 `$verb{${...}}` format (verbatim) can be used.
+
+In addition, a property named `xx.yy.zz` can be overriden by the environment
+variable `XX_YY_ZZ` (note that dots are replaced by underscore, and property
+name is converted to uppercase.
 =====
 
 The jPOS `Environment` has a ServiceLoader based plugin mechanism that support 

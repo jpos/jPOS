@@ -127,6 +127,7 @@ public class Environment implements Loggeable {
                     default:
                         if (gPrefix.length() == 0) {
                             r = System.getenv(gValue); // ENV has priority
+                            r = r == null ? System.getenv(gValue.replace('.', '_').toUpperCase()) : r;
                             r = r == null ? System.getProperty(gValue) : r; // then System.property
                             r = r == null ? propRef.get().getProperty(gValue) : r; // then jPOS --environment
                         } else {
@@ -249,7 +250,18 @@ public class Environment implements Loggeable {
             sb.append(String.format("[%s]%n", name));
             Properties properties = propRef.get();
             properties.stringPropertyNames().stream().
-              forEachOrdered(prop -> { sb.append(String.format ("  %s=%s%n", prop, properties.getProperty(prop)));
+              forEachOrdered(prop -> {
+                  String s = properties.getProperty(prop);
+                  String ds = Environment.get(String.format("${%s}", prop)); // de-referenced string
+                  StringBuilder buf = new StringBuilder(s);
+                  if (!s.equals(ds))
+                      buf.append (String.format (" (%s)", ds));
+
+                  sb.append(String.format ("  %s=%s%n",
+                    prop,
+                    buf.toString()
+                  )
+              );
             });
             if (serviceLoader.iterator().hasNext()) {
                 sb.append ("  providers:");
