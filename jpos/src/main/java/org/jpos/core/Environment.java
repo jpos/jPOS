@@ -32,9 +32,6 @@ public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
 
-    // older pattern, not supporting defaults, left for reference (delete if not needed anymore)
-    // private static Pattern valuePattern = Pattern.compile("^([\\w\\W]*)(\\$)([\\w\\W]*)?\\{([\\w\\W]+)\\}([\\w\\W]*)$");
-
     private static Pattern valuePattern = Pattern.compile("^(.*)(\\$)([\\w]*)\\{([-\\w.]+)(:(.+?))?\\}(.*)$");
     // make groups easier to read :-)                       11112222233333333   444444444455666665    7777
 
