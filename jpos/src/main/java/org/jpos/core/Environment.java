@@ -253,13 +253,11 @@ public class Environment implements Loggeable {
               forEachOrdered(prop -> {
                   String s = properties.getProperty(prop);
                   String ds = Environment.get(String.format("${%s}", prop)); // de-referenced string
-                  StringBuilder buf = new StringBuilder(s);
-                  if (!s.equals(ds))
-                      buf.append (String.format (" (%s)", ds));
-
-                  sb.append(String.format ("  %s=%s%n",
+                  boolean differ = !s.equals(ds);
+                  sb.append(String.format ("  %s=%s%s%n",
                     prop,
-                    buf.toString()
+                    s,
+                    differ ? " (*)" : ""
                   )
               );
             });

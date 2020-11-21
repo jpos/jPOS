@@ -44,12 +44,17 @@ public class OBF implements CLICommand {
     }
 
     private String obf(String s) {
+        SecureRandom sr = new SecureRandom();
         byte[] b = s.getBytes();
-        int i = Math.abs(new SecureRandom().nextInt());
+        byte[] e = new byte[Math.abs(sr.nextInt()) % 32];
+        int i = Math.abs(sr.nextInt());
+        sr.nextBytes(e);
         b = ISOUtil.xor(b, SystemSeed.getSeed(i, b.length));
-        ByteBuffer buf = ByteBuffer.allocate(b.length + 4);
+        ByteBuffer buf = ByteBuffer.allocate(b.length + e.length + 8);
         buf.putInt(i);
+        buf.putInt(b.length);
         buf.put(b);
+        buf.put(e);
         return Base64.getEncoder().encodeToString(buf.array());
     }
 }
