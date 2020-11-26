@@ -674,12 +674,7 @@ public class ISOUtil {
      * @return byte array
      */
     public static byte[] hex2byte (String s) {
-        if (s.length() % 2 == 0) {
-            return hex2byte (s.getBytes(CHARSET), 0, s.length() >> 1);
-        } else {
-        	// Padding left zero to make it even size #Bug raised by tommy
-        	return hex2byte("0"+s);
-        }
+        return hex2byte (s, CHARSET);
     }
     /**
      * Converts a hex string into a byte array
@@ -688,11 +683,12 @@ public class ISOUtil {
      * @return byte array
      */
     public static byte[] hex2byte (String s, Charset charset) {
+        if (charset == null) charset = CHARSET;
         if (s.length() % 2 == 0) {
             return hex2byte (s.getBytes(charset), 0, s.length() >> 1);
         } else {
         	// Padding left zero to make it even size #Bug raised by tommy
-        	return hex2byte("0"+s);
+        	return hex2byte("0"+s, charset);
         }
     }
 
