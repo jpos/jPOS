@@ -103,7 +103,7 @@ public class Track2 {
     }
 
     public static class Builder {
-        private static String TRACK2_EXPR = "^([0-9]{1,19})[=D]([0-9]{4})([0-9]{3})?([0-9]{4})?([0-9]{1,10})?$";
+        private static String TRACK2_EXPR = "^([0-9]{1,19})[=D]?([0-9]{4})?([0-9]{3})?([0-9]{4})?([0-9]{1,10})?$";
         private static Pattern TRACK2_PATTERN = Pattern.compile(TRACK2_EXPR);
         private String pan;
         private String exp;
@@ -155,9 +155,10 @@ public class Track2 {
             track = s;
             Matcher matcher = pattern.matcher(s);
             int cnt = matcher.groupCount();
-            if (matcher.find() && cnt >= 2) {
+            if (matcher.find() && cnt >= 1) {
                 pan = matcher.group(1);
-                exp = matcher.group(2);
+                if (cnt > 1)
+                    exp = matcher.group(2);
                 if (cnt > 2)
                     serviceCode = matcher.group(3);
                 if (cnt > 3)

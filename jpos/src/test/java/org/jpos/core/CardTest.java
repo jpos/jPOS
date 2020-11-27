@@ -42,6 +42,14 @@ public class CardTest  {
     }
 
     @Test
+    public void testShortTrack2() throws Throwable {
+        Track2 t2 = Track2.builder()
+                .track("4111111111111111=").build();
+
+        assertEquals("4111111111111111", t2.getPan(), "pan");
+    }
+    
+    @Test
     public void testTrack1() throws Throwable {
         Track1 t1 = Track1.builder()
           .track("%B4111111111111111^FAT ALBERT                ^201112345671234567890?").build();
