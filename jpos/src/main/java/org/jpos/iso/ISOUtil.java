@@ -674,11 +674,21 @@ public class ISOUtil {
      * @return byte array
      */
     public static byte[] hex2byte (String s) {
+        return hex2byte (s, CHARSET);
+    }
+    /**
+     * Converts a hex string into a byte array
+     * @param s source string (with Hex representation)
+     * @param charset character set to be used
+     * @return byte array
+     */
+    public static byte[] hex2byte (String s, Charset charset) {
+        if (charset == null) charset = CHARSET;
         if (s.length() % 2 == 0) {
-            return hex2byte (s.getBytes(), 0, s.length() >> 1);
+            return hex2byte (s.getBytes(charset), 0, s.length() >> 1);
         } else {
         	// Padding left zero to make it even size #Bug raised by tommy
-        	return hex2byte("0"+s);
+        	return hex2byte("0"+s, charset);
         }
     }
 
