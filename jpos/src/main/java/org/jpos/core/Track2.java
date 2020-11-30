@@ -103,7 +103,7 @@ public class Track2 {
     }
 
     public static class Builder {
-        private static String TRACK2_EXPR = "^([0-9]{1,19})[=D]?([0-9]{4})?([0-9]{3})?([0-9]{4})?([0-9]{1,10})?$";
+        private static String TRACK2_EXPR = "^([0-9]{1,19})[=D]([0-9]{4})?([0-9]{3})?([0-9]{4})?([0-9]{1,10})?$";
         private static Pattern TRACK2_PATTERN = Pattern.compile(TRACK2_EXPR);
         private String pan;
         private String exp;
