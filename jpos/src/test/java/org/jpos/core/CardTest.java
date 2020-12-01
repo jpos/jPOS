@@ -64,12 +64,12 @@ public class CardTest  {
     @Test
     public void testCard() throws Throwable {
         Track1 t1 = Track1.builder()
-          .track("%B4111111111111111^FAT ALBERT                ^201112345671234567890?").build();
+          .track("%B4111111111111111^FAT ALBERT                ^401112345671234567890?").build();
         Track2 t2 = Track2.builder()
-          .track("4111111111111111=201112345612345678901").build();
+          .track("4111111111111111=401112345612345678901").build();
         Card c = Card.builder()
           .pan("4111111111111111")
-          .exp("2011")
+          .exp("4011")
           .cvv("123")
           .cvv2("4567")
           .serviceCode("123")
@@ -104,10 +104,10 @@ public class CardTest  {
     @Test
     public void testISOMsg() throws Throwable {
         ISOMsg m = new ISOMsg("0800");
-        m.set(45, "%B4111111111111111^FAT ALBERT                ^201112345671234567890?");
-        m.set(35, "4111111111111111=201112345612345678901");
+        m.set(45, "%B4111111111111111^FAT ALBERT                ^401112345671234567890?");
+        m.set(35, "4111111111111111=401112345612345678901");
         m.set(2, "4111111111111111");
-        m.set(14, "2011");
+        m.set(14, "4011");
         Card c = Card.builder()
           .isomsg(m)
           .cvv2("123")
@@ -116,7 +116,7 @@ public class CardTest  {
 
         assertEquals(false, c.isExpired(new Date()), "not expired");
         assertEquals("4111111111111111", c.getPan(), "pan");
-        assertEquals("2011", c.getExp(), "exp");
+        assertEquals("4011", c.getExp(), "exp");
         assertEquals("123", c.getServiceCode(), "serviceCode");
         assertEquals("123", c.getTrack1().getServiceCode(), "t1.serviceCode");
         assertEquals("123", c.getTrack2().getServiceCode(), "t2.serviceCode");
@@ -131,12 +131,12 @@ public class CardTest  {
     public void testOverrideTrack1Pattern() throws Throwable {
         Track1 t1 = Track1.builder()
           .pattern(Pattern.compile("^[%]?[A-Z]+([0-9]{1,19})\\^([^\\^]{2,28})\\^([0-9]{4})([0-9]{3})([0-9]{4})?([0-9]{1,10})?"))
-          .track("B4111111111111111^ALPHAMERDADO PRUEBA         ^201110100026.000.003-6    000").build();
+          .track("B4111111111111111^ALPHAMERDADO PRUEBA         ^401110100026.000.003-6    000").build();
         Track2 t2 = Track2.builder()
-          .track("4111111111111111=201110145612345678901").build();
+          .track("4111111111111111=401110145612345678901").build();
         Card c = Card.builder()
           .pan("4111111111111111")
-          .exp("2011")
+          .exp("4011")
           .cvv("123")
           .cvv2("4567")
           .serviceCode("101")
