@@ -20,6 +20,7 @@ package org.jpos.security;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -57,11 +58,13 @@ public class SecureKeyBlockBuilder {
 
     protected static final int SIZE_HEADER_AES          = 8;
 
-    private final List<Character> versionsWith4CharacterMAC = Arrays.asList(
-         'A' // TR-31:2005 'A' Key block protected using the Key Variant Binding Method
-        ,'B' // TR-31:2010 'B' Key block protected using the Key Derivation Binding Method
-        ,'C' // TR-31:1010 'C' Key block protected using the Key Variant Binding Method
-        ,'0' // Proprietary '0' Key block protected using the 3-DES key
+    private final List<Character> versionsWith4CharacterMAC = new ArrayList<>(
+        Arrays.asList(
+             'A' // TR-31:2005 'A' Key block protected using the Key Variant Binding Method
+            ,'B' // TR-31:2010 'B' Key block protected using the Key Derivation Binding Method
+            ,'C' // TR-31:1010 'C' Key block protected using the Key Variant Binding Method
+            ,'0' // Proprietary '0' Key block protected using the 3-DES key
+        )
     );
 
     /**
