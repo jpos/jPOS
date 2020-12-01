@@ -16,8 +16,8 @@ ext {
         xmlunit: 'xmlunit:xmlunit:1.6',
         junit: 'org.junit.jupiter:junit-jupiter:5.7.0',
         bouncycastle: [
-            'org.bouncycastle:bcprov-jdk15on:1.66',
-            'org.bouncycastle:bcpg-jdk15on:1.66'
+            'org.bouncycastle:bcprov-jdk15on:1.67',
+            'org.bouncycastle:bcpg-jdk15on:1.67'
         ],
         hamcrest: 'org.hamcrest:hamcrest:2.2',
         sshd: 'org.apache.sshd:sshd-core:2.4.0',
