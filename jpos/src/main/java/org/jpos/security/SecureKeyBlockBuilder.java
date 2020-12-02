@@ -20,6 +20,7 @@ package org.jpos.security;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -53,15 +54,17 @@ public class SecureKeyBlockBuilder {
 
     protected static final int SIZE_OPTHDR_LENGTH       = 2;
 
-    protected static final int SIZE_HEADER_3DES         = 4;
+    protected static final int SIZE_HEADER_3DES         = 8;
 
-    protected static final int SIZE_HEADER_AES          = 8;
+    protected static final int SIZE_HEADER_AES          = 16;
 
-    private final List<Character> versionsWith4CharacterMAC = Arrays.asList(
-         'A' // TR-31:2005 'A' Key block protected using the Key Variant Binding Method
-        ,'B' // TR-31:2010 'B' Key block protected using the Key Derivation Binding Method
-        ,'C' // TR-31:1010 'C' Key block protected using the Key Variant Binding Method
-        ,'0' // Proprietary '0' Key block protected using the 3-DES key
+    private final List<Character> versionsWith8CharacterMAC = new ArrayList<>(
+        Arrays.asList(
+             'A' // TR-31:2005 'A' Key block protected using the Key Variant Binding Method
+            ,'B' // TR-31:2010 'B' Key block protected using the Key Derivation Binding Method
+            ,'C' // TR-31:2010 'C' Key block protected using the Key Variant Binding Method
+            ,'0' // Proprietary '0' Key block protected using the 3-DES key
+        )
     );
 
     /**
@@ -75,9 +78,9 @@ public class SecureKeyBlockBuilder {
     }
 
     /**
-     * Configure key block versions with 4 digits key block MAC.
+     * Configure key block versions with 8 digits key block MAC.
      * <p>
-     * Default 4 digits key block MAC versions are:
+     * Default 8 digits <i>(4 bytes)</i> key block MAC versions are:
      * <ul>
      *   <li>'A' TR-31:2005 Key block protected using the Key Variant Binding Method
      *   <li>'B' TR-31:2010 Key block protected using the Key Derivation Binding Method
@@ -87,17 +90,17 @@ public class SecureKeyBlockBuilder {
      * @param versions the string with versions characters
      * @return This builder instance
      */
-    public SecureKeyBlockBuilder with4characterMACVersions(String versions) {
-        Objects.requireNonNull(versions, "The versions with 4 digits MAC cannot be null");
-        versionsWith4CharacterMAC.clear();
+    public SecureKeyBlockBuilder with8characterMACVersions(String versions) {
+        Objects.requireNonNull(versions, "The versions with 8 digits MAC cannot be null");
+        versionsWith8CharacterMAC.clear();
         for (Character ch : versions.toCharArray())
-            versionsWith4CharacterMAC.add(ch);
+            versionsWith8CharacterMAC.add(ch);
 
         return this;
     }
 
     protected int getMACLength(SecureKeyBlock skb) {
-        if (versionsWith4CharacterMAC.contains(skb.getKeyBlockVersion()))
+        if (versionsWith8CharacterMAC.contains(skb.getKeyBlockVersion()))
             return SIZE_HEADER_3DES;
 
         return SIZE_HEADER_AES;

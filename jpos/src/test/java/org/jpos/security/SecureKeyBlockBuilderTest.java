@@ -31,15 +31,23 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class SecureKeyBlockBuilderTest {
 
-    private static final byte[] KEYBLOCK_MAC8 = ISOUtil.hex2byte("A1B2C3D4");
+    /**
+     * Test MAC with a length of 8 bytes.
+     */
+    private static final byte[] KEYBLOCK_MAC8 = ISOUtil.hex2byte("A1B2C3D4E5F60728");
 
-    private static final byte[] KEYBLOCK_MAC4 = ISOUtil.hex2byte("E1F2");
+    /**
+     * Test MAC with a length of 4 bytes.
+     */
+    private static final byte[] KEYBLOCK_MAC4 = ISOUtil.hex2byte("E1F22F1E");
 
     private static final byte[] KEYBLOCK_ENCKEY = ISOUtil.hex2byte("A9B8C7D6E5F49382");
 
     private static final String OPTHEADER_KS = "KS0ETest KS.12";
 
     private static final String OPTHEADER_KV = "KV08abcd";
+
+    Throwable thrown;
 
     SecureKeyBlockBuilder instance;
 
@@ -55,9 +63,9 @@ public class SecureKeyBlockBuilderTest {
      */
     @Test
     public void testBuildNull() {
-        assertThrows(NullPointerException.class, () -> {
-            instance.build(null);
-        });
+        thrown = assertThrows(NullPointerException.class,
+            () -> instance.build(null)
+        );
     }
 
     /**
@@ -65,10 +73,9 @@ public class SecureKeyBlockBuilderTest {
      */
     @Test
     public void testBuildToShort() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            String data = "10024V2TG17N00";
-            instance.build(data);
-        });
+        thrown = assertThrows(IllegalArgumentException.class,
+            () -> instance.build("10024V2TG17N00")
+        );
     }
 
     /**
@@ -76,11 +83,11 @@ public class SecureKeyBlockBuilderTest {
      */
     @Test
     public void testBuildWithoutEncKey() {
-        String data = "10024V2TG17N0033" + ISOUtil.hexString(KEYBLOCK_MAC8);
+        String data = "10032V2TG17N0033" + ISOUtil.hexString(KEYBLOCK_MAC8);
         ret = instance.build(data);
 
         assertEquals('1', ret.getKeyBlockVersion());
-        assertEquals(24, ret.getKeyBlockLength());
+        assertEquals(32, ret.getKeyBlockLength());
         assertEquals(KeyUsage.VISAPVV, ret.getKeyUsage());
         assertEquals(Algorithm.TDES, ret.getAlgorithm());
         assertEquals(ModeOfUse.GENONLY, ret.getModeOfUse());
@@ -116,11 +123,11 @@ public class SecureKeyBlockBuilderTest {
      */
     @Test
     public void testBuildWithoutWithoutEncKey() {
-        String data = "00020P0ANc4S0021" + ISOUtil.hexString(KEYBLOCK_MAC4);
+        String data = "00024P0ANc4S0021" + ISOUtil.hexString(KEYBLOCK_MAC4);
         ret = instance.build(data);
 
         assertEquals('0', ret.getKeyBlockVersion());
-        assertEquals(20, ret.getKeyBlockLength());
+        assertEquals(24, ret.getKeyBlockLength());
         assertEquals(KeyUsage.PINENC, ret.getKeyUsage());
         assertEquals(Algorithm.AES, ret.getAlgorithm());
         assertEquals(ModeOfUse.ANY, ret.getModeOfUse());
@@ -136,11 +143,11 @@ public class SecureKeyBlockBuilderTest {
      */
     @Test
     public void testBuildMAC8() {
-        String data = "00036V2RG17N0003" + ISOUtil.hexString(KEYBLOCK_ENCKEY) + ISOUtil.hexString(KEYBLOCK_MAC4);
+        String data = "00040V2RG17N0003" + ISOUtil.hexString(KEYBLOCK_ENCKEY) + ISOUtil.hexString(KEYBLOCK_MAC4);
         ret = instance.build(data);
 
         assertEquals('0', ret.getKeyBlockVersion());
-        assertEquals(36, ret.getKeyBlockLength());
+        assertEquals(40, ret.getKeyBlockLength());
         assertEquals(KeyUsage.VISAPVV, ret.getKeyUsage());
         assertEquals(Algorithm.RSA, ret.getAlgorithm());
         assertEquals(ModeOfUse.GENONLY, ret.getModeOfUse());
@@ -153,11 +160,11 @@ public class SecureKeyBlockBuilderTest {
 
     @Test
     public void testBuildWithOptHeaders() {
-        String data = "D0046V2TGc3E0233" + OPTHEADER_KV + OPTHEADER_KS + ISOUtil.hexString(KEYBLOCK_MAC8);
+        String data = "D0054V2TGc3E0233" + OPTHEADER_KV + OPTHEADER_KS + ISOUtil.hexString(KEYBLOCK_MAC8);
         ret = instance.build(data);
 
         assertEquals('D', ret.getKeyBlockVersion());
-        assertEquals(46, ret.getKeyBlockLength());
+        assertEquals(54, ret.getKeyBlockLength());
 
         assertNull(ret.getKeyBytes());
         assertArrayEquals(KEYBLOCK_MAC8, ret.getKeyBlockMAC());
@@ -175,11 +182,11 @@ public class SecureKeyBlockBuilderTest {
 
     @Test
     public void testBuildOptHeadersReversed() {
-        String data = "E0046V2TGc3E0233" + OPTHEADER_KS + OPTHEADER_KV + ISOUtil.hexString(KEYBLOCK_MAC8);
+        String data = "E0054V2TGc3E0233" + OPTHEADER_KS + OPTHEADER_KV + ISOUtil.hexString(KEYBLOCK_MAC8);
         ret = instance.build(data);
 
         assertEquals('E', ret.getKeyBlockVersion());
-        assertEquals(46, ret.getKeyBlockLength());
+        assertEquals(54, ret.getKeyBlockLength());
 
         assertNull(ret.getKeyBytes());
         assertArrayEquals(KEYBLOCK_MAC8, ret.getKeyBlockMAC());
@@ -200,7 +207,7 @@ public class SecureKeyBlockBuilderTest {
      */
     @Test
     public void testToKeyBlock() {
-        String data = "E0046V2TGc3E0233" + OPTHEADER_KS + OPTHEADER_KV + ISOUtil.hexString(KEYBLOCK_MAC8);
+        String data = "E0054V2TGc3E0233" + OPTHEADER_KS + OPTHEADER_KV + ISOUtil.hexString(KEYBLOCK_MAC8);
         ret = instance.build(data);
 
         assertEquals(data, instance.toKeyBlock(ret));
@@ -211,7 +218,7 @@ public class SecureKeyBlockBuilderTest {
      */
     @Test
     public void testToKeyBlockReversed() {
-        String data = "E0046V2TGc3E0233" + OPTHEADER_KV + OPTHEADER_KS + ISOUtil.hexString(KEYBLOCK_MAC8);
+        String data = "E0054V2TGc3E0233" + OPTHEADER_KV + OPTHEADER_KS + ISOUtil.hexString(KEYBLOCK_MAC8);
         ret = instance.build(data);
 
         assertEquals(data, instance.toKeyBlock(ret));
