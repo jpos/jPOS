@@ -65,7 +65,17 @@ public class SslChannelIntegrationTest {
 
         XMLChannel clientChannel = newClientChannel();
 
-        clientChannel.connect();
+        int tries = 10;
+        while (!clientChannel.isConnected() && tries > 0) {
+            try {
+                clientChannel.connect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            tries--;
+            Thread.sleep(10L);
+        }
+
         // need to push some traffic through to complete the SSL handshake
         clientChannel.send(new ISOMsg("0800"));
         assertThat(clientChannel.receive(), hasMti("0810"));
