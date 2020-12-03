@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import java.util.regex.Pattern;
 import org.hamcrest.text.MatchesPattern;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 public class ThreadPoolTest {
 
@@ -77,6 +78,7 @@ public class ThreadPoolTest {
     }
 
     @Test
+    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testRun1() throws Throwable {
         ThreadPool threadPool = new ThreadPool(1, 100);
         ISOUtil.sleep(50);
@@ -91,6 +93,7 @@ public class ThreadPoolTest {
     }
 
     @Test
+    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testRun2() throws Throwable {
         ThreadPool threadPool = new ThreadPool(1, 1);
         threadPool.execute(new TestTask());
