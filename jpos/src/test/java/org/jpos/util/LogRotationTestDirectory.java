@@ -19,18 +19,37 @@
 package org.jpos.util;
 
 import java.io.IOException;
+import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.PosixFileAttributes;
-import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.*;
+import java.util.List;
 import java.util.Set;
 
 public class LogRotationTestDirectory {
 
-    private Path directory;
+    private final Path directory;
 
-    public LogRotationTestDirectory(Path tempDir) {
+    private final FileStore filestore;
+
+    private AclFileAttributeView view;
+    private AclEntry denyEntry;
+
+    public LogRotationTestDirectory(Path tempDir) throws IOException {
         directory = tempDir;
+        filestore = Files.getFileStore(directory);
+        if (!filestore.supportsFileAttributeView(PosixFileAttributeView.class) &&
+                filestore.supportsFileAttributeView(AclFileAttributeView.class)) {
+            view = Files.getFileAttributeView(directory, AclFileAttributeView.class);
+            denyEntry = AclEntry
+                    .newBuilder()
+                    .setType(AclEntryType.DENY)
+                    .setPrincipal(view.getOwner())
+                    .setPermissions(AclEntryPermission.ADD_FILE)
+                    .setFlags(AclEntryFlag.FILE_INHERIT,
+                            AclEntryFlag.DIRECTORY_INHERIT)
+                    .build();
+        }
     }
 
     public synchronized Path getDirectory() {
@@ -42,14 +61,30 @@ public class LogRotationTestDirectory {
     }
 
     public void preventNewFileCreation() throws IOException {
-        Set<PosixFilePermission> perms = Files.readAttributes(directory, PosixFileAttributes.class).permissions();
-        perms.remove(PosixFilePermission.OWNER_EXECUTE);
-        Files.setPosixFilePermissions(directory, perms);
+        if (filestore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+            Set<PosixFilePermission> perms = Files.readAttributes(directory, PosixFileAttributes.class).permissions();
+            perms.remove(PosixFilePermission.OWNER_EXECUTE);
+            Files.setPosixFilePermissions(directory, perms);
+        } else if (filestore.supportsFileAttributeView(AclFileAttributeView.class)) {
+            List<AclEntry> acl = view.getAcl();
+            acl.add(0, denyEntry);
+            view.setAcl(acl);
+        } else {
+            throw new IOException("Directory " + directory.toString() + " has unsupported FileStore type: " + filestore.type());
+        }
     }
 
     public void allowNewFileCreation() throws IOException {
-        Set<PosixFilePermission> perms = Files.readAttributes(directory, PosixFileAttributes.class).permissions();
-        perms.add(PosixFilePermission.OWNER_EXECUTE);
-        Files.setPosixFilePermissions(directory, perms);
+        if (filestore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+            Set<PosixFilePermission> perms = Files.readAttributes(directory, PosixFileAttributes.class).permissions();
+            perms.add(PosixFilePermission.OWNER_EXECUTE);
+            Files.setPosixFilePermissions(directory, perms);
+        } else if (filestore.supportsFileAttributeView(AclFileAttributeView.class)) {
+            List<AclEntry> acl = view.getAcl();
+            acl.remove(denyEntry);
+            view.setAcl(acl);
+        } else {
+            throw new IOException("Directory " + directory.toString() + " has unsupported FileStore type: " + filestore.type());
+        }
     }
 }
