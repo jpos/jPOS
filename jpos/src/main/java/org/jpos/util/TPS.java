@@ -19,11 +19,12 @@
 package org.jpos.util;
 
 import java.io.PrintStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * TPS can be used to measure Transactions Per Second (or transactions during
@@ -48,17 +49,16 @@ import java.util.concurrent.locks.ReentrantLock;
 @SuppressWarnings("unused")
 public class TPS implements Loggeable {
     AtomicInteger count;
-    AtomicLong start;
+    Instant start;
     AtomicLong readings;
     int peak;
-    long peakWhen;
+    Instant peakWhen;
     static final long FROM_NANOS = 1000000L;
-    long period;
+    Duration period;
     float tps;
     float avg;
     Timer timer;
     boolean autoupdate;
-    final ReentrantLock lock = new ReentrantLock();
     protected long simulatedNanoTime = 0L;
 
     public TPS() {
@@ -80,11 +80,10 @@ public class TPS implements Loggeable {
     public TPS(final long period, boolean autoupdate) {
         super();
         count = new AtomicInteger(0);
-        start = new AtomicLong(0L);
+        start = Instant.now();
         readings = new AtomicLong(0L);
-        this.period = period;
+        this.period = Duration.ofMillis(period);
         this.autoupdate = autoupdate;
-        start.set(System.nanoTime() / FROM_NANOS);
         if (autoupdate) {
             timer = new Timer();
             timer.schedule(
@@ -117,30 +116,27 @@ public class TPS implements Loggeable {
     }
 
     public long getPeakWhen() {
-        return peakWhen;
+        return peakWhen.toEpochMilli();
     }
 
     /**
      * resets average and peak
      */
     public void reset() {
-        lock.lock();
-        try {
+        synchronized(this) {
             avg = 0f;
             peak = 0;
-            peakWhen = 0L;
+            peakWhen = Instant.EPOCH;
             readings.set(0L);
-        } finally {
-            lock.unlock();
         }
     }
 
     public long getPeriod() {
-        return period;
+        return period.toMillis();
     }
 
     public long getElapsed() {
-        return (System.nanoTime() / FROM_NANOS) - start.get();
+        return Duration.between(start, Instant.now()).toMillis();
     }
 
     public String toString() {
@@ -149,15 +145,12 @@ public class TPS implements Loggeable {
     }
 
     public void stop() {
-        lock.lock();
-        try {
+        synchronized(this) {
             if (timer != null) {
                 timer.cancel();
                 timer = null;
                 autoupdate = false; // can still use it in manual mode
             }
-        } finally {
-            lock.unlock();
         }
     }
 
@@ -170,43 +163,41 @@ public class TPS implements Loggeable {
     }
 
     private float calcTPS(long interval) {
-        lock.lock();
-        try {
-            tps = (float) period * count.get() / interval;
-            if (period != 1000L) {
-                tps = tps*1000L/period;
+        return calcTPS(Duration.ofMillis(interval));
+    }
+
+    private float calcTPS(Duration interval) {
+        synchronized(this) {
+            tps = (float) period.toNanos() * count.get() / interval.toNanos();
+            if (period.toNanos() != 1000000000L) {
+                tps = tps/period.toNanos();
             }
             long r = readings.getAndIncrement();
             avg = (r * avg + tps) / ++r;
             if (tps > peak) {
                 peak = Math.round(tps);
-                peakWhen = System.currentTimeMillis();
+                peakWhen = Instant.now();
             }
             count.set(0);
             return tps;
-        } finally {
-            lock.unlock();
         }
     }
 
     private float calcTPS() {
-        lock.lock();
-        try {
-            long now = getNanoTime() / FROM_NANOS;
-            long interval = now - start.get();
-            if (interval >= period) {
+        synchronized(this) {
+            Instant now = Instant.now();
+            Duration interval = Duration.between(start, now);
+            if (interval.compareTo(period) >= 0) {
                 calcTPS(interval);
-                start.set(now);
+                start = now;
             }
             return tps;
-        } finally {
-            lock.unlock();
         }
     }
 
     public void setSimulatedNanoTime(long simulatedNanoTime) {
         if (this.simulatedNanoTime == 0L)
-            start.set(simulatedNanoTime / FROM_NANOS);
+            start = Instant.ofEpochMilli(simulatedNanoTime / FROM_NANOS);
 
         this.simulatedNanoTime = simulatedNanoTime;
     }
