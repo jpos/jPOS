@@ -3,8 +3,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:5.1.2'
-        classpath 'org.owasp:dependency-check-gradle:5.3.2.1'
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:5.2.0'
+        classpath 'org.owasp:dependency-check-gradle:6.0.3'
     }
 }
 apply plugin: 'biz.aQute.bnd.builder'
