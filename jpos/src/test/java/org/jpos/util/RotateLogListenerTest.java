@@ -45,7 +45,7 @@ public class RotateLogListenerTest {
     private LogRotationTestDirectory logRotationTestDirectory;
 
     @BeforeEach
-    public void createLogRotateAbortsTestDir(@TempDir Path tempDir) {
+    public void createLogRotateAbortsTestDir(@TempDir Path tempDir) throws IOException {
         logRotationTestDirectory = new LogRotationTestDirectory(tempDir);
     }
 
