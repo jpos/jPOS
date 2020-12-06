@@ -14,7 +14,7 @@ subprojects {
     apply plugin: 'project-report'
 
     group = 'org.jpos'
-    version = '2.1.5'
+    version = '2.1.6-SNAPSHOT'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
