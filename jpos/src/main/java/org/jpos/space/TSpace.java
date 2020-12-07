@@ -20,6 +20,8 @@ package org.jpos.space;
 import org.jpos.util.Loggeable;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +41,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private static final long NRD_RESOLUTION = 500L;
     private static final int MAX_ENTRIES_IN_DUMP = 1000;
     private final Set[] expirables;
-    private long lastLongGC = System.currentTimeMillis();
+    private long lastLongGC = Instant.now().toEpochMilli();
 
     public TSpace () {
         super();
@@ -68,7 +70,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             throw new NullPointerException ("key=" + key + ", value=" + value);
         Object v = value;
         if (timeout > 0) {
-            v = new Expirable (value, System.currentTimeMillis() + timeout);
+            v = new Expirable (value, Instant.now().toEpochMilli() + timeout);
         }
         synchronized (this) {
             List l = getList(key);
@@ -111,13 +113,13 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     @Override
     public synchronized V in  (Object key, long timeout) {
         Object obj;
-        long now = System.currentTimeMillis();
-        long end = now + timeout;
+        Instant now = Instant.now();
+        long duration;
         while ((obj = inp (key)) == null &&
-                (now = System.currentTimeMillis()) < end)
+                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
         {
             try {
-                this.wait (end - now);
+                this.wait (timeout - duration);
             } catch (InterruptedException e) { }
         }
         return (V) obj;
@@ -137,13 +139,13 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     @Override
     public synchronized V rd  (Object key, long timeout) {
         Object obj;
-        long now = System.currentTimeMillis();
-        long end = now + timeout;
+        Instant now = Instant.now();
+        long duration;
         while ((obj = rdp (key)) == null &&
-                (now = System.currentTimeMillis()) < end)
+                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
         {
             try {
-                this.wait (end - now);
+                this.wait (timeout - duration);
             } catch (InterruptedException e) { }
         }
         return (V) obj;
@@ -161,13 +163,13 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     @Override
     public synchronized V nrd  (Object key, long timeout) {
         Object obj;
-        long now = System.currentTimeMillis();
-        long end = now + timeout;
+        Instant now = Instant.now();
+        long duration;
         while ((obj = rdp (key)) != null &&
-                (now = System.currentTimeMillis()) < end)
+                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
         {
             try {
-                this.wait (Math.min(NRD_RESOLUTION, end - now));
+                this.wait (Math.min(NRD_RESOLUTION, timeout - duration));
             } catch (InterruptedException ignored) { }
         }
         return (V) obj;
@@ -184,9 +186,9 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     public void gc () {
         gc(0);
-        if (System.currentTimeMillis() - lastLongGC > GCLONG) {
+        if (Instant.now().toEpochMilli() - lastLongGC > GCLONG) {
             gc(1);
-            lastLongGC = System.currentTimeMillis();
+            lastLongGC = Instant.now().toEpochMilli();
         }
     }
 
@@ -334,7 +336,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             throw new NullPointerException ("key=" + key + ", value=" + value);
         Object v = value;
         if (timeout > 0) {
-            v = new Expirable (value, System.currentTimeMillis() + timeout);
+            v = new Expirable (value, Instant.now().toEpochMilli() + timeout);
         }
         synchronized (this) {
             List l = getList(key);
@@ -371,7 +373,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             throw new NullPointerException ("key=" + key + ", value=" + value);
         Object v = value;
         if (timeout > 0) {
-            v = new Expirable (value, System.currentTimeMillis() + timeout);
+            v = new Expirable (value, Instant.now().toEpochMilli() + timeout);
         }
         synchronized (this) {
             List l = new LinkedList();
@@ -397,14 +399,14 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public boolean existAny (K[] keys, long timeout) {
-        long now = System.currentTimeMillis();
-        long end = now + timeout;
-        while ((now = System.currentTimeMillis()) < end) {
+        Instant now = Instant.now();
+        long duration;
+        while ((duration = Duration.between(now, Instant.now()).toMillis()) < timeout) {
             if (existAny (keys))
                 return true;
             synchronized (this) {
                 try {
-                    wait (end - now);
+                    wait (timeout - duration);
                 } catch (InterruptedException e) { }
             }
         }
@@ -527,7 +529,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
 
         public boolean isExpired () {
-            return expires < System.currentTimeMillis ();
+            return expires < Instant.now().toEpochMilli();
         }
 
         @Override
