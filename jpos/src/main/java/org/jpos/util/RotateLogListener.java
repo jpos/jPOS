@@ -40,7 +40,7 @@ import java.util.TimerTask;
  * @since jPOS 1.2
  */
 public class RotateLogListener extends SimpleLogListener 
-    implements Configurable, Destroyable
+    implements AutoCloseable, Configurable, Destroyable
 {
     FileOutputStream f;
     String logName = null;
