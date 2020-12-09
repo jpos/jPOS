@@ -18,6 +18,7 @@
 
 package org.jpos.q2.iso;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,8 +35,13 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @SuppressWarnings("unchecked")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -48,16 +54,19 @@ public class QMUXTestCase implements ISOResponseListener {
     static Object receivedHandback;
 
     @BeforeAll
-    public static void setUp() throws Exception {
+    public static void setUp(@TempDir Path deployDir) throws IOException {
         sp = SpaceFactory.getSpace();
-        q2 = new Q2("build/resources/test/org/jpos/q2/iso");
+        Files.walk(Paths.get("build/resources/test/org/jpos/q2/iso")).forEach( s -> {
+            try {
+                Files.copy(s, deployDir.resolve(s.getFileName()), REPLACE_EXISTING);
+            } catch (IOException e) {
+                fail();
+            }
+        });
+        q2 = new Q2(deployDir.toString());
         q2.start();
-        Thread.sleep(2000L);
-        try {
-            mux = NameRegistrar.get("mux.mux");
-        } catch (NameRegistrar.NotFoundException e) {
-            fail("MUX not found");
-        }
+        mux = NameRegistrar.get("mux.mux", 2000L);
+        assertNotNull(mux);
         receivedHandback = null;
     }
 
