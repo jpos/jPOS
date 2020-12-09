@@ -57,10 +57,12 @@ public class QMUXTestCase implements ISOResponseListener {
     public static void setUp(@TempDir Path deployDir) throws IOException {
         sp = SpaceFactory.getSpace();
         Files.walk(Paths.get("build/resources/test/org/jpos/q2/iso")).forEach( s -> {
-            try {
-                Files.copy(s, deployDir.resolve(s.getFileName()), REPLACE_EXISTING);
-            } catch (IOException e) {
-                fail();
+            if (Files.isRegularFile(s)) {
+                try {
+                    Files.copy(s, deployDir.resolve(s.getFileName()), REPLACE_EXISTING);
+                } catch (IOException e) {
+                    fail();
+                }
             }
         });
         q2 = new Q2(deployDir.toString());

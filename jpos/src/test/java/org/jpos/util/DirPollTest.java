@@ -388,8 +388,16 @@ public class DirPollTest {
 
     @Test
     public void testRetry(@TempDir Path deployDir) throws IOException {
-        Files.copy(Paths.get("build/resources/test/org/jpos/util/dirpoll_retry"), deployDir, REPLACE_EXISTING);
-        Q2 q2 = new Q2(deployDir.resolve("deploy").toString());
+        Files.walk(Paths.get("build/resources/test/org/jpos/util/dirpoll_retry/deploy")).forEach( s -> {
+            if (Files.isRegularFile(s)) {
+                try {
+                    Files.copy(s, deployDir.resolve(s.getFileName()), REPLACE_EXISTING);
+                } catch (IOException e) {
+                    fail();
+                }
+            }
+        });
+        Q2 q2 = new Q2(deployDir.toString());
         q2.start();
         ISOUtil.sleep(5000L);
         createTestFile(deployDir.resolve("request/REQ1"), "RETRYME");
