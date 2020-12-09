@@ -26,11 +26,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("unchecked")
 public class TransactionManagerTestCase {
@@ -40,9 +42,17 @@ public class TransactionManagerTestCase {
     public static String QUEUE_EMPTY = "TXNMGRTEST.EMPTY";
 
     @BeforeEach
-    public void setUp (@TempDir Path deployDir) throws Exception {
+    public void setUp (@TempDir Path deployDir) throws IOException {
         sp = SpaceFactory.getSpace("tspace:txnmgrtest");
-        Files.copy(Paths.get("build/resources/test/org/jpos/transaction"), deployDir, REPLACE_EXISTING);
+        Files.walk(Paths.get("build/resources/test/org/jpos/transaction")).forEach( s -> {
+            if (Files.isRegularFile(s)) {
+                try {
+                    Files.copy(s, deployDir.resolve(s.getFileName()), REPLACE_EXISTING);
+                } catch (IOException e) {
+                    fail();
+                }
+            }
+        });
         q2 = new Q2(deployDir.toString());
         q2.start();
     }
