@@ -21,6 +21,7 @@ package org.jpos.util;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -53,6 +54,7 @@ public class ThroughputControlTestCase {
         );
     }
     @Test
+    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testFifty () throws Exception {
         ThroughputControl tc = new ThroughputControl (10, 1000);
         Instant start = Instant.now();
@@ -70,6 +72,7 @@ public class ThroughputControlTestCase {
         );
     }
     @Test
+    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testDualPeriod () throws Exception {
         ThroughputControl tc = new ThroughputControl (
             new int[] { 100, 150 }, 

@@ -30,6 +30,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
@@ -167,6 +168,7 @@ public class JDBMSpaceTestCase {
         assertNull (sp.rdp ("PUSH"));
     }
     @Test
+    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testOutExpire() {
         sp.out ("OUT", "ONE", 1000L);
         sp.out ("OUT", "TWO", 2000L);
@@ -182,6 +184,7 @@ public class JDBMSpaceTestCase {
         assertNull (sp.rdp ("OUT"));
     }
     @Test
+    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testPushExpire() {
         sp.push ("PUSH", "FOUR", 4000L);
         sp.push ("PUSH", "THREE", 3000L);

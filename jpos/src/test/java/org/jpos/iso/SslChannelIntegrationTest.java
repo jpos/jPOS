@@ -21,6 +21,7 @@ package org.jpos.iso;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.EOFException;
@@ -82,12 +83,9 @@ public class SslChannelIntegrationTest {
 
         isoServer.shutdown();
 
-        try {
+        assertThrows(EOFException.class, () -> {
             clientChannel.receive();
-            fail("clientChannel should be closed");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(EOFException.class)));
-        }
+        }, "clientChannel should be closed");
     }
 
     private XMLChannel newClientChannel() throws IOException, ISOException {
