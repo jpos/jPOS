@@ -26,19 +26,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Profiler;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 
 @SuppressWarnings("unchecked")
 public class JDBMSpaceTestCase {
     public static final int COUNT = 100;
     JDBMSpace<String,Object> sp;
     @BeforeEach
-    public void setUp (@TempDir Path filename) {
-        sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace ("jdbm-space-test", filename.toString());
+    public void setUp (TestInfo testInfo, @TempDir Path filename) {
+        sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace (testInfo.getDisplayName(), filename.toString());
+        sp.run();
+    }
+    @AfterEach
+    public void tearDown () {
+        sp.close();
     }
     @Test
     public void testSimpleOut() throws Exception {
@@ -226,12 +235,12 @@ public class JDBMSpaceTestCase {
                 sp.out ("KA", Boolean.TRUE);
             }
         }.start();
-        long now = System.currentTimeMillis();
+        Instant now = Instant.now();
         assertTrue (
             sp.existAny(new String[]{"KA", "KB"}, 2000L),
             "existAnyWithTimeout ([KA,KB], delay)"
         );
-        long elapsed = System.currentTimeMillis() - now;
+        long elapsed = Duration.between(now, Instant.now()).toMillis();
         assertTrue (elapsed > 900L, "delay was > 1000");
         assertNotNull (sp.inp("KA"), "Entry should not be null");
     }
