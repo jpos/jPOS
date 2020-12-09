@@ -22,41 +22,44 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.Instant;
+
 
 public class ThroughputControlTestCase {
     @Test
     public void testSingleThread () throws Exception {
         ThroughputControl tc = new ThroughputControl (2, 1000);
-        long start = System.currentTimeMillis();
+        Instant start = Instant.now();
         assertTrue (tc.control() == 0L, "Control should return 0L");
         assertTrue (
-            System.currentTimeMillis() - start < 1000L,
-            "Elapsed time should be less than one second"
+                Duration.between(start, Instant.now()).toMillis() < 1000L,
+                "Elapsed time should be less than one second"
         );
         tc.control();
         assertTrue (
-            System.currentTimeMillis() - start < 1000L,
-            "Elapsed time should still be less than one second"
+                Duration.between(start, Instant.now()).toMillis() < 1000L,
+                "Elapsed time should still be less than one second"
         );
         tc.control();
         assertTrue (
-            System.currentTimeMillis() - start > 1000L,
-            "Elapsed time should be greater than one second"
+                Duration.between(start, Instant.now()).toMillis() > 1000L,
+                "Elapsed time should be greater than one second"
         );
         tc.control();
         assertTrue (
-            System.currentTimeMillis() - start < 2000L,
-            "second transaction should be less than two seconds"
+                Duration.between(start, Instant.now()).toMillis() < 2000L,
+                "second transaction should be less than two seconds"
         );
     }
     @Test
     public void testFifty () throws Exception {
         ThroughputControl tc = new ThroughputControl (10, 1000);
-        long start = System.currentTimeMillis();
+        Instant start = Instant.now();
         for (int i=0; i<50; i++)
             tc.control();
 
-        long elapsed =  System.currentTimeMillis() - start;
+        long elapsed = Duration.between(start, Instant.now()).toMillis();
         assertTrue (
             elapsed >= 4000L,
             "50 transactions should take at least 4 seconds but took " + elapsed
@@ -72,11 +75,11 @@ public class ThroughputControlTestCase {
             new int[] { 100, 150 }, 
             new int[] { 1000, 5000 }
         );
-        long start = System.currentTimeMillis();
+        Instant start = Instant.now();
         for (int i=0; i<100; i++)
             tc.control();
 
-        long elapsed =  System.currentTimeMillis() - start;
+        long elapsed = Duration.between(start, Instant.now()).toMillis();
         assertTrue (
             elapsed <= 1000L,
             "100 initial transactions should take more than about one second but took " + elapsed
@@ -84,7 +87,7 @@ public class ThroughputControlTestCase {
         for (int i=0; i<100; i++)
             tc.control();
 
-        elapsed =  System.currentTimeMillis() - start;
+        elapsed = Duration.between(start, Instant.now()).toMillis();
         assertTrue (
             elapsed > 5000L,
             "100 additional transactions should take more than five seconds but took " + elapsed
@@ -93,7 +96,7 @@ public class ThroughputControlTestCase {
     @Test
     public void testMultiThread() throws Exception {
         final ThroughputControl tc = new ThroughputControl (2, 1000);
-        long start = System.currentTimeMillis();
+        Instant start = Instant.now();
         Thread[] t = new Thread[10];
         for (int i=0; i<10; i++) {
             t[i] = new Thread() {
@@ -106,7 +109,7 @@ public class ThroughputControlTestCase {
         for (int i=0; i<10; i++) {
             t[i].join();
         }
-        long elapsed =  System.currentTimeMillis() - start;
+        long elapsed = Duration.between(start, Instant.now()).toMillis();
         assertTrue (
             elapsed > 4000L && elapsed < 5000L,
             "10 transactions should take about four seconds but took " + elapsed
