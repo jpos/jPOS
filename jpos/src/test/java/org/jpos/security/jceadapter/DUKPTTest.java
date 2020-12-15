@@ -119,6 +119,7 @@ public class DUKPTTest {
         test_DUKPT ("test-bdk", new KeySerialNumber ("987654", "3210", "EFFA00"), ISOUtil.hex2byte ("849763B43E5F9CFF"), PAN,true);
         test_DUKPT ("test-bdk", new KeySerialNumber ("987654", "3210", "EFFC00"), ISOUtil.hex2byte ("DEFC6F09F8927B71"), PAN,true);
         test_DUKPT ("test-bdk", new KeySerialNumber ("987654", "3210", "F00000"), ISOUtil.hex2byte ("73EC88AD0AC5830E"), PAN,true);
+        test_DUKPT ("test-bdk", new KeySerialNumber ("9876543210", "0000", "400002"), ISOUtil.hex2byte ("AEF0F261B1222EB1"), PAN,true);
     }
 
     @Test

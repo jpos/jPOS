@@ -2309,9 +2309,9 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
 
         byte[] curkey = calculateInitialKey(ksn, bdk, true);
 
-        byte[] smidr = ISOUtil.hex2byte(
-                ksn.getBaseKeyID() + ksn.getDeviceID() + ksn.getTransactionCounter()
-        );
+        String sn = ksn.getBaseKeyID() + ksn.getDeviceID() + ksn.getTransactionCounter();
+        if (sn.length() > 16) sn = sn.substring(sn.length()-16);
+        byte[] smidr = ISOUtil.hex2byte(sn);
         byte[] reg3 = ISOUtil.hex2byte(ksn.getTransactionCounter());
         reg3 = and(reg3, _1FFFFF);
         byte[] shiftr = _100000;
