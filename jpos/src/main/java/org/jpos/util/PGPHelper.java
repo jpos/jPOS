@@ -190,7 +190,7 @@ public class PGPHelper {
                     if (sig.verify()) {
                         rc &= 0x7FFFF;
                         ByteArrayInputStream bais = new ByteArrayInputStream(out.toByteArray());
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(bais));
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(bais, StandardCharsets.UTF_8));
                         String s;
                         Pattern p1 = Pattern.compile("\\s(valid through:)\\s(\\d\\d\\d\\d-\\d\\d-\\d\\d)?", Pattern.CASE_INSENSITIVE);
                         Pattern p2 = Pattern.compile("\\s(instances:)\\s([\\d]{0,4})?", Pattern.CASE_INSENSITIVE);
@@ -233,15 +233,16 @@ public class PGPHelper {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (InputStream is = getLicenseeStream()) {
             if (is != null) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                PrintStream p = new PrintStream(baos);
-                p.println();
-                p.println();
-                while (br.ready())
-                    p.println(br.readLine());
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                    PrintStream p = new PrintStream(baos, false, StandardCharsets.UTF_8.name());
+                    p.println();
+                    p.println();
+                    while(br.ready())
+                      p.println(br.readLine());
+                }
             }
         }
-        return baos.toString();
+        return baos.toString(StandardCharsets.UTF_8.name());
     }
     public static String getLicenseeHash() throws IOException, NoSuchAlgorithmException {
         return ISOUtil.hexString(hash(getLicensee()));
