@@ -44,7 +44,6 @@ import java.util.concurrent.TimeUnit;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Log;
 import org.jpos.util.Loggeable;
-import org.jpos.util.Profiler;
 
 /**
  * BerkeleyDB Jave Edition based persistent space implementation
@@ -176,12 +175,12 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     public synchronized V in (Object key, long timeout) {
         Object obj;
         Instant now = Instant.now();
-        long duration;
+        Duration duration;
         while ((obj = inp (key)) == null &&
-                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
+                Duration.ofMillis(timeout).compareTo(duration = Duration.between(now, Instant.now())) > 0)
         {
             try {
-                this.wait (timeout - duration);
+                this.wait (Math.max(Duration.ofMillis(timeout).minus(duration).toMillis(), 1L));
             } catch (InterruptedException ignored) { }
         }
         return (V) obj;
@@ -201,12 +200,12 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     public synchronized V rd  (Object key, long timeout) {
         Object obj;
         Instant now = Instant.now();
-        long duration;
+        Duration duration;
         while ((obj = rdp (key)) == null &&
-                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
+                Duration.ofMillis(timeout).compareTo(duration = Duration.between(now, Instant.now())) > 0)
         {
             try {
-                this.wait (timeout - duration);
+                this.wait (Math.max(Duration.ofMillis(timeout).minus(duration).toMillis(), 1L));
             } catch (InterruptedException ignored) { }
         }
         return (V) obj;
@@ -221,12 +220,12 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     public synchronized V nrd  (Object key, long timeout) {
         Object obj;
         Instant now = Instant.now();
-        long duration;
+        Duration duration;
         while ((obj = rdp (key)) != null &&
-                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
+                Duration.ofMillis(timeout).compareTo(duration = Duration.between(now, Instant.now())) > 0)
         {
             try {
-                this.wait (Math.min(NRD_RESOLUTION, timeout - duration));
+                this.wait (Math.min(NRD_RESOLUTION, Math.max(Duration.ofMillis(timeout).minus(duration).toMillis(), 1L)));
             } catch (InterruptedException ignored) { }
         }
         return (V) obj;
@@ -250,13 +249,13 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     }
     public boolean existAny (Object[] keys, long timeout) {
         Instant now = Instant.now();
-        long duration;
-        while ((duration = Duration.between(now, Instant.now()).toMillis()) < timeout) {
+        Duration duration;
+        while (Duration.ofMillis(timeout).compareTo(duration = Duration.between(now, Instant.now())) > 0) {
             if (existAny (keys))
                 return true;
             synchronized (this) {
                 try {
-                    wait (timeout - duration);
+                    wait (Math.max(Duration.ofMillis(timeout).minus(duration).toMillis(), 1L));
                 } catch (InterruptedException ignored) { }
             }
         }

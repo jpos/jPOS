@@ -20,6 +20,7 @@ package org.jpos.iso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -131,7 +132,7 @@ public class ISODate {
      * @return Date
      */
     public static Date parseISODate (String d) {
-        return parseISODate (d, System.currentTimeMillis());
+        return parseISODate (d, Instant.now().toEpochMilli());
     }
 
     /**
@@ -143,7 +144,7 @@ public class ISODate {
      * @return Date
      */
     public static Date parseISODate (String d, TimeZone timeZone) {
-        return parseISODate (d, System.currentTimeMillis(), timeZone);
+        return parseISODate (d, Instant.now().toEpochMilli(), timeZone);
     }
 
     /**

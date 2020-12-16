@@ -27,6 +27,7 @@ import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -136,7 +137,7 @@ public class MultiSessionChannelAdaptor
                     }
                     ISOMsg m = channel.receive ();
                     rx++;
-                    lastTxn = System.currentTimeMillis();
+                    lastTxn = Instant.now();
                     if (timeout > 0)
                         sp.out (out, m, timeout);
                     else

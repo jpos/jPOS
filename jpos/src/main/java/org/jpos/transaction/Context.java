@@ -26,6 +26,8 @@ import org.jpos.util.*;
 import org.jpos.rc.Result;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -157,13 +159,13 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     @SuppressWarnings("unchecked")
     public synchronized <T> T get (Object key, long timeout) {
         T obj;
-        long now = System.currentTimeMillis();
-        long end = now + timeout;
+        Instant now = Instant.now();
+        long duration;
         while ((obj = (T) map.get (key)) == null &&
-                (now = System.currentTimeMillis()) < end)
+                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
         {
             try {
-                this.wait (end - now);
+                this.wait (Math.max(timeout - duration, 1L));
             } catch (InterruptedException ignored) { }
         }
         return obj;
