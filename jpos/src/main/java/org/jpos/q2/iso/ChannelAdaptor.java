@@ -37,6 +37,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.SocketTimeoutException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -55,7 +57,7 @@ public class ChannelAdaptor
     boolean ignoreISOExceptions = false;
     boolean writeOnly = false;
     int rx, tx, connects;
-    long lastTxn = 0l;
+    Instant lastTxn = Instant.EPOCH;
     long timeout = 0l;
     boolean waitForWorkersOnStop;
     private Thread receiver;
@@ -331,7 +333,7 @@ public class ChannelAdaptor
                         continue;
                     ISOMsg m = channel.receive ();
                     rx++;
-                    lastTxn = System.currentTimeMillis();
+                    lastTxn = Instant.now();
                     if (timeout > 0)
                         sp.out (out, m, timeout);
                     else
@@ -431,7 +433,7 @@ public class ChannelAdaptor
 
     public void resetCounters () {
         rx = tx = connects = 0;
-        lastTxn = 0l;
+        lastTxn = Instant.EPOCH;
     }
     public String getCountersAsString () {
         StringBuffer sb = new StringBuffer();
@@ -440,9 +442,9 @@ public class ChannelAdaptor
         append (sb, ", connects=", connects);
         sb.append (", last=");
         sb.append(lastTxn);
-        if (lastTxn > 0) {
+        if (!lastTxn.equals(Instant.EPOCH)) {
             sb.append (", idle=");
-            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append(Duration.between(lastTxn, Instant.now()).toMillis());
             sb.append ("ms");
         }
         return sb.toString();
@@ -457,10 +459,10 @@ public class ChannelAdaptor
         return connects;
     }
     public long getLastTxnTimestampInMillis() {
-        return lastTxn;
+        return lastTxn.toEpochMilli();
     }
     public long getIdleTimeInMillis() {
-        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
+        return !lastTxn.equals(Instant.EPOCH) ? Duration.between(lastTxn, Instant.now()).toMillis() : -1L;
     }
     public String getSocketFactory() {
         return getProperty(getProperties ("channel"), "socketFactory");

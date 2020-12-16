@@ -25,9 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.regex.Pattern;
 import org.hamcrest.text.MatchesPattern;
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 public class ThreadPoolTest {
 
@@ -78,7 +80,6 @@ public class ThreadPoolTest {
     }
 
     @Test
-    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testRun1() throws Throwable {
         ThreadPool threadPool = new ThreadPool(1, 100);
         ISOUtil.sleep(50);
@@ -93,22 +94,22 @@ public class ThreadPoolTest {
     }
 
     @Test
-    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testRun2() throws Throwable {
         ThreadPool threadPool = new ThreadPool(1, 1);
         threadPool.execute(new TestTask());
         threadPool.execute(new TestTask());
+        Instant now = Instant.now();
         ISOUtil.sleep(50);
         assertEquals(2, threadPool.getJobCount(), "threadPool.getJobCount()");
         assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
         assertEquals(1, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
         assertEquals(1, threadPool.getPendingCount(), "threadPool.getPendingCount()");
-        ISOUtil.sleep(500);
+        ISOUtil.sleep(700 - Duration.between(now, Instant.now()).toMillis());
         assertEquals(2, threadPool.getJobCount(), "threadPool.getJobCount()");
         assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
         assertEquals(0, threadPool.getPendingCount(), "threadPool.getPendingCount()");
         assertEquals(1, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");
-        ISOUtil.sleep(550);
+        ISOUtil.sleep(1200 - Duration.between(now, Instant.now()).toMillis());
         assertEquals(2, threadPool.getJobCount(), "threadPool.getJobCount()");
         assertEquals(1, threadPool.getPoolSize(), "threadPool.getPoolSize()");
         assertEquals(1, threadPool.getMaxPoolSize(), "threadPool.getMaxPoolSize()");

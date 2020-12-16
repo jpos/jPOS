@@ -35,7 +35,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -234,7 +233,6 @@ public class TSpaceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testNotifyReaders() {
         final Space sp = new TSpace();
         final AtomicInteger ai = new AtomicInteger(10);
