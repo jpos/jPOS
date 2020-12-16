@@ -24,6 +24,7 @@ import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.PrivilegedAction;
 
 /**
  * Q2 Class Loader (scans deploy/lib directory for new jars)
@@ -74,7 +75,9 @@ public class QClassLoader
         QClassLoader loader;
         if (server.isRegistered (loaderName)) {
             server.unregisterMBean (loaderName);
-            loader = new QClassLoader (server, libDir, loaderName, getParent());
+            loader = java.security.AccessController.doPrivileged(
+              (PrivilegedAction<QClassLoader>) () -> new QClassLoader(server, libDir, loaderName, getParent())
+            );
         } else
             loader = this;
 
