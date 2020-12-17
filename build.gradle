@@ -1,3 +1,4 @@
+import org.gradle.internal.os.OperatingSystem
 apply from: 'jpos/libraries.gradle'
 
 allprojects {
@@ -131,7 +132,10 @@ subprojects {
             events "passed", "skipped", "failed"
         }
         systemProperty 'user.language', 'en'
-        maxParallelForks = Runtime.runtime.availableProcessors()
+        if (!(System.getenv("GITHUB_ACTIONS") != null && System.getenv("GITHUB_ACTIONS") == "true" &&
+                (OperatingSystem.current().isMacOsX() || OperatingSystem.current().isWindows()))) {
+            maxParallelForks = Runtime.runtime.availableProcessors()
+        }
     }
     jacoco {
         toolVersion = '0.8.6'
