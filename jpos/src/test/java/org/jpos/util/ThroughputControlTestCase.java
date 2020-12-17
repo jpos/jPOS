@@ -21,7 +21,6 @@ package org.jpos.util;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -54,7 +53,6 @@ public class ThroughputControlTestCase {
         );
     }
     @Test
-    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testFifty () throws Exception {
         ThroughputControl tc = new ThroughputControl (10, 1000);
         Instant start = Instant.now();
@@ -67,12 +65,11 @@ public class ThroughputControlTestCase {
             "50 transactions should take at least 4 seconds but took " + elapsed
         );
         assertTrue (
-            elapsed < 4300L,
+            elapsed < 4500L,
             "50 transactions shouldn't take more than aprox 4 seconds but took " + elapsed
         );
     }
     @Test
-    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testDualPeriod () throws Exception {
         ThroughputControl tc = new ThroughputControl (
             new int[] { 100, 150 }, 
@@ -92,7 +89,7 @@ public class ThroughputControlTestCase {
 
         elapsed = Duration.between(start, Instant.now()).toMillis();
         assertTrue (
-            elapsed > 5000L,
+            elapsed >= 5000L,
             "100 additional transactions should take more than five seconds but took " + elapsed
         );
     }
