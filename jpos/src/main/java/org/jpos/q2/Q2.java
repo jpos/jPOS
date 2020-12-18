@@ -985,7 +985,7 @@ public class Q2 implements FileFilter, Runnable {
         }
     }
     private void logVersion () {
-        long now = System.currentTimeMillis();
+        long now = Instant.now().toEpochMilli();
         if (now - lastVersionLog > 86400000L) {
             LogEvent evt = getLog().createLogEvent("version");
             evt.addMessage(getVersionString());

@@ -19,6 +19,8 @@
 package org.jpos.iso;
 
 
+import java.time.Instant;
+
 /**
  * @author joconnor
  */
@@ -139,9 +141,9 @@ public class PerformanceTesting
         ISOFieldPackager packager = (ISOFieldPackager)packagerClass.newInstance();
         packager.setLength(len);
         ISOField f = new ISOField(12, data);
-        long start = System.currentTimeMillis();
+        long start = Instant.now().toEpochMilli();
         runPackTest(packager, f);
-        long end = System.currentTimeMillis();
+        long end = Instant.now().toEpochMilli();
         boolean isOldImplementation = packagerClass.getSuperclass().getName().endsWith("ISOFieldPackager")
             || packagerClass.getSuperclass().getName().endsWith("IF_TBASE");
         System.out.println("Pack: " + (isOldImplementation ? "old " : "new ") + packager.getClass().getName() + " = " + (end - start));
@@ -154,9 +156,9 @@ public class PerformanceTesting
         ISOFieldPackager packager = (ISOFieldPackager)packagerClass.newInstance();
         packager.setLength(len);
         ISOBinaryField f = new ISOBinaryField(12, data);
-        long start = System.currentTimeMillis();
+        long start = Instant.now().toEpochMilli();
         runPackTest(packager, f);
-        long end = System.currentTimeMillis();
+        long end = Instant.now().toEpochMilli();
         boolean isOldImplementation = packagerClass.getSuperclass().getName().endsWith("ISOFieldPackager")
             || packagerClass.getSuperclass().getName().endsWith("IF_TBASE");
         System.out.println("Pack: " + (isOldImplementation ? "old " : "new ") + packager.getClass().getName() + " = " + (end - start));
@@ -175,9 +177,9 @@ public class PerformanceTesting
         packager.setLength(len);
         ISOField f = new ISOField(12, data);
         byte[] raw = packager.pack(f);
-        long start = System.currentTimeMillis();
+        long start = Instant.now().toEpochMilli();
         runUnpackTest(packager, f, raw);
-        long end = System.currentTimeMillis();
+        long end = Instant.now().toEpochMilli();
         boolean isOldImplementation = packagerClass.getSuperclass().getName().endsWith("ISOFieldPackager")
             || packagerClass.getSuperclass().getName().endsWith("IF_TBASE");
         System.out.println("Unpack: " + (isOldImplementation ? "old " : "new ") + packager.getClass().getName() + " = " + (end - start));
@@ -191,9 +193,9 @@ public class PerformanceTesting
         packager.setLength(len);
         ISOBinaryField f = new ISOBinaryField(12, data);
         byte[] raw = packager.pack(f);
-        long start = System.currentTimeMillis();
+        long start = Instant.now().toEpochMilli();
         runUnpackTest(packager, f, raw);
-        long end = System.currentTimeMillis();
+        long end = Instant.now().toEpochMilli();
         boolean isOldImplementation = packagerClass.getSuperclass().getName().endsWith("ISOFieldPackager")
             || packagerClass.getSuperclass().getName().endsWith("IF_TBASE");
         System.out.println("Unpack: " + (isOldImplementation ? "old " : "new ") + packager.getClass().getName() + " = " + (end - start));

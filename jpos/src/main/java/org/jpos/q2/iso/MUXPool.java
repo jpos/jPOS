@@ -27,6 +27,7 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -70,11 +71,11 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         NameRegistrar.unregister ("mux."+getName ());
     }
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
-        long maxWait = System.currentTimeMillis() + timeout;
+        long maxWait = Instant.now().toEpochMilli() + timeout;
         MUX mux = getMUX(m,maxWait);
 
         if (mux != null) {
-            timeout = maxWait - System.currentTimeMillis();
+            timeout = maxWait - Instant.now().toEpochMilli();
             if (timeout >= 0)
                 return mux.request (m, timeout);
         }
@@ -101,7 +102,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 if (isUsable(m))
                     return m;
             ISOUtil.sleep (1000);
-        } while (System.currentTimeMillis() < maxWait);
+        } while (Instant.now().toEpochMilli() < maxWait);
         return null;
     }
     protected MUX nextAvailableMUX (int mnumber, long maxWait) {
@@ -113,7 +114,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 msgno.incrementAndGet();
             }
             ISOUtil.sleep (1000);
-        } while (System.currentTimeMillis() < maxWait);
+        } while (Instant.now().toEpochMilli() < maxWait);
         return null;
     }
     private String[] toStringArray (String s) {
@@ -129,11 +130,11 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
         throws ISOException 
     {
-        long maxWait = System.currentTimeMillis() + timeout;
+        long maxWait = Instant.now().toEpochMilli() + timeout;
         MUX mux = getMUX(m,maxWait);
 
         if (mux != null) {
-            timeout = maxWait - System.currentTimeMillis();
+            timeout = maxWait - Instant.now().toEpochMilli();
             if (timeout >= 0)
                 mux.request(m, timeout,r, handBack);
             else {

@@ -19,6 +19,7 @@
 package org.jpos.transaction.participant;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -128,8 +129,8 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
     protected boolean isConnected (MUX mux) {
         if (!checkConnected || mux.isConnected())
             return true;
-        long timeout = System.currentTimeMillis() + waitTimeout;
-        while (System.currentTimeMillis() < timeout) {
+        long timeout = Instant.now().toEpochMilli() + waitTimeout;
+        while (Instant.now().toEpochMilli() < timeout) {
             if (mux.isConnected())
                 return true;
             ISOUtil.sleep (500);

@@ -29,6 +29,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
@@ -342,7 +343,7 @@ public class ISOServer extends Observable
                 for (;;) {
                     try {
                         ISOMsg m = channel.receive();
-                        lastTxn = System.currentTimeMillis();
+                        lastTxn = Instant.now().toEpochMilli();
                         Iterator iter = listeners.iterator();
                         while (iter.hasNext()) {
                             if (((ISORequestListener)iter.next()).process
@@ -695,7 +696,7 @@ public class ISOServer extends Observable
         sb.append (lastTxn);
         if (lastTxn > 0) {
             sb.append (", idle=");
-            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append(Instant.now().toEpochMilli() - lastTxn);
             sb.append ("ms");
         }
         return sb.toString();
@@ -742,7 +743,7 @@ public class ISOServer extends Observable
     }
     @Override
     public long getIdleTimeInMillis() {
-        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
+        return lastTxn > 0L ? Instant.now().toEpochMilli() - lastTxn : -1L;
     }
 
 

@@ -37,6 +37,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.SocketTimeoutException;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -331,7 +332,7 @@ public class ChannelAdaptor
                         continue;
                     ISOMsg m = channel.receive ();
                     rx++;
-                    lastTxn = System.currentTimeMillis();
+                    lastTxn = Instant.now().toEpochMilli();
                     if (timeout > 0)
                         sp.out (out, m, timeout);
                     else
@@ -442,7 +443,7 @@ public class ChannelAdaptor
         sb.append(lastTxn);
         if (lastTxn > 0) {
             sb.append (", idle=");
-            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append(Instant.now().toEpochMilli() - lastTxn);
             sb.append ("ms");
         }
         return sb.toString();
@@ -460,7 +461,7 @@ public class ChannelAdaptor
         return lastTxn;
     }
     public long getIdleTimeInMillis() {
-        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
+        return lastTxn > 0L ? Instant.now().toEpochMilli() - lastTxn : -1L;
     }
     public String getSocketFactory() {
         return getProperty(getProperties ("channel"), "socketFactory");

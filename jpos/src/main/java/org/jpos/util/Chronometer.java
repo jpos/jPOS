@@ -18,6 +18,7 @@
 
 package org.jpos.util;
 
+import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Chronometer {
@@ -25,20 +26,20 @@ public class Chronometer {
     private AtomicLong lap;
 
     public Chronometer() {
-        this.start = new AtomicLong(System.currentTimeMillis());
+        this.start = new AtomicLong(Instant.now().toEpochMilli());
         this.lap = new AtomicLong(start.get());
     }
 
     public long elapsed() {
-        return Math.max(System.currentTimeMillis() - start.get(), 0L);
+        return Math.max(Instant.now().toEpochMilli() - start.get(), 0L);
     }
 
     public void reset () {
-        start.set(System.currentTimeMillis());
+        start.set(Instant.now().toEpochMilli());
     }
 
     public long lap() {
-        long now = System.currentTimeMillis();
+        long now = Instant.now().toEpochMilli();
         long elapsed = now - lap.get();
         lap.set(now);
         return Math.max(elapsed, 0L);
@@ -48,7 +49,7 @@ public class Chronometer {
     public String toString() {
         return "Chronometer{" +
           "elapsed=" + elapsed() +
-          ", lap=" + (System.currentTimeMillis() - lap.get()) +
+          ", lap=" + (Instant.now().toEpochMilli() - lap.get()) +
           '}';
     }
 }

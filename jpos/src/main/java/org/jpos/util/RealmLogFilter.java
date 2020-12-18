@@ -25,6 +25,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.XmlConfigurable;
 import org.jdom2.Element;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -80,7 +81,7 @@ public class RealmLogFilter implements LogListener, XmlConfigurable, Configurabl
     private Set<String> enabledRealms;
     private Set<String> disabledRealms;
     private Set<String> realmsMissed = new HashSet<>();
-    private long lastDump = System.currentTimeMillis();
+    private long lastDump = Instant.now().toEpochMilli();
     private long dumpInterval;
 
     @Override
@@ -91,11 +92,11 @@ public class RealmLogFilter implements LogListener, XmlConfigurable, Configurabl
             return ev;
         } else {
             realmsMissed.add(realm);
-            if (dumpInterval > 0 && System.currentTimeMillis() - lastDump > dumpInterval) {
+            if (dumpInterval > 0 && Instant.now().toEpochMilli() - lastDump > dumpInterval) {
                 LogEvent evt = new LogEvent("ignored-realms");
                 evt.addMessage(realmsMissed);
                 realmsMissed = new HashSet<>();
-                lastDump = System.currentTimeMillis();
+                lastDump = Instant.now().toEpochMilli();
                 return evt;
             }
             return null;

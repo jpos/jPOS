@@ -29,6 +29,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -148,8 +149,8 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
                         }
                     }else{
                         if(info == null) scripts.put(sources[i], info=new ScriptInfo());
-                        if(System.currentTimeMillis() > info.getLastCheck() + cfg.getLong("reload")){
-                            info.setLastCheck(System.currentTimeMillis());
+                        if(Instant.now().toEpochMilli() > info.getLastCheck() + cfg.getLong("reload")){
+                            info.setLastCheck(Instant.now().toEpochMilli());
                             if(f.exists() && f.canRead() && f.isFile()){
                                 if(info.getLastModified() != f.lastModified()) {
                                     info.setLastModified(f.lastModified());

@@ -18,19 +18,20 @@
 
 package org.jpos.util;
 
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 public class StopWatch {
     long end;
     public StopWatch (long period, TimeUnit unit) {
-        end = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(period, unit);
+        end = Instant.now().toEpochMilli() + TimeUnit.MILLISECONDS.convert(period, unit);
     }
     public StopWatch (long periodInMillis) {
         this (periodInMillis, TimeUnit.MILLISECONDS);
     }
     public void finish() {
-        long now = System.currentTimeMillis();
+        long now = Instant.now().toEpochMilli();
         if (end > now) {
             try {
                 Thread.sleep(end - now);
@@ -38,7 +39,7 @@ public class StopWatch {
         }
     }
     public boolean isFinished() {
-        return System.currentTimeMillis() >= end;
+        return Instant.now().toEpochMilli() >= end;
     }
 
     public static <T> T get(long period, TimeUnit unit, Supplier<T> f) {

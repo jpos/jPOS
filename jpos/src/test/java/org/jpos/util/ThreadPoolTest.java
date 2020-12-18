@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.time.Instant;
 import java.util.regex.Pattern;
 import org.hamcrest.text.MatchesPattern;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
@@ -164,9 +166,9 @@ public class ThreadPoolTest {
         int available = pool.getAvailableCount();
         int active = pool.getActiveCount();
 
-        long end = System.currentTimeMillis() + 10000L; // run for 10 seconds top
+        long end = Instant.now().toEpochMilli() + 10000L; // run for 10 seconds top
         int i = 0;
-        while (active >= 0 && System.currentTimeMillis() < end) {
+        while (active >= 0 && Instant.now().toEpochMilli() < end) {
             while (available > 0) {
                 pool.execute(() -> { });
                 available = pool.getAvailableCount();
