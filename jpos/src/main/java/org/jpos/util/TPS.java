@@ -80,7 +80,7 @@ public class TPS implements Loggeable {
     public TPS(final long period, boolean autoupdate) {
         super();
         count = new AtomicInteger(0);
-        start = Instant.now();
+        start = peakWhen = Instant.now();
         readings = new AtomicLong(0L);
         this.period = Duration.ofMillis(period);
         this.autoupdate = autoupdate;
