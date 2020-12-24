@@ -88,6 +88,15 @@ public class EuroSubFieldPackager extends ISOBasePackager
         }
     }
 
+
+    /**
+     * This packager treats field 0 as a field that may or may not be present before the  TLV subelements.
+     *
+     * Certain types of messages for some 8583 specs that extend this class' behavior (e.g., the Mastercard implementation
+     * in class {@link MasterCardEBCDICSubFieldPackager}) may not have field 0 present (the TCC in Mastercard's nomenclature).
+     * So, if the corresponding isofield packager for field 0 doesn't fill the {@link ISOComponent}'s value,
+     * we don't store anything as subfield 0 of m.
+     */
     @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException
     {
@@ -106,17 +115,22 @@ public class EuroSubFieldPackager extends ISOBasePackager
 
             c = fld[i].createComponent(i);
             consumed += fld[i].unpack (c, b, consumed);
-            if (logger != null) 
+            if (i != 0 || c.getValue() != null)
             {
-                evt.addMessage ("<unpack fld=\"" + i 
-                    +"\" packager=\""
-                    +fld[i].getClass().getName()+ "\">");
-                    evt.addMessage ("  <value>" 
-                    +c.getValue().toString()
-                    + "</value>");
-                evt.addMessage ("</unpack>");
+                if (logger != null)
+                {
+                    evt.addMessage ("<unpack fld=\"" + i
+                        +"\" packager=\""
+                        +fld[i].getClass().getName()+ "\">");
+                        evt.addMessage ("  <value>"
+                        +c.getValue().toString()
+                        + "</value>");
+                    evt.addMessage ("</unpack>");
+                }
+                m.set(c);
             }
-            m.set(c);
+            // else:
+            // If it was field 0 (TCC) && nothing was stored in the component, we discard this component
         }
         Logger.log (evt);
         return consumed;
