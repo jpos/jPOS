@@ -31,5 +31,6 @@ jobs:
         TERM: dumb
     - name: Dependency Check Analyze
       run: ./gradlew jpos:dependencyCheckAnalyze --info
+      if: runner.os != 'macOS'
       env:
         TERM: dumb

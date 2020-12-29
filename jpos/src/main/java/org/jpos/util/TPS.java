@@ -80,7 +80,7 @@ public class TPS implements Loggeable {
     public TPS(final long period, boolean autoupdate) {
         super();
         count = new AtomicInteger(0);
-        start = peakWhen = Instant.now();
+        start = peakWhen = Instant.now(NanoClock.systemUTC());
         readings = new AtomicLong(0L);
         this.period = Duration.ofMillis(period);
         this.autoupdate = autoupdate;
@@ -136,7 +136,7 @@ public class TPS implements Loggeable {
     }
 
     public long getElapsed() {
-        return Duration.between(start, Instant.now()).toMillis();
+        return Duration.between(start, Instant.now(NanoClock.systemUTC())).toMillis();
     }
 
     public String toString() {
@@ -176,7 +176,7 @@ public class TPS implements Loggeable {
             avg = (r * avg + tps) / ++r;
             if (tps > peak) {
                 peak = Math.round(tps);
-                peakWhen = Instant.now();
+                peakWhen = Instant.now(NanoClock.systemUTC());
             }
             count.set(0);
             return tps;
@@ -185,7 +185,7 @@ public class TPS implements Loggeable {
 
     private float calcTPS() {
         synchronized(this) {
-            Instant now = Instant.now();
+            Instant now = Instant.now(NanoClock.systemUTC());
             Duration interval = Duration.between(start, now);
             if (interval.compareTo(period) >= 0) {
                 calcTPS(interval);

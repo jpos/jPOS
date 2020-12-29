@@ -116,7 +116,7 @@ public class Q2 implements FileFilter, Runnable {
     private String[] args;
     private boolean hasSystemLogger;
     private boolean exit;
-    private Instant startTime;
+    private Duration startTime;
     private CLI cli;
     private boolean recursive;
     private ConfigDecorationProvider decorator=null;
@@ -142,7 +142,7 @@ public class Q2 implements FileFilter, Runnable {
     public Q2 (String[] args, BundleContext bundleContext) {
         super();
         this.args = args;
-        startTime = Instant.now();
+        startTime = Duration.ofNanos(System.nanoTime());
         instanceId = UUID.randomUUID();
         parseCmdLine (args);
         libDir     = new File (deployDir, "lib");
@@ -673,7 +673,7 @@ public class Q2 implements FileFilter, Runnable {
         return server;
     }
     public long getUptime() {
-        return Duration.between(startTime, Instant.now()).toMillis();
+        return Duration.ofNanos(System.nanoTime()).minus(startTime).toMillis();
     }
     public void displayVersion () {
         System.out.println(getVersionString());

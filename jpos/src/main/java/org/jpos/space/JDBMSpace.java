@@ -25,6 +25,7 @@ import jdbm.helper.FastIterator;
 import jdbm.helper.Serializer;
 import jdbm.htree.HTree;
 import org.jpos.util.DefaultTimer;
+import org.jpos.util.NanoClock;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -191,7 +192,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
                 long recid = recman.insert (value);
 
                 long expiration = timeout == -1 ? Long.MAX_VALUE :
-                        Instant.now().toEpochMilli() + timeout;
+                        Instant.now(NanoClock.systemUTC()).toEpochMilli() + timeout;
                 Ref dataRef = new Ref (recid, expiration);
                 long dataRefRecId = recman.insert (dataRef, refSerializer);
 
@@ -237,7 +238,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
             synchronized (this) {
                 long recid = recman.insert (value);
                 long expiration = timeout == -1 ? Long.MAX_VALUE :
-                        Instant.now().toEpochMilli() + timeout;
+                        Instant.now(NanoClock.systemUTC()).toEpochMilli() + timeout;
                 Ref dataRef = new Ref (recid, expiration);
 
                 Head head = (Head) htree.get (key);
@@ -322,13 +323,14 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
      */
     public synchronized V in (Object key, long timeout) {
         Object obj;
-        Instant now = Instant.now();
-        long duration;
+        Duration to = Duration.ofMillis(timeout);
+        Duration now = Duration.ofNanos(System.nanoTime());
+        Duration duration;
         while ((obj = inp (key)) == null &&
-                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
+                to.compareTo(duration = Duration.ofNanos(System.nanoTime()).minus(now)) > 0)
         {
             try {
-                this.wait (timeout - duration);
+                this.wait (Math.max(to.minus(duration).toMillis(), 1L));
             } catch (InterruptedException ignored) { }
         }
         return (V) obj;
@@ -358,13 +360,14 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
      */
     public synchronized V rd  (Object key, long timeout) {
         Object obj;
-        Instant now = Instant.now();
-        long duration;
+        Duration to = Duration.ofMillis(timeout);
+        Duration now = Duration.ofNanos(System.nanoTime());
+        Duration duration;
         while ((obj = rdp (key)) == null &&
-                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
+                to.compareTo(duration = Duration.ofNanos(System.nanoTime()).minus(now)) > 0)
         {
             try {
-                this.wait (timeout - duration);
+                this.wait (Math.max(to.minus(duration).toMillis(), 1L));
             } catch (InterruptedException ignored) { }
         }
         return (V) obj;
@@ -378,13 +381,14 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
     }
     public synchronized V nrd  (Object key, long timeout) {
         Object obj;
-        Instant now = Instant.now();
-        long duration;
+        Duration to = Duration.ofMillis(timeout);
+        Duration now = Duration.ofNanos(System.nanoTime());
+        Duration duration;
         while ((obj = rdp (key)) != null &&
-                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
+                to.compareTo(duration = Duration.ofNanos(System.nanoTime()).minus(now)) > 0)
         {
             try {
-                this.wait (Math.min(NRD_RESOLUTION, timeout - duration));
+                this.wait (Math.min(NRD_RESOLUTION, Math.max(to.minus(duration).toMillis(), 1L)));
             } catch (InterruptedException ignored) { }
         }
         return (V) obj;
@@ -410,14 +414,15 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
         return false;
     }
     public boolean existAny (Object[] keys, long timeout) {
-        Instant now = Instant.now();
-        long duration;
-        while ((duration = Duration.between(now, Instant.now()).toMillis()) < timeout) {
+        Duration to = Duration.ofMillis(timeout);
+        Duration now = Duration.ofNanos(System.nanoTime());
+        Duration duration;
+        while (to.compareTo(duration = Duration.ofNanos(System.nanoTime()).minus(now)) > 0) {
             if (existAny (keys))
                 return true;
             synchronized (this) {
                 try {
-                    wait (timeout - duration);
+                    wait (Math.max(to.minus(duration).toMillis(), 1L));
                 } catch (InterruptedException ignored) { }
             }
         }
@@ -665,7 +670,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
         }
 
         public boolean isExpired () {
-            return expires < Instant.now().toEpochMilli();
+            return expires < Instant.now(NanoClock.systemUTC()).toEpochMilli();
         }
         public String toString() {
             return getClass().getName() 

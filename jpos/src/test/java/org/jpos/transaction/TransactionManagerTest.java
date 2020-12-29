@@ -261,11 +261,7 @@ public class TransactionManagerTest {
             transactionManager.getKey(null, 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Call to getKey failed because TransactionManager QBean name is null", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -481,11 +477,7 @@ public class TransactionManagerTest {
             assertEquals(1, evt.getPayLoad().size(), "evt.payLoad.size()");
             assertEquals("        prepare: org.jpos.transaction.participant.Forward ABORTED", evt.getPayLoad()
                     .get(0), "evt.payLoad.get(0)");
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Call to getKey failed because TransactionManager QBean name is null", ex.getMessage(), "ex.getMessage()");
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertNull(transactionManager.groups, "transactionManager.groups");
             assertEquals(0, members.size(), "(ArrayList) members.size()");
@@ -504,11 +496,7 @@ public class TransactionManagerTest {
         } catch (NullPointerException ex) {
             assertEquals(1, evt.getPayLoad().size(), "evt.payLoad.size()");
             assertEquals("prepareForAbort: org.jpos.transaction.participant.Trace", evt.getPayLoad().get(0), "evt.payLoad.get(0)");
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Call to getKey failed because TransactionManager QBean name is null", ex.getMessage(), "ex.getMessage()");
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertNull(transactionManager.groups, "transactionManager.groups");
             assertEquals(0, members.size(), "(ArrayList) members.size()");
@@ -539,11 +527,7 @@ public class TransactionManagerTest {
             transactionManager.purge(100L, true);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Call to getKey failed because TransactionManager QBean name is null", ex.getMessage(), "ex.getMessage()");
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }
@@ -554,11 +538,7 @@ public class TransactionManagerTest {
             transactionManager.recover(1, 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Call to getKey failed because TransactionManager QBean name is null", ex.getMessage(), "ex.getMessage()");
             assertNull(transactionManager.psp, "transactionManager.psp");
             assertNull(transactionManager.groups, "transactionManager.groups");
         }
@@ -622,11 +602,7 @@ public class TransactionManagerTest {
             transactionManager.setState(100L, Integer.valueOf(-1));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Call to getKey failed because TransactionManager QBean name is null", ex.getMessage(), "ex.getMessage()");
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }
@@ -637,11 +613,7 @@ public class TransactionManagerTest {
             transactionManager.snapshot(100L, "testString", Integer.valueOf(-100));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Call to getKey failed because TransactionManager QBean name is null", ex.getMessage(), "ex.getMessage()");
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }
@@ -652,11 +624,7 @@ public class TransactionManagerTest {
             transactionManager.snapshot(100L, new Comment("testTransactionManagerText"));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Call to getKey failed because TransactionManager QBean name is null", ex.getMessage(), "ex.getMessage()");
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }
@@ -687,11 +655,7 @@ public class TransactionManagerTest {
             transactionManager.tailDone();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"str\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+            assertEquals("Call to getKey failed because TransactionManager QBean name is null", ex.getMessage(), "ex.getMessage()");
             assertNull(transactionManager.psp, "transactionManager.psp");
         }
     }

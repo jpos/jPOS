@@ -47,7 +47,7 @@ public class LogEvent {
     public LogEvent (String tag) {
         super();
         this.tag = tag;
-        createdAt = Instant.now();
+        createdAt = Instant.now(NanoClock.systemUTC());
         this.payLoad = Collections.synchronizedList (new ArrayList<>());
     }
 
@@ -95,7 +95,7 @@ public class LogEvent {
             p.println("");
         } else {
             if (dumpedAt == null)
-                dumpedAt = Instant.now();
+                dumpedAt = Instant.now(NanoClock.systemUTC());
             StringBuilder sb = new StringBuilder(indent);
             sb.append ("<log realm=\"");
             sb.append (getRealm());

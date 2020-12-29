@@ -824,7 +824,10 @@ public class TransactionManager
         return -1;
     }
     protected String getKey (String prefix, long id) {
-        StringBuilder sb = new StringBuilder (getName());
+        String name = getName();
+        if (name == null)
+            throw new NullPointerException("Call to getKey failed because TransactionManager QBean name is null");
+        StringBuilder sb = new StringBuilder (name);
         sb.append ('.');
         sb.append (prefix);
         sb.append (Long.toString (id));
@@ -1136,7 +1139,7 @@ public class TransactionManager
     private void setThreadName (long id, String method, TransactionParticipant p) {
         Thread.currentThread().setName(
             String.format("%s:%d %s %s %s", getName(), id, method, p.getClass().getName(),
-                LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
+                LocalDateTime.ofInstant(Instant.now(NanoClock.systemUTC()), ZoneId.systemDefault()))
         );
     }
     private void setThreadLocal (long id, Serializable context) {

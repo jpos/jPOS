@@ -20,6 +20,7 @@ package org.jpos.q2.cli;
 
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
+import org.jpos.util.NanoClock;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -35,7 +36,7 @@ public class TZCHECK implements CLICommand
     public void exec(CLIContext cli, String[] args) throws Exception
     {
         ZoneId zi = ZoneId.systemDefault();
-        Instant i = Instant.now();
+        Instant i = Instant.now(NanoClock.systemUTC());
         cli.println(
             "         Zone ID: " + zi + " (" + zi.getDisplayName(TextStyle.FULL, Locale.getDefault()) + ") "
                 + zi.getRules().getOffset(i)

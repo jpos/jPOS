@@ -35,7 +35,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.time.Duration;
-import java.time.Instant;
 
 @SuppressWarnings("unchecked")
 public class JDBMSpaceTestCase {
@@ -223,6 +222,7 @@ public class JDBMSpaceTestCase {
         );
     }
     @Test
+    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testExistWithTimeout() {
         assertFalse (
             sp.existAny(new String[]{"KA", "KB"}),
@@ -238,12 +238,12 @@ public class JDBMSpaceTestCase {
                 sp.out ("KA", Boolean.TRUE);
             }
         }.start();
-        Instant now = Instant.now();
+        Duration now = Duration.ofNanos(System.nanoTime());
         assertTrue (
             sp.existAny(new String[]{"KA", "KB"}, 2000L),
             "existAnyWithTimeout ([KA,KB], delay)"
         );
-        long elapsed = Duration.between(now, Instant.now()).toMillis();
+        long elapsed = Duration.ofNanos(System.nanoTime()).minus(now).toMillis();
         assertTrue (elapsed > 900L, "delay was > 1000");
         assertNotNull (sp.inp("KA"), "Entry should not be null");
     }
