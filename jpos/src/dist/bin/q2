@@ -9,6 +9,7 @@ then
 else
   rm -f jpos.pid
   exec java -server \
+    -XX:+IgnoreUnrecognizedVMOptions \
     -Xmx1G \
     -Xloggc:log/gc.log \
     -Djava.net.preferIPv4Stack=true \
