@@ -14,7 +14,7 @@ subprojects {
     apply plugin: 'project-report'
 
     group = 'org.jpos'
-    version = '2.1.5-SNAPSHOT'
+    version = '2.1.4-1'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
@@ -82,7 +82,7 @@ subprojects {
                         }
                     }
                 }
-                groupId = 'org.jpos'
+                groupId = 'com.hextremelabs.jpos'
                 artifactId = 'jpos'
                 from components.java
             }
