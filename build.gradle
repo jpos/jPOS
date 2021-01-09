@@ -101,7 +101,7 @@ subprojects {
     }
 
     signing {
-        required { !isSnapshot }
+        required { false }
         sign publishing.publications.mavenJava
     }
 
