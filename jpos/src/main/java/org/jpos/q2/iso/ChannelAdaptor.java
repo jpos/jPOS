@@ -24,6 +24,9 @@ import org.jpos.core.Environment;
 import org.jpos.core.handlers.exception.ExceptionHandlerAware;
 import org.jpos.core.handlers.exception.ExceptionHandlerConfigAware;
 import org.jpos.iso.*;
+import org.jpos.iso.channel.ASCIIChannel;
+import org.jpos.iso.packager.GenericPackager;
+import org.jpos.iso.packager.PostPackager;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
@@ -37,6 +40,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -201,7 +205,7 @@ public class ChannelAdaptor
             channel.setPackager (packager);
             f.setConfiguration (packager, e);
         }
-        QFactory.invoke (channel, "setHeader", QFactory.getAttributeValue (e, "header"));
+//        QFactory.invoke (channel, "setHeader", QFactory.getAttributeValue (e, "header"));
         f.setLogger        (channel, e);
         f.setConfiguration (channel, e);
 
@@ -295,7 +299,13 @@ public class ChannelAdaptor
                         break;
                     Object o = sp.in (in, delay);
                     if (o instanceof ISOMsg) {
-                        channel.send ((ISOMsg) o);
+                        final ISOMsg msg = (ISOMsg) o;
+                        final byte[] header = getMessageHeader(msg.pack());
+                        msg.setHeader(header);
+
+                        ((PostPackager) msg.getPackager()).setHeaderLength(header.length);
+                        ((ASCIIChannel) channel).setLengthDigits(header.length);
+                        channel.send (msg.pack());
                         tx++;
                     }
                     else if (keepAlive && channel.isConnected() && channel instanceof BaseChannel) {
@@ -317,6 +327,12 @@ public class ChannelAdaptor
             }
         }
     }
+
+    private byte[] getMessageHeader(byte[] messageBytes) {
+        final int len = (new String(messageBytes, StandardCharsets.UTF_8)).length();
+        return new byte[]{(byte) (len >> 8), (byte) (len % 256)};
+    }
+
     @SuppressWarnings("unchecked")
     public class Receiver implements Runnable {
         public Receiver () {

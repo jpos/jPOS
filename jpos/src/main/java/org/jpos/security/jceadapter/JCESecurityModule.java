@@ -24,25 +24,54 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
-import org.jpos.security.*;
+import org.jpos.security.ARPCMethod;
+import org.jpos.security.BaseSMAdapter;
+import org.jpos.security.CipherMode;
+import org.jpos.security.EncryptedPIN;
+import org.jpos.security.KeyScheme;
+import org.jpos.security.KeySerialNumber;
+import org.jpos.security.MKDMethod;
+import org.jpos.security.PaddingMethod;
+import org.jpos.security.SKDMethod;
+import org.jpos.security.SMAdapter;
+import org.jpos.security.SMException;
+import org.jpos.security.SecureDESKey;
+import org.jpos.security.Util;
+import org.jpos.security.WeakPINException;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleMsg;
 
+import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.security.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.crypto.Cipher;
 
 /**
  * JCESecurityModule is an implementation of a security module in software.
@@ -137,24 +166,29 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         super();
     }
 
+    public JCESecurityModule(InputStream stream, String fileName, StandardCopyOption copyOption) throws SMException, IOException {
+        Objects.requireNonNull(stream);
+        File lmkFile = new File(fileName);
+        Files.copy(stream, lmkFile.toPath(), copyOption);
+        init(null, lmkFile, false);
+        lmkFile.deleteOnExit();
+    }
+
     /**
      * @param lmkFile Local Master Keys filename of the JCE Security Module
      * @throws SMException
      */
-    public JCESecurityModule (String lmkFile) throws SMException
-    {
+    public JCESecurityModule(String lmkFile) throws SMException {
         Objects.requireNonNull(lmkFile);
         init(null, lmkFile, false);
     }
 
-    public JCESecurityModule (String lmkFile, String jceProviderClassName) throws SMException
-    {
+    public JCESecurityModule(String lmkFile, String jceProviderClassName) throws SMException {
         Objects.requireNonNull(lmkFile);
         init(jceProviderClassName, lmkFile, false);
     }
 
-    public JCESecurityModule (Configuration cfg, Logger logger, String realm) throws ConfigurationException
-    {
+    public JCESecurityModule(Configuration cfg, Logger logger, String realm) throws ConfigurationException {
         setLogger(logger, realm);
         setConfiguration(cfg);
     }
@@ -1770,28 +1804,33 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
                     int checkDigit = 0x0;
                     int padidx = pinLength + offset;
                     // test pin block
-                    validatePinBlock(block1,checkDigit,padidx,offset,'0');
+                    validatePinBlock(block1, checkDigit, padidx, offset, '0');
                     // get pin
                     pin = new String(Arrays.copyOfRange(block1, offset, padidx));
                 }
-                break;
+            break;
             default:
-                throw  new SMException("Unsupported PIN Block format: " + pinBlockFormat);
+                throw new SMException("Unsupported PIN Block format: " + pinBlockFormat);
         }
-        return  pin;
+        return pin;
+    }
+
+    private void init(String jceProviderClassName, String lmkFile, boolean lmkRebuild) throws SMException {
+        File lmk = lmkFile != null ? new File(lmkFile) : null;
+        init(jceProviderClassName, lmk, lmkRebuild);
     }
 
     /**
      * Initializes the JCE Security Module
+     *
      * @param jceProviderClassName
-     * @param lmkFile Local Master Keys File used by JCE Security Module to store the LMKs
+     * @param lmk Local Master Keys File used by JCE Security Module to store the LMKs
      * @param lmkRebuild if set to true, the lmkFile gets overwritten with newly generated keys (WARNING: this would render all your previously stored SecureKeys unusable)
      * @throws SMException
      */
-    private void init (String jceProviderClassName, String lmkFile, boolean lmkRebuild) throws SMException {
-        File lmk = lmkFile != null ? new File(lmkFile) : null;
+    private void init(String jceProviderClassName, File lmk, boolean lmkRebuild) throws SMException {
         if (lmk == null && !lmkRebuild)
-            throw new SMException ("null lmkFile - needs rebuild");
+            throw new SMException("null lmkFile - needs rebuild");
         try {
             keyTypeToLMKIndex = new TreeMap<>();
             keyTypeToLMKIndex.put(SMAdapter.TYPE_ZMK, 0x000);

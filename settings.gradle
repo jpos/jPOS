@@ -1,4 +1,4 @@
 include 'jpos'
 
-rootProject.name = 'jpos'
+rootProject.name = 'jpos-parent'
 

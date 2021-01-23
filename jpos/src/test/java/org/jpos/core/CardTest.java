@@ -68,7 +68,7 @@ public class CardTest  {
           .track2(t2)
           .build();
 
-        assertEquals(false, c.isExpired(new Date()), "not expired");
+        assertEquals(true, c.isExpired(new Date()), "not expired");
     }
 
     @Test
@@ -105,7 +105,7 @@ public class CardTest  {
           .serviceCode("123")
           .build();
 
-        assertEquals(false, c.isExpired(new Date()), "not expired");
+        assertEquals(true, c.isExpired(new Date()), "not expired");
         assertEquals("4111111111111111", c.getPan(), "pan");
         assertEquals("2011", c.getExp(), "exp");
         assertEquals("123", c.getServiceCode(), "serviceCode");

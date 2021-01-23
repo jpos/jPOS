@@ -644,9 +644,8 @@ public abstract class BaseChannel extends Observable
             setChanged();
         } catch (Exception e) {
             evt.addMessage (e);
+          Logger.log (evt);
             throw new ISOException ("unexpected exception", e);
-        } finally {
-            Logger.log (evt);
         }
     }
     /**

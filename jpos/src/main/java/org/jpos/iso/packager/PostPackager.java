@@ -232,7 +232,15 @@ public class PostPackager extends ISOBasePackager {
                     new IFA_LLLLLCHAR  (99999,  "STRUCTURED DATA"), 
                     new IF_CHAR     (253,  "PAYEE NAME AND ADDRESS"), 
                     new IFA_LLCHAR  (28,  "PAYER ACCOUNT INFORMATION"), 
-                    new IFA_LLLLCHAR(8000,  "ICC DATA")
+                    new IFA_LLLLCHAR(8000,  "ICC DATA"),
+                    new IFA_LLLCHAR (99, "RESERVED PRIVATE USE"),
+                    new IFA_LLLCHAR (99, "RESERVED PRIVATE USE"),
+                    new IFA_LLLCHAR (99, "RESERVED PRIVATE USE"),
+                    new IFA_LLLCHAR (99, "RESERVED PRIVATE USE"),
+                    new IFA_LLLCHAR (99, "RESERVED PRIVATE USE"),
+                    new IFA_LLLCHAR (99, "RESERVED PRIVATE USE"),
+                    new IFA_LLLCHAR (99, "RESERVED PRIVATE USE"),
+                    new IFA_NUMERIC  (4,  "ETT")
                 };  
 
         protected PostPrivatePackager()
