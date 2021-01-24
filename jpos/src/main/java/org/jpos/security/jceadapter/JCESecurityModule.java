@@ -172,6 +172,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         Files.copy(stream, lmkFile.toPath(), copyOption);
         init(null, lmkFile, false);
         lmkFile.deleteOnExit();
+        stream.close();
     }
 
     /**
