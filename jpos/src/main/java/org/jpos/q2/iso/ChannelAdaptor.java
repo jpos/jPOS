@@ -223,6 +223,7 @@ public class ChannelAdaptor
     {
         for (Object o : e.getChildren("filter")) {
             Element f = (Element) o;
+            if (!QFactory.isEnabled(f)) continue;
             String clazz = QFactory.getAttributeValue(f, "class");
             ISOFilter filter = (ISOFilter) fact.newInstance(clazz);
             fact.setLogger(filter, f);
