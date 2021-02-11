@@ -20,6 +20,7 @@ package org.jpos.q2.iso;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.BaseChannel;
 import org.jpos.iso.Channel;
 import org.jpos.iso.FactoryChannel;
@@ -95,19 +96,19 @@ public class OneShotChannelAdaptorMK2
             throw new ConfigurationException("channel element missing");
         }
         sp = grabSpace(persist.getChild("space"));
-        in = persist.getChildTextTrim("in");
-        out = persist.getChildTextTrim("out");
+        in = Environment.get(persist.getChildTextTrim ("in"));
+        out = Environment.get(persist.getChildTextTrim ("out"));
         ready = getName() + ".ready";
 
-        String s = persist.getChildTextTrim("max-connections");
+        String s = Environment.get(persist.getChildTextTrim ("max-connections"));
         maxConnections = s != null ? Integer.parseInt(s) : 1;
         handbackFields = cfg.getInts("handback-field");
 
-        s = persist.getChildTextTrim("delay");
-        delay = s != null ? Integer.valueOf(s) : 2500;
+        s = Environment.get(persist.getChildTextTrim ("delay"));
+        delay = s != null ? Integer.parseInt(s) : 2500;
 
-        s = persist.getChildTextTrim("check-interval");
-        checkInterval = s != null ? Integer.valueOf(s) : 60000;
+        s = Environment.get(persist.getChildTextTrim("check-interval"));
+        checkInterval = s != null ? Integer.parseInt(s) : 60000;
 
         NameRegistrar.register(getName(), this);
     }
