@@ -139,15 +139,11 @@ public class TransactionManager
             loadMonitorExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
             loadMonitorExecutor.scheduleAtFixedRate(
               new Thread(() -> {
-                  int outstandingTransactions = getOutstandingTransactions();
-                  int activeSessions = getActiveSessions();
-                  if (activeSessions < maxSessions && outstandingTransactions > threshold) {
-                      int count = Math.max(0, getSessionsToStandUp());
-                      if (count>0) {
-                          for (int i=0; i<count; i++)
-                              new Thread(this).start();
-                          getLog().info("Created " + count + " additional sessions");
-                      }
+                  int count = getSessionsToStandUp();
+                  if (count>0) {
+                      for (int i=0; i<count; i++)
+                          new Thread(this).start();
+                      getLog().info("Created " + count + " additional sessions");
                   }
               }), 5, 1, TimeUnit.SECONDS)
             ;
@@ -1090,7 +1086,10 @@ public class TransactionManager
     protected int getSessionsToStandUp() {
         int outstandingTransactions = getOutstandingTransactions();
         int activeSessions = getActiveSessions();
-        int count = Math.min(outstandingTransactions, maxSessions - activeSessions);
+        int count = 0;
+        if (activeSessions < maxSessions && outstandingTransactions > threshold) {
+            count = Math.min(outstandingTransactions, maxSessions - activeSessions);
+        }
         return count;
     }
   
