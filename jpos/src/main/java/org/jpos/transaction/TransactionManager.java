@@ -139,10 +139,8 @@ public class TransactionManager
             loadMonitorExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
             loadMonitorExecutor.scheduleAtFixedRate(
               new Thread(() -> {
-                  int outstandingTransactions = getOutstandingTransactions();
-                  int activeSessions = getActiveSessions();
-                  if (activeSessions < maxSessions && outstandingTransactions > threshold) {
-                      int count = Math.min(outstandingTransactions, maxSessions - activeSessions);
+                  int count = getSessionsToStandUp();
+                  if (count>0) {
                       for (int i=0; i<count; i++)
                           new Thread(this).start();
                       getLog().info("Created " + count + " additional sessions");
@@ -237,6 +235,9 @@ public class TransactionManager
             try {
                 if (hasStatusListeners)
                     notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
+                
+                if (isSessionToStandDown())
+                    break;
 
                 Object obj = iisp.in (queue, MAX_WAIT);
                 if (obj == Boolean.FALSE)
@@ -1078,6 +1079,27 @@ public class TransactionManager
         return debug;
     }
 
+    /**
+     * This method returns the number of sessions that can be started at this point in time
+     * @return number of sessions
+     */
+    protected int getSessionsToStandUp() {
+        int outstandingTransactions = getOutstandingTransactions();
+        int activeSessions = getActiveSessions();
+        int count = 0;
+        if (activeSessions < maxSessions && outstandingTransactions > threshold) {
+            count = Math.min(outstandingTransactions, maxSessions - activeSessions);
+        }
+        return count;
+    }
+  
+    /** 
+     * This method returns true if current session should stop working on more messages
+     * @return
+     */
+    protected boolean isSessionToStandDown() {
+        return false;
+    }
 
     @Override
     public int getActiveSessions() {
