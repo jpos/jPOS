@@ -84,7 +84,7 @@ public class ISO87APackager extends ISOBasePackager {
     /*050*/ new IF_CHAR     (  3, "CURRENCY CODE, SETTLEMENT"),
     /*051*/ new IF_CHAR     (  3, "CURRENCY CODE, CARDHOLDER BILLING"   ),
     /*052*/ new IFA_BINARY  (  8, "PIN DATA"   ),
-    /*053*/ new IFA_NUMERIC ( 16, "SECURITY RELATED CONTROL INFORMATION"),
+    /*053*/ new IFA_NUMERIC ( 96, "SECURITY RELATED CONTROL INFORMATION"),
     /*054*/ new IFA_LLLCHAR (120, "ADDITIONAL AMOUNTS"),
     /*055*/ new IFA_LLLCHAR (999, "RESERVED ISO"),
     /*056*/ new IFA_LLLCHAR (999, "RESERVED ISO"),
@@ -95,7 +95,7 @@ public class ISO87APackager extends ISOBasePackager {
     /*061*/ new IFA_LLLCHAR (999, "RESERVED PRIVATE"),
     /*062*/ new IFA_LLLCHAR (999, "RESERVED PRIVATE"),
     /*063*/ new IFA_LLLCHAR (999, "RESERVED PRIVATE"),
-    /*064*/ new IFA_BINARY  (  8, "MESSAGE AUTHENTICATION CODE FIELD"),
+    /*064*/ new IF_CHAR  (  64, "MESSAGE AUTHENTICATION CODE FIELD"),
     /*065*/ new IFA_BINARY  (  1, "BITMAP, EXTENDED"),
     /*066*/ new IFA_NUMERIC (  1, "SETTLEMENT CODE"),
     /*067*/ new IFA_NUMERIC (  2, "EXTENDED PAYMENT CODE"),
@@ -159,7 +159,7 @@ public class ISO87APackager extends ISOBasePackager {
     /*125*/ new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
     /*126*/ new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
     /*127*/ new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
-    /*128*/ new IFA_BINARY  (  8, "MAC 2"),
+    /*128*/ new IF_CHAR  (  64, "MAC 2"),
         };
     public ISO87APackager() {
         super();

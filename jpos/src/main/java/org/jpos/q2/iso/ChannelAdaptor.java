@@ -26,6 +26,7 @@ import org.jpos.core.handlers.exception.ExceptionHandlerConfigAware;
 import org.jpos.iso.*;
 import org.jpos.iso.channel.ASCIIChannel;
 import org.jpos.iso.packager.GenericPackager;
+import org.jpos.iso.packager.ISO87APackager;
 import org.jpos.iso.packager.PostPackager;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
@@ -303,7 +304,7 @@ public class ChannelAdaptor
                         final byte[] header = getMessageHeader(msg.pack());
                         msg.setHeader(header);
 
-                        ((PostPackager) msg.getPackager()).setHeaderLength(header.length);
+                        (getPackager(msg)).setHeaderLength(header.length);
                         ((ASCIIChannel) channel).setLengthDigits(header.length);
                         channel.send (msg.pack());
                         tx++;
@@ -490,5 +491,18 @@ public class ChannelAdaptor
     protected void append (StringBuffer sb, String name, int value) {
         sb.append (name);
         sb.append (value);
+    }
+
+    private ISOBasePackager getPackager(ISOMsg message) {
+        final ISOPackager packager = message.getPackager();
+        if (packager instanceof PostPackager) {
+            return new PostPackager();
+        }
+
+        if (packager instanceof ISO87APackager) {
+            return new ISO87APackager();
+        }
+
+        return (ISOBasePackager) packager;
     }
 }
