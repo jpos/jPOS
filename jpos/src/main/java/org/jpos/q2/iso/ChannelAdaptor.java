@@ -304,7 +304,7 @@ public class ChannelAdaptor
                         final byte[] header = getMessageHeader(msg.pack());
                         msg.setHeader(header);
 
-                        (getPackager(msg)).setHeaderLength(header.length);
+                        getPackager(msg).setHeaderLength(header.length);
                         ((ASCIIChannel) channel).setLengthDigits(header.length);
                         channel.send (msg.pack());
                         tx++;
@@ -496,11 +496,11 @@ public class ChannelAdaptor
     private ISOBasePackager getPackager(ISOMsg message) {
         final ISOPackager packager = message.getPackager();
         if (packager instanceof PostPackager) {
-            return new PostPackager();
+            return (PostPackager) packager;
         }
 
         if (packager instanceof ISO87APackager) {
-            return new ISO87APackager();
+            return (ISO87APackager) packager;
         }
 
         return (ISOBasePackager) packager;
