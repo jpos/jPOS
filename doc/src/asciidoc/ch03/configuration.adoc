@@ -119,18 +119,17 @@ A YAML file (i.e. `cfg/default.yml`) containing an entry like this:
 [source,yaml]
 -------------
 db:
-    pass: file:/var/secure/dbpass.txt
+    pass: file::/var/secure/dbpass.txt
 -------------
 
-Would obtain the `${db.pass}` property `/var/secure/dbpass.txt` file.
-
+Would obtain the value of the `${db.pass}` property from the `/var/secure/dbpass.txt` file.
 
 Likewise, an obfuscated entry like this:
 
 [source,yaml]
 -------------
 db:
-    pass: obf:Ir8LYtvCYsaXANchMMrBqq5Gs2DnMEstYAAAAA
+    pass: obf::Ir8LYtvCYsaXANchMMrBqq5Gs2DnMEstYAAAAA
 -------------
 
 would de-obfuscate the base64 encoded secret.
