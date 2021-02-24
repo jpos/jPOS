@@ -6,25 +6,9 @@ buildscript {
         classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:5.2.0'
         classpath 'org.owasp:dependency-check-gradle:6.1.1'
     }
-    ext {
-      spotbugsVersion = '1.6.8'
-    }
 }
-plugins {
-  id "com.github.spotbugs" version "4.6.0"
-}
-
 apply plugin: 'biz.aQute.bnd.builder'
 apply plugin: 'org.owasp.dependencycheck'
-spotbugsVersion = '1.6.8'
-apply from: 'spotbugs.gradle'
-
-spotbugsMain {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
 
 import aQute.bnd.gradle.Bundle
 
