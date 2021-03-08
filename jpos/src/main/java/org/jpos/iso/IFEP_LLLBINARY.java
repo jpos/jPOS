@@ -18,7 +18,6 @@
 
 package org.jpos.iso;
 import org.jpos.iso.packager.GenericPackagerParams;
-import org.jpos.util.Caller;
 import org.xml.sax.Attributes;
 
 import java.io.IOException;
