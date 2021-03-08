@@ -226,7 +226,7 @@ public class TaggedSequencePackager extends GenericPackager {
     }
 
     @Override
-    protected void setGenericPackagerParams(Attributes atts) {
+    public void setGenericPackagerParams(Attributes atts) {
         super.setGenericPackagerParams(atts);
         this.setToken(atts.getValue("token"));
         this.length = Integer.parseInt(atts.getValue("length"));

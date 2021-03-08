@@ -90,7 +90,7 @@ import java.util.TreeMap;
 
 @SuppressWarnings("unchecked")
 public class GenericPackager
-    extends ISOBasePackager implements Configurable
+    extends ISOBasePackager implements Configurable, GenericPackagerParams
 {
    /* Values copied from ISOBasePackager
       These can be changes using attributes on the isopackager node */
@@ -269,8 +269,8 @@ public class GenericPackager
         return sb.toString();
     }
 
-    protected void setGenericPackagerParams (Attributes atts)
-    {
+    @Override
+    public void setGenericPackagerParams (Attributes atts) {
         String maxField  = atts.getValue("maxValidField");
         String emitBmap  = atts.getValue("emitBitmap");
         String bmapfield = atts.getValue("bitmapField");
@@ -435,6 +435,8 @@ public class GenericPackager
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
+                    if (f instanceof GenericPackagerParams)
+                        ((GenericPackagerParams)f).setGenericPackagerParams (atts);
 
                     // Modified for using TaggedFieldPackager
                     if( f instanceof TaggedFieldPackager){
@@ -443,11 +445,8 @@ public class GenericPackager
                     fieldStack.push(f);
 
                     ISOBasePackager p = (ISOBasePackager) instantiate(packager, params);
-                    if (p instanceof GenericPackager)
-                    {
-                        GenericPackager gp = (GenericPackager) p;
-                        gp.setGenericPackagerParams (atts);
-                    }
+                    if (p instanceof GenericPackagerParams)
+                        ((GenericPackagerParams)p).setGenericPackagerParams (atts);
                     fieldStack.push(p);
 
                     fieldStack.push(new TreeMap());

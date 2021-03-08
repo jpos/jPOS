@@ -17,10 +17,15 @@
  */
 
 package org.jpos.iso;
+import org.jpos.iso.packager.GenericPackagerParams;
+import org.jpos.util.Caller;
+import org.xml.sax.Attributes;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-public class IFEP_LLLBINARY extends ISOBinaryFieldPackager {
+public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPackagerParams {
+    Integer fieldId = null;
 
     private static final int TAG_HEADER_LENGTH = 2;
     private final int prefixerPackedLength;
@@ -42,6 +47,11 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager {
         prefixerPackedLength = prefixer.getPackedLength();
     }
 
+    @Override
+    public void setGenericPackagerParams(Attributes atts) {
+        fieldId = Integer.parseInt(atts.getValue("id"));
+    }
+
     /**
      * @param c - a component
      * @return packed component
@@ -49,8 +59,8 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager {
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         int len = ((byte[]) c.getValue()).length;
-    
-        if (len > getLength())  
+        String key = fieldId != null ? fieldId.toString() : c.getKey().toString();
+        if (len > getLength())
             throw new ISOException (
                 "invalid len "+len +" packing IFEP_LLLBINARY field "
                 +c.getKey().toString()
@@ -60,7 +70,7 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager {
         byte[] llltt = 
             ISOUtil.asciiToEbcdic (
               ISOUtil.zeropad(Integer.toString(len+ TAG_HEADER_LENGTH), prefixerPackedLength)
-              +ISOUtil.zeropad(c.getKey().toString(), TAG_HEADER_LENGTH));
+              +ISOUtil.zeropad(key, TAG_HEADER_LENGTH));
 
         System.arraycopy(llltt, 0, b, 0, TAG_HEADER_LENGTH + prefixerPackedLength);
         System.arraycopy(c.getValue(), 0, b, TAG_HEADER_LENGTH + prefixerPackedLength, len);
