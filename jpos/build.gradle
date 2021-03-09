@@ -3,8 +3,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:5.2.0'
-        classpath 'org.owasp:dependency-check-gradle:6.1.1'
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:5.3.0'
+        classpath 'org.owasp:dependency-check-gradle:6.1.5'
     }
 }
 apply plugin: 'biz.aQute.bnd.builder'
@@ -295,7 +295,7 @@ task installApp(type: Sync) {
 
 task viewTests (description: 'Open Test Reports') {
     doLast {
-        Class.forName("java.awt.Desktop").newInstance().browse(
+        Class.forName("java.awt.Desktop").getDeclaredConstructor().newInstance().browse(
             new File("${buildDir}/reports/tests/test", 'index.html').toURI())
     }
 }

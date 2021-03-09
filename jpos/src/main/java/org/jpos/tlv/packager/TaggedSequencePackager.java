@@ -139,7 +139,7 @@ public class TaggedSequencePackager extends GenericPackager {
         try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             ISOComponent c;
             Map fields = m.getChildren();
-            fields.remove(new Integer(-1));
+            fields.remove(-1);
             int len = 0;
             boolean tagsStarted = false;
             Iterator iterator = fields.values().iterator();
