@@ -22,50 +22,57 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.jpos.iso.ISOBasePackager;
-import org.jpos.iso.ISOComponent;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOField;
-import org.jpos.iso.ISOUtil;
+import org.jpos.iso.*;
+import org.xml.sax.Attributes;
 
 /**
- * 
  * This packager is used to package subfields such as field 60 of GICC.
  */
-public class GICCSubFieldPackager extends ISOBasePackager {
+public class GICCSubFieldPackager extends GenericPackager implements ISOSubFieldPackager, GenericPackagerParams {
+    private int fieldId = 0;
+
     /**
      * Default constructor
      */
-    public GICCSubFieldPackager() {
-            super();
+    public GICCSubFieldPackager() throws ISOException {
+        super();
     }
 
     /**
      * Always return false
      */
     protected boolean emitBitMap() {
-            return false;
+        return false;
+    }
+
+    @Override
+    public int getFieldNumber() {
+        return fieldId;
+    }
+
+    @Override
+    public void setGenericPackagerParams(Attributes atts) {
+        super.setGenericPackagerParams(atts);
+        fieldId = Integer.parseInt(atts.getValue("id"));
     }
 
     public byte[] pack(ISOComponent c) throws ISOException {
-            try {
-                int len = 0;
-                byte[] result;
-                Map tab = c.getChildren();
+        try {
+            int len = 0;
+            byte[] result;
+            Map tab = c.getChildren();
+            List list = new ArrayList();
 
-                List list = new ArrayList();
-
-                // Handle first IF_CHAR field
-                ISOField f0 = (ISOField) tab.get(0);
-                if (f0 != null) {
+            // Handle first IF_CHAR field
+            ISOField f0 = (ISOField) tab.get(0);
+            if (f0 != null) {
                 String s = (String) f0.getValue();
                 list.add(s.getBytes());
                 len += s.getBytes().length;
             }
             for (int i = 1; i < fld.length; i++) {
                 Object obj = tab.get(i);
-                if (obj instanceof ISOComponent)
-                {
+                if (obj instanceof ISOComponent) {
                     ISOComponent f = (ISOComponent) obj;
                     byte[] b = fld[i].pack(f);
                     list.add(b);
@@ -82,29 +89,26 @@ public class GICCSubFieldPackager extends ISOBasePackager {
             }
 
             return result;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new ISOException(ex);
         }
     }
 
-    public int unpack(ISOComponent m, byte[] b) throws ISOException
-    {
+    public int unpack(ISOComponent m, byte[] b) throws ISOException {
         // Unpack the IF_CHAR field
         int consumed = 0;
         ISOComponent c;
         if (fld[0] != null && b[consumed] == 0x20) {
-                    // Hack to support a nine-byte filler
+            // Hack to support a nine-byte filler
             c = fld[0].createComponent(0);
             consumed += fld[0].unpack(c, b, consumed);
             m.set(c);
         }
 
         // Now unpack the IFEP_LLCHAR fields
-        for (; consumed < b.length;)
-        {
+        for (; consumed < b.length; ) {
             int fieldNumber = Integer.parseInt(ISOUtil.ebcdicToAscii(b,
-                consumed + 3, 2));
+              consumed + 3, 2));
             if (fld[fieldNumber] == null)
                 break;
             c = fld[fieldNumber].createComponent(fieldNumber);

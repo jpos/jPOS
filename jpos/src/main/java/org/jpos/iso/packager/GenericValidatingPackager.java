@@ -114,8 +114,8 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
             throw new ISOException(e);
         }
     }
-
-    protected void setGenericPackagerParams ( Attributes atts ) {
+    @Override
+    public void setGenericPackagerParams ( Attributes atts ) {
         String maxField  = atts.getValue( "maxValidField" );
         String emitBmap  = atts.getValue( "emitBitmap" );
         String bmapfield = atts.getValue( "bitmapField" );

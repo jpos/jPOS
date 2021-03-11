@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE isopackager PUBLIC
+        "-//jPOS/jPOS Generic Packager DTD 1.0//EN"
+        "http://jpos.org/dtd/generic-packager-1.0.dtd">
+
+<isopackager>
+ <isofield id="0" length="4"  name="Message Type Indicator" class="org.jpos.iso.IFB_NUMERIC" pad="true"/>
+ <isofield id="1" length="16" name="Bitmap" class="org.jpos.iso.IFB_BITMAP"/>
+ <isofieldpackager id="60" length="999" name="GICC 60" class="org.jpos.iso.IFE_LLLBINARY" 
+     packager="org.jpos.iso.packager.GICCSubFieldPackager">
+      <isofield
+          id="0"
+          length="9"
+          name="DUMMY"
+          class="org.jpos.iso.IF_CHAR"/>
+      <isofield
+          id="40"
+          length="2"
+          name="ECommerce Indicator"
+          class="org.jpos.iso.IFEP_LLLBINARY"/>
+      <isofieldpackager id="47" length="999" name="Digitization data" class="org.jpos.iso.IFEP_LLLBINARY"
+          packager="org.jpos.iso.packager.GICCSubFieldPackager">
+		    <isofield
+			    id="1"
+			    length="4"
+			    name="Wallet ID"
+			    class="org.jpos.iso.IFEP_LLLBINARY"/>
+      </isofieldpackager>
+   </isofieldpackager>
+</isopackager>
+

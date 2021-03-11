@@ -55,7 +55,7 @@ public class GenericSubFieldPackager extends GenericPackager implements ISOSubFi
     }
 
     @Override
-    protected void setGenericPackagerParams(Attributes atts) {
+    public void setGenericPackagerParams(Attributes atts) {
         super.setGenericPackagerParams(atts);
         fieldId = Integer.parseInt(atts.getValue("id"));
     }
