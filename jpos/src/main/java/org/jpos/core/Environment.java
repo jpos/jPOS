@@ -107,12 +107,14 @@ public class Environment implements Loggeable {
         String r = s;
         if (s != null) {
             Matcher m = verbPattern.matcher(s);
-            if (m.matches()) {
-                return m.group(1);
+            if (m.matches()) {                      // matches $verb{...}
+                return m.group(1);                  // return internal value, verbatim
             }
+
             m = valuePattern.matcher(s);
-            if (!m.matches())
-                return s;
+            if (!m.matches())                       // doesn't match $xxx{...} at all
+                return s;                           // return the whole thing
+
             while (m != null && m.matches()) {
                 String gPrefix = m.group(3);
                 String gValue = m.group(4);
