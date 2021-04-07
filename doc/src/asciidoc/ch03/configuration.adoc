@@ -65,7 +65,7 @@ configuration object by calling the +setConfiguration+ method on
     </object>
 ----
 
-Should +com.mycompany.MyObject"+ implement +Configurable+, Q2 would call its  +setConfiguration()+ method 
+Should +com.mycompany.MyObject+ implement +Configurable+, Q2 would call its  +setConfiguration()+ method 
 providing access to the underlying +myProperty+ property.
 
 It's interesting to note that Q2 provides the ability to have array of
@@ -82,7 +82,7 @@ properties under the same name, i.e:
 
 ----
 
-where one can call handy methods like  +String\[\] getAll(String)+. 
+where one can call handy methods like  +String[] getAll(String)+. 
 
 +setConfiguration(Configuration cfg)+ can check the Configuration object and might 
 throw a +ConfigurationException+ in case a required property is not present or 
@@ -90,11 +90,14 @@ is invalid.
 
 [TIP]
 =====
-SimpleConfiguration recognizes and de-reference properties with the
-format: `${xxx}` and search for a system property, or operating system
+SimpleConfiguration recognizes and de-references properties with the
+format: `${xxx}` and searches for a system property, or operating system
 environment variable under the `xxx` name.
+As a fallback mechanism of last resort, the properety can be resolved from a
+YAML or properties file in the `cfg` directory (default filename `default.yml`
+or `default.cfg`, which can be overridden by the `jpos.env` system property).
 
-You can add a default value within the expression, using the `:` (colon) separator.
+You can add a default value within the expression itself, using the `:` (colon) separator.
 For example `${xxx:def_value}`. If the property is not found, the default value will be used.
 
 The format `$sys{xxx}` de-reference just from system properties, and
