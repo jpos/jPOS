@@ -56,7 +56,7 @@ public class TPSTestCase {
         Instant nowDone = Instant.now();
         Thread.sleep (1050L - Duration.between(nowInit, Instant.now()).toMillis());
         assertTrue(tps.intValue() >= 800, "Expected aprox 1000 TPS but was " + tps.intValue());
-        assertTrue(tps.intValue() >= 800, "Still expecting aprox 1000 TPS on a second call");
+        assertTrue(tps.intValue() >= 800, "Still expecting aprox 1000 TPS on a second call but was " + tps.intValue());
         Thread.sleep (2500L - Duration.between(nowDone, Instant.now()).toMillis());
         assertEquals(
             0, tps.intValue(),
