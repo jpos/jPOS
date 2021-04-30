@@ -231,7 +231,7 @@ These can be changes using attributes on the isopackager node */
                     // Insert this new isofield into the Map
                     // on the top of the stack using the fieldID as the key
                     Map m = (Map) fieldStack.peek();
-                    m.put(new Integer(fldID), f);
+                    m.put(Integer.valueOf(fldID), f);
                 }
                 if ( localName.equals( "isofieldvalidator" ) ){
                     String type = atts.getValue( "class" );
@@ -278,7 +278,7 @@ onto the stack.
 4) a Map to collect the subfields
 */
                     String packager = atts.getValue("packager");
-                    fieldStack.push(new Integer(id));
+                    fieldStack.push(Integer.valueOf(id));
                     ISOFieldPackager f;
                     f = (ISOFieldPackager) Class.forName(type).newInstance();
                     f.setDescription(name);
@@ -349,7 +349,7 @@ onto the stack.
                         ex.printStackTrace(  );
                     }
                 }
-                ((Map)validatorStack.peek()).put( new Integer(fldID), f );
+                ((Map)validatorStack.peek()).put(Integer.valueOf(fldID), f );
             }
             if ( localName.equals( "isovalidator" ) ){
                 /** pop properties **/
