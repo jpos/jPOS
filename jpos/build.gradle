@@ -5,12 +5,49 @@ buildscript {
     dependencies {
         classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:5.3.0'
         classpath 'org.owasp:dependency-check-gradle:6.1.5'
+        classpath 'de.jjohannes.gradle:extra-java-module-info:0.4'
     }
+}
+plugins {
+   id "de.jjohannes.extra-java-module-info" version "0.6"
 }
 apply plugin: 'biz.aQute.bnd.builder'
 apply plugin: 'org.owasp.dependencycheck'
 
 import aQute.bnd.gradle.Bundle
+
+extraJavaModuleInfo {
+    automaticModule ('jdom2-2.0.6.jar', 'org.jdom2')
+    automaticModule ('javatuples-1.2.jar', 'org.javatuples')
+    automaticModule ('bsh-2.0b6.jar', 'bsh')
+    automaticModule ('commons-cli-1.4.jar', 'org.apache.commons.cli')
+    automaticModule ('je-18.3.12.jar', 'com.sleepycat.je')
+    automaticModule ('jdbm-1.0.jar', 'org.jdbm')
+    automaticModule ('HdrHistogram-2.1.12.jar', 'org.hdrhistogram.HdrHistogram')
+    automaticModule ('org.osgi.core-6.0.0.jar', 'org.osgi.core')
+    automaticModule ('javassist-3.27.0-GA.jar', 'org.javassist.javassist')
+/*
+    module ('sshd-core-2.6.0.jar',  'org.apache.sshd.core', '2.6.0') {
+        exports('org.apache.sshd.server')
+        exports('org.apache.sshd.server.auth.pubkey')
+	exports('org.apache.sshd.server.session')
+        exports('org.apache.sshd.server.channel')
+        exports('org.apache.sshd.server.command')
+        exports('org.apache.sshd.server.shell')
+    }
+    module ('sshd-common-2.6.0.jar',  'org.apache.sshd.common', '2.6.0') {
+        exports('org.apache.sshd.common')
+        exports('org.apache.sshd.common.config.keys')
+        exports('org.apache.sshd.common.util.security.eddsa')
+        exports('org.apache.sshd.common.cipher')
+        exports('org.apache.sshd.common.keyprovider')
+        exports('org.apache.sshd.common.util.buffer')
+        exports('org.apache.sshd.common.util.security')
+        exports('org.apache.sshd.common.config.keys.impl')
+        exports('org.apache.sshd.server.keyprovider')
+    }
+*/
+}
 
 dependencies {
     api libraries.jdom
@@ -23,12 +60,11 @@ dependencies {
     api libraries.hdrhistogram
 
     implementation libraries.osgi_core
-    implementation libraries.javassist
     implementation libraries.yaml;
     implementation libraries.jdbm
     implementation libraries.sleepycat_je
-    implementation libraries.sshd
-    implementation libraries.eddsa
+    // implementation libraries.sshd
+    // implementation libraries.eddsa
 
     testImplementation libraries.commons_lang3
     testImplementation libraries.hamcrest
@@ -88,7 +124,6 @@ def jposCopySpec = copySpec {
     }
 }
 
-def moduleName='org.jpos.jpos'
 def bundleVendor='jPOS.org'
 def bundleDescription="jPOS ${project.version}"
 def bundleActivator = 'org.jpos.q2.Activator'
@@ -110,8 +145,7 @@ task listJars {
 jar () {
     manifest {
         attributes 'Implementation-Title': 'jPOS', 
-                   'Implementation-Version': project.version,
-                   'Automatic-Module-Name': moduleName
+                   'Implementation-Version': project.version
     }
     bnd (
         'Bundle-Vendor': bundleVendor,
@@ -136,7 +170,6 @@ task q2jar (type: Bundle) {
         def manifestClasspath = configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
                    'Implementation-Version': project.version,
-                   'Automatic-Module-Name': moduleName,
                    'Main-Class': 'org.jpos.q2.Q2',
                    'Class-Path': manifestClasspath
     }
@@ -160,7 +193,6 @@ task bundleFull (type: Bundle) {
         def manifestClasspath = configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
                    'Implementation-Version': project.version,
-                   'Automatic-Module-Name': moduleName,
                    'Main-Class': 'org.jpos.q2.Q2',
                    'Class-Path': manifestClasspath
     }
