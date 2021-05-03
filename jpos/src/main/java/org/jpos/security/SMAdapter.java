@@ -442,6 +442,7 @@ public interface SMAdapter<T> {
      * @return pin encrypted under LMK
      * @throws SMException
      */
+    @Deprecated
     EncryptedPIN importPIN(EncryptedPIN pinUnderDuk, KeySerialNumber ksn, T bdk)
             throws SMException;
 
@@ -476,6 +477,7 @@ public interface SMAdapter<T> {
      * @return pin encrypted under kd2
      * @throws SMException
      */
+    @Deprecated
     EncryptedPIN translatePIN(EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
                               T bdk, T kd2, byte destinationPINBlockFormat) throws SMException;
 

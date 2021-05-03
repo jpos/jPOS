@@ -1622,6 +1622,7 @@ public class BaseSMAdapter<T>
      * @return imported pin
      * @throws SMException
      */
+    @Deprecated
     protected EncryptedPIN importPINImpl(EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             T bdk) throws SMException {
         return importPINImpl(pinUnderDuk,ksn,bdk,false);
@@ -1652,6 +1653,7 @@ public class BaseSMAdapter<T>
      * @return translated pin
      * @throws SMException
      */
+    @Deprecated
     protected EncryptedPIN translatePINImpl(EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             T bdk, T kd2, byte destinationPINBlockFormat) throws SMException {
         return translatePINImpl(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,false);

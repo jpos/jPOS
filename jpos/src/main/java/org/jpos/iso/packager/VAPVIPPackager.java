@@ -31,7 +31,7 @@ import org.jpos.iso.*;
  * @see ISOBasePackager
  * @see ISOComponent
  */
-
+@Deprecated
 public class VAPVIPPackager extends ISOBasePackager {
     private static final boolean pad = true;
     protected ISOFieldPackager fld[] = {

@@ -27,6 +27,7 @@ package org.jpos.iso;
  * @see ISOComponent
  * @deprecated Use IFE_CHAR instead
  */
+@Deprecated
 public class IF_ECHAR extends ISOFieldPackager {
     public IF_ECHAR() {
         super();

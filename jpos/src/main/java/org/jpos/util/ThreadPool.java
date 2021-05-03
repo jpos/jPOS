@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author apr@cs.com.uy
  * @deprecated Used Executor framework
  */
+@Deprecated
 public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Configurable, ThreadPoolMBean {
     private static AtomicInteger poolNumber = new AtomicInteger(0);
     private static AtomicInteger threadNumber = new AtomicInteger(0);

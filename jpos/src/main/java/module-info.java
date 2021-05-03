@@ -5,10 +5,8 @@ module org.jpos.jpos {
     requires org.bouncycastle.provider;
     requires org.apache.commons.cli;
     requires org.osgi.core;
-    // requires org.apache.sshd.core;
-    // requires org.apache.sshd.common;
-
-    exports org.jpos.iso.header;
+    requires org.javatuples;
+    
     exports org.jpos.iso.packager;
     exports org.jpos.iso.validator;
     exports org.jpos.q2;

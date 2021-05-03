@@ -221,6 +221,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @return trailer (may be null)
      */
     @SuppressWarnings("unused")
+    @Deprecated
     public String getTrailler() {
         return trailer;
     }
@@ -230,6 +231,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @param trailer Card's trailer
      */
     @SuppressWarnings("unused")
+    @Deprecated
     public void setTrailler (String trailer) {
         this.trailer = trailer;
     }

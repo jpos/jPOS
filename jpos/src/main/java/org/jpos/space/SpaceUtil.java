@@ -64,6 +64,7 @@ public class SpaceUtil {
     /**
      * @deprecated Use space.put instead
      */
+    @Deprecated
     public static void wipeAndOut  (Space sp, Object key, Object value) {
         sp.put(key, value);
     }
@@ -71,6 +72,7 @@ public class SpaceUtil {
     /**
      * @deprecated use space.put instead
      */
+    @Deprecated
     public static void wipeAndOut  (Space sp, Object key, Object value, long timeout) {
         sp.out(key, value, timeout);
     }

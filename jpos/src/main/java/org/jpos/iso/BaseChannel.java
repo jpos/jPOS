@@ -509,6 +509,7 @@ public abstract class BaseChannel extends Observable
      * @param len the packed image length
      * @throws IOException on error
      */
+    @Deprecated
     protected void sendMessageTrailler(ISOMsg m, int len) throws IOException
     {
     }
@@ -517,6 +518,7 @@ public abstract class BaseChannel extends Observable
      * @deprecated use sendMessageTrailer(ISOMsg m, byte[] b instead.
      */
     @SuppressWarnings ("deprecation")
+    @Deprecated
     protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException  {
         sendMessageTrailler (m, b.length);
     }
@@ -536,6 +538,7 @@ public abstract class BaseChannel extends Observable
     /**
      * @deprecated use getMessageTrailer(ISOMsg m) instead.
      */
+    @Deprecated
     protected void getMessageTrailler() throws IOException {
     }
 

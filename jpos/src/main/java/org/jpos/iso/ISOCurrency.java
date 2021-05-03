@@ -108,6 +108,7 @@ public class ISOCurrency
      * @throws IllegalArgumentException if we fail to convert the amount
      * @deprecated You should never use doubles
      */
+    @Deprecated
     public static double convertFromIsoMsg(String isoamount, String currency) throws IllegalArgumentException
     {
         Currency c = findCurrency(currency);

@@ -71,6 +71,7 @@ public class ISOUtil {
      * Default encoding (charset) for bytes transmissions over network
      * @deprecated use {@link #CHARSET} instead
      */
+    @Deprecated
     public static final String ENCODING  = "ISO8859_1";
     public static final Pattern unicodePattern = Pattern.compile("u00([0-9a-fA-F]{2})+");
 
