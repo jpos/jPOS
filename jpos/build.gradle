@@ -26,6 +26,9 @@ extraJavaModuleInfo {
     automaticModule ('HdrHistogram-2.1.12.jar', 'org.hdrhistogram.HdrHistogram')
     automaticModule ('org.osgi.core-6.0.0.jar', 'org.osgi.core')
     automaticModule ('javassist-3.27.0-GA.jar', 'org.javassist.javassist')
+    automaticModule ('fest-assert-1.4.jar', 'org.easytesting.fest-assert')
+    automaticModule ('fest-util-1.1.6.jar', 'org.easytesting.fest-util')
+    automaticModule ('xmlunit-1.6.jar', 'xmlunit')
 /*
     module ('sshd-core-2.6.0.jar',  'org.apache.sshd.core', '2.6.0') {
         exports('org.apache.sshd.server')

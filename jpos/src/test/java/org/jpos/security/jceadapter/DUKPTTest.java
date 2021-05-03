@@ -176,7 +176,7 @@ public class DUKPTTest {
 
         Properties props = new Properties();
         props.put("lmk", "build/resources/test/org/jpos/security/lmk-test");
-        props.put("provider", "com.sun.crypto.provider.SunJCE");
+        // props.put("provider", "com.sun.crypto.provider.SunJCE");
 
         sm.setConfiguration(new SimpleConfiguration(props));
     }

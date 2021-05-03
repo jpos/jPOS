@@ -25,6 +25,7 @@ import org.jpos.core.Environment;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
+import org.jpos.q2.QClassLoader;
 import org.jpos.security.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -38,6 +39,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.security.*;
 import java.util.*;
@@ -1820,12 +1822,18 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {
                 if (jceProviderClassName == null || jceProviderClassName.isEmpty()) {
-                    evt.addMessage("No JCE Provider specified. Attempting to load default provider (SunJCE).");
-                    jceProviderClassName = "com.sun.crypto.provider.SunJCE";
+                    provider = Security.getProvider("SunJCE");
+                } else {
+                    provider = java.security.AccessController.doPrivileged((PrivilegedAction<Provider>) () -> {
+                      try {
+                          return (Provider) Class.forName(jceProviderClassName).getDeclaredConstructor().newInstance();
+                      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                          throw new IllegalArgumentException(e);
+                      }
+                    });
                 }
-                provider = (Provider)Class.forName(jceProviderClassName).newInstance();
-                Security.addProvider(provider);
-                evt.addMessage("name", provider.getName());
+                 Security.addProvider(provider);
+                 evt.addMessage("name", provider.getName());
             } catch (Exception e) {
                 evt.addMessage(e);
                 throw  new SMException("Unable to load jce provider whose class name is: "
