@@ -35,7 +35,7 @@ import org.jpos.core.Environment;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.install.ModuleUtils;
-import org.jpos.q2.ssh.SshService;
+// import org.jpos.q2.ssh.SshService;
 import org.jpos.security.SystemSeed;
 import org.jpos.util.Log;
 import org.jpos.util.LogEvent;
@@ -43,7 +43,6 @@ import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.PGPHelper;
 import org.jpos.util.SimpleLogListener;
-import org.jpos.util.slf4j.Slf4JDynamicBinder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -150,14 +149,6 @@ public class Q2 implements FileFilter, Runnable {
         deployDir.mkdirs ();
         mainClassLoader = getClass().getClassLoader();
         this.bundleContext = bundleContext;
-        try {
-            Slf4JDynamicBinder.applyMods();
-        }
-        catch (Exception ignored) {
-            // We won't stop anything just because we could
-            // inot initialize slf4j.
-            // ignored.printStackTrace();
-        }
         registerQ2();
     }
     public Q2 () {
@@ -209,7 +200,7 @@ public class Q2 implements FileFilter, Runnable {
 
             try {
                 loader = (QClassLoader) java.security.AccessController.doPrivileged(
-                        new java.security.PrivilegedAction() {
+                    new java.security.PrivilegedAction() {
                             public Object run() {
                                 return new QClassLoader(server, libDir, loaderName, mainClassLoader);
                             }
@@ -238,8 +229,8 @@ public class Q2 implements FileFilter, Runnable {
             if (startOSGI)
                 startOSGIFramework();
             if (enableSsh) {
-                deployElement(SshService.createDescriptor(sshPort, sshUser, sshAuthorizedKeys, sshHostKeyFile),
-                  "05_sshd-" + getInstanceId() + ".xml", false, true);
+//                deployElement(SshService.createDescriptor(sshPort, sshUser, sshAuthorizedKeys, sshHostKeyFile),
+//                  "05_sshd-" + getInstanceId() + ".xml", false, true);
             }
 
             deployInternal();
