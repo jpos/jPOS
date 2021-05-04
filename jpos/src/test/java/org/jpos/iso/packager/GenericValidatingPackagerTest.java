@@ -398,26 +398,7 @@ public class GenericValidatingPackagerTest {
         genericValidatorContentHandler.startElement("testGenericValidatorContentHandlerNamespaceURI",
                 "testGenericValidatorContentHandlerLocalName", "testGenericValidatorContentHandlerQName", atts);
     }
-
-    @Test
-    public void testGenericValidatorContentHandlerStartElementThrowsSAXException() throws Throwable {
-        GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
-        Attributes atts = new AttributesImpl();
-        try {
-            genericValidatorContentHandler.startElement("testGenericValidatorContentHandlerNamespaceURI", "isofieldpackager",
-                    "testGenericValidatorContentHandlerQName", atts);
-            fail("Expected SAXException to be thrown");
-        } catch (SAXException ex) {
-            if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("null", ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("java.lang.NumberFormatException: null", ex.getMessage(), "ex.getMessage()");
-            }
-            assertEquals("null", ex.getException().getMessage(), "ex.getException().getMessage()");
-            assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
-        }
-    }
-
+    
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException1() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();

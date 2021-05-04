@@ -380,25 +380,7 @@ public class GenericPackagerTest {
             assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
-
-    @Test
-    public void testGenericContentHandlerStartElementThrowsSAXException4() throws Throwable {
-        GenericPackager.GenericContentHandler genericContentHandler = new X92GenericPackager().new GenericContentHandler();
-        Attributes atts = new Attributes2Impl();
-        try {
-            genericContentHandler.startElement("testGenericContentHandlerNamespaceURI", "isofieldpackager",
-                    "testGenericContentHandlerQName", atts);
-            fail("Expected SAXException to be thrown");
-        } catch (SAXException ex) {
-            if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("null", ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("java.lang.NumberFormatException: null", ex.getMessage(), "ex.getMessage()");
-            }
-            assertEquals("null", ex.getException().getMessage(), "ex.getException().getMessage()");
-        }
-    }
-
+    
     @Test
     public void testGetBitMapfieldPackager() throws Throwable {
         ISOFieldPackager iFA_AMOUNT = new IFA_AMOUNT();
