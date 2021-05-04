@@ -5,7 +5,7 @@ ext {
         sleepycat_je: 'com.sleepycat:je:18.3.12',
         commons_cli: 'commons-cli:commons-cli:1.4',
         commons_lang3: 'org.apache.commons:commons-lang3:3.11',
-        jline: 'org.jline:jline:3.19.0',
+        jline: 'org.jline:jline:3.20.0',
         beanshell: 'org.apache-extras.beanshell:bsh:2.0b6',
         javatuples: 'org.javatuples:javatuples:1.2',
         javassist: 'org.javassist:javassist:3.27.0-GA',
@@ -14,18 +14,18 @@ ext {
         mockito_jupiter: 'org.mockito:mockito-junit-jupiter:3.8.0',
         fest_assert: 'org.easytesting:fest-assert:1.4',
         xmlunit: 'xmlunit:xmlunit:1.6',
-        junit: 'org.junit.jupiter:junit-jupiter:5.7.0',
+        junit: 'org.junit.jupiter:junit-jupiter:5.7.1',
         bouncycastle: [
-            'org.bouncycastle:bcprov-jdk15on:1.67',
-            'org.bouncycastle:bcpg-jdk15on:1.67'
+            'org.bouncycastle:bcprov-jdk15on:1.68',
+            'org.bouncycastle:bcpg-jdk15on:1.68'
         ],
         hamcrest: 'org.hamcrest:hamcrest:2.2',
-        sshd: 'org.apache.sshd:sshd-core:2.4.0',
+        sshd: 'org.apache.sshd:sshd-core:2.6.0',
         eddsa: 'net.i2p.crypto:eddsa:0.3.0',
         slf4j_api: "org.slf4j:slf4j-api:1.7.30",
         slf4j_nop: "org.slf4j:slf4j-nop:1.7.30",
         hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.12',
-        yaml: "org.yaml:snakeyaml:1.26"
+        yaml: "org.yaml:snakeyaml:1.28"
     ]
 }
 
