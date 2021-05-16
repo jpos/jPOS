@@ -22,7 +22,7 @@ subprojects {
         'https://oss.sonatype.org/content/repositories/snapshots/' :
         'https://oss.sonatype.org/service/local/staging/deploy/maven2';
 
-    configurations.compile.transitive = true
+    configurations.implementation.transitive = true
     javadoc.failOnError = false
     pmd.ignoreFailures = true
 

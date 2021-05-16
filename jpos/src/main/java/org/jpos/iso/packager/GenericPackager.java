@@ -428,7 +428,7 @@ public class GenericPackager
                     */
                     String packager = atts.getValue("packager");
 
-                    fieldStack.push(new Integer(id));
+                    fieldStack.push(Integer.valueOf(id));
 
                     ISOFieldPackager f;
                     f = (ISOFieldPackager) Class.forName(type).newInstance();
@@ -467,7 +467,7 @@ public class GenericPackager
                     // Insert this new isofield into the Map
                     // on the top of the stack using the fieldID as the key
                     Map m = (Map) fieldStack.peek();
-                    m.put(new Integer(id), f);
+                    m.put(Integer.valueOf(id), f);
                 }
             }
             catch (Exception ex)

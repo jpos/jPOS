@@ -70,7 +70,7 @@ public class Currency implements Serializable
 
     public double parseAmountFromISOMsg(String isoamount)
     {
-        return new Double(isoamount)/Math.pow(10, getDecimals());
+        return Double.valueOf(isoamount)/Math.pow(10, getDecimals());
     }
 
     @Override

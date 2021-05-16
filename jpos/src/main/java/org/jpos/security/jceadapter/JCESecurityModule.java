@@ -1823,7 +1823,11 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
                     evt.addMessage("No JCE Provider specified. Attempting to load default provider (SunJCE).");
                     jceProviderClassName = "com.sun.crypto.provider.SunJCE";
                 }
-                provider = (Provider)Class.forName(jceProviderClassName).newInstance();
+                if (jceProviderClassName.equals("com.sun.crypto.provider.SunJCE")) {
+                    provider = java.security.Security.getProvider("SunJCE");
+                } else {
+                    provider = (Provider)Class.forName(jceProviderClassName).getDeclaredConstructor().newInstance();
+                }
                 Security.addProvider(provider);
                 evt.addMessage("name", provider.getName());
             } catch (Exception e) {
