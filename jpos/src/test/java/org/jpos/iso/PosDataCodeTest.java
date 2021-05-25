@@ -227,4 +227,34 @@ public class PosDataCodeTest {
         assertFalse(pdc.isSwiped());        
    }   
 
+   @Test
+   public void checkIsCardNotPresent() {
+
+        pdc.setSecurityCharacteristics(PRIVATE_ALG_ENCRYPTION, PKI_ENCRYPTION);
+        pdc.unsetSecurityCharacteristics(PKI_ENCRYPTION);
+        pdc.setReadingMethods(ReadingMethod.PHYSICAL);
+
+        pdc.setPOSEnvironments(POSEnvironment.RECURRING);        
+        assertTrue(pdc.isCardNotPresent(), "Should be true for recurring");
+        
+        pdc.unsetPOSEnvironments(POSEnvironment.RECURRING);
+        pdc.setPOSEnvironments(POSEnvironment.E_COMMERCE);
+        assertTrue(pdc.isCardNotPresent(), "Should be true for E-Commerce");
+
+        pdc.unsetPOSEnvironments(POSEnvironment.E_COMMERCE);
+        pdc.setPOSEnvironments(POSEnvironment.MOTO);
+        assertTrue(pdc.isCardNotPresent(), "Should be true for MO/TO");
+
+        pdc.unsetPOSEnvironments(POSEnvironment.MOTO);
+        pdc.unsetReadingMethods(ReadingMethod.PHYSICAL);
+        pdc.setPOSEnvironments(POSEnvironment.ATTENDED);
+        pdc.setReadingMethods(ReadingMethod.ICC);        
+        assertFalse(pdc.isCardNotPresent(), "Should be false for attended");
+
+        PosDataCode localPDC = new PosDataCode();
+        localPDC.setSecurityCharacteristics(PRIVATE_ALG_ENCRYPTION, PKI_ENCRYPTION);
+        localPDC.unsetSecurityCharacteristics(PKI_ENCRYPTION);
+        localPDC.setReadingMethods(ReadingMethod.MAGNETIC_STRIPE);
+        assertFalse(pdc.isCardNotPresent(), "Should be false for swiped");
+   } 
 }
