@@ -258,6 +258,9 @@ public class PosDataCode implements Loggeable {
     public boolean isECommerce() {
         return hasPosEnvironment(POSEnvironment.E_COMMERCE);
     }
+    public boolean isCardNotPresent() {
+        return isECommerce() || isManualEntry() || isRecurring();
+    }
     public String toString() {
         return super.toString() + "[" + ISOUtil.hexString (getBytes())+ "]";
     }
