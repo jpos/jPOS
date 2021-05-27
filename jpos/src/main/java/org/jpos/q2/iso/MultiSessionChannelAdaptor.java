@@ -136,7 +136,7 @@ public class MultiSessionChannelAdaptor
                     }
                     ISOMsg m = channel.receive ();
                     rx++;
-                    lastTxn = System.currentTimeMillis();
+                    updateLast();
                     if (timeout > 0)
                         sp.out (out, m, timeout);
                     else
