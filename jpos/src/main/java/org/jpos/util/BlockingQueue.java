@@ -18,6 +18,8 @@
 
 package org.jpos.util;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.LinkedList;
 
 /**
@@ -76,10 +78,10 @@ public class BlockingQueue {
             return dequeue ();
 
         consumers++;
-        long maxTime = System.currentTimeMillis() + timeout;
+        Instant now = Instant.now();
         try {
-            while (queue.size() == 0 && System.currentTimeMillis() < maxTime) {
-                wait (timeout);
+            while (queue.size() == 0 && Duration.between(now, Instant.now()).toMillis() < timeout) {
+                wait (Math.max(timeout, 1L));
                 if (closed)
                     throw new Closed();
             }

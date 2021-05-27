@@ -93,7 +93,7 @@ public class MUXPoolTest {
             if (isJavaVersionAtMost(JAVA_14)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("Cannot read the array length because \"<local4>\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot read the array length because \"<local5>\" is null", ex.getMessage(), "ex.getMessage()");
             }
         }
     }

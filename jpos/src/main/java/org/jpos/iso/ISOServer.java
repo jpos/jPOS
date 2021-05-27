@@ -29,6 +29,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
@@ -44,12 +46,7 @@ import java.util.Vector;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Logger;
-import org.jpos.util.NameRegistrar;
-import org.jpos.util.ThreadPool;
+import org.jpos.util.*;
 
 /**
  * Accept ServerChannel sessions and forwards them to ISORequestListeners
@@ -82,7 +79,7 @@ public class ISOServer extends Observable
     public static final int DEFAULT_MAX_THREADS = 100;
     public static final String LAST = ":last";
     String name;
-    protected long lastTxn = 0l;
+    protected Instant lastTxn = Instant.EPOCH;
     protected Logger logger;
     protected String realm;
     protected String realmChannel;
@@ -342,7 +339,7 @@ public class ISOServer extends Observable
                 for (;;) {
                     try {
                         ISOMsg m = channel.receive();
-                        lastTxn = System.currentTimeMillis();
+                        lastTxn = Instant.now();
                         Iterator iter = listeners.iterator();
                         while (iter.hasNext()) {
                             if (((ISORequestListener)iter.next()).process
@@ -611,7 +608,7 @@ public class ISOServer extends Observable
     @Override
     public void resetCounters () {
         cnt = new int[SIZEOF_CNT];
-        lastTxn = 0l;
+        lastTxn = Instant.EPOCH;
     }
     /**
      * @return number of connections accepted by this server
@@ -692,10 +689,10 @@ public class ISOServer extends Observable
         sb.append (", tx=");
         sb.append (Integer.toString(cnt[1]));
         sb.append (", last=");
-        sb.append (lastTxn);
-        if (lastTxn > 0) {
+        sb.append (lastTxn.toEpochMilli());
+        if (!lastTxn.equals(Instant.EPOCH)) {
             sb.append (", idle=");
-            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append(Duration.between(lastTxn, Instant.now()).toMillis());
             sb.append ("ms");
         }
         return sb.toString();
@@ -738,11 +735,11 @@ public class ISOServer extends Observable
     }
     @Override
     public long getLastTxnTimestampInMillis() {
-        return lastTxn;
+        return lastTxn.toEpochMilli();
     }
     @Override
     public long getIdleTimeInMillis() {
-        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
+        return !lastTxn.equals(Instant.EPOCH) ? Duration.between(lastTxn, Instant.now()).toMillis() : -1L;
     }
 
 
@@ -777,7 +774,7 @@ public class ISOServer extends Observable
                 sb.append (", tx=");
                 sb.append (Integer.toString (cc[ISOChannel.TX]));
                 sb.append (", last=");
-                sb.append (Long.toString(lastTxn));
+                sb.append (Long.toString(lastTxn.toEpochMilli()));
                 p.println (sb.toString());
             }
         }

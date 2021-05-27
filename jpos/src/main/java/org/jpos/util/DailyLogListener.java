@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -175,7 +176,7 @@ public class DailyLogListener extends RotateLogListener{
 		}
 
 		Path logBasePath = Paths.get(prefix).getParent();
-		long currentSystemTime = System.currentTimeMillis();
+		long currentSystemTime = Instant.now().toEpochMilli();
 
 		try {
 			Files.find(logBasePath, DEF_MAXDEPTH,

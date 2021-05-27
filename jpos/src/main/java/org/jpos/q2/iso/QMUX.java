@@ -30,6 +30,7 @@ import org.jpos.util.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -161,7 +162,7 @@ public class QMUX
                 if (resp != null) 
                 {
                     rx++;
-                    lastTxn = System.currentTimeMillis();
+                    lastTxn = Instant.now().toEpochMilli();
                 }else {
                     rxExpired++;
                     if (m.getDirection() != ISOMsg.OUTGOING)
@@ -369,7 +370,7 @@ public class QMUX
         sb.append (lastTxn);
         if (lastTxn > 0) {
             sb.append (", idle=");
-            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append(Instant.now().toEpochMilli() - lastTxn);
             sb.append ("ms");
         }
         return sb.toString();
@@ -416,7 +417,7 @@ public class QMUX
         return lastTxn;
     }
     public long getIdleTimeInMillis() {
-        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
+        return lastTxn > 0L ? Instant.now().toEpochMilli() - lastTxn : -1L;
     }
 
     protected void processUnhandled (ISOMsg m) {
@@ -529,7 +530,7 @@ public class QMUX
                 synchronized (QMUX.this) {
                     rx++;
                     rxPending--;
-                    lastTxn = System.currentTimeMillis();
+                    lastTxn = Instant.now().toEpochMilli();
                 }
                 long elapsed = chrono.elapsed();
                 metrics.record("all", elapsed);

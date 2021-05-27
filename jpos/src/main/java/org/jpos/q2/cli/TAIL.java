@@ -20,12 +20,10 @@ package org.jpos.q2.cli;
 
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogListener;
-import org.jpos.util.Logger;
-import org.jpos.util.NameRegistrar;
+import org.jpos.util.*;
 
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -70,7 +68,7 @@ public class TAIL implements CLICommand, LogListener {
 
     public synchronized LogEvent log(LogEvent ev) {
         if (p != null) {
-            Date d = new Date(System.currentTimeMillis());
+            Date d = new Date(Instant.now().toEpochMilli());
 //            if (ansi)
 //                cli.getOutputStream().write(1); // BOLD
             cli.println(
