@@ -71,22 +71,21 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     }
 
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
-        long maxWait = System.currentTimeMillis() + timeout;
-        MUX mux = getMUX(m,maxWait);
-
-        if (mux != null) {
-            long remainingTimeout = maxWait - System.currentTimeMillis();
-            if (timeout == 0) {
-                // a zero timeout intent is to fire-and-forget, so we use 'send' instead of 'request'
-                try {
-                    mux.send(m);
-                } catch (IOException e) {
-                    throw new ISOException(e.getMessage(), e);
-                }
-            } else if (remainingTimeout >= 0)
-                return mux.request(m, remainingTimeout);
+        if (timeout == 0) {
+            // a zero timeout intent is to fire-and-forget, so we use 'send' instead of 'request'
+            try {
+                this.send(m);
+            } catch (IOException e) {
+                throw new ISOException(e.getMessage(), e);
+            }
+            return null;
         }
-        return null;
+        long maxWait = System.nanoTime() + (timeout * 1000000);
+        MUX mux = getMUX(m,timeout);
+
+        if (mux != null)
+            return mux.request(m, Math.max((maxWait - System.nanoTime()) / 1000000, 1L));
+        throw new ISOException ("No MUX available");
     }
 
     public void send (ISOMsg m) throws ISOException, IOException {
@@ -105,15 +104,17 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         return false;
     }
     protected MUX firstAvailableMUX (long maxWait) {
+        long timeout = System.nanoTime() + (maxWait * 1000000);
         do {
             for (MUX m : mux)
                 if (isUsable(m))
                     return m;
             ISOUtil.sleep (1000);
-        } while (System.currentTimeMillis() < maxWait);
+        } while (System.nanoTime() < timeout);
         return null;
     }
     protected MUX nextAvailableMUX (int mnumber, long maxWait) {
+        long timeout = System.nanoTime() + (maxWait * 1000000);
         do {
             for (int i=0; i<mux.length; i++) {
                 int j = (mnumber+i) % mux.length;
@@ -122,7 +123,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 msgno.incrementAndGet();
             }
             ISOUtil.sleep (1000);
-        } while (System.currentTimeMillis() < maxWait);
+        } while (System.nanoTime() < timeout);
         return null;
     }
     private String[] toStringArray (String s) {
@@ -138,29 +139,23 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
         throws ISOException 
     {
-        long maxWait = System.currentTimeMillis() + timeout;
-        MUX mux = getMUX(m,maxWait);
-
-        if (mux != null) {
-            long remainingTimeout = maxWait - System.currentTimeMillis();
-            if (timeout == 0) {
-                // a zero timeout intent is to fire-and-forget, so we use 'send' instead of 'request'
-                try {
-                    mux.send(m);
-                } catch (IOException e) {
-                    throw new ISOException(e.getMessage(), e);
-                }
-            } else if (remainingTimeout >= 0)
-                mux.request(m, remainingTimeout, r, handBack);
-            else {
-                new Thread() {
-                    public void run() {
-                        r.expired (handBack);
-                    }
-                }.start();
+        if (timeout == 0) {
+            // a zero timeout intent is to fire-and-forget, so we use 'send' instead of 'request'
+            try {
+                this.send(m);
+                new Thread(() -> r.expired(handBack)).start();
+            } catch (IOException e) {
+                throw new ISOException(e.getMessage(), e);
             }
-        } else 
-            throw new ISOException ("No MUX available");
+        } else {
+            long maxWait = System.nanoTime() + (timeout * 1000000);
+            MUX mux = getMUX(m,timeout);
+
+            if (mux != null)
+                mux.request(m, Math.max((maxWait - System.nanoTime()) / 1000000, 1L),r, handBack);
+            else
+                throw new ISOException ("No MUX available");
+        }
     }
     private boolean overrideMTI(String mtiReq) {
         if(overrideMTIs != null){
