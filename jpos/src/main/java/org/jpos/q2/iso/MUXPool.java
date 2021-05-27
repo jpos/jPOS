@@ -27,6 +27,7 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -70,13 +71,14 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         NameRegistrar.unregister ("mux."+getName ());
     }
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
-        long maxWait = System.currentTimeMillis() + timeout;
-        MUX mux = getMUX(m,maxWait);
+        Duration maxWait = Duration.ofNanos(System.nanoTime()).plus(Duration.ofMillis(timeout));
+        MUX mux = getMUX(m,timeout);
 
         if (mux != null) {
-            timeout = maxWait - System.currentTimeMillis();
-            if (timeout >= 0)
+            if (timeout == 0)
                 return mux.request (m, timeout);
+            else
+                return mux.request (m, Math.max(maxWait.minus(Duration.ofNanos(System.nanoTime())).toMillis(), 1L));
         }
         return null;
     }
@@ -96,15 +98,19 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         return false;
     }
     protected MUX firstAvailableMUX (long maxWait) {
+        Duration now = Duration.ofNanos(System.nanoTime());
+        Duration timeout = Duration.ofMillis(maxWait).plus(now);
         do {
             for (MUX m : mux)
                 if (isUsable(m))
                     return m;
             ISOUtil.sleep (1000);
-        } while (System.currentTimeMillis() < maxWait);
+        } while (maxWait == 0 || Duration.ofNanos(System.nanoTime()).compareTo(timeout) < 0);
         return null;
     }
     protected MUX nextAvailableMUX (int mnumber, long maxWait) {
+        Duration now = Duration.ofNanos(System.nanoTime());
+        Duration timeout = Duration.ofMillis(maxWait).plus(now);
         do {
             for (int i=0; i<mux.length; i++) {
                 int j = (mnumber+i) % mux.length;
@@ -113,7 +119,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 msgno.incrementAndGet();
             }
             ISOUtil.sleep (1000);
-        } while (System.currentTimeMillis() < maxWait);
+        } while (maxWait == 0 || Duration.ofNanos(System.nanoTime()).compareTo(timeout) < 0);
         return null;
     }
     private String[] toStringArray (String s) {
@@ -129,20 +135,14 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
         throws ISOException 
     {
-        long maxWait = System.currentTimeMillis() + timeout;
-        MUX mux = getMUX(m,maxWait);
+        Duration maxWait = Duration.ofNanos(System.nanoTime()).plus(Duration.ofMillis(timeout));
+        MUX mux = getMUX(m,timeout);
 
         if (mux != null) {
-            timeout = maxWait - System.currentTimeMillis();
-            if (timeout >= 0)
+            if (timeout == 0)
                 mux.request(m, timeout,r, handBack);
-            else {
-                new Thread() {
-                    public void run() {
-                        r.expired (handBack);
-                    }
-                }.start();
-            }
+            else
+                mux.request(m, Math.max(maxWait.minus(Duration.ofNanos(System.nanoTime())).toMillis(), 1L),r, handBack);
         } else 
             throw new ISOException ("No MUX available");
     }
