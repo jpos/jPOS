@@ -71,19 +71,20 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     }
 
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
+        if (timeout == 0) {
+            // a zero timeout intent is to fire-and-forget,
+            // you should use 'send' instead of 'request'
+            try {
+                send(m);
+            } catch (IOException e) {
+                throw new ISOException(e.getMessage(), e);
+            }
+        }
         long maxWait = System.currentTimeMillis() + timeout;
         MUX mux = getMUX(m,maxWait);
-
         if (mux != null) {
             long remainingTimeout = maxWait - System.currentTimeMillis();
-            if (timeout == 0) {
-                // a zero timeout intent is to fire-and-forget, so we use 'send' instead of 'request'
-                try {
-                    mux.send(m);
-                } catch (IOException e) {
-                    throw new ISOException(e.getMessage(), e);
-                }
-            } else if (remainingTimeout >= 0)
+            if (remainingTimeout >= 0)
                 return mux.request(m, remainingTimeout);
         }
         return null;
@@ -138,19 +139,26 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
         throws ISOException 
     {
+        if (timeout == 0) {
+            // a zero timeout intent is to fire-and-forget,
+            // you should use 'send' instead of 'request'
+            try {
+                send(m);
+                new Thread() {
+                    public void run() {
+                        r.expired (handBack);
+                    }
+                }.start();
+            } catch (IOException e) {
+                throw new ISOException(e.getMessage(), e);
+            }
+        }
         long maxWait = System.currentTimeMillis() + timeout;
         MUX mux = getMUX(m,maxWait);
 
         if (mux != null) {
             long remainingTimeout = maxWait - System.currentTimeMillis();
-            if (timeout == 0) {
-                // a zero timeout intent is to fire-and-forget, so we use 'send' instead of 'request'
-                try {
-                    mux.send(m);
-                } catch (IOException e) {
-                    throw new ISOException(e.getMessage(), e);
-                }
-            } else if (remainingTimeout >= 0)
+            if (remainingTimeout >= 0)
                 mux.request(m, remainingTimeout, r, handBack);
             else {
                 new Thread() {
