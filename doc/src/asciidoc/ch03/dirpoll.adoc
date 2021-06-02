@@ -56,9 +56,9 @@ will be placed in the +response+ directory).
             super ();
             DirPoll dp = new DirPoll ();
             dp.setLogger (logger, "dir-poll");
-            db.setPath ("/tmp/dirpoll");
-            db.createDirs ();
-            db.setProcessor (this);
+            dp.setPath ("/tmp/dirpoll");
+            dp.createDirs ();
+            dp.setProcessor (this);
             new Thread (dp).start ();
         }
         public byte[] process (String name, byte[] b) {
