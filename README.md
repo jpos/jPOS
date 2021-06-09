@@ -1,6 +1,8 @@
 [![][jpos-logo]][jpos-url]
+
 [![Build Status][badge-travis-image]][badge-travis-url]
 [![Javadocs](http://www.javadoc.io/badge/org.jpos/jpos.svg)](http://www.javadoc.io/doc/org.jpos/jpos)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
 
 ## Documentation
 
@@ -10,7 +12,7 @@ Visit [http://jpos.org/learn](http://jpos.org/learn).
 
 Visit [http://jpos.org/resources](http://jpos.org/resources) for additional information.
 
-        
+
 ## License
 
 Affero GPLv3 Visit [http://jpos.org/license](http://jpos.org/license).
