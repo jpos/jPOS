@@ -19,7 +19,7 @@ Affero GPLv3 Visit [http://jpos.org/license](http://jpos.org/license).
 
 Commercial-friendly licensing available: [Contact form](http://jpos.org/main/contact?p=license).
 
-[jpos-logo]: http://jpos.org/images/jpos_l.jpg
+[jpos-logo]: http://jpos.org/images/jpos.png
 [jpos-url]: http://jpos.org
 [badge-travis-url]: https://travis-ci.org/jpos/jPOS
 [badge-travis-image]: https://api.travis-ci.org/jpos/jPOS.svg
