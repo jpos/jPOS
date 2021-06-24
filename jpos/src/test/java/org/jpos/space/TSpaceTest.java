@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.time.Duration;
 import java.util.AbstractSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,27 +63,27 @@ public class TSpaceTest {
 
     @Test
     public void testExpirableCompareTo() throws Throwable {
-        int result = new TSpace.Expirable(Integer.valueOf(0), 1L).compareTo(new TSpace.Expirable(new Object(), 0L));
+        int result = new TSpace.Expirable(Integer.valueOf(0), Duration.ofMillis(1L)).compareTo(new TSpace.Expirable(new Object(), Duration.ofMillis(0L)));
         assertEquals(1, result, "result");
     }
 
     @Test
     public void testExpirableCompareTo1() throws Throwable {
-        TSpace.Expirable obj = new TSpace.Expirable(new Object(), 0L);
-        int result = new TSpace.Expirable(new Object(), 0L).compareTo(obj);
+        TSpace.Expirable obj = new TSpace.Expirable(new Object(), Duration.ofMillis(0L));
+        int result = new TSpace.Expirable(new Object(), Duration.ofMillis(0L)).compareTo(obj);
         assertEquals(0, result, "result");
     }
 
     @Test
     public void testExpirableCompareTo2() throws Throwable {
-        int result = new TSpace.Expirable(null, 0L).compareTo(new TSpace.Expirable(new Object(), 1L));
+        int result = new TSpace.Expirable(null, Duration.ofMillis(0L)).compareTo(new TSpace.Expirable(new Object(), Duration.ofMillis(1L)));
         assertEquals(-1, result, "result");
     }
 
     @Test
     public void testExpirableCompareToThrowsNullPointerException() throws Throwable {
         try {
-            new TSpace.Expirable(new Object(), 100L).compareTo(null);
+            new TSpace.Expirable(new Object(), Duration.ofMillis(100L)).compareTo(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             if (isJavaVersionAtMost(JAVA_14)) {
@@ -96,51 +97,51 @@ public class TSpaceTest {
     @Test
     public void testExpirableConstructor() throws Throwable {
         Object value = new Object();
-        TSpace.Expirable expirable = new TSpace.Expirable(value, 100L);
-        assertEquals(100L, expirable.expires, "expirable.expires");
+        TSpace.Expirable expirable = new TSpace.Expirable(value, Duration.ofMillis(100L));
+        assertEquals(Duration.ofMillis(100L), expirable.expires, "expirable.expires");
         assertSame(value, expirable.value, "expirable.value");
     }
 
     @Test
     public void testExpirableGetValue() throws Throwable {
-        String result = (String) new TSpace.Expirable("", 9184833384926L).getValue();
+        String result = (String) new TSpace.Expirable("", Duration.ofNanos(System.nanoTime()).plus(Duration.ofMillis(9184833384926L))).getValue();
         assertEquals("", result, "result");
     }
 
     @Test
     public void testExpirableGetValue1() throws Throwable {
-        Object result = new TSpace.Expirable(null, 9184833384926L).getValue();
+        Object result = new TSpace.Expirable(null, Duration.ofMillis(9184833384926L)).getValue();
         assertNull(result, "result");
     }
 
     @Test
     public void testExpirableGetValue2() throws Throwable {
-        Object result = new TSpace.Expirable(new Object(), 100L).getValue();
+        Object result = new TSpace.Expirable(new Object(), Duration.ofNanos(System.nanoTime()).minus(Duration.ofMillis(100L))).getValue();
         assertNull(result, "result");
     }
 
     @Test
     public void testExpirableIsExpired() throws Throwable {
-        boolean result = new TSpace.Expirable("", 9184833384926L).isExpired();
+        boolean result = new TSpace.Expirable("", Duration.ofNanos(System.nanoTime()).plus(Duration.ofMillis(9184833384926L))).isExpired();
         assertFalse(result, "result");
     }
 
     @Test
     public void testExpirableIsExpired1() throws Throwable {
-        boolean result = new TSpace.Expirable(new Object(), 100L).isExpired();
+        boolean result = new TSpace.Expirable(new Object(), Duration.ofNanos(System.nanoTime()).minus(Duration.ofMillis(100L))).isExpired();
         assertTrue(result, "result");
     }
 
     @Test
     public void testExpirableToString() throws Throwable {
-        new TSpace.Expirable(";\"i", 100L).toString();
+        new TSpace.Expirable(";\"i", Duration.ofMillis(100L)).toString();
         assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testExpirableToStringThrowsNullPointerException() throws Throwable {
         try {
-            new TSpace.Expirable(null, 100L).toString();
+            new TSpace.Expirable(null, Duration.ofMillis(100L)).toString();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             if (isJavaVersionAtMost(JAVA_14)) {
