@@ -30,6 +30,8 @@ import org.jpos.util.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +60,7 @@ public class QMUX
 
     List<ISORequestListener> listeners;
     private volatile int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
-    private volatile long lastTxn = 0L;
+    private volatile Duration lastTxn = null;
     private boolean listenerRegistered;
     public QMUX () {
         super ();
@@ -161,7 +163,7 @@ public class QMUX
                 if (resp != null) 
                 {
                     rx++;
-                    lastTxn = System.currentTimeMillis();
+                    lastTxn = Duration.ofNanos(System.nanoTime());
                 }else {
                     rxExpired++;
                     if (m.getDirection() != ISOMsg.OUTGOING)
@@ -351,7 +353,7 @@ public class QMUX
     }
     public synchronized void resetCounters() {
         rx = tx = rxExpired = txExpired = rxPending = rxUnhandled = rxForwarded = 0;
-        lastTxn = 0l;
+        lastTxn = null;
     }
     public String getCountersAsString () {
         StringBuffer sb = new StringBuffer();
@@ -366,10 +368,10 @@ public class QMUX
         sb.append (", connected=");
         sb.append (Boolean.toString(isConnected()));
         sb.append (", last=");
-        sb.append (lastTxn);
-        if (lastTxn > 0) {
+        sb.append (getLastTxnTimestampInMillis());
+        if (lastTxn != null) {
             sb.append (", idle=");
-            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append(Duration.ofNanos(System.nanoTime()).minus(lastTxn).toMillis());
             sb.append ("ms");
         }
         return sb.toString();
@@ -413,10 +415,12 @@ public class QMUX
     }
 
     public long getLastTxnTimestampInMillis() {
-        return lastTxn;
+        if (lastTxn == null)
+            return 0L;
+        return Instant.now().minus(Duration.ofNanos(System.nanoTime()).minus(lastTxn)).toEpochMilli();
     }
     public long getIdleTimeInMillis() {
-        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
+        return lastTxn != null ? Duration.ofNanos(System.nanoTime()).minus(lastTxn).toMillis() : -1L;
     }
 
     protected void processUnhandled (ISOMsg m) {
@@ -529,7 +533,7 @@ public class QMUX
                 synchronized (QMUX.this) {
                     rx++;
                     rxPending--;
-                    lastTxn = System.currentTimeMillis();
+                    lastTxn = Duration.ofNanos(System.nanoTime());
                 }
                 long elapsed = chrono.elapsed();
                 metrics.record("all", elapsed);

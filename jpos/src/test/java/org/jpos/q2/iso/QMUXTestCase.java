@@ -67,6 +67,7 @@ public class QMUXTestCase implements ISOResponseListener {
         });
         q2 = new Q2(deployDir.toString());
         q2.start();
+        q2.ready(5000L);
         mux = NameRegistrar.get("mux.mux", 2000L);
         assertNotNull(mux);
         receivedHandback = null;
