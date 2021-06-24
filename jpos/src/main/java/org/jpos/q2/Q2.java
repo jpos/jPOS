@@ -69,7 +69,6 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -116,7 +115,7 @@ public class Q2 implements FileFilter, Runnable {
     private String[] args;
     private boolean hasSystemLogger;
     private boolean exit;
-    private Instant startTime;
+    private Duration startTime;
     private CLI cli;
     private boolean recursive;
     private ConfigDecorationProvider decorator=null;
@@ -126,7 +125,7 @@ public class Q2 implements FileFilter, Runnable {
     private BundleContext bundleContext;
     private String pidFile;
     private String name = JMX_NAME;
-    private long lastVersionLog;
+    private Duration lastVersionLog = Duration.ZERO;
     private String watchServiceClassname;
     private boolean enableSsh;
     private boolean disableDeployScan;
@@ -142,7 +141,7 @@ public class Q2 implements FileFilter, Runnable {
     public Q2 (String[] args, BundleContext bundleContext) {
         super();
         this.args = args;
-        startTime = Instant.now();
+        startTime = Duration.ofNanos(System.nanoTime());
         instanceId = UUID.randomUUID();
         parseCmdLine (args);
         libDir     = new File (deployDir, "lib");
@@ -673,7 +672,7 @@ public class Q2 implements FileFilter, Runnable {
         return server;
     }
     public long getUptime() {
-        return Duration.between(startTime, Instant.now()).toMillis();
+        return Duration.ofNanos(System.nanoTime()).minus(startTime).toMillis();
     }
     public void displayVersion () {
         System.out.println(getVersionString());
@@ -985,8 +984,8 @@ public class Q2 implements FileFilter, Runnable {
         }
     }
     private void logVersion () {
-        long now = System.currentTimeMillis();
-        if (now - lastVersionLog > 86400000L) {
+        Duration now = Duration.ofNanos(System.nanoTime());
+        if (now.minus(lastVersionLog).compareTo(Duration.ofDays(1)) > 0) {
             LogEvent evt = getLog().createLogEvent("version");
             evt.addMessage(getVersionString());
             Logger.log(evt);
