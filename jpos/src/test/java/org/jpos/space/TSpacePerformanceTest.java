@@ -22,7 +22,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -40,20 +39,19 @@ import static org.junit.jupiter.api.Assertions.fail;
  *
  * @author Robert Demski
  */
-@SuppressWarnings("unchecked")
 public class TSpacePerformanceTest  {
 
     LocalSpace<String,Object> sp1;
     LocalSpace<String,Object> sp2;
-    List<Long> t1 = new ArrayList();
-    List<Long> t2 = new ArrayList();
+    final List<Long> t1 = new ArrayList<>();
+    final List<Long> t2 = new ArrayList<>();
 //    List t1 = Collections.synchronizedCollection(new ArrayList());
     public static final int COUNT = 100000;
-    TPS tpsOut = new TPS(100L, false);
-    TPS tpsIn = new TPS(100L, false);
+    final TPS tpsOut = new TPS(100L, false);
+    final TPS tpsIn = new TPS(100L, false);
 
     class WriteSpaceTask implements Runnable {
-        String key;
+        final String key;
         
         WriteSpaceTask(String key){
            this.key = key;
@@ -66,12 +64,12 @@ public class TSpacePerformanceTest  {
           }
           long stamp2 = System.nanoTime();
           t1.add(stamp2-stamp);
-          System.err.println("Write "+key+" out: "+(stamp2-stamp)/1000000 + " " + tpsOut.toString());
+          System.err.println("Write "+key+" out: "+(stamp2-stamp)/1000000 + " " + tpsOut);
         }
     }
 
     class ReadSpaceTask implements Runnable {
-        String key;
+        final String key;
         
         ReadSpaceTask(String key){
            this.key = key;
@@ -84,18 +82,17 @@ public class TSpacePerformanceTest  {
           }
           long stamp2 = System.nanoTime();
           t2.add(stamp2-stamp);
-          System.err.println("Read  "+key+"  in: "+(stamp2-stamp)/1000000 + " " + tpsIn.toString());
+          System.err.println("Read  "+key+"  in: "+(stamp2-stamp)/1000000 + " " + tpsIn);
         }  
     }
 
-    @SuppressWarnings("unchecked")
     class WriteSpaceWithNotifyTask implements Runnable, SpaceListener<String,Object> {
-        String key;
-        LocalSpace sp1;
-        LocalSpace sp2;
+        final String key;
+        final LocalSpace<String,Object> sp1;
+        final LocalSpace<String,Object> sp2;
         int count = 0;
         
-        WriteSpaceWithNotifyTask(String key, LocalSpace sp1, LocalSpace sp2){
+        WriteSpaceWithNotifyTask(String key, LocalSpace<String,Object> sp1, LocalSpace<String,Object> sp2){
           this.key = key;
           this.sp1 = sp1;
           this.sp2 = sp2;
@@ -118,7 +115,7 @@ public class TSpacePerformanceTest  {
     }
 
     class WriteSpaceWithNotifyReadTask implements Runnable, SpaceListener<String,Object> {
-        String key;
+        final String key;
        
         WriteSpaceWithNotifyReadTask(String key){
           this.key = key;
@@ -136,8 +133,8 @@ public class TSpacePerformanceTest  {
 
     @BeforeEach
     public void setUp () {
-        sp1 = new TSpace<String,Object>();
-        sp2 = new TSpace<String,Object>();
+        sp1 = new TSpace<>();
+        sp2 = new TSpace<>();
         t1.clear();
         t2.clear();
     }
@@ -154,11 +151,11 @@ public class TSpacePerformanceTest  {
     }
 
     @Test
-    public void testReadPerformance() throws Throwable {
+    public void testReadPerformance() throws InterruptedException {
         int size = 10;
-        ExecutorService es = new ThreadPoolExecutor(size, Integer.MAX_VALUE,
-                              30, TimeUnit.SECONDS, new SynchronousQueue());
-        ((ThreadPoolExecutor)es).prestartAllCoreThreads();
+        ThreadPoolExecutor es = new ThreadPoolExecutor(size, Integer.MAX_VALUE,
+                              30, TimeUnit.SECONDS, new SynchronousQueue<>());
+        es.prestartAllCoreThreads();
 
         for (int i=0; i<size; i++)
           es.execute(new WriteSpaceTask("PerformTask-"+i));
@@ -170,14 +167,16 @@ public class TSpacePerformanceTest  {
         ISOUtil.sleep(500);
         es.shutdown();
         printAvg(t2, "Avg. read : ");
+        if (!es.awaitTermination(5, TimeUnit.SECONDS))
+            fail("Failed to shutdown ThreadPoolExecutor.");
     }
 
     @Test
-    public void testDeadLockWithNotify() throws Throwable {
+    public void testDeadLockWithNotify() throws InterruptedException {
         int size = 10;
-        final ExecutorService es = new ThreadPoolExecutor(size*2, Integer.MAX_VALUE,
-                              30, TimeUnit.SECONDS, new SynchronousQueue());
-        ((ThreadPoolExecutor)es).prestartAllCoreThreads();
+        final ThreadPoolExecutor es = new ThreadPoolExecutor(size*2, Integer.MAX_VALUE,
+                              30, TimeUnit.SECONDS, new SynchronousQueue<>());
+        es.prestartAllCoreThreads();
         
         for (int i=0; i<size; i++)
           es.execute(new WriteSpaceWithNotifyTask("WriteTask1-"+i,sp1,sp2));
@@ -185,7 +184,7 @@ public class TSpacePerformanceTest  {
           es.execute(new WriteSpaceWithNotifyTask("WriteTask2-"+i,sp2,sp1));
 
         Instant stamp = Instant.now();
-        while (((ThreadPoolExecutor)es).getActiveCount() > 0) {
+        while (es.getActiveCount() > 0) {
           if (Duration.between(stamp, Instant.now()).toMillis() < 10000){
             ISOUtil.sleep(100);
             continue;
@@ -199,16 +198,17 @@ public class TSpacePerformanceTest  {
 
 //        es.shutdown();
         es.shutdownNow();
-        es.awaitTermination(5, TimeUnit.SECONDS);
+        if (!es.awaitTermination(5, TimeUnit.SECONDS))
+            fail("Failed to shutdown ThreadPoolExecutor.");
     }
 
     @Disabled("Remove it when TSpace can pass it")
     @Test
-    public void testStolenEntryAtNotify() throws Throwable {
+    public void testStolenEntryAtNotify() throws InterruptedException {
         int size = 10;
-        final ExecutorService es = new ThreadPoolExecutor(size*2, Integer.MAX_VALUE,
-                              30, TimeUnit.SECONDS, new SynchronousQueue());
-        ((ThreadPoolExecutor)es).prestartAllCoreThreads();
+        final ThreadPoolExecutor es = new ThreadPoolExecutor(size*2, Integer.MAX_VALUE,
+                              30, TimeUnit.SECONDS, new SynchronousQueue<>());
+        es.prestartAllCoreThreads();
         
         for (int i=0; i<size; i++)
           es.execute(new WriteSpaceWithNotifyReadTask("WriteTask-"+i));
@@ -220,7 +220,8 @@ public class TSpacePerformanceTest  {
         assertNull(sp2.in("lost-entry", 200), "Detected stolen entry at notify");
 
         es.shutdownNow();
-//        es.awaitTermination(5, TimeUnit.SECONDS);
+        if (!es.awaitTermination(5, TimeUnit.SECONDS))
+            fail("Failed to shutdown ThreadPoolExecutor.");
     }
 
 }

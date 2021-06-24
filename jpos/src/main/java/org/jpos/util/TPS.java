@@ -49,17 +49,16 @@ import java.util.concurrent.atomic.AtomicLong;
 @SuppressWarnings("unused")
 public class TPS implements Loggeable {
     AtomicInteger count;
-    Instant start;
+    Duration start;
     AtomicLong readings;
-    int peak;
+    AtomicInteger peak;
     Instant peakWhen;
-    static final long FROM_NANOS = 1000000L;
     Duration period;
     float tps;
     float avg;
     Timer timer;
     boolean autoupdate;
-    protected long simulatedNanoTime = 0L;
+    protected Duration simulatedNanoTime = Duration.ZERO;
 
     public TPS() {
         this(1000L, false);
@@ -78,11 +77,21 @@ public class TPS implements Loggeable {
      * @param autoupdate true to autoupdate
      */
     public TPS(final long period, boolean autoupdate) {
+        this(Duration.ofMillis(period), autoupdate);
+    }
+
+    /**
+     * @param period as a duration
+     * @param autoupdate true to autoupdate
+     */
+    public TPS(Duration period, boolean autoupdate) {
         super();
         count = new AtomicInteger(0);
-        start = peakWhen = Instant.now();
+        start = Duration.ofNanos(System.nanoTime());
+        peak = new AtomicInteger(0);
+        peakWhen = Instant.now();
         readings = new AtomicLong(0L);
-        this.period = Duration.ofMillis(period);
+        this.period = period;
         this.autoupdate = autoupdate;
         if (autoupdate) {
             timer = new Timer();
@@ -91,7 +100,7 @@ public class TPS implements Loggeable {
                         public void run() {
                             calcTPS(period);
                         }
-                    }, period, period);
+                    }, period.toMillis(), period.toMillis());
         }
     }
 
@@ -112,7 +121,7 @@ public class TPS implements Loggeable {
     }
 
     public int getPeak() {
-        return peak;
+        return peak.get();
     }
 
     public long getPeakWhen() {
@@ -125,7 +134,7 @@ public class TPS implements Loggeable {
     public void reset() {
         synchronized(this) {
             avg = 0f;
-            peak = 0;
+            peak.set(0);
             peakWhen = Instant.EPOCH;
             readings.set(0L);
         }
@@ -136,7 +145,7 @@ public class TPS implements Loggeable {
     }
 
     public long getElapsed() {
-        return Duration.between(start, Instant.now()).toMillis();
+        return Duration.ofNanos(System.nanoTime()).minus(start).toMillis();
     }
 
     public String toString() {
@@ -158,12 +167,8 @@ public class TPS implements Loggeable {
         p.println(indent
                 + "<tps"
                 + (autoupdate ? " auto='true'>" : ">")
-                + this.toString()
+                + this
                 + "</tps>");
-    }
-
-    private float calcTPS(long interval) {
-        return calcTPS(Duration.ofMillis(interval));
     }
 
     private float calcTPS(Duration interval) {
@@ -174,8 +179,8 @@ public class TPS implements Loggeable {
             }
             long r = readings.getAndIncrement();
             avg = (r * avg + tps) / ++r;
-            if (tps > peak) {
-                peak = Math.round(tps);
+            if (tps > peak.get()) {
+                peak.set(Math.round(tps));
                 peakWhen = Instant.now();
             }
             count.set(0);
@@ -185,8 +190,8 @@ public class TPS implements Loggeable {
 
     private float calcTPS() {
         synchronized(this) {
-            Instant now = Instant.now();
-            Duration interval = Duration.between(start, now);
+            Duration now = Duration.ofNanos(System.nanoTime());
+            Duration interval = now.minus(start);
             if (interval.compareTo(period) >= 0) {
                 calcTPS(interval);
                 start = now;
@@ -196,13 +201,13 @@ public class TPS implements Loggeable {
     }
 
     public void setSimulatedNanoTime(long simulatedNanoTime) {
-        if (this.simulatedNanoTime == 0L)
-            start = Instant.ofEpochMilli(simulatedNanoTime / FROM_NANOS);
+        if (this.simulatedNanoTime.equals(Duration.ZERO))
+            start = Duration.ofNanos(simulatedNanoTime);
 
-        this.simulatedNanoTime = simulatedNanoTime;
+        this.simulatedNanoTime = Duration.ofNanos(simulatedNanoTime);
     }
 
     protected long getNanoTime() {
-        return simulatedNanoTime > 0L ? simulatedNanoTime : System.nanoTime();
+        return simulatedNanoTime.equals(Duration.ZERO) ? Duration.ofNanos(System.nanoTime()).toNanos() : simulatedNanoTime.toNanos();
     }
 }
