@@ -59,12 +59,21 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
      * @param filename underlying JDBM filename
      */
     protected JDBMSpace (String name, String filename) {
+        this(name, filename, new Properties());
+    }
+
+    /**
+     * protected constructor.
+     * @param name Space Name
+     * @param filename underlying JDBM filename
+     * @param properties additional JDBM properties
+     */
+    JDBMSpace (String name, String filename, Properties properties) {
         super();
         this.name = name;
         try {
-            Properties props = new Properties();
-            props.put (RecordManagerOptions.CACHE_SIZE, "512");
-            recman = RecordManagerFactory.createRecordManager (filename, props);
+            properties.put (RecordManagerOptions.CACHE_SIZE, "512");
+            recman = RecordManagerFactory.createRecordManager (filename, properties);
             long recid = recman.getNamedObject ("space");
             if (recid != 0) {
                 htree = HTree.load (recman, recid);
@@ -99,12 +108,22 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
      * @param filename the storage file name
      * @return reference to named JDBMSpace
      */
-    public synchronized static JDBMSpace
-        getSpace (String name, String filename) 
+    public static JDBMSpace getSpace (String name, String filename) {
+        return getSpace(name, filename, new Properties());
+    }
+    /**
+     * creates a named JDBMSpace
+     * @param name the Space name
+     * @param filename the storage file name
+     * @param properties additional JDBM properties
+     * @return reference to named JDBMSpace
+     */
+    synchronized static JDBMSpace
+        getSpace (String name, String filename, Properties properties)
     {
         JDBMSpace sp = (JDBMSpace) spaceRegistrar.get (name);
         if (sp == null) {
-            sp = new JDBMSpace (name, filename);
+            sp = new JDBMSpace (name, filename, properties);
             spaceRegistrar.put (name, sp);
         }
         return sp;

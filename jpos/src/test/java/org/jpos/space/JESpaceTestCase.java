@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sleepycat.je.Durability;
+import com.sleepycat.je.EnvironmentConfig;
 import org.jpos.iso.ISOMsg;
 import org.jpos.transaction.Context;
 import org.jpos.util.Profiler;
@@ -46,8 +48,10 @@ public class JESpaceTestCase {
     JESpace<String,Object> sp;
     @BeforeEach
     public void setUp (TestInfo testInfo, @TempDir Path spaceTestDir) throws IOException {
+        EnvironmentConfig envConfig = new EnvironmentConfig();
+        envConfig.setDurability(Durability.COMMIT_NO_SYNC);
         sp = (JESpace<String,Object>)
-            JESpace.getSpace (testInfo.getDisplayName(), spaceTestDir.toString());
+            JESpace.getSpace (testInfo.getDisplayName(), spaceTestDir.toString(), envConfig);
         sp.run();
     }
     @AfterEach
@@ -140,7 +144,6 @@ public class JESpaceTestCase {
         assertNull (sp.rdp ("PUSH"));
     }
     @Test
-    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testOutExpire() {
         sp.out ("OUT", "ONE", 1000L);
         sp.out ("OUT", "TWO", 2000L);
@@ -156,7 +159,6 @@ public class JESpaceTestCase {
         assertNull (sp.rdp ("OUT"));
     }
     @Test
-    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testPushExpire() {
         sp.push ("PUSH", "FOUR", 4000L);
         sp.push ("PUSH", "THREE", 3000L);
@@ -191,6 +193,7 @@ public class JESpaceTestCase {
             "existAny ([KEYC,KEYD])");
     }
     @Test
+    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testExistWithTimeout() {
         assertFalse(
             sp.existAny(new String[]{"KA", "KB"}),
