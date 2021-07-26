@@ -289,7 +289,8 @@ public class SecureKeyBlock extends SecureKey {
 
         p.println(inner + "<data>" + ISOUtil.hexString(getKeyBytes()) + "</data>");
         p.println(inner + "<mac>" + ISOUtil.hexString(getKeyBlockMAC()) + "</mac>");
-        p.println(inner + "<check-value>" + ISOUtil.hexString(getKeyCheckValue()) + "</check-value>");
+        if (getKeyCheckValue() != null)
+            p.println(inner + "<check-value>" + ISOUtil.hexString(getKeyCheckValue()) + "</check-value>");
         p.println(indent + "</secure-key-block>");
     }
 
