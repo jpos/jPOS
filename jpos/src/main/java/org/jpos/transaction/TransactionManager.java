@@ -123,7 +123,6 @@ public class TransactionManager
 
     @Override
     public void startService () throws Exception {
-        NameRegistrar.register(getName(), this);
         recover();
         threads = Collections.synchronizedList(new ArrayList(maxSessions));
         if (tps != null)
@@ -151,6 +150,7 @@ public class TransactionManager
         if (iisp != isp) {
             new Thread(new InputQueueMonitor()).start();
         }
+        NameRegistrar.register(getName(), this);
     }
 
     @Override
