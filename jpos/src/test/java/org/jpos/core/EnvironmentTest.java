@@ -18,11 +18,61 @@
 
 package org.jpos.core;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class EnvironmentTest {
+    static String oldEnv;
+    static String oldEnvdir;
+    static final String TEST_ENVDIR = "build/resources/test/org/jpos/core/";
+
+    @BeforeAll
+    public static void setUp() throws IOException
+    {
+        oldEnv = System.getProperty("jpos.env");            // save it to restore it later
+        oldEnvdir = System.getProperty("jpos.envdir");      // save it to restore it later
+
+        System.setProperty("jpos.env", "testenv");
+        System.setProperty("jpos.envdir", TEST_ENVDIR);
+        Environment.reload();                               // reload new env from new dir
+    }
+
+    @AfterAll
+    public static void tearDown() throws Exception {
+        // restore old env and envdir
+        if (oldEnv != null)
+            System.setProperty("jpos.env", oldEnv);
+        else
+            System.clearProperty("jpos.env");
+
+        if (oldEnvdir != null)
+            System.setProperty("jpos.envdir", oldEnvdir);
+        else
+            System.clearProperty("jpos.envdir");
+
+        Environment.reload();
+    }
+
+
+    // This test only uses System properties to try to override the values in the env file.
+    // A more complete version would also set an OS environment variable, which can't be
+    // easily done from Java.
+    // Changing env vars for tests can be done by using this JUnit extension.
+    //      https://junit-pioneer.org/
+    @Test
+    public void testFromCfg() {
+        System.setProperty("test.value", "from sys prop");
+        assertEquals("from testenv.yml", Environment.get("$cfg{test.value}"));
+    }
+
+
     @Test
     public void testEmptyDefault() {
         assertEquals("", Environment.get("${test:}"));

@@ -2,8 +2,8 @@
 
 == Configuration
 
-*org.jpos.core.Configuration* is a general purpose property container 
-extensively used by jPOS components. 
+*org.jpos.core.Configuration* is a general purpose property container
+extensively used by jPOS components.
 
 The Configuration interface looks like this:
 
@@ -65,7 +65,7 @@ configuration object by calling the +setConfiguration+ method on
     </object>
 ----
 
-Should +com.mycompany.MyObject+ implement +Configurable+, Q2 would call its  +setConfiguration()+ method 
+Should +com.mycompany.MyObject+ implement +Configurable+, Q2 would call its  +setConfiguration()+ method
 providing access to the underlying +myProperty+ property.
 
 It's interesting to note that Q2 provides the ability to have array of
@@ -82,10 +82,10 @@ properties under the same name, i.e:
 
 ----
 
-where one can call handy methods like  +String[] getAll(String)+. 
+where one can call handy methods like  +String[] getAll(String)+.
 
-+setConfiguration(Configuration cfg)+ can check the Configuration object and might 
-throw a +ConfigurationException+ in case a required property is not present or 
++setConfiguration(Configuration cfg)+ can check the Configuration object and might
+throw a +ConfigurationException+ in case a required property is not present or
 is invalid.
 
 [TIP]
@@ -93,25 +93,26 @@ is invalid.
 SimpleConfiguration recognizes and de-references properties with the
 format: `${xxx}` and searches for a system property, or operating system
 environment variable under the `xxx` name.
-As a fallback mechanism of last resort, the properety can be resolved from a
-YAML or properties file in the `cfg` directory (default filename `default.yml`
+As a fallback mechanism of last resort, the property can be resolved from an _environment file_, in
+YAML or _properties_ file syntax, found in the `cfg` directory (default filename `default.yml`
 or `default.cfg`, which can be overridden by the `jpos.env` system property).
 
 You can add a default value within the expression itself, using the `:` (colon) separator.
 For example `${xxx:def_value}`. If the property is not found, the default value will be used.
 
-The format `$sys{xxx}` de-reference just from system properties, and
-`$env{xxx}` just from the operating system environment.
+The format `$sys{xxx}` de-references just from system properties,
+`$env{xxx}` just from the operating system environment, and `$cfg{xxx}` just from the environment file (the.
+
 
 In the rare case where a value with the format `${...}` is required, the
 `$verb{${...}}` format (verbatim) can be used.
 
-In addition, a property named `xx.yy.zz` can be overriden by the environment
+In addition, a property named `xx.yy.zz` can be overridden by the environment
 variable `XX_YY_ZZ` (note that dots are replaced by underscore, and property
 name is converted to uppercase.
 =====
 
-The jPOS `Environment` has a ServiceLoader based plugin mechanism that support 
+The jPOS `Environment` has a ServiceLoader based plugin mechanism that support
 `EnvironmentProviders`. jPOS comes with two stock providers:
 
   - `FileEnvironmentProvider` (prefix `file::`).
