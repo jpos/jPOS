@@ -29,6 +29,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Environment implements Loggeable {
+    private static final String DEFAULT_ENVDIR = "cfg";         // default dir for the env file (relative to cwd), overridable with sys prop "jpos.envdir"
+
+    private static final String CFG_PREFIX = "cfg";
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
 
@@ -37,7 +40,9 @@ public class Environment implements Loggeable {
 
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
     private static Environment INSTANCE;
+
     private String name;
+    private String envDir;
     private AtomicReference<Properties> propRef = new AtomicReference<>(new Properties());
     private static String SP_PREFIX = "system.property.";
     private static int SP_PREFIX_LENGTH = SP_PREFIX.length();
@@ -56,6 +61,7 @@ public class Environment implements Loggeable {
     private Environment() throws IOException {
         name = System.getProperty ("jpos.env");
         name = name == null ? "default" : name;
+        envDir = System.getProperty("jpos.envdir", DEFAULT_ENVDIR);
         readConfig ();
         serviceLoader = ServiceLoader.load(EnvironmentProvider.class);
     }
@@ -91,7 +97,7 @@ public class Environment implements Loggeable {
      *
      * <ul>
      *     <li>Attempt to get it from an operating system environment variable called 'propname'</li>
-     *     <li>If not present, it will try to pick it from the a Java system.property</li>
+     *     <li>If not present, it will try to pick it from the Java system.property</li>
      *     <li>If not present either, it will try the target environment (either <code>.yml</code> or <code>.cfg</code></li>
      *     <li>Otherwise it returns null</li>
      * </ul>
@@ -120,6 +126,9 @@ public class Environment implements Loggeable {
                 String gValue = m.group(4);
                 gPrefix = gPrefix != null ? gPrefix : "";
                 switch (gPrefix) {
+                    case CFG_PREFIX:
+                        r = propRef.get().getProperty(gValue, null);
+                        break;
                     case SYSTEM_PREFIX:
                         r = System.getProperty(gValue);
                         break;
@@ -185,7 +194,7 @@ public class Environment implements Loggeable {
     }
 
     private boolean readYAML () throws IOException {
-        File f = new File("cfg/" + name + ".yml");
+        File f = new File(envDir + "/" + name + ".yml");
         errorString = null;
         if (f.exists() && f.canRead()) {
             Properties properties = new Properties();
@@ -197,8 +206,6 @@ public class Environment implements Loggeable {
                 });
                 propRef.set(properties);
                 return true;
-            } catch (IOException e) {
-                throw e;
             } catch (ScannerException e) {
                 errorString = "Environment (" + getName() + ") error " + e.getMessage();
             }
@@ -207,15 +214,13 @@ public class Environment implements Loggeable {
     }
 
     private boolean readCfg () throws IOException {
-        File f = new File("cfg/" + name + ".cfg");
+        File f = new File(envDir + "/" + name + ".cfg");
         if (f.exists() && f.canRead()) {
             Properties properties = new Properties();
             try (InputStream fis = new FileInputStream(f)) {
                 properties.load(new BufferedInputStream(fis));
                 propRef.set(properties);
                 return true;
-            } catch (IOException e) {
-                throw e;
             }
         }
         return false;
@@ -237,11 +242,10 @@ public class Environment implements Loggeable {
 
     @Override
     public void dump(final PrintStream p, String indent) {
-        p.printf ("%s<environment name='%s'>%n", indent, name);
+        p.printf ("%s<environment name='%s' envdir='%s'>%n", indent, name, envDir);
         Properties properties = propRef.get();
         properties.stringPropertyNames().stream().
-          forEachOrdered(prop -> { p.printf ("%s  %s=%s%n", indent, prop, properties.getProperty(prop));
-          });
+          forEachOrdered(prop -> p.printf ("%s  %s=%s%n", indent, prop, properties.getProperty(prop)) );
         p.printf ("%s</environment>%n", indent);
     }
 

@@ -599,7 +599,7 @@ public class SimpleConfigurationTest {
         // first, the `intro` sys property is not defined, so we get the default value
         assertEquals("AAA Introduction: BBB Hello jPOS! CCC (I said: Hello jPOS!) DDD", cfg.get("myprop"));
 
-        // now, we define `intro`, so we get its value from the sys propertis
+        // now, we define `intro`, so we get its value from the sys properties
         System.setProperty("intro", "Say it:");
         assertEquals("AAA Say it: BBB Hello jPOS! CCC (I said: Hello jPOS!) DDD", cfg.get("myprop"));
     }
