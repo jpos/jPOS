@@ -69,6 +69,9 @@ public class Environment implements Loggeable {
     public String getName() {
         return name;
     }
+    public String getDir() {
+        return envDir;
+    }
 
     public static Environment reload() throws IOException {
         return (INSTANCE = new Environment());
@@ -181,6 +184,7 @@ public class Environment implements Loggeable {
 
             extractSystemProperties();
             propRef.get().put ("jpos.env", name);
+            propRef.get().put ("jpos.envdir", envDir);
         }
     }
 
