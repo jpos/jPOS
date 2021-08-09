@@ -752,12 +752,15 @@ public class Q2 implements FileFilter, Runnable {
             } 
 
             // set up envdir and env before other parts of the system, so env is available
+            // force reload if any of the env options was changed
             if (line.hasOption("Ed")) {
                 System.setProperty("jpos.envdir", line.getOptionValue("Ed"));
             }
             if (line.hasOption("E")) {
                 System.setProperty("jpos.env", line.getOptionValue("E"));
-                Environment.getEnvironment();
+            }
+            if (line.hasOption("Ed") || line.hasOption("E")) {
+                Environment.reload();
             }
 
             if (line.hasOption ("c")) {
