@@ -173,7 +173,7 @@ public class Q2Test {
         String[] args = { "-Ed", "blah/foo/bar" };
         Q2 q2 = new Q2(args);
         Environment env = Environment.getEnvironment();
-        assertEquals("blah/foo/bar", env.getDir(), "env.getDir()");
+        assertEquals("blah/foo/bar", env.getEnvDir(), "env.getEnvDir()");
         q2.stop();
     }
 

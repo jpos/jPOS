@@ -69,7 +69,7 @@ public class Environment implements Loggeable {
     public String getName() {
         return name;
     }
-    public String getDir() {
+    public String getEnvDir() {
         return envDir;
     }
 
