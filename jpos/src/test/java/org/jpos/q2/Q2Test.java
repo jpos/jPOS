@@ -37,6 +37,7 @@ import javax.management.ObjectName;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jpos.core.Environment;
 import org.jpos.q2.qbean.SystemMonitor;
 import org.jpos.util.Log;
 import org.junit.jupiter.api.*;
@@ -164,6 +165,15 @@ public class Q2Test {
         Q2 q2 = new Q2(args);
         File result = q2.getDeployDir();
         assertEquals("deploy", result.getName(), "result.getName()");
+        q2.stop();
+    }
+
+    @Test
+    public void testGetEnvDir() throws Throwable {
+        String[] args = { "-Ed", "blah/foo/bar" };
+        Q2 q2 = new Q2(args);
+        Environment env = Environment.getEnvironment();
+        assertEquals("blah/foo/bar", env.getEnvDir(), "env.getEnvDir()");
         q2.stop();
     }
 

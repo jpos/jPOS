@@ -737,6 +737,7 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
         options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
         options.addOption ("E", "environment", true, "Environment name");
+        options.addOption ("Ed", "envdir", true, "Environment file directory, defaults to cfg");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -749,6 +750,19 @@ public class Q2 implements FileFilter, Runnable {
                 helpFormatter.printHelp ("Q2", options);
                 System.exit (0);
             } 
+
+            // set up envdir and env before other parts of the system, so env is available
+            // force reload if any of the env options was changed
+            if (line.hasOption("Ed")) {
+                System.setProperty("jpos.envdir", line.getOptionValue("Ed"));
+            }
+            if (line.hasOption("E")) {
+                System.setProperty("jpos.env", line.getOptionValue("E"));
+            }
+            if (line.hasOption("Ed") || line.hasOption("E")) {
+                Environment.reload();
+            }
+
             if (line.hasOption ("c")) {
                 cli = new CLI(this, line.getOptionValue("c"), line.hasOption("i"));
             } else if (line.hasOption ("i")) 
@@ -771,10 +785,7 @@ public class Q2 implements FileFilter, Runnable {
                 pidFile = line.getOptionValue("p");
             if (line.hasOption("n"))
                 name = line.getOptionValue("n");
-            if (line.hasOption("E")) {
-                System.setProperty("jpos.env", line.getOptionValue("E"));
-                Environment.getEnvironment();
-            }
+
             disableDeployScan = line.hasOption("Ns");
             disableDynamicClassloader = line.hasOption("Nd");
             enableSsh = line.hasOption("s");
