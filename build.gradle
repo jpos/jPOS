@@ -152,7 +152,7 @@ idea {
                 }.mapping.@vcs = 'Git' 
             }
         }
-        languageLevel = '1.8'
+        languageLevel = '16'
     }
 }
 
