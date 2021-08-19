@@ -105,6 +105,28 @@ public class CryptographicServiceMessage implements Loggeable {
     }
 
     /**
+     * Remove field from CSM
+     * @param tag Field Tag
+     * @throws NullPointerException on null tag
+     */
+    public void removeField (String tag) {
+        Objects.requireNonNull(tag, "The tag is required");
+        fields.remove(tag);
+    }
+
+    /**
+     * Remove fields from CSM
+     * @param tags tag list
+     * @throws NullPointerException on null tag
+     */
+    public void removeFields (String... tags) {
+        for (String tag : tags) {
+            Objects.requireNonNull(tag, "The tag is required");
+            fields.remove(tag);
+        }
+    }
+
+    /**
      * Returns the field content of a field with the given tag
      * @param tag
      * @return field Field Content, or null if tag not found
