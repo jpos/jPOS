@@ -21,12 +21,7 @@ package org.jpos.security;
 import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Cryptographic Service Message (CSM for short).
@@ -43,8 +38,7 @@ import java.util.StringTokenizer;
 
 @SuppressWarnings("unchecked")
 public class CryptographicServiceMessage implements Loggeable {
-    Map<String, String> fields = new HashMap<>();
-    List<String> orderedTags = new ArrayList<>();
+    Map<String, String> fields = new LinkedHashMap<>();
     String mcl;
 
     public static final String MCL_RSI = "RSI";
@@ -101,7 +95,6 @@ public class CryptographicServiceMessage implements Loggeable {
         Objects.requireNonNull(content, "The content is required");
         tag = tag.toUpperCase();
         fields.put(tag, content);
-        orderedTags.add(tag);
     }
 
     /**
@@ -147,7 +140,7 @@ public class CryptographicServiceMessage implements Loggeable {
         csm.append("CSM(MCL/");
         csm.append(getMCL());
         csm.append(" ");
-        for (String tag : orderedTags) {
+        for (String tag : fields.keySet()) {
             csm.append(tag);
             csm.append("/");
             csm.append(getFieldContent(tag));
@@ -171,7 +164,7 @@ public class CryptographicServiceMessage implements Loggeable {
         p.print(indent + "<csm");
         p.print(" class=\"" + getMCL() + "\"");
         p.println(">");
-        for (String tag : orderedTags) {
+        for (String tag : fields.keySet()) {
             p.println(inner + "<field tag=\"" + tag + "\" value=\"" + getFieldContent(tag) + "\"/>");
         }
         p.println(indent + "</csm>");
@@ -198,8 +191,9 @@ public class CryptographicServiceMessage implements Loggeable {
                     content = field.substring(separatorIndex + 1);
                 if (tag.equalsIgnoreCase("MCL"))
                     csm.setMCL(content);
-                else
+                else {
                     csm.addField(tag, content);
+                }
             } else
                 throw new ParsingException("Invalid field, doesn't have a tag: " + field);
         } while (st.hasMoreTokens());

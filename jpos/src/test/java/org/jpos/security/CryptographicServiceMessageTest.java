@@ -44,48 +44,6 @@ public class CryptographicServiceMessageTest {
         instance = new CryptographicServiceMessage();
     }
 
-    @Test
-    void testAddField() {
-        instance.addField("testTag", "testContent");
-        assertEquals(1, instance.fields.size());
-        assertEquals("testContent", instance.fields.get("TESTTAG"));
-        assertEquals(1, instance.orderedTags.size());
-        assertEquals("TESTTAG", instance.orderedTags.get(0));
-    }
-
-    @Test
-    void testAddFieldThrowsNullPointerException() {
-        thrown = assertThrows(NullPointerException.class,
-            () -> instance.addField("testTag", null)
-        );
-        assertEquals("The content is required", thrown.getMessage());
-        assertEquals(0, instance.fields.size());
-        assertEquals(0, instance.orderedTags.size());
-    }
-
-    @Test
-    void testAddFieldThrowsNullPointerException1() {
-        thrown = assertThrows(NullPointerException.class,
-            () -> instance.addField(null, "testContent")
-        );
-        assertEquals("The tag is required", thrown.getMessage());
-        assertEquals(0, instance.fields.size());
-        assertEquals(0, instance.orderedTags.size());
-    }
-
-    @Test
-    void testConstructor() {
-        assertEquals(0, instance.fields.size());
-        assertEquals(0, instance.orderedTags.size());
-    }
-
-    @Test
-    void testConstructor1() {
-        instance.setMCL("testMcl");
-        assertEquals(0, instance.fields.size());
-        assertEquals(0, instance.orderedTags.size());
-        assertEquals("testMcl", instance.mcl);
-    }
 
     @Test
     void testDump() throws Throwable {
@@ -233,6 +191,32 @@ public class CryptographicServiceMessageTest {
         instance.addField("testTag", "testContent");
         String result = instance.toString();
         assertEquals("CSM(MCL/testMcl TESTTAG/testContent )", result);
+    }
+
+    @Test
+    void testParseDynamicKeyExchange() throws ParsingException {
+        CryptographicServiceMessage csm = CryptographicServiceMessage.parse(
+            "CSM(MCL/KSM RCV/0001             ORG/0002             KD/0123456789ABCDEFFEDCBA9876543210 CTP/0000000000789A )                                        "
+        );
+        assertEquals("0001", csm.getFieldContent("RCV"));
+        assertEquals("0002", csm.getFieldContent("ORG"));
+        assertEquals("0123456789ABCDEFFEDCBA9876543210", csm.getFieldContent("KD"));
+        assertEquals("0000000000789A", csm.getFieldContent("CTP"));
+    }
+
+    @Test
+    void testRemoveFields() throws ParsingException {
+        CryptographicServiceMessage csm = CryptographicServiceMessage.parse(
+          "CSM(MCL/KSM RCV/0001             ORG/0002             KD/0123456789ABCDEFFEDCBA9876543210 CTP/0000000000789A )                                        "
+        );
+        assertEquals("0001", csm.getFieldContent("RCV"));
+        assertEquals("0002", csm.getFieldContent("ORG"));
+        assertEquals("0123456789ABCDEFFEDCBA9876543210", csm.getFieldContent("KD"));
+        assertEquals("0000000000789A", csm.getFieldContent("CTP"));
+        csm.removeFields("KD", "CTP");
+        assertNull (csm.getFieldContent("KD"));
+        assertNull (csm.getFieldContent("CTP"));
+        assertEquals ("CSM(MCL/KSM RCV/0001 ORG/0002 )", csm.toString());
     }
 
 }
