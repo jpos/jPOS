@@ -52,7 +52,12 @@ import org.osgi.framework.launch.FrameworkFactory;
 import org.xml.sax.SAXException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.management.*;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.ObjectInstance;
+import javax.management.ObjectName;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.nio.file.FileSystem;
@@ -355,21 +360,6 @@ public class Q2 implements FileFilter, Runnable {
         return (Q2) NameRegistrar.get(JMX_NAME, timeout);
     }
 
-    public void deploy (String serviceName, QBean qbean) throws MalformedObjectNameException, MBeanException, InstanceNotFoundException, ReflectionException, InstanceAlreadyExistsException, NotCompliantMBeanException, InvalidAttributeValueException {
-        ObjectName objectName = new ObjectName (QBEAN_NAME + serviceName);
-        MBeanServer mserver = getMBeanServer();
-        if(mserver.isRegistered(objectName)) {
-            throw new InstanceAlreadyExistsException (objectName+" has already been deployed in another file.");
-        }
-        ObjectInstance instance = mserver.registerMBean (
-          qbean, objectName
-        );
-        QFactory factory = getFactory();
-        factory.setAttribute (mserver, objectName, "Server", this);
-        factory.initQBean(this, objectName);
-        factory.startQBean(this, objectName);
-    }
-
     private boolean isXml(File f) {
         return f != null && f.getName().toLowerCase().endsWith(".xml");
     }
@@ -653,7 +643,6 @@ public class Q2 implements FileFilter, Runnable {
     public void relax () {
         relax (1000);
     }
-
     private void initSystemLogger () {
         File loggerConfig = new File (deployDir, LOGGER_CONFIG);
         if (loggerConfig.canRead()) {
