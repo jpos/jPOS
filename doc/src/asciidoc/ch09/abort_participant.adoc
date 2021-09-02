@@ -53,3 +53,14 @@ participant doesn't get called. If participant number four implements this
 
 image:images/tm_abort_participant.png[width="75%",alt="AbortParticipant"]
 
+
+At `prepareForAbort()` time, returning `PREPARED`, or `ABORTED`, is quite the same. 
+A `PREPARED` wouldn’t affect the flow of the transaction, it’s still in its `ABORT` track.
+But the `NO_JOIN` modifier could be useful if you’re doing nothing in your `abort()` callback.
+It’s an indication to the TM that it doesn’t need to call abort. 
+The difference is minimal, calling a dummy `abort()` method that does nothing is quite fast, 
+but the TM still needs to register that it needs to call that participant, and it records histograms, profiler, etc.
+So `NO_JOIN` is a good thing to consider returning.
+
+
+
