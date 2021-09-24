@@ -27,7 +27,6 @@ import org.jpos.rc.Result;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.jpos.transaction.ContextConstants.*;
 
@@ -380,6 +379,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
         PausedTransaction pt = getPausedTransaction();
         if (pt != null && !pt.isResumed()) {
             pt.setResumed (true);
+            resumeOnPause = false;
             pt.getTransactionManager().push (this);
         } else {
             resumeOnPause = true;
