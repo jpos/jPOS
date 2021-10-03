@@ -83,6 +83,27 @@ public class Result implements Loggeable {
         }
     }
 
+    public boolean hasIRC (IRC irc) {
+        synchronized (entries) {
+            return entries.stream().anyMatch(entry -> entry.irc == irc);
+        }
+    }
+    public boolean hasFailure(IRC irc) {
+        synchronized (entries) {
+            return failureList().stream().anyMatch(entry -> entry.irc == irc);
+        }
+    }
+    public boolean hasWarning(IRC irc) {
+        synchronized (entries) {
+            return warningList().stream().anyMatch(entry -> entry.irc == irc);
+        }
+    }
+    public boolean hasInfo(IRC irc) {
+        synchronized (entries) {
+            return infoList().stream().anyMatch(entry -> entry.irc == irc);
+        }
+    }
+
     public boolean isSuccess() {
         synchronized (entries) {
             return isSuccess0() && !hasFailures();
