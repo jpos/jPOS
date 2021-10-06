@@ -23,7 +23,12 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.List;
+import java.util.Random;
+import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -1513,60 +1518,22 @@ public class ISOUtil {
      * Converts a string[] or multiple strings into one comma-delimited String.
      *
      * Takes care of escaping commas using a backlash
-     * @see org.jpos.iso.ISOUtil#commaDecode(String)
+     * @see ISOUtil#commaDecode(String)
      * @param ss string array to be comma encoded
      * @return comma encoded string
      */
     public static String commaEncode (String... ss) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : ss) {
-            if (sb.length() > 0)
-                sb.append(',');
-            if (s != null) {
-                for (int i = 0; i<s.length(); i++) {
-                    char c = s.charAt(i);
-                    switch (c) {
-                        case '\\':
-                        case ',' :
-                            sb.append('\\');
-                            break;
-                    }
-                    sb.append(c);
-                }
-            }
-        }
-        return sb.toString();
+        return charEncode(',', ss);
     }
 
     /**
      * Decodes a comma encoded String as encoded by commaEncode
-     * @see org.jpos.iso.ISOUtil#commaEncode(String[])
+     * @see ISOUtil#commaEncode(String[])
      * @param s the command encoded String
      * @return String[]
      */
     public static String[] commaDecode (String s) {
-        List<String> l = new ArrayList<String>();
-        StringBuilder sb = new StringBuilder();
-        boolean escaped = false;
-        for (int i=0; i<s.length(); i++) {
-            char c = s.charAt(i);
-            if (!escaped) {
-                switch (c) {
-                    case '\\':
-                        escaped = true;
-                        continue;
-                    case ',':
-                        l.add(sb.toString());
-                        sb = new StringBuilder();
-                        continue;
-                }
-            }
-            sb.append(c);
-            escaped=false;
-        }
-        if (sb.length() > 0)
-            l.add(sb.toString());
-        return l.toArray(new String[l.size()]);
+        return charDecode(',', s);
     }
 
     /**
@@ -1684,5 +1651,65 @@ public class ISOUtil {
                              replaceAll("\\s", "")
                 ).collect(Collectors.joining()));
     }
-    
+
+    /**
+     * Converts a string[] or multiple strings into one char-delimited String.
+     *
+     * Takes care of escaping char using a backlash
+     * @see ISOUtil#charDecode(char, String)
+     * @param delimiter char used to delimit
+     * @param ss string array to be comma encoded
+     * @return char encoded string
+     */
+    public static String charEncode (char delimiter, String... ss) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : ss) {
+            if (sb.length() > 0) {
+                sb.append(delimiter);
+            }
+            if (s != null) {
+                for (int i = 0; i <s.length(); i++) {
+                    char c = s.charAt(i);
+                    if (c == delimiter || c == '\\'){
+                        sb.append('\\');
+                    }
+                    sb.append(c);
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Decodes a char encoded String as encoded by charEncode
+     * @see ISOUtil#charEncode(char, String[])
+     * @param delimiter char used to delimit
+     * @param s the char encoded String
+     * @return String[]
+     */
+    public static String[] charDecode (char delimiter, String s) {
+        List<String> l = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        boolean escaped = false;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (!escaped) {
+                if (c == '\\'){
+                    escaped = true;
+                    continue;
+                }
+                if (c == delimiter){
+                    l.add(sb.toString());
+                    sb = new StringBuilder();
+                    continue;
+                }
+            }
+            sb.append(c);
+            escaped = false;
+        }
+        if (sb.length() > 0) {
+            l.add(sb.toString());
+        }
+        return l.toArray(new String[l.size()]);
+    }
 }

@@ -18,10 +18,13 @@
 
 package org.jpos.iso;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasItemInArray;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -31,10 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
-import static org.apache.commons.lang3.JavaVersion.JAVA_10;
-import static org.apache.commons.lang3.JavaVersion.JAVA_14;
-import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -5071,8 +5070,8 @@ public class ISOUtilTest {
     }
 
     /**
-     * @see org.jpos.iso.ISOUtil#commaEncode(String[])
-     * @see org.jpos.iso.ISOUtil#commaDecode(String)
+     * @see ISOUtil#commaEncode(String[])
+     * @see ISOUtil#commaDecode(String)
      */
     @Test
     public void testCommaEncodeAndDecode() {
@@ -5177,5 +5176,16 @@ public class ISOUtilTest {
         String normalized = ISOUtil.normalize (s);
         String stripped = ISOUtil.stripUnicode(normalized);
         assertEquals(s, stripped);
+    }
+
+    @Test
+    public void testCharEncodeAndDecode() {
+        assertEquals("", ISOUtil.charEncode(':'), "error encoding \"\"");
+        assertEquals("a:b:c", ISOUtil.charEncode(':', "a", "b", "c"), "error encoding \"a,b,c\"");
+        assertEquals("\\::\\\\:c", ISOUtil.charEncode(':', ":", "\\", "c"), "error encoding \"\\::\\\\:c\"");
+
+        assertArrayEquals(new String[] {}, ISOUtil.charDecode(':', ""), "error decoding \"\"");
+        assertArrayEquals(new String[] { "a", "b", "c" }, ISOUtil.charDecode(':', "a:b:c"), "error decoding \"a,b,c\"");
+        assertArrayEquals(new String[] { ":", "\\", "c" }, ISOUtil.charDecode(':', "\\::\\\\:c"), "error decoding \"\\::\\\\:c\"");
     }
 }
