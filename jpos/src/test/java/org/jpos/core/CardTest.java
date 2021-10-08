@@ -146,4 +146,15 @@ public class CardTest  {
 
         assertEquals(false, c.isExpired(new Date()), "not expired");
     }
+    @Test
+    public void testShortPan() throws Throwable {
+        Track2 t2 = Track2.builder()
+          .track("41111111111111=2011123456123456789012").build();
+
+        assertEquals("41111111111111", t2.getPan(), "pan");
+        assertEquals("2011", t2.getExp(), "exp");
+        assertEquals("123", t2.getServiceCode(), "serviceCode");
+        assertEquals("4561", t2.getCvv(), "cvv");
+        assertEquals("23456789012", t2.getDiscretionaryData(), "discretionaryData");
+    }
 }
