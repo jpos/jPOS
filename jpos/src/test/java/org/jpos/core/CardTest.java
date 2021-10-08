@@ -32,13 +32,13 @@ public class CardTest  {
     @Test
     public void testTrack2() throws Throwable {
         Track2 t2 = Track2.builder()
-          .track("4111111111111111=201112345612345678901").build();
+          .track("4111111111111111=20111234561234567890").build();
 
         assertEquals("4111111111111111", t2.getPan(), "pan");
         assertEquals("2011", t2.getExp(), "exp");
         assertEquals("123", t2.getServiceCode(), "serviceCode");
         assertEquals("4561", t2.getCvv(), "cvv");
-        assertEquals("2345678901", t2.getDiscretionaryData(), "discretionaryData");
+        assertEquals("234567890", t2.getDiscretionaryData(), "discretionaryData");
     }
 
     @Test
@@ -66,7 +66,7 @@ public class CardTest  {
         Track1 t1 = Track1.builder()
           .track("%B4111111111111111^FAT ALBERT                ^401112345671234567890?").build();
         Track2 t2 = Track2.builder()
-          .track("4111111111111111=401112345612345678901").build();
+          .track("4111111111111111=40111234561234567890").build();
         Card c = Card.builder()
           .pan("4111111111111111")
           .exp("4011")
@@ -105,7 +105,7 @@ public class CardTest  {
     public void testISOMsg() throws Throwable {
         ISOMsg m = new ISOMsg("0800");
         m.set(45, "%B4111111111111111^FAT ALBERT                ^401112345671234567890?");
-        m.set(35, "4111111111111111=401112345612345678901");
+        m.set(35, "4111111111111111=40111234561234567890");
         m.set(2, "4111111111111111");
         m.set(14, "4011");
         Card c = Card.builder()
@@ -124,7 +124,7 @@ public class CardTest  {
         assertEquals("4567", c.getTrack1().getCvv(), "t1.cvv");
         assertEquals("4561", c.getTrack2().getCvv(), "t2.cvv");
         assertEquals("1234567890", c.getTrack1().getDiscretionaryData(), "discretionaryData");
-        assertEquals("2345678901", c.getTrack2().getDiscretionaryData(), "discretionaryData");
+        assertEquals("234567890", c.getTrack2().getDiscretionaryData(), "discretionaryData");
     }
 
     @Test
@@ -133,7 +133,7 @@ public class CardTest  {
           .pattern(Pattern.compile("^[%]?[A-Z]+([0-9]{1,19})\\^([^\\^]{2,28})\\^([0-9]{4})([0-9]{3})([0-9]{4})?([0-9]{1,10})?"))
           .track("B4111111111111111^ALPHAMERDADO PRUEBA         ^401110100026.000.003-6    000").build();
         Track2 t2 = Track2.builder()
-          .track("4111111111111111=401110145612345678901").build();
+          .track("4111111111111111=40111014561234567890").build();
         Card c = Card.builder()
           .pan("4111111111111111")
           .exp("4011")

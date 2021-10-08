@@ -151,6 +151,8 @@ public class Track2 {
         {
             if (s == null)
                 throw new InvalidCardException ("null track2 data");
+            if (s.length() > 37)
+                throw new InvalidCardException("track2 too long");
 
             track = s;
             Matcher matcher = pattern.matcher(s);
