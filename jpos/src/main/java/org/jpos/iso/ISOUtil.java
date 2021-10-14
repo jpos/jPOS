@@ -1663,18 +1663,21 @@ public class ISOUtil {
      */
     public static String charEncode (char delimiter, String... ss) {
         StringBuilder sb = new StringBuilder();
-        for (String s : ss) {
-            if (sb.length() > 0) {
+        for (int j = 0, ssLength = ss.length; j < ssLength; j++) {
+            String s = ss[j];
+            if (s == null || s.length() == 0) {
                 sb.append(delimiter);
+                continue;
             }
-            if (s != null) {
-                for (int i = 0; i <s.length(); i++) {
-                    char c = s.charAt(i);
-                    if (c == delimiter || c == '\\'){
-                        sb.append('\\');
-                    }
-                    sb.append(c);
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                if (c == delimiter || c == '\\') {
+                    sb.append('\\');
                 }
+                sb.append(c);
+            }
+            if (j < ssLength - 1) {
+                sb.append(delimiter);
             }
         }
         return sb.toString();
@@ -1707,9 +1710,26 @@ public class ISOUtil {
             sb.append(c);
             escaped = false;
         }
-        if (sb.length() > 0) {
-            l.add(sb.toString());
-        }
+        l.add(sb.toString());
         return l.toArray(new String[l.size()]);
+    }
+
+    /**
+     * Decodes a char encoded String returning element in position i
+     * @param s comma encoded string
+     * @param delimiter char used to delimit
+     * @param i position (starts at 0)
+     * @return element in position i of comma encoded string, or empty
+     */
+    public static String charDecode(String s, char delimiter, int i) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        String[] split = charDecode(delimiter, s);
+        if (split.length <= 0) {
+            return "";
+        } else {
+            return i < split.length ? split[i] : "";
+        }
     }
 }
