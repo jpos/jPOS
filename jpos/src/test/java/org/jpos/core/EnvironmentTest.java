@@ -77,4 +77,10 @@ public class EnvironmentTest {
     public void testEmptyDefault() {
         assertEquals("", Environment.get("${test:}"));
     }
+
+    @Test
+    public void testObfuscated() {
+        System.setProperty("obf.value", "obf::D4sCOgAAAASneiqWUPCruOtNmAU78cg6uBAv3N0/8DSNK6ptaozLAg==");
+        assertEquals("OBFUSCATED ABCD", Environment.get("OBFUSCATED ${obf.value}"));
+    }
 }

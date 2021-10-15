@@ -156,6 +156,12 @@ public class Environment implements Loggeable {
                 }
 
                 if (r != null) {
+                    for (EnvironmentProvider p : serviceLoader) {
+                        int l = p.prefix().length();
+                        if (r != null && r.length() > l && r.startsWith(p.prefix())) {
+                            r = p.get(r.substring(l));
+                        }
+                    }
                     if (m.group(1) != null) {
                         r = m.group(1) + r;
                     }
@@ -165,12 +171,6 @@ public class Environment implements Loggeable {
                 }
                 else
                     m = null;
-            }
-        }
-        for (EnvironmentProvider p : serviceLoader) {
-            int l = p.prefix().length();
-            if (r != null && r.length() > l && r.startsWith(p.prefix())) {
-                r = p.get(r.substring(l));
             }
         }
         return r;
