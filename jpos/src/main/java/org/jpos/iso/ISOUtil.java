@@ -1665,7 +1665,8 @@ public class ISOUtil {
         StringBuilder sb = new StringBuilder();
         for (int j = 0, ssLength = ss.length; j < ssLength; j++) {
             String s = ss[j];
-            if (s == null || s.length() == 0) {
+            final boolean notLast = j < ssLength - 1;
+            if (notLast && (s == null || s.length() == 0)) {
                 sb.append(delimiter);
                 continue;
             }
@@ -1676,7 +1677,7 @@ public class ISOUtil {
                 }
                 sb.append(c);
             }
-            if (j < ssLength - 1) {
+            if (notLast) {
                 sb.append(delimiter);
             }
         }

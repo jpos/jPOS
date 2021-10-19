@@ -5183,12 +5183,14 @@ public class ISOUtilTest {
     @Test
     public void testCharEncodeAndDecode() {
         assertEquals("", ISOUtil.charEncode(':'), "error encoding \"\"");
+        assertEquals(":", ISOUtil.charEncode(':', "",""), "error encoding \"\",\"\"");
         assertEquals("a:b:c", ISOUtil.charEncode(':', "a", "b", "c"), "error encoding \"a:b:c\"");
         assertEquals("\\::\\\\:c", ISOUtil.charEncode(':', ":", "\\", "c"), "error encoding \"\\::\\\\:c\"");
         assertEquals(":b:c", ISOUtil.charEncode(':', "", "b", "c"), "error encoding \":b:c\"");
         assertEquals("::b:c", ISOUtil.charEncode(':', "", "", "b", "c"), "error encoding \"::b:c\"");
 
         assertArrayEquals(new String[] {""}, ISOUtil.charDecode(':',""), "error decoding \"\"");
+        assertArrayEquals(new String[] {"", ""}, ISOUtil.charDecode(':',":"), "error decoding \":\"");
         assertArrayEquals(new String[] { "a", "b", "c" }, ISOUtil.charDecode(':', "a:b:c"), "error decoding \"a:b:c\"");
         assertArrayEquals(new String[] { ":", "\\", "c" }, ISOUtil.charDecode(':', "\\::\\\\:c"), "error decoding \"\\::\\\\:c\"");
         assertArrayEquals(new String[] { "", "b", "c" }, ISOUtil.charDecode(':', ":b:c"), "error decoding \":b:c\"");
