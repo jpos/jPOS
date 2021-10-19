@@ -5079,11 +5079,13 @@ public class ISOUtilTest {
         assertEquals("a,b,c", ISOUtil.commaEncode(new String[] { "a", "b", "c" }), "error encoding \"a,b,c\"");
         assertEquals("\\,,\\\\,c", ISOUtil.commaEncode(new String[] { ",", "\\", "c" }),
                 "error encoding \"\\,,\\\\,c\"");
+        assertEquals(",b,c", ISOUtil.commaEncode("", "b", "c"), "error encoding \"b,c\"");
 
-        assertArrayEquals(new String[] {}, ISOUtil.commaDecode(""), "error decoding \"\"");
+        assertArrayEquals(new String[] {""}, ISOUtil.commaDecode(""), "error decoding \"\"");
         assertArrayEquals(new String[] { "a", "b", "c" }, ISOUtil.commaDecode("a,b,c"), "error decoding \"a,b,c\"");
         assertArrayEquals(new String[] { ",", "\\", "c" }, ISOUtil.commaDecode("\\,,\\\\,c"),
                 "error decoding \"\\,,\\\\,c\"");
+        assertEquals(",,b,c", ISOUtil.commaEncode(null, "", "b", "c"), "error encoding \"b,c\"");
     }
 
     @Test
@@ -5181,11 +5183,21 @@ public class ISOUtilTest {
     @Test
     public void testCharEncodeAndDecode() {
         assertEquals("", ISOUtil.charEncode(':'), "error encoding \"\"");
-        assertEquals("a:b:c", ISOUtil.charEncode(':', "a", "b", "c"), "error encoding \"a,b,c\"");
+        assertEquals("a:b:c", ISOUtil.charEncode(':', "a", "b", "c"), "error encoding \"a:b:c\"");
         assertEquals("\\::\\\\:c", ISOUtil.charEncode(':', ":", "\\", "c"), "error encoding \"\\::\\\\:c\"");
+        assertEquals(":b:c", ISOUtil.charEncode(':', "", "b", "c"), "error encoding \":b:c\"");
+        assertEquals("::b:c", ISOUtil.charEncode(':', "", "", "b", "c"), "error encoding \"::b:c\"");
 
-        assertArrayEquals(new String[] {}, ISOUtil.charDecode(':', ""), "error decoding \"\"");
-        assertArrayEquals(new String[] { "a", "b", "c" }, ISOUtil.charDecode(':', "a:b:c"), "error decoding \"a,b,c\"");
+        assertArrayEquals(new String[] {""}, ISOUtil.charDecode(':',""), "error decoding \"\"");
+        assertArrayEquals(new String[] { "a", "b", "c" }, ISOUtil.charDecode(':', "a:b:c"), "error decoding \"a:b:c\"");
         assertArrayEquals(new String[] { ":", "\\", "c" }, ISOUtil.charDecode(':', "\\::\\\\:c"), "error decoding \"\\::\\\\:c\"");
+        assertArrayEquals(new String[] { "", "b", "c" }, ISOUtil.charDecode(':', ":b:c"), "error decoding \":b:c\"");
+        assertArrayEquals(new String[] { "", "", "b", "c" }, ISOUtil.charDecode(':',"::b:c"), "error decoding \"::b:c\"");
+
+        assertEquals("", ISOUtil.charDecode("", ':', 0), "error getting part 0 of \"\"");
+        assertEquals("", ISOUtil.charDecode("", ':', 2), "error getting part 2 of \"\"");
+        assertEquals("c", ISOUtil.charDecode("a:b:c", ':', 2), "error getting part 2 of  \"a:b:c\"");
+        assertEquals("", ISOUtil.charDecode("a:b:c", ':', 4), "error getting part 4 of  \"a:b:c\"");
+        assertEquals("b", ISOUtil.charDecode(":b:c", ':', 1), "error getting part 1 of  \":b:c\"");
     }
 }
