@@ -1657,6 +1657,9 @@ public class ISOUtil {
      * Converts a string[] or multiple strings into one char-delimited String.
      *
      * Takes care of escaping char using a backlash
+     *
+     * NOTE: for backward compatibility, an empty String returns a zero-length array
+     *
      * @see ISOUtil#charDecode(char, String)
      * @param delimiter char used to delimit
      * @param ss string array to be char encoded
