@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
+import java.util.StringJoiner;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -1658,30 +1659,26 @@ public class ISOUtil {
      * Takes care of escaping char using a backlash
      * @see ISOUtil#charDecode(char, String)
      * @param delimiter char used to delimit
-     * @param ss string array to be comma encoded
+     * @param ss string array to be char encoded
      * @return char encoded string
      */
     public static String charEncode (char delimiter, String... ss) {
-        StringBuilder sb = new StringBuilder();
-        for (int j = 0, ssLength = ss.length; j < ssLength; j++) {
-            String s = ss[j];
-            final boolean notLast = j < ssLength - 1;
-            if (notLast && (s == null || s.length() == 0)) {
-                sb.append(delimiter);
+        StringJoiner sj = new StringJoiner(String.valueOf(delimiter));
+        for (String s : ss) {
+            if (s == null || s.length() == 0) {
+                sj.add("");
                 continue;
             }
-            for (int i = 0; i < s.length(); i++) {
-                char c = s.charAt(i);
+            StringBuilder sb = new StringBuilder();
+            for (char c : s.toCharArray()) {
                 if (c == delimiter || c == '\\') {
-                    sb.append('\\');
+                    sb.append("\\");
                 }
                 sb.append(c);
             }
-            if (notLast) {
-                sb.append(delimiter);
-            }
+            sj.add(sb.toString());
         }
-        return sb.toString();
+        return sj.toString();
     }
 
     /**
@@ -1692,6 +1689,12 @@ public class ISOUtil {
      * @return String[]
      */
     public static String[] charDecode (char delimiter, String s) {
+        if (s == null) {
+            return null;
+        }
+        if (s.length() == 0) {
+            return new String[0];
+        }
         List<String> l = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         boolean escaped = false;
