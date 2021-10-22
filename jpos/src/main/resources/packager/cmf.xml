@@ -985,8 +985,8 @@
           class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
           id="39"
-          length="64"
-          name="Network Name"
+          length="4"
+          name="Remote ISO result code"
           class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
           id="52"
