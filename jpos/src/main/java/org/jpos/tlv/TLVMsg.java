@@ -138,7 +138,7 @@ public class TLVMsg implements Loggeable {
         if (ba[0] == 0x00) {
             // strip byte array if starts with 0x00
             ba = Arrays.copyOfRange(ba, 1, ba.length);
-            if (ba.length == 3) // handle three-byte tags
+            if (ba.length == 3 && ba[0] == (byte) 0xDF) // handle three-byte tags
                 return;
         }
 
