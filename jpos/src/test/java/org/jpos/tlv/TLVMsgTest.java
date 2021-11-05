@@ -127,4 +127,12 @@ public class TLVMsgTest {
         assertArrayEquals(ISOUtil.hex2byte("0806393837363132"), b);
     }
 
+    @Test
+    public void testThreeByteLengthTag() {
+        byte[] b = ISOUtil.hex2byte("df8116161e040000000000000000000000000000000000000000df81290830f0f020b0f0ff00");
+        TLVList tlv = new TLVList();
+        tlv.unpack(b);
+        tlv.dump (System.out, "");
+        assertArrayEquals(b, tlv.pack());
+    }
 }

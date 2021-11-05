@@ -112,7 +112,7 @@ public class TLVMsg implements Loggeable {
      * <p>
      * Tag number in accordance with ISO/IEC 7816
      * <ol>
-     *   <li>The tag field consists of one or more consecutive bytes. It a number.
+     *   <li>The tag field consists of one or more consecutive bytes. It is a number.
      *   <li>ISO/IEC 7816 uses neither ’00’ nor ‘FF’ as tag value.
      *   <li>If the bits B5-B1 of the leading byte are not all set to 1, then
      *       may they shall encode an integer equal to the tag number. Then the
@@ -134,9 +134,13 @@ public class TLVMsg implements Loggeable {
 
         BigInteger bi = BigInteger.valueOf(tag);
         byte[] ba = bi.toByteArray();
-        if (ba[0] == 0x00)
+
+        if (ba[0] == 0x00) {
             // strip byte array if starts with 0x00
             ba = Arrays.copyOfRange(ba, 1, ba.length);
+            if (ba.length == 3) // handle three-byte tags
+                return;
+        }
 
         int idx = 0;
         do {
@@ -153,10 +157,11 @@ public class TLVMsg implements Loggeable {
                     throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
                             + " shall contain subsequent byte"
                     );
-            } else if (idx + 1 < ba.length)
+            } else if (idx+1  < ba.length) {
                 throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
                         + " cannot contain subsequent byte"
                 );
+            }
             idx++;
         } while (idx < ba.length);
     }
