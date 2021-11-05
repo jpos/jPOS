@@ -137,7 +137,7 @@
       name="Transaction life cycle identification data"
       class="org.jpos.iso.IFB_BINARY"
       pad="false"
-      emitBitmap="false" 
+      emitBitmap="false"
       firstField="0"
       packager="org.jpos.iso.packager.GenericSubFieldPackager">
       <isofield
@@ -299,7 +299,7 @@
       length="9999"
       name="Card acceptor name/location"
       class="org.jpos.iso.IFB_LLLLBINARY"
-      emitBitmap="true" bitmapField="0" 
+      emitBitmap="true" bitmapField="0"
       packager="org.jpos.iso.packager.GenericSubFieldPackager">
       <isofield
           id="0"
@@ -392,7 +392,7 @@
       length="9999"
       name="Verification data"
       class="org.jpos.iso.IFB_LLLLBINARY"
-      emitBitmap="true" bitmapField="0" 
+      emitBitmap="true" bitmapField="0"
       packager="org.jpos.iso.packager.GenericSubFieldPackager">
       <isofield
           id="0"
@@ -964,40 +964,40 @@
           name="Network Name"
           class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
-              id="26"
-              length="16"
-              name="Device ID/IMEI"
-              class="org.jpos.iso.IFB_NUMERIC" />
+          id="26"
+          length="16"
+          name="Device ID/IMEI"
+          class="org.jpos.iso.IFB_NUMERIC" />
       <isofield
-              id="27"
-              length="64"
-              name="Geolocation"
-              class="org.jpos.iso.IFB_LLCHAR" />
-      <isofield
-              id="28"
-              length="64"
-              name="Cardholder Identification Data"
-              class="org.jpos.iso.IFB_LLCHAR" />
-      <isofield
-              id="29"
-              length="64"
-              name="Invoice"
-              class="org.jpos.iso.IFB_LLCHAR" />
-      <isofield
-          id="39"
+          id="27"
           length="64"
-          name="Network Name"
+          name="Geolocation"
           class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
-              id="52"
-              length="8"
-              name="New PIN Block"
-              class="org.jpos.iso.IFB_BINARY"/>
+          id="28"
+          length="64"
+          name="Cardholder Identification Data"
+          class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
-              id="53"
-              length="48"
-              name="KSN for new PIN Block"
-              class="org.jpos.iso.IFB_LLBINARY"/>
+          id="29"
+          length="64"
+          name="Invoice"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="39"
+          length="4"
+          name="Remote ISO result code"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="52"
+          length="8"
+          name="New PIN Block"
+          class="org.jpos.iso.IFB_BINARY"/>
+      <isofield
+          id="53"
+          length="48"
+          name="KSN for new PIN Block"
+          class="org.jpos.iso.IFB_LLBINARY"/>
       <isofield
           id="63"
           length="9999"
