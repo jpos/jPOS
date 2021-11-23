@@ -21,12 +21,14 @@ package org.jpos.q2;
 
 import org.jdom2.Element;
 import org.jpos.core.*;
+import org.jpos.core.annotation.Config;
 import org.jpos.q2.qbean.QConfig;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
 import javax.management.*;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -111,7 +113,7 @@ public class QFactory {
             configureQBean(mserver,objectName,e);
             setConfiguration (obj, e);  // handle legacy (QSP v1) Configurables 
 
-            if (obj instanceof QBean) 
+            if (obj instanceof QBean)
                 mserver.invoke (objectName, "init",  null, null);
         }
         catch (Throwable t) {
@@ -164,7 +166,7 @@ public class QFactory {
             // okay to fail (produced by some application servers instead of AttributeNotFoundException)
         }
     }
-
+    
     public void startQBean (Q2 server, ObjectName objectName)
         throws InstanceNotFoundException,
                MBeanException,
@@ -365,15 +367,18 @@ public class QFactory {
         String s = e.getAttributeValue(name);
         return Environment.getEnvironment().getProperty(s, s);
     }
-    public void setConfiguration (Object obj, Element e) 
+    public void setConfiguration (Object obj, Element e)
         throws ConfigurationException 
     {
         try {
+            Configuration cfg = getConfiguration (e);
+            autoconfigure(obj, cfg);
+
             if (obj instanceof Configurable)
-                ((Configurable)obj).setConfiguration (getConfiguration (e));
+                ((Configurable)obj).setConfiguration (cfg);
             if (obj instanceof XmlConfigurable)
                 ((XmlConfigurable)obj).setConfiguration(e);
-        } catch (ConfigurationException ex) {
+        } catch (ConfigurationException | IllegalAccessException ex) {
             throw new ConfigurationException (ex);
         }
     }
@@ -435,5 +440,26 @@ public class QFactory {
 
     public static String getEnabledAttribute (Element e) {
        return Environment.get(e.getAttributeValue("enabled", "true"));
+    }
+
+    public static void autoconfigure (Object obj, Configuration cfg) throws IllegalAccessException {
+        Field[] fields = obj.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Config.class)) {
+                Config config = field.getAnnotation(Config.class);
+                String v = cfg.get(config.value(), null);
+                if (v != null) {
+                    if (!field.isAccessible())
+                        field.setAccessible(true);
+                    Class<?> c = field.getType();
+                    if (c.isAssignableFrom(String.class))
+                        field.set(obj, v);
+                    else if (c.isAssignableFrom(int.class) || c.isAssignableFrom(Integer.class))
+                        field.set(obj, cfg.getInt(config.value()));
+                    else if (c.isAssignableFrom(long.class) || c.isAssignableFrom(Long.class))
+                        field.set(obj, cfg.getLong(config.value()));
+                }
+            }
+        }
     }
 }

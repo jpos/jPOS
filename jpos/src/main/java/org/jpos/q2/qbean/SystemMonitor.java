@@ -21,6 +21,7 @@ package org.jpos.q2.qbean;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.Environment;
+import org.jpos.core.annotation.Config;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
@@ -64,6 +65,9 @@ public class SystemMonitor extends QBeanSupport
     private String frozenDump;
     private String localHost;
     private String processName;
+
+    @Config("metrics-dir")
+    private String metricsDir;
 
     public void startService() {
         try {
@@ -221,6 +225,7 @@ public class SystemMonitor extends QBeanSupport
                 zi.getDisplayName(TextStyle.FULL, Locale.getDefault()),
                 zi.getRules().getOffset(instant).toString());
         p.printf("%swatch service: %s%n", indent, getServer().getWatchServiceClassname());
+        p.printf("%s  metrics dir: %s%n", indent, metricsDir);
         List<ZoneOffsetTransitionRule> l = zi.getRules().getTransitionRules();
         for (ZoneOffsetTransitionRule tr : l) {
             p.printf("%s         rule: %s%n", indent, tr.toString());
@@ -270,7 +275,7 @@ public class SystemMonitor extends QBeanSupport
     }
 
     private void dumpMetrics() {
-        if (cfg.get("metrics-dir", null) != null) {
+        if (metricsDir != null) {
             File dir = new File(cfg.get("metrics-dir"));
             dir.mkdir();
             NameRegistrar.getAsMap().forEach((key, value) -> {
