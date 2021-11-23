@@ -151,3 +151,26 @@ deployments, HSM based EnvironmentProvider should be used instead.
 The `obf` CLI command can be used to create these obfuscated entries.
 =====
 
+Since version 2.1.7, jPOS supports the `@Config` annotation that pushes configuration properties (String, int, Integer, long, Long) down to classes
+instanciated through QFactory (Qbeans, Transaction Participants, etc.), i.e:
+
+[source,java]
+-------------
+  public class MyClass {
+      @Config("port") int port;
+  }
+-------------
+
+The 'port' variable would be picked from:
+
+
+[source,xml]
+------------
+  ...
+     <property name="port" value="1234" />
+  ...
+
+------------
+
+from the QBean or participant configuration.
+

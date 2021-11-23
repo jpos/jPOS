@@ -261,27 +261,7 @@ public class QFactory2Test {
         assertEquals("testQFactoryName", e.getName(), "e.getName()");
         q2.stop();
     }
-
-    @Test
-    public void testSetConfigurationThrowsConfigurationException() throws Throwable {
-        String[] args = new String[0];
-        Q2 q2 = new Q2(args);
-        try {
-            new QFactory(null, q2).setConfiguration(new BSHTransactionParticipant(), null);
-            fail("Expected ConfigurationException to be thrown");
-        } catch (ConfigurationException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("org.jpos.core.ConfigurationException (java.lang.NullPointerException)", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("org.jpos.core.ConfigurationException: Cannot invoke \"org.jdom2.Element.getChild(String)\" because \"e\" is null (java.lang.NullPointerException: Cannot invoke \"org.jdom2.Element.getChild(String)\" because \"e\" is null)", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot invoke \"org.jdom2.Element.getChild(String)\" because \"e\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
-        } finally {
-            q2.stop();
-        }
-    }
-
+    
     @Test
     public void testSetConfigurationThrowsNullPointerException() throws Throwable {
         String[] args = new String[0];
