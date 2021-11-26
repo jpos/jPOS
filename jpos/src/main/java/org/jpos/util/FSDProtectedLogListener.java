@@ -103,69 +103,76 @@ public class FSDProtectedLogListener implements LogListener, Configurable
                 Object obj = payLoad.get (i);
                 if (obj instanceof FSDISOMsg) {
                     FSDISOMsg m = (FSDISOMsg) ((FSDISOMsg) obj).clone();
-                    try {
-                        checkTruncated (m);
-                        checkProtected (m);
-                        checkHidden (m);
-                    } catch (ISOException e) {
-                        ev.addMessage (e);
-                    }
+                    checkTruncated (m);
+                    checkProtected (m);
+                    checkHidden (m);
+                    payLoad.set (i, m);
+                } else if (obj instanceof FSDMsg) {
+                    FSDMsg m = (FSDMsg) ((FSDMsg) obj).clone();
+                    checkTruncated (m);
+                    checkProtected (m);
+                    checkHidden (m);
                     payLoad.set (i, m);
                 }
             }
         }
         return ev;
     }
-    private void checkTruncated (FSDISOMsg m) throws ISOException {
-         for (String truncateField : truncateFields) {
-             String truncate[] = truncateField.split(":");
-             if (truncate.length == 2) {
-                 String f = truncate[0];
-                 int len = Integer.parseInt(truncate[1]);
-                 Object v = null;
-                 try {
-                     v = m.getFSDMsg().get(f);
-                 } catch (Exception ignored) {
-                     // NOPMD: NOP
-                 }
-                 if (v instanceof String) {
-                     String x = (String) v;
-                     if (x.length() > len) {
-                         m.getFSDMsg().set(f, x.substring(0, len));
-                     }
-                 }
-             }
-         }
+
+    private void checkHidden(FSDISOMsg m) {
+        checkHidden(m.getFSDMsg());
     }
-    private void checkProtected (FSDISOMsg m) throws ISOException {
+
+    private void checkProtected(FSDISOMsg m) {
+        checkProtected(m.getFSDMsg());
+    }
+
+    private void checkTruncated(FSDISOMsg m) {
+        checkTruncated(m.getFSDMsg());
+    }
+
+    private void checkTruncated(FSDMsg m) {
+        for (String truncateField : truncateFields) {
+            String truncate[] = truncateField.split(":");
+            if (truncate.length == 2) {
+                String f = truncate[0];
+                int len = Integer.parseInt(truncate[1]);
+                String v = null;
+                try {
+                    v = m.get(f);
+                } catch (Exception ignored) {
+                    // NOPMD: NOP
+                }
+                if (v != null && v.length() > len) {
+                    m.set(f, v.substring(0, len));
+                }
+            }
+        }
+
+    }
+    private void checkProtected (FSDMsg m) {
         for (String f : protectFields) {
-            Object v = null;
+            String v = null;
             try {
-                v = m.getFSDMsg().get(f);
+                v = m.get(f);
             } catch (Exception ignored) {
                 // NOPMD: ignore error
             }
             if (v != null) {
-                if (v instanceof String)
-                    m.getFSDMsg().set (f, ISOUtil.protect((String) v));
-                else
-                    m.getFSDMsg().set (f, new String(BINARY_WIPED));
+                m.set (f, ISOUtil.protect(v));
             }
         }
     }
-    private void checkHidden (FSDISOMsg m) throws ISOException {
+    private void checkHidden (FSDMsg m) {
         for (String f : wipeFields) {
             Object v = null;
             try {
-                v = m.getFSDMsg().get (f);
+                v = m.get (f);
             } catch (Exception ignored) {
                 // NOPMD ignore error
             }
             if (v != null) {
-                if (v instanceof String)
-                    m.getFSDMsg().set (f, WIPED);
-                else
-                    m.getFSDMsg().set (f, new String(BINARY_WIPED));
+                m.set (f, WIPED);
             }
         }
     }
