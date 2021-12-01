@@ -40,12 +40,12 @@ public class IFE_LLLNUM extends ISOStringFieldPackager
      */
     public IFE_LLLNUM(int len, String description) {
         super(len, description, NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LLL);
-        checkLength(len, 9);
+        checkLength(len, 999);
     }
 
     public void setLength(int len)
     {
-        checkLength(len, 9);
+        checkLength(len, 999);
         super.setLength(len);
     }
 }
