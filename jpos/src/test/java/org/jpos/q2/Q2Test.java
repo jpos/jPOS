@@ -172,7 +172,7 @@ public class Q2Test {
     public void testGetEnvDir() throws Throwable {
         String[] args = { "-Ed", "blah/foo/bar" };
         Q2 q2 = new Q2(args);
-        Environment env = Environment.getEnvironment();
+        Environment env = Environment.reload(); // Environment.INSTANCE is polluted from previous runs
         assertEquals("blah/foo/bar", env.getEnvDir(), "env.getEnvDir()");
         q2.stop();
     }

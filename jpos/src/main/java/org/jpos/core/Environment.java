@@ -18,6 +18,8 @@
 
 package org.jpos.core;
 
+import org.jpos.iso.ISOUtil;
+import org.jpos.util.Caller;
 import org.jpos.util.Loggeable;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.scanner.ScannerException;
@@ -198,36 +200,44 @@ public class Environment implements Loggeable {
     }
 
     private boolean readYAML () throws IOException {
-        File f = new File(envDir + "/" + name + ".yml");
         errorString = null;
-        if (f.exists() && f.canRead()) {
-            Properties properties = new Properties();
-            try (InputStream fis = new FileInputStream(f)) {
-                Yaml yaml = new Yaml();
-                Iterable<Object> document = yaml.loadAll(fis);
-                document.forEach(d -> {
-                    flat(properties, null, (Map<String, Object>) d, false);
-                });
-                propRef.set(properties);
-                return true;
-            } catch (ScannerException e) {
-                errorString = "Environment (" + getName() + ") error " + e.getMessage();
+        boolean configRead = false;
+        String[] names = ISOUtil.commaDecode(name);
+        for (String n : names) {
+            File f = new File(envDir + "/" + n + ".yml");
+            if (f.exists() && f.canRead()) {
+                Properties properties = new Properties();
+                try (InputStream fis = new FileInputStream(f)) {
+                    Yaml yaml = new Yaml();
+                    Iterable<Object> document = yaml.loadAll(fis);
+                    document.forEach(d -> {
+                        flat(properties, null, (Map<String, Object>) d, false);
+                    });
+                    propRef.set(properties);
+                    configRead = true;
+                } catch (ScannerException e) {
+                    errorString = "Environment (" + getName() + ") error " + e.getMessage();
+                }
             }
         }
-        return false;
+        return configRead;
     }
 
     private boolean readCfg () throws IOException {
-        File f = new File(envDir + "/" + name + ".cfg");
-        if (f.exists() && f.canRead()) {
-            Properties properties = new Properties();
-            try (InputStream fis = new FileInputStream(f)) {
-                properties.load(new BufferedInputStream(fis));
-                propRef.set(properties);
-                return true;
+        String[] names = ISOUtil.commaDecode(name);
+        boolean configRead = false;
+        for (String n : names) {
+            File f = new File(envDir + "/" + n + ".cfg");
+            if (f.exists() && f.canRead()) {
+                Properties properties = new Properties();
+                try (InputStream fis = new FileInputStream(f)) {
+                    properties.load(new BufferedInputStream(fis));
+                    propRef.set(properties);
+                    configRead = true;
+                }
             }
         }
-        return false;
+        return configRead;
     }
 
     @SuppressWarnings("unchecked")

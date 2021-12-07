@@ -757,10 +757,7 @@ public class Q2 implements FileFilter, Runnable {
                 System.setProperty("jpos.envdir", line.getOptionValue("Ed"));
             }
             if (line.hasOption("E")) {
-                System.setProperty("jpos.env", line.getOptionValue("E"));
-            }
-            if (line.hasOption("Ed") || line.hasOption("E")) {
-                Environment.reload();
+                System.setProperty("jpos.env", ISOUtil.commaEncode(line.getOptionValues("E")));
             }
 
             if (line.hasOption ("c")) {
