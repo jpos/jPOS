@@ -226,10 +226,10 @@ public class Environment implements Loggeable {
     private boolean readCfg () throws IOException {
         String[] names = ISOUtil.commaDecode(name);
         boolean configRead = false;
+        Properties properties = new Properties();
         for (String n : names) {
             File f = new File(envDir + "/" + n + ".cfg");
             if (f.exists() && f.canRead()) {
-                Properties properties = new Properties();
                 try (InputStream fis = new FileInputStream(f)) {
                     properties.load(new BufferedInputStream(fis));
                     propRef.set(properties);
