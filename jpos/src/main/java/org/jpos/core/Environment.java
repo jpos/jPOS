@@ -181,9 +181,12 @@ public class Environment implements Loggeable {
     @SuppressWarnings("unchecked")
     private void readConfig () throws IOException {
         if (name != null) {
-            if (!readYAML())
-                readCfg();
-
+            Properties properties = new Properties();
+            String[] names = ISOUtil.commaDecode(name);
+            for (String n: names) {
+                if (!readYAML(n, properties))
+                    readCfg(n, properties);
+            }
             extractSystemProperties();
             propRef.get().put ("jpos.env", name);
             propRef.get().put ("jpos.envdir", envDir);
@@ -199,45 +202,35 @@ public class Environment implements Loggeable {
           .forEach(prop -> System.setProperty(prop.substring(SP_PREFIX_LENGTH), (String) properties.get(prop)));
     }
 
-    private boolean readYAML () throws IOException {
+    private boolean readYAML (String n, Properties properties) throws IOException {
         errorString = null;
-        boolean configRead = false;
-        String[] names = ISOUtil.commaDecode(name);
-        for (String n : names) {
-            File f = new File(envDir + "/" + n + ".yml");
-            if (f.exists() && f.canRead()) {
-                Properties properties = new Properties();
-                try (InputStream fis = new FileInputStream(f)) {
-                    Yaml yaml = new Yaml();
-                    Iterable<Object> document = yaml.loadAll(fis);
-                    document.forEach(d -> {
-                        flat(properties, null, (Map<String, Object>) d, false);
-                    });
-                    propRef.set(properties);
-                    configRead = true;
-                } catch (ScannerException e) {
-                    errorString = "Environment (" + getName() + ") error " + e.getMessage();
-                }
+        File f = new File(envDir + "/" + n + ".yml");
+        if (f.exists() && f.canRead()) {
+            try (InputStream fis = new FileInputStream(f)) {
+                Yaml yaml = new Yaml();
+                Iterable<Object> document = yaml.loadAll(fis);
+                document.forEach(d -> {
+                    flat(properties, null, (Map<String, Object>) d, false);
+                });
+                propRef.set(properties);
+                return true;
+            } catch (ScannerException e) {
+                errorString = "Environment (" + getName() + ") error " + e.getMessage();
             }
         }
-        return configRead;
+        return false;
     }
 
-    private boolean readCfg () throws IOException {
-        String[] names = ISOUtil.commaDecode(name);
-        boolean configRead = false;
-        Properties properties = new Properties();
-        for (String n : names) {
-            File f = new File(envDir + "/" + n + ".cfg");
-            if (f.exists() && f.canRead()) {
-                try (InputStream fis = new FileInputStream(f)) {
-                    properties.load(new BufferedInputStream(fis));
-                    propRef.set(properties);
-                    configRead = true;
-                }
+    private boolean readCfg (String n, Properties properties) throws IOException {
+        File f = new File(envDir + "/" + n + ".cfg");
+        if (f.exists() && f.canRead()) {
+            try (InputStream fis = new FileInputStream(f)) {
+                properties.load(new BufferedInputStream(fis));
+                propRef.set(properties);
+                return true;
             }
         }
-        return configRead;
+        return false;
     }
 
     @SuppressWarnings("unchecked")
