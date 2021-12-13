@@ -740,6 +740,8 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("Ed", "envdir", true, "Environment file directory, defaults to cfg");
 
         try {
+            System.setProperty("log4j2.formatMsgNoLookups", "true"); // log4shell prevention
+
             CommandLine line = parser.parse (options, args);
             if (line.hasOption ("v")) {
                 displayVersion();
