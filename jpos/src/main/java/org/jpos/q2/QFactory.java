@@ -458,6 +458,8 @@ public class QFactory {
                         field.set(obj, cfg.getInt(config.value()));
                     else if (c.isAssignableFrom(long.class) || c.isAssignableFrom(Long.class))
                         field.set(obj, cfg.getLong(config.value()));
+                    else if (c.isAssignableFrom(boolean.class) || c.isAssignableFrom(Boolean.class))
+                        field.set(obj, cfg.getBoolean(config.value()));
                 }
             }
         }

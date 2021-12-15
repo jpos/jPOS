@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigAnnotationTest {
     @Test
@@ -35,10 +36,12 @@ public class ConfigAnnotationTest {
         cfg.put("mystring", "My String");
         cfg.put("mylong", "10000");
         cfg.put("myint", "1000");
+        cfg.put("myboolean", "yes");
         QFactory.autoconfigure(bean, cfg);
         assertEquals("My String", bean.getMystring());
         assertEquals(1000, bean.getMyint());
         assertEquals(10000L, bean.getMylong());
+        assertTrue(bean.isMyboolean());
     }
 
     public static class MyAutoConfigurable {
@@ -51,6 +54,8 @@ public class ConfigAnnotationTest {
         @Config("mylong")
         private Long mylong;
 
+        @Config("myboolean")
+        private boolean myboolean;
 
         public String getMystring() {
             return mystring;
@@ -63,6 +68,8 @@ public class ConfigAnnotationTest {
         public Long getMylong() {
             return mylong;
         }
+
+        public boolean isMyboolean() {return myboolean; }
 
 
         @Override
