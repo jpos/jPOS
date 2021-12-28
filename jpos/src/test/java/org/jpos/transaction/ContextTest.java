@@ -21,6 +21,7 @@ package org.jpos.transaction;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -363,5 +364,33 @@ public class ContextTest {
         t1.join();
         if (errorsPut.get() + errorsDump.get() > 0)
             fail ("Concurrent Exception has been raised " + errorsPut.get() + "/" + errorsDump.get() + " time(s)");
+    }
+
+    @Test
+    public void testHasKeyAndMove () {
+        Context ctx = new Context();
+        ctx.put ("A", "ABC");
+        ctx.put ("P", "XYZ", true);
+        assertTrue(ctx.hasKey("A"));
+        assertFalse(ctx.hasKey("B"));
+        assertFalse(ctx.hasPersistedKey("A"));
+        assertTrue(ctx.hasPersistedKey("P"));
+
+        // Move A to B (transient)
+        ctx.move ("A", "B");
+        assertTrue(ctx.hasKey("B"));
+        assertFalse(ctx.hasKey("A"));
+        assertFalse(ctx.hasPersistedKey("A"));
+        assertFalse(ctx.hasPersistedKey("B"));
+
+        // Persist B
+        ctx.persist ("B");
+        assertTrue(ctx.hasPersistedKey("B"));
+
+        // Move B to C (should retain persistence)
+        ctx.move ("B", "C");
+        assertTrue(ctx.hasKey("C"));
+        assertTrue(ctx.hasPersistedKey("C"));
+        assertFalse(ctx.hasPersistedKey("B"));
     }
 }

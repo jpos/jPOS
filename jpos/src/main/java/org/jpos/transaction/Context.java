@@ -102,6 +102,39 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     }
 
     /**
+     * Check if key present
+     * @param key the key
+     * @return true if present
+     */
+    public boolean hasKey(Object key) {
+        return getMap().containsKey(key);
+    }
+
+    /**
+     * Check key exists present persisted map
+     * @param key the key
+     * @return true if present
+     */
+    public boolean hasPersistedKey(Object key) {
+        return getPMap().containsKey(key);
+    }
+
+    /**
+     * Move entry to new key name
+     * @param from key
+     * @param to key
+     * @return the entry's value (could be null if 'from' key not present)
+     */
+    public synchronized <T> T move(Object from, Object to) {
+        T obj = get(from);
+        if (obj != null) {
+            put(to, obj, hasPersistedKey(from));
+            remove(from);
+        }
+        return obj;
+    }
+
+    /**
      * Get object instance from transaction context.
      *
      * @param <T> desired type of object instance
