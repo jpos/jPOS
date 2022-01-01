@@ -83,4 +83,10 @@ public class EnvironmentTest {
         System.setProperty("obf.value", "obf::D4sCOgAAAASneiqWUPCruOtNmAU78cg6uBAv3N0/8DSNK6ptaozLAg==");
         assertEquals("OBFUSCATED ABCD", Environment.get("OBFUSCATED ${obf.value}"));
     }
+
+    @Test
+    public void testLoop() {
+        System.setProperty("loop", "${loop}");
+        assertEquals("${loop}", Environment.get("${loop}"));
+    }
 }

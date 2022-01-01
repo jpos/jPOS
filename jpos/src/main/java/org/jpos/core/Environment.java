@@ -127,6 +127,7 @@ public class Environment implements Loggeable {
                 return s;                           // return the whole thing
 
             while (m != null && m.matches()) {
+                String previousR = r;
                 String gPrefix = m.group(3);
                 String gValue = m.group(4);
                 gPrefix = gPrefix != null ? gPrefix : "";
@@ -173,6 +174,9 @@ public class Environment implements Loggeable {
                 }
                 else
                     m = null;
+
+                if (Objects.equals(r, previousR))
+                    break;
             }
         }
         return r;
