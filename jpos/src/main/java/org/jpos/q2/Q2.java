@@ -736,7 +736,7 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("sh", "ssh-host-key-file", true, "SSH host key file, defaults to 'cfg/hostkeys.ser'");
         options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
         options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
-        options.addOption ("E", "environment", true, "Environment name");
+        options.addOption ("E", "environment", true, "Environment name.\nCan be given multiple times (applied in order, and values may override previous ones)");
         options.addOption ("Ed", "envdir", true, "Environment file directory, defaults to cfg");
 
         try {
