@@ -2,6 +2,10 @@ import org.gradle.internal.os.OperatingSystem
 apply from: 'jpos/libraries.gradle'
 
 allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        options.fork = true
+    }
+
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 }
@@ -165,4 +169,3 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
         project.sourceSets.main.compileClasspath})
     failOnError = false
 }
-
