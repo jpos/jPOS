@@ -251,6 +251,9 @@ public class GenericPackager
             );
         }
         reader.setFeature ("http://xml.org/sax/features/validation", true);
+        reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         GenericContentHandler handler = new GenericContentHandler();
         reader.setContentHandler(handler);
         reader.setErrorHandler(handler);
