@@ -89,4 +89,32 @@ public class EnvironmentTest {
         System.setProperty("loop", "${loop}");
         assertEquals("${loop}", Environment.get("${loop}"));
     }
+
+    @Test
+    public void testOtherPropertyAsDefault() {
+        assertEquals("1", Environment.get("${property:${propertyA:1}}"),
+                "Should take the default of propertyA (1), since neither property nor propertyA are defined");
+    }
+
+    @Test
+    public void testOtherPropertyAsDefaultWithEmptyDefault() {
+        assertEquals("", Environment.get("${property:${propertyA:}}"),
+                "Should take the default of propertyA (empty), since neither property nor propertyA are defined");
+    }
+
+    @Test
+    public void testOtherDefinedPropertyAsDefault() {
+        System.setProperty("propertyA", "A");
+        assertEquals("A", Environment.get("${property:${propertyA:}}"),
+                "Should take the value of propertyA (A), since property is not defined");
+        System.clearProperty("propertyA");
+    }
+
+    @Test
+    public void testDefinedPropertyWithOtherPropertyAsDefaultWithEmptyDefault() {
+        System.setProperty("property", "B");
+        assertEquals("B", Environment.get("${property:${propertyA:}}"),
+                "Should take the value of property (B)");
+        System.clearProperty("property");
+    }
 }
