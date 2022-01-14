@@ -1,0 +1,219 @@
+[[logger-adaptor]]
+
+== LoggerAdaptor
+
+This service provides an easy way of declaring a logger (see <<logger>>) for the application. It creates a `Logger` instance and regiters it in `NameRegistrar,` so it can be referenced from other deploy descriptors or code.
+
+As mentioned in <<running_Q2>>, a default logger is created if no `00_logger.xml` is present. That is the simplest logger definition, with the exception of one that has no log listener at all.
+
+Let's revisit it:
+
+[source,xml]
+----
+<logger name="Q2"> <!--1-->
+    <log-listener class="org.jpos.util.SimpleLogListener" /> <!--2-->
+</logger>
+----
+
+<1> In absence of a `class` attributes `Q2` maps `logger` root elements to `org.jpos.q2.qbean.LoggerAdaptor`, `QFactory` takes the mapping from the resource link:https://github.com/jpos/jPOS/blob/master/jpos/src/main/resources/org/jpos/q2/QFactory.properties#L1[+QFactory.properties+]
+<2> This is the simplest `LogListener` definition you can see, it just dumps all events to `System.out`, more details in the next subsection.
+
+The following subsections mention some log listeners included in the jPOS distribution. They just describe the items that can be configured by deploy descriptors, but some of them have additional capabilities that can be configured programmatically. Or less commonly used properties that can be read from the source code or javadoc.
+
+=== SimpleLogListener
+
+This log listener dumps all events to standard output.
+
+It can have an inner `writer` element that can modify how the elements are written to the output stream. See link:https://github.com/jpos/jPOS/blob/master/jpos/src/main/java/org/jpos/util/MappingLogEventWriter.java#L42[+MappingLogEventWriter.java+] for an example.
+
+
+=== RotateLogListener
+
+This log listener writes output to a rotating file. It extends `SimpleLogListener`, so it inherits its configuration capabilities plus the ones needed to configure its specific purpose.
+
+Its configuration looks like this:
+
+[source,xml]
+----
+  <log-listener class="org.jpos.util.RotateLogListener">
+    <property name="file" value="log/q2.log" />     <!--1-->
+    <property name="window" value="86400" />        <!--2-->
+    <property name="copies" value="90" />           <!--3-->
+    <property name="maxsize" value="100000000" />   <!--4-->
+    <proeprty name="rotate-on-startup" value="false"/> <!--5-->
+  </log-listener>
+----
+<1> The location base path, where it will write the output.
+<2> How often to rotate in seconds, defaults to `0` which has a special meaning of never to rotate by time.
+<3> How many copies to maintain, defaults to `0` which has a special meaning of maintaining a single copy.
+<4> Maximum size in bytes it lets the log file to grow. If the log file becomes greater than that, it automatically rotates it.
+<5> Automatically rotate on start up?, defaults to false.
+
+The rotation procedure goes by renaming each copy by increasing its suffix, and `.1` is appended to the base file, the one given by the `file` property. When one copy reaches the `maxsize` limit it is eliminated.
+
+[IMPORTANT]
+=====
+The `RotateLogListener` tracks the window, it is not based in the file modification timestamp, so if the application restarts, the time rests and the rotation procedure does not happen until the window time passes since then. Unless of course `rotate-on-startup` is set to `true` and in that case it rotates immediately.
+=====
+
+=== DailyLogListener
+
+Rotates the log files daily or ata a given rudimentary schedule, with the ability of compressing old logs. It also extends `RotateLogListener`, so it shares some of its properties, and some other have slightly different meaning.
+
+As usual, we illustrate the usage by example. For properties commented as optional, the example shows its default values.
+
+[source, xml]
+----
+  <log-listener class="org.jpos.util.DailyLogListener">
+    <property name="window" value="86400" />                <!-- optional, defaults to one day -->
+    <property name="prefix" value="log/q2" />               <!-- mandatory -->
+    <property name="suffix" value=".log"/>                  <!-- optional -->
+    <property name="date-format" value="-yyyy-MM-dd-HH"/>   <!-- optional -->
+    <property name="compression-format" value="gzip"/>      <!-- optional --> <!--1-->
+    <property name="compressed-suffix" value=".gz"/>        <!-- optional --> <!--2-->
+    <property name="maxsize" value="-1"/>                   <!-- optional --> <!--3-->
+    <property name="compression-buffer-size" value="131072"/>   <!--optional --> <!--4-->
+    <property name="first-rotate-time" value="00:00:00"/>   <!-- optional --> <!--5-->
+    <property name="first-rotate-date" value="current date"/>      <!-- optional -->
+    <property name="maxage" value="0"/>                     <!-- optional --> <!--6-->
+    <property name="delete-regex" value=".."/>              <!-- optional --> <!--7-->
+  </log-listener>
+</logger>
+----
+<1> Valid values: `gzip`, `zip` and none.
+<2> Defaults to `.zip` for zip, `.gz` for gzip, and nothing for no compression.
+<3> Almost equals to `RotateLogListener`, except for `0` (the default) or negative values mean no limit. If the size exceeds this value the file is compressed, and
+successive copies will have ".(count)" appended before the suffix.
+Unlike `RotateLogListener` older copies have lower numbers.
+<4> Low level parameter, which determines the size of the
+buffer used to read from the uncompressed file, defaults to
+128*1024 = 128 KB. Use bigger values in machines with a lot of
+memory and if the application produces big log files in the given window.
+<5> `first-rotate-time` and `first-rotate-date` determines the first rotation,
+successive rotations will take place when determined by this two
+parameters plus multiples of window, the defaults are 00:00:00 and today
+and the formats are HH:mm:ss and yyyy-MM-dd respectively. The later only makes sense if you want to rotate on a period greater (and multiple of) a day, like weekly or monthly.
+<6> Max age of log files, the log listener deletes files older than this property in seconds. It calculates the age from file attributes in the file system and deletes all that match a delete regular expression.
+<7> Regular expression that files need to match to be deleted by age. The default is the concatenation of:
+    - `^`, match from the start
+    - The filename part of the prefix, `q2` in the example.
+    - `.+` one or more characters.
+    - suffix, in the example `.log`
+    - compressed suffix
+    - `$` must end with the suffix.
++
+It only deletes files in the same directory as the base log file.
+
+[[ProtectedLogListener]]
+=== ProtectedLogListener
+
+A filter log listener that protects the content of sensitive data, it does not actually log anything to a file o stream but just modify the log events, for the next log listener in line.
+
+Since it doesn't make sense to be used on its own, in the example we show how it is meant to be used in combination with output log listeners. Properties not set, default to empty string, i.e. empty set of fields. Subelements can be protected as well by passing them in the path form, e.g. `49.2`
+
+[source,xml]
+----
+<logger name="Q2">
+  <log-listener class="org.jpos.util.SimpleLogListener"/>       <!--1-->
+  <log-listener class="org.jpos.util.ProtectedLogListener">
+    <property name="protect" value="2 35 45 49.2 55" />         <!--2-->
+    <property name="wipe"    value="48" />                      <!--3-->
+  </log-listener>
+  <log-listener class="org.jpos.util.RotateLogListener">        <!--4-->
+    <property name="file" value="log/q2.log" />
+    <property name="window" value="86400" />
+    <property name="copies" value="5" />
+    <property name="maxsize" value="1000000" />
+  </log-listener>
+</logger>
+----
+<1> Standard output isn't protected because it is placed before the `ProtectedLogListener`.
+<2> Fields to protect, separated by spaces, its sensitive parts are repleced by underscores (`_`), link:https://github.com/jpos/jPOS/blob/master/jpos/src/main/java/org/jpos/iso/ISOUtil.java#L903[+ISOUtil.protect()+] determines which positions need to be replaced, for example: +
+`"40000101010001"` is converted to `"400001____0001"`. +
+`"40000101010001=020128375"` is converted to `"400001____0001=0201_____"`. +
+`"40000101010001D020128375" is converted to "400001____0001D0201_____"`. +
+`"123"` is converted to `"___"`.
+<3> Fields to wipe out, they are just replaced by constants, `[WIPE]` replaces a string field, and bytes `AA55AA55` (hex representation) replaces any other kind of field, including composite fields but designed to replace binary ones.
+<4> Files written by the `RotateLogListener` will have all given fields protected, since it is after the `ProtectedLogListener`.
+
+
+=== FSDProtectedLogListener
+
+This log listener performs the same task as `ProtectedLogListener` but for `FSDMsg` and `FSDISOMsg` instances. And since its usage is the same, we just focus on its configuration part.
+
+In this case the fields reference `FSDMsg` fields, and for `FSDISOMsg` instances its inner `FSDMsg` fields.
+
+[source,xml]
+----
+<log-listener class="org.jpos.util.FSDProtectedLogListener">
+    <property name="protect" value="2 35 pan track2" />             <!--1-->
+    <property name="wipe"    value="pin 52" />                      <!--2-->
+    <property name="truncate" value="field1:100 field2:50" />       <!--3-->
+</log-listener>
+----
+<1> Fields to protect, see <<ProtectedLogListener>> for more details.
+<2> Fields to wipe out.
+<3> In addition, this log listener also can truncate fields, this property specifies the fields and the lengths to which the log listener will truncate them separated by a colon.
+
+=== SysLogListener
+
+The `SysLoglistener` sends the events to the system log concentrator (aka syslog), see link:https://www.ietf.org/rfc/rfc3164.txt[].
+
+[source,xml]
+----
+<log-listener class="org.jpos.util.SysLogListener">
+    <property name="facility" value="16" />         <!--1-->
+    <property name="severity" value="6" />          <!--2-->
+
+    <property name="host" value="localhost"/>       <!--3-->
+    <property name="port" value="514"/>             <!--4-->
+
+    <property name="tags" value="audit, syslog" />  <!--5-->
+    <property name="prefix" value="[jPOS]" />       <!--6-->
+
+    <property name="syslog.facility" value="21" />  <!--7-->
+    <property name="syslog.severity" value="5" />
+
+    <property name="audit.facility" value="21" />
+    <property name="audit.severity" value="4" />
+</log-listener>
+----
+<1> Default facility, used if it is not defined for a tag. Optional, defaults to `16`, local use 0.
+<2> Default severity, used if it is not defined for a tag. Optional, defaults to `6`, Informational.
+<3> Host to send the log events to. Optional, defaults to `localhost`.
+<4> Port to connect to send the log events on the host. Optional, defaults to 514.
+<5> The log listener will only send the log events with its tags listed here. Optional, defaults to `"audit, syslog"`.
+<6> An optional prefix to prepend to the message to be sent, if not defined, nothing is prepended.
+<7> Each tag can be mapped to a different facility and severity.
+
+=== RealmLogFilter
+
+Filters LogEvents by their realm.
+
+RealmLogFilter is a filter for log events, as with the protected log listeners it should be defined _before_ other standard LogListeners such as SimpleLogListener or RotateLogListener that write the output to the place we want to avoid logging filtered events.
+
+[source,xml]
+----
+<log-listener class="org.jpos.util.RealmLogFilter">
+    <property name="dump-interval" value="60000"/>      <!--1-->
+    <enabled>                                           <!--2-->
+        Q2.system
+        my-realm
+    </enabled>
+</log-listener>
+----
+<1> Those realms that had events but were filtered will be saved. These are logged at an  interval defined by the `dump-interval` property in a tag. Once logged, these filtered realms are reset. This property is optional and it defautls to `0` which means never to log missed realms.
+<2> If `enabled` tag is present, then the log listener will filter all realms not defined there. If this tag is present the `disabled` tag is ignroed. In this example only log events with realms `Q2.system` or `my-realm` are going to be passed on to the next log listener.
+
+[source,xml]
+----
+<log-listener class="org.jpos.util.RealmLogFilter">
+    <disabled>                                          <!--1-->
+        filtered-realm-1
+        filtered-realm-2
+    </disabled>
+</log-listener>
+----
+
+<1> If `enabled` tag is not present and `disabled` tag is, then only events with realms matching one of the defined here are filtered out, and all the other are passed to the next log listener. In this example it would not pass log events with realm `filtered-realm-1` or `fitlered-realm-2` to the next log listener.
+
