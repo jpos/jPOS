@@ -38,7 +38,7 @@ import java.util.List;
  * to the final destination respectfully.
  *
  * Example configuration: <br>
- *     <pre>
+ *     <pre>{@code
  *         <writer class="org.jpos.util.MappingLogEventWriter">
  *             <event-mapper class="...">
  *                 <property....  />
@@ -49,7 +49,7 @@ import java.util.List;
  *             </output-mapper>
  *             <output-mapper class="..."/>
  *         </writer>
- *     </pre>
+ *     }</pre>
  *
  * @author Alwyn Schoeman
  * @since 2.1.4
