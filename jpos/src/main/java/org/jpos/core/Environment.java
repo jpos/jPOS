@@ -203,7 +203,9 @@ public class Environment implements Loggeable {
           .stringPropertyNames()
           .stream()
           .filter(e -> e.startsWith(SP_PREFIX))
-          .forEach(prop -> System.setProperty(prop.substring(SP_PREFIX_LENGTH), (String) properties.get(prop)));
+          .forEach(prop -> System.setProperty(
+            prop.substring(SP_PREFIX_LENGTH), getProperty ((String) properties.get(prop)))
+          );
     }
 
     private boolean readYAML (String n, Properties properties) throws IOException {
