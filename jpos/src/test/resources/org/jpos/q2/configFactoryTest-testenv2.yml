@@ -1,0 +1,4 @@
+base:
+   name: configFactoryTest-testenv2
+---
+configFactoryTest2: true

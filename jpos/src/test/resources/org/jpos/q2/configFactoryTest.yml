@@ -1,0 +1,4 @@
+base:
+   name: configFactoryTest
+---
+configFactoryTest: true
