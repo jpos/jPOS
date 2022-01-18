@@ -30,41 +30,41 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Filters LogEvents by their realm
+ * Filters LogEvents by their realm <BR>
  *
  * RealmLogFilter is a filter for Event logs,
  * it should be defined _before_ other standard LogListeners
  * such as SimpleLogListener or RotateLogListeners.
  *
- * * i.e.
- *  <pre>
+ *  e.g:
+ *  <pre>{@code
  *  <logger name="Q2">
- *  <log-listener class="org.jpos.util.SimpleLogListener"/>
- *  <log-listener class="org.jpos.util.RealmLogFilter">
- *    <property name="dump-interval" value="60000"/>
- *    <enabled>
- *      Q2.system
- *      my-realm
- *    </enabled>
- *  </log-listener>
- *  <log-listener class="org.jpos.util.RotateLogListener">
- *    <property name="file" value="/log/q2.log" />
- *    <property name="window" value="86400" />
- *    <property name="copies" value="5" />
- *    <property name="maxsize" value="1000000" />
+ *    <log-listener class="org.jpos.util.SimpleLogListener"/>
+ *    <log-listener class="org.jpos.util.RealmLogFilter">
+ *      <property name="dump-interval" value="60000"/>
+ *      <enabled>
+ *        Q2.system
+ *        my-realm
+ *      </enabled>
  *    </log-listener>
+ *    <log-listener class="org.jpos.util.RotateLogListener">
+ *      <property name="file" value="/log/q2.log" />
+ *      <property name="window" value="86400" />
+ *      <property name="copies" value="5" />
+ *      <property name="maxsize" value="1000000" />
+ *      </log-listener>
  *  </logger>
- *  </pre>
+ *  }</pre>
  *
  * Order is important. In the previous example SimpleLogListener
  * will show all LogEvents before RealmLogFilter filters these
- * according to the list of enabled realms.
+ * according to the list of enabled realms. <br>
  *
  * Reads values configured inside <enabled></enabled> or
  * <disabled></disabled> to choose elements of which realm to log.
  * If <enabled></enabled> is defined, these realms ONLY will be logged. Disabled will not be taken into account.
  * If the <disabled></disabled> realms are defined, only this will not be shown, the rest will.
- * If none of them is defined the events will be logged.
+ * If none of them is defined the events will be logged.<br>
  *
  * Those realms that had events but were filtered will be saved. These are logged at a certain interval defined
  * by the property dump-interval in an <ignored-realms> tag. Once logged these filtered realms are reset.

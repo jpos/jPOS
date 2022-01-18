@@ -86,6 +86,7 @@ include::ch08/channel_adaptor.adoc[]
 include::ch08/one_shot_channel_adaptor.adoc[]
 include::ch08/qmux.adoc[]
 include::ch08/qserver.adoc[]
+include::ch08/logger-adaptor.adoc[]
 
 = TransactionManager
 include::ch09/intro.adoc[]

@@ -33,21 +33,21 @@ import java.util.List;
  * it should be defined _before_ other standard LogListeners
  * such as SimpleLogListener or RotateLogListeners.<br>
  * i.e.
- * <pre>
- * <logger name="qsp">
+ * <pre>{@code
+ * <logger name="Q2">
  *   <log-listener class="org.jpos.util.SimpleLogListener"/>
  *   <log-listener class="org.jpos.util.ProtectedLogListener">
  *     <property name="protect" value="2 35 45 55" />
  *     <property name="wipe"    value="48" />
  *   </log-listener>
  *   <log-listener class="org.jpos.util.RotateLogListener">
- *     <property name="file" value="/tmp/qsp.log" />
+ *     <property name="file" value="log/q2..log" />
  *     <property name="window" value="86400" />
  *     <property name="copies" value="5" />
  *     <property name="maxsize" value="1000000" />
  *   </log-listener>
  * </logger>
- * </pre>
+ * }</pre>
  * 
  * Order is important. In the previous example SimpleLogListener
  * will dump unprotected LogEvents while RotateLogListener will
