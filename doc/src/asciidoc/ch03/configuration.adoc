@@ -62,6 +62,7 @@ configuration object by calling the +setConfiguration+ method on
 ----
     <object name="myObject" class="com.mycompany.MyObject">
       <property name="myProperty" value="any Value" />
+      <property file="cfg/myprops.yml" />
     </object>
 ----
 
@@ -173,4 +174,13 @@ The 'port' variable would be picked from:
 ------------
 
 from the QBean or participant configuration.
+
+[TIP]
+=====
+When using multiple environments (i.e. `-Eprod -Enode1`) you can specify
+
+`<property file="cfg/myconfig.yml" env="true" />`
+
+and the system will load the files `myconfig.yml`, `myconfig-prod.yml` and `myconfig-node1.yml`.
+=====
 
