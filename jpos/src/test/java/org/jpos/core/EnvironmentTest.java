@@ -70,6 +70,7 @@ public class EnvironmentTest {
     public void testFromCfg() {
         System.setProperty("test.value", "from sys prop");
         assertEquals("from testenv.yml", Environment.get("$cfg{test.value}"));
+        assertEquals("from testenv.yml", System.getProperty("test.sys"));
     }
 
 

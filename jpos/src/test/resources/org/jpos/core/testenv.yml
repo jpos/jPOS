@@ -1,2 +1,7 @@
 test:
   value: "from testenv.yml"
+---
+system:
+  property:
+    test:
+      sys: ${test.value}

@@ -64,8 +64,8 @@ public class Environment implements Loggeable {
         name = System.getProperty ("jpos.env");
         name = name == null ? "default" : name;
         envDir = System.getProperty("jpos.envdir", DEFAULT_ENVDIR);
-        readConfig ();
         serviceLoader = ServiceLoader.load(EnvironmentProvider.class);
+        readConfig ();
     }
 
     public String getName() {
@@ -196,7 +196,7 @@ public class Environment implements Loggeable {
           .stringPropertyNames()
           .stream()
           .filter(e -> e.startsWith(SP_PREFIX))
-          .forEach(prop -> System.setProperty(prop.substring(SP_PREFIX_LENGTH), (String) properties.get(prop)));
+          .forEach(prop -> System.setProperty(prop.substring(SP_PREFIX_LENGTH), this.getProperty((String) properties.get(prop))));
     }
 
     private boolean readYAML () throws IOException {
