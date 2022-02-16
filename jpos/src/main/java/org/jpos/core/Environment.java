@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2021 jPOS Software SRL
+ * Copyright (C) 2000-2022 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
 
-    private static Pattern valuePattern = Pattern.compile("^(.*)(\\$)([\\w]*)\\{([-\\w.]+)(:(.*))?\\}(.*)$");
+    private static Pattern valuePattern = Pattern.compile("^(.*)(\\$)([\\w]*)\\{([-\\w.]+)(:(.*?))?\\}(.*)$");
     // make groups easier to read :-)                       11112222233333333   44444444445566665    7777
 
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
@@ -127,6 +127,7 @@ public class Environment implements Loggeable {
                 return s;                           // return the whole thing
 
             while (m != null && m.matches()) {
+                String previousR = r;
                 String gPrefix = m.group(3);
                 String gValue = m.group(4);
                 gPrefix = gPrefix != null ? gPrefix : "";
@@ -173,6 +174,9 @@ public class Environment implements Loggeable {
                 }
                 else
                     m = null;
+
+                if (Objects.equals(r, previousR))
+                    break;
             }
         }
         return r;
@@ -181,9 +185,12 @@ public class Environment implements Loggeable {
     @SuppressWarnings("unchecked")
     private void readConfig () throws IOException {
         if (name != null) {
-            if (!readYAML())
-                readCfg();
-
+            Properties properties = new Properties();
+            String[] names = ISOUtil.commaDecode(name);
+            for (String n: names) {
+                if (!readYAML(n, properties))
+                    readCfg(n, properties);
+            }
             extractSystemProperties();
             propRef.get().put ("jpos.env", name);
             propRef.get().put ("jpos.envdir", envDir);
@@ -196,48 +203,40 @@ public class Environment implements Loggeable {
           .stringPropertyNames()
           .stream()
           .filter(e -> e.startsWith(SP_PREFIX))
-          .forEach(prop -> System.setProperty(prop.substring(SP_PREFIX_LENGTH), this.getProperty((String) properties.get(prop))));
+          .forEach(prop -> System.setProperty(
+            prop.substring(SP_PREFIX_LENGTH), getProperty ((String) properties.get(prop)))
+          );
     }
 
-    private boolean readYAML () throws IOException {
+    private boolean readYAML (String n, Properties properties) throws IOException {
         errorString = null;
-        boolean configRead = false;
-        String[] names = ISOUtil.commaDecode(name);
-        for (String n : names) {
-            File f = new File(envDir + "/" + n + ".yml");
-            if (f.exists() && f.canRead()) {
-                Properties properties = new Properties();
-                try (InputStream fis = new FileInputStream(f)) {
-                    Yaml yaml = new Yaml();
-                    Iterable<Object> document = yaml.loadAll(fis);
-                    document.forEach(d -> {
-                        flat(properties, null, (Map<String, Object>) d, false);
-                    });
-                    propRef.set(properties);
-                    configRead = true;
-                } catch (ScannerException e) {
-                    errorString = "Environment (" + getName() + ") error " + e.getMessage();
-                }
+        File f = new File(envDir + "/" + n + ".yml");
+        if (f.exists() && f.canRead()) {
+            try (InputStream fis = new FileInputStream(f)) {
+                Yaml yaml = new Yaml();
+                Iterable<Object> document = yaml.loadAll(fis);
+                document.forEach(d -> {
+                    flat(properties, null, (Map<String, Object>) d, false);
+                });
+                propRef.set(properties);
+                return true;
+            } catch (ScannerException e) {
+                errorString = "Environment (" + getName() + ") error " + e.getMessage();
             }
         }
-        return configRead;
+        return false;
     }
 
-    private boolean readCfg () throws IOException {
-        String[] names = ISOUtil.commaDecode(name);
-        boolean configRead = false;
-        for (String n : names) {
-            File f = new File(envDir + "/" + n + ".cfg");
-            if (f.exists() && f.canRead()) {
-                Properties properties = new Properties();
-                try (InputStream fis = new FileInputStream(f)) {
-                    properties.load(new BufferedInputStream(fis));
-                    propRef.set(properties);
-                    configRead = true;
-                }
+    private boolean readCfg (String n, Properties properties) throws IOException {
+        File f = new File(envDir + "/" + n + ".cfg");
+        if (f.exists() && f.canRead()) {
+            try (InputStream fis = new FileInputStream(f)) {
+                properties.load(new BufferedInputStream(fis));
+                propRef.set(properties);
+                return true;
             }
         }
-        return configRead;
+        return false;
     }
 
     @SuppressWarnings("unchecked")

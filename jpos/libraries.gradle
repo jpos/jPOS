@@ -1,6 +1,6 @@
 ext {
     libraries = [
-        jdom: 'org.jdom:jdom2:2.0.6',
+        jdom: 'org.jdom:jdom2:2.0.6.1',
         jdbm: 'jdbm:jdbm:1.0',
         sleepycat_je: 'com.sleepycat:je:18.3.12',
         commons_cli: 'commons-cli:commons-cli:1.4',

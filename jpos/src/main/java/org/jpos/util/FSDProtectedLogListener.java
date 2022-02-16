@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2021 jPOS Software SRL
+ * Copyright (C) 2000-2022 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ import java.util.List;
  * such as SimpleLogListener or RotateLogListeners. It is
  * based upon the ProtectedLogListener<br>
  * i.e.
- * <pre>
+ * <pre>{@code
  * <logger name="Q2">
  *   <log-listener class="org.jpos.util.SimpleLogListener"/>
  *   <log-listener class="org.jpos.util.FSDProtectedLogListener">
@@ -49,7 +49,7 @@ import java.util.List;
  *     <property name="maxsize" value="1000000" />
  *   </log-listener>
  * </logger>
- * </pre>
+ * }</pre>
  * 
  * Order is important. In the previous example SimpleLogListener
  * will dump unprotected LogEvents while RotateLogListener will

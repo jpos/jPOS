@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2021 jPOS Software SRL
+ * Copyright (C) 2000-2022 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -98,6 +98,39 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     public <T> T get(Object key) {
         @SuppressWarnings("unchecked")
         T obj = (T) getMap().get(key);
+        return obj;
+    }
+
+    /**
+     * Check if key present
+     * @param key the key
+     * @return true if present
+     */
+    public boolean hasKey(Object key) {
+        return getMap().containsKey(key);
+    }
+
+    /**
+     * Check key exists present persisted map
+     * @param key the key
+     * @return true if present
+     */
+    public boolean hasPersistedKey(Object key) {
+        return getPMap().containsKey(key);
+    }
+
+    /**
+     * Move entry to new key name
+     * @param from key
+     * @param to key
+     * @return the entry's value (could be null if 'from' key not present)
+     */
+    public synchronized <T> T move(Object from, Object to) {
+        T obj = get(from);
+        if (obj != null) {
+            put(to, obj, hasPersistedKey(from));
+            remove(from);
+        }
         return obj;
     }
 

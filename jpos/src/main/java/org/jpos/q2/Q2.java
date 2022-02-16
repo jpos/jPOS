@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2021 jPOS Software SRL
+ * Copyright (C) 2000-2022 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -736,10 +736,12 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("sh", "ssh-host-key-file", true, "SSH host key file, defaults to 'cfg/hostkeys.ser'");
         options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
         options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
-        options.addOption ("E", "environment", true, "Environment name");
+        options.addOption ("E", "environment", true, "Environment name.\nCan be given multiple times (applied in order, and values may override previous ones)");
         options.addOption ("Ed", "envdir", true, "Environment file directory, defaults to cfg");
 
         try {
+            System.setProperty("log4j2.formatMsgNoLookups", "true"); // log4shell prevention
+
             CommandLine line = parser.parse (options, args);
             if (line.hasOption ("v")) {
                 displayVersion();

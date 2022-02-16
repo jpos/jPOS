@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2021 jPOS Software SRL
+ * Copyright (C) 2000-2022 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,13 +19,11 @@
 package org.jpos.core;
 
 import org.jpos.core.annotation.Config;
-import org.jpos.q2.Q2;
 import org.jpos.q2.QFactory;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigAnnotationTest {
     @Test
@@ -35,11 +33,31 @@ public class ConfigAnnotationTest {
         cfg.put("mystring", "My String");
         cfg.put("mylong", "10000");
         cfg.put("myint", "1000");
+        cfg.put("myboolean", "yes");
         QFactory.autoconfigure(bean, cfg);
         assertEquals("My String", bean.getMystring());
         assertEquals(1000, bean.getMyint());
         assertEquals(10000L, bean.getMylong());
+        assertTrue(bean.isMyboolean());
     }
+
+    @Test
+    public void testChildConfig() throws ConfigurationException, IllegalAccessException {
+        MyChildAutoConfigurable bean = new MyChildAutoConfigurable();
+        Configuration cfg = new SimpleConfiguration();
+        cfg.put("mystring", "My String");
+        cfg.put("mylong", "10000");
+        cfg.put("myint", "1000");
+        cfg.put("myboolean", "yes");
+        cfg.put("mychildstring", "My Child String");
+        QFactory.autoconfigure(bean, cfg);
+        assertEquals("My String", bean.getMystring());
+        assertEquals(1000, bean.getMyint());
+        assertEquals(10000L, bean.getMylong());
+        assertEquals("My Child String", bean.getChildString());
+        assertTrue(bean.isMyboolean());
+    }
+
 
     public static class MyAutoConfigurable {
         @Config("mystring")
@@ -51,6 +69,8 @@ public class ConfigAnnotationTest {
         @Config("mylong")
         private Long mylong;
 
+        @Config("myboolean")
+        private boolean myboolean;
 
         public String getMystring() {
             return mystring;
@@ -64,6 +84,8 @@ public class ConfigAnnotationTest {
             return mylong;
         }
 
+        public boolean isMyboolean() {return myboolean; }
+
 
         @Override
         public String toString() {
@@ -72,6 +94,15 @@ public class ConfigAnnotationTest {
               ", myint=" + myint +
               ", mylong=" + mylong +
               '}';
+        }
+    }
+
+    public static class MyChildAutoConfigurable extends MyAutoConfigurable {
+        @Config("mychildstring")
+        private String childString;
+
+        public String getChildString() {
+            return childString;
         }
     }
 

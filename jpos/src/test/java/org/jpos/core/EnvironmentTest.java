@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2021 jPOS Software SRL
+ * Copyright (C) 2000-2022 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -83,5 +83,11 @@ public class EnvironmentTest {
     public void testObfuscated() {
         System.setProperty("obf.value", "obf::D4sCOgAAAASneiqWUPCruOtNmAU78cg6uBAv3N0/8DSNK6ptaozLAg==");
         assertEquals("OBFUSCATED ABCD", Environment.get("OBFUSCATED ${obf.value}"));
+    }
+
+    @Test
+    public void testLoop() {
+        System.setProperty("loop", "${loop}");
+        assertEquals("${loop}", Environment.get("${loop}"));
     }
 }

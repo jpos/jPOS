@@ -254,8 +254,9 @@ The ready available ones include:
 |SimpleLogListener|Dumps log events to a PrintStream (such as System.out)
 |RotateLogListener|Automatically rotate logs based on file size and time window
 |DailyLogListener|Automatically rotate logs daily. Has the ability to compress old log files
-|OperatorLogListener|Applies some filtering and e-mails log-events to an operator
+|OperatorLogListener|Applies some filtering and e-mails log-events to an operator, not longer included in jPOS core, it's part of the jPOS-EE mail module
 |ProtectedLogListener|Protect sensitive data from ISOMsgs in LogEvents for PCI compliance
+|FSDProtectedLogListener| Same as `ProtectedLogListeer` for `FSDMsg` and `FSDISOMsg` instances.
 |SysLogListener|Forward log events to the operating system syslog.
 |RealmLogFilter|Filter log events by their realm. Enabled or disabled realms can be defined.
 |===============
