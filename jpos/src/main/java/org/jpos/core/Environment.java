@@ -64,8 +64,8 @@ public class Environment implements Loggeable {
         name = System.getProperty ("jpos.env");
         name = name == null ? "default" : name;
         envDir = System.getProperty("jpos.envdir", DEFAULT_ENVDIR);
-        readConfig ();
         serviceLoader = ServiceLoader.load(EnvironmentProvider.class);
+        readConfig ();
     }
 
     public String getName() {
