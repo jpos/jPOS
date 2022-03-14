@@ -20,6 +20,7 @@ package org.jpos.transaction;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.jpos.transaction.TransactionConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,15 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.NotActiveException;
-import java.io.SerializablePermission;
-import java.io.UnsupportedEncodingException;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 import org.jdom2.Comment;
 import org.jdom2.Element;
@@ -43,6 +41,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
+import org.jpos.space.SpaceFactory;
 import org.jpos.transaction.participant.BSHTransactionParticipant;
 import org.jpos.transaction.participant.CheckPoint;
 import org.jpos.transaction.participant.Debug;
@@ -453,7 +452,58 @@ public class TransactionManagerTest {
         LogEvent evt = new LogEvent();
         int result = transactionManager.prepare(1, 100L, Boolean.TRUE, new ArrayList(), arrayList.iterator(), false, evt, null);
         assertEquals(3, evt.getPayLoad().size(), "evt.payLoad.size()");
-        assertEquals(TransactionConstants.PREPARED, result, "result");
+        assertEquals(PREPARED, result, "result");
+    }
+
+    @Test
+    public void testPrepareAbortsOnMisconfiguredGroup() throws Throwable {
+        transactionManager = new TransactionManager();
+        transactionManager.psp = SpaceFactory.getSpace();
+        transactionManager.groups = Collections.emptyMap();
+        transactionManager.abortOnMisconfiguredGroups = true;
+        transactionManager.setName(transactionManager.getClass().getSimpleName());
+
+        TransactionParticipant participant = mock(TransactionParticipant.class);
+        when(participant.prepare(anyLong(), any())).thenReturn(PREPARED | NO_JOIN);
+
+        GroupSelector selector = mock(GroupSelector.class);
+        when(selector.prepare(anyLong(), any())).thenReturn(PREPARED | NO_JOIN);
+        when(selector.select(anyLong(), any())).thenReturn("Lorem ipsum dolor sit amet");
+
+        List<TransactionParticipant> list = Arrays.asList(participant, selector);
+        LogEvent evt = new LogEvent();
+
+        int result = transactionManager.prepare(1, 100L, Boolean.FALSE, members, list.iterator(), false, evt, null);
+
+        verify(participant, times(1)).prepare(anyLong(), any());
+        verify(selector, times(1)).prepare(anyLong(), any());
+        verify(selector, times(1)).select(anyLong(), any());
+        assertEquals(ABORTED, result);
+    }
+
+    @Test
+    public void testPrepareShouldNotAbortOnMisconfiguredGroupByDefault() throws Throwable {
+        transactionManager = new TransactionManager();
+        transactionManager.psp = SpaceFactory.getSpace();
+        transactionManager.groups = Collections.emptyMap();
+        transactionManager.setName(transactionManager.getClass().getSimpleName());
+
+        TransactionParticipant participant = mock(TransactionParticipant.class);
+        when(participant.prepare(anyLong(), any())).thenReturn(PREPARED);
+
+        GroupSelector selector = mock(GroupSelector.class);
+        when(selector.prepare(anyLong(), any())).thenReturn(PREPARED);
+        when(selector.select(anyLong(), any())).thenReturn("Lorem ipsum dolor sit amet");
+
+        List<TransactionParticipant> list = Arrays.asList(participant, selector);
+        LogEvent evt = new LogEvent();
+
+        int result = transactionManager.prepare(1, 100L, Boolean.FALSE, members, list.iterator(), false, evt, null);
+
+        verify(participant, times(1)).prepare(anyLong(), any());
+        verify(selector, times(1)).prepare(anyLong(), any());
+        verify(selector, times(1)).select(anyLong(), any());
+        assertEquals(PREPARED, result);
     }
 
     @Test
