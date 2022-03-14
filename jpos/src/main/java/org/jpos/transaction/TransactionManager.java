@@ -82,6 +82,7 @@ public class TransactionManager
     boolean profiler;
     boolean doRecover;
     boolean callSelectorOnAbort;
+    boolean abortOnMisconfiguredGroups;
     int sessions;
     int maxSessions;
     int threshold;
@@ -450,6 +451,7 @@ public class TransactionManager
         callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", true);
         if (profiler)
             metrics = new Metrics(new AtomicHistogram(cfg.getLong("metrics-highest-trackable-value", 60000), 2));
+        abortOnMisconfiguredGroups = cfg.getBoolean("abort-on-misconfigured-groups");
     }
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
@@ -691,8 +693,11 @@ public class TransactionManager
                     while (st.hasMoreTokens ()) {
                         String grp = st.nextToken();
                         addGroup (id, grp);
-                        if (evt != null && groups.get(grp) == null)
+                        if (evt != null && groups.get(grp) == null) {
                             evt.addMessage ("                 WARNING: group '" + grp + "' not configured");
+                            if (abortOnMisconfiguredGroups)
+                                abort = true;
+                        }
                         participants.addAll (getParticipants (grp));
                     }
                     while (iter.hasNext())
