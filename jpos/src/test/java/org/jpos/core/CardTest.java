@@ -48,7 +48,7 @@ public class CardTest  {
 
         assertEquals("4111111111111111", t2.getPan(), "pan");
     }
-    
+
     @Test
     public void testTrack1() throws Throwable {
         Track1 t1 = Track1.builder()
@@ -156,5 +156,31 @@ public class CardTest  {
         assertEquals("123", t2.getServiceCode(), "serviceCode");
         assertEquals("4561", t2.getCvv(), "cvv");
         assertEquals("23456789012", t2.getDiscretionaryData(), "discretionaryData");
+    }
+
+    @Test
+    public void test6DigitBIN() throws Throwable {
+        Card c = Card.builder()
+          .pan("4111111111111111")
+          .exp("4011")
+          .cvv("123")
+          .cvv2("4567")
+          .serviceCode("101")
+          .build();
+
+        assertEquals("411111", c.getBin(), "pan");
+    }
+
+    @Test
+    public void test8DigitBIN() throws Throwable {
+        Card c = Card.builder()
+          .pan("4111111111111111")
+          .exp("4011")
+          .cvv("123")
+          .cvv2("4567")
+          .serviceCode("101")
+          .build();
+
+        assertEquals("41111111", c.getBin(8), "pan");
     }
 }

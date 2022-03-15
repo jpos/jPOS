@@ -175,6 +175,14 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
     }
 
     @Test
+    public void testGet8DigitBIN() throws Throwable {
+        CardHolder cardHolder = new CardHolder();
+        cardHolder.setPAN("testCardHolderPan");
+        String result = cardHolder.getBIN(8);
+        assertEquals("testCard", result, "result");
+    }
+
+    @Test
     public void testGetBINThrowsNullPointerException() throws Throwable {
         try {
             new CardHolder().getBIN();
