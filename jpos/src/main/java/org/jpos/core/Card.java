@@ -85,8 +85,21 @@ public class Card {
         return hasTrack1() && hasTrack2();
     }
 
+    /**
+     * Returns the traditional 6-digit BIN from the PAN
+     * @return the first 6 digits of the PAN
+     */
     public String getBin () {
-        return pan.substring(0, BINLEN);
+        return getBin(BINLEN);
+    }
+
+    /**
+     * Returns the first <code>len</code> digits from the PAN.
+     * Can be used for the newer 8-digit BINs, or some arbitrary length.
+     * @return the first <code>len</code> digits of the PAN
+     */
+    public String getBin (int len) {
+        return pan.substring(0, len);
     }
 
     @Override

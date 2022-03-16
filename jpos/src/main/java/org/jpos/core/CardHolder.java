@@ -79,7 +79,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @param track2 cards track2
      * @exception InvalidCardException
      */
-    public CardHolder (String track2) 
+    public CardHolder (String track2)
         throws InvalidCardException
     {
         super();
@@ -90,7 +90,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * creates a new CardHolder based on pan and exp
      * @exception InvalidCardException
      */
-    public CardHolder (String pan, String exp) 
+    public CardHolder (String pan, String exp)
         throws InvalidCardException
     {
         super();
@@ -130,7 +130,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @param s a valid track2
      * @exception InvalidCardException
      */
-    public void parseTrack2 (String s) 
+    public void parseTrack2 (String s)
         throws InvalidCardException
     {
         if (s == null)
@@ -140,7 +140,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
             pan = s.substring(0, separatorIndex);
             exp = s.substring(separatorIndex+1, separatorIndex+1+4);
             trailer = s.substring(separatorIndex+1+4);
-        } else 
+        } else
             throw new InvalidCardException ("Invalid track2 format");
     }
 
@@ -171,7 +171,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     public String getNameOnCard() {
         String name = null;
         if (track1!=null) {
-            StringTokenizer st = 
+            StringTokenizer st =
                     new StringTokenizer(track1, TRACK1_SEPARATOR);
             if (st.countTokens()<2)
                 return null;
@@ -247,9 +247,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @param pan Primary Account NUmber
      * @exception InvalidCardException
      */
-    public void setPAN (String pan) 
+    public void setPAN (String pan)
         throws InvalidCardException
-    { 
+    {
         if (pan.length() < MINPANLEN)
             throw new InvalidCardException ("PAN length smaller than min required");
         this.pan = pan;
@@ -258,16 +258,26 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     /**
      * @return Primary Account Number
      */
-    public String getPAN () { 
+    public String getPAN () {
         return pan;
     }
 
+
     /**
-     * Get Bank Issuer Number
-     * @return bank issuer number
+     * Get the first <code>len</code> digits from the PAN.
+     * Can be used for the newer 8-digit BINs, or some arbitrary length.
+     * @return <code>len</code>-digit bank issuer number
      */
-    public String getBIN () { 
-        return pan.substring(0, BINLEN);
+    public String getBIN (int len) {
+        return pan.substring(0, len);
+    }
+
+    /**
+     * Get the traditional 6-digit BIN (Bank Issuer Number) from the PAN
+     * @return 6-digit bank issuer number
+     */
+    public String getBIN () {
+        return getBIN(BINLEN);
     }
 
     /**
@@ -275,9 +285,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @param exp card expiration date
      * @exception InvalidCardException
      */
-    public void setEXP (String exp) 
+    public void setEXP (String exp)
         throws InvalidCardException
-    { 
+    {
         if (exp.length() != 4)
             throw new InvalidCardException ("Invalid Exp length, must be 4");
         this.exp = exp;
@@ -287,7 +297,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * Get Expiration Date
      * @return card expiration date
      */
-    public String getEXP () { 
+    public String getEXP () {
         return exp;
     }
 
@@ -328,7 +338,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         int i, crc;
 
         int odd = p.length() % 2;
-        
+
         for (i=crc=0; i<p.length(); i++) {
             char c = p.charAt(i);
             if (!Character.isDigit (c))
