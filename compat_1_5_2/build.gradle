@@ -1,8 +1,0 @@
-dependencies {
-    compile project(':jpos')
-    compile "log4j:log4j:1.2.16"
-}
-
-tasks.withType(JavaCompile) {
-  options.compilerArgs << "-Xlint:none"
-}
