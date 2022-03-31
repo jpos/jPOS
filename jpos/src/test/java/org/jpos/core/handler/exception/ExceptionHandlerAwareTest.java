@@ -35,10 +35,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
+
 import static org.mockito.Mockito.when;
 
 public class ExceptionHandlerAwareTest implements ExceptionHandlerAware {
@@ -126,7 +127,7 @@ public class ExceptionHandlerAwareTest implements ExceptionHandlerAware {
             handle(e);
         }
 
-        verifyZeroInteractions(h5);
+        verifyNoInteractions(h5);
         InOrder inOrder = Mockito.inOrder(h1,h2,h3,h4);
 
         inOrder.verify(h3).handle(any());
@@ -162,7 +163,7 @@ public class ExceptionHandlerAwareTest implements ExceptionHandlerAware {
             }
         }
 
-        verifyZeroInteractions(h1, h2, h4, h5);
+        verifyNoInteractions(h1, h2, h4, h5);
         verify(h3).handle(any());
     }
 

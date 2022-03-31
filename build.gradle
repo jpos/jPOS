@@ -26,8 +26,8 @@ subprojects {
     javadoc.failOnError = false
     pmd.ignoreFailures = true
 
-    sourceCompatibility = 16
-    targetCompatibility = 16
+    sourceCompatibility = 17
+    targetCompatibility = 17
     repositories {
         mavenCentral()
         maven { url 'https://jpos.org/maven' }
@@ -138,7 +138,7 @@ subprojects {
         }
     }
     jacoco {
-        toolVersion = '0.8.6'
+        toolVersion = '0.8.7'
     }
 }
 

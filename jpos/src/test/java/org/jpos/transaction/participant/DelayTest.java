@@ -38,8 +38,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class DelayTest {
-    @Mock
-    Random random;
+    Random random = new Random();
     @Mock
     Configuration cfg;
     @Mock
@@ -80,16 +79,5 @@ public class DelayTest {
     @Test
     public void testPrepare() {
         assertThat(delay.prepare(0L, context), is(PREPARED));
-    }
-
-    @Test
-    public void testComputeDelay() {
-        // This unit test exposes (and verifies fix) of bug found by FindBugs:
-        // "Bad attempt to compute absolute value of signed random long"
-        // Math.abs can potentially return a negative number
-        // see http://stackoverflow.com/questions/2546078/java-random-long-number-in-0-x-n-range
-        delay.sleep(5L);
-        // should not throw an IllegalArgumentException (timeout value is negative)
-        verify(random, atLeastOnce()).nextDouble(); // check we are using the mock Random
     }
 }
