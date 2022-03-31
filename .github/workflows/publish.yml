@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ next ]
+  pull_request:
+    branches: [ next ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    strategy:
+      fail-fast: true
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt' # See 'Supported distributions' for available options
+          java-version: '17'
+      - name: Check
+        run: ./gradlew jpos:check --info
+        env:
+          TERM: dumb
+      - name: Publish
+        run: ./gradlew jpos:publish --info
+        env:
+          TERM: dumb
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
