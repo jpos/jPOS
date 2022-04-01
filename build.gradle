@@ -18,6 +18,9 @@ subprojects {
     version = '3.0.0-SNAPSHOT'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
+    def mavenCentralRepo = isSnapshot ?
+        'https://oss.sonatype.org/content/repositories/snapshots/' :
+        'https://oss.sonatype.org/service/local/staging/deploy/maven2';
     configurations.implementation.transitive = true
     javadoc.failOnError = false
     pmd.ignoreFailures = true
@@ -38,26 +41,17 @@ subprojects {
         withJavadocJar()
         withSourcesJar()
     }
+
     publishing {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/jPOS/jpos")
-                credentials {
-                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-                    password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-                }
-            }
-        }
         publications {
-            gpr(MavenPublication) {
+            mavenJava(MavenPublication) {
                 pom {
                     name = 'jPOS Project'
                     description = """
-                    jPOS is an ISO-8583 based financial transaction 
-                    library/framework that can be customized and 
-                    extended in order to implement financial interchanges.
-                    """
+    jPOS is an ISO-8583 based financial transaction 
+    library/framework that can be customized and 
+    extended in order to implement financial interchanges.
+  """
                     url = "http://jpos.org"
                     organization {
                         name = 'jPOS.org'
@@ -88,13 +82,31 @@ subprojects {
                         }
                     }
                 }
-                from(components.java)
+                groupId = 'org.jpos'
+                artifactId = 'jpos'
+                from components.java
+            }
+        }
+        repositories {
+            maven {
+                def releasesRepoUrl = mavenCentralRepo
+                def snapshotsRepoUrl = 'file:///opt/local/maven'
+                url = isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
+                if (!isSnapshot) {
+                    credentials {
+                        if (project.hasProperty("mavenCentralUsername"))
+                            username = mavenCentralUsername
+                        if (project.hasProperty("mavenCentralPassword"))
+                            password = mavenCentralPassword
+                    }
+                }
             }
         }
     }
+
     signing {
         required { !isSnapshot }
-        sign publishing.publications.gpr
+        sign publishing.publications.mavenJava
     }
 
     javadoc {
