@@ -75,9 +75,7 @@ public class QClassLoader
         QClassLoader loader;
         if (server.isRegistered (loaderName)) {
             server.unregisterMBean (loaderName);
-            loader = java.security.AccessController.doPrivileged(
-              (PrivilegedAction<QClassLoader>) () -> new QClassLoader(server, libDir, loaderName, getParent())
-            );
+            loader = new QClassLoader(server, libDir, loaderName, getParent());
         } else
             loader = this;
 

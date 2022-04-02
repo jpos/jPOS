@@ -150,15 +150,7 @@ public class SystemMonitor extends QBeanSupport
         super.setConfiguration(cfg);
         scripts = cfg.getAll("script");
     }
-
-    private SecurityManager getSecurityManager() {
-        return System.getSecurityManager();
-    }
-
-    private boolean hasSecurityManager() {
-        return getSecurityManager() != null;
-    }
-
+    
     private Runtime getRuntimeInstance() {
 	    return Runtime.getRuntime();
     }
@@ -236,8 +228,6 @@ public class SystemMonitor extends QBeanSupport
             p.printf("%s   transition: %s (%s)%n", indent, in, in.atZone(zi));
         }
         p.printf("%s        clock: %d %s%n", indent, System.currentTimeMillis() / 1000L, instant);
-        if (hasSecurityManager())
-            p.printf("%s  sec-manager: %s%n", indent, getSecurityManager());
         p.printf("%s thread count: %d%n", indent, mxBean.getThreadCount());
         p.printf("%s peak threads: %d%n", indent, mxBean.getPeakThreadCount());
         p.printf("%s user threads: %d%n", indent, Thread.activeCount());

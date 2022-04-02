@@ -1824,13 +1824,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
                 if (jceProviderClassName == null || jceProviderClassName.isEmpty()) {
                     provider = Security.getProvider("SunJCE");
                 } else {
-                    provider = java.security.AccessController.doPrivileged((PrivilegedAction<Provider>) () -> {
-                      try {
-                          return (Provider) Class.forName(jceProviderClassName).getDeclaredConstructor().newInstance();
-                      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
-                          throw new IllegalArgumentException(e);
-                      }
-                    });
+                    provider = (Provider) Class.forName(jceProviderClassName).getDeclaredConstructor().newInstance();
                 }
                  Security.addProvider(provider);
                  evt.addMessage("name", provider.getName());

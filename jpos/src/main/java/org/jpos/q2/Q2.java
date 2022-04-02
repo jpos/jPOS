@@ -199,13 +199,7 @@ public class Q2 implements FileFilter, Runnable {
             final ObjectName loaderName = new ObjectName(Q2_CLASS_LOADER);
 
             try {
-                loader = (QClassLoader) java.security.AccessController.doPrivileged(
-                    new java.security.PrivilegedAction() {
-                            public Object run() {
-                                return new QClassLoader(server, libDir, loaderName, mainClassLoader);
-                            }
-                        }
-                );
+                loader = new QClassLoader(server, libDir, loaderName, mainClassLoader);
                 if (server.isRegistered(loaderName))
                     server.unregisterMBean(loaderName);
                 server.registerMBean(loader, loaderName);
