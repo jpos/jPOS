@@ -6,6 +6,7 @@ module org.jpos.jpos {
     requires org.apache.commons.cli;
     requires org.osgi.core;
     requires org.javatuples;
+    requires org.yaml.snakeyaml;
     
     exports org.jpos.iso.packager;
     exports org.jpos.iso.validator;
