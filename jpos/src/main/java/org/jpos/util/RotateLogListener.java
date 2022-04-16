@@ -31,7 +31,9 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 /**
  * Rotates logs
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -182,7 +184,7 @@ public class RotateLogListener extends SimpleLogListener
 
     protected synchronized void logDebug (String msg) {
         if (p != null) {
-            p.println ("<log realm=\"rotate-log-listener\" at=\""+new Date().toString() +"\">");
+            p.println ("<log realm=\"rotate-log-listener\" at=\""+LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())+"\">");
             p.println ("   "+msg);
             p.println ("</log>");
         }
