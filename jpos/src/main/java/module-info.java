@@ -7,7 +7,8 @@ module org.jpos.jpos {
     requires org.osgi.core;
     requires org.javatuples;
     requires org.yaml.snakeyaml;
-    
+    requires org.hdrhistogram.HdrHistogram;
+
     exports org.jpos.iso.packager;
     exports org.jpos.iso.validator;
     exports org.jpos.q2;
