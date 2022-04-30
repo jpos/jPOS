@@ -148,7 +148,9 @@
     <!-- See https://checkstyle.org/config_whitespace.html -->
     <module name="EmptyForIteratorPad"/>
     <module name="GenericWhitespace"/>
-    <module name="MethodParamPad"/>
+    <module name="MethodParamPad">
+      <property name="allowLineBreaks" value="true"/>
+    </module>
     <module name="NoWhitespaceAfter"/>
     <module name="NoWhitespaceBefore"/>
     <module name="OperatorWrap"/>
