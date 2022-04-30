@@ -22,23 +22,53 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * General purpose Chronometer
+ *
+ * Measures execution time (in millis) with support for partial durations.
+ */
 public class Chronometer {
     private final AtomicReference<Instant> start;
     private final AtomicReference<Instant> lap;
 
+    /**
+     * Creates a new Chronometer
+     */
     public Chronometer() {
         this.start = new AtomicReference<>(Instant.now());
         this.lap = new AtomicReference<>(start.get());
     }
 
+    /**
+     * Returns elapsed time since creation or last reset
+     *
+     * @return elapsed time in millis
+     */
     public long elapsed() {
         return Duration.between(start.get(), Instant.now()).toMillis();
     }
 
+    /**
+     * Resets this chronometer.
+     */
     public void reset () {
         start.set(Instant.now());
     }
 
+    /**
+     * Ongoing partial since start or last lap.
+     *
+     * @return ongoing partial in millis.
+     */
+    public long partial() {
+        return Duration.between(start.get(), Instant.now()).toMillis();
+    }
+
+    /**
+     * Return current partial and resets lap.
+     *
+     * @return partial in millis.
+     */
     public long lap() {
         Instant now = Instant.now();
         long elapsed = Duration.between(start.get(), now).toMillis();
