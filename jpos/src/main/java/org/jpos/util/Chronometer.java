@@ -61,7 +61,7 @@ public class Chronometer {
      * @return ongoing partial in millis.
      */
     public long partial() {
-        return Duration.between(start.get(), Instant.now()).toMillis();
+        return Duration.between(lap.get(), Instant.now()).toMillis();
     }
 
     /**
@@ -71,7 +71,7 @@ public class Chronometer {
      */
     public long lap() {
         Instant now = Instant.now();
-        long elapsed = Duration.between(start.get(), now).toMillis();
+        long elapsed = Duration.between(lap.get(), now).toMillis();
         lap.set(now);
         return elapsed;
     }
