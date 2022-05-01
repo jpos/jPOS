@@ -31,6 +31,7 @@ module org.jpos.jpos {
     exports org.jpos.util;
     exports org.jpos.util.function;
     exports org.jpos.emv;
+    exports org.jpos.core;
     exports org.jpos.core.handlers.exception;
     exports org.jpos.rc;
 }
