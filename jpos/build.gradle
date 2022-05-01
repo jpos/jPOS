@@ -10,6 +10,7 @@ buildscript {
 }
 plugins {
    id "de.jjohannes.extra-java-module-info" version "0.6"
+   id 'checkstyle'
 }
 apply plugin: 'biz.aQute.bnd.builder'
 apply plugin: 'org.owasp.dependencycheck'
@@ -186,6 +187,11 @@ task q2jar (type: Bundle) {
         'Export-Package': bundleExportPackage,
         'Include-Resource': configurations.runtimeClasspath.collect { '-lib/' + it.getName() }.join(' ')
     )
+}
+
+checkstyle {
+    ignoreFailures = true
+    configFile file("${rootProject.projectDir}/.github/linters/sun_checks.xml")
 }
 
 task bundleFull (type: Bundle) {
