@@ -51,7 +51,7 @@ public class Chronometer {
     /**
      * Resets this chronometer.
      */
-    public void reset () {
+    public void reset() {
         start.set(Instant.now());
     }
 
