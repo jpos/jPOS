@@ -18,12 +18,11 @@
 
 package org.jpos.transaction;
 
+import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -32,17 +31,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("unchecked")
 public class TransactionManagerTestCase {
-    Q2 q2;
-    Space sp;
+    private static Q2 q2;
+    private static Space sp;
     public static String QUEUE = "TXNMGRTEST";
     public static String QUEUE_EMPTY = "TXNMGRTEST.EMPTY";
+    public static String QUEUE_DELAY = "TXNMGRTEST.DELAY";
 
-    @BeforeEach
-    public void setUp (@TempDir Path deployDir) throws IOException {
+    @BeforeAll
+    public static void setUp (@TempDir Path deployDir) throws IOException {
         sp = SpaceFactory.getSpace("tspace:txnmgrtest");
         Files.walk(Paths.get("build/resources/test/org/jpos/transaction")).forEach( s -> {
             if (Files.isRegularFile(s)) {
@@ -55,7 +56,9 @@ public class TransactionManagerTestCase {
         });
         q2 = new Q2(deployDir.toString());
         q2.start();
+        q2.ready(10000L);
     }
+//
 //    public void testSimpleTransaction() {
 //        for (int i=0; i<100; i++) {
 //            Context ctx = new Context();
@@ -69,6 +72,47 @@ public class TransactionManagerTestCase {
 //        ctx.put ("RETRY", Integer.valueOf(10), true);
 //        sp.out (QUEUE, ctx);
 //    }
+
+    @Test
+    public void testTransactionNoDelay() {
+        Context ctx = new Context();
+        ctx.put("DELAY-0", 50L);
+        ctx.put("DELAY-1", 50L);
+        sp.out(QUEUE_DELAY, ctx);
+        String rc = ctx.get("RC", 5000L);
+        assertEquals("00", rc);
+    }
+
+    @Test
+    public void testTransactionDelay0() {
+        Context ctx = new Context();
+        ctx.put("DELAY-0", 110L);
+        ctx.put("DELAY-1", 20L);
+        sp.out(QUEUE_DELAY, ctx);
+        String rc = ctx.get("RC", 5000L);
+        assertEquals("01", rc);
+    }
+
+    @Test
+    public void testTransactionDelay1() {
+        Context ctx = new Context();
+        ctx.put("DELAY-0", 20L);
+        ctx.put("DELAY-1", 110L);
+        sp.out(QUEUE_DELAY, ctx);
+        String rc = ctx.get("RC", 5000L);
+        assertEquals("01", rc);
+    }
+
+    @Test
+    public void testTransactionMaxDelay() {
+        Context ctx = new Context();
+        ctx.put("DELAY-0", 90L);
+        ctx.put("DELAY-1", 90L);
+        sp.out(QUEUE_DELAY, ctx);
+        String rc = ctx.get("RC", 5000L);
+        assertEquals("01", rc);
+    }
+
     @Test
     public void testEmptyTM() {
         Context ctx = new Context();
@@ -85,9 +129,8 @@ public class TransactionManagerTestCase {
         sp.out(QUEUE, ctx);
     }
 
-    @AfterEach
-    public void tearDown() throws Exception {
-        Thread.sleep(5000);
+    @AfterAll
+    static void tearDown() throws Exception {
         q2.shutdown(true);
     }
 }

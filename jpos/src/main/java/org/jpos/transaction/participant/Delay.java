@@ -19,20 +19,37 @@
 package org.jpos.transaction.participant;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.Random;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.transaction.TransactionParticipant;
+import org.jpos.core.annotation.Config;
+import org.jpos.transaction.AbortParticipant;
+import org.jpos.transaction.Context;
+import org.jpos.transaction.ContextConstants;
 
-public class Delay implements TransactionParticipant, Configurable {
+/**
+ * Delay participant
+ *
+ * Can be used for debugging/testing purposes. It just delays the transaction callbacks.
+ *
+ */
+public class Delay implements AbortParticipant, Configurable {
     long prepareDelay = 0L;
     long commitDelay = 0L;
     long abortDelay = 0L;
     Random random;
+    String delayName;
+
     public int prepare(long id, Serializable context) {
-        sleep (prepareDelay);
+        long delay = prepareDelay;
+        if (context instanceof Context) {
+            Context ctx = (Context) context;
+            delay = Optional.ofNullable((Long) ctx.get(delayName)).orElse(delay);
+        }
+        sleep (delay);
         return PREPARED;
     }
 
@@ -49,11 +66,12 @@ public class Delay implements TransactionParticipant, Configurable {
         commitDelay  = cfg.getLong ("commit-delay");
         abortDelay   = cfg.getLong ("abort-delay");
         random       = cfg.getBoolean ("random") ? new Random() : null;
+        delayName    = cfg.get("delay-name", "DELAY");
     }
     void sleep (long delay) {
         if (delay > 0L) {
             try {
-                Thread.sleep (random != null ? (long)random.nextDouble()*delay : delay);
+                Thread.sleep (random != null ? (long)(random.nextDouble()*delay) : delay);
             } catch (InterruptedException ignored) { }
         }
     }

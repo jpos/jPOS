@@ -7,7 +7,7 @@
  <property name="debug" value="true" />
  <property name="retry-interval"   value="250" />
  <property name="pause-timeout"   value="2000" />
-
+ 
  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
   <property name="trace" value="pre-retry" />
  </participant>
@@ -19,6 +19,7 @@
  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
   <property name="trace" value="post-pause" />
  </participant>
+
 
  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
   <property name="trace" value="pre-switch" />
@@ -41,6 +42,8 @@
    <property name="trace" value="Joined Participant 3" />
   </participant>
  </participant>
+ <participant class="org.jpos.transaction.participant.SimulateResponse" />
+ 
  <!--
  we use 'debug-context' now
  <participant class="org.jpos.transaction.participant.Debug" logger="Q2" />
@@ -61,5 +64,5 @@
    <property name="trace" value="inGroupC" />
   </participant>
  </group>
-</txnmgr-test>
 
+</txnmgr-test>

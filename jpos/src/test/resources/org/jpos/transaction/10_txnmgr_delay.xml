@@ -1,0 +1,15 @@
+<txnmgr-delay class="org.jpos.transaction.TransactionManager" logger="Q2">
+ <property name="queue"            value="TXNMGRTEST.DELAY" />
+ <property name="sessions"         value="4" />
+ <property name="input-space" value="tspace:txnmgrtest" />
+
+ <participant class="org.jpos.transaction.participant.Delay" timeout="100" max-timeout="150">
+  <property name="delay-name" value="DELAY-0" />
+ </participant>
+ <participant class="org.jpos.transaction.participant.Delay" timeout="100" max-timeout="150">
+  <property name="delay-name" value="DELAY-1" />
+ </participant>
+
+ <participant class="org.jpos.transaction.participant.SimulateResponse" />
+
+</txnmgr-delay>

@@ -8,6 +8,8 @@ can be used as-is or used as a reference to write your own.
 The `<participant ...>` element supports an optional `enabled` attribute
 that can be used disable participants at runtime. The `enabled` value can
 either be 'yes/no/true/false` or a list of environment names (i.e.: `prod, staging`).
+
+In addition as of jPOS 3.0.0, it supports the `timeout` and `max-timeout` attributes.
 =====
 
 include::participants/switch.adoc[]

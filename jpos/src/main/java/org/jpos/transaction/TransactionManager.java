@@ -65,8 +65,7 @@ public class TransactionManager
     private static final ThreadLocal<Long> tlId = new ThreadLocal<>();
     private Metrics metrics;
     private static ScheduledThreadPoolExecutor loadMonitorExecutor;
-    private static Map<TransactionParticipant,String> names = new HashMap<>();
-
+    private static Map<TransactionParticipant,ParticipantParams> params = new HashMap<>();
 
     Space sp;
     Space psp;
@@ -259,6 +258,7 @@ public class TransactionManager
                     continue;
                 }
                 context = (Serializable) obj;
+                Chronometer chronometer = null;
                 if (obj instanceof Pausable) {
                     Pausable pausable = (Pausable) obj;
                     pt = pausable.getPausedTransaction();
@@ -274,10 +274,14 @@ public class TransactionManager
                             metrics.record(getName(pt.getParticipant()) + "-resume", prof.getPartialInMillis());
                         if (prof != null)
                             prof.reenable();
+                        chronometer = pt.getChronometer();
                         pausedCounter.decrementAndGet();
-                    }
-                } else 
+                    } 
+                } else {
                     pt = null;
+                }
+                if (chronometer == null)
+                    chronometer = new Chronometer();
 
                 if (pt == null) {
                     int running = getActiveTransactions();
@@ -316,7 +320,7 @@ public class TransactionManager
                 }
                 snapshot (id, context, PREPARING);
                 setThreadLocal(id, context);
-                action = prepare (session, id, context, members, iter, abort, evt, prof);
+                action = prepare (session, id, context, members, iter, abort, evt, prof, chronometer);
                 removeThreadLocal();
                 switch (action) {
                     case PAUSE:
@@ -614,7 +618,7 @@ public class TransactionManager
             metrics.record(getName(p) + "-abort", c.elapsed());
     }
     protected int prepare
-        (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof)
+        (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof, Chronometer chronometer)
     {
         boolean retry = false;
         boolean pause = false;
@@ -627,6 +631,7 @@ public class TransactionManager
                 return ABORTED;
             }
             TransactionParticipant p = iter.next();
+            ParticipantParams pp = getParams(p);
             if (abort) {
                 if (hasStatusListeners)
                     notifyStatusListeners (
@@ -644,15 +649,37 @@ public class TransactionManager
                     notifyStatusListeners (
                         session, TransactionStatusEvent.State.PREPARING, id, getName(p), context
                     );
-                action = prepare (p, id, context);
+
+                boolean timeout = false;
+                boolean maxTimeout = false;
+
+                if (pp.maxTimeout > 0 && chronometer.elapsed() > pp.maxTimeout) {
+                    action = ABORTED | NO_JOIN | READONLY;
+                    maxTimeout = true;
+                } else {
+                    chronometer.lap();
+                    action = prepare(p, id, context);
+                    if (pp.timeout > 0 && chronometer.partial() > pp.timeout) {
+                        timeout = true;
+                    }
+                    if (pp.maxTimeout > 0 && chronometer.elapsed() > pp.maxTimeout) {
+                        maxTimeout = true;
+                    }
+                }
+                if (timeout || maxTimeout)
+                    action &= (PREPARED ^ 0xFFFF);
 
                 abort  = (action & PREPARED) == ABORTED;
                 retry  = (action & RETRY) == RETRY;
                 pause  = (action & PAUSE) == PAUSE;
+
                 if (evt != null) {
                     evt.addMessage ("        prepare: "
                             + getName(p)
                             + (abort ? " ABORTED" : " PREPARED")
+                            + (timeout ? " TIMEOUT" : "")
+                            + (maxTimeout && !timeout ? " MAX_TIMEOUT (not called)" : "")
+                            + (maxTimeout && timeout ? " MAX_TIMEOUT" : "")
                             + (retry ? " RETRY" : "")
                             + (pause ? " PAUSE" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
@@ -661,6 +688,7 @@ public class TransactionManager
                         prof.checkPoint ("prepare: " + getName(p));
                 }
             }
+
             if ((action & READONLY) == 0) {
                 Chronometer c = new Chronometer();
                 snapshot (id, context);
@@ -717,7 +745,7 @@ public class TransactionManager
                     if (t > 0)
                         expirationMonitor = new PausedMonitor (pausable);
                     PausedTransaction pt = new PausedTransaction (
-                        this, id, p, members, iter, abort, expirationMonitor, prof, evt
+                        this, id, p, members, iter, abort, expirationMonitor, prof, evt, chronometer
                     );
                     pausable.setPausedTransaction (pt);
                     if (expirationMonitor != null) {
@@ -815,7 +843,13 @@ public class TransactionManager
             realm = ":" + realm;
         else
             realm = "";
-        names.put(participant, Caller.shortClassName(participant.getClass().getName())+realm);
+
+        params.put(participant, new ParticipantParams(
+            Caller.shortClassName(participant.getClass().getName())+realm,
+            getLong (e, "timeout"),
+            getLong (e, "max-timeout")
+          )
+        );
         if (participant instanceof Destroyable) {
             destroyables.add((Destroyable) participant);
         }
@@ -1154,8 +1188,11 @@ public class TransactionManager
     }
 
     private String getName(TransactionParticipant p) {
-        String name;
-        return ((name = names.get(p)) != null) ? name : p.getClass().getName();
+        return getParams(p).name();
+    }
+
+    private ParticipantParams getParams (TransactionParticipant p) {
+        return Optional.ofNullable(params.get(p)).orElse(new ParticipantParams(p.getClass().getName(), 0L, 0L));
     }
 
     private String tmInfo() {
@@ -1165,4 +1202,15 @@ public class TransactionManager
           (tps != null ? ", " + tps.toString() : "")
         );
     }
+
+    private long getLong (Element e, String attributeName) {
+        String s = QFactory.getAttributeValue (e, attributeName);
+        if (s != null) {
+            try {
+                return Long.parseLong(s);
+            } catch (NumberFormatException ignored) {}
+        }
+        return 0L;
+    }
+    public record ParticipantParams (String name, long timeout, long maxTimeout) {}
 }
