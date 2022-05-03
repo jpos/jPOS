@@ -2,14 +2,17 @@
  <property name="queue"            value="TXNMGRTEST.DELAY" />
  <property name="sessions"         value="4" />
  <property name="input-space" value="tspace:txnmgrtest" />
+ <property name="max-time" value="500" />
 
- <participant class="org.jpos.transaction.participant.Delay" timeout="100" max-timeout="150">
+ <participant class="org.jpos.transaction.participant.Delay" timeout="100" max-time="150">
   <property name="delay-name" value="DELAY-0" />
  </participant>
- <participant class="org.jpos.transaction.participant.Delay" timeout="100" max-timeout="150">
+ <participant class="org.jpos.transaction.participant.Delay" timeout="100" max-time="150">
   <property name="delay-name" value="DELAY-1" />
  </participant>
-
+ <participant class="org.jpos.transaction.participant.Delay">
+  <property name="delay-name" value="DELAY-2" />
+ </participant>
  <participant class="org.jpos.transaction.participant.SimulateResponse" />
 
 </txnmgr-delay>

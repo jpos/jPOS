@@ -35,8 +35,16 @@ public class Chronometer {
      * Creates a new Chronometer
      */
     public Chronometer() {
-        this.start = new AtomicReference<>(Instant.now());
-        this.lap = new AtomicReference<>(start.get());
+        this (Instant.now());
+    }
+
+    /**
+     * Creates a new Chronometer and specify start instant
+     * @param start chronometer start
+     */
+    public Chronometer(Instant start) {
+        this.start = new AtomicReference<>(start);
+        this.lap = new AtomicReference<>(this.start.get());
     }
 
     /**

@@ -22,6 +22,7 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
+import org.jpos.util.Caller;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -29,8 +30,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.jpos.transaction.ContextConstants.TIMESTAMP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -112,6 +115,35 @@ public class TransactionManagerTestCase {
         String rc = ctx.get("RC", 5000L);
         assertEquals("01", rc);
     }
+
+    @Test
+    public void testOKArrival() {
+        Context ctx = new Context();
+        ctx.put(TIMESTAMP, Instant.now());
+        sp.out(QUEUE_DELAY, ctx);
+        String rc = ctx.get("RC", 5000L);
+        assertEquals("00", rc);
+    }
+
+    @Test
+    public void testLateArrival() {
+        Context ctx = new Context();
+        ctx.put(TIMESTAMP, Instant.now().minusSeconds(5L));
+        sp.out(QUEUE_DELAY, ctx);
+        String rc = ctx.get("RC", 5000L);
+        assertEquals("01", rc);
+    }
+
+    @Test
+    public void testTMMaxTime() {
+        Context ctx = new Context();
+        ctx.log (Caller.info());
+        ctx.put("DELAY-2", 510L);
+        sp.out(QUEUE_DELAY, ctx);
+        String rc = ctx.get("RC", 5000L);
+        assertEquals("01", rc);
+    }
+
 
     @Test
     public void testEmptyTM() {

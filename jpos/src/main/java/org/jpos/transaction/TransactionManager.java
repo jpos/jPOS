@@ -22,6 +22,7 @@ import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.annotation.Config;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
@@ -39,6 +40,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import org.jpos.iso.ISOUtil;
+
+import static org.jpos.transaction.ContextConstants.TIMESTAMP;
 
 @SuppressWarnings("unchecked")
 public class TransactionManager 
@@ -66,6 +69,7 @@ public class TransactionManager
     private Metrics metrics;
     private static ScheduledThreadPoolExecutor loadMonitorExecutor;
     private static Map<TransactionParticipant,ParticipantParams> params = new HashMap<>();
+    private long globalMaxTime;
 
     Space sp;
     Space psp;
@@ -280,8 +284,9 @@ public class TransactionManager
                 } else {
                     pt = null;
                 }
-                if (chronometer == null)
-                    chronometer = new Chronometer();
+                if (chronometer == null) {
+                    chronometer = new Chronometer(getStart(context));
+                }
 
                 if (pt == null) {
                     int running = getActiveTransactions();
@@ -444,6 +449,7 @@ public class TransactionManager
         sessions = cfg.getInt ("sessions", 1);
         threshold = cfg.getInt ("threshold", sessions / 2);
         maxSessions = cfg.getInt ("max-sessions", sessions);
+        globalMaxTime = cfg.getLong("max-time", 0L);
         if (maxSessions < sessions)
             throw new ConfigurationException("max-sessions < sessions");
         if (maxActiveSessions > 0) {
@@ -632,11 +638,18 @@ public class TransactionManager
             }
             TransactionParticipant p = iter.next();
             ParticipantParams pp = getParams(p);
+            if (!abort && pp.maxTime > 0 && chronometer.elapsed() > pp.maxTime) {
+                abort = true;
+                if (evt != null)
+                    evt.addMessage("    forcedAbort: " + getName(p) + " elapsed=" + chronometer.elapsed());
+            }
+
             if (abort) {
                 if (hasStatusListeners)
                     notifyStatusListeners (
                         session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, getName(p), context
                     );
+
                 action = prepareForAbort (p, id, context);
 
                 if (evt != null && p instanceof AbortParticipant) {
@@ -650,23 +663,12 @@ public class TransactionManager
                         session, TransactionStatusEvent.State.PREPARING, id, getName(p), context
                     );
 
-                boolean timeout = false;
-                boolean maxTimeout = false;
 
-                if (pp.maxTimeout > 0 && chronometer.elapsed() > pp.maxTimeout) {
-                    action = ABORTED | NO_JOIN | READONLY;
-                    maxTimeout = true;
-                } else {
-                    chronometer.lap();
-                    action = prepare(p, id, context);
-                    if (pp.timeout > 0 && chronometer.partial() > pp.timeout) {
-                        timeout = true;
-                    }
-                    if (pp.maxTimeout > 0 && chronometer.elapsed() > pp.maxTimeout) {
-                        maxTimeout = true;
-                    }
-                }
-                if (timeout || maxTimeout)
+                chronometer.lap();
+                action = prepare(p, id, context);
+                boolean timeout = pp.timeout > 0 && chronometer.partial() > pp.timeout;
+                boolean maxTime = pp.maxTime > 0 && chronometer.elapsed() > pp.maxTime;
+                if (timeout || maxTime)
                     action &= (PREPARED ^ 0xFFFF);
 
                 abort  = (action & PREPARED) == ABORTED;
@@ -678,8 +680,7 @@ public class TransactionManager
                             + getName(p)
                             + (abort ? " ABORTED" : " PREPARED")
                             + (timeout ? " TIMEOUT" : "")
-                            + (maxTimeout && !timeout ? " MAX_TIMEOUT (not called)" : "")
-                            + (maxTimeout && timeout ? " MAX_TIMEOUT" : "")
+                            + (maxTime ? " MAX_TIMEOUT" : "")
                             + (retry ? " RETRY" : "")
                             + (pause ? " PAUSE" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
@@ -846,8 +847,8 @@ public class TransactionManager
 
         params.put(participant, new ParticipantParams(
             Caller.shortClassName(participant.getClass().getName())+realm,
-            getLong (e, "timeout"),
-            getLong (e, "max-timeout")
+            getLong (e, "timeout", 0L),
+            getLong (e, "max-time", globalMaxTime)
           )
         );
         if (participant instanceof Destroyable) {
@@ -1203,14 +1204,24 @@ public class TransactionManager
         );
     }
 
-    private long getLong (Element e, String attributeName) {
+    private long getLong (Element e, String attributeName, long defValue) {
         String s = QFactory.getAttributeValue (e, attributeName);
         if (s != null) {
             try {
                 return Long.parseLong(s);
             } catch (NumberFormatException ignored) {}
         }
-        return 0L;
+        return defValue;
     }
-    public record ParticipantParams (String name, long timeout, long maxTimeout) {}
+
+    private Instant getStart (Serializable context) {
+        if (context instanceof Context) {
+            Object o = ((Context) context).get(TIMESTAMP);
+            if (o instanceof Instant)
+                return (Instant) o;
+        }
+        return Instant.now();
+    }
+
+    public record ParticipantParams (String name, long timeout, long maxTime) {}
 }
