@@ -275,6 +275,9 @@ public class TransactionManager
                         if (prof != null)
                             prof.reenable();
                         pausedCounter.decrementAndGet();
+
+                        if (evt != null && abort)
+                            evt.addMessage ("   [force abort]");
                     }
                 } else 
                     pt = null;
@@ -312,7 +315,8 @@ public class TransactionManager
                     if (prof == null)
                         prof = new Profiler();
                     else
-                        prof.checkPoint("resume");
+                        prof.checkPoint("resume" +
+                                        (pt != null && pt.isAborting() ? " [force abort]" : ""));
                 }
                 snapshot (id, context, PREPARING);
                 setThreadLocal(id, context);
