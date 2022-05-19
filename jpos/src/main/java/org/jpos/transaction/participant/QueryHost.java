@@ -100,16 +100,19 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
         return PREPARED | NO_JOIN | READONLY;
     }
 
+    @Override
     public void responseReceived (ISOMsg resp, Object handBack) {
         Context ctx = (Context) handBack;
         ctx.put (responseName, resp);
         ctx.resume();
     }
+    @Override
     public void expired (Object handBack) {
         Context ctx = (Context) handBack;
         String ds = ctx.getString(destination);
         String muxName = cfg.get ("mux." + ds , "mux." + ds);
         ctx.getResult().fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' does not respond", muxName).FAIL();
+        ctx.getPausedTransaction().forceAbort();
         ctx.resume();
     }
 
