@@ -20,6 +20,7 @@ package org.jpos.q2.iso;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.*;
 import org.jpos.space.SpaceUtil;
 import org.jpos.util.LogSource;
@@ -163,7 +164,7 @@ public class MultiSessionChannelAdaptor
     protected void initSpaceAndQueues () throws ConfigurationException {
         super.initSpaceAndQueues();
         Element persist = getPersist ();
-        String s = persist.getChildTextTrim("sessions");
+        String s = Environment.get(persist.getChildTextTrim("sessions"));
         setSessions(s != null && s.length() > 0 ? Integer.parseInt(s) : 1);
     }
 
