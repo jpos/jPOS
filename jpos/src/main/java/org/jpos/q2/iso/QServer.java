@@ -20,6 +20,7 @@ package org.jpos.q2.iso;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
@@ -126,7 +127,7 @@ public class QServer
     }
     private void initIn() {
         Element persist = getPersist();
-        inQueue = persist.getChildText("in");
+        inQueue = Environment.get(persist.getChildTextTrim("in"));
         if (inQueue != null) {
             /*
              * We have an 'in' queue to monitor for messages we will
@@ -138,7 +139,7 @@ public class QServer
     }
     private void initOut() {
         Element persist = getPersist();
-        outQueue = persist.getChildText("out");
+        outQueue = Environment.get(persist.getChildTextTrim("out"));
         if (outQueue != null) {
             /*
              * We have an 'out' queue to send any messages to that are received
@@ -266,7 +267,7 @@ public class QServer
     public ISOServer getISOServer() {
         return server;
     }
-    
+
     @Override
     public String getCountersAsString () {
         return server.getCountersAsString ();
@@ -329,7 +330,7 @@ public class QServer
 
     private LocalSpace grabSpace (Element e) throws ConfigurationException
     {
-        String uri = e != null ? e.getText() : "";
+        String uri = e != null ? Environment.get(e.getTextTrim()) : "";
         Space sp = SpaceFactory.getSpace (uri);
         if (sp instanceof LocalSpace) {
             return (LocalSpace) sp;
