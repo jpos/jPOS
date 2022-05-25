@@ -20,6 +20,7 @@ package org.jpos.q2.iso;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.*;
 import org.jpos.space.SpaceUtil;
 import org.jpos.util.LogSource;
@@ -34,7 +35,7 @@ import java.util.Date;
  * @since 1.8.5
  */
 @SuppressWarnings({"unused", "unchecked"})
-public class MultiSessionChannelAdaptor 
+public class MultiSessionChannelAdaptor
     extends ChannelAdaptor
     implements MultiSessionChannelAdaptorMBean, Channel, Loggeable
 {
@@ -97,7 +98,7 @@ public class MultiSessionChannelAdaptor
                         channel.send ((ISOMsg) o);
                         tx++;
                     }
-                } catch (ISOFilter.VetoException e) { 
+                } catch (ISOFilter.VetoException e) {
                     getLog().warn ("channel-sender-"+in, e.getMessage ());
                 } catch (ISOException e) {
                     getLog().warn ("channel-sender-"+in, e.getMessage ());
@@ -105,7 +106,7 @@ public class MultiSessionChannelAdaptor
                         disconnect (channel);
                     }
                     ISOUtil.sleep (1000); // slow down on errors
-                } catch (Exception e) { 
+                } catch (Exception e) {
                     getLog().warn ("channel-sender-"+in, e.getMessage ());
                     disconnect (channel);
                     ISOUtil.sleep (1000);
@@ -149,7 +150,7 @@ public class MultiSessionChannelAdaptor
                         }
                         ISOUtil.sleep(1000);
                     }
-                } catch (Exception e) { 
+                } catch (Exception e) {
                     if (running()) {
                         getLog().warn("channel-receiver-" + out, e);
                         disconnect (channel);
@@ -163,7 +164,7 @@ public class MultiSessionChannelAdaptor
     protected void initSpaceAndQueues () throws ConfigurationException {
         super.initSpaceAndQueues();
         Element persist = getPersist ();
-        String s = persist.getChildTextTrim("sessions");
+        String s = Environment.get(persist.getChildTextTrim("sessions"));
         setSessions(s != null && s.length() > 0 ? Integer.parseInt(s) : 1);
     }
 
