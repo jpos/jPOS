@@ -23,12 +23,7 @@ import java.io.PrintStream;
 import org.jpos.util.Loggeable;
 
 @SuppressWarnings("unused")
-public class PosDataCode implements Loggeable {
-
-    public interface Flag {
-        int getOffset();
-        int intValue();
-    }
+public class PosDataCode extends PosFlags implements Loggeable {
     public enum ReadingMethod implements Flag {
         UNKNOWN                (1, "Unknown"),
         CONTACTLESS            (1 << 1, "Information not taken from card"),  // i.e.: RFID
@@ -310,30 +305,7 @@ public class PosDataCode implements Loggeable {
         p.printf ("%ssc: %s%n", inner, sb.toString());
         p.println("</pdc>");
     }
-
-
-    /**
-     * Sets or unsets a set of flags according to value
-     * @param value if true flags are set, else unset
-     * @param flags flag set to set or unset
-     */
-    public void setFlags(boolean value, Flag... flags) {
-        if (value) {
-            for (Flag flag  : flags) {
-                for (int v = flag.intValue(), offset = flag.getOffset(); v != 0; v >>>= 8, offset++) {
-                    b[offset] |= (byte) v;
-                }
-            }
-        } else {
-            for (Flag flag  : flags) {
-                for (int v = flag.intValue(), offset = flag.getOffset(); v != 0; v >>>= 8, offset++) {
-                    b[offset] &= (byte) ~v;
-                }
-            }
-        }
-
-    }
-
+    
     public void setReadingMethods(boolean value, ReadingMethod ... methods ){
         setFlags(value, methods);
     }

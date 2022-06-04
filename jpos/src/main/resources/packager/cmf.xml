@@ -190,12 +190,67 @@
       name="Merchant category code"
       pad="false"
       class="org.jpos.iso.IFB_NUMERIC"/>
-  <isofield
+  <isofieldpackager
       id="27"
       length="27"
       name="POS capability"
       pad="false"
+      class="org.jpos.iso.IFB_BINARY"
+      emitBitmap="false"
+      firstField="0"
+      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+    <isofield
+      id="0"
+      length="8"
+      name="Card Reading and Verification Capabilities"
+      pad="false"
       class="org.jpos.iso.IFB_BINARY"/>
+    <isofield
+      id="1"
+      length="1"
+      name="Approval code length"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+      id="2"
+      length="3"
+      name="Cardholder receipt data length"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+      id="3"
+      length="3"
+      name="Card acceptor receipt data length"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+      id="4"
+      length="3"
+      name="Cardholder display data length"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+      id="5"
+      length="3"
+      name="Card acceptor display data length"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+      id="6"
+      length="3"
+      name="ICC script data length"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+      id="7"
+      length="1"
+      name="Track3 rewrite capability"
+      class="org.jpos.iso.IF_CHAR"/>
+    <isofield
+      id="8"
+      length="1"
+      name="Card capture capability"
+      class="org.jpos.iso.IF_CHAR"/>
+    <isofield
+      id="9"
+      length="1"
+      name="PIN Input length"
+      class="org.jpos.iso.IFB_BINARY"/>
+  </isofieldpackager>
   <isofield
       id="28"
       length="8"
