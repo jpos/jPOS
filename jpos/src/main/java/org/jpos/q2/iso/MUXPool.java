@@ -91,7 +91,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     }
 
     public void send (ISOMsg m) throws ISOException, IOException {
-        long maxWait = 1000L; // reasonable default
+        long maxWait = System.currentTimeMillis() + 1000L; // reasonable default
         MUX mux = getMUX(m,maxWait);
 
         if (mux == null)
