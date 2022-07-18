@@ -85,7 +85,7 @@ Most components have a setName (String name) method implemented like this:
 
 
 The prefix +"mux."+ is used here in order to avoid a clash of names in the
-registrar between different classes of components using the same name  (i.e.
+registrar between different classes of components using the same name  (e.g.
 +"mux.institutionABC"+  and  +"channel.institutionABC"+). 
 
 

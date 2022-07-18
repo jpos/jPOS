@@ -408,10 +408,10 @@ by other means (e.g., by phone) and send an advice.
 |Time|Acquirer|Issuer|Description
 |t~0~|0100 --&gt; ||authorization request
 |t~1~|||no response
-|t~3~|0400 --&gt; ||reverse previous authorization
-|t~4~|| &lt;-- 0410|reverse received
-|t~5~|0120 --&gt; ||authorization advice
-|t~6~|| &lt;-- 0130|advice received
+|t~2~|0400 --&gt; ||reverse previous authorization
+|t~3~|| &lt;-- 0410|reverse received
+|t~4~|0120 --&gt; ||authorization advice
+|t~5~|| &lt;-- 0130|advice received
 |===============
 
 Depending on your particular implementation, you may be able to send
@@ -436,7 +436,7 @@ exchanged during an authorization request and response. See below:
 |0|MTI|0100|Authorization request
 |2|Primary Account Number|4321123443211234|
 |3|Processing Code|000000|
-|4|Amount transaction|000000012300|i.e., 123.00
+|4|Amount transaction|000000012300|e.g., 123.00
 |7|Transmission data/time|0304054133|MMYYHHMMSS
 |11|System trace audit number|001205|
 |14|Expiration date|0205|YYMM
@@ -457,7 +457,7 @@ exchanged during an authorization request and response. See below:
 |0|MTI|0110|Authorization response
 |2|Primary Account Number|4321123443211234|
 |3|Processing Code|000000|
-|4|Amount transaction|000000012300|i.e., 123.00
+|4|Amount transaction|000000012300|e.g., 123.00
 |7|Transmission data/time|0304054133|MMYYHHMMSS
 |11|System trace audit number|001205|
 |14|Expiration date|0205|YYMM

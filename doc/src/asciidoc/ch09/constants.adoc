@@ -7,7 +7,7 @@
 
 |ABORTED|0|
   The participant is not prepared. Transaction should be aborted.
-|PREPARE|1|
+|PREPARED|1|
   The participant is prepared to commit the transaction, provided
   all other participants down the list return PREPARED too.
 |RETRY|2|

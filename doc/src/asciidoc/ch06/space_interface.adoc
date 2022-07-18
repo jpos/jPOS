@@ -17,7 +17,7 @@ handy methods:
 * +V rdp (K key)+
   Read an entry if it exists ('p' for 'probe').
 
-* +Vinp (K key)+
+* +V inp (K key)+
   Take an entry if it exists (again, 'p' for 'probe').
 
 * +void nrd (K key)+

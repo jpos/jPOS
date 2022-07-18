@@ -47,7 +47,7 @@ We also have a very simple interface called Configurable:
 
    package org.jpos.core;
 
-   public interface Configuration {
+   public interface Configurable {
      public void setConfiguration (Configuration cfg)
         throws ConfigurationException;
    }
@@ -70,7 +70,7 @@ Should +com.mycompany.MyObject+ implement +Configurable+, Q2 would call its  +se
 providing access to the underlying +myProperty+ property.
 
 It's interesting to note that Q2 provides the ability to have array of
-properties under the same name, i.e:
+properties under the same name, e.g.:
 
 [source,xml]
 ----

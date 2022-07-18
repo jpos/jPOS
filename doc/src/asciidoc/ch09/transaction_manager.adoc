@@ -2,7 +2,7 @@
 
 The +TransactionManager+ is a jPOS Service that monitors a Space queue waiting
 for transactions to be processed. These transactions are expected to be any
-+Serializable+ objects, but in most jPOS applications those are actually 
++Serializable+ object, but in most jPOS applications those are actually 
 +org.jpos.transaction.Context+ objects.
 
 The following image shows a typical scenario:
