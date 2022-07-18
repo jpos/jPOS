@@ -92,7 +92,7 @@ order to make sure that this particular channel won't load the system with more 
 The BSHFilter is one of the most useful, and one of the most abused filters. It allows you to
 run a link:http://beanshell.org[BeanShell] script that can be modified on the fly. It's extremely
 useful in situations where you need to add a field or two, or change the content of a given
-field, i.e. while testing on a tight certification window.
+field, e.g., while testing on a tight certification window.
 
 It is not intended to be used as a way to implement your business logic, BSH code is great, but
 tend to become brittle, difficult to refactor, test, you don't have IDE support, etc.
@@ -121,7 +121,7 @@ Your `bsh` file will have access to the following variables:
 * `evt`     - a LogEvent that you can use to add information to the Log
 * `cfg`     - a reference to the configuration object
 
-=== Aditional filters
+=== Additional filters
 
 Take a look at link:https://github.com/jpos/jPOS/tree/master/jpos/src/main/java/org/jpos/iso/filter[Github repository] 
 for additional samples.

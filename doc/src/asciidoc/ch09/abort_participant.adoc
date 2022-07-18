@@ -12,7 +12,7 @@ If everything goes okay and all participants return +PREPARED+, then you'll have
 no problem reaching the last set of participants. By contrast, if for some
 reason a given participant fails (e.g., imagine +FetchData+ fails), then the
 remaining participants down the list (in our example, FetchData through
-+SendRepsonse+) won't get called because the transaction manager will initiate
++SendResponse+) won't get called because the transaction manager will initiate
 the aborting procedure (which will call abort(id,context) only on the
 previously-called participants, i.e., only on ValidateMessage in our example).
 

@@ -24,7 +24,7 @@ public interface ISOServerSocketFactory {
 as well as a provider that implements both of them: +org.jpos.iso.GenericSSLSocketFactory+
 
 The ChannelAdaptor accepts an optional 'socketFactory' property in the
-channel configuration, and the QServer accepts an 'server-socket-factory'
+channel configuration, and the QServer accepts a 'server-socket-factory'
 child element.
 
 .SocketFactory configuration in a ChannelAdaptor
