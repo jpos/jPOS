@@ -26,7 +26,7 @@ It supports the following values:
 ======
 As a safety net, the `SendResponse` participant verifies that there is
 no entry in the Context under the name `TX` (typically used to store a
-JDBC/DB transaction. This is an arbitrary convention, we want to make
+JDBC/DB transaction). This is an arbitrary convention, we want to make
 sure that transactions are committed to disk before actually sending
 back responses.
 ======

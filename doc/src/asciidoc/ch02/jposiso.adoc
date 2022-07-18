@@ -11,7 +11,7 @@ object (or an ISOMsg's subclass).
 
 The ISOMsg class uses the *Composite pattern* (see  
 Design Patterns, elements of Reusable Object-Oriented Software
-by Gamma, Helm, Johnson and Vlissides) 
+by Gamma, Helm, Johnson and Vlissides). 
 
 ISOMsg, ISOField, ISOBitMapField, ISOBinaryField and any custom field type
 that you may implement are subclasses of ISOComponent.  Let's have a look at
@@ -161,7 +161,7 @@ You use
    
 ----
 
-in order to assign a packager to a given +ISOMsg+, i.e:
+in order to assign a packager to a given +ISOMsg+, e.g.:
 
 [source,java]
 ----
@@ -607,7 +607,7 @@ channels. While you don't necesarily have to extend BaseChannel to write a
 custom channel, you'll probably find it very useful. 
 
 Depending on your wire protocol, you'll probably only need to extend
-BaseChannel and just override a few methods, i.e: 
+BaseChannel and just override a few methods, e.g.: 
 
 [source,java]
 ----

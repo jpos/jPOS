@@ -7,6 +7,6 @@ calls to a given Space without having to extend its implementation
 for full details).
 
 Using a +SpaceInterceptor+, the developer can override specific methods in
-order to perform aditional tasks.
+order to perform additional tasks.
 
 

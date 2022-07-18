@@ -18,8 +18,8 @@ including all the components in a single [huge] XML configuration file
 was not a good idea.
 
 *  Although several QSP components supported some limited ReConfiguration, 
-   many others din't. As a result, major changes usually involved restarting 
-   the application (a very costly operation in a 24/7 system) 
+   many others didn't. As a result, major changes usually involved restarting 
+   the application (a very costly operation in a 24/7 system). 
 
 *  If for some reason, the changes involved went beyond just tweaking a 
    configuration file and required additional changes in a supporting 

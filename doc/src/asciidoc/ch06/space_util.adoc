@@ -13,8 +13,8 @@ remove all entries under a given key
 
 * **+nextLong+**
 When used in combination with a persistent Space (such as +JDBMSpace+
-or +JESpace+), this method can be used to easilyl implement sequencers,
-i.e:
+or +JESpace+), this method can be used to easily implement sequencers,
+e.g.:
 
 [source,java]
 ------------
