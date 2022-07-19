@@ -19,14 +19,11 @@
 package org.jpos.security;
 
 import org.jpos.iso.ISOUtil;
-import org.jpos.security.SystemSeed;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import java.nio.ByteBuffer;
 import java.security.*;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
