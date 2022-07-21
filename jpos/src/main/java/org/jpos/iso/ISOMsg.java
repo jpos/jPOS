@@ -520,6 +520,7 @@ public class ISOMsg extends ISOComponent
             ((Loggeable) header).dump (p, newIndent);
 
         for (int i : fields.keySet()) {
+           //If you want the bitmap dumped in the log, change the condition from (i >= 0) to (i >= -1). 
             if (i >= 0) {
                 if ((c = (ISOComponent) fields.get(i)) != null)
                     c.dump(p, newIndent);
