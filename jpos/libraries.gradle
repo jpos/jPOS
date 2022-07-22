@@ -13,7 +13,7 @@ ext {
         mockito_jupiter: 'org.mockito:mockito-junit-jupiter:4.6.1',
         fest_assert: 'org.easytesting:fest-assert:1.4',
         xmlunit: 'xmlunit:xmlunit:1.6',
-        junit: 'org.junit.jupiter:junit-jupiter:5.7.1',
+        junit: 'org.junit.jupiter:junit-jupiter:5.8.2',
         bouncycastle: [
             'org.bouncycastle:bcprov-jdk15on:1.69',
             'org.bouncycastle:bcpg-jdk15on:1.69'

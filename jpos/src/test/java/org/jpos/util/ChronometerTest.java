@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChronometerTest {
-    private long TOLERANCE = 100L;
+    private long TOLERANCE = 200L;
     @Test
     public void testElapsed() throws InterruptedException {
         Chronometer c = new Chronometer();
