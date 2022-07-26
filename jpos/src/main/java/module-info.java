@@ -8,7 +8,12 @@ module org.jpos.jpos {
     requires org.javatuples;
     requires org.yaml.snakeyaml;
     requires org.hdrhistogram.HdrHistogram;
-
+    requires org.jline;
+    requires bsh;
+    requires org.slf4j;
+    requires com.sleepycat.je;
+    requires org.jdbm;
+    
     exports org.jpos.iso.packager;
     exports org.jpos.iso.validator;
     exports org.jpos.q2;
@@ -34,5 +39,6 @@ module org.jpos.jpos {
     exports org.jpos.core;
     exports org.jpos.core.handlers.exception;
     exports org.jpos.rc;
-}
 
+    uses org.jpos.core.EnvironmentProvider;
+}
