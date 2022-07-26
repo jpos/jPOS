@@ -65,12 +65,6 @@ child element.
 
 [NOTE]
 ====
-While `GenericSSLSocketFactory` can be used to demonstrate SSL support
-in jPOS, production-grade installations should consider it just
-a reference/sample implementation. It uses `${user.home}/.keystore`
-with a default password, so *at the very least* you
-want to override its +getPassword()+ method.
-
 For backward compatibility, we also have a `SunJSSESocketFactory` implementation
 that uses `com.sun.net.ssl.internal.ssl.Provider`.
 ====
