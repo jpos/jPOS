@@ -47,6 +47,10 @@ public class BcdPrefixer implements Prefixer
      * A length prefixer for up to 99999 chars. The length is encoded with 5 BCD digits.
      */
     public static final BcdPrefixer LLLLL = new BcdPrefixer(5);
+    /**
+    * A length prefixer for up to 999999 chars. The length is encoded with 6 BCD digits.
+    */
+    public static final BcdPrefixer LLLLLL = new BcdPrefixer(6);
 
     /** The number of digits allowed to express the length */
     private int nDigits;
