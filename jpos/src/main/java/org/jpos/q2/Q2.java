@@ -1038,6 +1038,16 @@ public class Q2 implements FileFilter, Runnable {
     public boolean isDisableDynamicClassloader() {
         return disableDynamicClassloader;
     }
+
+    public void deployTemplate (String template, String filename, String prefix)
+      throws IOException, JDOMException, GeneralSecurityException, ISOException, NullPointerException {
+        if (template.startsWith("jar:")) {
+            deployResourceTemplate(template.substring(4), filename, prefix);
+        } else {
+            deployFileTemplate(template, filename, prefix);
+        }
+    }
+
     public static class QEntry {
         long deployed;
         ObjectInstance instance;
@@ -1105,6 +1115,26 @@ public class Q2 implements FileFilter, Runnable {
             fow.close();
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format("Unable to write pid-file (%s)", pidFile), e);
+        }
+    }
+
+    private void deployResourceTemplate (String resource, String filename, String prefix)
+      throws IOException, JDOMException, GeneralSecurityException, ISOException {
+        SAXBuilder builder = new SAXBuilder();
+        try (InputStream is = loader.getResourceAsStream(resource)) {
+            Objects.requireNonNull(is, "resource " + resource + " not present");
+            String s = new String(is.readAllBytes()).replaceAll("__PREFIX__", prefix);
+            Document doc = builder.build(new ByteArrayInputStream(s.getBytes()));
+            deployElement (doc.getRootElement(), filename, false, true);
+        }
+    }
+
+    private void deployFileTemplate (String resource, String filename, String prefix) throws IOException, JDOMException, ISOException, GeneralSecurityException {
+        SAXBuilder builder = new SAXBuilder();
+        try (InputStream is = new FileInputStream(resource)) {
+            String s = new String(is.readAllBytes()).replaceAll("__PREFIX__", prefix);
+            Document doc = builder.build(new ByteArrayInputStream(s.getBytes()));
+            deployElement(doc.getRootElement(), filename, false, true);
         }
     }
 
@@ -1196,7 +1226,7 @@ public class Q2 implements FileFilter, Runnable {
         }
     }
     private void deployResource(String resource)
-      throws IOException, SAXException, JDOMException, GeneralSecurityException, ISOException
+      throws IOException, JDOMException, GeneralSecurityException, ISOException
     {
         SAXBuilder builder = new SAXBuilder();
         try (InputStream source = getClass().getClassLoader().getResourceAsStream(resource)) {
@@ -1204,4 +1234,5 @@ public class Q2 implements FileFilter, Runnable {
             deployElement (doc.getRootElement(), resource.substring(DEPLOY_PREFIX.length()), false,true);
         }
     }
+
 }
