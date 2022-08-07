@@ -24,7 +24,9 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.Environment;
 import org.jpos.core.XmlConfigurable;
 import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOUtil;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.QFactory;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -38,13 +40,19 @@ public class TemplateDeployer extends QBeanSupport implements XmlConfigurable {
             try {
                 String resource = Environment.get(e.getAttributeValue("resource"));
                 String filename = Environment.get(e.getAttributeValue("filename"));
-                String prefix = Environment.get(e.getAttributeValue("prefix"));
-                getServer().deployTemplate(resource, filename, prefix);
+                if (QFactory.isEnabled(e)) {
+                    String prefix = Environment.get(e.getTextTrim());
+                    String[] ss = ISOUtil.commaDecode(prefix);
+                    for (String s : ss) {
+                        s = s.trim();
+                        getServer().deployTemplate(resource, filename, s);
+                    }
+                } else
+                    getLog().warn("%s (%s) not enabled".formatted(resource, filename));
             } catch (Exception ex) {
                 getLog().error(ex);
             }
         }
-
     }
 
     @Override
