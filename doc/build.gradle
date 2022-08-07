@@ -55,7 +55,7 @@ task createHtml(type: DocbookHtml) {
 
 task viewHtml (dependsOn: createHtml, description: 'Open HTML docbook outout in default browser', group: 'Toolchain') {
   doLast {
-    Class.forName("java.awt.Desktop").newInstance().browse(
+    java.awt.Desktop.getDesktop().browse(
         new File("${buildDir}/docbook/html", 'master.html').toURI())
   }
 }
@@ -63,7 +63,7 @@ task viewHtml (dependsOn: createHtml, description: 'Open HTML docbook outout in 
 
 task viewPdf (dependsOn: createPdf , description: 'Open PDF docbook outout in default viewer', group: 'Toolchain') {
   doLast {
-    Class.forName("java.awt.Desktop").newInstance().browse(
+    java.awt.Desktop.getDesktop().browse(
         new File("${buildDir}/docbook/pdf", this.project.rootProject.name + '.pdf').toURI())
   }
 }

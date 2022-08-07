@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 
 repositories {
     mavenCentral()
-    maven { url 'http://repository.sonatype.org/content/groups/public' }
+    maven { url 'https://repository.sonatype.org/content/groups/public' }
     mavenLocal()
 }
 
@@ -11,8 +11,8 @@ targetCompatibility = 1.8
 
 
 dependencies {
-    compile localGroovy()
-    compile 'xerces:xercesImpl:2.11.0',
+    implementation localGroovy()
+    implementation 'xerces:xercesImpl:2.11.0',
             'xml-resolver:xml-resolver:1.2',
             'saxon:saxon:6.5.3',
             'org.apache.xmlgraphics:fop:1.1',
