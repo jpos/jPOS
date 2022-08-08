@@ -39,16 +39,16 @@ public class TemplateDeployer extends QBeanSupport implements XmlConfigurable {
         for (Element e : config.getChildren("template")) {
             try {
                 String resource = Environment.get(e.getAttributeValue("resource"));
-                String filename = Environment.get(e.getAttributeValue("filename"));
+                String descriptorPrefix = Environment.get(e.getAttributeValue("descriptor-prefix"));
                 if (QFactory.isEnabled(e)) {
                     String prefix = Environment.get(e.getTextTrim());
                     String[] ss = ISOUtil.commaDecode(prefix);
                     for (String s : ss) {
                         s = s.trim();
-                        getServer().deployTemplate(resource, filename, s);
+                        getServer().deployTemplate(resource, "%s_%s.xml".formatted(descriptorPrefix, s), s);
                     }
                 } else
-                    getLog().warn("%s (%s) not enabled".formatted(resource, filename));
+                    getLog().warn("%s (%s) not enabled".formatted(resource, descriptorPrefix));
             } catch (Exception ex) {
                 getLog().error(ex);
             }
