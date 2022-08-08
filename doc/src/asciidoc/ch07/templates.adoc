@@ -7,7 +7,7 @@ In order to simplify its configuration Q2 supports `templates` that can be launc
 or programmatically using Q2's `deployTemplate` method.
 
 A template is identical to a regular QBean XML descriptor, and can be placed anywhere in the
-filesystem, or classpath (including dynamic classpath) that has a special keyboard called `__PREFIX__`
+filesystem, or classpath (including dynamic classpath) that has a special keyword called `__PREFIX__`
 that are replaced at deploy time.
 
 Q2's `deployTemplate` method has the following signature:
