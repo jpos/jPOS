@@ -1,0 +1,159 @@
+[[templates]]
+== QBean descriptor templates
+
+Typical jPOS applications have many similar servers, muxes, and channels, sometimes hundreds of them.
+
+In order to simplify its configuration Q2 supports `templates` that can be launched from a template deployer,
+or programmatically using Q2's `deployTemplate` method.
+
+A template is identical to a regular QBean XML descriptor, and can be placed anywhere in the
+filesystem, or classpath (including dynamic classpath) that has a special keyword called `__PREFIX__`
+that are replaced at deploy time.
+
+Q2's `deployTemplate` method has the following signature:
+
+[source,java]
+=============
+ deployTemplate(String resource, String filename, String prefix);
+=============
+
+- `resource` is the resource location (e.g.: `templates/channel.xml`). If the resource starts with `jar:`, Q2 fetchs it 
+  from the classpath (e.g.: `jar:META-INF/q2/templates/channel.xml`).
+- `filename` is the QBean descriptor filename, e.g.: `10_acme_channel.xml`
+- `prefix` is the Environment prefix (see below).
+
+Imagine you have an environment (`cfg/default.yml`) file that looks like this:
+
+
+[source,yml]
+----
+    acme:
+        host: 192.168.1.1
+        port: 8000
+    emca:
+        host: 192.168.1.2
+        port: 8001
+----
+
+In a regular deployment, you could have two channel configurations like this:
+
+[source,xml]
+----
+    10_channel_acme.xml
+
+    <channel-adaptor name="acme-channel-adaptor" ...>
+      <channel class="${acme.channel}" packager=...>
+        <property name="host" value="${acme.host}" />
+        <property name="port" value="${acme.port}" />
+        ...
+        ...
+      </channel>
+      <in>acme-send</in>
+      <out>acme-receive</out>
+    </channel-adaptor>
+
+    10_channel_emca.xml
+
+    <channel-adaptor name="emca-channel-adaptor" ...>
+      <channel class="${emca.channel}" packager=...>
+        <property name="host" value="${emca.host}" />
+        <property name="port" value="${emca.port}" />
+        ...
+        ...
+      </channel>
+      <in>emca-send</in>
+      <out>emca-receive</out>
+    </channel-adaptor>
+----
+
+With templates, you can have a single template like this somewhere in your
+filesystem or classpath (say `templates/channel.xml`).
+
+[source,xml]
+----
+<channel-adaptor name="__PREFIX__-channel-adaptor" 
+    enabled="${__PREFIX__.enabled:false}"
+    class="org.jpos.q2.iso.ChannelAdaptor" 
+    logger="${__PREFIX__.logger:Q2}">
+ <channel class="${__PREFIX__.channel}" 
+         logger="${__PREFIX__.logger:Q2}" 
+       packager="${__PREFIX__.packager:org.jpos.iso.packager.GenericPackager}">
+  <property name="host" value="${__PREFIX__.host}" />
+  <property name="port" value="${__PREFIX__.port}" />
+  <property name="header" value="${__PREFIX__.header}" />
+  <property name="connect-timeout" value="${__PREFIX__.timeout:5000}" />
+  <property name="packager-config" value="${__PREFIX__.packagerConfig}" />
+ </channel>
+ <in>__PREFIX__-send</in>
+ <out>__PREFIX__-receive</out>
+ <reconnect-delay>${__PREFIX__.reconnect:10000}</reconnect-delay>
+ <wait-for-workers-on-stop>${__PREFIX__.wait:yes}</wait-for-workers-on-stop>
+</channel-adaptor>
+----
+
+and perhaps a `mux.xml` connected to it:
+
+[source,xml]
+----
+<mux name="__PREFIX__" class="org.jpos.q2.iso.QMUX" 
+    enabled="${__PREFIX__.enabled:false}"
+    logger="${__PREFIX__.logger:Q2}" realm="__PREFIX__">
+  <key>${__PREFIX__.mux.key:41,11}</key>
+
+ <in>__PREFIX__-receive</in>
+ <out>__PREFIX__-send</out>
+
+ <ready>__PREFIX__-channel.ready</ready>
+</mux>
+----
+
+[source,xml]
+----
+<templates>
+    <template resource="templates/channel.xml" descriptor-prefix="10_channel_">
+        acme,emca
+    </template>
+    <template resource="templates/mux.xml" descriptor-prefix="20_mux_">
+        acme,emca
+    </template>
+</templates>
+----
+
+[mermaid,templates,png,aligh=center]
+----
+
+flowchart LR
+    channel.xml --> 10_channel_acme.xml
+    channel.xml --> 10_channel_emca.xml
+
+    mux.xml --> 20_mux_acme.xml
+    mux.xml --> 20_mux_emca.xml
+----
+
+The special text `__PREFIX__` is replaced by Q2 in each file using the prefix `acme` and `emca`,
+so the properties:
+
+[source,xml]
+----
+  <property name="host" value="${__PREFIX__.host}" />
+  <property name="port" value="${__PREFIX__.port}" />
+----
+
+gets converted to
+
+[source,xml]
+----
+  <property name="host" value="${acme.host}" />
+  <property name="port" value="${acme.port}" />
+----
+
+on the `10_channel_acme.xml` and
+
+[source,xml]
+----
+  <property name="host" value="${acme.host}" />
+  <property name="port" value="${acme.port}" />
+----
+
+on `10_channel_emca.xml`.
+

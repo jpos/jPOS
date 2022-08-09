@@ -16,6 +16,7 @@ module org.jpos.jpos {
     
     exports org.jpos.iso.packager;
     exports org.jpos.iso.validator;
+    exports org.jpos.iso;
     exports org.jpos.q2;
     exports org.jpos.q2.cli;
     exports org.jpos.q2.install;
