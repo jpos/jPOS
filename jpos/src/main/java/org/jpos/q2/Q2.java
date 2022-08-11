@@ -306,7 +306,7 @@ public class Q2 implements FileFilter, Runnable {
             q2Thread.interrupt ();
             if (join) {
                 try {
-                    q2Thread.join();
+                    q2Thread.join(SHUTDOWN_TIMEOUT);
                     log.info ("shutdown done");
                 } catch (InterruptedException e) {
                     log.warn (e);
