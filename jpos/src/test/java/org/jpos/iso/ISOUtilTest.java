@@ -45,10 +45,17 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ISOUtilTest {
     final String lineSep = System.getProperty("line.separator");
+
+    @BeforeAll
+    static void cleanCache() {
+        ISOUtil.cleanBinCache();
+        System.setProperty("jpos.util.bin.length", "40000100");
+    }
 
     @Test
     public void testAsciiToEbcdic() throws Throwable {
@@ -4384,6 +4391,15 @@ public class ISOUtilTest {
         assertThrows(NullPointerException.class, () -> {
             ISOUtil.protect(null);
         });
+    }
+
+    @Test
+    void testProtectWithBin8() throws Exception {
+        ISOUtil.cleanBinCache();
+        System.setProperty("jpos.util.bin.length", "40000100");
+
+        assertEquals("410001______0101", ISOUtil.protect("4100010000000101", '_'), "Should mask a PAN with a bin of 6 digits");
+        assertEquals("40000100____0101", ISOUtil.protect("4000010000000101", '_'), "Should mask a PAN with a bin of 8 digits");
     }
 
     @Test
