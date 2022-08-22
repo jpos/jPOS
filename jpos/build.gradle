@@ -21,7 +21,7 @@ extraJavaModuleInfo {
     automaticModule ('jdom2-2.0.6.jar', 'org.jdom2')
     automaticModule ('javatuples-1.2.jar', 'org.javatuples')
     automaticModule ('bsh-2.0b6.jar', 'bsh')
-    automaticModule ('commons-cli-1.4.jar', 'org.apache.commons.cli')
+    automaticModule ('commons-cli-1.5.0.jar', 'org.apache.commons.cli')
     automaticModule ('je-18.3.12.jar', 'com.sleepycat.je')
     automaticModule ('jdbm-1.0.jar', 'org.jdbm')
     automaticModule ('HdrHistogram-2.1.12.jar', 'org.hdrhistogram.HdrHistogram')

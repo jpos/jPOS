@@ -3,7 +3,7 @@ ext {
         jdom: 'org.jdom:jdom2:2.0.6.1',
         jdbm: 'jdbm:jdbm:1.0',
         sleepycat_je: 'com.sleepycat:je:18.3.12',
-        commons_cli: 'commons-cli:commons-cli:1.4',
+        commons_cli: 'commons-cli:commons-cli:1.5.0',
         commons_lang3: 'org.apache.commons:commons-lang3:3.11',
         jline: 'org.jline:jline:3.21.0',
         beanshell: 'org.apache-extras.beanshell:bsh:2.0b6',
