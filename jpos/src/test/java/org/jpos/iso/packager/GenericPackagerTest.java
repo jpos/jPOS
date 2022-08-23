@@ -18,20 +18,20 @@
 
 package org.jpos.iso.packager;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
-import static org.apache.commons.lang3.JavaVersion.JAVA_10;
-import static org.apache.commons.lang3.JavaVersion.JAVA_14;
-import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.util.EmptyStackException;
-
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
@@ -42,6 +42,8 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockserver.integration.ClientAndServer;
+import org.mockserver.verify.VerificationTimes;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -549,5 +551,21 @@ public class GenericPackagerTest {
             assertNull(genericSubFieldPackager.getLogger(), "(GenericSubFieldPackager) genericSubFieldPackager.getLogger()");
             assertNull(genericSubFieldPackager.getRealm(), "(GenericSubFieldPackager) genericSubFieldPackager.getRealm()");
         }
+    }
+
+    @Test
+    public void testXXEAttach() throws ISOException {
+        ClientAndServer mockServer = startClientAndServer(1080);
+
+        String xeeAttackXml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+            + "<!DOCTYPE foo [\n"
+            + "  <!ELEMENT foo ANY >\n"
+            + "  <!ENTITY xxe SYSTEM \"http://localhost:1080/xxe\" >]>\n"
+            + "<foo>&xxe;</foo>";
+        new GenericPackager().readFile(new ByteArrayInputStream(xeeAttackXml.getBytes()));
+        mockServer.verify(
+            request().withPath("/xxe"),
+            VerificationTimes.exactly(0)
+        );
     }
 }

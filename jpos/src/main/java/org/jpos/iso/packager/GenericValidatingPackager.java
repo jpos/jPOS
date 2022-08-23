@@ -102,6 +102,9 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
                     System.getProperty( "sax.parser",
                     "org.apache.crimson.parser.XMLReaderImpl"));
             reader.setFeature ("http://xml.org/sax/features/validation", true);
+            reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             GenericValidatorContentHandler handler = new GenericValidatorContentHandler();
             reader.setContentHandler(handler);
             reader.setErrorHandler(handler);

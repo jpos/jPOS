@@ -18,6 +18,9 @@
 
 package org.jpos.iso.packager;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,10 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
-import static org.apache.commons.lang3.JavaVersion.JAVA_10;
-import static org.apache.commons.lang3.JavaVersion.JAVA_14;
-import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -36,7 +37,6 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.jpos.iso.ISOBaseValidator;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldValidator;
@@ -51,6 +51,8 @@ import org.jpos.iso.validator.MSGTEST02;
 import org.jpos.iso.validator.TEST0100;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockserver.integration.ClientAndServer;
+import org.mockserver.verify.VerificationTimes;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -870,5 +872,22 @@ public class GenericValidatingPackagerTest {
                 assertEquals("Cannot invoke \"org.jpos.iso.ISOBaseValidator.validate(org.jpos.iso.ISOComponent)\" because \"mval\" is null", ex.getMessage(), "ex.getMessage()");
             }
         }
+    }
+
+    @Test
+    public void testXXEAttach() throws ISOException {
+        ClientAndServer mockServer = startClientAndServer(1081);
+
+        String xeeAttackXml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+            + "<!DOCTYPE foo [\n"
+            + "  <!ELEMENT foo ANY >\n"
+            + "  <!ENTITY xxe SYSTEM \"http://localhost:1081/xxe\" >]>\n"
+            + "<foo>&xxe;</foo>";
+        new GenericValidatingPackager().readFile(new ByteArrayInputStream(xeeAttackXml.getBytes()));
+
+        mockServer.verify(
+            request().withPath("/xxe"),
+            VerificationTimes.exactly(0)
+        );
     }
 }

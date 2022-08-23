@@ -39,6 +39,7 @@ dependencies {
         exclude(module: 'hamcrest-core')
     }
     testImplementation libraries.mockito_jupiter
+    testImplementation libraries.mockserver
 
     //  JSONPackager on hold
     //    compile (libraries.jsonsimple) {
