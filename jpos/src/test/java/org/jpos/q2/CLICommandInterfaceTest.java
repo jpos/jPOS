@@ -18,13 +18,15 @@
 
 package org.jpos.q2;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -44,22 +46,21 @@ public class CLICommandInterfaceTest {
     @Test
     public void testparseCommand_LineIsNull() throws IOException {
         String[] args = cliCommandInterface.parseCommand(null);
-        assertThat(args).isEmpty();
+        assertTrue(args == null || args.length == 0);
     }
 
     @Test
     public void testparseCommand_LineContainsSpacesOnly() throws IOException {
         String line = "     ";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(args).isEmpty();
+        assertTrue(args == null || args.length == 0);
     }
 
     @Test
     public void testparseCommand_NoQuotes() throws IOException {
         String line = "arg1 arg2 arg3";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(Arrays.asList(args))
-                .containsSequence("arg1", "arg2", "arg3");
+        assertArrayEquals(args, new String[] { "arg1", "arg2", "arg3"});
     }
 
     @Test
@@ -67,8 +68,7 @@ public class CLICommandInterfaceTest {
             throws IOException {
         String line = "arg1 'arg2' arg3";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(Arrays.asList(args))
-                .containsSequence("arg1", "arg2", "arg3");
+        assertArrayEquals(args, new String[] { "arg1", "arg2", "arg3"});
     }
 
     @Test
@@ -76,8 +76,7 @@ public class CLICommandInterfaceTest {
             throws IOException {
         String line = "arg1 'arg2 with spaces within' arg3";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(Arrays.asList(args)).containsSequence("arg1",
-                "arg2 with spaces within", "arg3");
+        assertArrayEquals(args, new String[] { "arg1", "arg2 with spaces within", "arg3"});
     }
 
     @Test
@@ -85,8 +84,7 @@ public class CLICommandInterfaceTest {
             throws IOException {
         String line = "arg1 'arg2 with spaces and \"double quotes\" within' arg3";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(Arrays.asList(args)).containsSequence("arg1",
-                "arg2 with spaces and \"double quotes\" within", "arg3");
+        assertArrayEquals(args, new String[] { "arg1", "arg2 with spaces and \"double quotes\" within", "arg3"});
     }
 
     @Test
@@ -94,8 +92,7 @@ public class CLICommandInterfaceTest {
             throws IOException {
         String line = "arg1 \"arg2\" arg3";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(Arrays.asList(args))
-                .containsSequence("arg1", "arg2", "arg3");
+        assertArrayEquals(args, new String[] { "arg1", "arg2", "arg3"});
     }
 
     @Test
@@ -103,8 +100,7 @@ public class CLICommandInterfaceTest {
             throws IOException {
         String line = "arg1 \"arg2 with spaces within\" arg3";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(Arrays.asList(args)).containsSequence("arg1",
-                "arg2 with spaces within", "arg3");
+        assertArrayEquals(args, new String[] { "arg1", "arg2 with spaces within", "arg3"});
     }
 
     @Test
@@ -112,8 +108,7 @@ public class CLICommandInterfaceTest {
             throws IOException {
         String line = "arg1 \"arg2 with spaces and 'simple quotes' within\" arg3";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(Arrays.asList(args)).containsSequence("arg1",
-                "arg2 with spaces and 'simple quotes' within", "arg3");
+        assertArrayEquals(args, new String[] { "arg1", "arg2 with spaces and 'simple quotes' within", "arg3"});
     }
 
     @Test
@@ -121,8 +116,7 @@ public class CLICommandInterfaceTest {
             throws IOException {
         String line = "arg1 '' arg3";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(Arrays.asList(args))
-                .containsSequence("arg1", "", "arg3");
+        assertArrayEquals(args, new String[] { "arg1", "", "arg3"});
     }
 
     @Test
@@ -130,8 +124,7 @@ public class CLICommandInterfaceTest {
             throws IOException {
         String line = "arg1 \"\" arg3";
         String[] args = cliCommandInterface.parseCommand(line);
-        assertThat(Arrays.asList(args))
-                .containsSequence("arg1", "", "arg3");
+        assertArrayEquals(args, new String[] { "arg1", "", "arg3"});
     }
     
 }

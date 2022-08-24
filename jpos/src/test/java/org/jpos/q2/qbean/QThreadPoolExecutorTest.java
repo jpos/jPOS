@@ -18,10 +18,7 @@
 
 package org.jpos.q2.qbean;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -147,10 +144,9 @@ public class QThreadPoolExecutorTest {
 
         qbean.initService();
 
-        assertThat(qbean.getExecSrvType()).isEqualTo("fixed");
-        assertThat(qbean.getInitialCorePoolSize()).isEqualTo(10);
-        assertThat(qbean.getTerminationTimer()).isEqualTo(
-                QThreadPoolExecutor.DEFAULT_TERMINATION_TIMER);
+        assertEquals(qbean.getExecSrvType(), "fixed");
+        assertEquals(qbean.getInitialCorePoolSize(), 10);
+        assertEquals(qbean.getTerminationTimer(), QThreadPoolExecutor.DEFAULT_TERMINATION_TIMER);
     }
 
     @Test
@@ -162,10 +158,11 @@ public class QThreadPoolExecutorTest {
 
         qbean.initService();
 
-        assertThat(qbean.getExecSrvType()).isEqualTo("cached");
-        assertThat(qbean.getInitialCorePoolSize()).isEqualTo(0);
-        assertThat(qbean.getTerminationTimer()).isEqualTo(
-                QThreadPoolExecutor.DEFAULT_TERMINATION_TIMER);
+        assertEquals(qbean.getExecSrvType(), "cached");
+        assertEquals(qbean.getInitialCorePoolSize(), 0);
+        assertEquals(qbean.getTerminationTimer(),
+          QThreadPoolExecutor.DEFAULT_TERMINATION_TIMER
+        );
     }
 
     @Test
@@ -178,10 +175,9 @@ public class QThreadPoolExecutorTest {
 
         qbean.initService();
 
-        assertThat(qbean.getExecSrvType()).isEqualTo("cached");
-        assertThat(qbean.getInitialCorePoolSize()).isEqualTo(100);
-        assertThat(qbean.getTerminationTimer()).isEqualTo(
-                QThreadPoolExecutor.DEFAULT_TERMINATION_TIMER);
+        assertEquals (qbean.getExecSrvType(), "cached");
+        assertEquals (qbean.getInitialCorePoolSize(), 100);
+        assertEquals (qbean.getTerminationTimer(), QThreadPoolExecutor.DEFAULT_TERMINATION_TIMER);
     }
 
     @Test
@@ -193,10 +189,9 @@ public class QThreadPoolExecutorTest {
 
         qbean.initService();
 
-        assertThat(qbean.getExecSrvType()).isEqualTo("scheduled");
-        assertThat(qbean.getInitialCorePoolSize()).isEqualTo(15);
-        assertThat(qbean.getTerminationTimer()).isEqualTo(
-                QThreadPoolExecutor.DEFAULT_TERMINATION_TIMER);
+        assertEquals (qbean.getExecSrvType(), "scheduled");
+        assertEquals (qbean.getInitialCorePoolSize(), 15);
+        assertEquals (qbean.getTerminationTimer(), QThreadPoolExecutor.DEFAULT_TERMINATION_TIMER);
     }
 
     @Test
@@ -209,9 +204,9 @@ public class QThreadPoolExecutorTest {
 
         qbean.initService();
 
-        assertThat(qbean.getExecSrvType()).isEqualTo("fixed");
-        assertThat(qbean.getInitialCorePoolSize()).isEqualTo(10);
-        assertThat(qbean.getTerminationTimer()).isEqualTo(30);
+        assertEquals(qbean.getExecSrvType(), "fixed");
+        assertEquals(qbean.getInitialCorePoolSize(), 10);
+        assertEquals(qbean.getTerminationTimer(), 30);
     }
 
     @Test
@@ -225,7 +220,7 @@ public class QThreadPoolExecutorTest {
             qbean.initService();
             fail("ConfigurationException was expected");
         } catch (ConfigurationException e) {
-            assertThat(e.getMessage().contains(
+            assertTrue (e.getMessage().contains(
                     QThreadPoolExecutor.XML_CONFIG_ATTR__EXEC_SRV_TYPE));
         }
 
@@ -242,7 +237,7 @@ public class QThreadPoolExecutorTest {
             qbean.initService();
             fail("ConfigurationException was expected");
         } catch (ConfigurationException e) {
-            assertThat(e.getMessage().contains(
+            assertTrue(e.getMessage().contains(
                     QThreadPoolExecutor.XML_CONFIG_ATTR__EXEC_SRV_TYPE));
         }
 
@@ -259,8 +254,8 @@ public class QThreadPoolExecutorTest {
             qbean.initService();
             fail("ConfigurationException was expected");
         } catch (ConfigurationException e) {
-            assertThat(e.getMessage().contains(
-                    QThreadPoolExecutor.XML_CONFIG_ATTR__EXEC_SRV_COREPOOLSIZE));
+            assertTrue(e.getMessage().contains(
+                    QThreadPoolExecutor.XML_CONFIG_ATTR__EXEC_SRV_TYPE));
         }
 
     }
@@ -292,7 +287,7 @@ public class QThreadPoolExecutorTest {
         ThreadPoolExecutor executorService = QThreadPoolExecutor
                 .getThreadPoolExecutor(QBEAN_DEFAULT_NAME,
                         ThreadPoolExecutor.class);
-        assertThat(executorService.getCorePoolSize()).isEqualTo(2);
+        assertEquals(executorService.getCorePoolSize(), 2);
     }
 
     @Test
@@ -305,7 +300,7 @@ public class QThreadPoolExecutorTest {
         ThreadPoolExecutor executorService = QThreadPoolExecutor
                 .getThreadPoolExecutor(QBEAN_DEFAULT_NAME,
                         ThreadPoolExecutor.class);
-        assertThat(executorService.getCorePoolSize()).isEqualTo(3);
+        assertEquals(executorService.getCorePoolSize(), 3);
     }
 
     @Test
@@ -318,7 +313,7 @@ public class QThreadPoolExecutorTest {
         ScheduledThreadPoolExecutor executorService = QThreadPoolExecutor
                 .getThreadPoolExecutor(QBEAN_DEFAULT_NAME,
                         ScheduledThreadPoolExecutor.class);
-        assertThat(executorService.getCorePoolSize()).isEqualTo(4);
+        assertEquals(executorService.getCorePoolSize(), 4);
     }
 
     @Test
@@ -329,7 +324,7 @@ public class QThreadPoolExecutorTest {
             qbean.startService();
             fail("An exception was expected");
         } catch (Exception e) {
-            assertThat(e.getMessage().contains("Unable to start service"));
+            assertTrue(e.getMessage().contains("Unable to start service"));
         }
     }
 

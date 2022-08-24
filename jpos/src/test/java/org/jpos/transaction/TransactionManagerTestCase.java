@@ -138,7 +138,7 @@ public class TransactionManagerTestCase {
     public void testTMMaxTime() {
         Context ctx = new Context();
         ctx.log (Caller.info());
-        ctx.put("DELAY-2", 510L);
+        ctx.put("DELAY-2", 550L);
         sp.out(QUEUE_DELAY, ctx);
         String rc = ctx.get("RC", 5000L);
         assertEquals("01", rc);
