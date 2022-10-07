@@ -70,7 +70,9 @@ public class PosCapability extends PosFlags implements Loggeable {
         OFFLINE_MANUAL_VERIFICATION          (1 << 8, "Offline manual verification"),
         OFFLINE_BIOGRAPHICS                  (1 << 9, "Offline biographics"),
         ACCOUNT_BASED_DIGITAL_SIGNATURE      (1 << 10, "Account based digital signature"),
-        PUBLIC_KEY_BASED_DIGITAL_SIGNATURE   (1 << 11, "Public key based digital signature");
+        PUBLIC_KEY_BASED_DIGITAL_SIGNATURE   (1 << 11, "Public key based digital signature"),
+        MOTO_ECOMMERCE                       (1 << 12, "Mail/Telephone/Electronic Commerce verification method"),
+        ECOMMERCE_AUTHENTICATION             (1 << 13, "Electronic Commerce Authenticated using a approved protocol");
 
         private int val;
         private String description;

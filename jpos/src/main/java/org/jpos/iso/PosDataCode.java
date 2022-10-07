@@ -69,7 +69,9 @@ public class PosDataCode extends PosFlags implements Loggeable {
         OFFLINE_MANUAL_VERIFICATION          (1 << 8, "Offline manual verification"),
         OFFLINE_BIOGRAPHICS                  (1 << 9, "Offline biographics"),
         ACCOUNT_BASED_DIGITAL_SIGNATURE      (1 << 10, "Account based digital signature"),
-        PUBLIC_KEY_BASED_DIGITAL_SIGNATURE   (1 << 11, "Public key based digital signature");
+        PUBLIC_KEY_BASED_DIGITAL_SIGNATURE   (1 << 11, "Public key based digital signature"),
+        MOTO_ECOMMERCE                       (1 << 12, "Mail/Telephone/Electronic Commerce verification method"),
+        ECOMMERCE_AUTHENTICATION             (1 << 13, "Electronic Commerce Authenticated using a approved protocol");
 
         private int val;
         private String description;
@@ -103,7 +105,11 @@ public class PosDataCode extends PosFlags implements Loggeable {
         ATM_ON_BANK             (1 << 9, "ATM on bank premises"),
         ATM_OFF_BANK            (1 << 10, "ATM off bank premises"),
         DEFERRED_TRANSACTION    (1 << 11, "Deferred transaction"),
-        INSTALLMENT_TRANSACTION (1 << 12, "Installment transaction");
+        INSTALLMENT_TRANSACTION (1 << 12, "Installment transaction"),
+        SUBSEQUENT              (1 << 13, "Subsequent transaction"),
+        REAUTHORIZATION         (1 << 14, "Re-authorization"),
+        RESUBMISSION            (1 << 15, "Resubmits transaction"),
+        NON_SECURE_ECOMMERCE    (1 << 16, "Electronic commerce transaction that has no data protection");
 
         private int val;
         private String description;
