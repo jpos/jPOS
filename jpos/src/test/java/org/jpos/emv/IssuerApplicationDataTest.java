@@ -18,11 +18,13 @@
 
 package org.jpos.emv;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.jpos.emv.IssuerApplicationData.Format;
+import org.jpos.emv.cryptogram.MChipCryptogram;
+import org.jpos.emv.cryptogram.CryptogramSpec;
+import org.jpos.emv.cryptogram.VISACryptogram;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IssuerApplicationDataTest {
 
@@ -106,11 +108,11 @@ public class IssuerApplicationDataTest {
     @Test
     public void testVIS15_2() {
         IssuerApplicationData iad = new IssuerApplicationData(
-                "1F43010020000000000000000007717300000000000000000000000000000000");
+                "1F22010020000000000000000007717300000000000000000000000000000000");
         iad.dump(System.out, "");
         assertEquals(Format.VIS, iad.getFormat());
         assertEquals("01", iad.getDerivationKeyIndex(), "KDI matches.");
-        assertEquals("43", iad.getCryptogramVersionNumber(), "CVN matches.");
+        assertEquals("22", iad.getCryptogramVersionNumber(), "CVN matches.");
         assertEquals("0020000000", iad.getCardVerificationResults(), "CVR matches.");
         assertEquals("000000000007717300000000000000000000000000000000", iad.getIssuerDiscretionaryData(), "CVN matches.");
     }
@@ -136,5 +138,37 @@ public class IssuerApplicationDataTest {
         assertEquals("06", iad.getDerivationKeyIndex(), "KDI matches.");        
         assertEquals("A231C00200", iad.getCardVerificationResults(), "CVR matches.");
         assertEquals("110601010000000000000000000000", iad.getIssuerDiscretionaryData(), "CVN matches.");
-    }       
+    }
+
+    @Test
+    public void testVISA() {
+        CryptogramSpec spec = new IssuerApplicationData("06010A03000000").getCryptogramSpec();
+        assertTrue(spec instanceof VISACryptogram, "Cryptogram Spec should be VISA");
+
+        spec = new IssuerApplicationData("06011203000000").getCryptogramSpec();
+        assertTrue(spec instanceof VISACryptogram, "Cryptogram Spec should be VISA");
+
+        spec = new IssuerApplicationData("1F22010300000000000000000000000000000000000000000000000000000000").getCryptogramSpec();
+        assertTrue(spec instanceof VISACryptogram, "Cryptogram Spec should be VISA");
+    }
+
+    @Test
+    public void testMChip() {
+        CryptogramSpec spec = new IssuerApplicationData("0110608003220000B6A400000000000000FF").getCryptogramSpec();
+        assertTrue(spec instanceof MChipCryptogram, "Cryptogram Spec should be M/Chip");
+
+        spec = new IssuerApplicationData("0114020000044000DAC10000000000000000").getCryptogramSpec();
+        assertTrue(spec instanceof MChipCryptogram, "Cryptogram Spec should be M/Chip");
+
+    }
+
+    @Test
+    public void testCryptogramSpecNotSupported() {
+        assertThrows(Exception.class,
+                () -> new IssuerApplicationData(
+                        "0F0000000000000000000000000000000F000000000000000000000000000000").getCryptogramSpec());
+
+    }
+
+
 }
