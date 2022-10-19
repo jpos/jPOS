@@ -18,11 +18,15 @@
 
 package org.jpos.emv;
 
-import java.io.PrintStream;
-import java.util.Objects;
-
+import org.jpos.emv.cryptogram.MChipCryptogram;
+import org.jpos.emv.cryptogram.CryptogramSpec;
+import org.jpos.emv.cryptogram.VISACryptogram;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
+
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Issuer Application Data parser (IAD, tag 0x9F10) with support for the following formats:
@@ -40,9 +44,11 @@ public final class IssuerApplicationData implements Loggeable {
     private String idd;
     private String dac;
     private String counters;
+    private String lastOnlineATC;
     private Format format;
     private String cci;
 
+    private CryptogramSpec cryptogramSpec = null;
     /**
      * 
      * @param hexIAD Hexadecimal (String) representation of the IAD.
@@ -58,16 +64,22 @@ public final class IssuerApplicationData implements Loggeable {
 
         format = Format.UNKNOWN;
 
-        if (iad.length() == 36 || iad.length() == 52)
+        int len = iad.length() / 2; // length in bytes
+
+        if (Arrays.asList(18, 20, 26, 28).contains(len)) {
+            //Therefore, the length of the Issuer Application Data is 18 bytes and for 
+            // M/Chip Advance it may be 18, 20, 26, or 28.
             unpackMCHIP(iad);
-        else if (iad.length() == 64 && 
-                iad.startsWith("0F") && iad.substring(32, 34).equals("0F"))
+        } else if (len == 32 && iad.startsWith("0F") && iad.startsWith("0F", 32)) {
+            // EMV_v4.3_Book_3
+            // C7.2 Issuer Application Data for Format Code 'A'
             unpackEMVFormatA(iad);
-        else if ((iad.length() <= 46 && iad.startsWith("06")) || 
-                (iad.length() == 64 && iad.startsWith("1F")))
+        } else if ((len >= 7 && len <= 23) || len == 32) {
+            // IAD Format 0/1/3 or IAD Format 2
             unpackVIS(iad);
-        else
+        } else {
             unpackOther(iad);
+        }
     }
 
     /**
@@ -80,13 +92,29 @@ public final class IssuerApplicationData implements Loggeable {
     }
 
     private void unpackMCHIP(String data) {
-
+        
+        int length = data.length();
+        
         format = Format.M_CHIP;
         dki = data.substring(0, 2);
         cvn = data.substring(2, 4);
+        cryptogramSpec = new MChipCryptogram(cvn);
         cvr = data.substring(4, 16);
         dac = data.substring(16, 20);
-        counters = data.substring(20, 36);        
+
+        //Counters (Plaintext or Encrypted)/Accumulators
+        if (length <= 40) { //20 bytes
+            counters = data.substring(20, 36);
+        } else {
+            counters = data.substring(20, 52);
+        }
+
+        // Last Online ATC (Only for M/Chip Advance)
+        if (length == 40) {
+            lastOnlineATC = data.substring(36, 40);
+        } else if (length == 56) {
+            lastOnlineATC = data.substring(52, 56);
+        }
     }
 
     private void unpackVIS(String iad) {
@@ -108,6 +136,7 @@ public final class IssuerApplicationData implements Loggeable {
             if (iad.length() > 14)
                 idd = iad.substring(13);
         }
+        cryptogramSpec = new VISACryptogram(cvn);
     }
 
     private void unpackEMVFormatA(String data) {
@@ -201,7 +230,14 @@ public final class IssuerApplicationData implements Loggeable {
     public String getIssuerDiscretionaryData() {
         return idd;
     }
+    
+    public String getLastOnlineATC() {
+        return lastOnlineATC;
+    }
 
+    public CryptogramSpec getCryptogramSpec() {
+        return Objects.requireNonNull(cryptogramSpec, "CryptogramSpec not implemented");
+    }
     @Override
     public String toString() {
         return iad;
@@ -233,8 +269,9 @@ public final class IssuerApplicationData implements Loggeable {
             p.printf("%n%sDAC/ICC dynamic number: '%s'", inner, getDAC());            
 
         if (counters != null)
-            p.printf("%n%sPlaintext/Encrypted counters: '%s'", inner, getCounters());            
-
+            p.printf("%n%sPlaintext/Encrypted counters: '%s'", inner, getCounters());
+        if (lastOnlineATC != null)
+            p.printf("%n%sLast ATC Online: '%s'", inner, getLastOnlineATC());
         p.printf("%n%s</iad>%n", indent);  
     }
 
