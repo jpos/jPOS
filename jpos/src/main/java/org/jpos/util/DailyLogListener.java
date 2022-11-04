@@ -71,10 +71,9 @@ public class DailyLogListener extends RotateLogListener{
         maxSize = cfg.getLong("maxsize",DEF_MAXSIZE);
         sleepTime = cfg.getLong("sleeptime", DEF_WIN) * 1000;
 
-        String suffix = cfg.get("suffix", DEF_SUFFIX), prefix = cfg.get("prefix");
-        setSuffix(suffix);
-        setPrefix(prefix);
-        logName = prefix + suffix;
+        setSuffix(cfg.get("suffix", DEF_SUFFIX));
+        setPrefix(cfg.get("prefix"));
+        logName = getPrefix() + getSuffix();
 
 		maxAge = cfg.getLong("maxage", DEF_MAXAGE);
 		if (maxAge > 0) {
