@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 public class TLVMsgTest {
 
     static final int TEST_TAG1      = 0x64;
-    static final int TEST_TAG3      = 0x1fe8;
+    static final int TEST_TAG3      = 0x1f68;
 
     TLVMsg msg;
     TLVList tl;
@@ -108,7 +108,7 @@ public class TLVMsgTest {
     public void testGetTLVEmptyValue2() {
         byte[] value = new byte[0];
         byte[] result = tl.createTLVMsg(TEST_TAG3, value).getTLV();
-        assertArrayEquals(ISOUtil.hex2byte("1FE800"), result);
+        assertArrayEquals(ISOUtil.hex2byte("1F6800"), result);
     }
 
     @Test
