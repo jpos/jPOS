@@ -138,12 +138,11 @@ public class TLVMsg implements Loggeable {
         if (ba[0] == 0x00) {
             // strip byte array if starts with 0x00
             ba = Arrays.copyOfRange(ba, 1, ba.length);
-            if (ba.length == 3 && ba[0] == (byte) 0xDF) // handle three-byte tags
-                return;
         }
 
         int idx = 0;
         do {
+            boolean byteFollows = (idx == 0 && isExtTagByte(ba[idx])) || (idx > 0 && (ba[idx] & 0x80) == 0x80);
             if ((ba[idx] & 0xff) == SKIP_BYTE1) {
                 throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
                         + " cannot contain in any 0x00 byte"
@@ -152,12 +151,11 @@ public class TLVMsg implements Loggeable {
                 throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
                         + " cannot contain in any 0xff byte"
                 );
-            } else if (isExtTagByte(ba[idx])) {
-                if (ba.length <= idx + 1)
-                    throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
-                            + " shall contain subsequent byte"
-                    );
-            } else if (idx+1  < ba.length) {
+            } else if (byteFollows && ba.length <= idx + 1) {
+                throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
+                        + " shall contain subsequent byte"
+                );
+            } else if (!byteFollows && idx+1 < ba.length) {
                 throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
                         + " cannot contain subsequent byte"
                 );
@@ -308,6 +306,10 @@ public class TLVMsg implements Loggeable {
         p.print("' value='");
         p.print(ISOUtil.hexString(getValue()));
         p.println("' />");
+    }
+
+    private boolean isPrimitive (byte firstByte) {
+        return (firstByte & 0x20) == 0x00;
     }
 
 }

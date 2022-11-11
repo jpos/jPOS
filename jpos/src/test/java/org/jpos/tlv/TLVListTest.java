@@ -60,7 +60,7 @@ public class TLVListTest {
 
     static final int TEST_TAG1      = 0x64;
     static final int TEST_TAG2      = 0x46;
-    static final int TEST_TAG3      = 0x1fe8;
+    static final int TEST_TAG3      = 0x1f08;
 
     TLVList instance;
 
@@ -142,10 +142,10 @@ public class TLVListTest {
     @Test
     public void testAppendThreeBytesTag() {
         byte[] expected = ISOUtil.hex2byte("37D47C");
-        instance.append(0xbf5f37, expected);
+        instance.append(0xbf8f37, expected);
         byte[] result = instance.pack();
         assertEquals(7, result.length);
-        assertArrayEquals(ISOUtil.hex2byte("BF5F37"), Arrays.copyOf(result, 3));
+        assertArrayEquals(ISOUtil.hex2byte("BF8F37"), Arrays.copyOf(result, 3));
         assertArrayEquals(expected, Arrays.copyOfRange(result, 4, 7));
     }
 
@@ -426,9 +426,9 @@ public class TLVListTest {
         instance.append(0x0a, new byte[0]);
         instance.append(instance.createTLVMsg(0x0d, null));
         instance.append(0x3f10, new byte[2]);
-        instance.append(0x1f7fa0, new byte[1]);
+        instance.append(0x1f7f, new byte[1]);
         TLVMsg result = instance.index(10);
-        assertEquals(0x1f7fa0, result.getTag());
+        assertEquals(0x1f7f, result.getTag());
     }
 
     @Test
@@ -962,4 +962,13 @@ public class TLVListTest {
         });
     }
 
+    @Test
+    public void testUnpackSubsequentBytes() throws Exception {
+        byte[] buf = ISOUtil.hex2byte("9F816E0100DF3F0101");
+        instance.unpack(buf, 0);
+        System.out.println (ISOUtil.hexString(instance.getValue(0x9f816e)));
+        assertArrayEquals(ISOUtil.hex2byte("00"), instance.getValue(0x9f816e));
+        assertArrayEquals(ISOUtil.hex2byte("01"),instance.getValue(0xDF3F));
+        assertArrayEquals(buf, instance.pack());
+    }
 }
