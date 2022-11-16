@@ -1022,7 +1022,7 @@
           id="26"
           length="16"
           name="Device ID/IMEI"
-          class="org.jpos.iso.IFB_NUMERIC" />
+          class="org.jpos.iso.IFB_LLNUM" />
       <isofield
           id="27"
           length="64"
@@ -1037,6 +1037,21 @@
           id="29"
           length="64"
           name="Invoice"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="30"
+          length="2"
+          name="Total records for presentment"
+          class="org.jpos.iso.IFB_NUMERIC" />
+      <isofield
+          id="31"
+          length="2"
+          name="Current record of the presentment"
+          class="org.jpos.iso.IFB_NUMERIC" />
+      <isofield
+          id="32"
+          length="99"
+          name="Interchange fee"
           class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
           id="39"
