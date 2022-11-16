@@ -1046,7 +1046,7 @@
       <isofield
           id="31"
           length="2"
-          name="Current record of the presentment"
+          name="Presentment Sequence Number"
           class="org.jpos.iso.IFB_NUMERIC" />
       <isofield
           id="32"
