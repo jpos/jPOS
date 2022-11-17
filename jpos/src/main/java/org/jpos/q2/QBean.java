@@ -73,5 +73,7 @@ public interface QBean {
     /**
      * @return state (STARTING, STARTED, FAILED, DESTROYED ...)
      */
-    String getStateAsString ();
+    default String getStateAsString () {
+        return getState() >= 0 ? stateString[getState()] : "Unknown";
+    }
 }
