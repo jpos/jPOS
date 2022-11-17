@@ -22,10 +22,12 @@ import bsh.BshClassManager;
 import bsh.Interpreter;
 import bsh.UtilEvalError;
 import org.jdom2.Element;
+import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
 
 public class BSH extends QBeanSupport implements Runnable {
     protected Interpreter bsh;
+
     public void initService() {
         bsh = new Interpreter ();
         BshClassManager bcm = bsh.getClassManager();
@@ -45,6 +47,7 @@ public class BSH extends QBeanSupport implements Runnable {
             bsh.set  ("qbean", this);
             bsh.set  ("log", getLog());
             bsh.set  ("cfg", getConfiguration());
+            bsh.set  ("q2", getServer());
             bsh.eval (config.getText());
             String source = config.getAttributeValue ("source");
             if (source != null)
@@ -54,4 +57,3 @@ public class BSH extends QBeanSupport implements Runnable {
         }
     }
 }
-
