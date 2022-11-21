@@ -8,7 +8,7 @@ ext {
         jline: 'org.jline:jline:3.20.0',
         beanshell: 'org.apache-extras.beanshell:bsh:2.0b6',
         javatuples: 'org.javatuples:javatuples:1.2',
-        javassist: 'org.javassist:javassist:3.27.0-GA',
+        javassist: 'org.javassist:javassist:3.29.2-GA',
         osgi_core: 'org.osgi:org.osgi.core:6.0.0',
         mockito: 'org.mockito:mockito-core:3.8.0',
         mockito_jupiter: 'org.mockito:mockito-junit-jupiter:3.8.0',
