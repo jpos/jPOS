@@ -28,16 +28,17 @@ extraJavaModuleInfo {
     automaticModule ('org.osgi.core-6.0.0.jar', 'org.osgi.core')
     automaticModule ('javassist-3.27.0-GA.jar', 'org.javassist.javassist')
     automaticModule ('xmlunit-1.6.jar', 'xmlunit')
-/*
-    module ('sshd-core-2.6.0.jar',  'org.apache.sshd.core', '2.6.0') {
-        exports('org.apache.sshd.server')
+    /*
+    module ("sshd-core-${sshdVersion}.jar",  'org.apache.sshd.core', "${sshdVersion}") {
         exports('org.apache.sshd.server.auth.pubkey')
 	exports('org.apache.sshd.server.session')
         exports('org.apache.sshd.server.channel')
         exports('org.apache.sshd.server.command')
         exports('org.apache.sshd.server.shell')
     }
-    module ('sshd-common-2.6.0.jar',  'org.apache.sshd.common', '2.6.0') {
+    module ("sshd-common-${sshdVersion}.jar",  'org.apache.sshd.common', "${sshdVersion}") {
+        exports('org.apache.sshd.server')
+        exports('org.apache.sshd.server.keyprovider')
         exports('org.apache.sshd.common')
         exports('org.apache.sshd.common.config.keys')
         exports('org.apache.sshd.common.util.security.eddsa')
@@ -46,9 +47,8 @@ extraJavaModuleInfo {
         exports('org.apache.sshd.common.util.buffer')
         exports('org.apache.sshd.common.util.security')
         exports('org.apache.sshd.common.config.keys.impl')
-        exports('org.apache.sshd.server.keyprovider')
     }
-*/
+    */
 }
 
 dependencies {

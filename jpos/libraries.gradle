@@ -1,4 +1,5 @@
 ext {
+    sshdVersion = '2.9.2'
     libraries = [
         jdom: 'org.jdom:jdom2:2.0.6.1',
         jdbm: 'jdbm:jdbm:1.0',
@@ -18,7 +19,7 @@ ext {
             'org.bouncycastle:bcpg-jdk14:1.71'
         ],
         hamcrest: 'org.hamcrest:hamcrest:2.2',
-        // sshd: 'org.apache.sshd:sshd-core:2.6.0',
+        sshd: "org.apache.sshd:sshd-core:${sshdVersion}",
         eddsa: 'net.i2p.crypto:eddsa:0.3.0',
         slf4j_api: "org.slf4j:slf4j-api:1.7.36",
         slf4j_nop: "org.slf4j:slf4j-nop:1.7.36",

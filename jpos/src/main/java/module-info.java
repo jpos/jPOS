@@ -13,7 +13,10 @@ module org.jpos.jpos {
     requires org.slf4j;
     requires com.sleepycat.je;
     requires org.jdbm;
-    
+    // requires org.apache.sshd.common;
+    // requires org.apache.sshd.server;
+    // requires org.apache.sshd.core;
+
     exports org.jpos.iso.packager;
     exports org.jpos.iso.validator;
     exports org.jpos.iso;
@@ -24,6 +27,7 @@ module org.jpos.jpos {
     exports org.jpos.q2.qbean;
     exports org.jpos.q2.security;
     exports org.jpos.q2.ui;
+    // exports org.jpos.q2.ssh;
     exports org.jpos.security;
     exports org.jpos.security.jceadapter;
     exports org.jpos.space;
