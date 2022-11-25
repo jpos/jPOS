@@ -25,6 +25,7 @@ import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.command.Command;
 import org.apache.sshd.server.command.CommandFactory;
 import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.server.session.ServerSessionAware;
 import org.apache.sshd.server.shell.ShellFactory;
 import org.jpos.q2.CLI;
 import org.jpos.q2.Q2;
@@ -55,7 +56,7 @@ public class CliShellFactory implements Factory<Command>, CommandFactory, ShellF
     @Override
     public Command createShell(ChannelSession channel) { return new JPosCLIShell(null); }
 
-    public class JPosCLIShell implements Command, SessionAware {
+    public class JPosCLIShell implements Command, ServerSessionAware {
         InputStream in;
         OutputStream out;
         OutputStream err;
