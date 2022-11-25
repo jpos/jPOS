@@ -5,11 +5,10 @@ buildscript {
     dependencies {
         classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:5.3.0'
         classpath 'org.owasp:dependency-check-gradle:7.2.1'
-        classpath 'de.jjohannes.gradle:extra-java-module-info:0.4'
     }
 }
 plugins {
-   id "de.jjohannes.extra-java-module-info" version "0.6"
+   id "org.gradlex.extra-java-module-info" version "1.1"
    id 'checkstyle'
 }
 apply plugin: 'biz.aQute.bnd.builder'
