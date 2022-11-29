@@ -1109,18 +1109,15 @@ public class ISOUtil {
 
     /**
      * Return true if the string is alphanum.
-     * <code>{letter digit (.) (_) (-) ( ) (?) }</code>
-     * 
      **/
     public static boolean isAlphaNumeric ( String s ) {
-        int i = 0, len = s.length();
-        while ( i < len && ( Character.isLetterOrDigit( s.charAt( i ) ) ||
-                             s.charAt( i ) == ' ' || s.charAt( i ) == '.' ||
-                             s.charAt( i ) == '-' || s.charAt( i ) == '_' )
-                             || s.charAt(i) == '?' ){
-            i++;
+        int len = s.length();
+        for (int i=0; i<len; i++) {
+            char c = s.charAt(i);
+            if (!Character.isLetterOrDigit(s.charAt(i)))
+                return false;
         }
-        return i >= len;
+        return len > 0;
     }
 
     /**
