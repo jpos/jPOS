@@ -20,12 +20,7 @@ package org.jpos.iso.packager;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.jpos.iso.ISOBaseValidator;
 import org.jpos.iso.ISOComponent;
@@ -197,12 +192,9 @@ public class ISOBaseValidatingPackagerTest {
 
     @Test
     public void testValidateThrowsNullPOinterException1() throws Throwable {
-        try {
+        assertThrows(NullPointerException.class, () -> {
             new ISOBaseValidatingPackager().validate(new ISOField(100, "testISOBaseValidatingPackagerv"));
-            fail("Expected ClassCastException to be thrown");
-        } catch (NullPointerException ex) {
-            assertEquals(NullPointerException.class, ex.getClass(), "ex.getClass()");
-        }
+        });
     }
 
     @Test
@@ -407,16 +399,9 @@ public class ISOBaseValidatingPackagerTest {
 
     @Test
     public void testValidateThrowsNullPointerException1() throws Throwable {
-        try {
+        assertThrows(NullPointerException.class, () -> {
             new ISOBaseValidatingPackager().validate(new ISOMsg("testISOBaseValidatingPackagerMti"));
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read the array length because \"<local6>\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        });
     }
 
     @Test
@@ -432,16 +417,9 @@ public class ISOBaseValidatingPackagerTest {
         ISOMsg m = new ISOMsg();
         m.setMTI("testISOBaseValidatingPackagerMti");
         m.setRetransmissionMTI();
-        try {
+        assertThrows(NullPointerException.class, () -> {
             iSOBaseValidatingPackager.validate(m);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.endsWith(String)\" because the return value of \"org.jpos.iso.ISOMsg.getString(int)\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        });
     }
 
     @Test
@@ -454,16 +432,9 @@ public class ISOBaseValidatingPackagerTest {
         ISOComponent m = new ISOVMsg(new ISOMsg(), FirstError);
         ISOValidator[] fvlds = new ISOValidator[0];
         iSOBaseValidatingPackager.setFieldValidator(fvlds);
-        try {
+        assertThrows(NullPointerException.class, () -> {
             iSOBaseValidatingPackager.validate(m);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.endsWith(String)\" because the return value of \"org.jpos.iso.ISOMsg.getString(int)\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        });
     }
 
     @Test
@@ -477,15 +448,8 @@ public class ISOBaseValidatingPackagerTest {
         iSOBaseValidatingPackager.setFieldValidator(fvlds);
         iSOBaseValidatingPackager.setMsgValidator(msgVlds);
         ISOComponent m = new ISOVMsg(new ISOMsg(), FirstError);
-        try {
+        assertThrows(NullPointerException.class, () -> {
             iSOBaseValidatingPackager.validate(m);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.endsWith(String)\" because the return value of \"org.jpos.iso.ISOMsg.getString(int)\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        });
     }
 }

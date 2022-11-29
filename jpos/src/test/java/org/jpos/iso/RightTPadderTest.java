@@ -18,13 +18,10 @@
 
 package org.jpos.iso;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import static org.apache.commons.lang3.JavaVersion.JAVA_1_8;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -65,15 +62,8 @@ public class RightTPadderTest {
 
     @Test
     public void testPadThrowsStringIndexOutOfBoundsException() throws Throwable {
-        try {
+        assertThrows(StringIndexOutOfBoundsException.class, () -> {
             new RightTPadder(' ').pad("testRightTPadderData", -1);
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
-        } catch (StringIndexOutOfBoundsException ex) {
-            if (isJavaVersionAtMost(JAVA_1_8)) {
-                assertEquals("String index out of range: -1", ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("begin 0, end -1, length 20", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        });
     }
 }

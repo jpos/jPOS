@@ -3563,32 +3563,12 @@ public class ISOUtilTest {
 
     @Test
     public void testIsAlphaNumericThrowsStringIndexOutOfBoundsException() throws Throwable {
-        try {
-            ISOUtil.isAlphaNumeric(" ");
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
-        } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: 1", ex.getMessage(), "ex.getMessage()");
-        }
+        assertFalse(ISOUtil.isAlphaNumeric(" "));
     }
 
     @Test
     public void testIsAlphaNumericThrowsStringIndexOutOfBoundsException1() throws Throwable {
-        try {
-            ISOUtil.isAlphaNumeric("");
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
-        } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: 0", ex.getMessage(), "ex.getMessage()");
-        }
-    }
-
-    @Test
-    public void testIsAlphaNumericThrowsStringIndexOutOfBoundsException2() throws Throwable {
-        try {
-            ISOUtil.isAlphaNumeric("testISOUtils");
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
-        } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: 12", ex.getMessage(), "ex.getMessage()");
-        }
+        assertFalse(ISOUtil.isAlphaNumeric(""));
     }
 
     @Test
@@ -3929,11 +3909,6 @@ public class ISOUtilTest {
         assertEquals(74, result, "result");
     }
 
-    @Test
-    public void testParseInt4() throws Throwable {
-        int result = ISOUtil.parseInt("1");
-        assertEquals(1, result, "result");
-    }
 
     @Test
     public void testParseInt5() throws Throwable {
@@ -4187,35 +4162,6 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
-    public void testParseIntThrowsNumberFormatException9() throws Throwable {
-        try {
-            ISOUtil.parseInt("9Characte", 28);
-            fail("Expected NumberFormatException to be thrown");
-        } catch (NumberFormatException ex) {
-            assertEquals("String contains non-digit", ex.getMessage(), "ex.getMessage()");
-        }
-    }
-
-    @Test
-    public void testParseIntThrowsStringIndexOutOfBoundsException() throws Throwable {
-        try {
-            ISOUtil.parseInt("", 100);
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
-        } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: 0", ex.getMessage(), "ex.getMessage()");
-        }
-    }
-
-    @Test
-    public void testParseIntThrowsStringIndexOutOfBoundsException1() throws Throwable {
-        try {
-            ISOUtil.parseInt("");
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
-        } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: 0", ex.getMessage(), "ex.getMessage()");
-        }
-    }
 
     @Test
     public void testProtect() throws Throwable {

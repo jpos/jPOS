@@ -24,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +63,7 @@ public class DirPollOperationTest {
     }
 
     private String createTempDir() throws IOException {
-        File temp = File.createTempFile("dir_poll", "tmp");
+        File temp = Files.createTempDirectory("dir_poll" + "tmp").toFile();
         temp.delete(); // delete the file, we want a dir
         temp.mkdirs();
         return temp.getAbsolutePath();

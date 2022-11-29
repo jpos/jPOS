@@ -20,10 +20,7 @@ package org.jpos.q2.iso;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.jdom2.Element;
 import org.jpos.iso.ISOMsg;
@@ -70,32 +67,18 @@ public class MUXPoolTest {
     }
 
     @Test
-    public void testIsConnectedThrowsNullPointerException() throws Throwable {
-        try {
+    public void testIsConnectedThrowsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> {
             new MUXPool().isConnected();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read the array length because \"<local2>\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        });
     }
 
     @Test
     public void testRequestThrowsNullPointerException() throws Throwable {
         MUXPool mUXPool = new MUXPool();
-        try {
+        assertThrows(NullPointerException.class, () -> {
             mUXPool.request(new ISOMsg("testMUXPoolMti"), 100L);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read the array length because \"<local4>\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        });
     }
 
     @Test

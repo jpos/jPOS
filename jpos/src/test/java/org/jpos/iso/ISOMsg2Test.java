@@ -18,8 +18,6 @@
 
 package org.jpos.iso;
 
-import static org.apache.commons.lang3.JavaVersion.JAVA_14;
-import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -112,11 +110,6 @@ public class ISOMsg2Test {
             iSOMsg.clone((int[])null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read the array length because \"<local4>\" is null", ex.getMessage(), "ex.getMessage()");
-            }
             assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
         }
     }
@@ -434,11 +427,6 @@ public class ISOMsg2Test {
             new ISOMsg("testISOMsgMti").hasFields(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read the array length because \"<local3>\" is null", ex.getMessage(), "ex.getMessage()");
-            }
         }
     }
 
@@ -553,10 +541,10 @@ public class ISOMsg2Test {
         iSOMsg.setFieldNumber(-2);
         try {
             iSOMsg.isRequest();
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: 2", ex.getMessage(), "ex.getMessage()");
+            return;
         }
+        fail("Expected StringIndexOutOfBoundsException to be thrown");
     }
 
     @Test
@@ -605,10 +593,10 @@ public class ISOMsg2Test {
     public void testIsResponseThrowsStringIndexOutOfBoundsException() throws Throwable {
         try {
             new ISOMsg("").isResponse();
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: 2", ex.getMessage(), "ex.getMessage()");
+            return;
         }
+        fail("Expected StringIndexOutOfBoundsException to be thrown");
     }
 
     @Test
@@ -667,11 +655,6 @@ public class ISOMsg2Test {
             iSOMsg.merge(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read field \"fields\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
-            }
             assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
             assertEquals(-1, iSOMsg.maxField, "iSOMsg.maxField");
             assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
@@ -712,13 +695,6 @@ public class ISOMsg2Test {
             assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
             assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
             assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.nested.getMessage(), "ex.nested.getMessage()");
-            } else {
-                assertEquals("java.lang.NullPointerException: Cannot load from object array because \"this.fld\" is null", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot load from object array because \"this.fld\" is null", ex.nested.getMessage(), "ex.nested.getMessage()");
-            }
             assertEquals(100, iSOMsg.maxField, "iSOMsg.maxField");
             assertSame(p, iSOMsg.packager, "iSOMsg.packager");
         }
@@ -752,11 +728,6 @@ public class ISOMsg2Test {
             assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
             assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
             assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.iso.ISOPackager.pack(org.jpos.iso.ISOComponent)\" because \"this.packager\" is null", ex.getMessage(), "ex.getMessage()");
-            }
             assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
             assertNull(iSOMsg.packager, "iSOMsg.packager");
         }
@@ -770,11 +741,6 @@ public class ISOMsg2Test {
             iSOMsg.pack();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.iso.ISOPackager.pack(org.jpos.iso.ISOComponent)\" because \"this.packager\" is null", ex.getMessage(), "ex.getMessage()");
-            }
             assertNull(iSOMsg.packager, "iSOMsg.packager");
             assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
             assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
@@ -790,11 +756,6 @@ public class ISOMsg2Test {
             iSOVMsg.readHeader(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"java.io.ObjectInput.readShort()\" because \"in\" is null", ex.getMessage(), "ex.getMessage()");
-            }
             assertNull(((ISOVMsg) iSOVMsg).header, "(ISOVMsg) iSOVMsg.header");
         }
     }
@@ -1092,13 +1053,13 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("");
         try {
             iSOMsg.setResponseMTI();
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: 2", ex.getMessage(), "ex.getMessage()");
             assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
             assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
             assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
+            return;
         }
+        fail("Expected StringIndexOutOfBoundsException to be thrown");
     }
 
     @Test
@@ -1127,13 +1088,13 @@ public class ISOMsg2Test {
         iSOMsg.setMTI("");
         try {
             iSOMsg.setRetransmissionMTI();
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("String index out of range: 2", ex.getMessage(), "ex.getMessage()");
             assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
             assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
             assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
+            return;
         }
+        fail("Expected StringIndexOutOfBoundsException to be thrown");
     }
 
     @Test
@@ -1241,11 +1202,6 @@ public class ISOMsg2Test {
             iSOMsg.unpack(b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.iso.ISOPackager.unpack(org.jpos.iso.ISOComponent, byte[])\" because \"this.packager\" is null", ex.getMessage(), "ex.getMessage()");
-            }
             assertNull(iSOMsg.packager, "iSOMsg.packager");
         }
     }
@@ -1313,11 +1269,6 @@ public class ISOMsg2Test {
             iSOMsg.writeExternal(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"java.io.ObjectOutput.writeByte(int)\" because \"out\" is null", ex.getMessage(), "ex.getMessage()");
-            }
             assertNull(iSOMsg.header, "iSOMsg.header");
         }
     }
@@ -1362,11 +1313,6 @@ public class ISOMsg2Test {
             iSOVMsg.writeHeader(out);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.iso.ISOHeader.getLength()\" because \"this.header\" is null", ex.getMessage(), "ex.getMessage()");
-            }
             assertNull(((ISOVMsg) iSOVMsg).header, "(ISOVMsg) iSOVMsg.header");
         }
     }
@@ -1383,11 +1329,6 @@ public class ISOMsg2Test {
             iSOVMsg.writePackager(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"java.io.ObjectOutput.writeByte(int)\" because \"out\" is null", ex.getMessage(), "ex.getMessage()");
-            }
         }
     }
 

@@ -241,11 +241,6 @@ public class ISOFieldPackagerTest {
             iFB_AMOUNT.unpack(new ISOMsg(), in);
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            if (isJavaVersionAtMost(JAVA_1_8)) {
-                assertEquals("String index out of range: 1", ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("offset 0, count 1, length 0", ex.getMessage(), "ex.getMessage()");
-            }
             assertEquals(10, in.available(), "(ByteArrayInputStream) in.available()");
         }
     }

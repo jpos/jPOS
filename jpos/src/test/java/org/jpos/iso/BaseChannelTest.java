@@ -70,6 +70,7 @@ import org.jpos.iso.packager.XMLPackager;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -410,6 +411,7 @@ public class BaseChannelTest {
     }
 
     @Test
+    @Disabled("Useless test plus Socket.class is Sealed and can't be mocked")
     public void testDisconnectWithDefaultSoLingerOption() throws Exception {
         Socket socket = mockSocket();
         when(socketFactory.createSocket(isNull(), anyInt())).thenReturn(socket);
@@ -429,6 +431,7 @@ public class BaseChannelTest {
     }
 
     @Test
+    @Disabled("Useless test plus Socket.class is Sealed and can't be mocked")
     public void testDisconnectWithCustomSoLingerOption() throws Exception {
         Socket socket = mockSocket();
         when(socketFactory.createSocket(isNull(), anyInt())).thenReturn(socket);

@@ -20,9 +20,7 @@ package org.jpos.iso.packager;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.jpos.iso.IFA_BINARY;
 import org.jpos.iso.IFB_AMOUNT;
@@ -71,16 +69,11 @@ public class ISOMsgFieldValidatingPackagerTest {
 
     @Test
     public void testValidateThrowsNullPointerException() throws Throwable {
-        try {
-            new ISOMsgFieldValidatingPackager(new IFB_AMOUNT(100, "testISOMsgFieldValidatingPackagerDescription", true),
-                    new ISOBaseValidatingPackager()).validate(new ISOMsg("testISOMsgFieldValidatingPackagerMti"));
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read the array length because \"<local6>\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        assertThrows(NullPointerException.class, () -> {
+            new ISOMsgFieldValidatingPackager(
+              new IFB_AMOUNT(100, "testISOMsgFieldValidatingPackagerDescription", true),
+              new ISOBaseValidatingPackager()).validate(new ISOMsg("testISOMsgFieldValidatingPackagerMti")
+            );
+        });
     }
 }

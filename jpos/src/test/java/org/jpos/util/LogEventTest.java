@@ -29,20 +29,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.custommonkey.xmlunit.XMLUnit;
 import org.jpos.iso.packager.ISO87APackagerBBitmap;
 import org.jpos.iso.packager.ISO93APackager;
 import org.jpos.iso.packager.ISOBaseValidatingPackager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class LogEventTest {
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        XMLUnit.setIgnoreWhitespace(true);
-    }
-
     @Test
     public void testAddMessage() throws Throwable {
         LogEvent logEvent = new LogEvent(new ISO87APackagerBBitmap(), "testLogEventTag", Integer.valueOf(-2));

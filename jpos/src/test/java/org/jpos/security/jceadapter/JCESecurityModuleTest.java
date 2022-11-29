@@ -953,17 +953,10 @@ public class JCESecurityModuleTest {
         String serviceCode = "226";
         String dcvv = "562";
         byte[] atc = ISOUtil.hex2byte("3210");
-        try {
+        assertThrows(SMException.class, () -> {
             jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
-                        ,serviceCode, atc, MKDMethod.OPTION_A);
-            fail("Expected SMException to be thrown");
-        } catch (SMException ex){
-            if (isJavaVersionAtMost(JAVA_13)) {
-                assertEquals("String index out of range: -4", ex.getNested().getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("begin 4, end 0, length 0", ex.getNested().getMessage(), "ex.getMessage()");
-            }
-        }
+              ,serviceCode, atc, MKDMethod.OPTION_A);
+        });
     }
 
     @Test
@@ -973,17 +966,10 @@ public class JCESecurityModuleTest {
         String serviceCode = "226";
         String dcvv = "562";
         byte[] atc = ISOUtil.hex2byte("3210");
-        try {
+        assertThrows(SMException.class, () -> {
             jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
-                        ,serviceCode, atc, MKDMethod.OPTION_A);
-            fail("Expected SMException to be thrown");
-        } catch (SMException ex){
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"pan\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
-        }
+              ,serviceCode, atc, MKDMethod.OPTION_A);
+        });
     }
 
     @Test
@@ -1072,17 +1058,10 @@ public class JCESecurityModuleTest {
         String cvc3 = "12612";
         byte[] atc = ISOUtil.hex2byte("2710");
         byte[] upn = ISOUtil.hex2byte("00002710");
-        try {
+        assertThrows(SMException.class, () -> {
             jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
-            ,upn, data, MKDMethod.OPTION_A, cvc3);
-            fail("Expected SMException to be thrown");
-        } catch (SMException ex){
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"pan\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
-        }
+              ,upn, data, MKDMethod.OPTION_A, cvc3);
+        });
     }
 
     @Test
