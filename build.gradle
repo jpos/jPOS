@@ -27,8 +27,8 @@ subprojects {
     javadoc.failOnError = false
     pmd.ignoreFailures = true
 
-    sourceCompatibility = 17
-    targetCompatibility = 17
+    sourceCompatibility = 19
+    targetCompatibility = 19
     repositories {
         mavenCentral()
         mavenLocal()
@@ -139,7 +139,7 @@ subprojects {
         }
     }
     jacoco {
-        toolVersion = '0.8.7'
+        toolVersion = '0.8.8'
     }
 }
 
@@ -153,7 +153,7 @@ idea {
                 }.mapping.@vcs = 'Git' 
             }
         }
-        languageLevel = '16'
+        languageLevel = '19'
     }
 }
 
