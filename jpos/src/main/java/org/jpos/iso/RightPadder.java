@@ -48,8 +48,9 @@ public class RightPadder implements Padder
         this.pad = pad;
     }
 
-    public String pad(String data, int maxLength) throws ISOException
-    {
+    public String pad(String data, int maxLength) throws ISOException {
+        if (maxLength < 0)
+            throw new ISOException ("invalid maxLength " + maxLength);
         int len = data.length();
 
         if (len < maxLength) {
