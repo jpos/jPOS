@@ -43,7 +43,6 @@ import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.PGPHelper;
 import org.jpos.util.SimpleLogListener;
-import org.jpos.util.slf4j.Slf4JDynamicBinder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -150,14 +149,6 @@ public class Q2 implements FileFilter, Runnable {
         deployDir.mkdirs ();
         mainClassLoader = getClass().getClassLoader();
         this.bundleContext = bundleContext;
-        try {
-            Slf4JDynamicBinder.applyMods();
-        }
-        catch (Exception ignored) {
-            // We won't stop anything just because we could
-            // inot initialize slf4j.
-            // ignored.printStackTrace();
-        }
         registerQ2();
     }
     public Q2 () {

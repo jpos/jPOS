@@ -23,7 +23,6 @@ dependencies {
     api libraries.hdrhistogram
 
     implementation libraries.osgi_core
-    implementation libraries.javassist
     implementation libraries.yaml;
     implementation libraries.jdbm
     implementation libraries.sleepycat_je
