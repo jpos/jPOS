@@ -11,12 +11,8 @@ else
   exec java -server \
     -XX:+IgnoreUnrecognizedVMOptions \
     -Xmx1G \
-    -Xloggc:log/gc.log \
-    -Djava.net.preferIPv4Stack=true \
-    -XX:+UseConcMarkSweepGC  \
-    -XX:+ParallelRefProcEnabled \
-    -XX:ParallelGCThreads=2 \
-    -XX:+TieredCompilation \
+    -Xlog:gc:log/gc.log \
+    -Dcom.sun.management.jmxremote=true \
     -jar @jarname@  --pid="jpos.pid" "$@"
 fi
 
