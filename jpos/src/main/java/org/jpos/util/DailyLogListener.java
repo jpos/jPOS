@@ -82,8 +82,7 @@ public class DailyLogListener extends RotateLogListener{
 
         DateFormat fmt = new SimpleDateFormat(cfg.get("date-format",DEF_DATE_FMT));
         setDateFmt(fmt);
-		deleteRegex = cfg.get("delete-regex", defaultDeleteRegex());
-
+	
         Integer formatObj =
                 COMPRESSION_FORMATS
                 .get(cfg.get("compression-format","none").toLowerCase());
@@ -93,6 +92,8 @@ public class DailyLogListener extends RotateLogListener{
                 DEF_COMPRESSED_SUFFIX[compressionFormat]));
         setCompressionBufferSize(cfg.getInt("compression-buffer-size",
                 DEF_BUFFER_SIZE));
+	    
+	deleteRegex = cfg.get("delete-regex", defaultDeleteRegex());
 
         setLastDate(fmt.format(new Date()));
 
