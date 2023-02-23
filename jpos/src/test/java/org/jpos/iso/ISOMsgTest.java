@@ -18,9 +18,7 @@
 
 package org.jpos.iso;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -42,24 +40,24 @@ public class ISOMsgTest {
         assertEquals ("Field 63.2.3", m.getString ("63.2.3"));
         assertEquals ("CAFEBABE", new String(m.getBytes("63.2.4")));
     }
-    
+
     @Test
     public void testFPath() throws Exception {
         ISOMsg m = new ISOMsg("0100");
-        
+
         String mynull = null;
-        
+
         assertFalse(m.hasField("63"));
         assertFalse(m.hasField(63));
         assertFalse(m.hasField("63.2"));
         assertFalse(m.hasField("63.2.3"));
-        
+
         m.set("63.2.3","value3");
         m.set("63.2.4","value4");
-        
+
         /*
          * Check null processing on set matches existing processing (setting to null same as unset).
-         * 
+         *
          * Please note m.set(fPathString,null) is amiguous and cannot be distinguished from
          *  m.set(fieldNumberString, byte[]), so take care.
          */
@@ -67,56 +65,56 @@ public class ISOMsgTest {
         m.set("63.2.6",m.getString("99"));  // null as well
         assertFalse(m.hasField("63.2.5"));
         assertFalse(m.hasField("63.2.6"));
-                
+
         assertEquals(true,m.hasField("63.2.3"));
         assertEquals("value3", m.getString("63.2.3"));
         assertEquals(true,m.hasField("63.2.4"));
         assertEquals("value4", m.getString("63.2.4"));
-        
+
         assertFalse(m.hasField("63.2.999"));
         assertFalse(m.hasField("63.2.4.999"));
-                
+
         m.unset("63.2.3");
-        
+
         assertFalse(m.hasField("63.2.3"));
-        
+
         assertEquals(true,m.hasField("63.2"));
         m.unset("63.2.4");  // Removal of last remaining field triggers removal of immediate parent.
         assertFalse(m.hasField("63.2"));
-        
+
         m.unset("63.2.4.999");  // No problem removing non-existant fields.
-        
+
         assertFalse(m.hasField("99"));
         assertFalse(m.hasField(99));
         m.set("99.99","value99");
         m.set("99.98",mynull);
-        
+
         assertEquals(true, m.hasField("99.99"));
         assertEquals("value99", m.getString("99.99"));
-        
+
         assertFalse(m.hasField("100"));
         assertFalse(m.hasField(100));
         m.set("100.100",mynull);
         assertFalse(m.hasField("100.100"));
         assertFalse(m.hasField("100"));  // Not added unnecessarily
         assertFalse(m.hasField(100));  // Still not added unnecessarily
-        
+
 
     }
-    
+
     @Test
     public void testFPathISOComponent() throws Exception {
         ISOMsg m = new ISOMsg("0100");
 
         ISOField f100 = new ISOField(100,"value100");
-        
+
         assertFalse(m.hasField("100"));
         assertFalse(m.hasField(100));
         m.set(f100);
         assertTrue(m.hasField("100"));
         assertTrue(m.hasField(100));
         assertEquals(f100,m.getComponent("100"));
-        
+
         assertFalse(m.hasField("101"));
         assertFalse(m.hasField(101));
         m.set("101.101","value101");
@@ -133,12 +131,12 @@ public class ISOMsgTest {
         ISOMsg f102 = new ISOMsg(102);
         f102.set("1","value1");
         f102.set("2","value2");
-        
+
         assertFalse(m.hasField("102"));
         m.set(f102);
         assertTrue(m.hasField("102.1"));
         assertTrue(m.hasField("102.2"));
-        
+
         ISOMsg copy = new ISOMsg();
         copy.set("101",m.getComponent("101"));
         assertTrue(copy.hasField("101"));
@@ -147,7 +145,7 @@ public class ISOMsgTest {
         assertTrue(copy.hasField("101.102"));
         assertEquals("value101",copy.getString("101.101"));
         assertEquals("value102",copy.getString("101.102"));
-        
+
         copy.set("102.1", m.getComponent("102.1"));
         assertTrue(copy.hasField("102"));
         assertTrue(copy.hasField(102));
@@ -156,7 +154,7 @@ public class ISOMsgTest {
         assertFalse(copy.hasField("102.2"));
         assertNull(copy.getString("102.2"));
     }
-    
+
     @Test
     public void testFPathISOComponent_2() throws Exception {
         ISOAmount comp = new ISOAmount();
@@ -212,10 +210,10 @@ public class ISOMsgTest {
     @Test
     public void testFPathISOEcho() throws Exception {
         ISOMsg m = new ISOMsg("0100");
-        
+
         ISOField f100 = new ISOField(100,"value100");
         m.set(f100);
-        
+
         m.set("101.101","value101");
         m.set("101.102","value102");
 
@@ -223,7 +221,7 @@ public class ISOMsgTest {
         f102.set("1","value1");
         f102.set("2","value2");
         m.set(f102);
-        
+
         ISOMsg f103 = new ISOMsg(103);
         f103.set("97","value1");
         f103.set("98","value2");
@@ -237,15 +235,15 @@ public class ISOMsgTest {
         m.set(14,"14");
         m.set(15,"15");
         m.set(16,"16");
-        
+
         String[] echoList = new String[] {"10","11","16","14","101.102","103","911.911","999"};
-        
+
         ISOMsg copyMsg = new ISOMsg();
-        
+
         for (String fpath : echoList) {
             copyMsg.set(fpath, m.getComponent(fpath));
         }
-        
+
         /*
          * Check fields in echoMsg
          */
@@ -264,8 +262,8 @@ public class ISOMsgTest {
         assertEquals(true,copyMsg.hasField(103));       // Whole of 103 copied
         assertEquals(true,copyMsg.hasField("103.97"));  // Whole of 103 copied
         assertEquals(true,copyMsg.hasField("103.98"));  // Whole of 103 copied
-        
-        
+
+
         /*
          * Check fields echod but *not* present in m are not somehow present in copyMsg
          */
@@ -274,7 +272,7 @@ public class ISOMsgTest {
         assertFalse(copyMsg.hasField("911.911"));
         assertFalse(copyMsg.hasField("999"));
         assertFalse(copyMsg.hasField(999));
-        
+
         /*
          * Check fields present in m but not required to be copied are not present in copyMsg
          */
