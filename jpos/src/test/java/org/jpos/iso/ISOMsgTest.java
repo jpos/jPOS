@@ -113,20 +113,20 @@ public class ISOMsgTest {
         assertFalse(m.hasField("100"));
         assertFalse(m.hasField(100));
         m.set(f100);
-        assertEquals(true, m.hasField("100"));
-        assertEquals(true, m.hasField(100));
+        assertTrue(m.hasField("100"));
+        assertTrue(m.hasField(100));
         assertEquals(f100,m.getComponent("100"));
         
         assertFalse(m.hasField("101"));
         assertFalse(m.hasField(101));
         m.set("101.101","value101");
-        assertEquals(true, m.hasField("101.101"));
-        assertEquals(true, m.hasField("101"));
-        assertEquals(true, m.hasField(101));
+        assertTrue(m.hasField("101.101"));
+        assertTrue(m.hasField("101"));
+        assertTrue(m.hasField(101));
         assertEquals(101,m.getComponent("101.101").getKey());
         assertEquals("value101", m.getComponent("101.101").getValue());
         m.set("101.102","value102");
-        assertEquals(true, m.hasField("101.102"));
+        assertTrue(m.hasField("101.102"));
         assertEquals(102,m.getComponent("101.102").getKey());
         assertEquals("value102", m.getComponent("101.102").getValue());
 
@@ -136,27 +136,79 @@ public class ISOMsgTest {
         
         assertFalse(m.hasField("102"));
         m.set(f102);
-        assertEquals(true, m.hasField("102.1"));
-        assertEquals(true, m.hasField("102.2"));
+        assertTrue(m.hasField("102.1"));
+        assertTrue(m.hasField("102.2"));
         
         ISOMsg copy = new ISOMsg();
         copy.set("101",m.getComponent("101"));
-        assertEquals(true, copy.hasField("101"));
-        assertEquals(true, copy.hasField(101));
-        assertEquals(true, copy.hasField("101.101"));
-        assertEquals(true, copy.hasField("101.102"));
+        assertTrue(copy.hasField("101"));
+        assertTrue(copy.hasField(101));
+        assertTrue(copy.hasField("101.101"));
+        assertTrue(copy.hasField("101.102"));
         assertEquals("value101",copy.getString("101.101"));
         assertEquals("value102",copy.getString("101.102"));
         
         copy.set("102.1", m.getComponent("102.1"));
-        assertEquals(true, copy.hasField("102"));
-        assertEquals(true, copy.hasField(102));
-        assertEquals(true, copy.hasField("102.1"));
+        assertTrue(copy.hasField("102"));
+        assertTrue(copy.hasField(102));
+        assertTrue(copy.hasField("102.1"));
         assertEquals("value1",copy.getString("102.1"));
         assertFalse(copy.hasField("102.2"));
         assertNull(copy.getString("102.2"));
     }
     
+    @Test
+    public void testFPathISOComponent_2() throws Exception {
+        ISOAmount comp = new ISOAmount();
+        comp.setValue("840"+"2"+"000055555533");
+        assertEquals(-1, comp.getFieldNumber());
+
+        ISOMsg m = new ISOMsg();
+        m.set(44, "hello44");
+        m.set("95.2.8", comp);
+
+        assertTrue(m.hasField(95));
+        assertTrue(m.hasField("95"));
+        assertNotNull(m.getComponent(95));
+
+        assertTrue(m.hasField("95.2"));
+        assertTrue(m.hasField("95.2.8"));
+
+        ISOComponent extractedComp = m.getComponent("95.2.8");
+        assertEquals(comp, extractedComp);
+        assertEquals(8, extractedComp.getFieldNumber());
+        assertEquals("840", ((ISOAmount)extractedComp).getCurrencyCodeAsString());
+
+        ISOAmount comp2 = new ISOAmount(99);
+        comp2.setValue("858"+"2"+"000011111177");
+
+        assertEquals(99, comp2.getFieldNumber());
+        m.set("95.2.10", comp2);
+
+        // the set method above should have changed comp2's inner field number to the last value in the path
+        assertEquals(10, comp2.getFieldNumber());
+
+        assertNotNull(m.getComponent("95.2.10"));
+        assertEquals(comp2, m.getComponent("95.2.10"));
+
+        assertEquals(10, m.getComponent("95.2").getMaxField());
+        assertEquals( 2, m.getComponent("95.2").getChildren().size());
+        assertEquals(858, ((ISOAmount)m.getComponent("95.2.10")).getCurrencyCode());
+
+        m.set("95.2.8", (String)null);
+        assertEquals(1, m.getComponent("95.2").getChildren().size());
+        assertEquals(858, ((ISOAmount)m.getComponent("95.2.10")).getCurrencyCode());
+
+        m.unset("95.2.10");
+        // The way ISOMsg#unset(fpath) works, is that if the parent of the unset sub-subfield becomes
+        // empty, it will also delete the parent!  But the behaviour doesn't propagate up the hierarchy...
+        assertFalse(m.hasField("95.2"));
+
+        // ...therefore, 95 should still exist (along with the root ISOMsg, of course)
+        assertTrue(m.hasField("95"));
+        assertTrue(m.getComponent("95").getChildren().isEmpty());
+    }
+
     @Test
     public void testFPathISOEcho() throws Exception {
         ISOMsg m = new ISOMsg("0100");
