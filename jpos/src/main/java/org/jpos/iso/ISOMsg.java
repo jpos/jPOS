@@ -285,32 +285,32 @@ public class ISOMsg extends ISOComponent
      * @param c component
      * @throws ISOException on error
      */
-     public void set (String fpath, ISOComponent c) throws ISOException {
-         StringTokenizer st = new StringTokenizer (fpath, ".");
-         ISOMsg m = this;
-         for (;;) {
-             int fldno = parseInt(st.nextToken());
-             if (st.hasMoreTokens()) {
-                 Object obj = m.getValue(fldno);
-                 if (obj instanceof ISOMsg)
-                     m = (ISOMsg) obj;
-                 else
-                     /*
-                      * we need to go deeper, however, if the value == null then
-                      * there is nothing to do (unset) at the lower levels, so break now and save some processing.
-                      */
-                     if (c == null) {
-                         break;
-                     } else {
-                         // We have a value to set, so adding a level to hold it is sensible.
-                         m.set (m = new ISOMsg (fldno));
-                     }
-             } else {
-                 m.set (c);
-                 break;
-             }
-         }
-     }
+    public void set(String fpath, ISOComponent c) throws ISOException {
+        StringTokenizer st = new StringTokenizer (fpath, ".");
+        ISOMsg m = this;
+        for (;;) {
+            int fldno = parseInt(st.nextToken());
+            if (st.hasMoreTokens()) {
+                Object obj = m.getValue(fldno);
+                if (obj instanceof ISOMsg)
+                    m = (ISOMsg) obj;
+                else
+                    /*
+                     * we need to go deeper, however, if the value == null then
+                     * there is nothing to do (unset) at the lower levels, so break now and save some processing.
+                     */
+                    if (c == null) {
+                        break;
+                    } else {
+                        // We have a value to set, so adding a level to hold it is sensible.
+                        m.set(m = new ISOMsg(fldno));
+                    }
+            } else {
+                m.set(c);
+                break;
+            }
+        }
+    }
 
     /**
      * Creates an ISOField associated with fldno within this ISOMsg.
@@ -520,7 +520,7 @@ public class ISOMsg extends ISOComponent
             ((Loggeable) header).dump (p, newIndent);
 
         for (int i : fields.keySet()) {
-           //If you want the bitmap dumped in the log, change the condition from (i >= 0) to (i >= -1). 
+           //If you want the bitmap dumped in the log, change the condition from (i >= 0) to (i >= -1).
             if (i >= 0) {
                 if ((c = (ISOComponent) fields.get(i)) != null)
                     c.dump(p, newIndent);
