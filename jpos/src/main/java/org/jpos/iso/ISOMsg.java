@@ -306,8 +306,6 @@ public class ISOMsg extends ISOComponent
                         m.set(m = new ISOMsg(fldno));
                     }
             } else {
-                if (c != null)
-                    c.setFieldNumber(fldno);
                 m.set(c);
                 break;
             }
