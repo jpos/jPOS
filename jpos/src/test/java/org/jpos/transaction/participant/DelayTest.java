@@ -21,6 +21,7 @@ package org.jpos.transaction.participant;
 import static org.hamcrest.Matchers.is;
 import static org.jpos.transaction.TransactionConstants.PREPARED;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.jpos.transaction.TransactionConstants.READONLY;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -78,6 +79,6 @@ public class DelayTest {
 
     @Test
     public void testPrepare() {
-        assertThat(delay.prepare(0L, context), is(PREPARED));
+        assertThat(delay.prepare(0L, context), is(PREPARED | READONLY));
     }
 }

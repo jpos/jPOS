@@ -23,6 +23,7 @@ import org.jpos.q2.Q2;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.Caller;
+import org.jpos.util.ThroughputControl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -160,6 +161,7 @@ public class TransactionManagerTestCase {
         ctx.put("persistent", "jumped over the lazy dog", true);
         sp.out(QUEUE, ctx);
     }
+
 
     @AfterAll
     static void tearDown() throws Exception {

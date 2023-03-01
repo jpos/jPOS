@@ -22,7 +22,6 @@ import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.annotation.Config;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
@@ -31,8 +30,6 @@ import org.jpos.util.*;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.time.Instant;
@@ -61,47 +58,42 @@ public class TransactionManager
     public static final String  DEFAULT_GROUP = "";
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
     public static final long    MAX_WAIT = 15000L;
-    public static final long    TIMER_PURGE_INTERVAL = 1000L;
     protected Map<String,List<TransactionParticipant>> groups;
     private Set<Destroyable> destroyables = new HashSet<>();
     private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<>();
     private static final ThreadLocal<Long> tlId = new ThreadLocal<>();
     private Metrics metrics;
-    private static ScheduledThreadPoolExecutor loadMonitorExecutor;
     private static Map<TransactionParticipant,ParticipantParams> params = new HashMap<>();
     private long globalMaxTime;
 
-    Space sp;
-    Space psp;
-    Space isp;  // real input space
-    Space iisp; // internal input space
-    String queue;
-    String tailLock;
-    List<Thread> threads;
-    final List<TransactionStatusListener> statusListeners = new ArrayList<>();
-    boolean hasStatusListeners;
-    boolean debug;
-    boolean debugContext;
-    boolean profiler;
-    boolean doRecover;
-    boolean callSelectorOnAbort;
-    boolean abortOnMisconfiguredGroups;
-    int sessions;
-    int maxSessions;
-    int threshold;
-    int maxActiveSessions;
-    private AtomicInteger activeSessions = new AtomicInteger();
-    private AtomicInteger pausedCounter = new AtomicInteger();
-    private AtomicInteger activeTransactions = new AtomicInteger(0);
+    private Space<String,Object> sp;
+    private Space<String,Object> psp;
+    private Space<String,Object> isp;  // real input space
+    private Space<String,Object> iisp; // internal input space
+    private String queue;
+    private String tailLock;
+    private final List<Thread> threads = Collections.synchronizedList(new ArrayList<>());
+    private final List<TransactionStatusListener> statusListeners = new ArrayList<>();
+    private boolean hasStatusListeners;
+    private boolean debug;
+    private boolean debugContext;
+    private boolean profiler;
+    private boolean doRecover;
+    private boolean callSelectorOnAbort;
+    private boolean abortOnMisconfiguredGroups;
+    private int sessions;
+    private int maxSessions;
+    private int threshold;
+    private int maxActiveTransactions;
+    private final AtomicInteger activeSessions = new AtomicInteger();
 
-    volatile long head, tail;
-    long retryInterval = 5000L;
-    long retryTimeout  = 60000L;
-    long pauseTimeout  = 0L;
-    boolean abortOnPauseTimeout = true;
-    Runnable retryTask = null;
-    TPS tps;
-    final Timer timer = DefaultTimer.getTimer();
+    private volatile long head, tail;
+    private long retryInterval = 5000L;
+    private long retryTimeout  = 60000L;
+    private long pauseTimeout  = 0L;
+    private boolean abortOnPauseTimeout = true;
+    private Runnable retryTask = null;
+    private TPS tps;
 
     @Override
     public void initService () throws ConfigurationException {
@@ -109,12 +101,7 @@ public class TransactionManager
         if (queue == null)
             throw new ConfigurationException ("queue property not specified");
         sp  = SpaceFactory.getSpace (cfg.get ("space"));
-        isp = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
-        if (isp == sp)
-            iisp = isp;
-        else {
-            iisp = sp;
-        }
+        isp = iisp = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space", this.toString()));
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
         head = Math.max (initCounter (HEAD, tail), tail);
@@ -128,31 +115,17 @@ public class TransactionManager
     @Override
     public void startService () throws Exception {
         recover();
-        threads = Collections.synchronizedList(new ArrayList(maxSessions));
         if (tps != null)
             tps.stop();
         tps = new TPS (cfg.getBoolean ("auto-update-tps", true));
-        for (int i=0; i<sessions; i++) {
-            new Thread(this).start();
-        }
+        Thread.ofPlatform().start(this);
         if (psp.rdp (RETRY_QUEUE) != null)
             checkRetryTask();
 
-        if (maxSessions > sessions) {
-            loadMonitorExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
-            loadMonitorExecutor.scheduleAtFixedRate(
-              new Thread(() -> {
-                  int count = getSessionsToStandUp();
-                  if (count>0) {
-                      for (int i=0; i<count; i++)
-                          new Thread(this).start();
-                      getLog().info("Created " + count + " additional sessions");
-                  }
-              }), 5, 1, TimeUnit.SECONDS)
-            ;
-        }
         if (iisp != isp) {
-            new Thread(new InputQueueMonitor()).start();
+            Thread.ofVirtual().unstarted(
+              new InputQueueMonitor()
+            ).start();
         }
         NameRegistrar.register(getName(), this);
     }
@@ -160,8 +133,6 @@ public class TransactionManager
     @Override
     public void stopService () {
         NameRegistrar.unregister(getName());
-        if (loadMonitorExecutor != null)
-            loadMonitorExecutor.shutdown();
         Thread[] tt = threads.toArray(new Thread[threads.size()]);
         if (iisp != isp)
             for (Object o=iisp.inp(queue); o != null; o=iisp.inp(queue))
@@ -170,8 +141,7 @@ public class TransactionManager
             iisp.out(queue, Boolean.FALSE, 60 * 1000);
         for (Thread thread : tt) {
             try {
-                thread.join (60*1000);
-                threads.remove(thread);
+                thread.join (5000);
             } catch (InterruptedException e) {
                 getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
                 thread.interrupt();
@@ -208,215 +178,145 @@ public class TransactionManager
 
     @Override
     public void run () {
-        long id = 0;
-        int session = 0; // FIXME
-        List<TransactionParticipant> members = null;
-        Iterator<TransactionParticipant> iter = null;
-        PausedTransaction pt;
-        boolean abort = false;
-        LogEvent evt = null;
-        Profiler prof;
-        boolean paused;
-        boolean transactionActive;
-        Thread thread = Thread.currentThread();
-        if (threads.size() < maxSessions) {
-            threads.add(thread);
-            session = threads.indexOf(thread);
-            activeSessions.incrementAndGet();
-        } else {
-            getLog().warn ("Max sessions reached, new session not created");
-            return;
-        }
-        getLog().info ("start " + thread);
         while (running()) {
-            Serializable context = null;
-            prof = null;
-            evt = null;
-            paused = false;
-            transactionActive = false;
-            thread.setName (getName() + "-" + session + ":idle");
-            int action = -1;
-            try {
-                if (hasStatusListeners)
-                    notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
-                
-                if (isSessionToStandDown())
-                    break;
-
-                Object obj = iisp.in (queue, MAX_WAIT);
-                if (obj == Boolean.FALSE)
-                    continue;   // stopService ``hack''
-
-                if (obj == null) {
-                    if (session+1 > sessions && getActiveSessions() > sessions)
-                        break; // we are an extra session, exit
-                    else {
-                        continue;
-                    }
-                }
-                if (!(obj instanceof Serializable)) {
-                    getLog().error (
-                        "non serializable '" + obj.getClass().getName()
-                       + "' on queue '" + queue + "'"
+            if (heavyLoaded()) {
+                ISOUtil.sleep (100L);
+                getLog().info ("HeavyLoaded - active sessions: " + getActiveSessions());
+                continue;
+            }
+            Object obj = iisp.in (queue, MAX_WAIT);
+            if (obj instanceof Serializable context) {
+                if (getActiveSessions() <= maxSessions) {
+                    if (context instanceof Context ctx)
+                        ctx.log ("active=%d, maxSessions=%d".formatted(getActiveSessions(), maxSessions));
+                    int session = activeSessions.incrementAndGet();
+                    Thread t = Thread.ofVirtual().unstarted(() -> {
+                          runTransaction(context, session);
+                          activeSessions.decrementAndGet();
+                          threads.remove(Thread.currentThread());
+                      }
                     );
-                    continue;
+                    t.setName (getName() + "-" + session + ":starting");
+                    threads.add(t);
+                    t.start();
                 }
-                context = (Serializable) obj;
-                Chronometer chronometer = null;
-                if (obj instanceof Pausable) {
-                    Pausable pausable = (Pausable) obj;
-                    pt = pausable.getPausedTransaction();
-                    if (pt != null) {
-                        pt.cancelExpirationMonitor();
-                        id      = pt.id();
-                        members = pt.members();
-                        iter    = pt.iterator();
-                        abort   = pt.isAborting();
-                        evt     = pt.getLogEvent();
-                        prof    = pt.getProfiler();
-                        if (metrics != null && prof != null)
-                            metrics.record(getName(pt.getParticipant()) + "-resume", prof.getPartialInMillis());
-                        if (prof != null)
-                            prof.reenable();
-                        chronometer = pt.getChronometer();
-                        pausedCounter.decrementAndGet();
-                        if (evt != null && abort)
-                            evt.addMessage ("   [force abort]");
-                    }
-                } else {
-                    pt = null;
-                }
-                if (chronometer == null) {
-                    chronometer = new Chronometer(getStart(context));
-                }
-
-                if (pt == null) {
-                    int running = getActiveTransactions();
-                    if (maxActiveSessions > 0 && running >= maxActiveSessions) {
-                        getLog().warn (
-                            Thread.currentThread().getName() 
-                            + ": emergency retry, running-sessions=" + running 
-                            + ", max-active-sessions=" + maxActiveSessions
-                        );
-                        psp.out (RETRY_QUEUE, obj, retryTimeout);
-                        checkRetryTask();
-                        continue;
-                    }
-                    abort = false;
-                    id = nextId ();
-                    members = new ArrayList ();
-                    iter = getParticipants (DEFAULT_GROUP).iterator();
-                    activeTransactions.incrementAndGet();
-                }
-                transactionActive = true;
-                if (debug) {
-                    if (evt == null) {
-                        evt = getLog().createLogEvent("debug",
-                          Thread.currentThread().getName()
-                            + ":" + Long.toString(id) +
-                            (pt != null ? " [resuming]" : "")
-                        );
-                        if (debugContext) {
-                            evt.addMessage (context);
-                        }
-                    }
-                    if (prof == null)
-                        prof = new Profiler();
-                    else
-                        prof.checkPoint("resume" +
-                                        (pt != null && pt.isAborting() ? " [force abort]" : ""));
-                }
-                snapshot (id, context, PREPARING);
-                setThreadLocal(id, context);
-                action = prepare (session, id, context, members, iter, abort, evt, prof, chronometer);
-                removeThreadLocal();
-                switch (action) {
-                    case PAUSE:
-                        paused = true;
-                        if (id % TIMER_PURGE_INTERVAL == 0)
-                            timer.purge();
-                        pausedCounter.incrementAndGet();
-                        break;
-                    case PREPARED:
-                        if (members.size() > 0) {
-                            setState(id, COMMITTING);
-                            setThreadLocal(id, context);
-                            commit(session, id, context, members, false, evt, prof);
-                            removeThreadLocal();
-                        }
-                        break;
-                    case ABORTED:
-                        if (members.size() > 0) {
-                            setThreadLocal(id, context);
-                            abort(session, id, context, members, false, evt, prof);
-                            removeThreadLocal();
-                        }
-                        break;
-                    case RETRY:
-                        psp.out (RETRY_QUEUE, context);
-                        checkRetryTask();
-                        break;
-                    case NO_JOIN:
-                        break;
-                }
-                if ((action & PAUSE) == 0) {
-                    snapshot (id, null, DONE);
-                    if (id == tail) {
-                        checkTail ();
-                    } else {
-                        purge (id, false);
-                    }
-                    tps.tick();
-                }
-            } catch (Throwable t) {
-                if (evt == null)
-                    getLog().fatal (t); // should never happen
-                else
-                    evt.addMessage (t);
-            } finally {
-                removeThreadLocal();
-                if (transactionActive && !paused)
-                    activeTransactions.decrementAndGet();
-                if (hasStatusListeners) {
-                    notifyStatusListeners (
-                        session,
-                        paused ? TransactionStatusEvent.State.PAUSED : TransactionStatusEvent.State.DONE, 
-                        id, "", context);
-                }
-                if (evt != null && (action == PREPARED || action == ABORTED || (action == -1 && prof != null))) {
-                    switch (action) {
-                        case PREPARED :
-                            evt.setTag("commit");
-                            break;
-                        case ABORTED :
-                            evt.setTag ("abort");
-                            break;
-                        case -1:
-                            evt.setTag ("undefined");
-                            break;
-                    }
-                    if (getInTransit() > Math.max(maxActiveSessions, activeSessions.get()) * 100) {
-                        evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
-                    }
-                    evt.addMessage (
-                        String.format (" %s, elapsed=%dms",
-                            tmInfo(),
-                            prof != null ? prof.getElapsedInMillis() : -1
-                        )
-                    );
-                    if (prof != null)
-                        evt.addMessage (prof);
-                    try {
-                        Logger.log(freeze(context, evt, prof));
-                    } catch (Throwable t) {
-                        getLog().error(t);
-                    }
+                else {
+                    ISOUtil.sleep(100L);
+                    iisp.push(queue, context);  // push it back
                 }
             }
         }
-        threads.remove(thread);
-        int currentActiveSessions = activeSessions.decrementAndGet();
-        getLog().info ("stop " + Thread.currentThread() + ", active sessions=" + currentActiveSessions);
+    }
+
+    private void runTransaction (Serializable context, int session) {
+        long id = 0;
+        List<TransactionParticipant> members = null;
+        Iterator<TransactionParticipant> iter = null;
+        boolean abort;
+        LogEvent evt;
+        Profiler prof;
+        Thread thread = Thread.currentThread();
+
+        prof = null;
+        evt = null;
+        thread.setName (getName() + "-" + session + ":idle");
+        int action = -1;
+        try {
+            if (hasStatusListeners)
+                notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
+
+            Chronometer chronometer = new Chronometer(getStart(context));
+
+            abort = false;
+            id = nextId ();
+            members = new ArrayList<> ();
+            iter = getParticipants (DEFAULT_GROUP).iterator();
+            if (debug) {
+                evt = getLog().createLogEvent(
+                  "debug",
+                  "%s:%d".formatted(Thread.currentThread().getName(), id)
+                );
+                if (debugContext) {
+                    evt.addMessage (context);
+                }
+                prof = new Profiler();
+            }
+            snapshot (id, context, PREPARING);
+            setThreadLocal(id, context);
+            action = prepare (session, id, context, members, iter, abort, evt, prof, chronometer);
+            removeThreadLocal();
+            switch (action) {
+                case PREPARED:
+                    if (members.size() > 0) {
+                        setState(id, COMMITTING);
+                        setThreadLocal(id, context);
+                        commit(session, id, context, members, false, evt, prof);
+                        removeThreadLocal();
+                    }
+                    break;
+                case ABORTED:
+                    if (members.size() > 0) {
+                        setThreadLocal(id, context);
+                        abort(session, id, context, members, false, evt, prof);
+                        removeThreadLocal();
+                    }
+                    break;
+                case RETRY:
+                    psp.out (RETRY_QUEUE, context);
+                    checkRetryTask();
+                    break;
+                case NO_JOIN:
+                    break;
+            }
+            snapshot (id, null, DONE);
+            if (id == tail) {
+                checkTail ();
+            } else {
+                purge (id, false);
+            }
+            tps.tick();
+        } catch (Throwable t) {
+            if (evt == null)
+                getLog().fatal (t); // should never happen
+            else
+                evt.addMessage (t);
+        } finally {
+            removeThreadLocal();
+            if (hasStatusListeners) {
+                notifyStatusListeners (
+                  session,
+                  TransactionStatusEvent.State.DONE,
+                  id, "", context);
+            }
+            if (evt != null && (action == PREPARED || action == ABORTED || (action == -1 && prof != null))) {
+                switch (action) {
+                    case PREPARED :
+                        evt.setTag("commit");
+                        break;
+                    case ABORTED :
+                        evt.setTag ("abort");
+                        break;
+                    case -1:
+                        evt.setTag ("undefined");
+                        break;
+                }
+                if (getInTransit() > Math.max(maxActiveTransactions, activeSessions.get()) * 100L) {
+                    evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
+                }
+                evt.addMessage (
+                  String.format (" %s, elapsed=%dms",
+                    tmInfo(),
+                    prof.getElapsedInMillis()
+                  )
+                );
+                evt.addMessage (prof);
+                try {
+                    Logger.log(freeze(context, evt, prof));
+                } catch (Throwable t) {
+                    getLog().error(t);
+                }
+            }
+        }
     }
 
     @Override
@@ -448,17 +348,17 @@ public class TransactionManager
         retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
         pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
         abortOnPauseTimeout = cfg.getBoolean("abort-on-pause-timeout", true);
-        maxActiveSessions  = cfg.getInt  ("max-active-sessions", 0);
+        maxActiveTransactions = cfg.getInt  ("max-active-sessions", 0);
         sessions = cfg.getInt ("sessions", 1);
         threshold = cfg.getInt ("threshold", sessions / 2);
         maxSessions = cfg.getInt ("max-sessions", sessions);
         globalMaxTime = cfg.getLong("max-time", 0L);
         if (maxSessions < sessions)
             throw new ConfigurationException("max-sessions < sessions");
-        if (maxActiveSessions > 0) {
-            if (maxActiveSessions < sessions)
+        if (maxActiveTransactions > 0) {
+            if (maxActiveTransactions < sessions)
                 throw new ConfigurationException("max-active-sessions < sessions");
-            if (maxActiveSessions < maxSessions)
+            if (maxActiveTransactions < maxSessions)
                 throw new ConfigurationException("max-active-sessions < max-sessions");
         }
         callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", true);
@@ -621,7 +521,7 @@ public class TransactionManager
             setThreadName(id, "abort", p);
             p.abort(id, context);
         } catch (Throwable t) {
-            getLog().warn ("ABORT: " + Long.toString (id), t);
+            getLog().warn ("ABORT: " + id, t);
         }
         if (metrics != null)
             metrics.record(getName(p) + "-abort", c.elapsed());
@@ -630,7 +530,6 @@ public class TransactionManager
         (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof, Chronometer chronometer)
     {
         boolean retry = false;
-        boolean pause = false;
         for (int i=0; iter.hasNext (); i++) {
             int action;
             if (i > MAX_PARTICIPANTS) {
@@ -676,7 +575,6 @@ public class TransactionManager
 
                 abort  = (action & PREPARED) == ABORTED;
                 retry  = (action & RETRY) == RETRY;
-                pause  = (action & PAUSE) == PAUSE;
 
                 if (evt != null) {
                     evt.addMessage ("        prepare: "
@@ -685,7 +583,6 @@ public class TransactionManager
                             + (timeout ? " TIMEOUT" : "")
                             + (maxTime ? " MAX_TIMEOUT" : "")
                             + (retry ? " RETRY" : "")
-                            + (pause ? " PAUSE" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
                             + ((action & NO_JOIN) == NO_JOIN ? " NO_JOIN" : ""));
                     if (prof != null)
@@ -721,7 +618,7 @@ public class TransactionManager
                 }
                 if (groupName != null) {
                     StringTokenizer st = new StringTokenizer (groupName, " ,");
-                    List participants = new ArrayList();
+                    List<TransactionParticipant> participants = new ArrayList();
                     while (st.hasMoreTokens ()) {
                         String grp = st.nextToken();
                         addGroup (id, grp);
@@ -736,35 +633,7 @@ public class TransactionManager
                         participants.add (iter.next());
 
                     iter = participants.iterator();
-                    continue;
                 }
-            }
-            if (pause) {
-                if (context instanceof Pausable) {
-                    Pausable pausable = (Pausable) context;
-                    long t = pausable.getTimeout();
-                    if (t == 0) 
-                        t = pauseTimeout;
-                    TimerTask expirationMonitor = null;
-                    if (t > 0)
-                        expirationMonitor = new PausedMonitor (pausable);
-                    PausedTransaction pt = new PausedTransaction (
-                        this, id, p, members, iter, abort, expirationMonitor, prof, evt, chronometer
-                    );
-                    pausable.setPausedTransaction (pt);
-                    if (expirationMonitor != null) {
-                        synchronized (context) {
-                            if (!pt.isResumed()) {
-                                timer.schedule (
-                                    expirationMonitor, t
-                                );
-                            }
-                        }
-                    }
-                } else {
-                    throw new RuntimeException ("Unable to PAUSE transaction - Context is not Pausable");
-                }
-                return PAUSE;
             }
         }
         return abort ? retry ? RETRY : ABORTED : PREPARED;
@@ -870,7 +739,7 @@ public class TransactionManager
         StringBuilder sb = new StringBuilder (getName());
         sb.append ('.');
         sb.append (prefix);
-        sb.append (Long.toString (id));
+        sb.append (id);
         return sb.toString ();
     }
     protected long initCounter (String name, long defValue) {
@@ -882,13 +751,12 @@ public class TransactionManager
         return L;
     }
     protected void commitOff (Space sp) {
-        if (sp instanceof JDBMSpace) {
-            ((JDBMSpace) sp).setAutoCommit(false);
+        if (sp instanceof JDBMSpace jsp) {
+            jsp.setAutoCommit(false);
         }
     }
     protected void commitOn (Space sp) {
-        if (sp instanceof JDBMSpace) {
-            JDBMSpace jsp = (JDBMSpace) sp;
+        if (sp instanceof JDBMSpace jsp) {
             jsp.commit ();
             jsp.setAutoCommit(true);
         }
@@ -908,10 +776,8 @@ public class TransactionManager
     protected void checkTail () {
         Object lock = sp.in (tailLock);
         while (tailDone()) {
-            // if (debug) {
-            //    getLog().debug ("tailDone " + tail);
-            // }
             tail++;
+            Thread.yield();
         }
         syncTail ();
         sp.out(tailLock, lock);
@@ -1026,7 +892,7 @@ public class TransactionManager
     protected synchronized void checkRetryTask () {
         if (retryTask == null) {
             retryTask = new RetryTask();
-            new Thread(retryTask).start();
+            Thread.ofVirtual().start(retryTask).setDaemon(true);
         }
     }
 
@@ -1042,22 +908,6 @@ public class TransactionManager
      */
     protected FrozenLogEvent freeze(Serializable context, LogEvent evt, Profiler prof) {
         return new FrozenLogEvent(evt);
-    }
-
-    public static class PausedMonitor extends TimerTask {
-        Pausable context;
-        public PausedMonitor (Pausable context) {
-            super();
-            this.context = context;
-        }
-        @Override
-        public void run() {
-            cancel();
-            PausedTransaction paused = context.getPausedTransaction();
-            if (paused != null && paused.getTransactionManager().abortOnPauseTimeout)
-                paused.forceAbort();
-            context.resume();
-        }
     }
 
     public class RetryTask implements Runnable {
@@ -1133,7 +983,7 @@ public class TransactionManager
         if (activeSessions < maxSessions && outstandingTransactions > threshold) {
             count = Math.min(outstandingTransactions, maxSessions - activeSessions);
         }
-        return count;
+        return Math.min(1000, count); // reasonable value for virtual thread creation within one second
     }
   
     /** 
@@ -1147,12 +997,6 @@ public class TransactionManager
     @Override
     public int getActiveSessions() {
         return activeSessions.intValue();
-    }
-    public int getPausedCounter() {
-        return pausedCounter.intValue();
-    }
-    public int getActiveTransactions() {
-        return activeTransactions.intValue();
     }
     public int getMaxSessions() {
         return maxSessions;
@@ -1200,10 +1044,10 @@ public class TransactionManager
     }
 
     private String tmInfo() {
-        return String.format ("in-transit=%d/%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d%s",
-          getActiveTransactions(), getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
+        return String.format ("in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d%s",
+          getInTransit(), head, tail, getOutstandingTransactions(),
           getActiveSessions(), maxSessions,
-          (tps != null ? ", " + tps.toString() : "")
+          (tps != null ? ", " + tps : "")
         );
     }
 
@@ -1224,6 +1068,10 @@ public class TransactionManager
                 return (Instant) o;
         }
         return Instant.now();
+    }
+
+    private boolean heavyLoaded() {
+        return getActiveSessions() >= maxSessions;
     }
 
     public record ParticipantParams (String name, long timeout, long maxTime) {}

@@ -1,6 +1,7 @@
 <txnmgr-delay class="org.jpos.transaction.TransactionManager" logger="Q2">
  <property name="queue"            value="TXNMGRTEST.DELAY" />
- <property name="sessions"         value="4" />
+ <property name="sessions"         value="10" />
+ <property name="max-sessions"         value="256" />
  <property name="input-space" value="tspace:txnmgrtest" />
  <property name="max-time" value="500" />
 

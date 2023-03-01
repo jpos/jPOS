@@ -31,8 +31,6 @@ public interface TransactionManagerMBean extends QBeanSupportMBean {
     boolean getDebugContext();
     int getOutstandingTransactions();
     int getActiveSessions();
-    int getPausedCounter();
-    int getActiveTransactions();
     int getMaxSessions();
     String getTPSAsString();
     float getTPSAvg();

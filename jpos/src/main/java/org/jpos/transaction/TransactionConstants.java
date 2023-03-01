@@ -18,12 +18,10 @@
 
 package org.jpos.transaction;
 
-
 public interface TransactionConstants {
     int ABORTED  = 0;
     int PREPARED = 1;
     int RETRY    = 2;
-    int PAUSE    = 4;
 
     /**
      * This participant does not join the transaction

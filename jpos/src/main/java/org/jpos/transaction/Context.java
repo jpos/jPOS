@@ -30,12 +30,11 @@ import java.util.*;
 
 import static org.jpos.transaction.ContextConstants.*;
 
-public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
-    private static final long serialVersionUID = -6441115276439791245L;
+public class Context implements Externalizable, Loggeable, Cloneable {
+    @Serial
+    private static final long serialVersionUID = 3748639681455895902L;
     private transient Map<Object,Object> map; // transient map
     private Map<Object,Object> pmap;          // persistent (serializable) map
-    private long timeout;
-    private boolean resumeOnPause = false;
     private transient boolean trace = false;
 
     public Context () {
@@ -248,16 +247,14 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Context context = (Context) o;
-        return timeout == context.timeout &&
-          resumeOnPause == context.resumeOnPause &&
-          trace == context.trace &&
+        return trace == context.trace &&
           Objects.equals(map, context.map) &&
           Objects.equals(pmap, context.pmap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(map, pmap, timeout, resumeOnPause, trace);
+        return Objects.hash(map, pmap, trace);
     }
 
     /**
@@ -387,37 +384,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     public void checkPoint (String detail) {
         getProfiler().checkPoint (detail);
     }
-    public void setPausedTransaction (PausedTransaction p) {
-        put (PAUSED_TRANSACTION.toString(), p);
-        synchronized (this) {
-            if (resumeOnPause) {
-                resume();
-            }
-        }
-    }
-    public PausedTransaction getPausedTransaction() {
-        return get (PAUSED_TRANSACTION.toString());
-    }
-    public PausedTransaction getPausedTransaction(long timeout) {
-        return get (PAUSED_TRANSACTION.toString(), timeout);
-    }
-    
-    public void setTimeout (long timeout) {
-        this.timeout = timeout;
-    }
-    public long getTimeout () {
-        return timeout;
-    }
-    public synchronized void resume() {
-        PausedTransaction pt = getPausedTransaction();
-        if (pt != null && !pt.isResumed()) {
-            pt.setResumed (true);
-            resumeOnPause = false;
-            pt.getTransactionManager().push (this);
-        } else {
-            resumeOnPause = true;
-        }
-    }
+
     public boolean isTrace() {
         return trace;
     }

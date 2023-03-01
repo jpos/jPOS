@@ -6,7 +6,7 @@ ext {
         sleepycat_je: 'com.sleepycat:je:18.3.12',
         commons_cli: 'commons-cli:commons-cli:1.5.0',
         commons_lang3: 'org.apache.commons:commons-lang3:3.12.0',
-        jline: 'org.jline:jline:3.21.0',
+        jline: 'org.jline:jline:3.22.0',
         beanshell: 'org.apache-extras.beanshell:bsh:2.0b6',
         javatuples: 'org.javatuples:javatuples:1.2',
         osgi_core: 'org.osgi:org.osgi.core:6.0.0',

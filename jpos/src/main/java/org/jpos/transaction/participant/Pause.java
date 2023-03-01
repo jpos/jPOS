@@ -19,37 +19,23 @@
 package org.jpos.transaction.participant;
 
 import java.io.Serializable;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
-import org.jpos.transaction.Context;
 import org.jpos.transaction.TransactionParticipant;
-import org.jpos.util.ConcurrentUtil;
+import java.util.concurrent.locks.LockSupport;
 
 public class Pause implements TransactionParticipant, Configurable {
     private long timeout = 0L;
-    private ScheduledThreadPoolExecutor executor = ConcurrentUtil.newScheduledThreadPoolExecutor();
 
     public int prepare(long id, Serializable context) {
-        Context ctx = (Context) context;
-        executor.schedule(new Resumer(ctx), timeout, TimeUnit.MILLISECONDS);
-        return PREPARED | PAUSE | NO_JOIN | READONLY;
+        if (timeout > 0) {
+            LockSupport.parkNanos(timeout * 1_000_000L);
+        }
+        return PREPARED | NO_JOIN | READONLY;
     }
 
     public void setConfiguration(Configuration cfg) {
         timeout = cfg.getLong ("timeout");
-    }
-
-    static class Resumer implements Runnable {
-        Context ctx;
-        public Resumer(Context ctx) {
-            this.ctx = ctx;
-        }
-        @Override
-        public void run () {
-            ctx.resume();
-        }
     }
 }

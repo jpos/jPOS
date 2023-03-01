@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor">
-  <log-listener class="org.jpos.util.SimpleLogListener" />
+<!--  <property name="redirect" value="stdout, stderr" />-->
+  
+<!--  <log-listener class="org.jpos.util.SimpleLogListener" />-->
+  <log-listener class="org.jpos.util.RotateLogListener">
+    <property name="file" value="/tmp/q2.log" />
+    <property name="window" value="86400" />
+    <property name="copies" value="1000" />
+    <property name="maxsize" value="100000000" />
+  </log-listener>
 </logger>

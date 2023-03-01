@@ -47,20 +47,7 @@ public class QueryHostTest implements TransactionConstants, MUX {
         queryHost.setConfiguration(cfg);
         NameRegistrar.register("mux.TEST", this);
     }
-
-    @Test
-    public void testSimpleQueryAsync() throws Exception {
-        Context ctx = new Context();
-        cfg.put("continuations", "yes");
-        queryHost.setConfiguration(cfg);
-        ctx.put(ContextConstants.REQUEST.toString(), createDummyRequest());
-        ctx.put(ContextConstants.DESTINATION.toString(), "TEST");
-        int action = queryHost.prepare(1L, ctx);
-        assertTrue(action == (PREPARED | READONLY | PAUSE | NO_JOIN));
-        assertNotNull (ctx.get(ContextConstants.RESPONSE.toString(), 1000));
-        assertFalse (ctx.getResult().hasFailures(), "Should not have failures");
-    }
-
+    
     @Test
     public void testSimpleQuerySync() throws Exception {
         Context ctx = new Context();

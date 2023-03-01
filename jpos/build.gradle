@@ -338,3 +338,8 @@ task viewTests (description: 'Open Test Reports') {
     }
 }
 
+test {
+  minHeapSize = "4G" 
+  maxHeapSize = "8G"
+}
+

@@ -9,14 +9,11 @@ then
 else
   rm -f jpos.pid
   exec java -server \
-    -XX:+IgnoreUnrecognizedVMOptions \
-    -Xmx1G \
+    -Xmx4G \
+    --enable-preview \
     -Xlog:gc:log/gc.log \
-    -Djava.net.preferIPv4Stack=true \
-    -XX:+UseConcMarkSweepGC  \
-    -XX:+ParallelRefProcEnabled \
-    -XX:ParallelGCThreads=2 \
-    -XX:+TieredCompilation \
     -jar @jarname@  --pid="jpos.pid" "$@"
 fi
 
+# -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 \
+# --show-module-resolution \

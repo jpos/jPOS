@@ -34,7 +34,7 @@ import org.jpos.util.NameRegistrar;
 import org.jpos.transaction.Context;
 
 @SuppressWarnings("unused")
-public class QueryHost implements TransactionParticipant, ISOResponseListener, Configurable {
+public class QueryHost implements TransactionParticipant, Configurable {
     private static final long DEFAULT_TIMEOUT = 30000L;
     private static final long DEFAULT_WAIT_TIMEOUT = 1000L;
 
@@ -75,19 +75,14 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
         if (isConnected(mux)) {
             long t = Math.max(timeout - chronometer.elapsed(), 1000L); // give at least a second to catch a response
             try {
-                if (continuations) {
-                    mux.request(m, t, this, ctx);
-                    return PREPARED | READONLY | PAUSE | NO_JOIN;
+                ISOMsg resp = mux.request(m, t);
+                if (resp != null) {
+                    ctx.put(responseName, resp);
+                    return PREPARED | READONLY | NO_JOIN;
+                } else if (ignoreUnreachable) {
+                    ctx.log(String.format ("MUX '%s' no response", muxName));
                 } else {
-                    ISOMsg resp = mux.request(m, t);
-                    if (resp != null) {
-                        ctx.put(responseName, resp);
-                        return PREPARED | READONLY | NO_JOIN;
-                    } else if (ignoreUnreachable) {
-                        ctx.log(String.format ("MUX '%s' no response", muxName));
-                    } else {
-                        return result.fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' does not respond", muxName).FAIL();
-                    }
+                    return result.fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' does not respond", muxName).FAIL();
                 }
             } catch (ISOException e) {
                 return result.fail(CMF.SYSTEM_ERROR, Caller.info(), e.getMessage()).FAIL();
@@ -100,19 +95,6 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
         return PREPARED | NO_JOIN | READONLY;
     }
 
-    public void responseReceived (ISOMsg resp, Object handBack) {
-        Context ctx = (Context) handBack;
-        ctx.put (responseName, resp);
-        ctx.resume();
-    }
-    public void expired (Object handBack) {
-        Context ctx = (Context) handBack;
-        String ds = ctx.getString(destination);
-        String muxName = cfg.get ("mux." + ds , "mux." + ds);
-        ctx.getResult().fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' does not respond", muxName).FAIL();
-        ctx.resume();
-    }
-
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         timeout = cfg.getLong ("timeout", DEFAULT_TIMEOUT);
@@ -120,7 +102,6 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
         requestName = cfg.get ("request", ContextConstants.REQUEST.toString());
         responseName = cfg.get ("response", ContextConstants.RESPONSE.toString());
         destination = cfg.get ("destination", ContextConstants.DESTINATION.toString());
-        continuations = cfg.getBoolean("continuations", true);
         ignoreUnreachable = cfg.getBoolean("ignore-host-unreachable", false);
         checkConnected = cfg.getBoolean("check-connected", checkConnected);
     }

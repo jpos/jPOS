@@ -135,23 +135,8 @@ public class ContextTest {
     }
 
     @Test
-    public void testGetPausedTransaction() throws Throwable {
-        Context context = new Context();
-        PausedTransaction result = context.getPausedTransaction();
-        assertNull(result, "result");
-    }
-
-    @Test
     public void testGetProfiler() throws Throwable {
         new Context().getProfiler();
-        assertTrue(true, "Test completed without Exception");
-    }
-
-    @Test
-    public void testGetProfiler1() throws Throwable {
-        Context context = new Context();
-        context.getPausedTransaction();
-        context.getProfiler();
         assertTrue(true, "Test completed without Exception");
     }
 
@@ -170,14 +155,6 @@ public class ContextTest {
     }
 
     @Test
-    public void testGetString3() throws Throwable {
-        Context context = new Context();
-        context.getPausedTransaction();
-        String result = context.getString("", null);
-        assertNull(result, "result");
-    }
-
-    @Test
     public void testGetThrowsNullPointerException() throws Throwable {
         Context context = new Context();
         try {
@@ -191,15 +168,7 @@ public class ContextTest {
             }
         }
     }
-
-    @Test
-    public void testLog() throws Throwable {
-        Context context = new Context();
-        context.getPausedTransaction();
-        context.log("testString");
-        assertTrue(true, "Test completed without Exception");
-    }
-
+    
     @Test
     public void testLog1() throws Throwable {
         new Context().log("");

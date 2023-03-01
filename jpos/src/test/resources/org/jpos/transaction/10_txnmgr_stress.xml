@@ -1,0 +1,16 @@
+<txnmgr-stress class="org.jpos.transaction.TransactionManager" logger="Q2">
+ <property name="queue"            value="TXNMGRTEST.STRESS" />
+ <property name="sessions"         value="1" />
+ <property name="max-sessions"         value="256000" />
+<!-- <property name="max-active-sessions" value="100000" />-->
+ <property name="input-space" value="tspace:txnmgrtest" />
+ <property name="max-time" value="500000" />
+
+ <participant class="org.jpos.transaction.participant.Delay" timeout="200000" max-time="300000">
+  <property name="delay-name" value="DELAY-0" />
+ </participant>
+ <participant class="org.jpos.transaction.participant.Pause">
+  <property name="timeout" value="5000" />
+ </participant>
+ <participant class="org.jpos.transaction.participant.SimulateResponse" />
+</txnmgr-stress>
