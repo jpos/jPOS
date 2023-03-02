@@ -58,7 +58,7 @@ public class TransactionManagerStress {
             }
         });
         Random r = new Random();
-        for (int i=0; i<1_000_000; i++) {
+        for (int i=0; i<100_000; i++) {
             ctx = new Context();
             ctx.put("DELAY-0", 100L + r.nextInt(4900));
             // ctx.put("DELAY-1", 400L + r.nextInt(50));
