@@ -31,10 +31,11 @@ jobs:
       env:
         TERM: dumb
     - name: Upload test results
+      if: success() || failure()
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: jpos/build/reports/tests/test/index.html
+        path: */build/reports/tests/test/index.html
     - name: Dependency Check Analyze
       run: ./gradlew jpos:dependencyCheckAnalyze --info
       env:
