@@ -30,7 +30,13 @@ jobs:
       run: ./gradlew jpos:check --info
       env:
         TERM: dumb
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: build/reports/tests/test/index.html
     - name: Dependency Check Analyze
       run: ./gradlew jpos:dependencyCheckAnalyze --info
       env:
         TERM: dumb
+
