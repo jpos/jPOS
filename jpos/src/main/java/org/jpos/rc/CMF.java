@@ -114,8 +114,8 @@ public enum CMF implements IRC {
     INVALID_CARD(1804),
     CARD_NOT_ACTIVE(1806),
     CARD_NOT_CONFIGURED(1808),
-    SYSTEM_ERROR_DB(1811),
-    SYSTEM_ERROR_TXN(1812),
+    SYSTEM_ERROR_DB(1811, false, true),
+    SYSTEM_ERROR_TXN(1812,false, true),
     CONFIGURATION_ERROR(1818),
     INVALID_FIELD(1830),
     MISCONFIGURED_ENDPOINT(1831),
@@ -212,14 +212,14 @@ public enum CMF implements IRC {
     // User specific result codes
     USER(90000);
 
-    int irc;
-    String ircStr;
+    private final int irc;
+    private final String ircStr;
 
-    boolean success;
-    boolean inhibit;
+    private final boolean success;
+    private final boolean inhibit;
 
-    private static Map<Integer,IRC> lookupInt = new HashMap<>();
-    private static Map<String,IRC>  lookupStr = new HashMap<>();
+    private static final Map<Integer,IRC> lookupInt = new HashMap<>();
+    private static final Map<String,IRC>  lookupStr = new HashMap<>();
     static {
         // This section executes after all the enum instances have been constructed
         for (IRC irc : values()) {
