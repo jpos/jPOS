@@ -9,7 +9,7 @@ buildscript {
 }
 plugins {
    id "org.gradlex.extra-java-module-info" version "1.1"
-   id 'checkstyle'
+   // id 'checkstyle'
 }
 apply plugin: 'biz.aQute.bnd.builder'
 apply plugin: 'org.owasp.dependencycheck'
@@ -185,10 +185,10 @@ task q2jar (type: Bundle) {
     )
 }
 
-checkstyle {
-    ignoreFailures = true
-    configFile file("${rootProject.projectDir}/.github/linters/sun_checks.xml")
-}
+//checkstyle {
+//    ignoreFailures = true
+//    configFile file("${rootProject.projectDir}/.github/linters/sun_checks.xml")
+//}
 
 task bundleFull (type: Bundle) {
     dependsOn jar
