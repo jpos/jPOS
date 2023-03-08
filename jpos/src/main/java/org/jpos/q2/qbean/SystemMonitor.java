@@ -30,10 +30,7 @@ import org.jpos.util.*;
 import javax.crypto.Cipher;
 import javax.management.MBeanServerConnection;
 import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.management.RuntimeMXBean;
-import java.lang.management.ThreadMXBean;
+import java.lang.management.*;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
@@ -212,6 +209,7 @@ public class SystemMonitor extends QBeanSupport
         p.printf ("%s       drift : %d%n", indent, delay);
         p.printf ("%smemory(t/u/f): %d/%d/%d%n", indent,
                 r.totalMemory()/MB, (r.totalMemory() - r.freeMemory())/MB, r.freeMemory()/MB);
+        dumpGCStats(p, indent);
         p.printf("%s     encoding: %s%n", indent, Charset.defaultCharset());
         p.printf("%s     timezone: %s (%s) %s%n", indent, zi,
                 zi.getDisplayName(TextStyle.FULL, Locale.getDefault()),
@@ -276,5 +274,15 @@ public class SystemMonitor extends QBeanSupport
                 }
             });
         }
+    }
+
+    private void dumpGCStats(PrintStream p, String indent) {
+        long totalCount = 0;
+        long totalTime = 0;
+        for(GarbageCollectorMXBean gc : ManagementFactory.getGarbageCollectorMXBeans()) {
+            totalCount += Math.max(gc.getCollectionCount(), 0L);
+            totalTime += Math.max(gc.getCollectionTime(), 0L);
+        }
+        p.printf ("%s     GC Stats: %d/%d%n", indent, totalCount, totalTime);
     }
 }
