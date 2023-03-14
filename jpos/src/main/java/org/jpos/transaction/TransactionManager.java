@@ -723,12 +723,12 @@ public class TransactionManager
                     PausedTransaction pt = new PausedTransaction (
                         this, id, p, members, iter, abort, expirationMonitor, prof, evt
                     );
-                    pausable.setPausedTransaction (pt);
-                    if (expirationMonitor != null) {
-                        synchronized (context) {
+                    synchronized (context) {
+                        pausable.setPausedTransaction (pt);
+                        if (expirationMonitor != null && !pt.isResumed()) {
                             if (!pt.isResumed()) {
                                 timer.schedule (
-                                    expirationMonitor, t
+                                  expirationMonitor, t
                                 );
                             }
                         }
