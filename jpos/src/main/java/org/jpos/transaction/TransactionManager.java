@@ -30,6 +30,8 @@ import org.jpos.util.*;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.time.Instant;
@@ -72,7 +74,6 @@ public class TransactionManager
     private Space<String,Object> iisp; // internal input space
     private String queue;
     private String tailLock;
-    private final List<Thread> threads = Collections.synchronizedList(new ArrayList<>());
     private final List<TransactionStatusListener> statusListeners = new ArrayList<>();
     private boolean hasStatusListeners;
     private boolean debug;
@@ -94,6 +95,7 @@ public class TransactionManager
     private boolean abortOnPauseTimeout = true;
     private Runnable retryTask = null;
     private TPS tps;
+    private ExecutorService executor;
 
     @Override
     public void initService () throws ConfigurationException {
@@ -110,6 +112,11 @@ public class TransactionManager
         groups = new HashMap<>();
         initParticipants (getPersist());
         initStatusListeners (getPersist());
+        executor = Executors.newThreadPerTaskExecutor(
+          Thread.ofVirtual()
+          .allowSetThreadLocals(true)
+          .inheritInheritableThreadLocals(false)
+          .factory());
     }
 
     @Override
@@ -133,20 +140,11 @@ public class TransactionManager
     @Override
     public void stopService () {
         NameRegistrar.unregister(getName());
-        Thread[] tt = threads.toArray(new Thread[threads.size()]);
         if (iisp != isp)
             for (Object o=iisp.inp(queue); o != null; o=iisp.inp(queue))
                 isp.out(queue, o); // push back to replicated space
-        for (Thread t : tt)
-            iisp.out(queue, Boolean.FALSE, 60 * 1000);
-        for (Thread thread : tt) {
-            try {
-                thread.join (5000);
-            } catch (InterruptedException e) {
-                getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
-                thread.interrupt();
-            }
-        }
+
+
         tps.stop();
         for (Destroyable destroyable : destroyables) {
             try {
@@ -190,15 +188,10 @@ public class TransactionManager
                     if (context instanceof Context ctx)
                         ctx.log ("active=%d, maxSessions=%d".formatted(getActiveSessions(), maxSessions));
                     int session = activeSessions.incrementAndGet();
-                    Thread t = Thread.ofVirtual().unstarted(() -> {
-                          runTransaction(context, session);
-                          activeSessions.decrementAndGet();
-                          threads.remove(Thread.currentThread());
-                      }
-                    );
-                    t.setName (getName() + "-" + session + ":starting");
-                    threads.add(t);
-                    t.start();
+                    executor.execute(() -> {
+                        runTransaction(context, session);
+                        activeSessions.decrementAndGet();
+                    });
                 }
                 else {
                     ISOUtil.sleep(100L);
