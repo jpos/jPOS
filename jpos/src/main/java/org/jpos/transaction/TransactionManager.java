@@ -726,11 +726,9 @@ public class TransactionManager
                     synchronized (context) {
                         pausable.setPausedTransaction (pt);
                         if (expirationMonitor != null && !pt.isResumed()) {
-                            if (!pt.isResumed()) {
-                                timer.schedule (
-                                  expirationMonitor, t
-                                );
-                            }
+                            timer.schedule (
+                              expirationMonitor, t
+                            );
                         }
                     }
                 } else {
