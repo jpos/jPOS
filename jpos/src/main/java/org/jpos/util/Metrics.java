@@ -32,6 +32,9 @@ public class Metrics implements Loggeable {
     public Metrics(Histogram template) {
         super();
         this.template = template;
+        if (template != null && template.getStartTimeStamp() == Long.MAX_VALUE) {
+            template.setStartTimeStamp(System.currentTimeMillis());
+        }
     }
 
     public Map<String,Histogram> metrics() {
