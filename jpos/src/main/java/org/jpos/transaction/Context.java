@@ -27,15 +27,20 @@ import org.jpos.rc.Result;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 
 import static org.jpos.transaction.ContextConstants.*;
 
-public class Context implements Externalizable, Loggeable, Cloneable {
-    @Serial
-    private static final long serialVersionUID = 3748639681455895902L;
+public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
+    private static final long serialVersionUID = 2604524947983441462L;
     private transient Map<Object,Object> map; // transient map
     private Map<Object,Object> pmap;          // persistent (serializable) map
     private transient boolean trace = false;
+    private Semaphore paused = new Semaphore(1);
+    private CompletableFuture<Integer> pausedFuture;
+    private long timeout;
 
     public Context () {
         super ();
@@ -392,6 +397,30 @@ public class Context implements Externalizable, Loggeable, Cloneable {
         if (trace)
             getProfiler();
         this.trace = trace;
+    }
+
+    @Override
+    public Future<Integer> pause() {
+        paused.acquireUninterruptibly();
+        pausedFuture = new CompletableFuture<>();
+        return pausedFuture;
+    }
+
+    @Override
+    public void resume(int result) {
+        pausedFuture.complete(result);
+        pausedFuture = null;
+        paused.release();
+    }
+
+    @Override
+    public long getTimeout() {
+        return timeout;
+    }
+
+    @Override
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 
     private String getKeyName(Object keyObject) {

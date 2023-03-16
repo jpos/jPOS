@@ -18,11 +18,13 @@
 
 package org.jpos.transaction;
 
+import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.space.LocalSpace;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.Chronometer;
+import org.jpos.util.NameRegistrar;
 import org.jpos.util.ThroughputControl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
@@ -79,7 +81,10 @@ public class TransactionManagerStress {
 
 
     @AfterAll
-    static void tearDown() throws Exception {
+    static void tearDown() {
+        TransactionManager tm = NameRegistrar.getIfExists("txnmgr-stress");
+        while (tm.getActiveSessions() > 0)
+            ISOUtil.sleep(500L);
         q2.shutdown(true);
     }
 }

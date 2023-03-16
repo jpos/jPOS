@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2022 jPOS Software SRL
+ * Copyright (C) 2000-2023 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,21 +18,11 @@
 
 package org.jpos.transaction;
 
-public interface TransactionConstants {
-    int ABORTED  = 0;
-    int PREPARED = 1;
-    int RETRY    = 2;
-    int PAUSE    = 4;
+import java.util.concurrent.Future;
 
-    /**
-     * This participant does not join the transaction
-     */
-    int NO_JOIN  = 0x40;
-
-    /**
-     * Context has not been modified (no need to persist a snapshot)
-     */
-    int READONLY = 0x80;
-
-    int FAIL = READONLY | NO_JOIN; // shortcut to heavily used action combination - assumes ABORTED == 0
+public interface Pausable {
+    void setTimeout (long timeoutInMillis);
+    long getTimeout();
+    Future<Integer> pause();
+    void resume(int result);
 }

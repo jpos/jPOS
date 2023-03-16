@@ -30,8 +30,7 @@ import org.jpos.util.*;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.time.Instant;
@@ -87,11 +86,12 @@ public class TransactionManager
     private int threshold;
     private int maxActiveTransactions;
     private final AtomicInteger activeSessions = new AtomicInteger();
+    private final AtomicInteger pausedSessions = new AtomicInteger();
 
     private volatile long head, tail;
     private long retryInterval = 5000L;
     private long retryTimeout  = 60000L;
-    private long pauseTimeout  = 0L;
+    private long pauseTimeout  = 60000L;
     private boolean abortOnPauseTimeout = true;
     private Runnable retryTask = null;
     private TPS tps;
@@ -523,6 +523,7 @@ public class TransactionManager
         (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof, Chronometer chronometer)
     {
         boolean retry = false;
+        boolean pause = false;
         for (int i=0; iter.hasNext (); i++) {
             int action;
             if (i > MAX_PARTICIPANTS) {
@@ -561,6 +562,9 @@ public class TransactionManager
 
                 chronometer.lap();
                 action = prepare(p, id, context);
+                if ((action & PAUSE) == PAUSE) {
+                    action = pauseAndWait (context, action);
+                }
                 boolean timeout = pp.timeout > 0 && chronometer.partial() > pp.timeout;
                 boolean maxTime = pp.maxTime > 0 && chronometer.elapsed() > pp.maxTime;
                 if (timeout || maxTime)
@@ -1037,8 +1041,8 @@ public class TransactionManager
     }
 
     private String tmInfo() {
-        return String.format ("in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d%s",
-          getInTransit(), head, tail, getOutstandingTransactions(),
+        return String.format ("in-transit=%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d%s",
+          getInTransit(), head, tail, pausedSessions.get(), getOutstandingTransactions(),
           getActiveSessions(), maxSessions,
           (tps != null ? ", " + tps : "")
         );
@@ -1065,6 +1069,26 @@ public class TransactionManager
 
     private boolean heavyLoaded() {
         return getActiveSessions() >= maxSessions;
+    }
+
+    private int pauseAndWait(Serializable context, int action) {
+        if (context instanceof Pausable pausable) try {
+            pausedSessions.incrementAndGet();
+            Future<Integer> paused = pausable.pause();
+            long timeout = pausable.getTimeout();
+            timeout = timeout > 0 ? Math.min (timeout, pauseTimeout) : pauseTimeout;
+            try {
+                action = paused.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException e) {
+                if (context instanceof Context ctx)
+                    ctx.log(e);
+            } catch (TimeoutException e) {
+                action &= (PREPARED ^ 0xFFFF); // turn off 'PREPARED' - we need to abort
+            }
+        } finally {
+            pausedSessions.decrementAndGet();
+        }
+        return action;
     }
 
     public record ParticipantParams (String name, long timeout, long maxTime) {}

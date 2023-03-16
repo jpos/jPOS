@@ -22,17 +22,21 @@ import java.io.Serializable;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
+import org.jpos.transaction.Context;
 import org.jpos.transaction.TransactionParticipant;
 import java.util.concurrent.locks.LockSupport;
 
 public class Pause implements TransactionParticipant, Configurable {
     private long timeout = 0L;
-
     public int prepare(long id, Serializable context) {
+        Context ctx =  (Context) context;
         if (timeout > 0) {
-            LockSupport.parkNanos(timeout * 1_000_000L);
+            Thread.ofVirtual().start(() -> {
+                LockSupport.parkNanos(timeout * 1_000_000L);
+                ctx.resume(PREPARED | NO_JOIN | READONLY);
+            });
         }
-        return PREPARED | NO_JOIN | READONLY;
+        return PAUSE | NO_JOIN | READONLY;
     }
 
     public void setConfiguration(Configuration cfg) {
