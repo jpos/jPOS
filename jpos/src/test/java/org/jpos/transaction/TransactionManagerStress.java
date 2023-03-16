@@ -25,7 +25,6 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.Chronometer;
 import org.jpos.util.NameRegistrar;
-import org.jpos.util.ThroughputControl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
