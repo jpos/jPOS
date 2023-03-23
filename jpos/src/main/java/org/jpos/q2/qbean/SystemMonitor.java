@@ -34,14 +34,17 @@ import java.lang.management.*;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
 import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneOffsetTransitionRule;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Periodically dumps Thread and memory usage
@@ -62,6 +65,7 @@ public class SystemMonitor extends QBeanSupport
     private String frozenDump;
     private String localHost;
     private String processName;
+    private Lock dumping = new ReentrantLock();
 
     @Config("metrics-dir")
     private String metricsDir;
@@ -69,8 +73,7 @@ public class SystemMonitor extends QBeanSupport
     public void startService() {
         try {
             log.info("Starting SystemMonitor");
-            me = new Thread(this,"SystemMonitor");
-            me.start();
+            me = Thread.ofVirtual().name("SystemMonitor").start(this);
         } catch (Exception e) {
             log.warn("error starting service", e);
         }
@@ -78,15 +81,17 @@ public class SystemMonitor extends QBeanSupport
 
     public void stopService() {
         log.info("Stopping SystemMonitor");
-        if (me != null)
-            me.interrupt();
+        interruptMainThread();
     }
+    public void destroyService() throws InterruptedException {
+        me.join(Duration.ofMillis(5000L));
+    }
+
 
     public synchronized void setSleepTime(long sleepTime) {
         this.sleepTime = sleepTime;
         setModified(true);
-        if (me != null)
-            me.interrupt();
+        interruptMainThread();
     }
 
     public synchronized long getSleepTime() {
@@ -96,8 +101,7 @@ public class SystemMonitor extends QBeanSupport
     public synchronized void setDetailRequired(boolean detail) {
         this.detailRequired = detail;
         setModified(true);
-        if (me != null)
-            me.interrupt();
+        interruptMainThread();
     }
 
     public synchronized boolean getDetailRequired() {
@@ -105,10 +109,18 @@ public class SystemMonitor extends QBeanSupport
     }
 
     private void dumpThreads(ThreadGroup g, PrintStream p, String indent) {
-        Thread[] list = new Thread[g.activeCount() + 5];
-        int nthreads = g.enumerate(list);
-        for (int i = 0; i < nthreads; i++)
-            p.println(indent + list[i]);
+        ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+        ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(true, true);
+        for (ThreadInfo threadInfo : threadInfos) {
+            p.printf ("%sThread[#%d %s:%s %s%s%s]%n", indent,
+              threadInfo.getThreadId(),
+              g.getName(),
+              threadInfo.getThreadName(),
+              threadInfo.isInNative() ? "n" : "",
+              threadInfo.isDaemon() ? "d" : "",
+              threadInfo.isSuspended() ? "s" : ""
+            );
+        }
     }
 
     void showThreadGroup(ThreadGroup g, PrintStream p, String indent) {
@@ -122,9 +134,14 @@ public class SystemMonitor extends QBeanSupport
         localHost = getLocalHost();
         processName = ManagementFactory.getRuntimeMXBean().getName();
         while (running()) {
-            frozenDump = generateFrozenDump ("");
-            log.info(this);
-            frozenDump = null;
+            try {
+                dumping.lock();
+                frozenDump = generateFrozenDump ("");
+                log.info(this);
+                frozenDump = null;
+            } finally {
+                dumping.unlock();
+            }
             try {
                 long expected = System.currentTimeMillis() + sleepTime;
                 Thread.sleep(sleepTime);
@@ -228,7 +245,6 @@ public class SystemMonitor extends QBeanSupport
         p.printf("%s        clock: %d %s%n", indent, System.currentTimeMillis() / 1000L, instant);
         p.printf("%s thread count: %d%n", indent, mxBean.getThreadCount());
         p.printf("%s peak threads: %d%n", indent, mxBean.getPeakThreadCount());
-        p.printf("%s user threads: %d%n", indent, Thread.activeCount());
 
         showThreadGroup(Thread.currentThread().getThreadGroup(), p, newIndent);
         NameRegistrar.getInstance().dump(p, indent, detailRequired);
@@ -240,12 +256,14 @@ public class SystemMonitor extends QBeanSupport
     }
     private void exec (String script, PrintStream ps, String indent) {
         try {
-            Process p = Runtime.getRuntime().exec(script);
-            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()) );
+            ProcessBuilder pb = new ProcessBuilder (QExec.parseCommandLine(script));
+            Process p = pb.start();
+            BufferedReader in = p.inputReader();
             String line;
             while ((line = in.readLine()) != null) {
                 ps.printf("%s%s%n", indent, line);
             }
+            p.waitFor();
         } catch (Exception e) {
             e.printStackTrace(ps);
         }
@@ -284,5 +302,16 @@ public class SystemMonitor extends QBeanSupport
             totalTime += Math.max(gc.getCollectionTime(), 0L);
         }
         p.printf ("%s     GC Stats: %d/%d%n", indent, totalCount, totalTime);
+    }
+
+    private void interruptMainThread() {
+        if (me != null) {
+            dumping.lock();
+            try {
+                me.interrupt();
+            } finally {
+                dumping.unlock();
+            }
+        }
     }
 }
