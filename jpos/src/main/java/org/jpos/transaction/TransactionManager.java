@@ -116,6 +116,7 @@ public class TransactionManager
           Thread.ofVirtual()
           .allowSetThreadLocals(true)
           .inheritInheritableThreadLocals(false)
+          .name(getName())
           .factory());
     }
 
