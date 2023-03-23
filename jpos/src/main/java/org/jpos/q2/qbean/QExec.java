@@ -85,6 +85,8 @@ public class QExec extends QBeanSupport implements QExecMBean {
     }
 
     public static List<String> parseCommandLine(String commandLine) {
+        if (commandLine == null || commandLine.isEmpty())
+            throw new IllegalArgumentException("Empty command");
         List<String> args = new ArrayList<>();
         StringBuilder currentArg = new StringBuilder();
         boolean inQuotes = false;
