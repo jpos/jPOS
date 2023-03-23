@@ -18,10 +18,7 @@
 
 package org.jpos.q2.qbean;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -49,66 +46,24 @@ public class SystemMonitorTest {
 
     @BeforeEach
     public void onSetup() throws Exception {
-	baos = new ByteArrayOutputStream();
-	printStream = new PrintStream(baos, true, "US-ASCII");
+        baos = new ByteArrayOutputStream();
+        printStream = new PrintStream(baos, true, "US-ASCII");
     }
 
     @Test
     public void testSetDetailRequired() throws Throwable {
-	systemMonitor.setDetailRequired(true);
-	assertTrue(systemMonitor.getDetailRequired(),
-               "systemMonitor.getDetailRequired()");
-	assertTrue(systemMonitor.isModified(), "systemMonitor.isModified()");
+        systemMonitor.setDetailRequired(true);
+        assertTrue(systemMonitor.getDetailRequired(),
+          "systemMonitor.getDetailRequired()");
+        assertTrue(systemMonitor.isModified(), "systemMonitor.isModified()");
     }
 
     @Test
     public void testSetSleepTime() throws Throwable {
-	systemMonitor.setSleepTime(1L);
-	assertEquals(1L, systemMonitor.getSleepTime(),
-               "systemMonitor.getSleepTime()");
-	assertTrue(systemMonitor.isModified(), "systemMonitor.isModified()");
+        systemMonitor.setSleepTime(1L);
+        assertEquals(1L, systemMonitor.getSleepTime(),
+          "systemMonitor.getSleepTime()");
+        assertTrue(systemMonitor.isModified(), "systemMonitor.isModified()");
     }
 
-    @Test
-    public void testShowThreadGroupThrowsNullPointerException()
-	    throws Throwable {
-	assertThrows(NullPointerException.class, () -> {
-	    String indent = "++";
-	    systemMonitor.showThreadGroup(null, printStream, indent);
-	});
-    }
-
-    @Test
-    public void testShowThreadGroup() throws Throwable {
-	String indent = "++";
-	systemMonitor.showThreadGroup(threadGroup, printStream, indent);
-	assertThat(baos.toString(), is(""));
-    }
-
-//    @Test
-//    public void testDump() {
-//        systemMonitor = new SystemMonitorExtendedForTesting();
-//
-//        String indent = "##";
-//        systemMonitor.dump(printStream, indent);
-//        String result = baos.toString();
-//        // System.out.println(result);
-//        assertThat(
-//            result,
-//            allOf(containsString("version"),
-//                containsString("host"),
-//                containsString("instance"),
-//                containsString("name-registrar")));
-//    }
-//
-//    static class SystemMonitorExtendedForTesting extends SystemMonitor {
-//        Runtime runtime;
-//        SecurityManager securityManager;
-//
-//        public SystemMonitorExtendedForTesting() {
-//            super();
-//            runtime = mock(Runtime.class);
-//            securityManager = mock(SecurityManager.class);
-//    	}
-//    }
 }
