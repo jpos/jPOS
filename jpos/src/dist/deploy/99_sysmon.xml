@@ -1,6 +1,11 @@
-<sysmon logger="Q2">
+<sysmon logger="Q2" realm="sysmon">
  <attr name="sleepTime" type="java.lang.Long">3600000</attr>
  <attr name="detailRequired" type="java.lang.Boolean">true</attr>
  <property name="metrics-dir" value="log" />
+ <property name="dump-stacktrace" value="true" />
+ <property name="script" value="uptime"  />
+ <property name="script" value="uname -a"  />
+ <property name="script" value="ulimit -n"  />
+ <property name="script" value="iostat"  />
 </sysmon>
 

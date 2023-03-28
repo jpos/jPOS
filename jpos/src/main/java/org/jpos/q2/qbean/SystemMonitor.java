@@ -40,9 +40,7 @@ import java.time.ZoneId;
 import java.time.format.TextStyle;
 import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneOffsetTransitionRule;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -69,6 +67,9 @@ public class SystemMonitor extends QBeanSupport
 
     @Config("metrics-dir")
     private String metricsDir;
+
+    @Config("dump-stacktrace")
+    boolean dumpStackTrace;
 
     public void startService() {
         try {
@@ -109,18 +110,17 @@ public class SystemMonitor extends QBeanSupport
     }
 
     private void dumpThreads(ThreadGroup g, PrintStream p, String indent) {
-        ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-        ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(true, true);
-        for (ThreadInfo threadInfo : threadInfos) {
-            p.printf ("%sThread[#%d %s:%s %s%s%s]%n", indent,
-              threadInfo.getThreadId(),
-              g.getName(),
-              threadInfo.getThreadName(),
-              threadInfo.isInNative() ? "n" : "",
-              threadInfo.isDaemon() ? "d" : "",
-              threadInfo.isSuspended() ? "s" : ""
-            );
-        }
+        Thread.getAllStackTraces().entrySet().stream()
+          .sorted(Comparator.comparingLong(e -> e.getKey().threadId()))
+          .forEach((e -> {
+              Thread t = e.getKey();
+              p.printf("%s%d: %s:%s%n", indent, t.threadId(), t.getThreadGroup().getName(), t.getName());
+              if (dumpStackTrace) {
+                  for (var s : e.getValue()) {
+                      p.printf("%s    %s%n", indent, s);
+                  }
+              }
+          }));
     }
 
     void showThreadGroup(ThreadGroup g, PrintStream p, String indent) {
