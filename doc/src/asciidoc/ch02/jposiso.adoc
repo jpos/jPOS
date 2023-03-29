@@ -670,7 +670,7 @@ Let's have a look at a very simple filter, DelayFilter:
 [source,java]
 ----
 
-    public class DelayFilter implements ISOFilter, ReConfigurable {
+    public class DelayFilter implements ISOFilter, Configurable {
         long delay;
         public DelayFilter() {
             super();
