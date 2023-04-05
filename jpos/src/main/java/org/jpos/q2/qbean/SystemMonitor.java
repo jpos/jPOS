@@ -69,7 +69,7 @@ public class SystemMonitor extends QBeanSupport
     private String metricsDir;
 
     @Config("dump-stacktrace")
-    boolean dumpStackTrace;
+    int dumpStackTrace;
 
     public void startService() {
         try {
@@ -115,8 +115,11 @@ public class SystemMonitor extends QBeanSupport
           .forEach((e -> {
               Thread t = e.getKey();
               p.printf("%s%d: %s:%s%n", indent, t.threadId(), t.getThreadGroup().getName(), t.getName());
-              if (dumpStackTrace) {
+              if (dumpStackTrace > 0) {
+                  int i = 0;
                   for (var s : e.getValue()) {
+                      if (++i > dumpStackTrace)
+                          break;
                       p.printf("%s    %s%n", indent, s);
                   }
               }
