@@ -69,8 +69,10 @@ public class SystemMonitor extends QBeanSupport
     private String metricsDir;
 
     @Config("dump-stacktrace")
-    int dumpStackTrace;
+    boolean dumpStackTrace;
 
+    int stackTraceDepth;
+    
     public void startService() {
         try {
             log.info("Starting SystemMonitor");
@@ -115,10 +117,10 @@ public class SystemMonitor extends QBeanSupport
           .forEach((e -> {
               Thread t = e.getKey();
               p.printf("%s%d: %s:%s%n", indent, t.threadId(), t.getThreadGroup().getName(), t.getName());
-              if (dumpStackTrace > 0) {
+              if (dumpStackTrace) {
                   int i = 0;
                   for (var s : e.getValue()) {
-                      if (++i > dumpStackTrace)
+                      if (++i > stackTraceDepth)
                           break;
                       p.printf("%s    %s%n", indent, s);
                   }
@@ -166,6 +168,7 @@ public class SystemMonitor extends QBeanSupport
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         super.setConfiguration(cfg);
         scripts = cfg.getAll("script");
+        stackTraceDepth = cfg.getInt("stacktrace-depth", Integer.MAX_VALUE);
     }
     
     private Runtime getRuntimeInstance() {

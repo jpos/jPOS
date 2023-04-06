@@ -2,7 +2,8 @@
  <attr name="sleepTime" type="java.lang.Long">3600000</attr>
  <attr name="detailRequired" type="java.lang.Boolean">true</attr>
  <property name="metrics-dir" value="log" />
- <property name="dump-stacktrace" value="5" />
+ <property name="dump-stacktrace" value="true" />
+ <property name="stacktrace-depth" value="5" />
  <property name="script" value="uptime"  />
  <property name="script" value="uname -a"  />
  <property name="script" value="ulimit -n"  />
