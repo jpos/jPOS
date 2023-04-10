@@ -101,7 +101,7 @@ public class SslChannelIntegrationTest {
         XMLChannel clientSide = new XMLChannel(new XMLPackager());
         clientSide.setLogger(logger, "server.channel");
 
-        ISOServer isoServer = new ISOServer(PORT, clientSide, new ThreadPool());
+        ISOServer isoServer = new ISOServer(PORT, clientSide, 100);
         isoServer.setSocketFactory(new GenericSSLSocketFactory());
         isoServer.setConfiguration(serverConfiguration());
         isoServer.setLogger(logger, "server");
