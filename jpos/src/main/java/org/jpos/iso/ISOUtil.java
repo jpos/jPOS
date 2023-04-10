@@ -1039,7 +1039,12 @@ public class ISOUtil {
      * @param      millis   the length of time to sleep in milliseconds.
      */
     public static void sleep (long millis) {
-        LockSupport.parkNanos(Duration.ofMillis(millis).toNanos());
+        if (millis > 0)
+            LockSupport.parkNanos(Duration.ofMillis(millis).toNanos());
+        else if (millis == 0)
+            Thread.yield();
+        else
+            throw new IllegalArgumentException ("timeout value is negative");
     }
 
     /**
