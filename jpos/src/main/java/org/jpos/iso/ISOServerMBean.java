@@ -18,9 +18,7 @@
 
 package org.jpos.iso;
 
-import org.jpos.util.ThreadPoolMBean;
-
-public interface ISOServerMBean extends ThreadPoolMBean {
+public interface ISOServerMBean {
     int getPort();
     void resetCounters();
     int getConnectionCount();
@@ -31,4 +29,3 @@ public interface ISOServerMBean extends ThreadPoolMBean {
     long getLastTxnTimestampInMillis();
     long getIdleTimeInMillis();
 }
-
