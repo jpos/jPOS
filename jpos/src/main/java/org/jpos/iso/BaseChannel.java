@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /*
  * BaseChannel was ISOChannel. Now ISOChannel is an interface
@@ -92,8 +94,8 @@ public abstract class BaseChannel extends Observable
     protected DataInputStream serverIn;
     protected DataOutputStream serverOut;
     // The lock objects should be final, and never changed, but due to the clone() method, they must be set there.
-    protected Object serverInLock = new Object();
-    protected Object serverOutLock = new Object();
+    protected Lock serverInLock = new ReentrantLock();
+    protected Lock serverOutLock = new ReentrantLock();
     protected ISOPackager packager;
     protected ServerSocket serverSocket = null;
     protected List<ISOFilter> incomingFilters, outgoingFilters;
@@ -275,15 +277,21 @@ public abstract class BaseChannel extends Observable
             "/" + socket.getInetAddress().getHostAddress() + ":" 
             + socket.getPort()
         );
-        synchronized (serverInLock) {
+        try {
+            serverInLock.lock();
             serverIn = new DataInputStream (
-                new BufferedInputStream (socket.getInputStream ())
+              new BufferedInputStream (socket.getInputStream ())
             );
+        } finally {
+            serverInLock.unlock();
         }
-        synchronized (serverOutLock) {
+        try {
+            serverOutLock.lock();
             serverOut = new DataOutputStream(
-                new BufferedOutputStream(socket.getOutputStream(), 2048)
+              new BufferedOutputStream(socket.getOutputStream(), 2048)
             );
+        } finally {
+            serverOutLock.unlock();
         }
         postConnectHook();
         usable = true;
@@ -599,12 +607,15 @@ public abstract class BaseChannel extends Observable
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
             m.setPackager (p); // and could have dropped packager as well
             byte[] b = pack(m);
-            synchronized (serverOutLock) {
+            try  {
+                serverOutLock.lock();
                 sendMessageLength(b.length + getHeaderLength(m));
                 sendMessageHeader(m, b.length);
                 sendMessage (b, 0, b.length);
                 sendMessageTrailer(m, b);
                 serverOut.flush ();
+            } finally {
+                serverOutLock.unlock();
             }
             cnt[TX]++;
             setChanged();
@@ -614,10 +625,7 @@ public abstract class BaseChannel extends Observable
             evt.addMessage (m);
             evt.addMessage (e);
             throw e;
-        } catch (ISOException e) {
-            evt.addMessage (e);
-            throw e;
-        } catch (IOException e) {
+        } catch (ISOException | IOException e) {
             evt.addMessage (e);
             throw e;
         } catch (Exception e) {
@@ -641,9 +649,12 @@ public abstract class BaseChannel extends Observable
         try {
             if (!isConnected())
                 throw new ISOException ("unconnected ISOChannel");
-            synchronized (serverOutLock) {
+            try {
+                serverOutLock.lock();
                 serverOut.write(b);
                 serverOut.flush();
+            } finally {
+                serverOutLock.unlock();
             }
             cnt[TX]++;
             setChanged();
@@ -659,11 +670,13 @@ public abstract class BaseChannel extends Observable
      * @throws IOException on exception
      */
     public void sendKeepAlive () throws IOException {
-        synchronized (serverOutLock) {
+        try {
+            serverOutLock.lock();
             sendMessageLength(0);
             serverOut.flush ();
+        } finally {
+            serverOutLock.unlock();
         }
-
     }
     protected boolean isRejected(byte[] b) {
         // VAP Header support - see VAPChannel
@@ -713,7 +726,8 @@ public abstract class BaseChannel extends Observable
             if (!isConnected())
                 throw new IOException ("unconnected ISOChannel");
 
-            synchronized (serverInLock) {
+            try {
+                serverInLock.lock();
                 int len  = getMessageLength();
                 if (expectKeepAlive) {
                     while (len == 0) {
@@ -744,6 +758,8 @@ public abstract class BaseChannel extends Observable
                 else
                     throw new ISOException(
                         "receive length " +len + " seems strange - maxPacketLength = " + getMaxPacketLength());
+            } finally {
+                serverInLock.unlock();
             }
             m.setPackager (getDynamicPackager(header, b));
             m.setHeader (getDynamicHeader(header));
@@ -1137,8 +1153,8 @@ public abstract class BaseChannel extends Observable
             // to use the new lock objects to protect the old DataStreams.
             // This should be safe as the only code that calls BaseChannel.clone() is ISOServer.run(),
             // and it immediately calls accept(ServerSocket) which does a connect(), and that sets the stream objects.
-            channel.serverInLock = new Object();
-            channel.serverOutLock = new Object();
+            channel.serverInLock = new ReentrantLock();
+            channel.serverOutLock = new ReentrantLock();
             channel.serverIn = null;
             channel.serverOut = null;
             channel.usable = false;
