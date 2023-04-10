@@ -1,5 +1,6 @@
 module org.jpos.jpos {
     requires java.se;
+    requires jdk.jfr;
     requires org.jdom2;
     requires org.bouncycastle.pg;
     requires org.bouncycastle.provider;
