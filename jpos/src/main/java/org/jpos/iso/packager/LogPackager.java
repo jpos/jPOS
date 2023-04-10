@@ -31,6 +31,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.*;
 import java.util.Stack;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * packs/unpacks ISOMsgs from jPOS logs
@@ -49,6 +51,8 @@ public class LogPackager extends DefaultHandler
     private PrintStream p;
     private XMLReader reader = null;
     private Stack stk;
+
+    private Lock lock = new ReentrantLock();
 
     public static final String LOG_TAG       = "log";
     public static final String ISOMSG_TAG    = "isomsg";
@@ -79,17 +83,16 @@ public class LogPackager extends DefaultHandler
     public byte[] pack (ISOComponent c) throws ISOException {
         LogEvent evt = new LogEvent (this, "pack");
         try {
+            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException ("cannot pack "+c.getClass());
             ISOMsg m = (ISOMsg) c;
             byte[] b;
-            synchronized (this) {
-                p.println ("<log>");
-                c.dump (p, " ");
-                p.println ("</log>");
-                b = out.toByteArray();
-                out.reset();
-            }
+            p.println ("<log>");
+            c.dump (p, " ");
+            p.println ("</log>");
+            b = out.toByteArray();
+            out.reset();
             if (logger != null)
                 evt.addMessage (m);
             return b;
@@ -98,14 +101,16 @@ public class LogPackager extends DefaultHandler
             throw e;
         } finally {
             Logger.log(evt);
+            lock.unlock();
         }
     }
 
-    public synchronized int unpack (ISOComponent c, byte[] b) 
+    public int unpack (ISOComponent c, byte[] b)
         throws ISOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
         try {
+            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException 
                     ("Can't call packager on non Composite");
@@ -132,15 +137,17 @@ public class LogPackager extends DefaultHandler
             // throw new ISOException (e.toString());
         } finally {
             Logger.log (evt);
+            lock.unlock();
         }
         return b.length;
     }
 
-    public synchronized void unpack (ISOComponent c, InputStream in) 
+    public void unpack (ISOComponent c, InputStream in)
         throws ISOException, IOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
         try {
+            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException 
                     ("Can't call packager on non Composite");
@@ -166,6 +173,7 @@ public class LogPackager extends DefaultHandler
             // throw new ISOException (e.toString());
         } finally {
             Logger.log (evt);
+            lock.unlock();
         }
     }
 

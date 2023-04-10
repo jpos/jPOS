@@ -33,6 +33,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.Stack;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * packs/unpacks ISOMsgs into XML representation
@@ -51,6 +53,8 @@ public class XMLPackager extends DefaultHandler
     private PrintStream p;
     private XMLReader reader;
     private Stack stk;
+
+    private Lock lock = new ReentrantLock();
 
     public static final String ISOMSG_TAG    = "isomsg";
     public static final String ISOFIELD_TAG  = "field";
@@ -101,11 +105,14 @@ public class XMLPackager extends DefaultHandler
                 throw new ISOException ("cannot pack "+c.getClass());
             ISOMsg m = (ISOMsg) c;
             byte[] b;
-            synchronized (this) {
+            try {
+                lock.lock();
                 m.setDirection(0);  // avoid "direction=xxxxxx" in XML msg
                 m.dump (p, "");
                 b = out.toByteArray();
                 out.reset();
+            } finally {
+                lock.unlock();
             }
             if (logger != null)
                 evt.addMessage (m);
@@ -118,11 +125,12 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
-    public synchronized int unpack (ISOComponent c, byte[] b)
+    public int unpack (ISOComponent c, byte[] b)
         throws ISOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
         try {
+            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException
                     ("Can't call packager on non Composite");
@@ -156,14 +164,16 @@ public class XMLPackager extends DefaultHandler
             throw new ISOException (e.toString());
         } finally {
             Logger.log (evt);
+            lock.unlock();
         }
     }
 
-    public synchronized void unpack (ISOComponent c, InputStream in)
+    public void unpack (ISOComponent c, InputStream in)
         throws ISOException, IOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
         try {
+            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException
                     ("Can't call packager on non Composite");
@@ -192,6 +202,7 @@ public class XMLPackager extends DefaultHandler
             throw new ISOException (e.toString());
         } finally {
             Logger.log (evt);
+            lock.unlock();
         }
     }
 
