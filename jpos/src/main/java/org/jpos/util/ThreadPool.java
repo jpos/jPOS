@@ -25,6 +25,8 @@ import org.jpos.util.BlockingQueue.Closed;
 import org.jpos.util.NameRegistrar.NotFoundException;
 
 import java.io.PrintStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -48,7 +50,16 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     private int jobs = 0;
     private final String namePrefix;
     public static final int DEFAULT_MAX_THREADS = 100;
+
     
+    private AtomicInteger threadCount = new AtomicInteger();
+    private ExecutorService executor = Executors.newThreadPerTaskExecutor(
+      Thread.ofVirtual()
+        .allowSetThreadLocals(true)
+        .inheritInheritableThreadLocals(false)
+        .factory());
+
+
     public interface Supervised {
         boolean expired();
     }
@@ -142,7 +153,16 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     public void close () {
         pool.close();
     }
-    public synchronized void execute(Runnable action) throws Closed {        
+
+    public synchronized void execute(Runnable action) throws Closed {
+        executor.submit(() -> {
+            threadCount.incrementAndGet();
+            action.run();
+            threadCount.decrementAndGet();
+        });
+
+
+
         if (!pool.ready())
             throw new Closed();
 
