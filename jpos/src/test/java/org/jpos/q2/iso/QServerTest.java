@@ -37,7 +37,6 @@ public class QServerTest {
         assertEquals("org.jpos.q2.iso.QServer", qServer.getLog().getRealm(), "qServer.getLog().getRealm()");
         assertEquals(-1, qServer.getState(), "qServer.getState()");
         assertEquals(100, qServer.getMaxSessions(), "qServer.getMaxSessions()");
-        assertEquals(1, qServer.getMinSessions(), "qServer.getMinSessions()");
         assertTrue(qServer.isModified(), "qServer.isModified()");
         assertEquals(0, qServer.getPort(), "qServer.getPort()");
     }
@@ -98,28 +97,9 @@ public class QServerTest {
     public void testSetMinSessions() throws Throwable {
         QServer qServer = new QServer();
         qServer.setPersist(new Element("testQServerName", "testQServerUri"));
-        qServer.setMinSessions(100);
-        assertEquals(100, qServer.getMinSessions(), "qServer.getMinSessions()");
         assertTrue(qServer.isModified(), "qServer.isModified()");
     }
-
-    @Test
-    public void testSetMinSessionsThrowsNullPointerException() throws Throwable {
-        QServer qServer = new QServer();
-        try {
-            qServer.setMinSessions(100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertEquals(100, qServer.getMinSessions(), "qServer.getMinSessions()");
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jdom2.Element.getChildren(String)\" because the return value of \"org.jpos.q2.QBeanSupport.getPersist()\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-            assertFalse(qServer.isModified(), "qServer.isModified()");
-        }
-    }
-
+    
     @Test
     public void testSetPackager() throws Throwable {
         QServer qServer = new QServer();
@@ -219,4 +199,6 @@ public class QServerTest {
         QServer qServer = new QServer();
         qServer.stopService();
     }
+
+    
 }
