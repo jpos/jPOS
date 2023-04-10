@@ -343,3 +343,7 @@ test {
   maxHeapSize = "8G"
 }
 
+tasks.withType(JavaCompile) {
+    options.deprecation = true
+}
+
