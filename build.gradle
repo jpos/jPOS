@@ -12,8 +12,6 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
-    apply plugin: 'pmd'
-    apply plugin: 'jacoco'
     apply plugin: 'project-report'
 
     group = 'org.jpos'
@@ -25,10 +23,9 @@ subprojects {
         'https://oss.sonatype.org/service/local/staging/deploy/maven2';
     configurations.implementation.transitive = true
     javadoc.failOnError = false
-    pmd.ignoreFailures = true
 
-    sourceCompatibility = 20
-    targetCompatibility = 20
+    sourceCompatibility = 19
+    targetCompatibility = 19
 
     tasks.withType(JavaCompile) {
         options.compilerArgs += '--enable-preview'
@@ -146,9 +143,6 @@ subprojects {
             maxParallelForks = Runtime.runtime.availableProcessors()
         }
     }
-    jacoco {
-        toolVersion = '0.8.8'
-    }
 }
 
 // Configure IDEA to use Git
@@ -161,7 +155,7 @@ idea {
                 }.mapping.@vcs = 'Git' 
             }
         }
-        languageLevel = '20'
+        languageLevel = '19'
     }
 }
 
