@@ -29,27 +29,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EventObject;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Random;
-import java.util.Vector;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Logger;
-import org.jpos.util.NameRegistrar;
-import org.jpos.util.ThreadPool;
+import org.jpos.util.*;
 
 /**
  * Accept ServerChannel sessions and forwards them to ISORequestListeners
@@ -62,7 +53,6 @@ public class ISOServer extends Observable
     implements LogSource, Runnable, Observer, ISOServerMBean, Configurable,
     Loggeable, ISOServerSocketFactory
 {
-
     private enum PermLogPolicy {
         ALLOW_NOLOG, DENY_LOG, ALLOW_LOG, DENY_LOGWARNING
     }
@@ -77,9 +67,9 @@ public class ISOServer extends Observable
 
     protected ISOChannel clientSideChannel;
     ISOPackager clientPackager;
-    protected Collection clientOutgoingFilters, clientIncomingFilters, listeners;
-    ThreadPool pool;
-    public static final int DEFAULT_MAX_THREADS = 100;
+    protected Collection clientOutgoingFilters, clientIncomingFilters;
+    protected List<ISORequestListener> listeners;
+    public static final int DEFAULT_MAX_SESSIONS = 100;
     public static final String LAST = ":last";
     String name;
     protected long lastTxn = 0l;
@@ -87,24 +77,27 @@ public class ISOServer extends Observable
     protected String realm;
     protected String realmChannel;
     protected ISOServerSocketFactory socketFactory = null;
-    public static final int CONNECT      = 0;
-    public static final int SIZEOF_CNT   = 1;
-    private int[] cnt;
+
+    private AtomicInteger connectionCount = new AtomicInteger();
 
     private int backlog;
     protected Configuration cfg;
-    private boolean shutdown = false;
+    private volatile boolean shutdown = false;
     private ServerSocket serverSocket;
-    private Map channels;
+    private Map<String,WeakReference<ISOChannel>> channels;
     protected boolean ignoreISOExceptions;
     protected List<ISOServerEventListener> serverListeners = null;
+    private ExecutorService executor;
+    private Semaphore permits;
+    private int permitsCount = DEFAULT_MAX_SESSIONS;
+    private static final long SMALL_RELAX = 250;
+    private static final long LONG_RELAX = 5000;
 
    /**
     * @param port port to listen
     * @param clientSide client side ISOChannel (where we accept connections)
-    * @param pool ThreadPool (created if null)
     */
-    public ISOServer(int port, ServerChannel clientSide, ThreadPool pool) {
+    public ISOServer(int port, ServerChannel clientSide, int maxSessions) {
         super();
         this.port = port;
         this.clientSideChannel = clientSide;
@@ -114,21 +107,22 @@ public class ISOServer extends Observable
             this.clientOutgoingFilters = fc.getOutgoingFilters();
             this.clientIncomingFilters = fc.getIncomingFilters();
         }
-        this.pool = pool == null ?
-            new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
-        listeners = new Vector();
+        listeners = new ArrayList<>();
         name = "";
-        channels = new HashMap();
-        cnt = new int[SIZEOF_CNT];
-        serverListeners = new ArrayList<ISOServerEventListener>();
-    }
+        channels = Collections.synchronizedMap(new HashMap<>());
+        serverListeners = Collections.synchronizedList(new ArrayList<>());
 
+        executor = Executors.newVirtualThreadPerTaskExecutor();
+        if (maxSessions > 0)
+            permitsCount = maxSessions;
+        permits = new Semaphore(permitsCount);
+    }
 
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         configureConnectionPerms();
-        backlog = cfg.getInt ("backlog", 0);
+        backlog = cfg.getInt ("backlog", 5);
         ignoreISOExceptions = cfg.getBoolean("ignore-iso-exceptions");
         String ip = cfg.get ("bind-address", null);
         if (ip != null) {
@@ -225,24 +219,19 @@ public class ISOServer extends Observable
      */
     public void shutdown () {
         shutdown = true;
-        new Thread ("ISOServer-shutdown") {
-            @Override
-            public void run () {
-                shutdownServer ();
-                if (!cfg.getBoolean ("keep-channels")) {
-                    shutdownChannels ();
-                }
+        executor.submit(() -> {
+            Thread.currentThread().setName("ISOServer-shutdown");
+            shutdownServer();
+            if (!cfg.getBoolean("keep-channels")) {
+                shutdownChannels();
             }
-        }.start();
+        });
     }
     private void shutdownServer () {
         try {
             if (serverSocket != null) {
                 serverSocket.close ();
                 fireEvent(new ISOServerShutdownEvent(this));
-            }
-            if (pool != null) {
-                pool.close();
             }
         } catch (IOException e) {
             fireEvent(new ISOServerShutdownEvent(this));
@@ -315,63 +304,37 @@ public class ISOServer extends Observable
         public void run() {
             setChanged ();
             notifyObservers ();
-            if (channel instanceof BaseChannel) {
-                LogEvent ev = new LogEvent (this, "session-start");
-                Socket socket = ((BaseChannel)channel).getSocket ();
-                realm = realm + "/" + socket.getInetAddress().getHostAddress() + ":"
-                        + socket.getPort();
-                try {
-                    checkPermission (socket, ev);
-                } catch (ISOException e) {
-                    try {
-                        int delay = 1000 + new Random().nextInt (4000);
-                        ev.addMessage (e.getMessage());
-                        ev.addMessage ("delay=" + delay);
-                        ISOUtil.sleep (delay);
-                        socket.close ();
-                        fireEvent(new ISOServerShutdownEvent(ISOServer.this));
-                    } catch (IOException ioe) {
-                        ev.addMessage (ioe);
-                    }
+            if (channel instanceof BaseChannel baseChannel) {
+                LogEvent ev = new LogEvent (this, "session-start", connectionCount.get() + "/" + permitsCount);
+                Socket socket = baseChannel.getSocket ();
+                if (!checkPermission (socket, ev))
                     return;
-                } finally {
-                    Logger.log (ev);
-                }
+                realm = realm + "/" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
             }
             try {
-                for (;;) {
-                    try {
-                        ISOMsg m = channel.receive();
-                        lastTxn = System.currentTimeMillis();
-                        Iterator iter = listeners.iterator();
-                        while (iter.hasNext()) {
-                            if (((ISORequestListener)iter.next()).process
-                                (channel, m)) {
-                                break;
-                            }
+                while (true) try {
+                    ISOMsg m = channel.receive();
+                    lastTxn = System.currentTimeMillis();
+                    for (Object listener : listeners) {
+                        if (((ISORequestListener) listener).process(channel, m)) {
+                            break;
                         }
                     }
-                    catch (ISOFilter.VetoException e) {
-                        Logger.log (new LogEvent (this, "VetoException", e.getMessage()));
-                    }
-                    catch (ISOException e) {
-                        if (ignoreISOExceptions) {
-                            Logger.log (new LogEvent (this, "ISOException", e.getMessage()));
-                        }
-                        else {
-                            throw e;
-                        }
+                } catch (ISOFilter.VetoException e) {
+                    Logger.log(new LogEvent(this, "VetoException", e.getMessage()));
+                } catch (ISOException e) {
+                    if (ignoreISOExceptions) {
+                        Logger.log(new LogEvent(this, "ISOException", e.getMessage()));
+                    } else {
+                        throw e;
                     }
                 }
             } catch (EOFException e) {
-
                 // Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
             } catch (SocketException e) {
-
                 // if (!shutdown)
                 //     Logger.log (new LogEvent (this, "session-warning", e));
             } catch (InterruptedIOException e) {
-
                 // nothing to log
             } catch (Throwable e) {
                 Logger.log (new LogEvent (this, "session-error", e));
@@ -383,7 +346,7 @@ public class ISOServer extends Observable
                 Logger.log (new LogEvent (this, "session-error", ex));
                 fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
             }
-            Logger.log (new LogEvent (this, "session-end"));
+            Logger.log (new LogEvent (this, "session-end ", connectionCount.decrementAndGet() + "/" + permitsCount));
         }
         @Override
         public void setLogger (Logger logger, String realm) {
@@ -397,8 +360,28 @@ public class ISOServer extends Observable
             return ISOServer.this.getLogger();
         }
 
-        public void checkPermission (Socket socket, LogEvent evt) throws ISOException
-        {
+        private boolean checkPermission (Socket socket, LogEvent ev) {
+            try {
+                checkPermission0 (socket, ev);
+                return true;
+            } catch (ISOException e) {
+                try {
+                    int delay = 1000 + new Random().nextInt(4000);
+                    ev.addMessage(e.getMessage());
+                    ev.addMessage("delay=" + delay);
+                    ISOUtil.sleep(delay);
+                    socket.close();
+                    fireEvent(new ISOServerShutdownEvent(ISOServer.this));
+                } catch (Throwable t) {
+                    ev.addMessage (t);
+                }
+            } finally {
+                Logger.log (ev);
+            }
+            return false;
+        }
+
+        private void checkPermission0 (Socket socket, LogEvent evt) throws ISOException {
             // if there are no allow/deny params, just return without doing any checks
             // (i.e.: "silent allow policy", keeping backward compatibility)
             if (specificIPPerms.isEmpty() && wildcardAllow == null && wildcardDeny == null)
@@ -407,14 +390,12 @@ public class ISOServer extends Observable
             String ip= socket.getInetAddress().getHostAddress ();           // The remote IP
 
             // first, check allows or denies for specific/whole IPs (no wildcards)
-            Boolean specificAllow= specificIPPerms.get(ip);
+            boolean specificAllow = specificIPPerms.get(ip);
             if (specificAllow == Boolean.TRUE) {                            // specific IP allow
                 evt.addMessage("access granted, ip=" + ip);
                 return;
-
             } else if (specificAllow == Boolean.FALSE) {                    // specific IP deny
                 throw new ISOException("access denied, ip=" + ip);
-
             } else {                                                        // no specific match under the specificIPPerms Map
                 // We check the wildcard lists, deny first
                 if (wildcardDeny != null) {
@@ -463,55 +444,55 @@ public class ISOServer extends Observable
     //-- This is the main run for this ISOServer's Thread
     @Override
     public void run() {
-        ServerChannel  channel;
+        // ServerChannel  channel;
         if (socketFactory == null) {
             socketFactory = this;
         }
+        int round = 0;
         serverLoop : while  (!shutdown) {
+            round++;
             try {
+                if (permits.availablePermits() <= 0) {
+                    LockSupport.parkNanos(Duration.ofMillis(SMALL_RELAX).toNanos());
+                    if (round % 240 == 0 && cfg.getBoolean("permits-exhaustion-warning", true)) {
+                        log ("warn", "permits exhausted " + serverSocket.toString());
+                    }
+                    continue;
+                }
                 serverSocket = socketFactory.createServerSocket(port);
-
-                Logger.log (new LogEvent (this, "iso-server",
+                log ("iso-server",
                     "listening on " + (bindAddr != null ? bindAddr + ":" : "port ") + port
-                    + (backlog > 0 ? " backlog="+backlog : "")
-                ));
+                    + ", permits=" + permits.availablePermits()
+                    + (backlog > 0 ? ", backlog="+backlog : "")
+                );
                 while (!shutdown) {
                     try {
-                        if (pool.getAvailableCount() <= 0) {
+                        if (permits.availablePermits() <= 0) {
                             try {
                                 serverSocket.close();
                                 fireEvent(new ISOServerShutdownEvent(this));
                             } catch (IOException e){
-                                Logger.log (new LogEvent (this, "iso-server", e));
-                                relax();
+                                log ("iso-server", Caller.info() + ":" + e.getMessage());
                             }
-
-                            for (int i=0; pool.getIdleCount() == 0; i++) {
-                                if (shutdown) {
-                                    break serverLoop;
-                                }
-                                if (i % 240 == 0 && cfg.getBoolean("pool-exhaustion-warning", true)) {
-                                    LogEvent evt = new LogEvent (this, "warn");
-                                    evt.addMessage (
-                                        "pool exhausted " + serverSocket.toString()
-                                    );
-                                    evt.addMessage (pool);
-                                    Logger.log (evt);
-                                }
-                                ISOUtil.sleep (250);
-                            }
-                            serverSocket = socketFactory.createServerSocket(port);
+                            continue serverLoop;
                         }
-                        channel = (ServerChannel) clientSideChannel.clone();
+                        final ServerChannel channel = (ServerChannel) clientSideChannel.clone();
                         channel.accept (serverSocket);
 
-                        if (cnt[CONNECT]++ % 100 == 0) {
+                        if (connectionCount.getAndIncrement() % 100 == 0) {
                             purgeChannels ();
                         }
-                        WeakReference wr = new WeakReference (channel);
+                        WeakReference<ISOChannel> wr = new WeakReference<> (channel);
                         channels.put (channel.getName(), wr);
                         channels.put (LAST, wr);
-                        pool.execute (createSession(channel));
+                        executor.submit (() -> {
+                            try {
+                                permits.acquireUninterruptibly();
+                                createSession(channel).run();
+                            } finally {
+                                permits.release();
+                            }
+                          });
                         setChanged ();
                         notifyObservers (this);
                         fireEvent(new ISOServerAcceptEvent(this, channel));
@@ -538,9 +519,7 @@ public class ISOServer extends Observable
     //-------------------------------------------------------------------------------
 
     private void relax() {
-        try {
-            Thread.sleep (5000);
-        } catch (InterruptedException e) { }
+        LockSupport.parkNanos(Duration.ofMillis(LONG_RELAX).toNanos());
     }
 
     /**
@@ -610,7 +589,7 @@ public class ISOServer extends Observable
     }
     @Override
     public void resetCounters () {
-        cnt = new int[SIZEOF_CNT];
+        connectionCount.set(0);
         lastTxn = 0l;
     }
     /**
@@ -618,32 +597,7 @@ public class ISOServer extends Observable
      */
     @Override
     public int getConnectionCount () {
-        return cnt[CONNECT];
-    }
-
-    // ThreadPoolMBean implementation (delegate calls to pool)
-    @Override
-    public int getJobCount () {
-        return pool.getJobCount();
-    }
-    @Override
-    public int getPoolSize () {
-        return pool.getPoolSize();
-    }
-    @Override
-    public int getMaxPoolSize () {
-        return pool.getMaxPoolSize();
-    }
-    @Override
-    public int getIdleCount() {
-        return pool.getIdleCount();
-    }
-    @Override
-    public int getPendingCount () {
-        return pool.getPendingCount();
-    }
-    public int getActiveConnections () {
-        return pool.getActiveCount();
+        return connectionCount.get();
     }
 
     /**
@@ -733,8 +687,7 @@ public class ISOServer extends Observable
         return cnt[0];
     }
     public int getConnections () {
-        int cnt[] = getCounters();
-        return cnt[2];
+        return connectionCount.get();
     }
     @Override
     public long getLastTxnTimestampInMillis() {
@@ -787,14 +740,14 @@ public class ISOServer extends Observable
         sb.append (value);
     }
 
-    public synchronized void addServerEventListener(ISOServerEventListener listener) {
+    public void addServerEventListener(ISOServerEventListener listener) {
         serverListeners.add(listener);
     }
-    public synchronized void removeServerEventListener(ISOServerEventListener listener) {
+    public void removeServerEventListener(ISOServerEventListener listener) {
         serverListeners.remove(listener);
     }
 
-    public synchronized void fireEvent(EventObject event) {
+    public void fireEvent(EventObject event) {
         for (ISOServerEventListener l : serverListeners) {
             try {
                 l.handleISOServerEvent(event);
@@ -812,6 +765,16 @@ public class ISOServer extends Observable
             }
 
         }
+    }
+
+    private void log (String level, String message) {
+        LogEvent evt = new LogEvent (this, level);
+        evt.addMessage (message);
+        Logger.log (evt);
+    }
+
+    public int getActiveConnections () {
+        return permitsCount - permits.availablePermits();
     }
 }
 
