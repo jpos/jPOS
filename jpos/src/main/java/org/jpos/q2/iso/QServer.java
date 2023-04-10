@@ -38,10 +38,10 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.space.SpaceListener;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
-import org.jpos.util.ThreadPool;
 
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -58,7 +58,6 @@ public class QServer
 {
     private int port = 0;
     private int maxSessions = 100;
-    private int minSessions = 1;
     private String channelString, packagerString, socketFactoryString;
     private ISOChannel channel = null;
     private ISOServer server;
@@ -104,11 +103,7 @@ public class QServer
                   "does not implement ServerChannel");
         }
 
-        ThreadPool pool = null;
-        pool = new ThreadPool (minSessions ,maxSessions, getName() + "-ThreadPool");
-        pool.setLogger (log.getLogger(), getName() + ".pool");
-
-        server = new ISOServer (port, (ServerChannel) channel, pool);
+        server = new ISOServer (port, (ServerChannel) channel, maxSessions);
         server.setLogger (log.getLogger(), getName() + ".server");
         server.setName (getName ());
         if (socketFactoryString != null) {
@@ -123,7 +118,7 @@ public class QServer
         addListeners ();// ISORequestListener
         addISOServerConnectionListeners();
         NameRegistrar.register (getName(), this);
-        new Thread (server).start();
+        Executors.newVirtualThreadPerTaskExecutor().submit(server);
     }
     private void initIn() {
         Element persist = getPersist();
@@ -233,18 +228,6 @@ public class QServer
     @Override
     public int getMaxSessions () {
         return maxSessions;
-    }
-
-    @Override
-    public synchronized void setMinSessions (int minSessions) {
-        this.minSessions = minSessions;
-        setAttr (getAttrs (), "minSessions", minSessions);
-        setModified (true);
-    }
-
-    @Override
-    public int getMinSessions () {
-        return minSessions;
     }
 
     @Override

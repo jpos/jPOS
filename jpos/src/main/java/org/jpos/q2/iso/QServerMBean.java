@@ -40,11 +40,7 @@ public interface QServerMBean extends org.jpos.q2.QBeanSupportMBean {
   void setMaxSessions(int maxSessions) ;
 
   int getMaxSessions() ;
-
-  void setMinSessions(int minSessions) ;
-
-  int getMinSessions() ;
-
+  
   void setSocketFactory(java.lang.String sFactory) ;
 
   java.lang.String getSocketFactory() ;
