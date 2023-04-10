@@ -24,9 +24,12 @@ import org.jdom2.JDOMException;
 import java.io.*;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class FSDISOMsg extends ISOMsg implements Cloneable  {
     FSDMsg fsd;
+    Lock isLock = new ReentrantLock();
     public  FSDISOMsg () {
         super();
     }
@@ -53,12 +56,13 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
         }
     }
     public void unpack (InputStream in) throws IOException, ISOException {
-        synchronized (this) {
-            try {
-                fsd.unpack(in);
-            } catch (JDOMException e) {
-                throw new ISOException (e);
-            }
+        try {
+            isLock.lock();
+            fsd.unpack(in);
+        } catch (JDOMException e) {
+            throw new ISOException (e);
+        } finally {
+            isLock.unlock();
         }
     }
 
