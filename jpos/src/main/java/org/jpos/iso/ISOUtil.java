@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.StringJoiner;
 import java.util.StringTokenizer;
+import java.util.concurrent.locks.LockSupport;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -1034,14 +1036,10 @@ public class ISOUtil {
      * execution) for the specified number of milliseconds. The thread 
      * does not lose ownership of any monitors.
      *
-     * This is the same as Thread.sleep () without throwing InterruptedException
-     *
      * @param      millis   the length of time to sleep in milliseconds.
      */
     public static void sleep (long millis) {
-        try {
-            Thread.sleep (millis);
-        } catch (InterruptedException ignored) { }
+        LockSupport.parkNanos(Duration.ofMillis(millis).toNanos());
     }
 
     /**
