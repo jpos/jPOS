@@ -33,6 +33,8 @@ import org.jpos.util.NameRegistrar;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @SuppressWarnings("unchecked")
 public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneable {
@@ -43,6 +45,7 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     Configuration cfg = null;
     List pool;
     ISOChannel current;
+    Lock lock = new ReentrantLock();
 
     public ChannelPool () {
         super ();
@@ -51,53 +54,72 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     public void setPackager(ISOPackager p) {
         // nothing to do
     }
-    public synchronized void connect () throws IOException {
-        current = null;
-        LogEvent evt = new LogEvent (this, "connect");
-        evt.addMessage ("pool-size=" + Integer.toString (pool.size()));
-        for (int i=0; i<pool.size(); i++) {
-            try {
-                evt.addMessage ("pool-" + Integer.toString (i));
-                ISOChannel c = (ISOChannel) pool.get (i);
-                c.connect ();
-                if (c.isConnected()) {
-                    current = c;
-                    usable = true;
-                    break;
-                }
-            } catch (IOException e) {
-                evt.addMessage (e);
-            }
-        }
-        if (current == null)
-            evt.addMessage ("connect failed");
-        Logger.log (evt);
-        if (current == null) {
-            throw new IOException ("unable to connect");
-        }
-    }
-    public synchronized void disconnect () throws IOException {
-        current = null;
-        LogEvent evt = new LogEvent (this, "disconnect");
-        for (Object aPool : pool) {
-            try {
-                ISOChannel c = (ISOChannel) aPool;
-                c.disconnect();
-            } catch (IOException e) {
-                evt.addMessage(e);
-            }
-        }
-        Logger.log (evt);
-    }
-    public synchronized void reconnect() throws IOException {
-        disconnect ();
-        connect ();
-    }
-    public synchronized boolean isConnected() {
+    public void connect () throws IOException {
         try {
+            lock.lock();
+            current = null;
+            LogEvent evt = new LogEvent (this, "connect");
+            evt.addMessage ("pool-size=" + Integer.toString (pool.size()));
+            for (int i=0; i<pool.size(); i++) {
+                try {
+                    evt.addMessage ("pool-" + Integer.toString (i));
+                    ISOChannel c = (ISOChannel) pool.get (i);
+                    c.connect ();
+                    if (c.isConnected()) {
+                        current = c;
+                        usable = true;
+                        break;
+                    }
+                } catch (IOException e) {
+                    evt.addMessage (e);
+                }
+            }
+            if (current == null)
+                evt.addMessage ("connect failed");
+            Logger.log (evt);
+            if (current == null) {
+                throw new IOException ("unable to connect");
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+    public void disconnect () throws IOException {
+        try {
+            lock.lock();
+            current = null;
+            LogEvent evt = new LogEvent (this, "disconnect");
+            for (Object aPool : pool) {
+                try {
+                    ISOChannel c = (ISOChannel) aPool;
+                    c.disconnect();
+                } catch (IOException e) {
+                    evt.addMessage(e);
+                }
+            }
+            Logger.log (evt);
+        } finally {
+            lock.unlock();
+        }
+
+    }
+    public void reconnect() throws IOException {
+        try {
+            lock.lock();
+            disconnect ();
+            connect ();
+        } finally {
+            lock.unlock();;
+        }
+    }
+    public boolean isConnected() {
+        try {
+            lock.lock();
             return getCurrent().isConnected ();
         } catch (IOException e) {
             return false;
+        } finally {
+            lock.unlock();
         }
     }
     public ISOMsg receive() throws IOException, ISOException {
@@ -132,7 +154,7 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     public Logger getLogger() {
         return logger;
     }
-    public synchronized void setConfiguration (Configuration cfg) 
+    public void setConfiguration (Configuration cfg)
         throws ConfigurationException
     {
         this.cfg = cfg;
@@ -162,12 +184,16 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     public int size() {
         return pool.size();
     }
-    public synchronized ISOChannel getCurrent () throws IOException {
-        if (current == null)
-            connect();
-        else if (!usable)
-            reconnect();
-
+    public ISOChannel getCurrent () throws IOException {
+        try {
+            lock.lock();
+            if (current == null)
+                connect();
+            else if (!usable)
+                reconnect();
+        } finally {
+            lock.unlock();
+        }
         return current;
     }
     

@@ -97,9 +97,12 @@ public class CSChannel extends BaseChannel {
             serverIn.readFully(b,0,4);
             l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
             if (replyKeepAlive && l == 0) {
-                synchronized (serverOutLock) {
+                try {
+                    serverOutLock.lock();
                     serverOut.write(b);
                     serverOut.flush();
+                } finally {
+                    serverOutLock.unlock();
                 }
             }
         }

@@ -92,12 +92,15 @@ public class PADChannel extends BaseChannel {
         int hLen = getHeaderLength();
         LogEvent evt = new LogEvent (this, "receive");
         try {
-            synchronized (serverInLock) {
+            try {
+                serverInLock.lock();
                 if (hLen > 0) {
                     header = new byte [hLen];
                     serverIn.readFully(header);
                 }
                 m.unpack (serverIn);
+            } finally {
+                serverInLock.unlock();
             }
             m.setHeader (header);
             m.setDirection(ISOMsg.INCOMING);

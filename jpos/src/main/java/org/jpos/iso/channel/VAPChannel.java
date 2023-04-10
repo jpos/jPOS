@@ -180,11 +180,14 @@ public class VAPChannel extends BaseChannel {
             l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
 
             if (replyKeepAlive && l == 0) {
-                synchronized (serverOutLock) {
+                try {
+                    serverOutLock.lock();
                     serverOut.write(b);
                     serverOut.flush();
                     if (debugPoll)
                         Logger.log(new LogEvent(this, "poll"));
+                } finally {
+                    serverOutLock.unlock();
                 }
             }
         }
