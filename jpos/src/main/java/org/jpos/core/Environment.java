@@ -36,8 +36,8 @@ public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
 
-    private static Pattern valuePattern = Pattern.compile("^(.*)(\\$)([\\w]*)\\{([-\\w.]+)(:(.*?))?\\}(.*)$");
-    // make groups easier to read :-)                       11112222233333333   44444444445566665    7777
+    private static Pattern valuePattern = Pattern.compile("^(.*)(\\$)([\\w]*)\\{([-!\\w.]+)(:(.*?))?\\}(.*)$");
+    // make groups easier to read :-)                       11112222233333333   4444444444455666665    7777
 
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
     private static Environment INSTANCE;
@@ -57,6 +57,14 @@ public class Environment implements Loggeable {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    protected static Map<String,String> notMap = new HashMap<>();
+    static {
+        notMap.put("false", "true");
+        notMap.put("true",  "false");
+        notMap.put("yes",   "no");
+        notMap.put("no",    "yes");
     }
 
     private Environment() throws IOException {
@@ -126,9 +134,14 @@ public class Environment implements Loggeable {
                 return s;                           // return the whole thing
 
             while (m != null && m.matches()) {
+                boolean negated = false;
                 String previousR = r;
                 String gPrefix = m.group(3);
                 String gValue = m.group(4);
+                if (gValue.startsWith("!")) {
+                    negated = true;
+                    gValue = gValue.substring(1);
+                }
                 gPrefix = gPrefix != null ? gPrefix : "";
                 switch (gPrefix) {
                     case CFG_PREFIX:
@@ -151,8 +164,9 @@ public class Environment implements Loggeable {
                         }
                 }
 
+                String defValue = null;
                 if (r == null) {                                // unresolved property
-                    String defValue = m.group(6);
+                    defValue = m.group(6);
                     if (defValue != null)
                         r = defValue;                           // use default value from now on
                 }
@@ -164,6 +178,14 @@ public class Environment implements Loggeable {
                             r = p.get(r.substring(l));
                         }
                     }
+
+                    if (negated && r != null &&
+                        defValue == null)                       // we don't want to negate a default literal boolean!
+                    {
+                        String rNorm = r.trim().toLowerCase();
+                        r = notMap.getOrDefault(rNorm, r);      // if not a booleanish string, return unchanged
+                    }
+
                     if (m.group(1) != null) {
                         r = m.group(1) + r;
                     }
@@ -172,6 +194,8 @@ public class Environment implements Loggeable {
 
                     m = valuePattern.matcher(r);
                 } else {                // property was undefined/unresolved and no default was provided
+                    if (negated)
+                        r = "true";     // a negated undefined is interpreted as true
                     m = null;
                 }
 
