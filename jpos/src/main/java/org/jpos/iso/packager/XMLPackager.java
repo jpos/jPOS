@@ -105,8 +105,8 @@ public class XMLPackager extends DefaultHandler
                 throw new ISOException ("cannot pack "+c.getClass());
             ISOMsg m = (ISOMsg) c;
             byte[] b;
+            lock.lock();
             try {
-                lock.lock();
                 m.setDirection(0);  // avoid "direction=xxxxxx" in XML msg
                 m.dump (p, "");
                 b = out.toByteArray();
@@ -129,8 +129,8 @@ public class XMLPackager extends DefaultHandler
         throws ISOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
+        lock.lock();
         try {
-            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException
                     ("Can't call packager on non Composite");
@@ -172,8 +172,8 @@ public class XMLPackager extends DefaultHandler
         throws ISOException, IOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
+        lock.lock();
         try {
-            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException
                     ("Can't call packager on non Composite");

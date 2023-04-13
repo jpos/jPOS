@@ -139,8 +139,8 @@ public class SystemMonitor extends QBeanSupport
         localHost = getLocalHost();
         processName = ManagementFactory.getRuntimeMXBean().getName();
         while (running()) {
+            dumping.lock();
             try {
-                dumping.lock();
                 frozenDump = generateFrozenDump ("");
                 log.info(this);
                 frozenDump = null;

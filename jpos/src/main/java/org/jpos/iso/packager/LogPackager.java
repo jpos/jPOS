@@ -82,8 +82,8 @@ public class LogPackager extends DefaultHandler
     }
     public byte[] pack (ISOComponent c) throws ISOException {
         LogEvent evt = new LogEvent (this, "pack");
+        lock.lock();
         try {
-            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException ("cannot pack "+c.getClass());
             ISOMsg m = (ISOMsg) c;
@@ -109,8 +109,8 @@ public class LogPackager extends DefaultHandler
         throws ISOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
+        lock.lock();
         try {
-            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException 
                     ("Can't call packager on non Composite");
@@ -146,8 +146,8 @@ public class LogPackager extends DefaultHandler
         throws ISOException, IOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
+        lock.lock();
         try {
-            lock.lock();
             if (!(c instanceof ISOMsg))
                 throw new ISOException 
                     ("Can't call packager on non Composite");

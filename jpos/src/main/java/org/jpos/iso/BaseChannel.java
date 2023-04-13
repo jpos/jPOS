@@ -277,16 +277,16 @@ public abstract class BaseChannel extends Observable
             "/" + socket.getInetAddress().getHostAddress() + ":" 
             + socket.getPort()
         );
+        serverInLock.lock();
         try {
-            serverInLock.lock();
             serverIn = new DataInputStream (
               new BufferedInputStream (socket.getInputStream ())
             );
         } finally {
             serverInLock.unlock();
         }
+        serverOutLock.lock();
         try {
-            serverOutLock.lock();
             serverOut = new DataOutputStream(
               new BufferedOutputStream(socket.getOutputStream(), 2048)
             );
@@ -607,8 +607,8 @@ public abstract class BaseChannel extends Observable
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
             m.setPackager (p); // and could have dropped packager as well
             byte[] b = pack(m);
+            serverOutLock.lock();
             try  {
-                serverOutLock.lock();
                 sendMessageLength(b.length + getHeaderLength(m));
                 sendMessageHeader(m, b.length);
                 sendMessage (b, 0, b.length);
@@ -649,8 +649,8 @@ public abstract class BaseChannel extends Observable
         try {
             if (!isConnected())
                 throw new ISOException ("unconnected ISOChannel");
+            serverOutLock.lock();
             try {
-                serverOutLock.lock();
                 serverOut.write(b);
                 serverOut.flush();
             } finally {
@@ -670,8 +670,8 @@ public abstract class BaseChannel extends Observable
      * @throws IOException on exception
      */
     public void sendKeepAlive () throws IOException {
+        serverOutLock.lock();
         try {
-            serverOutLock.lock();
             sendMessageLength(0);
             serverOut.flush ();
         } finally {
@@ -726,8 +726,8 @@ public abstract class BaseChannel extends Observable
             if (!isConnected())
                 throw new IOException ("unconnected ISOChannel");
 
+            serverInLock.lock();
             try {
-                serverInLock.lock();
                 int len  = getMessageLength();
                 if (expectKeepAlive) {
                     while (len == 0) {

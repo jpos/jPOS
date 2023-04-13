@@ -56,8 +56,8 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
         }
     }
     public void unpack (InputStream in) throws IOException, ISOException {
+        isLock.lock();
         try {
-            isLock.lock();
             fsd.unpack(in);
         } catch (JDOMException e) {
             throw new ISOException (e);

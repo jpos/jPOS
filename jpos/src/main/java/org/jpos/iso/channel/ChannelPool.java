@@ -55,8 +55,8 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
         // nothing to do
     }
     public void connect () throws IOException {
+        lock.lock();
         try {
-            lock.lock();
             current = null;
             LogEvent evt = new LogEvent (this, "connect");
             evt.addMessage ("pool-size=" + Integer.toString (pool.size()));
@@ -85,8 +85,8 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
         }
     }
     public void disconnect () throws IOException {
+        lock.lock();
         try {
-            lock.lock();
             current = null;
             LogEvent evt = new LogEvent (this, "disconnect");
             for (Object aPool : pool) {
@@ -104,8 +104,8 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
 
     }
     public void reconnect() throws IOException {
+        lock.lock();
         try {
-            lock.lock();
             disconnect ();
             connect ();
         } finally {
@@ -113,8 +113,8 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
         }
     }
     public boolean isConnected() {
+        lock.lock();
         try {
-            lock.lock();
             return getCurrent().isConnected ();
         } catch (IOException e) {
             return false;
@@ -185,8 +185,8 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
         return pool.size();
     }
     public ISOChannel getCurrent () throws IOException {
+        lock.lock();
         try {
-            lock.lock();
             if (current == null)
                 connect();
             else if (!usable)
