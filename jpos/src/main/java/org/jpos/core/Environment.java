@@ -19,7 +19,6 @@
 package org.jpos.core;
 
 import org.jpos.iso.ISOUtil;
-import org.jpos.util.Caller;
 import org.jpos.util.Loggeable;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.scanner.ScannerException;
@@ -143,19 +142,19 @@ public class Environment implements Loggeable {
                         break;
                     default:
                         if (gPrefix.length() == 0) {
-                            r = System.getenv(gValue); // ENV has priority
+                            r = System.getenv(gValue);                              // ENV has priority
                             r = r == null ? System.getenv(gValue.replace('.', '_').toUpperCase()) : r;
-                            r = r == null ? System.getProperty(gValue) : r; // then System.property
-                            r = r == null ? propRef.get().getProperty(gValue) : r; // then jPOS --environment
+                            r = r == null ? System.getProperty(gValue) : r;         // then System.property
+                            r = r == null ? propRef.get().getProperty(gValue) : r;  // then jPOS --environment
                         } else {
                             return s; // do nothing - unknown prefix
                         }
                 }
 
-                if (r == null) {
+                if (r == null) {                                // unresolved property
                     String defValue = m.group(6);
                     if (defValue != null)
-                        r = defValue;
+                        r = defValue;                           // use default value from now on
                 }
 
                 if (r != null) {
@@ -170,10 +169,11 @@ public class Environment implements Loggeable {
                     }
                     if (m.group(7) != null)
                         r = r + m.group(7);
+
                     m = valuePattern.matcher(r);
-                }
-                else
+                } else {                // property was undefined/unresolved and no default was provided
                     m = null;
+                }
 
                 if (Objects.equals(r, previousR))
                     break;
@@ -241,14 +241,15 @@ public class Environment implements Loggeable {
 
     @SuppressWarnings("unchecked")
     public static void flat (Properties properties, String prefix, Map<String,Object> c, boolean dereference) {
-        for (Object o : c.entrySet()) {
-            Map.Entry<String,Object> entry = (Map.Entry<String,Object>) o;
+        for (Map.Entry<String,Object> entry : c.entrySet()) {
             String p = prefix == null ? entry.getKey() : (prefix + "." + entry.getKey());
             if (entry.getValue() instanceof Map) {
-                flat(properties, p, (Map) entry.getValue(), dereference);
+                flat(properties, p, (Map<String,Object>)entry.getValue(), dereference);
             } else {
                 Object obj = entry.getValue();
-                properties.put (p, "" + (dereference && obj instanceof String ? Environment.get((String) obj) : entry.getValue()));
+                properties.put (p, (dereference && obj instanceof String ?
+                                    Environment.get((String) obj) :
+                                    entry.getValue().toString()));
             }
         }
     }
