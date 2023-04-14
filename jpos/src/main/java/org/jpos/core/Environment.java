@@ -19,7 +19,6 @@
 package org.jpos.core;
 
 import org.jpos.iso.ISOUtil;
-import org.jpos.util.Caller;
 import org.jpos.util.Loggeable;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.scanner.ScannerException;
@@ -37,8 +36,8 @@ public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
 
-    private static Pattern valuePattern = Pattern.compile("^(.*)(\\$)([\\w]*)\\{([-\\w.]+)(:(.*?))?\\}(.*)$");
-    // make groups easier to read :-)                       11112222233333333   44444444445566665    7777
+    private static Pattern valuePattern = Pattern.compile("^(.*)(\\$)([\\w]*)\\{([-!\\w.]+)(:(.*?))?\\}(.*)$");
+    // make groups easier to read :-)                       11112222233333333   4444444444455666665    7777
 
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
     private static Environment INSTANCE;
@@ -58,6 +57,14 @@ public class Environment implements Loggeable {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    protected static Map<String,String> notMap = new HashMap<>();
+    static {
+        notMap.put("false", "true");
+        notMap.put("true",  "false");
+        notMap.put("yes",   "no");
+        notMap.put("no",    "yes");
     }
 
     private Environment() throws IOException {
@@ -127,9 +134,14 @@ public class Environment implements Loggeable {
                 return s;                           // return the whole thing
 
             while (m != null && m.matches()) {
+                boolean negated = false;
                 String previousR = r;
                 String gPrefix = m.group(3);
                 String gValue = m.group(4);
+                if (gValue.startsWith("!")) {
+                    negated = true;
+                    gValue = gValue.substring(1);
+                }
                 gPrefix = gPrefix != null ? gPrefix : "";
                 switch (gPrefix) {
                     case CFG_PREFIX:
@@ -143,19 +155,20 @@ public class Environment implements Loggeable {
                         break;
                     default:
                         if (gPrefix.length() == 0) {
-                            r = System.getenv(gValue); // ENV has priority
+                            r = System.getenv(gValue);                              // ENV has priority
                             r = r == null ? System.getenv(gValue.replace('.', '_').toUpperCase()) : r;
-                            r = r == null ? System.getProperty(gValue) : r; // then System.property
-                            r = r == null ? propRef.get().getProperty(gValue) : r; // then jPOS --environment
+                            r = r == null ? System.getProperty(gValue) : r;         // then System.property
+                            r = r == null ? propRef.get().getProperty(gValue) : r;  // then jPOS --environment
                         } else {
                             return s; // do nothing - unknown prefix
                         }
                 }
 
-                if (r == null) {
-                    String defValue = m.group(6);
+                String defValue = null;
+                if (r == null) {                                // unresolved property
+                    defValue = m.group(6);
                     if (defValue != null)
-                        r = defValue;
+                        r = defValue;                           // use default value from now on
                 }
 
                 if (r != null) {
@@ -165,15 +178,26 @@ public class Environment implements Loggeable {
                             r = p.get(r.substring(l));
                         }
                     }
+
+                    if (negated && r != null &&
+                        defValue == null)                       // we don't want to negate a default literal boolean!
+                    {
+                        String rNorm = r.trim().toLowerCase();
+                        r = notMap.getOrDefault(rNorm, r);      // if not a booleanish string, return unchanged
+                    }
+
                     if (m.group(1) != null) {
                         r = m.group(1) + r;
                     }
                     if (m.group(7) != null)
                         r = r + m.group(7);
+
                     m = valuePattern.matcher(r);
-                }
-                else
+                } else {                // property was undefined/unresolved and no default was provided
+                    if (negated)
+                        r = "true";     // a negated undefined is interpreted as true
                     m = null;
+                }
 
                 if (Objects.equals(r, previousR))
                     break;
@@ -241,14 +265,15 @@ public class Environment implements Loggeable {
 
     @SuppressWarnings("unchecked")
     public static void flat (Properties properties, String prefix, Map<String,Object> c, boolean dereference) {
-        for (Object o : c.entrySet()) {
-            Map.Entry<String,Object> entry = (Map.Entry<String,Object>) o;
+        for (Map.Entry<String,Object> entry : c.entrySet()) {
             String p = prefix == null ? entry.getKey() : (prefix + "." + entry.getKey());
             if (entry.getValue() instanceof Map) {
-                flat(properties, p, (Map) entry.getValue(), dereference);
+                flat(properties, p, (Map<String,Object>)entry.getValue(), dereference);
             } else {
                 Object obj = entry.getValue();
-                properties.put (p, "" + (dereference && obj instanceof String ? Environment.get((String) obj) : entry.getValue()));
+                properties.put (p, (dereference && obj instanceof String ?
+                                    Environment.get((String) obj) :
+                                    entry.getValue().toString()));
             }
         }
     }

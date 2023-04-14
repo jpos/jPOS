@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,4 +91,89 @@ public class EnvironmentTest {
         System.setProperty("loop", "${loop}");
         assertEquals("${loop}", Environment.get("${loop}"));
     }
+
+    @Test
+    public void multiExpr() {
+        assertEquals("the numbers UNO and DOS and NaN",
+                    Environment.get("the numbers ${test.one} and ${test.two} and ${test.three:NaN}"));
+    }
+
+    @Test
+    public void testNegateExprFromEnvironment() {
+        assertEquals("true", Environment.get("${test.true_boolean}"),
+                    "${test.true_boolean} should return \"true\"");
+
+        assertEquals("false", Environment.get("${!test.true_boolean}"),
+                    "${!test.true_boolean} should return \"false\"");
+
+        assertEquals("true", Environment.get("${!test.false_boolean}"),
+                    "${!test.false_boolean} should return \"true\"");
+
+        // In the yaml file the definition is "test.no_upper: NO",
+        // but it's converted to a boolean false by yaml parser.
+        // This is converted into a string "false" by the Environment flattening process.
+        assertEquals("true", Environment.get("${!test.no_upper}"),
+                    "test.no_upper: NO, so ${!test.no_upper} should return \"true\"");
+
+        // The system properties are already strings, soy "YES" is maintained as is
+        System.setProperty("enabled.value", "YES");
+        assertEquals("no", Environment.get("${!enabled.value}"),
+                    "enabled.value=\"YES\", so ${!enabled.value} should return \"no\"");
+
+        assertEquals("DOS", Environment.get("${!test.two}"),
+                    "${!test.two} should return DOS, since negate operator is ignored for non-boolean strings");
+    }
+
+    @Test
+    public void testNegateExprFromSimpleConfiguration() {
+        Properties props = new Properties();
+        props.put("literal-true", "true");
+        props.put("literal-NO",   "NO");
+
+        // In the yaml file the definition is "test.two: DOS",
+        props.put(    "expr-test-two",              "${test.two}");                    // must return false, since getBoolean is false for non-booleanish values
+        props.put("neg-expr-test-two",              "${!test.two}");                   // same as above, the negation op has no effect on non-booleanish values
+
+        props.put(    "expr-test-true-no-def",      "${test.true_boolean}");
+        props.put(    "expr-test-true-def",         "${test.true_boolean:false}");      // must return true, ignoring default
+
+        props.put(    "expr-test-no_upper-no-def",  "${test.no_upper}");
+        props.put("neg-expr-test-false-def",        "${!test.false_boolean:false}");    // must return true, ignoring default
+
+        // unresolved properties (they aren't defined anywhere)
+        props.put(    "undefined-no-def",  "${__undefined__}");
+        props.put(    "undefined-def",     "${__undefined__:true}");
+        props.put("neg-undefined-no-def",  "${!__undefined__}");
+        props.put("neg-undefined-def",     "${!__undefined__:true}");
+
+        SimpleConfiguration conf = new SimpleConfiguration(props);
+
+
+        assertTrue(conf.getBoolean("literal-true"), "literal-true");
+        assertFalse(conf.getBoolean("literal-NO"),  "literal-NO");
+
+        assertFalse(conf.getBoolean(    "expr-test-two"),        "expr-test-two: ${test.two} must return \"false\" for getBoolean");
+        assertFalse(conf.getBoolean("neg-expr-test-two"),    "neg-expr-test-two: ${!test.two} must return \"false\" for getBoolean");
+
+        assertTrue(conf.getBoolean("expr-test-true-no-def"),    "expr-test-true-no-def");
+        assertTrue(conf.getBoolean("expr-test-true-def"),       "expr-test-true-def must be true, ignoring default");
+
+
+        assertFalse(conf.getBoolean("expr-test-no_upper-no-def"),
+                "expr-test-no_upper-no-def");
+        assertTrue(conf.getBoolean("neg-expr-test-false-def"),
+                "neg-expr-test-false-def: ${!test.false_boolean:false} must be true, ignoring default");
+
+
+        assertFalse(conf.getBoolean("undefined-no-def"),
+                "undefined-no-def must be false, since it can't resolve");
+        assertTrue(conf.getBoolean("undefined-def"),
+                "undefined-def must be true, since the default is true and must be honored");
+
+        assertTrue(conf.getBoolean("neg-undefined-no-def"),
+            "neg-undefined-no-def: ${!__undefined__} must be true, since it's the opposite of undefined");
+        assertTrue(conf.getBoolean("neg-undefined-def"),
+            "neg-undefined-def: ${!__undefined__:true} must be true, since the default is true and must be honored");
+    }
+
 }
