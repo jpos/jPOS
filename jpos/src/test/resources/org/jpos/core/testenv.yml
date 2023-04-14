@@ -1,5 +1,17 @@
 test:
   value: "from testenv.yml"
+
+  true_boolean: true
+  false_boolean: false
+  yes_lower: yes          # converted to true by yaml parser
+  no_upper: NO            # converted to false by yaml parser
+
+  annotation:
+    envstring: "from testenv.yml"
+
+  one: UNO
+  two: DOS
+
 ---
 system:
   property:
