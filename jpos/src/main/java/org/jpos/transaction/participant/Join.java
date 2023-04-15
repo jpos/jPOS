@@ -30,14 +30,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 @SuppressWarnings("unchecked")
 public class Join
        implements TransactionConstants, AbortParticipant, 
                   XmlConfigurable
 {
-    private TransactionManager mgr;
-    private List participants = new ArrayList ();
+    private TransactionManager tm;
+    private final List<TransactionParticipant> participants = new ArrayList<> ();
 
     public int prepare (long id, Serializable o) {
         return mergeActions(
@@ -55,16 +56,13 @@ public class Join
     public void abort  (long id, Serializable o) { 
         joinRunners(abort (createRunners(id, o)));
     }
-    public void setConfiguration (Element e)
-        throws ConfigurationException
-    {
-        Iterator iter = e.getChildren ("participant").iterator();
-        while (iter.hasNext()) {
-            participants.add (mgr.createParticipant ((Element) iter.next()));
+    public void setConfiguration (Element e) throws ConfigurationException {
+        for (Element element : e.getChildren("participant")) {
+            participants.add(tm.createParticipant(element));
         }
     }
     public void setTransactionManager (TransactionManager mgr) {
-        this.mgr = mgr;
+        this.tm = mgr;
     }
     private Runner[] prepare (Runner[] runners) {
         for (Runner runner : runners) runner.prepare();
@@ -84,10 +82,10 @@ public class Join
     }
     private Runner[] createRunners(long id, Serializable o) {
         Runner[] runners = new Runner[participants.size()];
-        Iterator iter = participants.iterator();
+        Iterator<TransactionParticipant> iter = participants.iterator();
         for (int i=0; iter.hasNext(); i++) {
             runners[i] = new Runner (
-                (TransactionParticipant) iter.next(), id, o
+              iter.next(), id, o, tm.getExecutorService()
             );
         }
         return runners;
@@ -118,12 +116,14 @@ public class Join
                (readonly ? READONLY : 0);
     }
     public static class Runner implements Runnable {
-        TransactionParticipant p;
+        private TransactionParticipant p;
         public int rc;
         long id;
         int mode;
-        Serializable ctx;
+        private Serializable ctx;
         Thread t;
+
+        private ExecutorService executor;
         public static final int PREPARE = 0;
         public static final int PREPARE_FOR_ABORT = 1;
         public static final int COMMIT = 2;
@@ -132,10 +132,13 @@ public class Join
             "prepare", "prepareForAbort", "commit", "abort"
         };
 
-        public Runner (TransactionParticipant p, long id, Serializable ctx) {
+        private String threadName;
+
+        public Runner (TransactionParticipant p, long id, Serializable ctx, ExecutorService executor) {
             this.p = p;
             this.id = id;
             this.ctx = ctx;
+            this.executor = executor;
         }
         public void prepare() {
             createThread (PREPARE);
@@ -151,36 +154,35 @@ public class Join
         }
         public void run() {
             switch (mode) {
-                case PREPARE:
-                    rc = p.prepare(id, ctx);
-                    break;
-                case PREPARE_FOR_ABORT:
+                case PREPARE -> rc = p.prepare(id, ctx);
+                case PREPARE_FOR_ABORT -> {
                     if (p instanceof AbortParticipant)
-                        rc = ((AbortParticipant)p).prepareForAbort (id, ctx);
-                    break;
-                case COMMIT:
+                        rc = ((AbortParticipant) p).prepareForAbort(id, ctx);
+                }
+                case COMMIT -> {
                     if ((rc & NO_JOIN) == 0)
-                        p.commit (id, ctx);
-                    break;
-                case ABORT:
+                        p.commit(id, ctx);
+                }
+                case ABORT -> {
                     if ((rc & NO_JOIN) == 0)
-                        p.abort (id, ctx);
-                    break;
+                        p.abort(id, ctx);
+                }
             }
         }
         public void join () {
             try {
                 t.join ();
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException ignored) { }
         }
         private void createThread (int m) {
-            this.t = new Thread(this);
-            t.setName (
-                MODES[m] +
-                this.getClass().getName() + ":" + p.getClass().getName()
-            );
             this.mode = m;
-            t.start();
+            this.t = Thread.ofVirtual().name(
+              "%s%s:%s".formatted(
+                MODES[mode],
+                this.getClass().getName(),
+                p.getClass().getName()
+              )
+            ).start(this);
         }
     }
 }
