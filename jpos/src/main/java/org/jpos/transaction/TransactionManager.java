@@ -216,6 +216,7 @@ public class TransactionManager
         thread.setName (getName() + "-" + session + ":idle");
         int action = -1;
         try {
+            setThreadLocal(id, context);
             if (hasStatusListeners)
                 notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
 
@@ -236,23 +237,17 @@ public class TransactionManager
                 prof = new Profiler();
             }
             snapshot (id, context, PREPARING);
-            setThreadLocal(id, context);
             action = prepare (session, id, context, members, iter, abort, evt, prof, chronometer);
-            removeThreadLocal();
             switch (action) {
                 case PREPARED:
                     if (members.size() > 0) {
                         setState(id, COMMITTING);
-                        setThreadLocal(id, context);
                         commit(session, id, context, members, false, evt, prof);
-                        removeThreadLocal();
                     }
                     break;
                 case ABORTED:
                     if (members.size() > 0) {
-                        setThreadLocal(id, context);
                         abort(session, id, context, members, false, evt, prof);
-                        removeThreadLocal();
                     }
                     break;
                 case RETRY:
