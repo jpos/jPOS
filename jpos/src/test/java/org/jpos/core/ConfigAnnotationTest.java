@@ -18,10 +18,14 @@
 
 package org.jpos.core;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.jpos.core.annotation.Config;
 import org.jpos.q2.QFactory;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,11 +38,13 @@ public class ConfigAnnotationTest {
         cfg.put("mylong", "10000");
         cfg.put("myint", "1000");
         cfg.put("myboolean", "yes");
+        cfg.put("myarray", new String[] { "one", "two"});
         QFactory.autoconfigure(bean, cfg);
         assertEquals("My String", bean.getMystring());
         assertEquals(1000, bean.getMyint());
         assertEquals(10000L, bean.getMylong());
         assertTrue(bean.isMyboolean());
+        assertThat("myarray should have the configured values", bean.getMyarray(), is(new String[]{"one", "two"}));
     }
 
     @Test
@@ -50,12 +56,14 @@ public class ConfigAnnotationTest {
         cfg.put("myint", "1000");
         cfg.put("myboolean", "yes");
         cfg.put("mychildstring", "My Child String");
+        cfg.put("myarray", new String[] { "one", "two"});
         QFactory.autoconfigure(bean, cfg);
         assertEquals("My String", bean.getMystring());
         assertEquals(1000, bean.getMyint());
         assertEquals(10000L, bean.getMylong());
         assertEquals("My Child String", bean.getChildString());
         assertTrue(bean.isMyboolean());
+        assertThat("myarray should have the configured values", bean.getMyarray(), is(new String[]{"one", "two"}));
     }
 
 
@@ -71,7 +79,10 @@ public class ConfigAnnotationTest {
 
         @Config("myboolean")
         private boolean myboolean;
-
+        
+        @Config("myarray")
+        private String[] myarray;
+        
         public String getMystring() {
             return mystring;
         }
@@ -86,6 +97,9 @@ public class ConfigAnnotationTest {
 
         public boolean isMyboolean() {return myboolean; }
 
+        public String[] getMyarray() {
+            return myarray;
+        }
 
         @Override
         public String toString() {
@@ -93,6 +107,7 @@ public class ConfigAnnotationTest {
               "mystring='" + mystring + '\'' +
               ", myint=" + myint +
               ", mylong=" + mylong +
+              ", myarray=[" + String.join(", ", myarray)+"]" + 
               '}';
         }
     }
