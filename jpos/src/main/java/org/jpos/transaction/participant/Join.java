@@ -30,7 +30,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 @SuppressWarnings("unchecked")
 public class Join
@@ -85,7 +84,7 @@ public class Join
         Iterator<TransactionParticipant> iter = participants.iterator();
         for (int i=0; iter.hasNext(); i++) {
             runners[i] = new Runner (
-              iter.next(), id, o, tm.getExecutorService()
+              iter.next(), id, o
             );
         }
         return runners;
@@ -122,8 +121,6 @@ public class Join
         int mode;
         private Serializable ctx;
         Thread t;
-
-        private ExecutorService executor;
         public static final int PREPARE = 0;
         public static final int PREPARE_FOR_ABORT = 1;
         public static final int COMMIT = 2;
@@ -134,11 +131,10 @@ public class Join
 
         private String threadName;
 
-        public Runner (TransactionParticipant p, long id, Serializable ctx, ExecutorService executor) {
+        public Runner (TransactionParticipant p, long id, Serializable ctx) {
             this.p = p;
             this.id = id;
             this.ctx = ctx;
-            this.executor = executor;
         }
         public void prepare() {
             createThread (PREPARE);
