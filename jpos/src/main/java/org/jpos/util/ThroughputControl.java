@@ -22,7 +22,7 @@ import java.time.Instant;
 
 /**
  * ThroughputControl can be used to limit the throughput 
- * of a system to a maximum number of transactions in 
+ * of a process to a maximum number of transactions in 
  * a given period of time.
  */
 public class ThroughputControl {
@@ -33,16 +33,16 @@ public class ThroughputControl {
     private long[] sleep;
 
     /**
-     * @param maxTransactions ditto
-     * @param periodInMillis ditto
+     * @param maxTransactions Transaction count threshold.
+     * @param periodInMillis Time window, expressed in milliseconds.
      */
     public ThroughputControl (int maxTransactions, int periodInMillis) {
         this (new int[] { maxTransactions },
               new int[] { periodInMillis });
     }
     /**
-     * @param maxTransactions ditto
-     * @param periodInMillis ditto
+     * @param maxTransactions An array with transaction count thresholds.
+     * @param periodInMillis An array of time windows, expressed in milliseconds.
      */
     public ThroughputControl (int[] maxTransactions, int[] periodInMillis) {
         super();
@@ -61,10 +61,11 @@ public class ThroughputControl {
     }
 
     /**
-     * control should be called on every transaction.
-     * it may sleep for a while in order to control the system throughput
+     * This method should be called on every transaction.
+     * It will pause the thread for a while when the threshold is reached 
+     * in order to control the process throughput.
      * 
-     * @return aprox sleep time or zero if no sleep
+     * @return Returns sleep time in milliseconds when threshold is reached. Otherwise, zero.
      */
     public long control() {
         boolean delayed = false;
