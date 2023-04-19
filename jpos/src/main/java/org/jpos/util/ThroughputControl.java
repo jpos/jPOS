@@ -21,9 +21,23 @@ package org.jpos.util;
 import java.time.Instant;
 
 /**
- * ThroughputControl can be used to limit the throughput 
- * of a system to a maximum number of transactions in 
+ * ThroughputControl limits the throughput 
+ * of a process to a maximum number of transactions in 
  * a given period of time.
+ *
+ * As an example, the following code will cap the transaction count
+ * at 15 every second (a.k.a. 15 TPS).
+ *
+ * <pre>
+ *
+ *  ThroughputControl throughput = new ThroughputControl(15, 1000);
+ *
+ *  while (isConditionTrue()) {
+ *      throughput.control();
+ *      // Do stuff.
+ *  }
+ *
+ * </pre>
  */
 public class ThroughputControl {
     private int[] period;
