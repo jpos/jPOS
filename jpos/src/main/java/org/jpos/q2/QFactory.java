@@ -461,10 +461,21 @@ public class QFactory {
                             field.set(obj, cfg.getInt(config.value()));
                         else if (c.isAssignableFrom(long.class) || c.isAssignableFrom(Long.class))
                             field.set(obj, cfg.getLong(config.value()));
+                        else if (c.isAssignableFrom(double.class) || c.isAssignableFrom(Double.class))
+                            field.set(obj, cfg.getDouble(config.value()));
                         else if (c.isAssignableFrom(boolean.class) || c.isAssignableFrom(Boolean.class))
                             field.set(obj, cfg.getBoolean(config.value()));
-                        else if (c.isArray() && c.getComponentType().isAssignableFrom(String.class))
-                            field.set(obj, cfg.getAll(config.value()));
+                        else if (c.isArray()) {
+                            Class<?> ct = c.getComponentType();
+                            if (ct.isAssignableFrom(String.class))
+                                field.set(obj, cfg.getAll(config.value()));
+                            else if (ct.isAssignableFrom(int.class) || ct.isAssignableFrom(Integer.class))
+                                field.set(obj, cfg.getInts(config.value()));
+                            else if (ct.isAssignableFrom(long.class) || ct.isAssignableFrom(Long.class))
+                                field.set(obj, cfg.getLongs(config.value()));
+                            else if (ct.isAssignableFrom(double.class) || ct.isAssignableFrom(Double.class))
+                                field.set(obj, cfg.getDoubles(config.value())); 
+                        } 
                     }
                 }
             }
