@@ -37,14 +37,22 @@ public class ConfigAnnotationTest {
         cfg.put("mystring", "My String");
         cfg.put("mylong", "10000");
         cfg.put("myint", "1000");
+        cfg.put("mydouble", "1000.1");
         cfg.put("myboolean", "yes");
         cfg.put("myarray", new String[] { "one", "two"});
+        cfg.put("myints", new String[] {"1", "2"});
+        cfg.put("mylongs", new String[] {"1", "2", "3"});
+        cfg.put("mydoubles", new String[] {"1.1", "2.2", "3.3"});
         QFactory.autoconfigure(bean, cfg);
         assertEquals("My String", bean.getMystring());
         assertEquals(1000, bean.getMyint());
         assertEquals(10000L, bean.getMylong());
+        assertThat("mydouble should have the configured value", bean.getMydouble(), is(1000.1));
         assertTrue(bean.isMyboolean());
         assertThat("myarray should have the configured values", bean.getMyarray(), is(new String[]{"one", "two"}));
+        assertThat("myints should have the configured values", bean.getMyints(), is(new int[]{1, 2}));
+        assertThat("mylongs should have the configured values", bean.getMylongs(), is(new long[]{1, 2, 3}));
+        assertThat("mydoubles should have the configured values", bean.getMydoubles(), is(new double[]{1.1, 2.2, 3.3}));
     }
 
     @Test
@@ -54,16 +62,24 @@ public class ConfigAnnotationTest {
         cfg.put("mystring", "My String");
         cfg.put("mylong", "10000");
         cfg.put("myint", "1000");
+        cfg.put("mydouble", "1000.1");
         cfg.put("myboolean", "yes");
         cfg.put("mychildstring", "My Child String");
         cfg.put("myarray", new String[] { "one", "two"});
+        cfg.put("myints", new String[] {"1", "2"});
+        cfg.put("mylongs", new String[] {"1", "2", "3"});
+        cfg.put("mydoubles", new String[] {"1.1", "2.2", "3.3"});
         QFactory.autoconfigure(bean, cfg);
         assertEquals("My String", bean.getMystring());
         assertEquals(1000, bean.getMyint());
         assertEquals(10000L, bean.getMylong());
+        assertThat("mydouble should have the configured value", bean.getMydouble(), is(1000.1));
         assertEquals("My Child String", bean.getChildString());
         assertTrue(bean.isMyboolean());
         assertThat("myarray should have the configured values", bean.getMyarray(), is(new String[]{"one", "two"}));
+        assertThat("myints should have the configured values", bean.getMyints(), is(new int[]{1, 2}));
+        assertThat("mylongs should have the configured values", bean.getMylongs(), is(new long[]{1, 2, 3}));
+        assertThat("mydoubles should have the configured values", bean.getMydoubles(), is(new double[]{1.1, 2.2, 3.3}));
     }
 
 
@@ -77,12 +93,24 @@ public class ConfigAnnotationTest {
         @Config("mylong")
         private Long mylong;
 
+        @Config("mydouble")
+        private double mydouble;
+        
         @Config("myboolean")
         private boolean myboolean;
         
         @Config("myarray")
         private String[] myarray;
+
+        @Config("myints")
+        private int[] myints;
+
+        @Config("mylongs")
+        private long[] mylongs;
         
+        @Config("mydoubles")
+        private double[] mydoubles;
+
         public String getMystring() {
             return mystring;
         }
@@ -95,10 +123,26 @@ public class ConfigAnnotationTest {
             return mylong;
         }
 
+        public double getMydouble() {
+            return mydouble;
+        }
+
         public boolean isMyboolean() {return myboolean; }
 
         public String[] getMyarray() {
             return myarray;
+        }
+
+        public int[] getMyints() {
+            return myints;
+        }
+
+        public long[] getMylongs() {
+            return mylongs;
+        }
+
+        public double[] getMydoubles() {
+            return mydoubles;
         }
 
         @Override
