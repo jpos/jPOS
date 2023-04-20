@@ -47,7 +47,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     String splitField = "";
     boolean checkEnabled;
     Space sp;
-       
+
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
         muxName = toStringArray(e.getChildTextTrim ("muxes"));
@@ -144,11 +144,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             // you should use 'send' instead of 'request'
             try {
                 send(m);
-                new Thread() {
-                    public void run() {
-                        r.expired (handBack);
-                    }
-                }.start();
+                new Thread(() -> r.expired(handBack)).start();
             } catch (IOException e) {
                 throw new ISOException(e.getMessage(), e);
             }
@@ -161,15 +157,12 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             if (remainingTimeout >= 0)
                 mux.request(m, remainingTimeout, r, handBack);
             else {
-                new Thread() {
-                    public void run() {
-                        r.expired (handBack);
-                    }
-                }.start();
+                new Thread(()->r.expired(handBack)).start();
             }
-        } else 
+        } else
             throw new ISOException ("No MUX available");
     }
+
     private boolean overrideMTI(String mtiReq) {
         if(overrideMTIs != null){
             for (String mti : overrideMTIs) {
@@ -179,12 +172,13 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         }
         return false;
     }
+
     private MUX nextAvailableWithOverrideMUX(ISOMsg m, long maxWait) {
         try{
-            if(originalChannelField != null && !"".equals(originalChannelField)){
+            if(originalChannelField != null && !"".equals(originalChannelField)) {
                 String channelName = m.getString(originalChannelField);
                 if(channelName != null && !"".equals(channelName) && overrideMTI(m.getMTI())){
-                    ChannelAdaptor channel = (ChannelAdaptor)NameRegistrar.get (channelName);
+                    ChannelAdaptor channel = NameRegistrar.get (channelName);
                     for (MUX mx : mux) {
                         if(channel != null && ((QMUX)mx).getInQueue().equals(channel.getOutQueue())){
                             if(isUsable(mx))
@@ -199,6 +193,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         }
         return null;
     }
+
     private MUX splitByDivisorMUX(ISOMsg m, long maxWait) {
         try{
             if(splitField != null && !"".equals(splitField)){
@@ -214,20 +209,24 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         }
         return null;
     }
+
     private int getStrategy(String stg) {
-        if(stg == null)
+        if (stg == null)
             return PRIMARY_SECONDARY;
-        
+
         stg = stg.trim();
-        if("round-robin".equals(stg))
-            return ROUND_ROBIN;
-        else if("round-robin-with-override".equals(stg))
-            return ROUND_ROBIN_WITH_OVERRIDE;
-        else if("split-by-divisor".equals(stg))
-            return SPLIT_BY_DIVISOR;
-        else
-            return PRIMARY_SECONDARY;
+        switch (stg) {
+            case "round-robin":
+                return ROUND_ROBIN;
+            case "round-robin-with-override":
+                return ROUND_ROBIN_WITH_OVERRIDE;
+            case "split-by-divisor":
+                return SPLIT_BY_DIVISOR;
+            default:
+                return PRIMARY_SECONDARY;
+        }
     }
+
     private MUX getMUX(ISOMsg m, long maxWait){
         switch (strategy) {
             case ROUND_ROBIN: return nextAvailableMUX(msgno.incrementAndGet(), maxWait);
@@ -236,7 +235,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             default: return firstAvailableMUX(maxWait);
         }
     }
-    
+
     @Override
     public String[] getMuxNames() {
         return muxName;
@@ -247,8 +246,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         return strategy;
     }
 
-    private Space grabSpace (Element e)
-      throws ConfigurationException
+    private Space grabSpace (Element e) throws ConfigurationException
     {
         String uri = e != null ? e.getText() : "";
         return SpaceFactory.getSpace (uri);
