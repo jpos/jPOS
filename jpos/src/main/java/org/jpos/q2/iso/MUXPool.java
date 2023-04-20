@@ -27,7 +27,6 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -87,6 +86,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 throw new ISOException(e.getMessage(), e);
             }
         }
+
         long maxWait = System.currentTimeMillis() + timeout;
         MUX mux = getMUX(m,maxWait);
         if (mux != null) {
@@ -97,44 +97,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         return null;
     }
 
-    public void send (ISOMsg m) throws ISOException, IOException {
-        long maxWait = System.currentTimeMillis() + 1000L; // reasonable default
-        MUX mux = getMUX(m,maxWait);
-
-        if (mux == null)
-            throw new ISOException ("No available MUX");
-
-        mux.send(m);
-    }
-    public boolean isConnected() {
-        for (MUX m : mux)
-            if (isUsable(m))
-                return true;
-        return false;
-    }
-    protected MUX firstAvailableMUX (long maxWait) {
-        do {
-            for (MUX m : mux)
-                if (isUsable(m))
-                    return m;
-            ISOUtil.sleep (1000);
-        } while (System.currentTimeMillis() < maxWait);
-        return null;
-    }
-    protected MUX nextAvailableMUX (int mnumber, long maxWait) {
-        do {
-            for (int i=0; i<mux.length; i++) {
-                int j = (mnumber+i) % mux.length;
-                if (isUsable(mux[j]))
-                    return mux[j];
-                msgno.incrementAndGet();
-            }
-            ISOUtil.sleep (1000);
-        } while (System.currentTimeMillis() < maxWait);
-        return null;
-    }
-
-    public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack)
+    public void request(ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack)
         throws ISOException
     {
         if (timeout == 0) {
@@ -147,9 +110,9 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 throw new ISOException(e.getMessage(), e);
             }
         }
+
         long maxWait = System.currentTimeMillis() + timeout;
         MUX mux = getMUX(m,maxWait);
-
         if (mux != null) {
             long remainingTimeout = maxWait - System.currentTimeMillis();
             if (remainingTimeout >= 0)
@@ -159,6 +122,39 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             }
         } else
             throw new ISOException ("No MUX available");
+    }
+
+    public void send (ISOMsg m) throws ISOException, IOException {
+        long maxWait = System.currentTimeMillis() + 1000L; // reasonable default
+        MUX mux = getMUX(m,maxWait);
+
+        if (mux == null)
+            throw new ISOException ("No available MUX");
+
+        mux.send(m);
+    }
+
+    protected MUX firstAvailableMUX (long maxWait) {
+        do {
+            for (MUX m : mux)
+                if (isUsable(m))
+                    return m;
+            ISOUtil.sleep (1000);
+        } while (System.currentTimeMillis() < maxWait);
+        return null;
+    }
+
+    protected MUX nextAvailableMUX (int mnumber, long maxWait) {
+        do {
+            for (int i=0; i<mux.length; i++) {
+                int j = (mnumber+i) % mux.length;
+                if (isUsable(mux[j]))
+                    return mux[j];
+                msgno.incrementAndGet();
+            }
+            ISOUtil.sleep (1000);
+        } while (System.currentTimeMillis() < maxWait);
+        return null;
     }
 
     private boolean overrideMTI(String mtiReq) {
@@ -250,6 +246,13 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         return SpaceFactory.getSpace (uri);
     }
 
+    public boolean isConnected() {
+        for (MUX m : mux)
+            if (isUsable(m))
+                return true;
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     private boolean isUsable (MUX mux) {
         if (!checkEnabled || !(mux instanceof QMUX))
@@ -264,7 +267,6 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         }
         return mux.isConnected() && sp.rdp (enabledKey) != null;
     }
-
 
     private String[] toStringArray (String s) {
         return (s != null && s.length() > 0) ? ISOUtil.toStringArray(s) : null;
