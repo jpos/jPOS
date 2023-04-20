@@ -57,7 +57,14 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         splitField = e.getChildTextTrim("split-field");
         checkEnabled = cfg.getBoolean("check-enabled");
         sp = grabSpace (e.getChild ("space"));
-        mux = new MUX[muxName.length];
+
+        if (muxName != null)
+            mux = new MUX[muxName.length];
+        else
+            throw new ConfigurationException(
+                String.format("<muxes> element not configured for %s '%s'",
+                    getClass().getName(), getName()));
+
         try {
             for (int i=0; i<mux.length; i++)
                 mux[i] = QMUX.getMUX (muxName[i]);
@@ -126,18 +133,9 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         } while (System.currentTimeMillis() < maxWait);
         return null;
     }
-    private String[] toStringArray (String s) {
-        String[] ss = null;
-        if (s != null && s.length() > 0) {
-            StringTokenizer st = new StringTokenizer (s);
-            ss = new String[st.countTokens()];
-            for (int i=0; st.hasMoreTokens(); i++)
-                ss[i] = st.nextToken();
-        }
-        return ss;
-    }
-    public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
-        throws ISOException 
+
+    public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack)
+        throws ISOException
     {
         if (timeout == 0) {
             // a zero timeout intent is to fire-and-forget,
@@ -265,5 +263,10 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             return mux.isConnected() && sp.rdp (enabledKey) == sp.rdp (readyNames[0]);
         }
         return mux.isConnected() && sp.rdp (enabledKey) != null;
+    }
+
+
+    private String[] toStringArray (String s) {
+        return (s != null && s.length() > 0) ? ISOUtil.toStringArray(s) : null;
     }
 }
