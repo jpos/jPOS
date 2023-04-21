@@ -22,6 +22,7 @@ import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
@@ -33,19 +34,21 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author apr
  */
 public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
+    public static final int PRIMARY_SECONDARY = 0;
+    public static final int ROUND_ROBIN = 1;
+    public static final int ROUND_ROBIN_WITH_OVERRIDE = 2;
+    public static final int SPLIT_BY_DIVISOR = 3;
+
     int strategy = 0;
     String[] muxName;
     MUX[] mux;
     AtomicInteger msgno = new AtomicInteger();
-    public static final int ROUND_ROBIN = 1;
-    public static final int PRIMARY_SECONDARY = 0;
-    public static final int ROUND_ROBIN_WITH_OVERRIDE = 2;
-    public static final int SPLIT_BY_DIVISOR = 3;
     String[] overrideMTIs;
     String originalChannelField = "";
     String splitField = "";
     boolean checkEnabled;
     Space sp;
+    MUXPoolStrategyHandler strategyHandler;
 
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
@@ -70,10 +73,22 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         } catch (NameRegistrar.NotFoundException ex) {
             throw new ConfigurationException (ex);
         }
+
+        initHandler(e.getChild("strategy-handler"));
         NameRegistrar.register ("mux."+getName (), this);
     }
     public void stopService () {
         NameRegistrar.unregister ("mux."+getName ());
+    }
+
+    protected void initHandler(Element e) throws ConfigurationException {
+        if (e == null)
+            return;
+
+        QFactory factory = getFactory();
+        strategyHandler = factory.newInstance(QFactory.getAttributeValue (e, "class"));
+        factory.setLogger(strategyHandler, e);
+        factory.setConfiguration(strategyHandler, e);
     }
 
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
@@ -221,7 +236,15 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         }
     }
 
-    private MUX getMUX(ISOMsg m, long maxWait){
+    private MUX getMUX(ISOMsg m, long maxWait) {
+        MUX mux = null;
+        if (strategyHandler != null) {
+             mux = strategyHandler.getMUX(m, maxWait, this);
+        }
+
+        if (mux != null)
+            return mux;
+
         switch (strategy) {
             case ROUND_ROBIN: return nextAvailableMUX(msgno.incrementAndGet(), maxWait);
             case ROUND_ROBIN_WITH_OVERRIDE: return nextAvailableWithOverrideMUX(m, maxWait);
