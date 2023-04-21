@@ -22,32 +22,34 @@ import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author apr
  */
 public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
+    public static final int PRIMARY_SECONDARY = 0;
+    public static final int ROUND_ROBIN = 1;
+    public static final int ROUND_ROBIN_WITH_OVERRIDE = 2;
+    public static final int SPLIT_BY_DIVISOR = 3;
+
     int strategy = 0;
     String[] muxName;
     MUX[] mux;
     AtomicInteger msgno = new AtomicInteger();
-    public static final int ROUND_ROBIN = 1;
-    public static final int PRIMARY_SECONDARY = 0;
-    public static final int ROUND_ROBIN_WITH_OVERRIDE = 2;
-    public static final int SPLIT_BY_DIVISOR = 3;
     String[] overrideMTIs;
     String originalChannelField = "";
     String splitField = "";
     boolean checkEnabled;
     Space sp;
-       
+    StrategyHandler strategyHandler;
+
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
         muxName = toStringArray(e.getChildTextTrim ("muxes"));
@@ -57,17 +59,36 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         splitField = e.getChildTextTrim("split-field");
         checkEnabled = cfg.getBoolean("check-enabled");
         sp = grabSpace (e.getChild ("space"));
-        mux = new MUX[muxName.length];
+
+        if (muxName != null)
+            mux = new MUX[muxName.length];
+        else
+            throw new ConfigurationException(
+                String.format("<muxes> element not configured for %s '%s'",
+                    getClass().getName(), getName()));
+
         try {
             for (int i=0; i<mux.length; i++)
                 mux[i] = QMUX.getMUX (muxName[i]);
         } catch (NameRegistrar.NotFoundException ex) {
             throw new ConfigurationException (ex);
         }
+
+        initHandler(e.getChild("strategy-handler"));
         NameRegistrar.register ("mux."+getName (), this);
     }
     public void stopService () {
         NameRegistrar.unregister ("mux."+getName ());
+    }
+
+    protected void initHandler(Element e) throws ConfigurationException {
+        if (e == null)
+            return;
+
+        QFactory factory = getFactory();
+        strategyHandler = factory.newInstance(QFactory.getAttributeValue (e, "class"));
+        factory.setLogger(strategyHandler, e);
+        factory.setConfiguration(strategyHandler, e);
     }
 
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
@@ -80,6 +101,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 throw new ISOException(e.getMessage(), e);
             }
         }
+
         long maxWait = System.currentTimeMillis() + timeout;
         MUX mux = getMUX(m,maxWait);
         if (mux != null) {
@@ -88,6 +110,33 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 return mux.request(m, remainingTimeout);
         }
         return null;
+    }
+
+    public void request(ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack)
+        throws ISOException
+    {
+        if (timeout == 0) {
+            // a zero timeout intent is to fire-and-forget,
+            // you should use 'send' instead of 'request'
+            try {
+                send(m);
+                new Thread(() -> r.expired(handBack)).start();
+            } catch (IOException e) {
+                throw new ISOException(e.getMessage(), e);
+            }
+        }
+
+        long maxWait = System.currentTimeMillis() + timeout;
+        MUX mux = getMUX(m,maxWait);
+        if (mux != null) {
+            long remainingTimeout = maxWait - System.currentTimeMillis();
+            if (remainingTimeout >= 0)
+                mux.request(m, remainingTimeout, r, handBack);
+            else {
+                new Thread(()->r.expired(handBack)).start();
+            }
+        } else
+            throw new ISOException ("No MUX available");
     }
 
     public void send (ISOMsg m) throws ISOException, IOException {
@@ -99,12 +148,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
 
         mux.send(m);
     }
-    public boolean isConnected() {
-        for (MUX m : mux)
-            if (isUsable(m))
-                return true;
-        return false;
-    }
+
     protected MUX firstAvailableMUX (long maxWait) {
         do {
             for (MUX m : mux)
@@ -114,6 +158,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         } while (System.currentTimeMillis() < maxWait);
         return null;
     }
+
     protected MUX nextAvailableMUX (int mnumber, long maxWait) {
         do {
             for (int i=0; i<mux.length; i++) {
@@ -126,50 +171,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         } while (System.currentTimeMillis() < maxWait);
         return null;
     }
-    private String[] toStringArray (String s) {
-        String[] ss = null;
-        if (s != null && s.length() > 0) {
-            StringTokenizer st = new StringTokenizer (s);
-            ss = new String[st.countTokens()];
-            for (int i=0; st.hasMoreTokens(); i++)
-                ss[i] = st.nextToken();
-        }
-        return ss;
-    }
-    public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
-        throws ISOException 
-    {
-        if (timeout == 0) {
-            // a zero timeout intent is to fire-and-forget,
-            // you should use 'send' instead of 'request'
-            try {
-                send(m);
-                new Thread() {
-                    public void run() {
-                        r.expired (handBack);
-                    }
-                }.start();
-            } catch (IOException e) {
-                throw new ISOException(e.getMessage(), e);
-            }
-        }
-        long maxWait = System.currentTimeMillis() + timeout;
-        MUX mux = getMUX(m,maxWait);
 
-        if (mux != null) {
-            long remainingTimeout = maxWait - System.currentTimeMillis();
-            if (remainingTimeout >= 0)
-                mux.request(m, remainingTimeout, r, handBack);
-            else {
-                new Thread() {
-                    public void run() {
-                        r.expired (handBack);
-                    }
-                }.start();
-            }
-        } else 
-            throw new ISOException ("No MUX available");
-    }
     private boolean overrideMTI(String mtiReq) {
         if(overrideMTIs != null){
             for (String mti : overrideMTIs) {
@@ -179,12 +181,13 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         }
         return false;
     }
+
     private MUX nextAvailableWithOverrideMUX(ISOMsg m, long maxWait) {
         try{
-            if(originalChannelField != null && !"".equals(originalChannelField)){
+            if(originalChannelField != null && !"".equals(originalChannelField)) {
                 String channelName = m.getString(originalChannelField);
                 if(channelName != null && !"".equals(channelName) && overrideMTI(m.getMTI())){
-                    ChannelAdaptor channel = (ChannelAdaptor)NameRegistrar.get (channelName);
+                    ChannelAdaptor channel = NameRegistrar.get (channelName);
                     for (MUX mx : mux) {
                         if(channel != null && ((QMUX)mx).getInQueue().equals(channel.getOutQueue())){
                             if(isUsable(mx))
@@ -199,6 +202,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         }
         return null;
     }
+
     private MUX splitByDivisorMUX(ISOMsg m, long maxWait) {
         try{
             if(splitField != null && !"".equals(splitField)){
@@ -214,21 +218,33 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         }
         return null;
     }
+
     private int getStrategy(String stg) {
-        if(stg == null)
+        if (stg == null)
             return PRIMARY_SECONDARY;
-        
+
         stg = stg.trim();
-        if("round-robin".equals(stg))
-            return ROUND_ROBIN;
-        else if("round-robin-with-override".equals(stg))
-            return ROUND_ROBIN_WITH_OVERRIDE;
-        else if("split-by-divisor".equals(stg))
-            return SPLIT_BY_DIVISOR;
-        else
-            return PRIMARY_SECONDARY;
+        switch (stg) {
+            case "round-robin":
+                return ROUND_ROBIN;
+            case "round-robin-with-override":
+                return ROUND_ROBIN_WITH_OVERRIDE;
+            case "split-by-divisor":
+                return SPLIT_BY_DIVISOR;
+            default:
+                return PRIMARY_SECONDARY;
+        }
     }
-    private MUX getMUX(ISOMsg m, long maxWait){
+
+    private MUX getMUX(ISOMsg m, long maxWait) {
+        MUX mux = null;
+        if (strategyHandler != null) {
+             mux = strategyHandler.getMUX(this, m, maxWait);
+        }
+
+        if (mux != null)
+            return mux;
+
         switch (strategy) {
             case ROUND_ROBIN: return nextAvailableMUX(msgno.incrementAndGet(), maxWait);
             case ROUND_ROBIN_WITH_OVERRIDE: return nextAvailableWithOverrideMUX(m, maxWait);
@@ -236,7 +252,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             default: return firstAvailableMUX(maxWait);
         }
     }
-    
+
     @Override
     public String[] getMuxNames() {
         return muxName;
@@ -247,11 +263,21 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         return strategy;
     }
 
-    private Space grabSpace (Element e)
-      throws ConfigurationException
+    public StrategyHandler getStrategyHandler() {
+        return strategyHandler;
+    }
+
+    private Space grabSpace (Element e) throws ConfigurationException
     {
         String uri = e != null ? e.getText() : "";
         return SpaceFactory.getSpace (uri);
+    }
+
+    public boolean isConnected() {
+        for (MUX m : mux)
+            if (isUsable(m))
+                return true;
+        return false;
     }
 
     @SuppressWarnings("unchecked")
@@ -267,5 +293,43 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             return mux.isConnected() && sp.rdp (enabledKey) == sp.rdp (readyNames[0]);
         }
         return mux.isConnected() && sp.rdp (enabledKey) != null;
+    }
+
+    private String[] toStringArray (String s) {
+        return (s != null && s.length() > 0) ? ISOUtil.toStringArray(s) : null;
+    }
+
+
+    /**
+     * A class implementing this interface can be added to a {@link MUXPool} to override the classical built-in strategies.<br>
+     *
+     * It could be added to a {@code MUXPool} like this:<br>
+     *
+     * <pre>
+     *    &lt;mux class="org.jpos.q2.iso.MUXPool" logger="Q2" name="my-pool">
+     *      &lt;muxes>mux1 mux2 mux3&lt;/muxes>
+     *      &lt;strategy>round-robin&lt;/strategy>
+     *
+     *      &lt;strategy-handler class="xxx.yyy.MyPoolStrategy">
+     *        &lt;!-- some config here --&gt;
+     *      &lt;/strategy-handler>
+     *    &lt;/mux>
+     * </pre>
+     *
+     * If the {@code strategy-handler} returns {@code null}, the {@link MUXPool} will fall back to the
+     * defined {@code strategy} (or the default one, if none defined).
+     *
+     * @author barspi@transactility.com
+     */
+    public interface StrategyHandler {
+        /** If this method returns null, the {@link MUXPool} will fall back to the configured built-in
+         *  strategy.
+         *
+         * @param pool the {@link MUXPool} using this strategy handler
+         * @param m the {@link ISOMsg} that we wish to send
+         * @param maxWait deadline in milliseconds (epoch value as given by {@code System.currentTimeMillis()})
+         * @return an appropriate {@link MUX} for this strategy, or {@code null} if none is found
+         */
+        MUX getMUX(MUXPool pool, ISOMsg m, long maxWait);
     }
 }
