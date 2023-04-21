@@ -48,7 +48,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     String splitField = "";
     boolean checkEnabled;
     Space sp;
-    MUXPoolStrategyHandler strategyHandler;
+    StrategyHandler strategyHandler;
 
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
@@ -239,7 +239,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     private MUX getMUX(ISOMsg m, long maxWait) {
         MUX mux = null;
         if (strategyHandler != null) {
-             mux = strategyHandler.getMUX(m, maxWait, this);
+             mux = strategyHandler.getMUX(this, m, maxWait);
         }
 
         if (mux != null)
@@ -261,6 +261,10 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     @Override
     public int getStrategy() {
         return strategy;
+    }
+
+    public StrategyHandler getStrategyHandler() {
+        return strategyHandler;
     }
 
     private Space grabSpace (Element e) throws ConfigurationException
@@ -293,5 +297,39 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
 
     private String[] toStringArray (String s) {
         return (s != null && s.length() > 0) ? ISOUtil.toStringArray(s) : null;
+    }
+
+
+    /**
+     * A class implementing this interface can be added to a {@link MUXPool} to override the classical built-in strategies.<br>
+     *
+     * It could be added to a {@code MUXPool} like this:<br>
+     *
+     * <pre>
+     *    &lt;mux class="org.jpos.q2.iso.MUXPool" logger="Q2" name="my-pool">
+     *      &lt;muxes>mux1 mux2 mux3&lt;/muxes>
+     *      &lt;strategy>round-robin&lt;/strategy>
+     *
+     *      &lt;strategy-handler class="xxx.yyy.MyPoolStrategy">
+     *        &lt;!-- some config here --&gt;
+     *      &lt;/strategy-handler>
+     *    &lt;/mux>
+     * </pre>
+     *
+     * If the {@code strategy-handler} returns {@code null}, the {@link MUXPool} will fall back to the
+     * defined {@code strategy} (or the default one, if none defined).
+     *
+     * @author barspi@transactility.com
+     */
+    public interface StrategyHandler {
+        /** If this method returns null, the {@link MUXPool} will fall back to the configured built-in
+         *  strategy.
+         *
+         * @param pool the {@link MUXPool} using this strategy handler
+         * @param m the {@link ISOMsg} that we wish to send
+         * @param maxWait deadline in milliseconds (epoch value as given by {@code System.currentTimeMillis()})
+         * @return an appropriate {@link MUX} for this strategy, or {@code null} if none is found
+         */
+        MUX getMUX(MUXPool pool, ISOMsg m, long maxWait);
     }
 }
