@@ -126,17 +126,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         } while (System.currentTimeMillis() < maxWait);
         return null;
     }
-    private String[] toStringArray (String s) {
-        String[] ss = null;
-        if (s != null && s.length() > 0) {
-            StringTokenizer st = new StringTokenizer (s);
-            ss = new String[st.countTokens()];
-            for (int i=0; st.hasMoreTokens(); i++)
-                ss[i] = st.nextToken();
-        }
-        return ss;
-    }
-    public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
+    public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack)
         throws ISOException 
     {
         if (timeout == 0) {
