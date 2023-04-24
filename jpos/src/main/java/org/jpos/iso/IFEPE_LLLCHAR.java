@@ -25,7 +25,7 @@ package org.jpos.iso;
 /**
  * ISOFieldPackager EBCDIC variable len CHAR suitable for MasterCard subfield 112<br>
  * <code>
- * Format TTTLL....
+ * Format TTTLLL....
  * Where TTT is the 3 digit field number (Tag)
  *       LLL is the 3 digit field length
  *       ... is the field content   
