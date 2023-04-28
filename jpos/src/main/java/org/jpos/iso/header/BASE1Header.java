@@ -143,29 +143,28 @@ public class BASE1Header extends BaseHeader {
     /*
      * parse header contributed by santhoshvee@yahoo.co.uk in jpos-dev mailing list
      */
-     public String formatHeader() {
-         String h = ISOUtil.hexString(this.header);
-         String lf = System.getProperty("line.separator");
-         StringBuffer d = new StringBuffer();
-         d.append(lf);
-         d.append("[H 01] "); d.append(h.substring(0, 2));   d.append(lf);
-         d.append("[H 02] "); d.append(h.substring(2, 4));   d.append(lf);
-         d.append("[H 03] "); d.append(h.substring(4, 6));   d.append(lf);
-         d.append("[H 04] "); d.append(h.substring(6, 10));  d.append(lf);
-         d.append("[H 05] "); d.append(h.substring(10, 16)); d.append(lf);
-         d.append("[H 06] "); d.append(h.substring(16, 22)); d.append(lf);
-         d.append("[H 07] "); d.append(h.substring(22, 24)); d.append(lf);
-         d.append("[H 08] "); d.append(h.substring(24, 28)); d.append(lf);
-         d.append("[H 09] "); d.append(h.substring(28, 34)); d.append(lf);
-         d.append("[H 10] "); d.append(h.substring(34, 36)); d.append(lf);
-         d.append("[H 11] "); d.append(h.substring(36, 42)); d.append(lf);
-         d.append("[H 12] "); d.append(h.substring(42, 44)); d.append(lf);
-         if (isRejected()) {
-             d.append("[H 13] "); d.append(h.substring(44, 46)); d.append(lf);
-             d.append("[H 14] "); d.append(h.substring(46, 48)); d.append(lf);
-             
-         }
-         return d.toString();
-     }
-
+    public String formatHeader() {
+        String h = ISOUtil.hexString(this.header);
+        String lf = System.getProperty("line.separator");
+        StringBuffer d = new StringBuffer();
+        d.append(lf);
+        d.append("[H 01] Header length         "); d.append(h.substring(0, 2));   d.append(lf);
+        d.append("[H 02] Header format         "); d.append(h.substring(2, 4));   d.append(lf);
+        d.append("[H 03] Text format           "); d.append(h.substring(4, 6));   d.append(lf);
+        d.append("[H 04] Total length          "); d.append(h.substring(6, 10));  d.append(lf);
+        d.append("[H 05] Destination ID        "); d.append(h.substring(10, 16)); d.append(lf);
+        d.append("[H 06] Source ID             "); d.append(h.substring(16, 22)); d.append(lf);
+        d.append("[H 07] Round-trip ctrl info  "); d.append(h.substring(22, 24)); d.append(lf);
+        d.append("[H 08] BASE I flags          "); d.append(h.substring(24, 28)); d.append(lf);
+        d.append("[H 09] Message status flags  "); d.append(h.substring(28, 34)); d.append(lf);
+        d.append("[H 10] Batch number          "); d.append(h.substring(34, 36)); d.append(lf);
+        d.append("[H 11] Reserved              "); d.append(h.substring(36, 42)); d.append(lf);
+        d.append("[H 12] User info             "); d.append(h.substring(42, 44)); d.append(lf);
+        if (isRejected()) {
+            d.append("[H 13] Bitmap                "); d.append(h.substring(44, 48)); d.append(lf);
+            d.append("[H 14] Reject data group     "); d.append(h.substring(48, 52)); d.append(lf);
+            d.append("Original header              "); d.append(h.substring(52)); d.append(lf);
+        }
+        return d.toString();
+    }
 }
