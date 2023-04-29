@@ -31,7 +31,7 @@ import org.jpos.util.LogEvent;
 
 /**
  * Filter that maintains some fields of arriving messages in one direction and put
- * that fields in the message going in the oposite direction that is the answer,
+ * that fields in the message going in the opposite direction that is the answer,
  * based on a key formed by some fields.
  * @author <a href="mailto:aalcarraz@cabal.com.uy">Andr&eacute;s Alcarraz </a>
  */
