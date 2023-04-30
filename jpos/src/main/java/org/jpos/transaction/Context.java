@@ -34,11 +34,12 @@ import java.util.concurrent.Semaphore;
 import static org.jpos.transaction.ContextConstants.*;
 
 public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
+    @Serial
     private static final long serialVersionUID = 2604524947983441462L;
     private transient Map<Object,Object> map; // transient map
     private Map<Object,Object> pmap;          // persistent (serializable) map
     private transient boolean trace = false;
-    private Semaphore paused = new Semaphore(1);
+    private final Semaphore paused = new Semaphore(1);
     private CompletableFuture<Integer> pausedFuture;
     private long timeout;
 
@@ -247,21 +248,26 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         }
     }
 
-
     public Context clone(String[]... keys) {
         Context clonedContext = new Context();
+        Map<Object,Object> m = getMap();
+        Map<Object,Object> pm = getPMap();
         Arrays.stream(keys)
           .flatMap(Arrays::stream)
-          .filter(key -> map.containsKey(key))
-          .forEachOrdered(key -> clonedContext.put(key, map.get(key), pmap.containsKey(key)));
+          .map(String::strip)
+          .filter(m::containsKey)
+          .forEachOrdered(key -> clonedContext.put(key, m.get(key), pm.containsKey(key)));
         return clonedContext;
     }
 
     public Context clone(String... keys) {
         Context clonedContext = new Context();
+        Map<Object,Object> m = getMap();
+        Map<Object,Object> pm = getPMap();
         Arrays.stream(keys)
-          .filter(key -> map.containsKey(key))
-          .forEachOrdered(key -> clonedContext.put(key, map.get(key), pmap.containsKey(key)));
+          .map(String::strip)
+          .filter(m::containsKey)
+          .forEachOrdered(key -> clonedContext.put(key, m.get(key), pm.containsKey(key)));
         return clonedContext;
     }
 
@@ -316,11 +322,11 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         p.printf("%s%s%s: ", indent, key, pmap != null && pmap.containsKey(key) ? "(P)" : "");
         Object value = entry.getValue();
         if (value instanceof Loggeable) {
-            p.println("");
+            p.println();
             ((Loggeable) value).dump(p, indent + " ");
             p.print(indent);
         } else if (value instanceof Element) {
-            p.println("");
+            p.println();
             XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
             out.getFormat().setLineSeparator(System.lineSeparator());
             try {
@@ -328,10 +334,9 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
             } catch (IOException ex) {
                 ex.printStackTrace(p);
             }
-            p.println("");
-        } else if (value instanceof byte[]) {
-            byte[] b = (byte[]) value;
-            p.println("");
+            p.println();
+        } else if (value instanceof byte[] b) {
+            p.println();
             p.println(ISOUtil.hexdump(b));
             p.print(indent);
         }
@@ -385,7 +390,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
      * @return Profiler object
      */
     synchronized public Result getResult () {
-        Result result = (Result) get (RESULT.toString());
+        Result result = get (RESULT.toString());
         if (result == null) {
             result = new Result();
             put (RESULT.toString(), result);
@@ -443,6 +448,6 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
 
     private String getKeyName(Object keyObject) {
         return keyObject instanceof String ? (String) keyObject :
-          Caller.shortClassName(keyObject.getClass().getName())+"."+keyObject.toString();
+          Caller.shortClassName(keyObject.getClass().getName())+"."+ keyObject;
     }
 }
