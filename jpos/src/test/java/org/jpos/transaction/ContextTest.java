@@ -362,4 +362,19 @@ public class ContextTest {
         assertTrue(ctx.hasPersistedKey("C"));
         assertFalse(ctx.hasPersistedKey("B"));
     }
+
+    @Test
+    public void testCloneKeys() {
+        Context ctx = new Context();
+        ctx.put ("A", "ABC");
+        ctx.put ("B", "BCD");
+        ctx.put ("C", "XYZ", true);
+
+        assertEquals(ctx, ctx.clone("A", "B", "C"));
+        assertEquals(ctx, ctx.clone("A", "B", "C", "D"));
+        assertEquals(ctx, ctx.clone(new String[] {"A"} , new String[] {"B", "C"}));
+
+        assertFalse (ctx.clone("A", "B").hasKey("C"));
+        assertTrue(ctx.clone("A", "B", "C").hasPersistedKey("C"));
+    }
 }

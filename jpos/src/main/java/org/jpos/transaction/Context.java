@@ -247,6 +247,24 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         }
     }
 
+
+    public Context clone(String[]... keys) {
+        Context clonedContext = new Context();
+        Arrays.stream(keys)
+          .flatMap(Arrays::stream)
+          .filter(key -> map.containsKey(key))
+          .forEachOrdered(key -> clonedContext.put(key, map.get(key), pmap.containsKey(key)));
+        return clonedContext;
+    }
+
+    public Context clone(String... keys) {
+        Context clonedContext = new Context();
+        Arrays.stream(keys)
+          .filter(key -> map.containsKey(key))
+          .forEachOrdered(key -> clonedContext.put(key, map.get(key), pmap.containsKey(key)));
+        return clonedContext;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
