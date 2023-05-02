@@ -309,6 +309,19 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
             pmap.put (k, v);
         }
     }
+
+    /**
+     * Creates a deep copy of the current Context object.
+     * <p>
+     * This method clones the Context object, including its internal maps,
+     * while preserving the thread-safety of the resulting Context instance.
+     * The cloned Context will have the same entries as the original,
+     * but modifications to one will not affect the other.
+     * </p>
+     *
+     * @return a deep copy of the current Context object
+     * @throws AssertionError if cloning is not supported, which should not happen
+     */
     @Override
     public Context clone() {
         try {
@@ -353,6 +366,22 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return clonedContext;
     }
 
+    /**
+     * Merges the entries from the provided Context object into the current Context.
+     * <p>
+     * This method iterates over the entries in the given Context object 'c' and adds or updates
+     * the entries in the current Context. If an entry already exists in the current Context,
+     * its value will be updated. If an entry is marked as persisted in the given Context object,
+     * it will also be marked as persisted in the current Context.
+     * </p>
+     *
+     * @param c the Context object whose entries should be merged into the current Context
+     */
+    public void merge(Context c) {
+        if (c != null) {
+            c.getMap().forEach((key, value) -> put(key, value, c.hasPersistedKey(key)));
+        }
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -394,4 +394,14 @@ public class ContextTest {
         assertEquals ("C", ctx.keysNotPresent("A", "B", "C"));
         assertEquals ("C,D,E|F", ctx.keysNotPresent("A", "B", "C", "D", "E|F"));
     }
+
+    @Test
+    public void testMerge() {
+        Context ctx = new Context();
+        ctx.put ("A", "ABC");
+        Context ctx1 = new Context();
+        ctx1.put ("B", "BCD");
+        ctx.merge(ctx1);
+        assertTrue (ctx.hasKeys("A", "B"));
+    }
 }
