@@ -30,6 +30,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
+import java.util.stream.Stream;
 
 import static org.jpos.transaction.ContextConstants.*;
 
@@ -114,6 +115,84 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
     public boolean hasKey(Object key) {
         return getMap().containsKey(key);
     }
+
+    /**
+     * Determines whether the specified keys are all present in the map.
+     * This method accepts a variable number of key arguments and supports
+     * both Object[] and String keys. When the key is a String, it can contain
+     * multiple keys separated by a '|' character, and the method will return
+     * true if any of those keys is present in the map. The method does not
+     * support nested arrays of keys.
+     *
+     * @param keys A variable-length array of keys to check for in the map.
+     *             These keys can be of any Object type or String containing
+     *             multiple keys separated by '|'.
+     * @return true if all specified keys (or any of the '|' separated keys
+     *         within a String key) are present in the map, false otherwise.
+     */
+    public boolean hasKeys(Object... keys) {
+        Map<Object,Object> m = getMap();
+        return Arrays.stream(keys)
+          .flatMap(obj -> obj instanceof Object[] ? Arrays.stream((Object[]) obj) : Stream.of(obj))
+          .allMatch(key -> {
+              if (key instanceof String s) {
+                  s = s.strip();
+                  if (s.contains("|")) {
+                      return Arrays.stream(s.split("\\|"))
+                        .map(String::strip)
+                        .anyMatch(m::containsKey);
+                  } else {
+                      return m.containsKey(s);
+                  }
+              }
+              return m.containsKey(key);
+          });
+    }
+
+    /**
+     * Returns a comma-separated string of keys that are not present in the map.
+     * This method accepts a variable number of key arguments and supports
+     * both Object[] and String keys. When the key is a String, it can contain
+     * multiple keys separated by a '|' character, and the method will return
+     * the keys not present in the map. The method does not support nested arrays of keys.
+     *
+     * @param keys A variable-length array of keys to check for their absence in the map.
+     *             These keys can be of any Object type or String containing
+     *             multiple keys separated by '|'.
+     * @return A comma-separated string of keys that are not present in the map.
+     *         If all the specified keys (or any of the '|' separated keys within
+     *         a String key) are present in the map, an empty string is returned.
+     */
+    public String keysNotPresent (Object... keys) {
+        Map<Object, Object> m = getMap();
+        StringJoiner notFoundKeys = new StringJoiner(",");
+
+        Arrays.stream(keys)
+          .flatMap(obj -> obj instanceof Object[] ? Arrays.stream((Object[]) obj) : Stream.of(obj))
+          .forEach(key -> {
+              boolean keyPresent;
+
+              if (key instanceof String s) {
+                  s = s.strip();
+                  if (s.contains("|")) {
+                      keyPresent = Arrays.stream(s.split("\\|"))
+                        .map(String::strip)
+                        .anyMatch(m::containsKey);
+                  } else {
+                      keyPresent = m.containsKey(s);
+                  }
+              } else {
+                  keyPresent = m.containsKey(key);
+              }
+
+              if (!keyPresent) {
+                  notFoundKeys.add(key.toString().strip());
+              }
+          });
+
+        return notFoundKeys.toString();
+    }
+
 
     /**
      * Check key exists present persisted map
@@ -248,24 +327,27 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         }
     }
 
-    public Context clone(String[]... keys) {
+    /**
+     * Creates a clone of the current Context instance, including only the specified keys.
+     * This method accepts a variable number of key arguments and supports both
+     * Object[] and String keys. When the key is a String, it can contain multiple
+     * keys separated by a '|' character. The method does not support nested arrays of keys.
+     *
+     * @param keys A variable-length array of keys to include in the cloned context.
+     *             These keys can be of any Object type or String containing multiple
+     *             keys separated by '|'.
+     * @return A cloned Context instance containing only the specified keys and
+     *         their associated values from the original context. If none of the
+     *         specified keys are present in the original context, an empty Context
+     *         instance is returned.
+     */
+    public Context clone(Object... keys) {
         Context clonedContext = new Context();
         Map<Object,Object> m = getMap();
         Map<Object,Object> pm = getPMap();
         Arrays.stream(keys)
-          .flatMap(Arrays::stream)
-          .map(String::strip)
-          .filter(m::containsKey)
-          .forEachOrdered(key -> clonedContext.put(key, m.get(key), pm.containsKey(key)));
-        return clonedContext;
-    }
-
-    public Context clone(String... keys) {
-        Context clonedContext = new Context();
-        Map<Object,Object> m = getMap();
-        Map<Object,Object> pm = getPMap();
-        Arrays.stream(keys)
-          .map(String::strip)
+          .flatMap(obj -> obj instanceof Object[] ? Arrays.stream((Object[]) obj) : Stream.of(obj))
+          .flatMap(obj -> obj instanceof String s ? Arrays.stream(s.strip().split("\\|")).map(String::strip) : Stream.of(obj))
           .filter(m::containsKey)
           .forEachOrdered(key -> clonedContext.put(key, m.get(key), pm.containsKey(key)));
         return clonedContext;
