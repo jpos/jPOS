@@ -144,7 +144,6 @@ public class KeySerialNumberTest {
         assertEquals("00008", ksn.getTransactionCounter());
     }
 
-
     @Test
     public void testHexConstructorWrongLength() {
         assertThrows(IllegalArgumentException.class, () -> {
