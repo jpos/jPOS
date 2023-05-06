@@ -22,12 +22,14 @@ import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.Test;
 
 public class KeySerialNumberTest {
@@ -122,5 +124,44 @@ public class KeySerialNumberTest {
         keySerialNumber.setTransactionCounter("testKeySerialNumberTransactionCounter1");
         assertEquals("testKeySerialNumberTransactionCounter1",
                 keySerialNumber.transactionCounter, "keySerialNumber.transactionCounter");
+    }
+
+    @Test
+    public void testBinaryConstructor() {
+        byte[] ksnBin = ISOUtil.hex2byte("9876543210E00008");
+        KeySerialNumber ksn = new KeySerialNumber(ksnBin, 6, 5, 5);
+        assertEquals("987654", ksn.getBaseKeyID());
+        assertEquals("3210E", ksn.getDeviceID());
+        assertEquals("00008", ksn.getTransactionCounter());
+    }
+
+    @Test
+    public void testHexConstructor() {
+        String ksnHex = "9876543210E00008";
+        KeySerialNumber ksn = new KeySerialNumber(ksnHex, 6, 5, 5);
+        assertEquals("987654", ksn.getBaseKeyID());
+        assertEquals("3210E", ksn.getDeviceID());
+        assertEquals("00008", ksn.getTransactionCounter());
+    }
+
+    @Test
+    public void testHexConstructorWrongLength() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new KeySerialNumber("9876543210E008", 6, 5, 5);
+        });
+    }
+
+    @Test
+    public void testHexConstructorNullKSN() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new KeySerialNumber((String) null, 6, 5, 5);
+        });
+    }
+
+    @Test
+    public void testHexConstructorEmptyKSN() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new KeySerialNumber("                ", 6, 5, 5);
+        });
     }
 }
