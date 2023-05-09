@@ -25,7 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.ThreadPool;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.ServerSocket;
 
 public class ISOServerTest {
 
@@ -51,5 +57,17 @@ public class ISOServerTest {
         } catch (NameRegistrar.NotFoundException ex) {
             assertEquals("server.testISOServerName", ex.getMessage(), "ex.getMessage()");
         }
+    }
+
+
+    @Test
+    public void testDump() throws Throwable {
+        ISOServer server = new ISOServer(80, new BaseChannel() {}, new ThreadPool());
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(os);
+
+        server.dump(ps, "");
+
+        assertEquals("connected=0, rx=0, tx=0, last=0\n", os.toString("UTF8"));
     }
 }
