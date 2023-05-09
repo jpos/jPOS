@@ -27,9 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
 
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
+import org.jpos.iso.ISOUtil;
 import org.jpos.iso.filter.DelayFilter;
 import org.jpos.iso.packager.CTCSubFieldPackager;
 import org.jpos.iso.packager.ISO93APackager;
@@ -235,5 +237,18 @@ public class NACChannelTest {
             }
             assertSame(TPDU2, nACChannel.getHeader(), "nACChannel.getHeader()");
         }
+    }
+
+    @Test
+    void testSetHeaderDoesNotMangleOnNonHexCharacters() {
+        //jPOS-510
+        String expectedTpdu = "A4M09000";
+        String hex = ISOUtil.hexString(expectedTpdu.getBytes()); //"41344D3039303030"
+
+        NACChannel channel = new NACChannel();
+        channel.setHeader(hex);
+
+        byte[] header = channel.getHeader();
+        assertEquals(expectedTpdu, new String(header, StandardCharsets.UTF_8));
     }
 }
