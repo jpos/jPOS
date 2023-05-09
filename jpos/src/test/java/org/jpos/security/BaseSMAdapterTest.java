@@ -215,23 +215,7 @@ public class BaseSMAdapterTest {
             assertNull(ex.getNested(), "ex.getNested()");
         }
     }
-
-    @Test
-    public void testImportPINImplThrowsSMException1() throws Throwable {
-        BaseSMAdapter baseSMAdapter = new BaseSMAdapter(new SubConfiguration(new SimpleConfiguration(new Properties(null)),
-                "testBaseSMAdapterPrefix"), new Logger(), "testBaseSMAdapterRealm");
-        try {
-            baseSMAdapter.importPINImpl(new EncryptedPIN("testBaseSMAdapterPinBlockHexString", (byte) 0,
-                    "testBaseSMAdapterAccountNumber"), new KeySerialNumber(), new SecureDESKey((short) 100,
-                    "testBaseSMAdapterKeyType", "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"));
-            fail("Expected SMException to be thrown");
-        } catch (SMException ex) {
-            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.nested, "ex.nested");
-            assertNull(ex.getNested(), "ex.getNested()");
-        }
-    }
-
+    
     @Test
     public void testSetConfiguration() throws Throwable {
         BaseSMAdapter baseSMAdapter = new BaseSMAdapter();
@@ -255,21 +239,7 @@ public class BaseSMAdapterTest {
         baseSMAdapter.setName("testBaseSMAdapterName");
         assertEquals("testBaseSMAdapterName", baseSMAdapter.getName(), "baseSMAdapter.getName()");
     }
-
-    @Test
-    public void testTranslatePINImplThrowsSMException() throws Throwable {
-        BaseSMAdapter baseSMAdapter = new BaseSMAdapter();
-        SecureDESKey bdk = new SecureDESKey();
-        try {
-            baseSMAdapter.translatePINImpl(new EncryptedPIN(), new KeySerialNumber(), bdk, bdk, (byte) 0);
-            fail("Expected SMException to be thrown");
-        } catch (SMException ex) {
-            assertEquals("Operation not supported in: org.jpos.security.BaseSMAdapter", ex.getMessage(), "ex.getMessage()");
-            assertNull(ex.nested, "ex.nested");
-            assertNull(ex.getNested(), "ex.getNested()");
-        }
-    }
-
+    
     @Test
     public void testTranslatePINImplThrowsSMException1() throws Throwable {
         BaseSMAdapter baseSMAdapter = new BaseSMAdapter(new SubConfiguration(new SimpleConfiguration(new Properties(null)),

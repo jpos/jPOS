@@ -2165,25 +2165,13 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         byte[] kl = new byte[8];
         byte[] kr = new byte[8];
         byte[] kk = decryptFromLMK(bdk).getEncoded();
+        byte[] ksn = new byte[8];
 
         System.arraycopy(kk, 0, kl, 0, 8);
         System.arraycopy(kk, 8, kr, 0, 8);
-        String paddedKsn;
-        try
-        {
-            paddedKsn = ISOUtil.padleft(
-                    sn.getBaseKeyID() + sn.getDeviceID() + sn.getTransactionCounter(),
-                    20, 'F'
-            );
-        }
-        catch (ISOException e)
-        {
-            throw new SMException(e);
-        }
-
-        byte[] ksn = ISOUtil.hex2byte(paddedKsn.substring(0, 16));
+        System.arraycopy (sn.getBytes(), 0, ksn, 0, ksn.length);
         ksn[7] &= 0xE0;
-
+        
         byte[] data = encrypt64(ksn, kl);
         data = decrypt64(data, kr);
         data = encrypt64(data, kl);
@@ -2210,7 +2198,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     public byte[] dataEncrypt (SecureDESKey bdk, byte[] clearText) throws SMException {
         try {
             byte[] ksnB = jceHandler.generateDESKey ((short) 128).getEncoded();
-            KeySerialNumber ksn = getKSN (ISOUtil.hexString(ksnB));
+            KeySerialNumber ksn = getKSN (ksnB);
             byte[] derivedKey = calculateDerivedKey (ksn, bdk, true, true);
             Key dk = jceHandler.formDESKey ((short) 128, derivedKey);
             byte[] cypherText = jceHandler.encryptData (lpack(clearText), dk);
@@ -2241,7 +2229,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
             System.arraycopy (cypherText, 24, encryptedData, 0, encryptedData.length);
             System.arraycopy (cypherText, cypherText.length-8, mac, 0, 8);
 
-            KeySerialNumber ksn = getKSN (ISOUtil.hexString(ksnB));
+            KeySerialNumber ksn = getKSN (ksnB);
 
             byte[] derivedKey = calculateDerivedKey (ksn, bdk, true, true);
             Key dk = jceHandler.formDESKey ((short) 128, derivedKey);
@@ -2274,10 +2262,10 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
                 new byte[]{(byte) 0xE0, (byte) 0x00, (byte) 0x00};
 
         byte[] curkey = calculateInitialKey(ksn, bdk, false);
-        byte[] smidr = ISOUtil.hex2byte(
-                ksn.getBaseKeyID() + ksn.getDeviceID() + ksn.getTransactionCounter()
-        );
-        byte[] reg3 = ISOUtil.hex2byte(ksn.getTransactionCounter());
+        byte[] smidr = new byte[8];
+        System.arraycopy (ksn.getBytes(), 2, smidr, 0, smidr.length);
+
+        byte[] reg3 = ksn.getTransactionCounterBytes();
         reg3 = and(reg3, _1FFFFF);
         byte[] shiftr = _100000;
         byte[] temp;
@@ -2311,10 +2299,18 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
 
         byte[] curkey = calculateInitialKey(ksn, bdk, true);
 
-        String sn = ksn.getBaseKeyID() + ksn.getDeviceID() + ksn.getTransactionCounter();
-        if (sn.length() > 16) sn = sn.substring(sn.length()-16);
-        byte[] smidr = ISOUtil.hex2byte(sn);
-        byte[] reg3 = ISOUtil.hex2byte(ksn.getTransactionCounter());
+        byte[] smidr = new byte[8];
+        System.arraycopy (ksn.getBytes(), 2, smidr, 0, smidr.length);
+
+        byte[] ksnImage = ksn.getBytes();
+        byte[] reg3;
+        if (dataEncryption && ksnImage[0] != (byte) 0xFF && ksnImage[1] != (byte) 0xFF) {
+            // jPOS 2.x compatibility mode -  
+             reg3 = new byte[5];
+             System.arraycopy (ksnImage, 5, reg3, 0, reg3.length);
+        } else {
+            reg3 = ksn.getTransactionCounterBytes();
+        }
         reg3 = and(reg3, _1FFFFF);
         byte[] shiftr = _100000;
         byte[] temp;
@@ -2324,6 +2320,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         byte[] curkeyL = new byte[8];
         byte[] curkeyR = new byte[8];
         smidr = and(smidr, _E00000, 5);
+
         do
         {
             temp = and(shiftr, reg3);
@@ -2384,13 +2381,10 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
                 clearComponent3HexString);
     }
 
-    private KeySerialNumber getKSN(String s)
-    {
-        return new KeySerialNumber(
-                s.substring(0, 6),
-                s.substring(6, 10),
-                s.substring(10, Math.min(s.length(), 20))
-        );
+    private KeySerialNumber getKSN(byte[] b) {
+        ByteBuffer buf = ByteBuffer.allocate(10);
+        buf.put(b, 0, 10);
+        return new KeySerialNumber (buf.array());
     }
 
     protected EncryptedPIN translatePINImpl
