@@ -20,6 +20,7 @@ package org.jpos.iso.packager;
 
 import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 
 import java.io.ByteArrayOutputStream;
@@ -100,7 +101,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
     @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException
     {
-        LogEvent evt = new LogEvent (this, "unpack");
+        LogEvent evt = logger != null ? new LogEvent (this, "unpack") : null;
         int consumed = 0;
         ISOComponent c = null;
 
@@ -115,25 +116,38 @@ public class EuroSubFieldPackager extends ISOBasePackager
 
             c = fld[i].createComponent(i);
             consumed += fld[i].unpack (c, b, consumed);
-            if (i != 0 || c.getValue() != null)
-            {
-                if (logger != null)
-                {
-                    evt.addMessage ("<unpack fld=\"" + i
-                        +"\" packager=\""
-                        +fld[i].getClass().getName()+ "\">");
-                        evt.addMessage ("  <value>"
-                        +c.getValue().toString()
-                        + "</value>");
-                    evt.addMessage ("</unpack>");
+            if (i != 0 || c.getValue() != null) {
+                if (evt != null) {
+                    fieldUnpackLogger(evt, i, c, fld[i], logFieldName);
                 }
+
                 m.set(c);
             }
             // else:
             // If it was field 0 (TCC) && nothing was stored in the component, we discard this component
         }
-        Logger.log (evt);
+
+        if (logger != null && evt != null)
+            Logger.log (evt);
+
         return consumed;
     }
+
+
+    @Override
+    public void setLogger (Logger logger, String realm) {
+        super.setLogger (logger, realm);
+        if (fld != null) {
+            for (int i=0; i<fld.length; i++) {
+                if (fld[i] instanceof ISOMsgFieldPackager) {
+                    Object o = ((ISOMsgFieldPackager)fld[i]).getISOMsgPackager();
+                    if (o instanceof LogSource) {
+                        ((LogSource)o).setLogger (logger, realm + "-fld-" + i);
+                    }
+                }
+            }
+        }
+    }
+
 }
 
