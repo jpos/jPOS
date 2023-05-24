@@ -43,12 +43,35 @@ import java.util.BitSet;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
 
 public class ISOUtilTest {
     final String lineSep = System.getProperty("line.separator");
+
+
+    @Test
+    public void TestHexadecimalValidHexadec () {
+        byte[] validHexBytes = {(byte) 0x1F};
+        assertTrue(ISOUtil.isHexadecimal(validHexBytes));
+    }
+
+    @Test
+    public void testHex1IsDecimal2() {
+        byte[] validHexBytes = {(byte) 0xAB, (byte) 0xCD, (byte) 0xEF};
+        assertFalse(ISOUtil.isHexadecimal(validHexBytes));
+    }
+
+    @Test
+    public void testHex1IsDecimal3() {
+        byte[] validHexBytes = null;
+        assertFalse(ISOUtil.isHexadecimal(validHexBytes));
+    }
+
+
+
 
     @Test
     public void testAsciiToEbcdic() throws Throwable {

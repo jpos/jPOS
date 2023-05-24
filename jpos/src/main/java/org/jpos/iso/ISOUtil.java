@@ -32,6 +32,10 @@ import java.util.StringJoiner;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
+import java.math.BigInteger;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * various functions needed to pack/unpack ISO-8583 fields
@@ -177,6 +181,65 @@ public class ISOUtil {
     public static String zeropad(String s, int len) throws ISOException {
         return padleft(s, len, '0');
     }
+
+
+    
+    /** metodo para comprobar si mi parametro es o no un hexadecimal */
+   
+   /*  public static boolean isHexadecimal(byte[] bytes) {
+        for (byte b : bytes) {
+            int unsignedByte = b & 0xFF;
+            if (!((unsignedByte >= 0x30 && unsignedByte <= 0x39) ||  // Dígitos 0-9
+                  (unsignedByte >= 0x41 && unsignedByte <= 0x46) ||  // Letras A-F
+                  (unsignedByte >= 0x61 && unsignedByte <= 0x66))) {  // Letras a-f
+                return false;
+            }
+        }
+        return true;
+    }*/
+    
+    public static boolean isHexadecimal(byte[] bytes) {
+
+       
+        String patronHexadecimal = "^(0x)?[0-9A-Fa-f]+$";
+        Pattern patron = Pattern.compile(patronHexadecimal);
+        
+
+        //String cadena = "0xABCD"; // La cadena que deseas verificar
+        for(byte b:bytes )
+        {
+            Matcher matcher = patron.matcher(String.valueOf(b));
+            System.out.println(String.valueOf(b));
+            
+
+            if (matcher.matches()) {
+                System.out.println("La cadena es hexadecimal.");
+                return true;
+            } else {
+                System.out.println("La cadena no es hexadecimal.");
+                return false;
+            }
+        }
+        return false;    
+    }
+    /* fin del metodo */
+/* metodo 2 */
+
+        public static void main (String[] args) {
+            byte[] valorByte = {(byte) 0xAB, (byte) 0xCD}; // El valor byte que deseas verificar
+            
+            isHexadecimal(valorByte);
+            if (isHexadecimal(valorByte))
+            {
+                System.out.println("La cadena es hexadecimal.");
+            }
+            else
+            {
+                System.out.println("La cadena no es hexadecimal.");
+            }
+        }
+    
+    
 
     /**
      * zeropads a long without throwing an ISOException (performs modulus operation)
