@@ -186,7 +186,7 @@ public class ISOUtil {
     
     /** metodo para comprobar si mi parametro es o no un hexadecimal */
    
-   /*  public static boolean isHexadecimal(byte[] bytes) {
+    public static boolean isHexadecimal(byte[] bytes) {
         for (byte b : bytes) {
             int unsignedByte = b & 0xFF;
             if (!((unsignedByte >= 0x30 && unsignedByte <= 0x39) ||  // Dígitos 0-9
@@ -196,9 +196,9 @@ public class ISOUtil {
             }
         }
         return true;
-    }*/
+    }
     
-    public static boolean isHexadecimal(byte[] bytes) {
+    /*public static boolean isHexadecimal(byte[] bytes) {
 
        
         String patronHexadecimal = "^(0x)?[0-9A-Fa-f]+$";
@@ -226,9 +226,11 @@ public class ISOUtil {
 /* metodo 2 */
 
         public static void main (String[] args) {
-            byte[] valorByte = {(byte) 0xAB, (byte) 0xCD}; // El valor byte que deseas verificar
+            byte[] valorByte = {(byte) 0x1F};
+            //byte[] valorByte = {(byte) 0xAB, (byte) 0xCD}; // El valor byte que deseas verificar
             
             isHexadecimal(valorByte);
+            System.out.println(valorByte);
             if (isHexadecimal(valorByte))
             {
                 System.out.println("La cadena es hexadecimal.");
