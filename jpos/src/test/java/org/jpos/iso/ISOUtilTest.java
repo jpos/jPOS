@@ -70,8 +70,23 @@ public class ISOUtilTest {
         assertFalse(ISOUtil.isHexadecimal(validHexBytes));
     }
 
+    @Test
+    public void TestsHex1() {
+        String p = "1A2B3C";
+        assertTrue(ISOUtil.isHexadecimal2(p));
+    }
 
+    @Test
+    public void TestsHex2() {
+        String p = "1";
+        assertFalse(ISOUtil.isHexadecimal2(p));
+    }
 
+    @Test
+    public void TestsHex3() {
+        String p = null;
+        assertFalse(ISOUtil.isHexadecimal2(p));
+    }
 
     @Test
     public void testAsciiToEbcdic() throws Throwable {

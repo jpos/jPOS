@@ -181,10 +181,6 @@ public class ISOUtil {
     public static String zeropad(String s, int len) throws ISOException {
         return padleft(s, len, '0');
     }
-
-
-    
-    /** metodo para comprobar si mi parametro es o no un hexadecimal */
    
     public static boolean isHexadecimal(byte[] bytes) {
         for (byte b : bytes) {
@@ -197,52 +193,29 @@ public class ISOUtil {
         }
         return true;
     }
-    
-    /*public static boolean isHexadecimal(byte[] bytes) {
 
-       
-        String patronHexadecimal = "^(0x)?[0-9A-Fa-f]+$";
-        Pattern patron = Pattern.compile(patronHexadecimal);
+    public static boolean isHexadecimal2(String texto) {
+        // Verificar si el texto está vacío o tiene una longitud impar
+        if (texto.isEmpty() || texto.length() % 2 != 0) {
+            return false;
+        }
         
-
-        //String cadena = "0xABCD"; // La cadena que deseas verificar
-        for(byte b:bytes )
-        {
-            Matcher matcher = patron.matcher(String.valueOf(b));
-            System.out.println(String.valueOf(b));
-            
-
-            if (matcher.matches()) {
-                System.out.println("La cadena es hexadecimal.");
-                return true;
-            } else {
-                System.out.println("La cadena no es hexadecimal.");
-                return false;
+        // Verificar si cada carácter es un dígito hexadecimal válido
+        for (int i = 0; i < texto.length(); i++) {
+            char c = texto.charAt(i);
+            if (!isDigitHexadecimal(c)) {
+                throw new IllegalArgumentException("The string is not hexadecimal");
             }
         }
-        return false;    
+        
+        return true;
+
     }
-    /* fin del metodo */
-/* metodo 2 */
-
-        public static void main (String[] args) {
-            byte[] valorByte = {(byte) 0x1F};
-            //byte[] valorByte = {(byte) 0xAB, (byte) 0xCD}; // El valor byte que deseas verificar
-            
-            isHexadecimal(valorByte);
-            System.out.println(valorByte);
-            if (isHexadecimal(valorByte))
-            {
-                System.out.println("La cadena es hexadecimal.");
-            }
-            else
-            {
-                System.out.println("La cadena no es hexadecimal.");
-            }
-        }
     
+    public static boolean isDigitHexadecimal(char c) {
+        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
+    }
     
-
     /**
      * zeropads a long without throwing an ISOException (performs modulus operation)
      *
@@ -745,7 +718,15 @@ public class ISOUtil {
      * @return byte array
      */
     public static byte[] hex2byte (String s) {
-        return hex2byte (s, CHARSET);
+        if (isHexadecimal2(s))
+        {
+            return hex2byte (s, CHARSET);
+        }
+        else
+        {
+            return hex2byte (s, CHARSET);;
+        }  
+        
     }
     /**
      * Converts a hex string into a byte array
