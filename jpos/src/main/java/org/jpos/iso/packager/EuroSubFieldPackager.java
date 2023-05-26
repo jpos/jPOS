@@ -22,6 +22,7 @@ import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
+import org.xml.sax.Attributes;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
@@ -40,9 +41,25 @@ import java.util.Set;
  * such as field 48.
  */
 @SuppressWarnings("unchecked")
-public class EuroSubFieldPackager extends ISOBasePackager
+public class EuroSubFieldPackager extends ISOBasePackager implements GenericPackagerParams, ISOSubFieldPackager
 {
     protected static Prefixer tagPrefixer = AsciiPrefixer.LL;
+
+    // fieldId is read from "id" XML attribute (because this class is GenericPackagerParams).
+    // Useful for cases where we embed an EuroSubFieldPackager inside a non-bitmapped
+    // field (such as another EuroSubFieldPackager), and the wrapping packager needs to know
+    // this object's field position (i.e., outer tag)
+    protected Integer fieldId = -1;
+
+    @Override
+    public void setGenericPackagerParams(Attributes atts) {
+        fieldId = Integer.parseInt(atts.getValue("id"));
+    }
+
+    @Override
+    public int getFieldNumber() {
+        return fieldId;
+    }
 
     /**
      * Always return false
