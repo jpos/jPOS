@@ -73,19 +73,19 @@ public class ISOUtilTest {
     @Test
     public void TestsHex1() {
         String p = "1A2B3C";
-        assertTrue(ISOUtil.isHexadecimal2(p));
+        ISOUtil.hex2byte(p);
     }
 
     @Test
     public void TestsHex2() {
         String p = "1";
-        assertFalse(ISOUtil.isHexadecimal2(p));
+        ISOUtil.hex2byte(p);
     }
 
     @Test
     public void TestsHex3() {
         String p = null;
-        assertFalse(ISOUtil.isHexadecimal2(p));
+        ISOUtil.hex2byte(p);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ISOUtilTest {
     @Test
     public void testAsciiToEbcdic1() throws Throwable {
         byte[] a = new byte[1];
-        byte[] result = ISOUtil.asciiToEbcdic(a);
+        byte[] result = c.asciiToEbcdic(a);
         assertEquals(1, result.length, "result.length");
         assertEquals((byte) 0, result[0], "result[0]");
     }

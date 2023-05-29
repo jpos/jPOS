@@ -193,28 +193,6 @@ public class ISOUtil {
         }
         return true;
     }
-
-    public static boolean isHexadecimal2(String texto) {
-        // Verificar si el texto está vacío o tiene una longitud impar
-        if (texto.isEmpty() || texto.length() % 2 != 0) {
-            return false;
-        }
-        
-        // Verificar si cada carácter es un dígito hexadecimal válido
-        for (int i = 0; i < texto.length(); i++) {
-            char c = texto.charAt(i);
-            if (!isDigitHexadecimal(c)) {
-                throw new IllegalArgumentException("The string is not hexadecimal");
-            }
-        }
-        
-        return true;
-
-    }
-    
-    public static boolean isDigitHexadecimal(char c) {
-        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
-    }
     
     /**
      * zeropads a long without throwing an ISOException (performs modulus operation)
@@ -718,16 +696,26 @@ public class ISOUtil {
      * @return byte array
      */
     public static byte[] hex2byte (String s) {
-        if (isHexadecimal2(s))
+
+        if (s.isEmpty() || s.length() % 2 != 0) //verificar si el string es vacio
         {
-            return hex2byte (s, CHARSET);
+            throw new IllegalArgumentException("The string is empty or null");
         }
-        else
-        {
-            return hex2byte (s, CHARSET);;
-        }  
-        
+        // Verificar si cada carácter es un dígito hexadecimal válido
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i); 
+            if (!isDigitHexadecimal(c)) {
+                throw new IllegalArgumentException("The string is not hexadecimal");
+            }
+        }
+        return hex2byte(s, CHARSET);
+      
     }
+    
+    public static boolean isDigitHexadecimal(char c) {
+        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
+    }
+
     /**
      * Converts a hex string into a byte array
      * @param s source string (with Hex representation)
