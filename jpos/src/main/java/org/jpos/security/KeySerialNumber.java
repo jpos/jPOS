@@ -18,6 +18,7 @@
 
 package  org.jpos.security;
 
+import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
@@ -66,6 +67,34 @@ public class KeySerialNumber
         setBaseKeyID(baseKeyID);
         setDeviceID(deviceID);
         setTransactionCounter(transactionCounter);
+    }
+
+    /**
+     * Constructs a key serial number object from its hexadecimal representation.
+     * @param hexKSN hexadecimal representation of the KSN.
+     * @param idLength length of the base key ID.
+     * @param deviceLength length of the device ID.
+     * @param counterLength length of the transaction counter.
+     */
+    public KeySerialNumber(String hexKSN, int idLength, int deviceLength, int counterLength) {
+        if (hexKSN == null || hexKSN.trim().length() == 0)
+            throw new IllegalArgumentException("KSN cannot be empty.");
+        if (idLength + deviceLength + counterLength > hexKSN.length())
+            throw new IllegalArgumentException("Length spec doesn't match KSN.");
+        setBaseKeyID(hexKSN.substring(0, idLength));
+        setDeviceID(hexKSN.substring(idLength, idLength + deviceLength));
+        setTransactionCounter(hexKSN.substring(idLength + deviceLength, idLength + deviceLength + counterLength));
+    }
+
+    /**
+     * Constructs a key serial number object from its binary representation.
+     * @param binKSN binary representation of the KSN.
+     * @param idLength length of the base key ID.
+     * @param deviceLength length of the device ID.
+     * @param counterLength length of the transaction counter.
+     */
+    public KeySerialNumber(byte[] binKSN, int idLength, int deviceLength, int counterLength) {
+        this(ISOUtil.byte2hex(binKSN).toUpperCase(), idLength, deviceLength, counterLength);
     }
 
     /**

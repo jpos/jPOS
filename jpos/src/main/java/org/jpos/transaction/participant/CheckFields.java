@@ -82,7 +82,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
         }
         String t2 = cfg.get("track2-pattern", null);
         if (t2 != null) {
-            track2Pattern = Pattern.compile(t1);
+            track2Pattern = Pattern.compile(t2);
         }
     }
 
