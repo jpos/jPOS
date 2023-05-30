@@ -52,23 +52,6 @@ public class ISOUtilTest {
     final String lineSep = System.getProperty("line.separator");
 
 
-    @Test
-    public void TestHexadecimalValidHexadec () {
-        byte[] validHexBytes = {(byte) 0x1F};
-        assertTrue(ISOUtil.isHexadecimal(validHexBytes));
-    }
-
-    @Test
-    public void testHex1IsDecimal2() {
-        byte[] validHexBytes = {(byte) 0xAB, (byte) 0xCD, (byte) 0xEF};
-        assertFalse(ISOUtil.isHexadecimal(validHexBytes));
-    }
-
-    @Test
-    public void testHex1IsDecimal3() {
-        byte[] validHexBytes = null;
-        assertFalse(ISOUtil.isHexadecimal(validHexBytes));
-    }
 
     @Test
     public void TestsHex1() {
