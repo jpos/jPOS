@@ -22,6 +22,8 @@ import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.function.TriConsumer;
+import org.jpos.function.TriFunction;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
@@ -418,8 +420,9 @@ public class TransactionManager
         (int session, long id, Serializable context, List<TransactionParticipant> members, boolean recover, LogEvent evt, Profiler prof)
     {
         for (TransactionParticipant p :members) {
-            if (recover && p instanceof ContextRecovery) {
-                context = ((ContextRecovery) p).recover (id, context, true);
+            ParticipantParams pp = getParams(p);
+            if (recover && p instanceof ContextRecovery cr) {
+                context = recover (cr, id, context, pp, true);
                 if (evt != null)
                     evt.addMessage (" commit-recover: " + getName(p));
             }
@@ -427,7 +430,7 @@ public class TransactionManager
                 notifyStatusListeners (
                     session, TransactionStatusEvent.State.COMMITING, id, getName(p), context
                 );
-            commit (p, id, context);
+            commitOrAbort (p, id, context, pp, this::commit);
             if (evt != null) {
                 evt.addMessage ("         commit: " + getName(p));
                 if (prof != null)
@@ -439,8 +442,9 @@ public class TransactionManager
         (int session, long id, Serializable context, List<TransactionParticipant> members, boolean recover, LogEvent evt, Profiler prof)
     {
         for (TransactionParticipant p :members) {
-            if (recover && p instanceof ContextRecovery) {
-                context = ((ContextRecovery) p).recover (id, context, false);
+            ParticipantParams pp = getParams(p);
+            if (recover && p instanceof ContextRecovery cr) {
+                context = recover (cr, id, context, pp, true);
                 if (evt != null)
                     evt.addMessage ("  abort-recover: " + getName(p));
             }
@@ -449,7 +453,7 @@ public class TransactionManager
                     session, TransactionStatusEvent.State.ABORTING, id, getName(p), context
                 );
 
-            abort(p, id, context);
+            commitOrAbort (p, id, context, pp, this::abort);
             if (evt != null) {
                 evt.addMessage ("          abort: " + getName(p));
                 if (prof != null)
@@ -519,7 +523,6 @@ public class TransactionManager
         (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof, Chronometer chronometer)
     {
         boolean retry = false;
-        boolean pause = false;
         for (int i=0; iter.hasNext (); i++) {
             int action;
             if (i > MAX_PARTICIPANTS) {
@@ -542,7 +545,7 @@ public class TransactionManager
                         session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, getName(p), context
                     );
 
-                action = prepareForAbort (p, id, context);
+                action = prepareOrAbort (p, id, context, pp, this::prepareForAbort);
 
                 if (evt != null && p instanceof AbortParticipant) {
                     evt.addMessage("prepareForAbort: " + getName(p));
@@ -557,10 +560,7 @@ public class TransactionManager
 
 
                 chronometer.lap();
-                action = prepare(p, id, context);
-                if ((action & PAUSE) == PAUSE) {
-                    action = pauseAndWait (context, action);
-                }
+                action = prepareOrAbort (p, id, context, pp, this::prepare);
                 boolean timeout = pp.timeout > 0 && chronometer.partial() > pp.timeout;
                 boolean maxTime = pp.maxTime > 0 && chronometer.elapsed() > pp.maxTime;
                 if (timeout || maxTime)
@@ -713,7 +713,10 @@ public class TransactionManager
         params.put(participant, new ParticipantParams(
             Caller.shortClassName(participant.getClass().getName())+realm,
             getLong (e, "timeout", 0L),
-            getLong (e, "max-time", globalMaxTime)
+            getLong (e, "max-time", globalMaxTime),
+            getSet(e.getChild("requires")),
+            getSet(e.getChild("provides")),
+            getSet(e.getChild("optional"))
           )
         );
         if (participant instanceof Destroyable) {
@@ -1033,7 +1036,9 @@ public class TransactionManager
     }
 
     private ParticipantParams getParams (TransactionParticipant p) {
-        return Optional.ofNullable(params.get(p)).orElse(new ParticipantParams(p.getClass().getName(), 0L, 0L));
+        return Optional.ofNullable(params.get(p)).orElse(
+          new ParticipantParams(p.getClass().getName(), 0L, 0L, Collections.emptySet(), Collections.emptySet(), Collections.emptySet())
+        );
     }
 
     private String tmInfo() {
@@ -1087,5 +1092,60 @@ public class TransactionManager
         return action;
     }
 
-    public record ParticipantParams (String name, long timeout, long maxTime) {}
+    private record ParticipantParams (
+      String name,
+      long timeout,
+      long maxTime,
+      Set<String> requires,
+      Set<String> provides,
+      Set<String> optional) {
+        public boolean isConstrained() {
+            return !requires.isEmpty() || !optional.isEmpty();
+        }
+    }
+
+    private Set<String> getSet (Element e) {
+        return e != null ? new HashSet<>(Arrays.asList(ISOUtil.commaDecode(e.getTextTrim()))) : Collections.emptySet();
+    }
+
+    private int prepareOrAbort (TransactionParticipant p, long id, Serializable context, ParticipantParams pp, TriFunction<TransactionParticipant, Long, Serializable, Integer> preparationFunction) {
+        int action;
+        if (context instanceof Context ctx && pp.isConstrained()) {
+            if (!ctx.hasKeys(pp.requires.toArray())) {
+                ctx.log ("missing.requires: '%s'".formatted(ctx.keysNotPresent(pp.requires.toArray())));
+                action = ABORTED;
+            } else {
+                Context c = ctx.clone(pp.requires.toArray(), pp.optional.toArray());
+                action = preparationFunction.apply(p, id, c);
+                ctx.merge(c.clone(pp.provides.toArray()));
+            }
+        } else {
+            action = preparationFunction.apply(p, id, context);
+        }
+        if ((action & PAUSE) == PAUSE) {
+            action = pauseAndWait(context, action);
+        }
+        return action;
+    }
+
+    private void commitOrAbort (TransactionParticipant p, long id, Serializable context, ParticipantParams pp, TriConsumer<TransactionParticipant, Long, Serializable> preparationFunction) {
+        if (context instanceof Context ctx && pp.isConstrained()) {
+            Context c = ctx.clone(pp.requires.toArray(), pp.optional.toArray());
+            preparationFunction.accept(p, id, c);
+            ctx.merge(c.clone(pp.provides.toArray()));
+        } else {
+            preparationFunction.accept(p, id, context);
+        }
+    }
+
+    private Serializable recover (ContextRecovery p, long id, Serializable context, ParticipantParams pp, boolean commit) {
+        if (context instanceof Context ctx && pp.isConstrained()) {
+            Context c = ctx.clone(pp.requires.toArray(), pp.optional.toArray());
+            Serializable s = p.recover (id, c, commit);
+            return (s instanceof Context rc) ?
+                rc.clone (pp.provides.toArray()) : s;
+        } else {
+            return p.recover (id, context, commit);
+        }
+    }
 }
