@@ -34,134 +34,37 @@ import org.junit.jupiter.api.Test;
 
 public class KeySerialNumberTest {
 
-    @Test
-    public void testConstructor() throws Throwable {
-        KeySerialNumber keySerialNumber = new KeySerialNumber();
-        assertNull(keySerialNumber.getBaseKeyID(), "keySerialNumber.getBaseKeyID()");
-    }
-
-    @Test
-    public void testConstructor1() throws Throwable {
-        KeySerialNumber keySerialNumber = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
-                "testKeySerialNumberTransactionCounter");
-        assertEquals("testKeySerialNumberBaseKeyID", keySerialNumber.baseKeyID, "keySerialNumber.baseKeyID");
-        assertEquals("testKeySerialNumberDeviceID", keySerialNumber.deviceID, "keySerialNumber.deviceID");
-        assertEquals("testKeySerialNumberTransactionCounter",
-                keySerialNumber.transactionCounter, "keySerialNumber.transactionCounter");
-    }
 
     @Test
     public void testDump() throws Throwable {
         PrintStream p = new PrintStream(new ByteArrayOutputStream(), true, "UTF-8");
         Object[] objects = new Object[1];
         p.format("testKeySerialNumberParam1", objects);
-        new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID", "testKeySerialNumberTransactionCounter")
+        new KeySerialNumber("FFFF987654", "3210E", "000008")
                 .dump(p, "testKeySerialNumberIndent");
         assertTrue(true, "Test completed without Exception");
     }
 
     @Test
-    public void testDumpThrowsNullPointerException() throws Throwable {
-        try {
-            new KeySerialNumber().dump(null, "testKeySerialNumberIndent");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"java.io.PrintStream.println(String)\" because \"p\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
-    }
-
-    @Test
-    public void testGetBaseKeyID() throws Throwable {
-        String result = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
-                "testKeySerialNumberTransactionCounter").getBaseKeyID();
-        assertEquals("testKeySerialNumberBaseKeyID", result, "result");
-    }
-
-    @Test
-    public void testGetDeviceID() throws Throwable {
-        String result = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
-                "testKeySerialNumberTransactionCounter").getDeviceID();
-        assertEquals("testKeySerialNumberDeviceID", result, "result");
-    }
-
-    @Test
-    public void testGetTransactionCounter() throws Throwable {
-        String result = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
-                "testKeySerialNumberTransactionCounter").getTransactionCounter();
-        assertEquals("testKeySerialNumberTransactionCounter", result, "result");
-    }
-
-    @Test
-    public void testGetTransactionCounter1() throws Throwable {
-        String result = new KeySerialNumber().getTransactionCounter();
-        assertNull(result, "result");
-    }
-
-    @Test
-    public void testSetBaseKeyID() throws Throwable {
-        KeySerialNumber keySerialNumber = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
-                "testKeySerialNumberTransactionCounter");
-        keySerialNumber.setBaseKeyID("testKeySerialNumberBaseKeyID1");
-        assertEquals("testKeySerialNumberBaseKeyID1", keySerialNumber.baseKeyID, "keySerialNumber.baseKeyID");
-    }
-
-    @Test
-    public void testSetDeviceID() throws Throwable {
-        KeySerialNumber keySerialNumber = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
-                "testKeySerialNumberTransactionCounter");
-        keySerialNumber.setDeviceID("testKeySerialNumberDeviceID1");
-        assertEquals("testKeySerialNumberDeviceID1", keySerialNumber.deviceID, "keySerialNumber.deviceID");
-    }
-
-    @Test
-    public void testSetTransactionCounter() throws Throwable {
-        KeySerialNumber keySerialNumber = new KeySerialNumber("testKeySerialNumberBaseKeyID", "testKeySerialNumberDeviceID",
-                "testKeySerialNumberTransactionCounter");
-        keySerialNumber.setTransactionCounter("testKeySerialNumberTransactionCounter1");
-        assertEquals("testKeySerialNumberTransactionCounter1",
-                keySerialNumber.transactionCounter, "keySerialNumber.transactionCounter");
-    }
-
-    @Test
     public void testBinaryConstructor() {
         byte[] ksnBin = ISOUtil.hex2byte("9876543210E00008");
-        KeySerialNumber ksn = new KeySerialNumber(ksnBin, 6, 5, 5);
-        assertEquals("987654", ksn.getBaseKeyID());
-        assertEquals("3210E", ksn.getDeviceID());
-        assertEquals("00008", ksn.getTransactionCounter());
-    }
-
-    @Test
-    public void testHexConstructor() {
-        String ksnHex = "9876543210E00008";
-        KeySerialNumber ksn = new KeySerialNumber(ksnHex, 6, 5, 5);
-        assertEquals("987654", ksn.getBaseKeyID());
-        assertEquals("3210E", ksn.getDeviceID());
-        assertEquals("00008", ksn.getTransactionCounter());
+        KeySerialNumber ksn = new KeySerialNumber(ksnBin);
+        assertEquals("FFFF987654", ksn.getBaseKeyID());
+        assertEquals("03210E", ksn.getDeviceID());
+        assertEquals("000008", ksn.getTransactionCounter());
     }
 
     @Test
     public void testHexConstructorWrongLength() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new KeySerialNumber("9876543210E008", 6, 5, 5);
+            new KeySerialNumber(ISOUtil.hex2byte("9876543210E008"));
         });
     }
 
     @Test
     public void testHexConstructorNullKSN() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new KeySerialNumber((String) null, 6, 5, 5);
-        });
-    }
-
-    @Test
-    public void testHexConstructorEmptyKSN() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new KeySerialNumber("                ", 6, 5, 5);
+        assertThrows(NullPointerException.class, () -> {
+            new KeySerialNumber(null);
         });
     }
 }
