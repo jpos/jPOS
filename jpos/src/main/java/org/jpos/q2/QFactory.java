@@ -19,7 +19,9 @@
 package org.jpos.q2;
 
 
+import org.jdom2.Content;
 import org.jdom2.Element;
+import org.jdom2.Text;
 import org.jpos.core.*;
 import org.jpos.core.annotation.Config;
 import org.jpos.q2.qbean.QConfig;
@@ -63,6 +65,8 @@ public class QFactory {
                MBeanException,
                InstanceNotFoundException
     {
+        replaceEnvProperties(e);
+
         String clazz  = getAttributeValue (e, "class");
         if (clazz == null) {
             try {
@@ -482,4 +486,25 @@ public class QFactory {
             cc = cc.getSuperclass();
         } while (!cc.equals(Object.class));
     }
+    
+    public static void replaceEnvProperties(Element e) {
+       replaceEnvProperties(e, Environment.getEnvironment());
+    }
+    public static void replaceEnvProperties(Element e, Environment env) {
+        if (Boolean.parseBoolean(e.getAttributeValue("verbatim"))) return;
+        for (org.jdom2.Attribute attr : e.getAttributes()) {
+            String value = attr.getValue();
+            attr.setValue(env.getProperty(value, value));
+        }
+        for (Content child : e.getContent()) {
+            if (child instanceof Element) {
+                replaceEnvProperties((Element) child, env);
+            } else if (child instanceof Text) {
+                Text text = (Text) child;
+                String textValue = text.getText();
+                text.setText(env.getProperty(textValue, textValue));
+            }
+        }
+    }
+            
 }
