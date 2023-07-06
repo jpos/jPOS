@@ -678,6 +678,11 @@ public abstract class BaseChannel extends Observable
             serverOutLock.unlock();
         }
     }
+
+    public boolean isExpectKeepAlive() {
+        return expectKeepAlive;
+    }
+
     protected boolean isRejected(byte[] b) {
         // VAP Header support - see VAPChannel
         return false;
