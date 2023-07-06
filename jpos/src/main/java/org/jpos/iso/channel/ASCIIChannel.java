@@ -76,7 +76,7 @@ public class ASCIIChannel extends BaseChannel {
      * @exception IOException
      * @see ISOPackager
      */
-    public ASCIIChannel (ISOPackager p, ServerSocket serverSocket) 
+    public ASCIIChannel (ISOPackager p, ServerSocket serverSocket)
         throws IOException
     {
         super(p, serverSocket);
@@ -110,11 +110,15 @@ public class ASCIIChannel extends BaseChannel {
         while (l == 0) {
             serverIn.readFully(b, 0, lengthDigits);
             try {
-                if ((l=Integer.parseInt(new String(b))) == 0) {
-                    serverOut.write(b);
-                    serverOut.flush();
+                if ((l=Integer.parseInt(new String(b))) == 0 &&
+                    isExpectKeepAlive()) {
+
+                    synchronized (serverOutLock) {
+                        serverOut.write(b);
+                        serverOut.flush();
+                    }
                 }
-            } catch (NumberFormatException e) { 
+            } catch (NumberFormatException e) {
                 throw new ISOException ("Invalid message length "+new String(b));
             }
         }
