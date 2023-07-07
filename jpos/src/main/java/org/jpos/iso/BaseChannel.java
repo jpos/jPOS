@@ -662,6 +662,11 @@ public abstract class BaseChannel extends Observable
         }
 
     }
+
+    public boolean isExpectKeepAlive() {
+        return expectKeepAlive;
+    }
+
     protected boolean isRejected(byte[] b) {
         // VAP Header support - see VAPChannel
         return false;
