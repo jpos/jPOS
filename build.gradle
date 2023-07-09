@@ -33,7 +33,7 @@ subprojects {
         options.compilerArgs += '--enable-preview'
     }
     tasks.withType(Test) {
-        jvmArgs += "--enable-preview"
+        jvmArgs += '--enable-preview'
     }
 
     repositories {

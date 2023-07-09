@@ -73,7 +73,6 @@ dependencies {
     // compile 'org.apache.felix:org.apache.felix.framework:5.0.0'
 }
 
-def archiveJarName="${project.name}-${project.version}.jar"
 def q2ArchiveJarName="${project.name}-${project.version}-q2.jar"
 def jposCopySpec = copySpec {
     def cfg = new Properties()
@@ -110,14 +109,6 @@ def jposCopySpec = copySpec {
         from(configurations.runtimeClasspath)
     }
 }
-
-def bundleVendor='jPOS.org'
-def bundleDescription="jPOS ${project.version}"
-def bundleActivator = 'org.jpos.q2.Activator'
-def bundleImportPackage = 'javax.crypto,javax.crypto.spec,javax.management,javax.naming,javax.net.ssl,javax.security.cert,javax.swing,javax.swing.border,javax.swing.event,javax.swing.table,javax.swing.text,javax.swing.text.html,javax.swing.tree,javax.xml.transform,javax.xml.transform.stream,org.osgi.framework;version="[1.6,2)",org.osgi.framework.launch;version="[1.0,2)",org.w3c.dom,org.xml.sax,org.xml.sax.helpers,org.xml.sax.ext'
-def bundleExportPackage = 'org.jpos.bsh,org.jpos.core,org.jpos.iso,org.jpos.iso.channel,org.jpos.iso.filter,org.jpos.iso.gui,org.jpos.iso.header,org.jpos.iso.packager,org.jpos.iso.validator,org.jpos.q2,org.jpos.q2.cli,org.jpos.q2.install,org.jpos.q2.iso,org.jpos.q2.qbean,org.jpos.q2.security,org.jpos.q2.ui,org.jpos.security,org.jpos.security.jceadapter,org.jpos.space,org.jpos.tlv,org.jpos.transaction,org.jpos.transaction.gui,org.jpos.transaction.participant,org.jpos.ui,org.jpos.ui.action,org.jpos.ui.factory,org.jpos.util,org.jpos.util.function.org.jpos.emv,org.jpos.core.handlers.exception,org.jpos.rc'
-def bundleLicense = 'http://jpos.org/license'
-def bundleDocURL = 'http://jpos.org/doc/javadoc/index.html'
 
 task listJars {
     doLast {
