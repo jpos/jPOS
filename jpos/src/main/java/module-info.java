@@ -2,8 +2,6 @@ module org.jpos.jpos {
     requires java.se;
     requires jdk.jfr;
     requires org.jdom2;
-    requires org.bouncycastle.pg;
-    requires org.bouncycastle.provider;
     requires org.apache.commons.cli;
     requires org.osgi.core;
     requires org.javatuples;
@@ -14,6 +12,8 @@ module org.jpos.jpos {
     requires org.slf4j;
     requires com.sleepycat.je;
     requires org.jdbm;
+    requires org.bouncycastle.pg;
+    requires org.bouncycastle.lts.prov;
     // requires org.apache.sshd.common;
     // requires org.apache.sshd.server;
     // requires org.apache.sshd.core;

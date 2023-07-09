@@ -1,5 +1,6 @@
 ext {
     sshdVersion = '2.9.2'
+    bcVersion = '2.73.2'
     libraries = [
         jdom: 'org.jdom:jdom2:2.0.6.1',
         jdbm: 'jdbm:jdbm:1.0',
@@ -15,8 +16,8 @@ ext {
         xmlunit: 'xmlunit:xmlunit:1.6',
         junit: 'org.junit.jupiter:junit-jupiter:5.8.2',
         bouncycastle: [
-            'org.bouncycastle:bcprov-jdk15to18:1.71',
-            'org.bouncycastle:bcpg-jdk14:1.71'
+            "org.bouncycastle:bcprov-lts8on:${bcVersion}",
+            "org.bouncycastle:bcpg-lts8on:${bcVersion}"
         ],
         hamcrest: 'org.hamcrest:hamcrest:2.2',
         sshd: "org.apache.sshd:sshd-core:${sshdVersion}",
