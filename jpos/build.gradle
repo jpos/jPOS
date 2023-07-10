@@ -12,7 +12,6 @@ extraJavaModuleInfo {
     automaticModule ('je-18.3.12.jar', 'com.sleepycat.je')
     automaticModule ('jdbm-1.0.jar', 'org.jdbm')
     automaticModule ('HdrHistogram-2.1.12.jar', 'org.hdrhistogram.HdrHistogram')
-    automaticModule ('org.osgi.core-6.0.0.jar', 'org.osgi.core')
     automaticModule ('javassist-3.27.0-GA.jar', 'org.javassist.javassist')
     automaticModule ('xmlunit-1.6.jar', 'xmlunit')
     /*
@@ -48,7 +47,6 @@ dependencies {
     api libraries.slf4j_api
     api libraries.hdrhistogram
 
-    implementation libraries.osgi_core
     implementation libraries.yaml;
     implementation libraries.jdbm
     implementation libraries.sleepycat_je

@@ -43,11 +43,6 @@ import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.PGPHelper;
 import org.jpos.util.SimpleLogListener;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.launch.Framework;
-import org.osgi.framework.launch.FrameworkFactory;
 import org.xml.sax.SAXException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -120,9 +115,6 @@ public class Q2 implements FileFilter, Runnable {
     private boolean recursive;
     private ConfigDecorationProvider decorator=null;
     private UUID instanceId;
-    private Framework osgiFramework;
-    private boolean startOSGI = false;
-    private BundleContext bundleContext;
     private String pidFile;
     private String name = JMX_NAME;
     private long lastVersionLog;
@@ -138,7 +130,7 @@ public class Q2 implements FileFilter, Runnable {
     private static String CFG_PREFIX = "META-INF/q2/cfg/";
     private String nameRegistrarKey;
     
-    public Q2 (String[] args, BundleContext bundleContext) {
+    public Q2 (String[] args) {
         super();
         this.args = args;
         startTime = Instant.now();
@@ -148,17 +140,13 @@ public class Q2 implements FileFilter, Runnable {
         dirMap     = new TreeMap<>();
         deployDir.mkdirs ();
         mainClassLoader = getClass().getClassLoader();
-        this.bundleContext = bundleContext;
         registerQ2();
     }
     public Q2 () {
-        this (new String[] {}, null );
+        this (new String[] {});
     }
     public Q2 (String deployDir) {
-        this (new String[] { "-d", deployDir }, null);
-    }
-    public Q2 (String[] args) {
-        this(args, null);
+        this (new String[] { "-d", deployDir });
     }
     public void start () {
         if (shutdown.getCount() == 0)
@@ -213,15 +201,12 @@ public class Q2 implements FileFilter, Runnable {
             factory = new QFactory(loaderName, this);
             writePidFile();
             initSystemLogger();
-            if (bundleContext == null)
-                addShutdownHook();
+            addShutdownHook();
             q2Thread = Thread.currentThread();
             q2Thread.setContextClassLoader(loader);
             if (cli != null)
                 cli.start();
             initConfigDecorator();
-            if (startOSGI)
-                startOSGIFramework();
             if (enableSsh) {
 //                deployElement(SshService.createDescriptor(sshPort, sshUser, sshAuthorizedKeys, sshHostKeyFile),
 //                  "05_sshd-" + getInstanceId() + ".xml", false, true);
@@ -314,7 +299,6 @@ public class Q2 implements FileFilter, Runnable {
             }
         }
         q2Thread = null;
-        stopOSGIFramework();
     }
     public QClassLoader getLoader () {
         return loader;
@@ -327,7 +311,7 @@ public class Q2 implements FileFilter, Runnable {
     }
     public boolean accept (File f) {
         return f.canRead() && 
-            (isXml(f) || isBundle(f) ||
+            (isXml(f) ||
                     recursive && f.isDirectory() && !"lib".equalsIgnoreCase (f.getName()));
     }
     public File getDeployDir () {
@@ -339,17 +323,14 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     public static Q2 getQ2() {
-        return (Q2) NameRegistrar.getIfExists(JMX_NAME);
+        return NameRegistrar.getIfExists(JMX_NAME);
     }
     public static Q2 getQ2(long timeout) {
-        return (Q2) NameRegistrar.get(JMX_NAME, timeout);
+        return NameRegistrar.get(JMX_NAME, timeout);
     }
 
     private boolean isXml(File f) {
         return f != null && f.getName().toLowerCase().endsWith(".xml");
-    }
-    private boolean isBundle(File f) {
-        return osgiFramework != null && f != null && f.getName().toLowerCase().endsWith(".jar");
     }
     private boolean scan () {
         boolean rc = false;
@@ -369,7 +350,6 @@ public class Q2 implements FileFilter, Runnable {
 
     private void deploy () {
         List<ObjectInstance> startList = new ArrayList<ObjectInstance>();
-        List<File> osgiBundelList = new ArrayList<File>();
         Iterator<Map.Entry<File,QEntry>> iter = dirMap.entrySet().iterator();
 
         try {
@@ -379,11 +359,7 @@ public class Q2 implements FileFilter, Runnable {
                 QEntry qentry   = entry.getValue ();
                 long deployed   = qentry.getDeployed ();
                 if (deployed == 0) {
-                    if (qentry.isOSGIBundle()) {
-                        osgiBundelList.add(f);
-                        qentry.setDeployed (f.lastModified ());
-                    }
-                    else if (deploy(f)) {
+                    if (deploy(f)) {
                         if (qentry.isQBean ())
                             startList.add (qentry.getInstance());
                         qentry.setDeployed (f.lastModified ());
@@ -397,8 +373,6 @@ public class Q2 implements FileFilter, Runnable {
                     loader.forceNewClassLoaderOnNextScan();
                 }
             }
-            for (File f : osgiBundelList)
-                registerOSGIBundle(f);
             for (ObjectInstance instance : startList)
                 start(instance);
         }
@@ -516,8 +490,6 @@ public class Q2 implements FileFilter, Runnable {
                 Object obj      = qentry.getObject ();
                 ObjectName name = qentry.getObjectName ();
                 factory.destroyQBean (this, name, obj);
-            } else if (qentry.isOSGIBundle()) {
-                getLog().warn("OSGI bundle " + f.getName() + " no longer available in deploy directory");
             }
             if (log != null)
                 log.info ("undeployed:" + f.getCanonicalPath());
@@ -536,7 +508,7 @@ public class Q2 implements FileFilter, Runnable {
                     rc = true;
             }
         } else if (dirMap.get (f) == null) {
-            dirMap.put (f, new QEntry (isBundle(f)));
+            dirMap.put (f, new QEntry ());
             rc = true;
         }
         return rc;
@@ -711,7 +683,6 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("e","encrypt", true, "Encrypt configuration bundle");
         options.addOption ("i","cli", false, "Command Line Interface");
         options.addOption ("c","command", true, "Command to execute");
-        options.addOption ("O", "osgi", false, "Start experimental OSGi framework server");
         options.addOption ("p", "pid-file", true, "Store project's pid");
         options.addOption ("n", "name", true, "Optional name (defaults to 'Q2')");
         options.addOption ("s", "ssh", false, "Enable SSH server");
@@ -763,8 +734,6 @@ public class Q2 implements FileFilter, Runnable {
                 deployBundle (new File (line.getOptionValue ("C")), false);
             if (line.hasOption ("e"))
                 deployBundle (new File (line.getOptionValue ("e")), true);
-            if (line.hasOption("O"))
-                startOSGI = true;
             if (line.hasOption("p"))
                 pidFile = line.getOptionValue("p");
             if (line.hasOption("n"))
@@ -825,11 +794,7 @@ public class Q2 implements FileFilter, Runnable {
         }
     }
 
-    public Framework getOSGIFramework() {
-        return osgiFramework;
-    }
-
-    private byte[] dodes (byte[] data, int mode) 
+    private byte[] dodes (byte[] data, int mode)
        throws GeneralSecurityException
     {
         Cipher cipher = Cipher.getInstance("DES");
@@ -883,43 +848,6 @@ public class Q2 implements FileFilter, Runnable {
         return doc;
     }
 
-    private void startOSGIFramework() throws BundleException {
-        Iterator<FrameworkFactory> iter = ServiceLoader.load(FrameworkFactory.class, loader).iterator();
-        if (iter.hasNext()) {
-            FrameworkFactory frameworkFactory = iter.next();
-            Map<String, String> config = new HashMap<String, String>();
-            osgiFramework = frameworkFactory.newFramework(config);
-            osgiFramework.start();
-        } else {
-            getLog().warn("OSGI framework not found");
-        }
-    }
-    private boolean registerOSGIBundle (File f) {
-        BundleContext context = osgiFramework.getBundleContext();
-        LogEvent evt = getLog().createLogEvent("osgi", f.getName());
-        try {
-            Bundle bundle = context.installBundle("file:" + f.getAbsolutePath());
-            evt.addMessage("registered");
-            bundle.start();
-            evt.addMessage("started");
-        } catch (BundleException e) {
-            evt.addMessage(e);
-            return false;
-        } finally {
-            Logger.log(evt);
-        }
-        return true;
-    }
-    private void stopOSGIFramework() {
-        if (osgiFramework != null) {
-            try {
-                osgiFramework.stop();
-                osgiFramework.waitForStop(0L);
-            } catch (Exception e) {
-                getLog().warn(e);
-            }
-        }
-    }
     private void tidyFileAway (File f, String extension) {
         File rename = new File(f.getAbsolutePath()+"."+extension);
         while (rename.exists()){
@@ -1052,10 +980,8 @@ public class Q2 implements FileFilter, Runnable {
         long deployed;
         ObjectInstance instance;
         Object obj;
-        boolean osgiBundle;
-        public QEntry (boolean osgiBundle) {
+        public QEntry () {
             super();
-            this.osgiBundle = osgiBundle;
         }
         public QEntry (long deployed, ObjectInstance instance) {
             super();
@@ -1085,9 +1011,6 @@ public class Q2 implements FileFilter, Runnable {
         }
         public boolean isQBean () {
             return obj instanceof QBean;
-        }
-        public boolean isOSGIBundle() {
-            return osgiBundle;
         }
         public boolean isQPersist () {
             return obj instanceof QPersist;
