@@ -57,6 +57,8 @@ dependencies {
     testImplementation libraries.hamcrest
     testImplementation libraries.xmlunit
     testImplementation libraries.junit
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
     testImplementation (libraries.mockito) {
         exclude(module: 'hamcrest-core')
     }
