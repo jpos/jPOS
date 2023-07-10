@@ -3,7 +3,6 @@ module org.jpos.jpos {
     requires jdk.jfr;
     requires org.jdom2;
     requires org.apache.commons.cli;
-    requires org.osgi.core;
     requires org.javatuples;
     requires org.yaml.snakeyaml;
     requires org.hdrhistogram.HdrHistogram;
