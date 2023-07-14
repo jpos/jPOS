@@ -156,10 +156,9 @@ public class KeySerialNumber
         p.println(indent + "<key-serial-number>");
         p.println(inner + "<base-key-id>" + getBaseKeyID() + "</base-key-id>");
         p.println(inner + "<device-id>" + getDeviceID() + "</device-id>");
-        p.println(inner + "<transaction-counter>" + getTransactionCounter() + "</transaction-counter");
+        p.println(inner + "<transaction-counter>" + getTransactionCounter() + "</transaction-counter>");
         p.println(indent + "</key-serial-number>");
     }
 }
-
 
 
