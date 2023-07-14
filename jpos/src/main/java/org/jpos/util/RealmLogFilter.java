@@ -22,6 +22,7 @@ package org.jpos.util;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.core.XmlConfigurable;
 import org.jdom2.Element;
 
@@ -107,9 +108,9 @@ public class RealmLogFilter implements LogListener, XmlConfigurable, Configurabl
         Element enabled = e.getChild("enabled");
         Element disabled = e.getChild("disabled");
         if (enabled != null && !"".equals(enabled.getTextNormalize()))
-            enabledRealms = new HashSet(Arrays.asList(enabled.getTextNormalize().split(" ")));
+            enabledRealms = new HashSet<>(Arrays.asList(Environment.get(enabled.getTextNormalize()).split(" ")));
         if (disabled != null && !"".equals(disabled.getTextNormalize()))
-            disabledRealms = new HashSet(Arrays.asList(disabled.getTextNormalize().split(" ")));;
+            disabledRealms = new HashSet<>(Arrays.asList(Environment.get(disabled.getTextNormalize()).split(" ")));
     }
     
     private boolean realmEnabled (String realm) {
