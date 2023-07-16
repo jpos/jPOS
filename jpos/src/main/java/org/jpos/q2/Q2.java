@@ -170,20 +170,7 @@ public class Q2 implements FileFilter, Runnable {
               StandardWatchEventKinds.ENTRY_MODIFY,
               StandardWatchEventKinds.ENTRY_DELETE
             );
-            /*
-            * The following code determines whether a MBeanServer exists 
-            * already. If so then the first one in the list is used. 
-            * I have not yet find a way to interrogate the server for 
-            * information other than MBeans so to pick a specific one 
-            * would be difficult.
-            */
-            ArrayList mbeanServerList =
-                    MBeanServerFactory.findMBeanServer(null);
-            if (mbeanServerList.isEmpty()) {
-                server = MBeanServerFactory.createMBeanServer(JMX_NAME);
-            } else {
-                server = (MBeanServer) mbeanServerList.get(0);
-            }
+            server = ManagementFactory.getPlatformMBeanServer();
             final ObjectName loaderName = new ObjectName(Q2_CLASS_LOADER);
 
             try {
