@@ -100,6 +100,34 @@ public class QueryHostTest implements TransactionConstants, MUX {
         assertTrue (ctx.getResult().failure().getIrc() == CMF.MISCONFIGURED_ENDPOINT);
     }
 
+
+    @Test
+    public void testResolveTimeout_NoCtxEntry() throws Exception {
+        Context ctx = new Context();
+        cfg.put("timeout", "5678");
+        queryHost.setConfiguration(cfg);
+        assertEquals(5678, queryHost.resolveTimeout(ctx));
+    }
+
+    @Test
+    public void testResolveTimeout_DefaultCtxName() throws Exception {
+        Context ctx = new Context();
+        ctx.put("QUERYHOST_TIMEOUT", 8877);     // this one should take priority...
+        cfg.put("timeout", "5678");             // ...over this one
+        queryHost.setConfiguration(cfg);
+        assertEquals(8877, queryHost.resolveTimeout(ctx));
+    }
+
+    @Test
+    public void testResolveTimeout_CustomCtxName() throws Exception {
+        Context ctx = new Context();
+        ctx.put("MY_TIMEOUT", 8877);            // this one should take priority...
+        cfg.put("timeout", "5678");             // ...over this one
+        cfg.put("timeout-name", "MY_TIMEOUT");
+        queryHost.setConfiguration(cfg);
+        assertEquals(8877, queryHost.resolveTimeout(ctx));
+    }
+
     @Override
     public ISOMsg request(ISOMsg m, long timeout) throws ISOException {
         ISOMsg r = (ISOMsg) m.clone();

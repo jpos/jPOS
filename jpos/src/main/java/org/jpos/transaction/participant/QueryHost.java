@@ -39,6 +39,7 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
 
     private long timeout;
     private long waitTimeout;
+    private String timeoutName = "QUERYHOST_TIMEOUT";         // default ctx name
     private String requestName;
     private String responseName;
     private String destination;
@@ -71,7 +72,7 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
 
         Chronometer chronometer = new Chronometer();
         if (isConnected(mux)) {
-            long t = Math.max(timeout - chronometer.elapsed(), 1000L); // give at least a second to catch a response
+            long t = Math.max(resolveTimeout(ctx) - chronometer.elapsed(), 1000L); // give at least a second to catch a response
             try {
                 if (continuations) {
                     mux.request(m, t, this, ctx);
@@ -118,12 +119,23 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
         this.cfg = cfg;
         timeout = cfg.getLong ("timeout", DEFAULT_TIMEOUT);
         waitTimeout = cfg.getLong ("wait-timeout", DEFAULT_WAIT_TIMEOUT);
+        timeoutName = cfg.get("timeout-name", timeoutName);
         requestName = cfg.get ("request", ContextConstants.REQUEST.toString());
         responseName = cfg.get ("response", ContextConstants.RESPONSE.toString());
         destination = cfg.get ("destination", ContextConstants.DESTINATION.toString());
         continuations = cfg.getBoolean("continuations", true);
         ignoreUnreachable = cfg.getBoolean("ignore-host-unreachable", false);
         checkConnected = cfg.getBoolean("check-connected", checkConnected);
+    }
+
+    protected long resolveTimeout(Context ctx) {
+        Object o = ctx.get(timeoutName);
+        if (o == null)
+            return timeout;
+        else if (o instanceof Number)
+            return ((Number)o).longValue();
+        else
+            return Long.parseLong(o.toString());
     }
 
     protected boolean isConnected (MUX mux) {
