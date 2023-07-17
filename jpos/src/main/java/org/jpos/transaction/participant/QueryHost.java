@@ -34,12 +34,14 @@ import org.jpos.util.NameRegistrar;
 import org.jpos.transaction.Context;
 
 public class QueryHost implements TransactionParticipant, ISOResponseListener, Configurable {
+    public static final String TIMEOUT_NAME = "QUERYHOST_TIMEOUT";
+
     private static final long DEFAULT_TIMEOUT = 30000L;
     private static final long DEFAULT_WAIT_TIMEOUT = 1000L;
 
     private long timeout;
     private long waitTimeout;
-    private String timeoutName = "QUERYHOST_TIMEOUT";         // default ctx name
+    private String timeoutName = TIMEOUT_NAME;                  // default ctx name
     private String requestName;
     private String responseName;
     private String destination;
