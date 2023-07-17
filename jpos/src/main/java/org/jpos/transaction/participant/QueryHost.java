@@ -33,7 +33,6 @@ import org.jpos.util.Chronometer;
 import org.jpos.util.NameRegistrar;
 import org.jpos.transaction.Context;
 
-@SuppressWarnings("unused")
 public class QueryHost implements TransactionParticipant, ISOResponseListener, Configurable {
     private static final long DEFAULT_TIMEOUT = 30000L;
     private static final long DEFAULT_WAIT_TIMEOUT = 1000L;
@@ -45,7 +44,6 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
     private String destination;
     private boolean continuations;
     private Configuration cfg;
-    private String request;
     private boolean ignoreUnreachable;
     private boolean checkConnected= true;
 
