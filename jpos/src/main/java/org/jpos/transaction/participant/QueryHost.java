@@ -33,19 +33,20 @@ import org.jpos.util.Chronometer;
 import org.jpos.util.NameRegistrar;
 import org.jpos.transaction.Context;
 
-@SuppressWarnings("unused")
 public class QueryHost implements TransactionParticipant, Configurable {
+    public static final String TIMEOUT_NAME = "QUERYHOST_TIMEOUT";
+
     private static final long DEFAULT_TIMEOUT = 30000L;
     private static final long DEFAULT_WAIT_TIMEOUT = 1000L;
 
     private long timeout;
     private long waitTimeout;
+    private String timeoutName = TIMEOUT_NAME;                  // default ctx name
     private String requestName;
     private String responseName;
     private String destination;
     private boolean continuations;
     private Configuration cfg;
-    private String request;
     private boolean ignoreUnreachable;
     private boolean checkConnected= true;
 
@@ -73,7 +74,7 @@ public class QueryHost implements TransactionParticipant, Configurable {
 
         Chronometer chronometer = new Chronometer();
         if (isConnected(mux)) {
-            long t = Math.max(timeout - chronometer.elapsed(), 1000L); // give at least a second to catch a response
+            long t = Math.max(resolveTimeout(ctx) - chronometer.elapsed(), 1000L); // give at least a second to catch a response
             try {
                 ISOMsg resp = mux.request(m, t);
                 if (resp != null) {
@@ -99,11 +100,22 @@ public class QueryHost implements TransactionParticipant, Configurable {
         this.cfg = cfg;
         timeout = cfg.getLong ("timeout", DEFAULT_TIMEOUT);
         waitTimeout = cfg.getLong ("wait-timeout", DEFAULT_WAIT_TIMEOUT);
+        timeoutName = cfg.get("timeout-name", timeoutName);
         requestName = cfg.get ("request", ContextConstants.REQUEST.toString());
         responseName = cfg.get ("response", ContextConstants.RESPONSE.toString());
         destination = cfg.get ("destination", ContextConstants.DESTINATION.toString());
         ignoreUnreachable = cfg.getBoolean("ignore-host-unreachable", false);
         checkConnected = cfg.getBoolean("check-connected", checkConnected);
+    }
+
+    protected long resolveTimeout(Context ctx) {
+        Object o = ctx.get(timeoutName);
+        if (o == null)
+            return timeout;
+        else if (o instanceof Number)
+            return ((Number)o).longValue();
+        else
+            return Long.parseLong(o.toString());
     }
 
     protected boolean isConnected (MUX mux) {
