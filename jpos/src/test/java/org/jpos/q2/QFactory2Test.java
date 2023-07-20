@@ -33,7 +33,6 @@ import javax.management.ObjectName;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.jdom2.Text;
-import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOFieldValidator;
 import org.jpos.iso.IVA_ALPHANUM;
 import org.jpos.q2.iso.ChannelAdaptor;
@@ -45,7 +44,6 @@ public class QFactory2Test {
     @Test
     public void testConstructor() throws Throwable {
         ObjectName loaderName = new ObjectName("");
-        String[] args = new String[0];
         Q2 q2 = mock(Q2.class);
         QFactory qFactory = new QFactory(loaderName, q2);
         assertTrue(qFactory.classMapping.getKeys().hasMoreElements(),
@@ -183,7 +181,7 @@ public class QFactory2Test {
         Q2 q2 = new Q2(args);
         Element element = new Element("testQFactoryName", "testQFactoryUri");
         element.setAttribute(new Attribute("testQFactoryName", "testQFactoryValue", 0));
-        Element e = (Element) element.clone();
+        Element e = element.clone();
         QFactory qFactory = new QFactory(new ObjectName("testQFactoryParam1", "testQFactoryParam2", "testQFactoryParam3"), q2);
         e.setName("testQFactoryName");
         String[] args2 = new String[2];
