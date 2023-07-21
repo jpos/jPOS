@@ -499,8 +499,7 @@ public class QFactory {
         for (Content child : e.getContent()) {
             if (child instanceof Element) {
                 replaceEnvProperties((Element) child, env);
-            } else if (child instanceof Text) {
-                Text text = (Text) child;
+            } else if (child instanceof Text text) {
                 String textValue = text.getText();
                 text.setText(env.getProperty(textValue, textValue));
             }

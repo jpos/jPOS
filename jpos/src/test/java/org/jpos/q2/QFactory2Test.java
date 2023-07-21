@@ -28,10 +28,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
 import javax.management.ObjectName;
+import javax.management.ReflectionException;
 
 import org.jdom2.Attribute;
+import org.jdom2.AttributeType;
 import org.jdom2.Element;
+import org.jdom2.Namespace;
 import org.jdom2.Text;
 import org.jpos.iso.ISOFieldValidator;
 import org.jpos.iso.IVA_ALPHANUM;
@@ -356,12 +361,63 @@ public class QFactory2Test {
         Element e = new Element("testQFactoryName");
         final String ATTRIBUTE = "attribute-with-no-property";
         final String VALUE  = "value-with-${property-with-no-default}";
-        final String TEXT = "text with property with no default";
+        final String TEXT = "text with ${property-with-no-default}";
         e.setAttribute(ATTRIBUTE, VALUE);
         e.addContent(new Text(TEXT));
         QFactory.replaceEnvProperties(e);
         assertEquals(TEXT, e.getText(), "text content should not have changed");
         assertEquals(VALUE, e.getAttributeValue(ATTRIBUTE), "value should not have changed");
+    }
+
+    @Test
+    public void testReplaceEnvPropertiesWithVerbatim() {
+        Element e = new Element("testQFactoryName");
+        e.setAttribute("verbatim", "true");
+        final String ATTRIBUTE = "attribute-with-no-property";
+        final String VALUE  = "value with ${property-with-default:default}";
+        final String TEXT = "text with ${property-with-default:default}";
+        e.setAttribute(ATTRIBUTE, VALUE);
+        e.addContent(new Text(TEXT));
+        QFactory.replaceEnvProperties(e);
+        assertEquals(TEXT, e.getText(), "text content should not have changed");
+        assertEquals(VALUE, e.getAttributeValue(ATTRIBUTE), "value should not have changed");
+
+        //next assert are to validate the reason for not changing was the verbatim value.
+        e.setAttribute("verbatim", "false");
+        QFactory.replaceEnvProperties(e);
+        assertEquals("text with default", e.getText(), "now text should have changed");
+        assertEquals("value with default", e.getAttributeValue(ATTRIBUTE), "now value should have changed");
+
+    }
+
+    @Test
+    public void testReplaceEnvPropertiesWithVerbatimInChild() {
+        Element e = new Element("testQFactoryName");
+        final String ATTRIBUTE = "attribute-with-property";
+        final String VALUE  = "value with ${property-with-default:default}";
+        final String TEXT = "text with ${property-with-default:default}";
+        e.setAttribute(ATTRIBUTE, VALUE);
+        e.addContent(new Text(TEXT));
+
+        Element child = new Element("child");
+        child.setAttribute("verbatim", "true");
+        child.setAttribute(ATTRIBUTE, VALUE);
+        child.addContent(new Text(TEXT));
+        e.addContent(child);
+
+        QFactory.replaceEnvProperties(e);
+        assertEquals("text with default", e.getText(), "text in root should have changed");
+        assertEquals("value with default", e.getAttributeValue(ATTRIBUTE), "value in root should have changed");
+
+        assertEquals(TEXT, child.getText(), "text content in child should not have changed");
+        assertEquals(VALUE, child.getAttributeValue(ATTRIBUTE), "value in child should not have changed");
+
+        //next assert are to validate the reason for not changing was the verbatim value.
+        child.setAttribute("verbatim", "false");
+        QFactory.replaceEnvProperties(e);
+        assertEquals("text with default", child.getText(), "now text in child should have changed");
+        assertEquals("value with default", child.getAttributeValue(ATTRIBUTE), "value should have changed");
+
     }
 
     @Test
@@ -391,4 +447,58 @@ public class QFactory2Test {
         assertEquals("text with property with default", child.getText(), "text content should not have changed");
         assertEquals("value-with-default", child.getAttributeValue(ATTRIBUTE), "property should have been replaced by default value");
     }
+
+    @Test
+    void testInstantiateWithEnvProperties() throws ReflectionException, InstanceNotFoundException, MBeanException, InterruptedException {
+        Q2 q2 = new Q2(new String[]{});
+        q2.start();
+        while (q2.getMBeanServer() == null) Thread.sleep(100);
+        Element element = new Element("qbean");
+        element.setAttribute("class", "${altclass:java.lang.String}");
+
+        final String ATTRIBUTE = "attribute-with-no-property";
+        final String VALUE  = "value-with-${property-with-default:default}";
+        final String TEXT  = "text with ${property-with-default:property with default}";
+
+        Element child = new Element("child");
+        child.setAttribute(ATTRIBUTE, VALUE);
+        child.addContent(new Text(TEXT));
+
+        element.addContent(child);
+
+        QFactory qFactory = new QFactory(null, q2);
+        Object created = qFactory.instantiate(q2, element);
+        assertEquals(created.getClass(), String.class, "instantiate should have created a String");
+        assertEquals("text with property with default", child.getText(), "text content should not have changed");
+        assertEquals("value-with-default", child.getAttributeValue(ATTRIBUTE), "property should have been replaced by default value");
+        q2.stop();
+    }
+
+    @Test
+    void testInstantiateWithVerbatim() throws ReflectionException, InstanceNotFoundException, MBeanException, InterruptedException {
+        Q2 q2 = new Q2(new String[]{});
+        q2.start();
+        while (q2.getMBeanServer() == null) Thread.sleep(100);
+        Element element = new Element("qbean");
+        element.setAttribute("verbatim", "true");
+        element.setAttribute("class", "java.lang.String");
+
+        final String ATTRIBUTE = "attribute-with-no-property";
+        final String VALUE  = "value-with-${property-with-default:default}";
+        final String TEXT  = "text with ${property-with-default:property with default}";
+
+        Element child = new Element("child");
+        child.setAttribute(ATTRIBUTE, VALUE);
+        child.addContent(new Text(TEXT));
+
+        element.addContent(child);
+
+        QFactory qFactory = new QFactory(null, q2);
+        Object created = qFactory.instantiate(q2, element);
+        assertEquals(created.getClass(), String.class, "instantiate should have created a String");
+        assertEquals(TEXT, child.getText(), "text content should not have changed");
+        assertEquals(VALUE, child.getAttributeValue(ATTRIBUTE), "property should have been replaced by default value");
+        q2.stop();
+    }
+
 }
