@@ -49,7 +49,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import java.io.*;
@@ -526,9 +525,10 @@ public class Q2 implements FileFilter, Runnable {
                 }
             }
             if (QFactory.isEnabled(rootElement)) {
-                if (evt != null)
+                if (evt != null) {
                     evt.addMessage("deploy: " + f.getCanonicalPath());
-                Object obj = factory.instantiate (this, rootElement);
+                }
+                Object obj = factory.instantiate (this, factory.expandEnvProperties(rootElement));
                 qentry.setObject (obj);
 
                 ObjectInstance instance = factory.createQBean (
