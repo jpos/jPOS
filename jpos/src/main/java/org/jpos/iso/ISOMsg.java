@@ -964,6 +964,69 @@ public class ISOMsg extends ISOComponent
         return !isRequest();
     }
     /**
+     * @return true if message class is "authorization"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isAuthorization() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '1';
+    }
+    /**
+     * @return true if message class is "financial"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isFinancial() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '2';
+    }
+    /**
+     * @return true if message class is "file action"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isFileAction() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '3';
+    }
+    /**
+     * @return true if message class is "reversal"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isReversal() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '4' && (getMTI().charAt(3) == '0' || getMTI().charAt(3) == '1');
+    }
+    /**
+     * @return true if message class is "chargeback"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isChargeback() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '4' && (getMTI().charAt(3) == '2' || getMTI().charAt(3) == '3');
+    }
+    /**
+     * @return true if message class is "reconciliation"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isReconciliation() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '5';
+    }
+    /**
+     * @return true if message class is "administrative"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isAdministrative() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '6';
+    }
+    /**
+     * @return true if message class is "fee collection"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isFeeCollection() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '7';
+    }
+    /**
+     * @return true if message class is "fee collection"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isNetworkManagement() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '8';
+    }
+    /**
      * @return true if message is Retransmission
      * @exception ISOException on MTI not set
      */

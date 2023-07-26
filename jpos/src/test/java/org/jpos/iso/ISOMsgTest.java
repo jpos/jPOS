@@ -98,8 +98,6 @@ public class ISOMsgTest {
         assertFalse(m.hasField("100.100"));
         assertFalse(m.hasField("100"));  // Not added unnecessarily
         assertFalse(m.hasField(100));  // Still not added unnecessarily
-
-
     }
 
     @Test
@@ -289,5 +287,109 @@ public class ISOMsgTest {
         assertFalse(copyMsg.hasField(102));
         assertFalse(copyMsg.hasField("102.1"));
         assertFalse(copyMsg.hasField("102.2"));
+    }
+
+    @Test
+    public void testIsAuthorization() throws ISOException {
+        ISOMsg msg = new ISOMsg("2100"); 
+        assertTrue(msg.isAuthorization());
+        assertFalse(msg.isFinancial());
+        assertFalse(msg.isReversal());
+        assertFalse(msg.isChargeback());
+        assertFalse(msg.isReconciliation());
+        assertFalse(msg.isAdministrative());
+        assertFalse(msg.isNetworkManagement());
+        assertFalse(msg.isFeeCollection());
+    }
+
+    @Test
+    public void testIsFinancial() throws ISOException {
+        ISOMsg msg = new ISOMsg("2200"); 
+        assertFalse(msg.isAuthorization());
+        assertTrue(msg.isFinancial());
+        assertFalse(msg.isReversal());
+        assertFalse(msg.isChargeback());
+        assertFalse(msg.isReconciliation());
+        assertFalse(msg.isAdministrative());
+        assertFalse(msg.isNetworkManagement());
+        assertFalse(msg.isFeeCollection());
+    }
+
+    @Test
+    public void testIsReversal() throws ISOException {
+        ISOMsg msg = new ISOMsg("2400"); 
+        assertFalse(msg.isAuthorization());
+        assertFalse(msg.isFinancial());
+        assertTrue(msg.isReversal());
+        assertFalse(msg.isChargeback());
+        assertFalse(msg.isReconciliation());
+        assertFalse(msg.isAdministrative());
+        assertFalse(msg.isNetworkManagement());
+        assertFalse(msg.isFeeCollection());
+    }
+
+    @Test
+    public void testIsChargeback() throws ISOException {
+        ISOMsg msg = new ISOMsg("2402"); 
+        assertFalse(msg.isAuthorization());
+        assertFalse(msg.isFinancial());
+        assertFalse(msg.isReversal());
+        assertTrue(msg.isChargeback());
+        assertFalse(msg.isReconciliation());
+        assertFalse(msg.isAdministrative());
+        assertFalse(msg.isNetworkManagement());
+        assertFalse(msg.isFeeCollection());
+    }
+
+    @Test
+    public void testIsReconciliation() throws ISOException {
+        ISOMsg msg = new ISOMsg("2500"); 
+        assertFalse(msg.isAuthorization());
+        assertFalse(msg.isFinancial());
+        assertFalse(msg.isReversal());
+        assertFalse(msg.isChargeback());
+        assertTrue(msg.isReconciliation());
+        assertFalse(msg.isAdministrative());
+        assertFalse(msg.isNetworkManagement());
+        assertFalse(msg.isFeeCollection());
+    }
+
+    @Test
+    public void testIsAdministrative() throws ISOException {
+        ISOMsg msg = new ISOMsg("2600"); 
+        assertFalse(msg.isAuthorization());
+        assertFalse(msg.isFinancial());
+        assertFalse(msg.isReversal());
+        assertFalse(msg.isChargeback());
+        assertFalse(msg.isReconciliation());
+        assertTrue(msg.isAdministrative());
+        assertFalse(msg.isNetworkManagement());
+        assertFalse(msg.isFeeCollection());
+    }
+
+    @Test
+    public void testIsNetworkManagement() throws ISOException {
+        ISOMsg msg = new ISOMsg("2800"); 
+        assertFalse(msg.isAuthorization());
+        assertFalse(msg.isFinancial());
+        assertFalse(msg.isReversal());
+        assertFalse(msg.isChargeback());
+        assertFalse(msg.isReconciliation());
+        assertFalse(msg.isAdministrative());
+        assertTrue(msg.isNetworkManagement());
+        assertFalse(msg.isFeeCollection());
+    }
+
+    @Test
+    public void testIsFeeCollection() throws ISOException {
+        ISOMsg msg = new ISOMsg("2700"); 
+        assertFalse(msg.isAuthorization());
+        assertFalse(msg.isFinancial());
+        assertFalse(msg.isReversal());
+        assertFalse(msg.isChargeback());
+        assertFalse(msg.isReconciliation());
+        assertFalse(msg.isAdministrative());
+        assertFalse(msg.isNetworkManagement());
+        assertTrue(msg.isFeeCollection());
     }
 }
