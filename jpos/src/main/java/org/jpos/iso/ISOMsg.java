@@ -412,7 +412,7 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
-     * Unset a a set of fields referenced by fpaths if any ot them exist, otherwise ignore.
+     * Unset a set of fields referenced by fpaths, if any of them exist. Otherwise, ignore.
      *
      * @param fpaths dot-separated field paths (i.e. 63.2)
      */
