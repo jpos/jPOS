@@ -384,7 +384,7 @@ public interface SMAdapter<T> {
      * Encrypts a clear pin under LMK.
      *
      * <p>CAUTION: The use of clear pin presents a significant security risk
-     * @param pin clear pin as entered by card holder
+     * @param pin clear pin as entered by cardholder
      * @param accountNumber if <code>extract</code> is false then account number, including BIN and the check digit
      *        or if parameter <code>extract</code> is true then 12 right-most digits of the account number, excluding the check digit
      * @param extract true to extract 12 right-most digits off the account number
@@ -392,6 +392,18 @@ public interface SMAdapter<T> {
      * @throws SMException
      */
     EncryptedPIN encryptPIN(String pin, String accountNumber, boolean extract) throws SMException;
+
+    /**
+     * Encrypts a clear PIN under PEK.
+     *
+     * <p>CAUTION: The use of clear PIN presents a significant security risk.
+     * @param pin Clear PIN as entered by cardholder.
+     * @param accountNumber account number, including BIN and the check digit.
+     * @param pek PIN encryption key.
+     * @return Return PIN under PEK.
+     * @throws SMException
+     */
+    EncryptedPIN encryptPIN(String pin, String accountNumber, T pek) throws SMException;
 
     /**
      * Decrypts an Encrypted PIN (under LMK).

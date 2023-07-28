@@ -310,6 +310,30 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public EncryptedPIN encryptPIN(String pin, String accountNumber, T pek) throws SMException {
+        accountNumber = EncryptedPIN.extractAccountNumberPart(accountNumber);
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "clear pin", pin));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNumber));
+        cmdParameters.add(new SimpleMsg("parameter", "pin encryption Key", pek));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Encrypt clear PIN under PEK", cmdParameters));
+        EncryptedPIN result = null;
+        try {
+            result = encryptPINImpl(pin, accountNumber, pek);
+            evt.addMessage(new SimpleMsg("result", "PIN under PEK", result));
+        } 
+        catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } 
+        finally {
+            Logger.log(evt);
+        }
+        return result;
+    }
+
+    @Override
     public String decryptPIN (EncryptedPIN pinUnderLmk) throws SMException {
         List<Loggeable> cmdParameters = new ArrayList<>();
         cmdParameters.add(new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk));
@@ -911,6 +935,9 @@ public class BaseSMAdapter<T>
     public boolean verifydCVV(String accountNo, T imkac, String dcvv,
                      String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
+
+        if (accountNo == null || accountNo.trim().length() == 0)
+            throw new IllegalArgumentException("Account number not set.");
 
         List<Loggeable> cmdParameters = new ArrayList<>();
         cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
@@ -1575,6 +1602,19 @@ public class BaseSMAdapter<T>
      * @throws SMException
      */
     protected EncryptedPIN encryptPINImpl (String pin, String accountNumber) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     *
+     * @param pin
+     * @param accountNumber
+     * @param pek
+     * @return encrypted PIN under PEK.
+     * @throws SMException
+     */
+    protected EncryptedPIN encryptPINImpl(String pin, String accountNumber, T pek) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

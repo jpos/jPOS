@@ -955,7 +955,7 @@ public class JCESecurityModuleTest {
         byte[] atc = ISOUtil.hex2byte("3210");
         assertThrows(SMException.class, () -> {
             jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
-              ,serviceCode, atc, MKDMethod.OPTION_A);
+            ,serviceCode, atc, MKDMethod.OPTION_A);
         });
     }
 
