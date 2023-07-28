@@ -275,6 +275,14 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
+    protected EncryptedPIN encryptPINImpl(String pin, String accountNumber, SecureDESKey pek) throws SMException {
+        byte[] clearPINBlock = calculatePINBlock(pin, FORMAT00, accountNumber);
+        Key clearPEK = decryptFromLMK(pek);
+        byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, clearPEK);
+        return new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber, false);
+    }
+
+    @Override
     public String decryptPINImpl (EncryptedPIN pinUnderLmk) throws SMException {
         byte[] clearPINBlock = jceHandler.decryptData(pinUnderLmk.getPINBlock(),
                 getLMK(PINLMKIndex));
