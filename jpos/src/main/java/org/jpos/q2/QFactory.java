@@ -19,7 +19,9 @@
 package org.jpos.q2;
 
 
+import org.jdom2.Content;
 import org.jdom2.Element;
+import org.jdom2.Text;
 import org.jpos.core.*;
 import org.jpos.core.annotation.Config;
 import org.jpos.q2.qbean.QConfig;
@@ -482,4 +484,37 @@ public class QFactory {
             cc = cc.getSuperclass();
         } while (!cc.equals(Object.class));
     }
+
+    /**
+     * Decorates an {@link Element} by replacing its attributes, and content {@link Environment} properties references.
+     * @param e The element being decorated.
+     * @return The modified element, it is modified in place, but it is returned to ease method chaining or call composition.
+     */
+    public static Element expandEnvProperties(Element e) {
+       expandEnvProperties(e, Environment.getEnvironment());
+       return e;
+    }
+
+    /**
+     * Recursively replaces {@link Environment} properties in an element's attributes, its content and its children.
+     * Properties are replaced in place.
+     * @param e The element in which properties are being replaced.
+     * @param env The {@link Environment}'s singleton instance.
+     */
+    private static void expandEnvProperties(Element e, Environment env) {
+        if (Boolean.parseBoolean(e.getAttributeValue("verbatim"))) return;
+        for (org.jdom2.Attribute attr : e.getAttributes()) {
+            String value = attr.getValue();
+            attr.setValue(env.getProperty(value, value));
+        }
+        for (Content child : e.getContent()) {
+            if (child instanceof Element) {
+                expandEnvProperties((Element) child, env);
+            } else if (child instanceof Text text) {
+                String textValue = text.getText();
+                text.setText(env.getProperty(textValue, textValue));
+            }
+        }
+    }
+            
 }
