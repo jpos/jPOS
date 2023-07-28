@@ -979,6 +979,8 @@ public class JCESecurityModuleTest {
             jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
                         ,serviceCode, atc, MKDMethod.OPTION_A);
             fail("Expected SMException to be thrown");
+        } catch (IllegalArgumentException ex) {
+            assertTrue(ex.getMessage().contains("Account"));
         } catch (SMException ex){
             if (isJavaVersionAtMost(JAVA_14)) {
                 assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
