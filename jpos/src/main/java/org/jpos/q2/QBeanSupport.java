@@ -255,8 +255,9 @@ public class QBeanSupport
     protected void destroyService() throws Exception {}
 
     protected synchronized ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor() {
+        int corePoolSize = cfg.getInt("stpe-core-pool-size", 1);
         if (scheduledThreadPoolExecutor == null)
-            scheduledThreadPoolExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
+            scheduledThreadPoolExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor(corePoolSize);
         return scheduledThreadPoolExecutor;
     }
 
