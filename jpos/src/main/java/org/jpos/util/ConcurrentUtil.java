@@ -23,7 +23,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class ConcurrentUtil {
     public static ScheduledThreadPoolExecutor newScheduledThreadPoolExecutor() {
-        ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(1,
+        return newScheduledThreadPoolExecutor(1);
+    }
+    public static ScheduledThreadPoolExecutor newScheduledThreadPoolExecutor(int corePoolSize) {
+        ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(corePoolSize,
           r -> {
               Thread t = Executors.defaultThreadFactory().newThread(r);
               t.setDaemon(true);
