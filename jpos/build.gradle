@@ -1,29 +1,31 @@
 plugins {
-   id "org.gradlex.extra-java-module-info" version "1.1"
+   id "org.gradlex.extra-java-module-info" version "1.4.1"
    id "org.owasp.dependencycheck" version "8.3.1"
-   // id 'checkstyle'
 }
 
 extraJavaModuleInfo {
-    automaticModule ('jdom2-2.0.6.jar', 'org.jdom2')
-    automaticModule ('javatuples-1.2.jar', 'org.javatuples')
-    automaticModule ('bsh-2.0b6.jar', 'bsh')
-    automaticModule ('commons-cli-1.5.0.jar', 'org.apache.commons.cli')
-    automaticModule ('je-18.3.12.jar', 'com.sleepycat.je')
-    automaticModule ('jdbm-1.0.jar', 'org.jdbm')
-    automaticModule ('HdrHistogram-2.1.12.jar', 'org.hdrhistogram.HdrHistogram')
-    automaticModule ('javassist-3.27.0-GA.jar', 'org.javassist.javassist')
-    automaticModule ('xmlunit-1.6.jar', 'xmlunit')
-    /*
-    module ("sshd-core-${sshdVersion}.jar",  'org.apache.sshd.core', "${sshdVersion}") {
+    failOnMissingModuleInfo.set(false)
+
+    automaticModule ('org.jdom:jdom2', 'org.jdom2')
+    automaticModule ('commons-cli:commons-cli', 'org.apache.commons.cli')
+    automaticModule ('org.javatuples:javatuples', 'org.javatuples')
+    automaticModule ('org.hdrhistogram:HdrHistogram', 'org.hdrhistogram.HdrHistogram')
+    automaticModule ('org.jline:jline', 'org.jline')
+    automaticModule ('org.apache-extras.beanshell:bsh', 'bsh')
+    automaticModule ('com.sleepycat:je', 'com.sleepycat.je')
+    automaticModule ('jdbm:jdbm', 'org.jdbm')
+
+    module ('org.apache.sshd:sshd-core',  'org.apache.sshd', "${sshdVersion}") {
+        mergeJar('org.apache.sshd:sshd-common')
+        mergeJar('net.i2p.crypto:eddsa')
+
+        exports('org.apache.sshd.server')
         exports('org.apache.sshd.server.auth.pubkey')
 	exports('org.apache.sshd.server.session')
         exports('org.apache.sshd.server.channel')
         exports('org.apache.sshd.server.command')
         exports('org.apache.sshd.server.shell')
-    }
-    module ("sshd-common-${sshdVersion}.jar",  'org.apache.sshd.common', "${sshdVersion}") {
-        exports('org.apache.sshd.server')
+
         exports('org.apache.sshd.server.keyprovider')
         exports('org.apache.sshd.common')
         exports('org.apache.sshd.common.config.keys')
@@ -33,8 +35,9 @@ extraJavaModuleInfo {
         exports('org.apache.sshd.common.util.buffer')
         exports('org.apache.sshd.common.util.security')
         exports('org.apache.sshd.common.config.keys.impl')
+        exports('net.i2p.crypto.eddsa')
+        exports('net.i2p.crypto.eddsa.spec')
     }
-    */
 }
 
 dependencies {
@@ -50,8 +53,8 @@ dependencies {
     implementation libraries.yaml;
     implementation libraries.jdbm
     implementation libraries.sleepycat_je
-    // implementation libraries.sshd
-    // implementation libraries.eddsa
+    implementation libraries.sshd
+    implementation libraries.eddsa
 
     testImplementation libraries.commons_lang3
     testImplementation libraries.hamcrest
