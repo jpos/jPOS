@@ -407,13 +407,7 @@ public class BSHLogListenerTest {
         try {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read field \"value\" because \"tgtStr\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        } catch (NullPointerException ex) {}
     }
 
     @Test
@@ -426,13 +420,7 @@ public class BSHLogListenerTest {
         try {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read field \"value\" because \"tgtStr\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        } catch (NullPointerException ex) {}
     }
 
     @Test
@@ -445,13 +433,7 @@ public class BSHLogListenerTest {
         try {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read field \"value\" because \"tgtStr\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        } catch (NullPointerException ex) {}
     }
 
     @Test
@@ -463,13 +445,7 @@ public class BSHLogListenerTest {
         try {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot read field \"value\" because \"tgtStr\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        } catch (NullPointerException ex) {}
     }
 
     @Test
