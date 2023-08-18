@@ -75,14 +75,12 @@ public class QMUX
             throw new ConfigurationException ("Misconfigured QMUX. Please verify in/out queues");
         }
         ignorerc  = Environment.get(e.getChildTextTrim ("ignore-rc"));
-        key = toStringArray(DEFAULT_KEY, ", ", null);
+        key = toStringArray(e.getChildTextTrim("key"), ", ", DEFAULT_KEY);
         returnRejects = cfg.getBoolean("return-rejects", false);
         for (Element keyElement : e.getChildren("key")) {
             String mtiOverride = QFactory.getAttributeValue(keyElement, "mti");
             if (mtiOverride != null && mtiOverride.length() >= 2) {
                 mtiKey.put (mtiOverride.substring(0,2), toStringArray(keyElement.getTextTrim(), ", ", null));
-            } else {
-                key = toStringArray(e.getChildTextTrim("key"), ", ", DEFAULT_KEY);
             }
         }
         ready     = toStringArray(Environment.get(e.getChildTextTrim ("ready")));
