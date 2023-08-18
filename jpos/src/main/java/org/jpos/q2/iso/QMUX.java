@@ -470,10 +470,9 @@ public class QMUX
         metrics.dump (p, indent);
     }
     private String[] toStringArray(String s, String delimiter, String def) {
-        if (s == null)
-            s = def;
+        s = (s != null) ? Environment.get(s) : def; 
         String[] arr = null;
-        if (s != null && s.length() > 0) {
+        if (s != null && !s.isEmpty()) {
             StringTokenizer st;
             if (delimiter != null)
                 st = new StringTokenizer(s, delimiter);
