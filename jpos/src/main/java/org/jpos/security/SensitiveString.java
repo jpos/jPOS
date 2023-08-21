@@ -22,16 +22,21 @@ import org.jpos.iso.ISOUtil;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
+import java.lang.ref.Cleaner;
 import java.nio.ByteBuffer;
 import java.security.*;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class SensitiveString implements Supplier<String> {
+public class SensitiveString implements Supplier<String>, AutoCloseable {
     private SecretKey key;
     private byte[] encoded;
     private static Random rnd;
     private static final String AES = "AES/CBC/PKCS5Padding";
+
+    private static final Cleaner cleaner = Cleaner.create();
+    private Cleaner.Cleanable cleanable;
 
     static {
         rnd = new SecureRandom();
@@ -40,6 +45,7 @@ public class SensitiveString implements Supplier<String> {
     public SensitiveString(String s) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidAlgorithmParameterException {
         key = generateKey();
         encoded = encrypt(s.getBytes());
+        cleanable = cleaner.register(this, this::clean);
     }
 
     @Override
@@ -86,12 +92,25 @@ public class SensitiveString implements Supplier<String> {
         return b;
     }
 
+    public void clean () {
+        byte[] b = encoded;
+        encoded = null;
+        Arrays.fill (b, (byte) 0);
+    }
+
     @Override
     public String get() {
+        if (encoded == null)
+            throw new IllegalStateException ("SensitiveString not available");
         try {
             return new String(decrypt(encoded));
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException | NoSuchProviderException | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
             throw new AssertionError(e.getMessage());
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        clean();
     }
 }

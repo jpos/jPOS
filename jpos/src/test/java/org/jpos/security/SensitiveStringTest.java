@@ -18,9 +18,20 @@
 
 package org.jpos.security;
 
+import org.jpos.space.SpaceProxy;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SensitiveStringTest {
     @Test
@@ -39,5 +50,14 @@ public class SensitiveStringTest {
         SensitiveString ss0 = new SensitiveString(s);
         SensitiveString ss1 = new SensitiveString(s);
         assertEquals (ss0, ss1, "Equals should be true");
+    }
+
+    @Test
+    public void testClean() throws Exception {
+        SensitiveString ss = new SensitiveString("abc");
+        try (ss) {
+            assertEquals(ss.get(), "abc", "Equals should be true");
+        };
+        assertThrows(IllegalStateException.class, ss::get);
     }
 }
