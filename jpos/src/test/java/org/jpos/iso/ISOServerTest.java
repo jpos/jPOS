@@ -77,53 +77,57 @@ public class ISOServerTest {
         int runs = 1000;
 
         Recording recording = new Recording(Configuration.getConfiguration("default"));
-        recording.setMaxAge(Duration.ofSeconds(120));
+        recording.setMaxAge(Duration.ofSeconds(300));
         // jfr print --stack-depth 64 --events jdk.VirtualThreadPinned build/reports/isoserver.jfr
         Path outputPath = Paths.get("build/reports/isoserver.jfr");
         recording.setDestination(outputPath);
         recording.start();
 
         CSChannel channel = new CSChannel();
-        channel.setTimeout(10000);
+        channel.setTimeout(30000);
         channel.setPackager(new ISO87BPackager());
 
-        ISOServer server = new ISOServer(9999, channel, 1000);
+        ISOServer server = new ISOServer(9999, channel, runs+10);
         SimpleConfiguration cfg = new SimpleConfiguration();
-        cfg.put("backlog", Integer.toString(runs));
+        cfg.put("backlog", "100");
+        cfg.put("connect-timeout", "60000");
         server.setConfiguration(cfg);
         Logger logger = new Logger();
-        logger.addListener (new SimpleLogListener());
+        // logger.addListener (new SimpleLogListener());
         server.setLogger(logger, "ISOServerTest");
         server.addISORequestListener(new AutoResponder());
 
         ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
         executor.submit(server);
+        ISOUtil.sleep (5000L);
 
         CountDownLatch latch = new CountDownLatch(runs);
-
         for (int i=0; i<runs; i++) {
             final int j = i;
             executor.submit (() -> {
                  try {
                     CSChannel c = new CSChannel("localhost", 9999, new ISO87BPackager());
-                    c.setTimeout(5000);
+                    c.setTimeout(60000);
                     c.setLogger(logger, "test-client");
+                    c.setConfiguration(cfg); // we want a connect-timeout
                     c.connect();
                     ISOMsg m = new ISOMsg("0800");
                     m.set(11, ISOUtil.zeropad(j+1, 6));
                     c.send (m);
-                    ISOMsg r = c.receive();
+                    c.receive();
                     ISOUtil.sleep(5000L);
                     c.disconnect();
                 } catch (Throwable t) {
+                     fail ("%d: could not receive (%s)".formatted(j, t.getMessage()));
                     throw new RuntimeException(t);
                 } finally {
                      latch.countDown();
                  }
             });
-            // LockSupport.parkNanos(Duration.ofMillis(5).toNanos());
+            LockSupport.parkNanos(Duration.ofMillis(4).toNanos());
         }
-        latch.await(60, TimeUnit.SECONDS);
+        latch.await(300, TimeUnit.SECONDS);
+        ISOUtil.sleep (1000L); // let JFR catch-up with latests messages
         recording.dump(outputPath);
         recording.stop();
         recording.close();

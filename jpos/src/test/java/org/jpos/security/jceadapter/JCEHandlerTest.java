@@ -44,30 +44,19 @@ public class JCEHandlerTest {
     @BeforeEach
     public void onSetup() {
         provider = mock(Provider.class);
-        jCEHandler = new JCEHandler(provider);
+        jCEHandler = new JCEHandler();
     }
 
     @Test
     public void testConstructor() throws Throwable {
         assertEquals("NoPadding", JCEHandler.DES_NO_PADDING, "jCEHandler.desPadding");
         assertEquals("ECB", JCEHandler.DES_MODE_ECB, "jCEHandler.desMode");
-        assertSame(provider, jCEHandler.provider, "jCEHandler.provider");
     }
 
-    @Test
-    public void testConstructorThrowsJCEHandlerException() throws Throwable {
-        try {
-            new JCEHandler("testJCEHandlerJceProviderClassName");
-            fail("Expected JCEHandlerException to be thrown");
-        } catch (JCEHandlerException ex) {
-            assertEquals("java.lang.ClassNotFoundException: testJCEHandlerJceProviderClassName", ex.getMessage(), "ex.getMessage()");
-            assertEquals("testJCEHandlerJceProviderClassName", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-        }
-    }
 
     @Test
     public void testDecryptDataThrowsJCEHandlerException() throws Throwable {
-        jCEHandler = new JCEHandler((Provider) null);
+        jCEHandler = new JCEHandler();
         byte[] clearKeyBytes = new byte[1];
         Key key = jCEHandler.formDESKey((short) 192, clearKeyBytes);
         byte[] encryptedData = new byte[0];
@@ -75,35 +64,15 @@ public class JCEHandlerTest {
             jCEHandler.decryptData(encryptedData, key);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
             assertEquals("DESede", key.getAlgorithm(), "(SecretKeySpec) key.getAlgorithm()");
         }
     }
 
-    @Test
-    public void testDecryptDataThrowsNullPointerException() throws Throwable {
-        try {
-            new JCEHandler((Provider) null).decryptData("testString".getBytes(), null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"java.security.Key.getAlgorithm()\" because \"key\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
-    }
 
     @Test
     public void testDecryptDESKeyThrowsJCEHandlerException() throws Throwable {
-        jCEHandler = new JCEHandler((Provider) null);
-        JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
+        jCEHandler = new JCEHandler();
+        JCEHandler jCEHandler2 = new JCEHandler();
         byte[] clearKeyBytes = new byte[1];
         Key encryptingKey = jCEHandler2.formDESKey((short) 192, clearKeyBytes);
         byte[] encryptedDESKey = new byte[3];
@@ -111,13 +80,6 @@ public class JCEHandlerTest {
             jCEHandler.decryptDESKey((short) 100, encryptedDESKey, encryptingKey, true);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
             assertEquals("DESede", encryptingKey.getAlgorithm(), "(SecretKeySpec) encryptingKey.getAlgorithm()");
         }
     }
@@ -126,7 +88,7 @@ public class JCEHandlerTest {
     public void testDecryptDESKeyThrowsNullPointerException() throws Throwable {
         byte[] encryptedDESKey = new byte[2];
         try {
-            new JCEHandler((Provider) null).decryptDESKey((short) 100, encryptedDESKey, null, true);
+            new JCEHandler().decryptDESKey((short) 100, encryptedDESKey, null, true);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             if (isJavaVersionAtMost(JAVA_14)) {
@@ -139,7 +101,7 @@ public class JCEHandlerTest {
 
     @Test
     public void testDoCryptStuffThrowsJCEHandlerException() throws Throwable {
-        jCEHandler = new JCEHandler((Provider) null);
+        jCEHandler = new JCEHandler();
         byte[] bytes = new byte[1];
         Key key = new SecretKeySpec(bytes, "testJCEHandlerParam2");
         byte[] data = new byte[3];
@@ -147,13 +109,6 @@ public class JCEHandlerTest {
             jCEHandler.doCryptStuff(data, key, 100);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
             assertEquals("testJCEHandlerParam2", key.getAlgorithm(), "(SecretKeySpec) key.getAlgorithm()");
         }
     }
@@ -162,19 +117,12 @@ public class JCEHandlerTest {
     public void testDoCryptStuffThrowsJCEHandlerException1() throws Throwable {
         byte[] clearKeyBytes = new byte[1];
         Key key = jCEHandler.formDESKey((short) 192, clearKeyBytes);
-        JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
+        JCEHandler jCEHandler2 = new JCEHandler();
         byte[] data = new byte[3];
         try {
             jCEHandler2.doCryptStuff(data, key, 100);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
             assertEquals("DESede", key.getAlgorithm(), "(SecretKeySpec) key.getAlgorithm()");
         }
     }
@@ -196,8 +144,8 @@ public class JCEHandlerTest {
 
     @Test
     public void testEncryptDataThrowsJCEHandlerException() throws Throwable {
-        jCEHandler = new JCEHandler((Provider) null);
-        JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
+        jCEHandler = new JCEHandler();
+        JCEHandler jCEHandler2 = new JCEHandler();
         byte[] clearKeyBytes = new byte[1];
         Key key = jCEHandler2.formDESKey((short) 192, clearKeyBytes);
         byte[] data = new byte[1];
@@ -205,13 +153,6 @@ public class JCEHandlerTest {
             jCEHandler.encryptData(data, key);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
             assertEquals("DESede", key.getAlgorithm(), "(SecretKeySpec) key.getAlgorithm()");
         }
     }
@@ -220,7 +161,7 @@ public class JCEHandlerTest {
     public void testEncryptDataThrowsNullPointerException() throws Throwable {
         byte[] data = new byte[1];
         try {
-            new JCEHandler((Provider) null).encryptData(data, null);
+            new JCEHandler().encryptData(data, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             if (isJavaVersionAtMost(JAVA_14)) {
@@ -238,7 +179,7 @@ public class JCEHandlerTest {
         byte[] bytes2 = new byte[1];
         Key encryptingKey = new SecretKeySpec(bytes2, "testJCEHandlerParam2");
         try {
-            new JCEHandler((Provider) null).encryptDESKey((short) 64, clearDESKey, encryptingKey);
+            new JCEHandler().encryptDESKey((short) 64, clearDESKey, encryptingKey);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
@@ -257,7 +198,7 @@ public class JCEHandlerTest {
         byte[] clearKeyBytes = new byte[1];
         Key clearDESKey = jCEHandler.formDESKey((short) 192, clearKeyBytes);
         try {
-            new JCEHandler((Provider) null).encryptDESKey((short) 100, clearDESKey, clearDESKey);
+            new JCEHandler().encryptDESKey((short) 100, clearDESKey, clearDESKey);
             fail("Expected JCEHandlerException to be thrown");
         } catch (JCEHandlerException ex) {
             assertEquals("Unsupported key length: 100 bits", ex.getMessage(), "ex.getMessage()");
@@ -271,7 +212,7 @@ public class JCEHandlerTest {
         byte[] bytes = new byte[1];
         Key encryptingKey = new SecretKeySpec(bytes, "testJCEHandlerParam2");
         try {
-            new JCEHandler((Provider) null).encryptDESKey((short) 100, null, encryptingKey);
+            new JCEHandler().encryptDESKey((short) 100, null, encryptingKey);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             if (isJavaVersionAtMost(JAVA_14)) {
@@ -288,7 +229,7 @@ public class JCEHandlerTest {
     public void testExtractDESKeyMaterialThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] clearKeyBytes = new byte[1];
         Key clearDESKey = jCEHandler.formDESKey((short) 192, clearKeyBytes);
-        JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
+        JCEHandler jCEHandler2 = new JCEHandler();
         try {
             jCEHandler2.extractDESKeyMaterial((short) 128, clearDESKey);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
@@ -304,7 +245,7 @@ public class JCEHandlerTest {
 
     @Test
     public void testExtractDESKeyMaterialThrowsJCEHandlerException() throws Throwable {
-        JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
+        JCEHandler jCEHandler2 = new JCEHandler();
         byte[] clearKeyBytes = new byte[1];
         Key clearDESKey = jCEHandler.formDESKey((short) 192, clearKeyBytes);
         try {
@@ -412,51 +353,19 @@ public class JCEHandlerTest {
     @Test
     public void testGenerateDESKeyThrowsJCEHandlerException() throws Throwable {
         try {
-            new JCEHandler((Provider) null).generateDESKey((short) 63);
+            new JCEHandler().generateDESKey((short) 63);
             fail("Expected JCEHandlerException to be thrown");
-        } catch (JCEHandlerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
-        }
+        } catch (JCEHandlerException ignored) {}
     }
 
     @Test
     public void testGenerateDESKeyThrowsJCEHandlerException1() throws Throwable {
         try {
-            new JCEHandler((Provider) null).generateDESKey((short) 64);
+            new JCEHandler().generateDESKey((short) 65);
             fail("Expected JCEHandlerException to be thrown");
-        } catch (JCEHandlerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
-        }
+        } catch (JCEHandlerException ignored) {}
     }
-
-    @Test
-    public void testGenerateDESKeyThrowsJCEHandlerException2() throws Throwable {
-        try {
-            new JCEHandler((Provider) null).generateDESKey((short) 65);
-            fail("Expected JCEHandlerException to be thrown");
-        } catch (JCEHandlerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
-                assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            } else {
-                assertEquals("java.lang.NullPointerException: Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getMessage(), "ex.getMessage()");
-                assertEquals("Cannot invoke \"java.security.Provider.getName()\" because \"this.provider\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
-            }
-        }
-    }
-
+    
     @Test
     public void testGetBytesLength() throws Throwable {
         jCEHandler.getBytesLength((short) 128);

@@ -25,7 +25,6 @@ import org.jpos.core.Environment;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
-import org.jpos.q2.QClassLoader;
 import org.jpos.security.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -39,7 +38,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.security.*;
 import java.util.*;
@@ -1826,16 +1824,14 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
             keyTypeToLMKIndex.put(SMAdapter.TYPE_RSA_SK, 0x00C);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_HMAC,   0x10C);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_RSA_PK, 0x00D);
-            Provider provider;
+            Provider provider = null;
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {
-                if (jceProviderClassName == null || jceProviderClassName.isEmpty()) {
-                    provider = Security.getProvider("SunJCE");
-                } else {
+                if (jceProviderClassName != null && !jceProviderClassName.isEmpty()) {
                     provider = (Provider) Class.forName(jceProviderClassName).getDeclaredConstructor().newInstance();
+                    Security.addProvider(provider);
+                    evt.addMessage("name", provider.getName());
                 }
-                 Security.addProvider(provider);
-                 evt.addMessage("name", provider.getName());
             } catch (Exception e) {
                 evt.addMessage(e);
                 throw  new SMException("Unable to load jce provider whose class name is: "
@@ -1843,7 +1839,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
             } finally {
                 Logger.log(evt);
             }
-            jceHandler = new JCEHandler(provider);
+            jceHandler = new JCEHandler();
             if (lmkRebuild) {
                 // Creat new LMK file
                 evt = new LogEvent(this, "local-master-keys");

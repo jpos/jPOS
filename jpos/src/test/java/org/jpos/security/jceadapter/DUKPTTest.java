@@ -69,7 +69,7 @@ public class DUKPTTest {
         initKS();
     }
 
-    // @Test
+    @Test
     public void test_DUKPT() throws Exception
     {
         test_DUKPT ("test-bdk", new KeySerialNumber (ISOUtil.hex2byte("FFFF9876543210E00002")), ISOUtil.hex2byte ("B76997F83C1479DB"), PAN);
@@ -124,7 +124,7 @@ public class DUKPTTest {
         test_DUKPT ("test-bdk", new KeySerialNumber ("9876543210", "00004", "00002"), ISOUtil.hex2byte ("AEF0F261B1222EB1"), PAN,true);
     }
 
-    // @Test
+    @Test
     public void test_dataEncrypt() throws Exception {
         SecureDESKey bdk = ks.getKey("test-bdk");
         byte[] original = "The quick brown fox jumps over the lazy dog".getBytes();

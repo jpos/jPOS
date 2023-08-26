@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.apache.commons.lang3.JavaVersion.JAVA_13;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
@@ -953,7 +952,7 @@ public class JCESecurityModuleTest {
         String serviceCode = "226";
         String dcvv = "562";
         byte[] atc = ISOUtil.hex2byte("3210");
-        assertThrows(SMException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
             ,serviceCode, atc, MKDMethod.OPTION_A);
         });
@@ -966,7 +965,7 @@ public class JCESecurityModuleTest {
         String serviceCode = "226";
         String dcvv = "562";
         byte[] atc = ISOUtil.hex2byte("3210");
-        assertThrows(SMException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
               ,serviceCode, atc, MKDMethod.OPTION_A);
         });

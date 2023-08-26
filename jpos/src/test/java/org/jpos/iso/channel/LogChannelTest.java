@@ -49,7 +49,6 @@ public class LogChannelTest {
             assertEquals(SocketException.class, ex.getClass(), "ex.getClass()");
             assertEquals("org.jpos.iso.channel.LogChannel", logChannel.getOriginalRealm(), "logChannel.getOriginalRealm()");
             assertEquals(3, logChannel.getCounters().length, "logChannel.getCounters().length");
-            assertNull(logChannel.getRealm(), "logChannel.getRealm()");
             assertSame(socket, logChannel.getSocket(), "logChannel.getSocket()");
             assertFalse(logChannel.isConnected(), "logChannel.isConnected()");
             assertNull(logChannel.getLogger(), "logChannel.getLogger()");

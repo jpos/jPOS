@@ -21,8 +21,6 @@ package org.jpos.security.jceadapter;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,34 +58,6 @@ public class JCEHandler {
     /**
      * The JCE provider
      */
-    Provider provider = null;
-
-    /**
-     * Registers the JCE provider whose name is providerName and sets it to be the only provider to be used in this instance of the
-     * JCEHandler class.
-     * 
-     * @param jceProviderClassName
-     *            Name of the JCE provider (e.g. "com.sun.crypto.provider.SunJCE" for Sun's implementation, or
-     *            "org.bouncycastle.jce.provider.BouncyCastleProvider" for bouncycastle.org implementation)
-     * @throws JCEHandlerException
-     */
-    public JCEHandler(String jceProviderClassName) throws JCEHandlerException {
-        try {
-            provider = (Provider) Class.forName(jceProviderClassName).newInstance();
-            Security.addProvider(provider);
-        } catch (Exception e) {
-            throw new JCEHandlerException(e);
-        }
-    }
-
-    /**
-     * Uses the JCE provider specified
-     * 
-     * @param provider
-     */
-    public JCEHandler(Provider provider) {
-        this.provider = provider;
-    }
 
     /**
      * Generates a clear DES (DESede) key
@@ -102,9 +72,9 @@ public class JCEHandler {
         try {
             KeyGenerator k1;
             if (keyLength > SMAdapter.LENGTH_DES) {
-                k1 = KeyGenerator.getInstance(ALG_TRIPLE_DES, provider.getName());
+                k1 = KeyGenerator.getInstance(ALG_TRIPLE_DES);
             } else {
-                k1 = KeyGenerator.getInstance(ALG_DES, provider.getName());
+                k1 = KeyGenerator.getInstance(ALG_DES);
             }
             generatedClearKey = k1.generateKey();
             /*
@@ -306,7 +276,7 @@ public class JCEHandler {
         }
         AlgorithmParameterSpec aps = null;
         try {
-            Cipher c1 = Cipher.getInstance(transformation, provider.getName());
+            Cipher c1 = Cipher.getInstance(transformation);
             if (cipherMode != CipherMode.ECB)
                 aps = new IvParameterSpec(iv);
             c1.init(direction, key, aps);
@@ -361,7 +331,7 @@ public class JCEHandler {
         // Initalize new MAC engine and store them in macEngines cache
         Mac mac = null;
         try {
-            mac = Mac.getInstance(engine.getMacAlgorithm(), provider);
+            mac = Mac.getInstance(engine.getMacAlgorithm());
             mac.init(engine.getMacKey());
         } catch (NoSuchAlgorithmException e) {
             throw new JCEHandlerException(e);

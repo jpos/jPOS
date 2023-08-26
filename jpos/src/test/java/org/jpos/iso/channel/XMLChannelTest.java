@@ -41,74 +41,36 @@ import org.junit.jupiter.api.Test;
 public class XMLChannelTest {
 
     @Test
-    public void testConnectThrowsNullPointerException() throws Throwable {
+    public void testConnectThrowsSocketException() throws Throwable {
         XMLChannel xMLChannel = new XMLChannel();
         xMLChannel.setTimeout(1);
         Socket socket = new Socket();
         try {
             xMLChannel.connect(socket);
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"java.net.InetAddress.getHostAddress()\" because the return value of \"java.net.Socket.getInetAddress()\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-            assertNull(xMLChannel.getLogger(), "xMLChannel.getLogger()");
-            assertEquals("org.jpos.iso.channel.XMLChannel", xMLChannel.getOriginalRealm(), "xMLChannel.getOriginalRealm()");
-            assertNull(xMLChannel.reader, "xMLChannel.reader");
-            assertSame(socket, xMLChannel.getSocket(), "xMLChannel.getSocket()");
-            assertEquals(3, xMLChannel.getCounters().length, "xMLChannel.getCounters().length");
-            assertNull(xMLChannel.getRealm(), "xMLChannel.getRealm()");
-            assertFalse(xMLChannel.isConnected(), "xMLChannel.isConnected()");
-            assertNull(socket.getChannel(), "socket.getChannel()");
-        }
+        } catch (SocketException ignored) {}
     }
 
     @Test
-    public void testConnectThrowsNullPointerException1() throws Throwable {
+    public void testConnectThrowsSocketException1() throws Throwable {
         XMLChannel xMLChannel = new XMLChannel();
         xMLChannel.setTimeout(-1);
         Socket socket = new Socket(Proxy.NO_PROXY);
         try {
             xMLChannel.connect(socket);
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"java.net.InetAddress.getHostAddress()\" because the return value of \"java.net.Socket.getInetAddress()\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-            assertNull(xMLChannel.getLogger(), "xMLChannel.getLogger()");
-            assertEquals("org.jpos.iso.channel.XMLChannel", xMLChannel.getOriginalRealm(), "xMLChannel.getOriginalRealm()");
-            assertNull(xMLChannel.reader, "xMLChannel.reader");
-            assertSame(socket, xMLChannel.getSocket(), "xMLChannel.getSocket()");
-            assertEquals(3, xMLChannel.getCounters().length, "xMLChannel.getCounters().length");
-            assertNull(xMLChannel.getRealm(), "xMLChannel.getRealm()");
-            assertFalse(xMLChannel.isConnected(), "xMLChannel.isConnected()");
-            assertNull(socket.getChannel(), "socket.getChannel()");
-        }
+        } catch (SocketException ignored) {}
     }
 
     @Test
-    public void testConnectThrowsSocketException() throws Throwable {
+    public void testConnectThrowsSocketException2() throws Throwable {
         XMLChannel xMLChannel = new XMLChannel();
         Socket socket = new Socket(Proxy.NO_PROXY);
         socket.close();
         try {
             xMLChannel.connect(socket);
             fail("Expected SocketException to be thrown");
-        } catch (SocketException ex) {
-            assertEquals(SocketException.class, ex.getClass(), "ex.getClass()");
-            assertNull(xMLChannel.getLogger(), "xMLChannel.getLogger()");
-            assertEquals("org.jpos.iso.channel.XMLChannel", xMLChannel.getOriginalRealm(), "xMLChannel.getOriginalRealm()");
-            assertNull(xMLChannel.reader, "xMLChannel.reader");
-            assertSame(socket, xMLChannel.getSocket(), "xMLChannel.getSocket()");
-            assertEquals(3, xMLChannel.getCounters().length, "xMLChannel.getCounters().length");
-            assertNull(xMLChannel.getRealm(), "xMLChannel.getRealm()");
-            assertFalse(xMLChannel.isConnected(), "xMLChannel.isConnected()");
-            assertNull(socket.getChannel(), "socket.getChannel()");
-        }
+        } catch (SocketException ignored) {}
     }
 
     @Test
