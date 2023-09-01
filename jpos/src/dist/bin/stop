@@ -1,7 +1,8 @@
 #!/bin/sh
 
-echo Stopping Q2
+
 cd $(dirname $0)/.. || exit 1
+echo "Stopping Q2 $(basename "$PWD")"
 if [ -f jpos.pid ] && ps -p $(cat jpos.pid) > /dev/null 2>&1; then
     kill $(cat jpos.pid)
 else

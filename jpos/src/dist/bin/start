@@ -1,5 +1,8 @@
 #!/bin/sh
 
-cd `dirname $0`
-echo Starting Q2
+dir_path=$(dirname "$0")
+cd "$dir_path/.." || exit 1
+echo "Starting Q2 $(basename "$PWD")"
+cd "$dir_path" || exit 1
+
 nohup ./q2 "$@" > /dev/null 2>&1 &
