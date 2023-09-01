@@ -18,6 +18,7 @@
 
 package org.jpos.security;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jpos.iso.ISOUtil;
 
 import javax.crypto.*;
@@ -33,13 +34,15 @@ public class SensitiveString implements Supplier<String>, AutoCloseable {
     private SecretKey key;
     private byte[] encoded;
     private static Random rnd;
-    private static final String AES = "AES/CBC/PKCS5Padding";
+    private static final String AES = "AES/GCM/NoPadding";
 
     private static final Cleaner cleaner = Cleaner.create();
     private Cleaner.Cleanable cleanable;
 
     static {
         rnd = new SecureRandom();
+        if(Security.getProvider("BC") == null)
+            Security.addProvider(new BouncyCastleProvider());
     }
 
     public SensitiveString(String s) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidAlgorithmParameterException {
