@@ -65,8 +65,7 @@ public class TransactionManager
     private static final ThreadLocal<Long> tlId = new ThreadLocal<>();
     private Metrics metrics;
     private static ScheduledThreadPoolExecutor loadMonitorExecutor;
-    private static Map<TransactionParticipant,String> names = new HashMap<>();
-
+    private Map<TransactionParticipant,String> names = new HashMap<>();
 
     Space sp;
     Space psp;
