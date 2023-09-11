@@ -23,9 +23,7 @@ import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.distribution.Histogram;
 import io.micrometer.core.instrument.search.Search;
-import org.jpos.core.metrics.MeterInfo;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
