@@ -18,6 +18,15 @@
 
 package org.jpos.q2;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
+import io.micrometer.prometheus.PrometheusConfig;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
+import jdk.jfr.Configuration;
+import jdk.jfr.Recording;
+import jdk.jfr.RecordingState;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -34,8 +43,10 @@ import org.jdom2.output.XMLOutputter;
 import org.jpos.core.Environment;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
+import org.jpos.metrics.PrometheusService;
 import org.jpos.q2.install.ModuleUtils;
 // import org.jpos.q2.ssh.SshService;
+import org.jpos.q2.ssh.SshService;
 import org.jpos.security.SystemSeed;
 import org.jpos.util.Log;
 import org.jpos.util.LogEvent;
@@ -44,6 +55,7 @@ import org.jpos.util.NameRegistrar;
 import org.jpos.util.PGPHelper;
 import org.jpos.util.SimpleLogListener;
 import org.xml.sax.SAXException;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.management.InstanceAlreadyExistsException;
@@ -53,6 +65,7 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.net.InetSocketAddress;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,11 +74,18 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.security.GeneralSecurityException;
+import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
+import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
+
 
 import static java.util.ResourceBundle.getBundle;
 
@@ -121,6 +141,7 @@ public class Q2 implements FileFilter, Runnable {
     private boolean enableSsh;
     private boolean disableDeployScan;
     private boolean disableDynamicClassloader;
+    private boolean disableJFR;
     private int sshPort;
     private String sshAuthorizedKeys;
     private String sshUser;
@@ -128,6 +149,13 @@ public class Q2 implements FileFilter, Runnable {
     private static String DEPLOY_PREFIX = "META-INF/q2/deploy/";
     private static String CFG_PREFIX = "META-INF/q2/cfg/";
     private String nameRegistrarKey;
+    private Recording recording;
+    private CompositeMeterRegistry meterRegistry = io.micrometer.core.instrument.Metrics.globalRegistry;
+    private PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    private int metricsPort;
+    private String metricsPath;
+
+    private Counter instancesCounter = Metrics.counter("jpos.q2.instances");
     
     public Q2 (String[] args) {
         super();
@@ -139,6 +167,7 @@ public class Q2 implements FileFilter, Runnable {
         dirMap     = new TreeMap<>();
         deployDir.mkdirs ();
         mainClassLoader = getClass().getClassLoader();
+        registerMicroMeter();
         registerQ2();
     }
     public Q2 () {
@@ -150,14 +179,24 @@ public class Q2 implements FileFilter, Runnable {
     public void start () {
         if (shutdown.getCount() == 0)
             throw new IllegalStateException("Q2 has been stopped");
-        new Thread (this).start();
+        new Thread(this).start();
     }
     public void stop () {
         shutdown(true);
     }
+    public MeterRegistry getMeterRegistry() {
+        return meterRegistry;
+    }
+
+    public PrometheusMeterRegistry getPrometheusMeterRegistry () {
+        return prometheusRegistry;
+    }
     public void run () {
         started = true;
         Thread.currentThread().setName ("Q2-"+getInstanceId().toString());
+        startJFR();
+
+        instancesCounter.increment();
 
         Path dir = Paths.get(deployDir.getAbsolutePath());
         FileSystem fs = dir.getFileSystem();
@@ -171,7 +210,6 @@ public class Q2 implements FileFilter, Runnable {
             );
             server = ManagementFactory.getPlatformMBeanServer();
             final ObjectName loaderName = new ObjectName(Q2_CLASS_LOADER);
-
             try {
                 loader = new QClassLoader(server, libDir, loaderName, mainClassLoader);
                 if (server.isRegistered(loaderName))
@@ -194,8 +232,13 @@ public class Q2 implements FileFilter, Runnable {
                 cli.start();
             initConfigDecorator();
             if (enableSsh) {
-//                deployElement(SshService.createDescriptor(sshPort, sshUser, sshAuthorizedKeys, sshHostKeyFile),
-//                  "05_sshd-" + getInstanceId() + ".xml", false, true);
+                deployElement(SshService.createDescriptor(sshPort, sshUser, sshAuthorizedKeys, sshHostKeyFile),
+                  "05_sshd-" + getInstanceId() + ".xml", false, true);
+            }
+            if (metricsPort != 0) {
+                deployElement(
+                  PrometheusService.createDescriptor(metricsPort, metricsPath),
+                  "00_prometheus-" + getInstanceId() + ".xml", false, true);
             }
 
             deployInternal();
@@ -252,6 +295,8 @@ public class Q2 implements FileFilter, Runnable {
             else
                 e.printStackTrace();
             System.exit (1);
+        } finally {
+            stopJFR();
         }
     }
     public void shutdown () {
@@ -679,8 +724,11 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("sh", "ssh-host-key-file", true, "SSH host key file, defaults to 'cfg/hostkeys.ser'");
         options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
         options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
+        options.addOption ("Nf", "no-jfr", false, "Disables Java Flight Recorder");
         options.addOption ("E", "environment", true, "Environment name.\nCan be given multiple times (applied in order, and values may override previous ones)");
         options.addOption ("Ed", "envdir", true, "Environment file directory, defaults to cfg");
+        options.addOption ("mp", "metrics-port", true, "Metrics port");
+        options.addOption ("mP", "metrics-path", true, "Metrics path");
 
         try {
             System.setProperty("log4j2.formatMsgNoLookups", "true"); // log4shell prevention
@@ -728,11 +776,15 @@ public class Q2 implements FileFilter, Runnable {
 
             disableDeployScan = line.hasOption("Ns");
             disableDynamicClassloader = line.hasOption("Nd");
+            disableJFR = line.hasOption("Nf");
             enableSsh = line.hasOption("s");
             sshPort = Integer.parseInt(line.getOptionValue("sp", "2222"));
             sshAuthorizedKeys = line.getOptionValue ("sa", "cfg/authorized_keys");
             sshUser = line.getOptionValue("su", "admin");
             sshHostKeyFile = line.getOptionValue("sh", "cfg/hostkeys.ser");
+            if (line.hasOption("mp"))
+                metricsPort = Integer.parseInt(line.getOptionValue("mp"));
+            metricsPath = line.hasOption("mP") ? line.getOptionValue("mP") : "/metrics";
         } catch (MissingArgumentException e) {
             System.out.println("ERROR: " + e.getMessage());
             System.exit(1);
@@ -1144,5 +1196,31 @@ public class Q2 implements FileFilter, Runnable {
             deployElement (doc.getRootElement(), resource.substring(DEPLOY_PREFIX.length()), false,true);
         }
     }
+    private void startJFR () {
+        try {
+            if (!disableJFR) {
+                recording = new Recording(Configuration.getConfiguration("default"));
+                recording.start();
+            }
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    private void stopJFR () {
+        if (recording != null && recording.getState() == RecordingState.RUNNING) {
+            recording.stop();
+            recording = null;
+        }
+    }
+
+    private void registerMicroMeter () {
+        meterRegistry.clear(); // start Q2 off a fresh meter registry
+        new ClassLoaderMetrics().bindTo(meterRegistry);
+        new JvmMemoryMetrics().bindTo(meterRegistry);
+        new JvmGcMetrics().bindTo(meterRegistry);
+        new ProcessorMetrics().bindTo(meterRegistry);
+        new JvmThreadMetrics().bindTo(meterRegistry);
+        meterRegistry.add (prometheusRegistry);
+    }
 }
