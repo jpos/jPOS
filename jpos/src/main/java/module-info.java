@@ -13,7 +13,11 @@ module org.jpos.jpos {
     requires org.jdbm;
     requires org.bouncycastle.pg;
     requires org.bouncycastle.lts.prov;
+    requires jdk.httpserver;
+    requires micrometer.core;
+    requires micrometer.registry.prometheus;
     requires org.apache.sshd;
+    //    requires net.i2p.crypto.eddsa;
 
     exports org.jpos.iso.packager;
     exports org.jpos.iso.validator;

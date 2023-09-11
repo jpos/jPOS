@@ -1,6 +1,7 @@
 ext {
     sshdVersion = '2.10.0'
     bcVersion = '2.73.2'
+    micrometerVersion = '1.11.2'
     libraries = [
         jdom: 'org.jdom:jdom2:2.0.6.1',
         jdbm: 'jdbm:jdbm:1.0',
@@ -24,7 +25,11 @@ ext {
         slf4j_api: "org.slf4j:slf4j-api:1.7.36",
         slf4j_nop: "org.slf4j:slf4j-nop:1.7.36",
         hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.12',
-        yaml: "org.yaml:snakeyaml:2.0"
+        yaml: "org.yaml:snakeyaml:2.0",
+        micrometer: [
+          "io.micrometer:micrometer-core:${micrometerVersion}",
+          "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
+        ]
     ]
 }
 

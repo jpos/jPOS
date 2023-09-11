@@ -1,6 +1,9 @@
 plugins {
    id "org.gradlex.extra-java-module-info" version "1.4.1"
+   id "org.gradlex.java-module-dependencies" version "1.4"
    id "org.owasp.dependencycheck" version "8.3.1"
+
+   // id 'checkstyle'
 }
 
 extraJavaModuleInfo {
@@ -14,6 +17,8 @@ extraJavaModuleInfo {
     automaticModule ('org.apache-extras.beanshell:bsh', 'bsh')
     automaticModule ('com.sleepycat:je', 'com.sleepycat.je')
     automaticModule ('jdbm:jdbm', 'org.jdbm')
+    automaticModule ('io.micrometer:micrometer-core', "micrometer.core")
+    automaticModule ('io.micrometer:micrometer-registry-prometheus', "micrometer.registry.prometheus")
 
     module ('org.apache.sshd:sshd-core',  'org.apache.sshd', "${sshdVersion}") {
         mergeJar('org.apache.sshd:sshd-common')
@@ -53,6 +58,7 @@ dependencies {
     implementation libraries.yaml;
     implementation libraries.jdbm
     implementation libraries.sleepycat_je
+    implementation libraries.micrometer
     implementation libraries.sshd
     implementation libraries.eddsa
 
@@ -279,6 +285,10 @@ test {
 }
 
 tasks.withType(JavaCompile) {
-    options.deprecation = true
+    options.deprecation = false
+}
+
+tasks.withType(Test) {
+  jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
 

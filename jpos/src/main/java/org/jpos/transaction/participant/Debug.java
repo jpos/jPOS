@@ -29,7 +29,7 @@ import java.io.Serializable;
 
 public class Debug extends Log implements AbortParticipant {
     public int prepare (long id, Serializable o) {
-        // Logger.log (createEvent ("prepare", id, (Context) o));
+        Logger.log (createEvent ("prepare", id, (Context) o));
         return PREPARED | READONLY;
     }
     public void commit (long id, Serializable o) { 
@@ -39,7 +39,7 @@ public class Debug extends Log implements AbortParticipant {
         Logger.log (createEvent ("abort", id, (Context) o));
     }
     public int prepareForAbort (long id, Serializable o) { 
-        // Logger.log (createEvent ("prepare-for-abort", id, (Context) o));
+        Logger.log (createEvent ("prepare-for-abort", id, (Context) o));
         return PREPARED | READONLY;
     }
     private LogEvent createEvent (String action, long id, Context ctx) {
