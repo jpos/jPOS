@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 public class Metrics implements Loggeable {
     private Histogram template;
-    private Map<String,Histogram> metrics = new ConcurrentHashMap<>();
+    private Map<String, Histogram> metrics = new ConcurrentHashMap<>();
 
     public Metrics(Histogram template) {
         super();
@@ -37,18 +37,16 @@ public class Metrics implements Loggeable {
         }
     }
 
-    public Map<String,Histogram> metrics() {
+    public Map<String, Histogram> metrics() {
         return metrics.entrySet()
           .stream()
-          .sorted(Map.Entry.comparingByKey())
           .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().copy()));
     }
 
-    public Map<String,Histogram> metrics (String prefix) {
+    public Map<String, Histogram> metrics(String prefix) {
         return metrics.entrySet()
           .stream()
           .filter(e -> e.getKey().startsWith(prefix))
-          .sorted(Map.Entry.comparingByKey())
           .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().copy()));
     }
 
@@ -59,7 +57,7 @@ public class Metrics implements Loggeable {
             h.recordValue(l);
     }
 
-    private Histogram getHistogram (String p) {
+    private Histogram getHistogram(String p) {
         Histogram h = metrics.get(p);
         if (h == null) {
             Histogram hist = new Histogram(template);
@@ -70,15 +68,15 @@ public class Metrics implements Loggeable {
         return h;
     }
 
-    public void dump (PrintStream ps, String indent) {
+    public void dump(PrintStream ps, String indent) {
         metrics.entrySet()
           .stream()
           .sorted(Map.Entry.comparingByKey())
-          .forEach(e -> dumpPercentiles (ps, indent, e.getKey(), e.getValue().copy()));
+          .forEach(e -> dumpPercentiles(ps, indent, e.getKey(), e.getValue().copy()));
     }
 
-    private void dumpPercentiles (PrintStream ps, String indent, String key, Histogram h) {
-        ps.printf ("%s%s min=%d, max=%d, mean=%.4f stddev=%.4f 90%%=%d, 99%%=%d, 99.9%%=%d, 99.99%%=%d tot=%d size=%d%n",
+    private void dumpPercentiles(PrintStream ps, String indent, String key, Histogram h) {
+        ps.printf("%s%s min=%d, max=%d, mean=%.4f stddev=%.4f 90%%=%d, 99%%=%d, 99.9%%=%d, 99.99%%=%d tot=%d size=%d%n",
           indent,
           key,
           h.getMinValue(),
@@ -94,7 +92,7 @@ public class Metrics implements Loggeable {
         );
     }
 
-    private void dumpHistogram (File dir, String key, Histogram h) {
+    private void dumpHistogram(File dir, String key, Histogram h) {
         try (FileOutputStream fos = new FileOutputStream(new File(dir, key + ".hgrm"))) {
             h.outputPercentileDistribution(new PrintStream(fos), 1.0);
         } catch (IOException e) {
@@ -102,10 +100,10 @@ public class Metrics implements Loggeable {
         }
     }
 
-    public void dumpHistograms (File dir, String prefix) {
+    public void dumpHistograms(File dir, String prefix) {
         metrics.entrySet()
           .stream()
           .sorted(Map.Entry.comparingByKey())
-          .forEach(e -> dumpHistogram (dir, prefix + e.getKey(), e.getValue().copy()));
+          .forEach(e -> dumpHistogram(dir, prefix + e.getKey(), e.getValue().copy()));
     }
 }
