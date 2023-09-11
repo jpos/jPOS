@@ -18,12 +18,10 @@
 
 package org.jpos.jfr;
 
-import jdk.jfr.Category;
-import jdk.jfr.Event;
-import jdk.jfr.Name;
-import jdk.jfr.StackTrace;
+import jdk.jfr.*;
 
 @Category("jPOS")
 @Name("jpos.LogEvent")
 @StackTrace
+@Threshold("10 ms")
 public class LogEventDump extends Event { }

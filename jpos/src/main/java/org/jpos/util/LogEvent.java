@@ -21,6 +21,7 @@ package org.jpos.util;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jpos.jfr.LogEventDump;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -118,6 +119,8 @@ public class LogEvent {
             p.println (indent + "</log>");
     }
     public void dump (PrintStream p, String outer) {
+        var jfr = new LogEventDump();
+        jfr.begin();
         try {
             String indent = dumpHeader (p, outer);
             if (payLoad.isEmpty()) {
@@ -186,6 +189,7 @@ public class LogEvent {
 
         } finally {
             dumpTrailer (p, outer);
+            jfr.commit();
         }
     }
     public String getRealm() {
