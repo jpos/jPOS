@@ -41,8 +41,12 @@ import java.time.format.TextStyle;
 import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneOffsetTransitionRule;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+
+import static io.micrometer.core.instrument.Metrics.globalRegistry;
 
 /**
  * Periodically dumps Thread and memory usage
@@ -64,7 +68,6 @@ public class SystemMonitor extends QBeanSupport
     private String localHost;
     private String processName;
     private Lock dumping = new ReentrantLock();
-
     @Config("metrics-dir")
     private String metricsDir;
 
@@ -72,7 +75,10 @@ public class SystemMonitor extends QBeanSupport
     boolean dumpStackTrace;
 
     int stackTraceDepth;
-    
+    @Override
+    public void initService() { }
+
+    @Override
     public void startService() {
         try {
             log.info("Starting SystemMonitor");
@@ -89,7 +95,6 @@ public class SystemMonitor extends QBeanSupport
     public void destroyService() throws InterruptedException {
         me.join(Duration.ofMillis(5000L));
     }
-
 
     public synchronized void setSleepTime(long sleepTime) {
         this.sleepTime = sleepTime;
@@ -126,6 +131,17 @@ public class SystemMonitor extends QBeanSupport
                   }
               }
           }));
+    }
+
+    private void dumpMeters(PrintStream p, String indent) {
+        AtomicBoolean isFirst = new AtomicBoolean(true);
+        getServer().getMeterRegistry().getMeters()
+          .stream()
+          .sorted(Comparator.comparing(meter -> meter.getId().getName()))
+          .forEach(meter -> {
+            String prefix = indent + (isFirst.getAndSet(false) ? "       meters: " : "               ");
+            p.printf("%s%s%s%n", prefix, meter.getId().getName(), meter.measure());
+        });
     }
 
     void showThreadGroup(ThreadGroup g, PrintStream p, String indent) {
@@ -232,6 +248,7 @@ public class SystemMonitor extends QBeanSupport
         p.printf ("%s       drift : %d%n", indent, delay);
         p.printf ("%smemory(t/u/f): %d/%d/%d%n", indent,
                 r.totalMemory()/MB, (r.totalMemory() - r.freeMemory())/MB, r.freeMemory()/MB);
+        p.printf ("%s         args: %s%n", indent, String.join(",", ManagementFactory.getRuntimeMXBean().getInputArguments()));
         dumpGCStats(p, indent);
         p.printf("%s     encoding: %s%n", indent, Charset.defaultCharset());
         p.printf("%s     timezone: %s (%s) %s%n", indent, zi,
@@ -251,6 +268,7 @@ public class SystemMonitor extends QBeanSupport
         p.printf("%s        clock: %d %s%n", indent, System.currentTimeMillis() / 1000L, instant);
         p.printf("%s thread count: %d%n", indent, mxBean.getThreadCount());
         p.printf("%s peak threads: %d%n", indent, mxBean.getPeakThreadCount());
+        dumpMeters(p, indent);
 
         showThreadGroup(Thread.currentThread().getThreadGroup(), p, newIndent);
         NameRegistrar.getInstance().dump(p, indent, detailRequired);
