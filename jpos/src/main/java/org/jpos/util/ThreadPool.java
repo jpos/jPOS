@@ -55,7 +55,6 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     private AtomicInteger threadCount = new AtomicInteger();
     private ExecutorService executor = Executors.newThreadPerTaskExecutor(
       Thread.ofVirtual()
-        .allowSetThreadLocals(true)
         .inheritInheritableThreadLocals(false)
         .factory());
 
