@@ -18,6 +18,8 @@
 
 package org.jpos.transaction;
 
+import jdk.jfr.Configuration;
+import jdk.jfr.Recording;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.space.LocalSpace;
@@ -32,6 +34,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.time.Duration;
 import java.util.Random;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -45,9 +49,17 @@ public class TransactionManagerStress {
     private static Context ctx;
     public static String QUEUE_STRESS = "TXNMGRTEST.STRESS";
     private static Chronometer chronometer = new Chronometer();
+    private static Recording recording;
 
     @BeforeAll
-    public static void setUp (@TempDir Path deployDir) throws IOException {
+    public static void setUp (@TempDir Path deployDir) throws IOException, ParseException {
+        recording = new Recording(Configuration.getConfiguration("default"));
+        recording.setMaxAge(Duration.ofSeconds(300));
+        // jfr print --stack-depth 64 --events jdk.VirtualThreadPinned build/reports/tmstress.jfr
+        Path outputPath = Paths.get("build/reports/tmstress.jfr");
+        recording.setDestination(outputPath);
+        recording.start();
+
         sp = SpaceFactory.getSpace("tspace:txnmgrtest");
         Files.walk(Paths.get("build/resources/test/org/jpos/transaction")).forEach( s -> {
             if (Files.isRegularFile(s)) {
@@ -80,10 +92,15 @@ public class TransactionManagerStress {
 
 
     @AfterAll
-    static void tearDown() {
+    static void tearDown() throws IOException {
         TransactionManager tm = NameRegistrar.getIfExists("txnmgr-stress");
         while (tm.getActiveSessions() > 0)
             ISOUtil.sleep(500L);
+
+        recording.dump( Paths.get("build/reports/tmstress.jfr"));
+        recording.stop();
+        recording.close();
+
         q2.shutdown(true);
     }
 }
