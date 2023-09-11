@@ -17,6 +17,7 @@
  */
 
 package org.jpos.space;
+import org.jpos.jfr.SpaceEvent;
 import org.jpos.util.Loggeable;
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -52,6 +53,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void out (K key, V value) {
+        var jfr = new SpaceEvent("out", "" + key);
+        jfr.begin();
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
         synchronized(this) {
@@ -62,12 +65,18 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         if (sl != null)
             notifyListeners(key, value);
+        jfr.commit();
     }
 
     @Override
     public void out (K key, V value, long timeout) {
-        if (key == null || value == null)
-            throw new NullPointerException ("key=" + key + ", value=" + value);
+        var jfr = new SpaceEvent("out:tim", "" + key);
+        jfr.begin();
+
+        if (key == null || value == null) {
+            jfr.commit();
+            throw new NullPointerException("key=" + key + ", value=" + value);
+        }
         Object v = value;
         if (timeout > 0) {
             v = new Expirable (value, Instant.now().toEpochMilli() + timeout);
@@ -83,20 +92,33 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         if (sl != null)
             notifyListeners(key, value);
+        jfr.commit();
     }
 
     @Override
     public synchronized V rdp (Object key) {
-        if (key instanceof Template)
-            return (V) getObject ((Template) key, false);
-        return (V) getHead (key, false);
+        var jfr = new SpaceEvent("rdp", "" + key);
+        jfr.begin();
+        try {
+            if (key instanceof Template)
+                return (V) getObject ((Template) key, false);
+            return (V) getHead (key, false);
+        } finally {
+            jfr.commit();
+        }
     }
 
     @Override
     public synchronized V inp (Object key) {
-        if (key instanceof Template)
-            return (V) getObject ((Template) key, true);
-        return (V) getHead (key, true);
+        var jfr = new SpaceEvent("inp", "" + key);
+        jfr.begin();
+        try {
+            if (key instanceof Template)
+                return (V) getObject ((Template) key, true);
+            return (V) getHead (key, true);
+        } finally {
+            jfr.commit();
+        }
     }
 
     @Override
@@ -193,6 +215,9 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
 
     private void gc (int generation) {
+        var jfr = new SpaceEvent("gc", Integer.toString(generation));
+        jfr.begin();
+
         Set<K> exps;
         synchronized (this) {
             exps = expirables[generation];
@@ -212,14 +237,19 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                     sl = null;
             }
         }
+        jfr.commit();
     }
 
     @Override
     public synchronized int size (Object key) {
+        var jfr = new SpaceEvent("size", "" + key);
+        jfr.begin();
+
         int size = 0;
         List l = (List) entries.get (key);
         if (l != null) 
             size = l.size();
+        jfr.commit();
         return size;
     }
 
@@ -268,10 +298,14 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void dump(PrintStream p, String indent) {
+        var jfr = new SpaceEvent("dump", "");
+        jfr.begin();
+
         Object[] keys;
         int size = entries.size();
         if (size > MAX_ENTRIES_IN_DUMP * 100) {
             p.printf ("%sWARNING - space too big, size=%d%n", indent, size);
+            jfr.commit();
             return;
         }
         synchronized (this) {
@@ -293,9 +327,13 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             exp1 = expirables[1].size();
         }
         p.printf("%s    gcinfo: %d,%d%n", indent, exp0, exp1);
+        jfr.commit();
     }
 
     public void notifyListeners (Object key, Object value) {
+        var jfr = new SpaceEvent("notify", "" + key);
+        jfr.begin();
+
         Object[] listeners = null;
         synchronized (this) {
             if (sl == null)
@@ -313,12 +351,15 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                     ((SpaceListener) o).notify(key, value);
             }
         }
+        jfr.commit();
     }
 
     @Override
     public void push (K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
+        var jfr = new SpaceEvent("push", "" + key);
+        jfr.begin();
         synchronized(this) {
             List l = getList(key);
             boolean wasEmpty = l.isEmpty();
@@ -328,12 +369,15 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         if (sl != null)
             notifyListeners(key, value);
+        jfr.commit();
     }
 
     @Override
     public void push (K key, V value, long timeout) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
+        var jfr = new SpaceEvent("push:tim", "" + key);
+        jfr.begin();
         Object v = value;
         if (timeout > 0) {
             v = new Expirable (value, Instant.now().toEpochMilli() + timeout);
@@ -350,6 +394,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         if (sl != null)
             notifyListeners(key, value);
+        jfr.commit();
     }
 
     @Override
@@ -357,6 +402,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
 
+        var jfr = new SpaceEvent("put", "" + key);
+        jfr.begin();
         synchronized (this) {
             List l = new LinkedList();
             l.add (value);
@@ -365,12 +412,16 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         if (sl != null)
             notifyListeners(key, value);
+        jfr.commit();
     }
 
     @Override
     public void put (K key, V value, long timeout) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
+        var jfr = new SpaceEvent("put:tim", "" + key);
+        jfr.begin();
+
         Object v = value;
         if (timeout > 0) {
             v = new Expirable (value, Instant.now().toEpochMilli() + timeout);
@@ -386,6 +437,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         if (sl != null)
             notifyListeners(key, value);
+        jfr.commit();
     }
 
     @Override
