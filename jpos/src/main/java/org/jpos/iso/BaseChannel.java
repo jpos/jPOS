@@ -18,6 +18,7 @@
 
 package org.jpos.iso;
 
+import jdk.jfr.Event;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -25,20 +26,13 @@ import org.jpos.core.handlers.exception.ExceptionHandler;
 import org.jpos.core.handlers.exception.ExceptionHandlerAware;
 import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.iso.header.BaseHeader;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
-import org.jpos.util.Logger;
-import org.jpos.util.NameRegistrar;
+import org.jpos.jfr.ChannelEvent;
+import org.jpos.util.*;
 
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -112,7 +106,7 @@ public abstract class BaseChannel extends Observable
     private boolean roundRobin = false;
 
     private final Map<Class<? extends Exception>, List<ExceptionHandler>> exceptionHandlers = new HashMap<>();
-
+    
     /**
      * constructor shared by server and client
      * ISOChannels (which have different signatures)
@@ -268,14 +262,13 @@ public abstract class BaseChannel extends Observable
      * @param socket a Socket (client or server)
      * @exception IOException on error
      */
-    protected void connect (Socket socket) 
-        throws IOException
-    {
+    protected void connect (Socket socket) throws IOException {
         this.socket = socket;
         applyTimeout();
-        setLogger(getLogger(), getOriginalRealm() + 
-            "/" + socket.getInetAddress().getHostAddress() + ":" 
-            + socket.getPort()
+        InetAddress inetAddress = socket.getInetAddress();
+        String remoteAddress = (inetAddress != null) ? "/" + inetAddress.getHostAddress() + ":" + socket.getPort() : "";
+        setLogger(getLogger(), getOriginalRealm() +
+            remoteAddress
         );
         serverInLock.lock();
         try {
@@ -340,20 +333,30 @@ public abstract class BaseChannel extends Observable
         Socket s = null;
         if (!roundRobin)
             nextHostPort = 0;
+
+        IOException lastIOException = null;
+        String h=null;
+        int p=0;
         for (int i=0; i<hosts.length; i++) {
             try {
                 int ii = nextHostPort++ % hosts.length;
-                evt.addMessage ("Try " + i + " " + hosts[ii]+":"+ports[ii]);
-                s = newSocket (hosts[ii], ports[ii]);
-                evt.addMessage ("  Connection established to "
-                                + s.getInetAddress().getHostAddress() + ":" + s.getPort());
+                h = hosts[ii];
+                p = ports[ii];
+                evt.addMessage ("Try " + i + " " + h+":" + p);
+                s = newSocket (h, p);
+                evt.addMessage ("  Connected to %s:%d (%d)".formatted(
+                    s.getInetAddress().getHostAddress(),
+                    s.getPort(),
+                    s.getLocalPort())
+                );
                 break;
             } catch (IOException e) {
                 evt.addMessage ("  " + e.getMessage());
+                lastIOException = e;
             }
         }
         if (s == null)
-            throw new IOException ("Unable to connect");
+            throw new IOException ("%s:%d %s (%s)".formatted(h, p, lastIOException, Caller.info(1)));
         return s;
     }
     /**
@@ -388,8 +391,9 @@ public abstract class BaseChannel extends Observable
      * @throws SocketException
      */
     protected void applyTimeout () throws SocketException {
-        if (socket != null) {
-            socket.setKeepAlive(keepAlive);
+        if (socket != null && socket.isConnected()) {
+            if (keepAlive)
+                socket.setKeepAlive(keepAlive);
             if (timeout >= 0)
                 socket.setSoTimeout(timeout);
         }
@@ -413,26 +417,27 @@ public abstract class BaseChannel extends Observable
      * @exception IOException
      */
     public void connect () throws IOException {
+        ChannelEvent jfr = new ChannelEvent.Connect();
+        jfr.begin();
         LogEvent evt = new LogEvent (this, "connect");
         try {
-            if (serverSocket != null) {
-                accept(serverSocket);
-                evt.addMessage ("local port "+serverSocket.getLocalPort()
-                    +" remote host "+socket.getInetAddress());
-            }
-            else {
-                connect(newSocket (hosts, ports, evt));
-            }
+            socket = newSocket (hosts, ports, evt);
+            if (getHost() != null)
+                jfr.setDetail("%s:%d".formatted(getHost(), getPort()));
+            connect(socket);
+            jfr.append("%d".formatted(socket.getLocalPort()));
             applyTimeout();
             Logger.log (evt);
-        } catch (ConnectException e) {
-            Logger.log (new LogEvent (this, "connection-refused",
-                getHost()+":"+getPort())
-            );
         } catch (IOException e) {
-            evt.addMessage (e.getMessage ());
+            jfr = new ChannelEvent.ConnectionException(jfr.getDetail());
+            jfr.begin();
+            jfr.append (e.getMessage());
+            evt.addMessage (jfr.getDetail());
+            evt.addMessage(e);
             Logger.log (evt);
             throw e;
+        } finally {
+            jfr.commit();
         }
     }
 
@@ -441,14 +446,24 @@ public abstract class BaseChannel extends Observable
      * @exception IOException
      */
     public void accept(ServerSocket s) throws IOException {
-        // if (serverPort > 0)
-        //    s = new ServerSocket (serverPort);
-        // else
-        //     serverPort = s.getLocalPort();
-
-        Socket ss = s.accept();
-        this.name = ss.getInetAddress().getHostAddress()+":"+ss.getPort();
-        connect(ss);
+        ChannelEvent jfr = new ChannelEvent.Accept();
+        jfr.begin();
+        try {
+            Socket ss = s.accept();
+            this.name = "%d %s:%d".formatted(
+              ss.getLocalPort(),
+              ss.getInetAddress().getHostAddress(),
+              ss.getPort()
+            );
+            jfr.setDetail(name);
+            connect(ss);
+        } catch (IOException e) {
+            jfr = new ChannelEvent.AcceptException(e.getMessage());
+            jfr.begin();
+            throw e;
+        } finally {
+            jfr.commit();
+        }
 
         // Warning - closing here breaks ISOServer, we need an
         // accept that keep ServerSocket open.
@@ -595,6 +610,8 @@ public abstract class BaseChannel extends Observable
     public void send (ISOMsg m) 
         throws IOException, ISOException
     {
+        ChannelEvent jfr = new ChannelEvent.Send();
+        jfr.begin();
         LogEvent evt = new LogEvent (this, "send");
         try {
             if (!isConnected())
@@ -620,19 +637,24 @@ public abstract class BaseChannel extends Observable
             cnt[TX]++;
             setChanged();
             notifyObservers(m);
+            jfr.setDetail(m.toString());
         } catch (VetoException e) {
             //if a filter vets the message it was not added to the event
             evt.addMessage (m);
             evt.addMessage (e);
+            jfr.append (e.getMessage());
             throw e;
         } catch (ISOException | IOException e) {
             evt.addMessage (e);
+            jfr = new ChannelEvent.SendException(e.getMessage());
             throw e;
         } catch (Exception e) {
             evt.addMessage (e);
+            jfr = new ChannelEvent.SendException(e.getMessage());
             throw new IOException ("unexpected exception", e);
         } finally {
             Logger.log (evt);
+            jfr.commit();
         }
     }
     /**
@@ -642,9 +664,9 @@ public abstract class BaseChannel extends Observable
      * @exception ISOException
      * @exception ISOFilter.VetoException;
      */
-    public void send (byte[] b) 
-        throws IOException, ISOException
-    {
+    public void send (byte[] b) throws IOException, ISOException {
+        var jfr = new ChannelEvent.Send();
+        jfr.begin();
         LogEvent evt = new LogEvent (this, "send");
         try {
             if (!isConnected())
@@ -663,6 +685,7 @@ public abstract class BaseChannel extends Observable
             throw new ISOException ("unexpected exception", e);
         } finally {
             Logger.log (evt);
+            jfr.commit();
         }
     }
     /**
@@ -721,6 +744,9 @@ public abstract class BaseChannel extends Observable
      * @throws ISOException
      */
     public ISOMsg receive() throws IOException, ISOException {
+        var jfr = new ChannelEvent.Receive();
+        jfr.begin();
+
         byte[] b=null;
         byte[] header=null;
         LogEvent evt = new LogEvent (this, "receive");
@@ -814,6 +840,8 @@ public abstract class BaseChannel extends Observable
         } finally {
             Logger.log (evt);
         }
+        jfr.setDetail(m.toString());
+        jfr.commit();
         return m;
     }
     /**
@@ -832,12 +860,15 @@ public abstract class BaseChannel extends Observable
      * @exception IOException
      */
     public void disconnect () throws IOException {
+        var jfr = new ChannelEvent.Disconnect();
+        jfr.begin();
         LogEvent evt = new LogEvent (this, "disconnect");
-        if (serverSocket != null) 
-            evt.addMessage ("local port "+serverSocket.getLocalPort()
-                +" remote host "+serverSocket.getInetAddress());
-        else
-            evt.addMessage (host+":"+port);
+        if (socket != null) {
+            String detail = socket.getRemoteSocketAddress().toString();
+            jfr.setDetail(detail);
+            evt.addMessage(detail);
+        }
+
         try {
             usable = false;
             setChanged();
@@ -857,8 +888,11 @@ public abstract class BaseChannel extends Observable
             }
         } catch (IOException e) {
             evt.addMessage (e);
+            jfr.append (e.getMessage());
             Logger.log (evt);
             throw e;
+        } finally {
+            jfr.commit();
         }
         socket = null;
     }   

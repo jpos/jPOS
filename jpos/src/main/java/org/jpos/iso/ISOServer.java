@@ -40,7 +40,10 @@ import java.util.concurrent.locks.LockSupport;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.jfr.ChannelEvent;
 import org.jpos.util.*;
+
+import static org.jpos.jfr.ChannelEvent.*;
 
 /**
  * Accept ServerChannel sessions and forwards them to ISORequestListeners
@@ -330,10 +333,10 @@ public class ISOServer extends Observable
                     }
                 }
             } catch (EOFException e) {
-                // Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
+                 // Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
             } catch (SocketException e) {
-                // if (!shutdown)
-                //     Logger.log (new LogEvent (this, "session-warning", e));
+                 if (!shutdown)
+                     Logger.log (new LogEvent (this, "session-warning", e));
             } catch (InterruptedIOException e) {
                 // nothing to log
             } catch (Throwable e) {
@@ -468,11 +471,17 @@ public class ISOServer extends Observable
                 while (!shutdown) {
                     try {
                         if (permits.availablePermits() <= 0) {
+                            ChannelEvent jfr = new ChannelEvent.AcceptException(
+                              "Available permits too low (%d)".formatted(permits.availablePermits())
+                            );
+                            jfr.begin();
                             try {
                                 serverSocket.close();
                                 fireEvent(new ISOServerShutdownEvent(this));
                             } catch (IOException e){
                                 log ("iso-server", Caller.info() + ":" + e.getMessage());
+                            } finally {
+                                jfr.commit();
                             }
                             continue serverLoop;
                         }
