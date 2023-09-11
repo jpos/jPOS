@@ -18,15 +18,14 @@
 
 package org.jpos.util;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class ConcurrentUtil {
     public static ScheduledThreadPoolExecutor newScheduledThreadPoolExecutor() {
         ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(1,
           r -> {
-              Thread t = Executors.defaultThreadFactory().newThread(r);
-              t.setDaemon(true);
+              Thread t = Thread.ofVirtual().factory().newThread(r);
+              t.setName("spaceGC");
               return t;
           });
         stpe.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
