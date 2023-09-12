@@ -113,7 +113,7 @@ public class TransactionManager
     private static AtomicBoolean filtersAdded = new AtomicBoolean();
 
     private Gauge activeSessionsGauge;
-    private Counter transactionsCounter;
+    private Counter transactionCounter;
 
     @Override
     public void initService () throws ConfigurationException {
@@ -226,9 +226,13 @@ public class TransactionManager
                     if (context instanceof Context ctx)
                         ctx.log ("active=%d, maxSessions=%d".formatted(getActiveSessions(), maxSessions));
                     int session = activeSessions.incrementAndGet();
+                    transactionCounter.increment();
                     executor.execute(() -> {
-                        runTransaction(context, session);
-                        activeSessions.decrementAndGet();
+                        try {
+                            runTransaction(context, session);
+                        } finally {
+                            activeSessions.decrementAndGet();
+                        }
                     });
                 }
                 else {
@@ -393,10 +397,12 @@ public class TransactionManager
             metrics = new Metrics(new AtomicHistogram(cfg.getLong("metrics-highest-trackable-value", 60000), 2));
         abortOnMisconfiguredGroups = cfg.getBoolean("abort-on-misconfigured-groups");
 
-        // Configure meters
         try {
             activeSessionsGauge = MeterFactory.gauge
               (getServer().getMeterRegistry(), MeterInfo.TM_ACTIVE_SESSIONS, Tags.of("name", getName()), BaseUnits.THREADS, activeSessions::get
+            );
+            transactionCounter = MeterFactory.counter
+              (getServer().getMeterRegistry(), MeterInfo.TM_COUNTER, Tags.of("name", getName())
             );
         } catch (Exception e) {
             throw new ConfigurationException (e);

@@ -18,8 +18,9 @@
 
 package org.jpos.metrics;
 public enum MeterInfo {
-    TM_ACTIVE_SESSIONS("jpos.tm.active.sessions", "approximate number of activeSessions"),
-    TM_OPERATION("jpos.tm", "transaction manager operation");
+    TM_ACTIVE_SESSIONS("jpos.tm.active.sessions", "TransactionManager activeSessions"),
+    TM_OPERATION("jpos.tm.op", "TransactionManager operation"),
+    TM_COUNTER("jpos.tm.cnt", "TransactionManager counter");
     final String id;
     final String description;
 
