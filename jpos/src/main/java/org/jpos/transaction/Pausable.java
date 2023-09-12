@@ -25,4 +25,6 @@ public interface Pausable {
     long getTimeout();
     Future<Integer> pause();
     void resume(int result);
+
+    void reset();
 }

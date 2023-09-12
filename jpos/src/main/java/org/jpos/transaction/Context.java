@@ -29,7 +29,9 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Stream;
 
 import static org.jpos.transaction.ContextConstants.*;
@@ -40,10 +42,9 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
     private transient Map<Object,Object> map; // transient map
     private Map<Object,Object> pmap;          // persistent (serializable) map
     private transient boolean trace = false;
-    private final Semaphore paused = new Semaphore(1);
     private CompletableFuture<Integer> pausedFuture;
     private long timeout;
-
+    private final Lock lock = new ReentrantLock();
     public Context () {
         super ();
     }
@@ -535,16 +536,37 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
 
     @Override
     public Future<Integer> pause() {
-        paused.acquireUninterruptibly();
-        pausedFuture = new CompletableFuture<>();
+        try {
+            lock.lock();
+            if (pausedFuture == null)
+                pausedFuture = new CompletableFuture<>();
+            else if (!pausedFuture.isDone())
+                throw new IllegalStateException("already paused");
+        } finally {
+            lock.unlock();
+        }
         return pausedFuture;
     }
 
     @Override
     public void resume(int result) {
-        pausedFuture.complete(result);
-        pausedFuture = null;
-        paused.release();
+        try {
+            lock.lock();
+            if (pausedFuture == null)
+                pausedFuture = new CompletableFuture<>();
+            pausedFuture.complete(result);
+        } finally {
+            lock.unlock();
+        }
+    }
+    @Override
+    public void reset () {
+        try {
+            lock.lock();
+            pausedFuture = null;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override

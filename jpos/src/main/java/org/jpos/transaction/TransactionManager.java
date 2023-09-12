@@ -1155,6 +1155,8 @@ public class TransactionManager
                     ctx.log(e);
             } catch (TimeoutException e) {
                 action &= (PREPARED ^ 0xFFFF); // turn off 'PREPARED' - we need to abort
+            } finally {
+                pausable.reset();
             }
         } finally {
             pausedSessions.decrementAndGet();
