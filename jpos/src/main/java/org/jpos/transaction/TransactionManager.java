@@ -20,6 +20,7 @@ package org.jpos.transaction;
 
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.binder.BaseUnits;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
@@ -404,6 +405,8 @@ public class TransactionManager
             transactionCounter = MeterFactory.counter
               (getServer().getMeterRegistry(), MeterInfo.TM_COUNTER, Tags.of("name", getName())
             );
+            meters.add(activeSessionsGauge);
+            meters.add(transactionCounter);
         } catch (Exception e) {
             throw new ConfigurationException (e);
         }
@@ -1257,11 +1260,16 @@ public class TransactionManager
                 tags = tags.and("realm", realm.trim());
         }
         return new Timers(
-          MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare")),
-          MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare-for-abort")),
-          MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "commit")),
-          MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "abort")),
-          MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "snapshot"))
+          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare"))),
+          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare-for-abort"))),
+          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "commit"))),
+          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "abort"))),
+          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "snapshot")))
         );
+    }
+
+    private Timer addTimer (Timer m) {
+        meters.add (m);
+        return m;
     }
 }
