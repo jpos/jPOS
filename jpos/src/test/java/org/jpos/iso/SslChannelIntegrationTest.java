@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Properties;
 
 import org.hamcrest.Description;
@@ -83,7 +84,7 @@ public class SslChannelIntegrationTest {
 
         isoServer.shutdown();
 
-        assertThrows(EOFException.class, () -> {
+        assertThrows(SocketTimeoutException.class, () -> {
             clientChannel.receive();
         }, "clientChannel should be closed");
     }

@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
 
@@ -236,7 +237,8 @@ public class ISOServer extends Observable
                 serverSocket.close ();
                 fireEvent(new ISOServerShutdownEvent(this));
             }
-        } catch (IOException e) {
+            executor.awaitTermination(LONG_RELAX, TimeUnit.SECONDS);
+        } catch (IOException | InterruptedException e) {
             fireEvent(new ISOServerShutdownEvent(this));
             Logger.log (new LogEvent (this, "shutdown", e));
         }
@@ -601,6 +603,7 @@ public class ISOServer extends Observable
         connectionCount.set(0);
         lastTxn = 0l;
     }
+
     /**
      * @return number of connections accepted by this server
      */
