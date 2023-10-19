@@ -1,6 +1,5 @@
 [![][jpos-logo]][jpos-url]
 
-[![Build Status][badge-travis-image]][badge-travis-url]
 [![Javadocs](http://www.javadoc.io/badge/org.jpos/jpos.svg)](http://www.javadoc.io/doc/org.jpos/jpos)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
@@ -21,6 +20,4 @@ Commercial-friendly licensing available: [Contact form](http://jpos.org/main/con
 
 [jpos-logo]: http://jpos.org/images/jpos.png
 [jpos-url]: http://jpos.org
-[badge-travis-url]: https://travis-ci.org/jpos/jPOS
-[badge-travis-image]: https://api.travis-ci.org/jpos/jPOS.svg
 [![Gitter](https://badges.gitter.im/jpos/jPOS.svg)](https://gitter.im/jpos/jPOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
