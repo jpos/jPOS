@@ -58,6 +58,10 @@ public class MeterFactory {
             .register(registry));
     }
 
+    public static void remove (MeterRegistry registry, Meter meter) {
+        registry.getMeters().remove(meter);
+    }
+
     @SuppressWarnings("unchecked")
     private static <T extends Meter> T createMeter(MeterRegistry registry, MeterInfo meterInfo, Tags tags, Callable<T> creator) {
         try {

@@ -140,7 +140,7 @@ public class SystemMonitor extends QBeanSupport
           .sorted(Comparator.comparing(meter -> meter.getId().getName()))
           .forEach(meter -> {
             String prefix = indent + (isFirst.getAndSet(false) ? "       meters: " : "               ");
-            p.printf("%s%s%s%n", prefix, meter.getId().getName(), meter.measure());
+            p.printf("%s%s %s %s%n", prefix, meter.getId().getName(), meter.getId().getTags(), meter.measure());
         });
     }
 

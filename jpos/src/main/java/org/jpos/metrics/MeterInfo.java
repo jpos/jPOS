@@ -20,7 +20,19 @@ package org.jpos.metrics;
 public enum MeterInfo {
     TM_ACTIVE_SESSIONS("jpos.tm.active.sessions", "TransactionManager activeSessions"),
     TM_OPERATION("jpos.tm.op", "TransactionManager operation"),
-    TM_COUNTER("jpos.tm.cnt", "TransactionManager counter");
+    TM_COUNTER("jpos.tm.cnt", "TransactionManager counter"),
+    ISOSERVER_CONNECTION_COUNT("jpos.server.connections", "Incoming active connections"),
+    ISOCHANNEL_CONNECTION_COUNT("jpos.channel.connections", "Outgoing active connections"),
+    ISOMSG_OUT ("jpos.isomsg.out", "Transmitted messages"),
+    ISOMSG_IN ("jpos.isomsg.in", "Received messages"),
+    CHANNEL_ACTIVE_CONNECTIONS("jpos.channel.connections", "Active outgoing connections"),
+    MUX_STATUS("jpos.mux.status", "MUX Status"),
+    MUX_TX("jpos.mux.tx", "MUX tx counter"),
+    MUX_RX("jpos.mux.rx", "MUX rx counter"),
+    MUX_EXPIRED("jpos.mux.expired.cnt", "MUX expired counter"),
+    MUX_RESPONSE_TIME("jpos.mux.timer", "MUX response timer"),
+    CHANNEL_STATUS("jpos.channel.status", "Channel status");
+
     final String id;
     final String description;
 

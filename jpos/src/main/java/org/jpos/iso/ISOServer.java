@@ -315,6 +315,8 @@ public class ISOServer extends Observable
                 if (!checkPermission (socket, ev))
                     return;
                 realm = realm + "/" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
+                if (clientSideChannel instanceof BaseChannel bc)
+                    baseChannel.setCounters(bc.getMsgInCounter(), bc.getMsgOutCounter());
             }
             try {
                 while (true) try {

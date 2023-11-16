@@ -18,18 +18,16 @@
 
 package org.jpos.q2.iso;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.binder.BaseUnits;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.Environment;
-import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISORequestListener;
-import org.jpos.iso.ISOServer;
-import org.jpos.iso.ISOServerEventListener;
-import org.jpos.iso.ISOServerSocketFactory;
-import org.jpos.iso.ISOSource;
-import org.jpos.iso.ServerChannel;
+import org.jpos.iso.*;
+import org.jpos.metrics.MeterFactory;
+import org.jpos.metrics.MeterInfo;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.LocalSpace;
@@ -66,6 +64,11 @@ public class QServer
     private String outQueue;
     private String sendMethod;
     AtomicInteger msgn = new AtomicInteger();
+
+    private Gauge connectionsGauge;
+    private Counter msgOutCounter;
+    private Counter msgInCounter;
+
     public QServer () {
         super ();
     }
@@ -104,12 +107,13 @@ public class QServer
         }
 
         server = new ISOServer (port, (ServerChannel) channel, maxSessions);
+        initMeters(); // meters need 'server' to be initialized
         server.setLogger (log.getLogger(), getName() + ".server");
         server.setName (getName ());
         if (socketFactoryString != null) {
-            ISOServerSocketFactory sFac = (ISOServerSocketFactory) getFactory().newInstance(socketFactoryString);
-            if (sFac != null && sFac instanceof LogSource) {
-                ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
+            ISOServerSocketFactory sFac = getFactory().newInstance(socketFactoryString);
+            if (sFac instanceof LogSource ls) {
+                ls.setLogger(log.getLogger(),getName() + ".socket-factory");
             }
             server.setSocketFactory(sFac);
         }
@@ -125,10 +129,9 @@ public class QServer
         inQueue = Environment.get(persist.getChildTextTrim("in"));
         if (inQueue != null) {
             /*
-             * We have an 'in' queue to monitor for messages we will
-             *  send out through server in our (SpaceListener)notify(Object, Object) method.
+             * We have an 'in' queue to monitor for messages to be
+             * sent out through server in our (SpaceListener)notify(Object, Object) method.
              */
-
             sp.addListener(inQueue, this);
         }
     }
@@ -138,7 +141,7 @@ public class QServer
         if (outQueue != null) {
             /*
              * We have an 'out' queue to send any messages to that are received
-             * by the our requestListener(this).
+             * by our requestListener(this).
              *
              * Note, if additional ISORequestListeners are registered with the server after
              *  this point, then they won't see anything as our process(ISOSource, ISOMsg)
@@ -159,14 +162,11 @@ public class QServer
         }
     }
     private void initWhoToSendTo() {
-
         Element persist = getPersist();
         sendMethod = persist.getChildText("send-request");
         if (sendMethod==null) {
             sendMethod="LAST";
         }
-
-
     }
 
     @Override
@@ -175,6 +175,7 @@ public class QServer
             server.shutdown ();
             sp.removeListener(inQueue, this);
         }
+        removeMeters();
     }
     @Override
     public void destroyService () {
@@ -394,7 +395,7 @@ public class QServer
     }
 
     /*
-     * This method will be invoke through the ISORequestListener interface, *if*
+     * This method will be invoked through the ISORequestListener interface, *if*
      * this QServer has an 'out' queue to handle.
      */
     @Override
@@ -403,6 +404,26 @@ public class QServer
         return true;
     }
 
+    private void initMeters() {
+        var tags =  Tags.of("name", getName(), "type", "server");
+        var registry = getServer().getMeterRegistry();
+        connectionsGauge =
+          MeterFactory.gauge
+            (registry, MeterInfo.ISOSERVER_CONNECTION_COUNT,
+              tags,
+              BaseUnits.THREADS,
+              server::getConnectionCount
+          );
+        msgInCounter = MeterFactory.counter(registry, MeterInfo.ISOMSG_IN, tags);
+        msgOutCounter = MeterFactory.counter(registry, MeterInfo.ISOMSG_OUT, tags);
+        if (channel instanceof BaseChannel baseChannel) {
+             baseChannel.setCounters(msgInCounter, msgOutCounter);
+        }
+    }
+    private void removeMeters() {
+        var registry = getServer().getMeterRegistry();
+         registry.remove(connectionsGauge);
+         registry.remove(msgInCounter);
+         registry.remove(msgOutCounter);
+    }
 }
-
-

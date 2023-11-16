@@ -18,6 +18,7 @@
 
 package org.jpos.iso;
 
+import io.micrometer.core.instrument.Counter;
 import jdk.jfr.Event;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -104,6 +105,9 @@ public abstract class BaseChannel extends Observable
     private static final int DEFAULT_TIMEOUT = 300000;
     private int nextHostPort = 0;
     private boolean roundRobin = false;
+
+    private Counter msgOutCounter;
+    private Counter msgInCounter;
 
     private final Map<Class<? extends Exception>, List<ExceptionHandler>> exceptionHandlers = new HashMap<>();
     
@@ -257,6 +261,18 @@ public abstract class BaseChannel extends Observable
     public boolean isConnected() {
         return socket != null && usable;
     }
+
+    public void setCounters(Counter msgInCounter, Counter msgOutCounter) {
+        this.msgInCounter = msgInCounter;
+        this.msgOutCounter = msgOutCounter;
+    }
+    public Counter getMsgInCounter() {
+        return msgInCounter;
+    }
+    public Counter getMsgOutCounter() {
+        return msgOutCounter;
+    }
+
     /**
      * setup I/O Streams from socket
      * @param socket a Socket (client or server)
@@ -635,6 +651,8 @@ public abstract class BaseChannel extends Observable
                 serverOutLock.unlock();
             }
             cnt[TX]++;
+            if (msgOutCounter != null)
+                msgOutCounter.increment();
             setChanged();
             notifyObservers(m);
             jfr.setDetail(m.toString());
@@ -801,6 +819,9 @@ public abstract class BaseChannel extends Observable
             m = applyIncomingFilters (m, header, b, evt);
             m.setDirection(ISOMsg.INCOMING);
             cnt[RX]++;
+            if (msgInCounter != null) {
+                 msgInCounter.increment();
+            }
             setChanged();
             notifyObservers(m);
         } catch (ISOException e) {
