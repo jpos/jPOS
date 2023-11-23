@@ -2,12 +2,10 @@ package org.jpos.tlv.packager.bertlv;
 import org.bouncycastle.util.Arrays;
 import org.jpos.iso.*;
 import org.jpos.tlv.ISOTaggedField;
-import org.jpos.tlv.packager.bertlv.BERTLVAsciiHexPackager;
-import org.jpos.tlv.packager.bertlv.BERTLVBinaryPackager;
 
 import org.junit.jupiter.api.*;
 
-public class Bug_BERTLVAsciiPackager {
+public class Bug568BERTLVAsciiHexPackager {
 
     final String HEX_ASCII = "9f2610e18d2a69a45dd09a9f360401839f3708ab34b0bd";
 
