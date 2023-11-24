@@ -17,11 +17,10 @@
  */
 
 package org.jpos.space;
+
 import org.jpos.util.Loggeable;
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -40,8 +39,9 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private static final long GCLONG = 60*1000;
     private static final long NRD_RESOLUTION = 500L;
     private static final int MAX_ENTRIES_IN_DUMP = 1000;
+    private static final long ONE_MILLION = 1_000_000L;         // multiplier millis --> nanos
     private final Set[] expirables;
-    private long lastLongGC = Instant.now().toEpochMilli();
+    private long lastLongGC = System.nanoTime();
 
     public TSpace () {
         super();
@@ -70,7 +70,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             throw new NullPointerException ("key=" + key + ", value=" + value);
         Object v = value;
         if (timeout > 0) {
-            v = new Expirable (value, Instant.now().toEpochMilli() + timeout);
+            v = new Expirable (value, System.nanoTime() + (timeout * ONE_MILLION));
         }
         synchronized (this) {
             List l = getList(key);
@@ -112,17 +112,18 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public synchronized V in  (Object key, long timeout) {
-        Object obj;
-        Instant now = Instant.now();
-        long duration;
-        while ((obj = inp (key)) == null &&
-                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
+        V obj;
+        long now = System.nanoTime();
+        long to = now + timeout * ONE_MILLION;
+        long waitFor;
+        while ( (obj = inp (key)) == null &&
+                (waitFor = (to - System.nanoTime())) >= 0 )
         {
             try {
-                this.wait (timeout - duration);
+                this.wait(Math.max(waitFor / ONE_MILLION, 1L));
             } catch (InterruptedException e) { }
         }
-        return (V) obj;
+        return obj;
     }
 
     @Override
@@ -138,17 +139,18 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public synchronized V rd  (Object key, long timeout) {
-        Object obj;
-        Instant now = Instant.now();
-        long duration;
-        while ((obj = rdp (key)) == null &&
-                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
+        V obj;
+        long now = System.nanoTime();
+        long to = now + (timeout * ONE_MILLION);
+        long waitFor;
+        while ( (obj = rdp (key)) == null &&
+                (waitFor = (to - System.nanoTime())) >= 0 )
         {
             try {
-                this.wait (timeout - duration);
+                this.wait(Math.max(waitFor / ONE_MILLION, 1L));
             } catch (InterruptedException e) { }
         }
-        return (V) obj;
+        return obj;
     }
 
     @Override
@@ -162,17 +164,19 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public synchronized V nrd  (Object key, long timeout) {
-        Object obj;
-        Instant now = Instant.now();
-        long duration;
-        while ((obj = rdp (key)) != null &&
-                (duration = Duration.between(now, Instant.now()).toMillis()) < timeout)
+        V obj;
+        long now = System.nanoTime();
+        long to = now + (timeout * ONE_MILLION);
+        long waitFor;
+        while ( (obj = rdp (key)) != null &&
+                (waitFor = (to - System.nanoTime())) >= 0 )
         {
             try {
-                this.wait (Math.min(NRD_RESOLUTION, timeout - duration));
+                this.wait(Math.min(NRD_RESOLUTION,
+                                   Math.max(waitFor / ONE_MILLION, 1L)));
             } catch (InterruptedException ignored) { }
         }
-        return (V) obj;
+        return obj;
     }
 
     @Override
@@ -186,9 +190,9 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     public void gc () {
         gc(0);
-        if (Instant.now().toEpochMilli() - lastLongGC > GCLONG) {
+        if (System.nanoTime() - lastLongGC > GCLONG) {
             gc(1);
-            lastLongGC = Instant.now().toEpochMilli();
+            lastLongGC = System.nanoTime();
         }
     }
 
@@ -336,7 +340,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             throw new NullPointerException ("key=" + key + ", value=" + value);
         Object v = value;
         if (timeout > 0) {
-            v = new Expirable (value, Instant.now().toEpochMilli() + timeout);
+            v = new Expirable (value, System.nanoTime() + (timeout * ONE_MILLION));
         }
         synchronized (this) {
             List l = getList(key);
@@ -373,7 +377,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             throw new NullPointerException ("key=" + key + ", value=" + value);
         Object v = value;
         if (timeout > 0) {
-            v = new Expirable (value, Instant.now().toEpochMilli() + timeout);
+            v = new Expirable (value, System.nanoTime() + (timeout * ONE_MILLION));
         }
         synchronized (this) {
             List l = new LinkedList();
@@ -399,14 +403,15 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public boolean existAny (K[] keys, long timeout) {
-        Instant now = Instant.now();
-        long duration;
-        while ((duration = Duration.between(now, Instant.now()).toMillis()) < timeout) {
+        long now = System.nanoTime();
+        long to = now + (timeout * ONE_MILLION);
+        long waitFor;
+        while ((waitFor = (to - System.nanoTime())) >= 0) {
             if (existAny (keys))
                 return true;
             synchronized (this) {
                 try {
-                    wait (timeout - duration);
+                    this.wait(Math.max(waitFor / ONE_MILLION, 1L));
                 } catch (InterruptedException e) { }
             }
         }
@@ -517,19 +522,24 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     static class Expirable implements Comparable, Serializable {
 
-        static final long serialVersionUID = 0xA7F22BF5;
+        private static final long serialVersionUID = 0xA7F22BF5;
 
         Object value;
+
+        /**
+         *  When to expire, in the future, as given by monotonic System.nanoTime().<br>
+         *  IMPORTANT: always use a nanosec offset from System.nanoTime()!
+         */
         long expires;
 
-        public Expirable (Object value, long expires) {
+        Expirable (Object value, long expires) {
             super();
             this.value = value;
             this.expires = expires;
         }
 
-        public boolean isExpired () {
-            return expires < Instant.now().toEpochMilli();
+        boolean isExpired () {
+            return (System.nanoTime() - expires) > 0;
         }
 
         @Override
@@ -540,20 +550,16 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                 + ",expired=" + isExpired ();
         }
 
-        public Object getValue() {
+        Object getValue() {
             return isExpired() ? null : value;
         }
 
         @Override
-        public int compareTo (Object obj) {
-            Expirable other = (Expirable) obj;
-            long otherExpires = other.expires;
-            if (otherExpires == expires)
-                return 0;
-            else if (expires < otherExpires)
-                return -1;
-            else 
-                return 1;
+        public int compareTo (Object other) {
+            long diff = this.expires - ((Expirable)other).expires;
+            return  diff > 0 ?  1 :
+                    diff < 0 ? -1 :
+                    0;
         }
     }
 

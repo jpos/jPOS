@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.time.Duration;
 import java.util.AbstractSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,6 +43,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @SuppressWarnings("unchecked")
 @ExtendWith(MockitoExtension.class)
 public class TSpaceTest {
+    static final long EXPIRE_OFFSET = Duration.ofDays(9999).toNanos();
 
     @Test
     public void testConstructor() throws Throwable {
@@ -103,31 +105,33 @@ public class TSpaceTest {
 
     @Test
     public void testExpirableGetValue() throws Throwable {
-        String result = (String) new TSpace.Expirable("", 9184833384926L).getValue();
+        String result = (String) new TSpace.Expirable("", System.nanoTime() + EXPIRE_OFFSET).getValue();
         assertEquals("", result, "result");
     }
 
     @Test
     public void testExpirableGetValue1() throws Throwable {
-        Object result = new TSpace.Expirable(null, 9184833384926L).getValue();
+        Object result = new TSpace.Expirable(null, System.nanoTime() + EXPIRE_OFFSET).getValue();
         assertNull(result, "result");
     }
 
     @Test
     public void testExpirableGetValue2() throws Throwable {
-        Object result = new TSpace.Expirable(new Object(), 100L).getValue();
+        // using negative offset to ensure expiration (literally, object is born already expired)
+        Object result = new TSpace.Expirable(new Object(), System.nanoTime() - EXPIRE_OFFSET).getValue();
         assertNull(result, "result");
     }
 
     @Test
     public void testExpirableIsExpired() throws Throwable {
-        boolean result = new TSpace.Expirable("", 9184833384926L).isExpired();
+        boolean result = new TSpace.Expirable("", System.nanoTime() + EXPIRE_OFFSET).isExpired();
         assertFalse(result, "result");
     }
 
     @Test
     public void testExpirableIsExpired1() throws Throwable {
-        boolean result = new TSpace.Expirable(new Object(), 100L).isExpired();
+        // using negative offset to ensure expiration (literally, object is born already expired)
+        boolean result = new TSpace.Expirable(new Object(),  System.nanoTime() - EXPIRE_OFFSET).isExpired();
         assertTrue(result, "result");
     }
 
@@ -140,7 +144,7 @@ public class TSpaceTest {
     @Test
     public void testExpirableToStringThrowsNullPointerException() throws Throwable {
         try {
-            new TSpace.Expirable(null, 100L).toString();
+            new TSpace.Expirable(null,100L).toString();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             if (isJavaVersionAtMost(JAVA_14)) {
@@ -153,7 +157,6 @@ public class TSpaceTest {
 
     @Test
     public void testGc() throws Throwable {
-
         TSpace tSpace = new TSpace();
         tSpace.gc();
         assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
@@ -207,6 +210,7 @@ public class TSpaceTest {
                 "tSpace.entries.get(\"\").get(0) had \"testString\" removed");
         assertEquals("testString", result, "result");
         assertEquals(3, tSpace.entries.size(), "tSpace.entries.size()");
+        tSpace.dump(System.out, ">>");
     }
 
     @Test
@@ -239,12 +243,10 @@ public class TSpaceTest {
         final Space sp = new TSpace();
         final AtomicInteger ai = new AtomicInteger(10);
         for (int i=0; i<10; i++) {
-            new Thread() {
-                public void run() {
-                    if (sp.rd("TEST", 5000L) != null)
-                        ai.decrementAndGet();
-                }
-            }.start();
+            new Thread(()->{
+                if (sp.rd("TEST", 5000L) != null)
+                    ai.decrementAndGet();
+            }).start();
         }
         sp.out("TEST", Boolean.TRUE);
         ISOUtil.sleep(500L);
