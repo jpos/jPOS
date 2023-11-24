@@ -43,6 +43,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @SuppressWarnings("unchecked")
 @ExtendWith(MockitoExtension.class)
 public class TSpaceTest {
+    static final long EXPIRE_OFFSET = Duration.ofDays(9999).toNanos();
 
     @Test
     public void testConstructor() throws Throwable {
@@ -63,27 +64,27 @@ public class TSpaceTest {
 
     @Test
     public void testExpirableCompareTo() throws Throwable {
-        int result = new TSpace.Expirable(Integer.valueOf(0), Duration.ofMillis(1L)).compareTo(new TSpace.Expirable(new Object(), Duration.ofMillis(0L)));
+        int result = new TSpace.Expirable(Integer.valueOf(0), 1L).compareTo(new TSpace.Expirable(new Object(), 0L));
         assertEquals(1, result, "result");
     }
 
     @Test
     public void testExpirableCompareTo1() throws Throwable {
-        TSpace.Expirable obj = new TSpace.Expirable(new Object(), Duration.ofMillis(0L));
-        int result = new TSpace.Expirable(new Object(), Duration.ofMillis(0L)).compareTo(obj);
+        TSpace.Expirable obj = new TSpace.Expirable(new Object(), 0L);
+        int result = new TSpace.Expirable(new Object(), 0L).compareTo(obj);
         assertEquals(0, result, "result");
     }
 
     @Test
     public void testExpirableCompareTo2() throws Throwable {
-        int result = new TSpace.Expirable(null, Duration.ofMillis(0L)).compareTo(new TSpace.Expirable(new Object(), Duration.ofMillis(1L)));
+        int result = new TSpace.Expirable(null, 0L).compareTo(new TSpace.Expirable(new Object(), 1L));
         assertEquals(-1, result, "result");
     }
 
     @Test
     public void testExpirableCompareToThrowsNullPointerException() throws Throwable {
         try {
-            new TSpace.Expirable(new Object(), Duration.ofMillis(100L)).compareTo(null);
+            new TSpace.Expirable(new Object(), 100L).compareTo(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             if (isJavaVersionAtMost(JAVA_14)) {
@@ -97,51 +98,53 @@ public class TSpaceTest {
     @Test
     public void testExpirableConstructor() throws Throwable {
         Object value = new Object();
-        TSpace.Expirable expirable = new TSpace.Expirable(value, Duration.ofMillis(100L));
-        assertEquals(Duration.ofMillis(100L), expirable.expires, "expirable.expires");
+        TSpace.Expirable expirable = new TSpace.Expirable(value, 100L);
+        assertEquals(100L, expirable.expires, "expirable.expires");
         assertSame(value, expirable.value, "expirable.value");
     }
 
     @Test
     public void testExpirableGetValue() throws Throwable {
-        String result = (String) new TSpace.Expirable("", Duration.ofNanos(System.nanoTime()).plus(Duration.ofMillis(9184833384926L))).getValue();
+        String result = (String) new TSpace.Expirable("", System.nanoTime() + EXPIRE_OFFSET).getValue();
         assertEquals("", result, "result");
     }
 
     @Test
     public void testExpirableGetValue1() throws Throwable {
-        Object result = new TSpace.Expirable(null, Duration.ofMillis(9184833384926L)).getValue();
+        Object result = new TSpace.Expirable(null, System.nanoTime() + EXPIRE_OFFSET).getValue();
         assertNull(result, "result");
     }
 
     @Test
     public void testExpirableGetValue2() throws Throwable {
-        Object result = new TSpace.Expirable(new Object(), Duration.ofNanos(System.nanoTime()).minus(Duration.ofMillis(100L))).getValue();
+        // using negative offset to ensure expiration (literally, object is born already expired)
+        Object result = new TSpace.Expirable(new Object(), System.nanoTime() - EXPIRE_OFFSET).getValue();
         assertNull(result, "result");
     }
 
     @Test
     public void testExpirableIsExpired() throws Throwable {
-        boolean result = new TSpace.Expirable("", Duration.ofNanos(System.nanoTime()).plus(Duration.ofMillis(9184833384926L))).isExpired();
+        boolean result = new TSpace.Expirable("", System.nanoTime() + EXPIRE_OFFSET).isExpired();
         assertFalse(result, "result");
     }
 
     @Test
     public void testExpirableIsExpired1() throws Throwable {
-        boolean result = new TSpace.Expirable(new Object(), Duration.ofNanos(System.nanoTime()).minus(Duration.ofMillis(100L))).isExpired();
+        // using negative offset to ensure expiration (literally, object is born already expired)
+        boolean result = new TSpace.Expirable(new Object(),  System.nanoTime() - EXPIRE_OFFSET).isExpired();
         assertTrue(result, "result");
     }
 
     @Test
     public void testExpirableToString() throws Throwable {
-        new TSpace.Expirable(";\"i", Duration.ofMillis(100L)).toString();
+        new TSpace.Expirable(";\"i", 100L).toString();
         assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testExpirableToStringThrowsNullPointerException() throws Throwable {
         try {
-            new TSpace.Expirable(null, Duration.ofMillis(100L)).toString();
+            new TSpace.Expirable(null,100L).toString();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             if (isJavaVersionAtMost(JAVA_14)) {
@@ -154,7 +157,6 @@ public class TSpaceTest {
 
     @Test
     public void testGc() throws Throwable {
-
         TSpace tSpace = new TSpace();
         tSpace.gc();
         assertEquals(0, tSpace.entries.size(), "tSpace.entries.size()");
@@ -208,6 +210,7 @@ public class TSpaceTest {
                 "tSpace.entries.get(\"\").get(0) had \"testString\" removed");
         assertEquals("testString", result, "result");
         assertEquals(3, tSpace.entries.size(), "tSpace.entries.size()");
+        tSpace.dump(System.out, ">>");
     }
 
     @Test
@@ -240,12 +243,10 @@ public class TSpaceTest {
         final Space sp = new TSpace();
         final AtomicInteger ai = new AtomicInteger(10);
         for (int i=0; i<10; i++) {
-            new Thread() {
-                public void run() {
-                    if (sp.rd("TEST", 5000L) != null)
-                        ai.decrementAndGet();
-                }
-            }.start();
+            new Thread(()->{
+                if (sp.rd("TEST", 5000L) != null)
+                    ai.decrementAndGet();
+            }).start();
         }
         sp.out("TEST", Boolean.TRUE);
         ISOUtil.sleep(500L);
