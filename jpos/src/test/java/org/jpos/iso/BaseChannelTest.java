@@ -18,18 +18,19 @@
 
 package org.jpos.iso;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.*;
@@ -1223,4 +1224,61 @@ public class BaseChannelTest {
         byte[] result = aSCIIChannel.streamReceive();
         assertEquals(0, result.length, "result.length");
     }
+
+    /**
+     * Connect using input stream, send a message and check what is written in the output stream 
+     * is the same as the packed message.
+     */
+    @Test
+    public void testConnectWithStreamsAndSend() throws ISOException, IOException {
+        BaseChannel ch = new PADChannel() {
+            @Override
+            public boolean isConnected() {
+                return serverOut != null;
+            }
+        };
+        ISOPackager packager = new ISO87APackager(); 
+        ch.setPackager(packager);
+        
+        ISOMsg m = new ISOMsg();
+        m.setMTI("0800");
+        m.set(11, "000000");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ch.connect(null, out);
+        ch.send(m);
+        assertThat("Packed message should match output stream content", 
+                out.toByteArray(), is(equalTo(packager.pack(m))));
+        //Double check just to verify we are not comparing empty arrays.
+        m.set(41, "ABC");
+        assertThat("Packed message should not match a different message", 
+                out.toByteArray(), is(not(equalTo(packager.pack(m)))));
+    }
+
+    /**
+     * Connect using output stream, receive a message and check it is the same as sent. 
+     */
+    @Test
+    public void testConnectWithStreamsAndReceive() throws ISOException, IOException {
+        BaseChannel ch = new PADChannel(){
+            @Override
+            public boolean isConnected() {
+                return serverIn != null;
+            }
+        };
+        ISOPackager packager = new ISO87APackager();
+        ch.setPackager(packager);
+
+        ISOMsg m = new ISOMsg();
+        m.setMTI("0800");
+        m.set(11, "000000");
+        m.setPackager(packager);
+        ByteArrayInputStream in = new ByteArrayInputStream(m.pack());
+        ch.connect(in, null);
+        ISOMsg m2 = ch.receive();
+        assertThat("Received message should not be null", m2, is(notNullValue()));
+        assertThat("Received message should be the same as original",
+                m2.pack(), is(equalTo(m.pack())));
+        
+    }
+
 }

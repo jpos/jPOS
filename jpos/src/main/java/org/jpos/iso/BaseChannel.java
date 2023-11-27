@@ -291,6 +291,20 @@ public abstract class BaseChannel extends Observable
         setChanged();
         notifyObservers();
     }
+
+    /**
+     * Allow the channel to be connected to a pair of input and output streams.
+     * <p> 
+     * For instance for taking input from or outputting to a file or standard input/ouput.  
+     * 
+     * @param in Where to read from.
+     * @param out Where to write to.
+     */
+    protected void connect(InputStream in, OutputStream out) {
+        usable = in != null || out != null; //at least one of them has to be not null
+        if (in != null) serverIn = new DataInputStream(in);
+        if (out != null) serverOut = new DataOutputStream(out);
+    }
     protected void postConnectHook() throws IOException {
         // do nothing
     }
