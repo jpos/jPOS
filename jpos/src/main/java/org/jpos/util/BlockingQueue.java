@@ -79,7 +79,8 @@ public class BlockingQueue {
         long maxTime = System.currentTimeMillis() + timeout;
         try {
             while (queue.size() == 0 && System.currentTimeMillis() < maxTime) {
-                wait (timeout);
+                if (timeout > 0L)
+                    wait (timeout);
                 if (closed)
                     throw new Closed();
             }
