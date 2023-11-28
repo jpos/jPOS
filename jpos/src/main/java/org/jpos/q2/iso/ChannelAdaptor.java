@@ -37,6 +37,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.SocketTimeoutException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -49,13 +51,13 @@ public class ChannelAdaptor
 {
     protected Space sp;
     private ISOChannel channel;
+    private Duration lastTxn = null;
     String in, out, ready, reconnect;
     long delay;
     boolean keepAlive = false;
     boolean ignoreISOExceptions = false;
     boolean writeOnly = false;
     int rx, tx, connects;
-    long lastTxn = 0l;
     long timeout = 0l;
     boolean waitForWorkersOnStop;
     private Thread receiver;
@@ -332,7 +334,7 @@ public class ChannelAdaptor
                         continue;
                     ISOMsg m = channel.receive ();
                     rx++;
-                    lastTxn = System.currentTimeMillis();
+                    lastTxn = Duration.ofNanos(System.nanoTime());
                     if (timeout > 0)
                         sp.out (out, m, timeout);
                     else
@@ -430,9 +432,12 @@ public class ChannelAdaptor
         setModified(true);
     }
 
+    void updateLast() {
+        lastTxn = Duration.ofNanos(System.nanoTime());
+    }
     public void resetCounters () {
         rx = tx = connects = 0;
-        lastTxn = 0l;
+        lastTxn = null;
     }
     public String getCountersAsString () {
         StringBuffer sb = new StringBuffer();
@@ -440,10 +445,10 @@ public class ChannelAdaptor
         append (sb, ", rx=", rx);
         append (sb, ", connects=", connects);
         sb.append (", last=");
-        sb.append(lastTxn);
-        if (lastTxn > 0) {
+        sb.append(getLastTxnTimestampInMillis());
+        if (lastTxn != null) {
             sb.append (", idle=");
-            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append(Duration.ofNanos(System.nanoTime()).minus(lastTxn).toMillis());
             sb.append ("ms");
         }
         return sb.toString();
@@ -458,10 +463,12 @@ public class ChannelAdaptor
         return connects;
     }
     public long getLastTxnTimestampInMillis() {
-        return lastTxn;
+        if (lastTxn == null)
+            return 0L;
+        return Instant.now().minus(Duration.ofNanos(System.nanoTime()).minus(lastTxn)).toEpochMilli();
     }
     public long getIdleTimeInMillis() {
-        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
+        return lastTxn != null ? Duration.ofNanos(System.nanoTime()).minus(lastTxn).toMillis() : -1L;
     }
     public String getSocketFactory() {
         return getProperty(getProperties ("channel"), "socketFactory");
