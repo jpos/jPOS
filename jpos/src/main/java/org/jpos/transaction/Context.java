@@ -195,7 +195,8 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
                 (now = System.currentTimeMillis()) < end)
         {
             try {
-                this.wait (end - now);
+                if (end > now)
+                    this.wait (end - now);
             } catch (InterruptedException ignored) { }
         }
         return obj;
