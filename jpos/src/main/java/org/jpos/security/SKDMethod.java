@@ -32,33 +32,34 @@ package org.jpos.security;
  */
 public enum SKDMethod {
 
-   /**
-    * Visa Smart Debit/Credit or UKIS in England
-    * <br>
-    * Described in Visa Integrated Circuit Card
-    * Specification (VIS) Version 1.5 - May 2009, section B.4
-    */
-   VSDC
+    /**
+     * Visa Smart Debit/Credit or UKIS in England
+     * <br>
+     * Described in Visa Integrated Circuit Card
+     * Specification (VIS) Version 1.5 - May 2009, section B.4
+     */
+    VSDC,
 
-   /**
-    * MasterCard Proprietary SKD method
-    */
-  ,MCHIP
-   /**
-    * American Express
-    */
-  ,AEPIS_V40
+    /**
+     * MasterCard Proprietary SKD method
+     */
+    MCHIP,
 
-   /**
-    * EMV Common Session Key Derivation Method
-    * Described in EMV v4.2 Book 2 - June 2008, Annex A1.3
-    */
-  ,EMV_CSKD
+    /**
+     * American Express
+     */
+    AEPIS_V40,
 
-   /**
-    * EMV2000 Session Key Method
-    * Described in EMV 2000 v4.0 Book 2 - December 2000, Annex A1.3
-    */
-  ,EMV2000_SKM
+    /**
+     * EMV Common Session Key Derivation Method
+     * Described in EMV v4.2 Book 2 - June 2008, Annex A1.3
+     */
+    EMV_CSKD,
+
+    /**
+     * EMV2000 Session Key Method
+     * Described in EMV 2000 v4.0 Book 2 - December 2000, Annex A1.3
+     */
+    EMV2000_SKM,
 
 }
