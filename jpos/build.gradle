@@ -28,6 +28,8 @@ dependencies {
     implementation libraries.sleepycat_je
     implementation libraries.sshd
     implementation libraries.eddsa
+    implementation libraries.bytebuddy
+    implementation libraries.commons_lang3
 
     testImplementation libraries.commons_lang3
     testImplementation libraries.hamcrest

@@ -820,6 +820,9 @@ public class TransactionManager
         if (participant instanceof Destroyable) {
             destroyables.add((Destroyable) participant);
         }
+        if (AnnotatedParticipantWrapper.isMatch(participant)) {
+            participant = AnnotatedParticipantWrapper.wrap(participant);
+        }
         return participant;
     }
 
