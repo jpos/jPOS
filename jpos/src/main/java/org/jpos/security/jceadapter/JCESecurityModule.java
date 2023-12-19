@@ -969,8 +969,6 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
                 break;
             case EMV_CSKD:
                 skac = deriveCommonSK_AC(mkac, atc);
-                byte [] padded =  paddingISO9797Method2(transData);
-                transData = padded;
                 break;
             default:
                 throw new SMException("Session Key Derivation "+skdm+" not supported");
@@ -1044,8 +1042,6 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
             case EMV_CSKD:
                 skac = deriveSK_MK(mkac, atc, new byte[4]);
                 skarpc = skac;
-                byte [] padded =  paddingISO9797Method2(transData);
-                transData = padded;
                 break;
             default:
                 throw new SMException("Session Key Derivation "+skdm+" not supported");
