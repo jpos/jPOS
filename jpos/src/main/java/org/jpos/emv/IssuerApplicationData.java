@@ -57,7 +57,7 @@ public final class IssuerApplicationData implements Loggeable {
 
         Objects.requireNonNull(hexIAD, "IAD data cannot be null.");
 
-        iad = hexIAD.trim().toUpperCase();
+        iad = hexIAD.trim();
 
         if (iad.length() < 14)
             throw new IllegalArgumentException("Invalid IAD length.");
