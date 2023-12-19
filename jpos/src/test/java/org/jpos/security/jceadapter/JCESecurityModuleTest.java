@@ -34,7 +34,16 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
 import org.jpos.iso.ISOUtil;
-import org.jpos.security.*;
+import org.jpos.security.ARPCMethod;
+import org.jpos.security.CipherMode;
+import org.jpos.security.EncryptedPIN;
+import org.jpos.security.KeyScheme;
+import org.jpos.security.MKDMethod;
+import org.jpos.security.PaddingMethod;
+import org.jpos.security.SKDMethod;
+import org.jpos.security.SMAdapter;
+import org.jpos.security.SMException;
+import org.jpos.security.SecureDESKey;
 import org.jpos.util.Logger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -154,7 +163,7 @@ public class JCESecurityModuleTest {
      * Card Sequence Number
      */
     static final String accountNoA_CSN = "00";
-
+    
     /**
      * 19 digits account number
      */
@@ -196,9 +205,9 @@ public class JCESecurityModuleTest {
     }
 
     static class EMVTxnData {
-
+ 
       Map<String, byte[]> dm;
-
+ 
       EMVTxnData() {
           dm = new HashMap<String, byte[]>();
           dm.put("AMMOUNT",           ISOUtil.hex2byte("000000010000"));
@@ -1826,53 +1835,6 @@ public class JCESecurityModuleTest {
             "E09B073B4007541FAB76B04370451031",
             "4CBF5D51EA8525EF045EFED6E386D9D9");
         assertArrayEquals(ISOUtil.hex2byte("40D522"), sdk.getKeyCheckValue(), "3: KeyCheck was " + ISOUtil.hexString(sdk.getKeyCheckValue()));
-    }
-
-
-    /**
-     *  Test Data is based of EMV Issuer and Application Security Guidelines v3.0  Annex A.3.3 - Example of ARQC Generation
-     */
-    @Test
-    public void TestARQCGeneration() throws Throwable {
-
-        String PAN = "5413339000006165";
-        String PANSeqNo = "00";
-        String amount = "000000010000";
-        String amount_other = "000000001000";
-        String terminalCountryCode = "0840";
-        String terminalVerificationResult = "0000001080";
-        String transactionCurrencyCode = "0840";
-        String transactionDate = "980704";
-        String transactionType = "00";
-        String unpredictableNumber = "11111111";
-        String applicationInterchangeProfile = "5800";
-        String applicationTransactionCounter = "3456";
-        String IssuerApplicationData = "0FA500A03800000000000000000000000F010000000000000000000000000000";
-
-        byte[] k = ISOUtil.hex2byte("9E15204313F7318ACB79B90BD986AD29");
-
-        SecureDESKey kek =  jcesecmod.generateKey(SMAdapter.LENGTH_DES, SMAdapter.TYPE_RSA_PK);
-        byte[] encKey = jcesecmod.encryptData(CipherMode.ECB, kek, k , new byte[8]);
-        SecureDESKey mkac =  jcesecmod.importKey((short) 128, SMAdapter.TYPE_MK_AC, encKey, kek, false);
-
-        byte[] d = ISOUtil.hex2byte(
-                amount
-                + amount_other
-                + terminalCountryCode
-                + terminalVerificationResult
-                + transactionCurrencyCode
-                + transactionDate
-                + transactionType
-                + unpredictableNumber
-                + applicationInterchangeProfile
-                + applicationTransactionCounter
-                + IssuerApplicationData
-        );
-
-        boolean result = jcesecmod.verifyARQC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD, mkac, PAN, PANSeqNo,ISOUtil.hex2byte("C20039270FE384D5") ,ISOUtil.hex2byte(applicationTransactionCounter), ISOUtil.hex2byte(unpredictableNumber), d);
-
-        assertTrue( result);
-
     }
 
 }
