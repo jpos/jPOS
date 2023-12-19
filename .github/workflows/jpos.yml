@@ -14,9 +14,11 @@ jobs:
     - name: Set up JDK ${{ matrix.java }}
       uses: actions/setup-java@v3
       with:
+        distribution: 'corretto'
         java-version: ${{ matrix.java }}
+        cache: 'gradle'
     - name: Cache Gradle packages
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
@@ -29,7 +31,18 @@ jobs:
       run: ./gradlew jpos:check --info
       env:
         TERM: dumb
+    - name: Upload test results
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: jpos/build/reports/tests/*
     - name: Dependency Check Analyze
       run: ./gradlew jpos:dependencyCheckAnalyze --info
       env:
         TERM: dumb
+    - name: Dependency Check Analyze
+      run: ./gradlew jpos:dependencyCheckAnalyze --info
+      env:
+        TERM: dumb
+
