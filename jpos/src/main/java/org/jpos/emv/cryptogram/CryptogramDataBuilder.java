@@ -33,7 +33,7 @@ import java.util.*;
  */
 public interface CryptogramDataBuilder {
 
-    final PaddingMethod ZERO_PADDING = data -> data;
+    final PaddingMethod NO_PADDING = data -> data;
 
     /**
      * ISO/IEC 9797-1 padding method 1
@@ -45,9 +45,23 @@ public interface CryptogramDataBuilder {
 
     /**
      * ISO/IEC 9797-1 padding method 2
-     *  for Block size 8,  n = 64
+     * for Block size 8,  n = 64
      */
     final PaddingMethod ISO9797Method2 = data -> ISO9797Method1.apply(data + "80");
+
+    /**
+     * ISO/IEC 9797-1 padding method 3
+     * for Block size 8,  n = 64
+     */
+    final PaddingMethod ISO9797Method3 = data -> {
+        StringBuilder sb = new StringBuilder();
+        String D = ISO9797Method1.apply(data);
+        String Ld = ISOUtil.byte2hex(ISOUtil.int2byte(data.length() / 2));
+        String Lp = ISO9797Method1.apply(Ld);
+        Lp = Ld.length() % 16 == 0 ? "" : Lp.substring(Ld.length());
+        return sb.append(Lp).append(Ld).append(D).toString();
+    };
+
 
     /**
      * Method that selects the  minimum set of data elements recommended for
