@@ -20,11 +20,10 @@ package org.jpos.emv.cryptogram;
 
 import org.jpos.emv.EMVStandardTagType;
 import org.jpos.emv.IssuerApplicationData;
+import org.jpos.iso.ISOUtil;
 import org.jpos.tlv.TLVList;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 /**
@@ -33,6 +32,22 @@ import java.util.Optional;
  * @author Rainer Reyes
  */
 public interface CryptogramDataBuilder {
+
+    final PaddingMethod ZERO_PADDING = data -> data;
+
+    /**
+     * ISO/IEC 9797-1 padding method 1
+     * for Block size 8,  n = 64
+     */
+    final PaddingMethod ISO9797Method1 = data -> data.isEmpty() ?
+            "0000000000000000" :
+            ISOUtil.zeropadRight(data, data.length() % 16 == 0 ? data.length() : data.length() + 16 - data.length() % 16);
+
+    /**
+     * ISO/IEC 9797-1 padding method 2
+     *  for Block size 8,  n = 64
+     */
+    final PaddingMethod ISO9797Method2 = data -> ISO9797Method1.apply(data + "80");
 
     /**
      * Method that selects the  minimum set of data elements recommended for
@@ -67,7 +82,7 @@ public interface CryptogramDataBuilder {
     String getDefaultARPCRequest(boolean approved);
 
     /**
-     * Select necessary data elements and create the string used to generate the ARQC
+     * Select necessary data elements and create the string used to generate the ARQC with no padding
      * <p>
      *
      * @param data ICC data received
@@ -76,4 +91,22 @@ public interface CryptogramDataBuilder {
      */
     String buildARQCRequest(TLVList data, IssuerApplicationData iad);
 
+
+    /**
+     * Select necessary data elements and create the string used to generate the ARQC with padding
+     * <p>
+     *
+     * @param data          ICC data received
+     * @param iad           Issuer application Data
+     * @param paddingMethod Padding method to use
+     * @return String used to generate the ARQC
+     */
+    String buildARQCRequest_padded(TLVList data, IssuerApplicationData iad, PaddingMethod paddingMethod);
+
+    /**
+     * Padding Method Interface
+     */
+    interface PaddingMethod {
+        String apply(String data);
+    }
 }
