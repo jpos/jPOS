@@ -28,7 +28,7 @@ import static org.jpos.emv.cryptogram.CryptogramDataBuilder.minimumSetOfDataElem
  * @author Rainer Reyes
  */
 public class CVN18DataBuilder implements CryptogramDataBuilder {
-    
+
     @Override
     public String getDefaultARPCRequest(boolean approved) {
         /* for success:
@@ -46,5 +46,10 @@ public class CVN18DataBuilder implements CryptogramDataBuilder {
         minimumSetOfDataElement(data).stream().forEach(sb::append);
         sb.append(iad.toString());
         return sb.toString();
+    }
+
+    @Override
+    public String buildARQCRequest_padded(TLVList data, IssuerApplicationData iad, PaddingMethod paddingMethod) {
+        return paddingMethod.apply(buildARQCRequest(data, iad));
     }
 }

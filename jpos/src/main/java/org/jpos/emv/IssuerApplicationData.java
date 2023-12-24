@@ -70,7 +70,7 @@ public final class IssuerApplicationData implements Loggeable {
             //Therefore, the length of the Issuer Application Data is 18 bytes and for 
             // M/Chip Advance it may be 18, 20, 26, or 28.
             unpackMCHIP(iad);
-        } else if (len == 32 && iad.startsWith("0F") && iad.startsWith("0F", 32)) {
+        } else if (len == 32 && (iad.startsWith("0F") || iad.startsWith("0f")) && (iad.startsWith("0F", 32) || iad.startsWith("0f", 32))) {
             // EMV_v4.3_Book_3
             // C7.2 Issuer Application Data for Format Code 'A'
             unpackEMVFormatA(iad);
