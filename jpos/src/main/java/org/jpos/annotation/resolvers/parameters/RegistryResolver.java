@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jpos.annotation.Registry;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.ISOUtil;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.TransactionParticipant;
 import org.jpos.util.NameRegistrar;
@@ -22,7 +22,7 @@ public class RegistryResolver implements ResolverServiceProvider {
         public void configure(Parameter f) throws ConfigurationException {
             Registry annotation = f.getAnnotation(Registry.class);
             registryKey = findKey(annotation.value(), f.getType(), NameRegistrar.getAsMap());
-            if (StringUtils.isEmpty(registryKey)) {
+            if (ISOUtil.isEmpty(registryKey)) {
                 throw new ConfigurationException("Could not find Registry entry for " + f.getName());
             }
         }
@@ -44,7 +44,7 @@ public class RegistryResolver implements ResolverServiceProvider {
 
         protected String getMatch(String key, List<String> typeMatches, List<String> keyMatches)
                 throws ConfigurationException {
-            if (StringUtils.isNotBlank(key)) {
+            if (!ISOUtil.isEmpty(key)) {
                 return getMatch(key, keyMatches);
             } else {
                 return getMatch(key, typeMatches);

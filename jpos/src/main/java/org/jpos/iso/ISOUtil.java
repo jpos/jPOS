@@ -1105,6 +1105,13 @@ public class ISOUtil {
     public static boolean isBlank( String s ){
         return s.trim().length() == 0;
     }
+    
+    /**
+     * @return true if the string is null or is blank filled (space char filled)
+     */
+    public static boolean isEmpty(String s) {
+        return s == null || isBlank(s);
+    }
 
     /**
      * Return true if the string is alphanum.
