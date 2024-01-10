@@ -903,7 +903,7 @@ public class ISOUtil {
      * @param mask char used to protect the string
      * @return 'protected' String
      */
-    public static String protect (String s, char mask) {
+    public static String protect0 (String s, char mask) {
         StringBuilder sb = new StringBuilder();
         int len   = s.length();
         int clear = len > 6 ? 6 : 0;
@@ -932,15 +932,51 @@ public class ISOUtil {
         try {
             //Addresses Track1 Truncation
             int charCount = s.replaceAll("[^\\^]", "").length();
-            if (charCount == 2 ) {
-                s = s.substring(0, s.lastIndexOf("^")+1);
-                s = ISOUtil.padright(s, len, mask);
+            if (charCount >= 2) {
+                int firstCaret = s.indexOf("^");
+                int secondCaret = s.indexOf("^", firstCaret + 1);
+
+                s = s.substring(0, firstCaret + 1);
+                s = padright(s, secondCaret, mask);
+                s = s.concat("^");
+                s = padright(s, len, mask);
             }
         } catch (ISOException e){
             //cannot PAD - should never get here
         }
         return s;
     }
+
+
+    public static String protect(String s, char mask) {
+        // Validation for minimum length
+        if (s.length() < 10) { // 6 (BIN) + 4 (last digits) = 10
+            return s; // nothing to do
+        }
+        StringBuilder protectedTrack = new StringBuilder(s);
+
+        // Identify the positions of separators (^ and =)
+        String separator = s.contains("^") ? "^" : "=";
+        int firstSeparatorIndex = protectedTrack.indexOf(separator);
+        if (firstSeparatorIndex < 6) {
+            return s; // nothing to do
+        }
+        int lastDigitIndex = firstSeparatorIndex - 4;
+
+        // Replace characters with underscore except BIN, last four digits and separators
+        for (int i = 6; i < lastDigitIndex; i++) {
+            protectedTrack.setCharAt(i, mask);
+        }
+        for (int i = firstSeparatorIndex + 1; i < protectedTrack.length(); i++) {
+            char c = protectedTrack.charAt(i);
+            if ((c != '=' && c != '^')) {
+                protectedTrack.setCharAt(i, mask);
+            }
+        }
+        return protectedTrack.toString();
+    }
+
+
     public static String protect(String s) {
         return protect(s, '_');
     }

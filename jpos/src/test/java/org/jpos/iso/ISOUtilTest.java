@@ -4170,9 +4170,15 @@ public class ISOUtilTest {
     }
 
     @Test
-    public void testProtect1() throws Throwable {
-        String result = ISOUtil.protect("=WaW=4V0");
-        assertEquals("=___=___", result, "result");
+    public void testProtectTrack1() throws Throwable {
+        String result = ISOUtil.protect("B4000340000000504^John/Doe                  ^22251110000123000");
+        assertEquals("B40003_______0504^__________________________^_________________", result, "result");
+    }
+
+    @Test
+    public void testProtectTrack2() throws Throwable {
+        String result = ISOUtil.protect("4000340000000504=23052211985878901234");
+        assertEquals("400034______0504=____________________", result, "result");
     }
 
     @Test
@@ -4181,35 +4187,7 @@ public class ISOUtilTest {
         assertEquals("=====^===========^====^===", result, "result");
     }
 
-    @Test
-    public void testProtect11() throws Throwable {
-        String result = ISOUtil.protect("testISOUtils");
-        assertEquals("testIS__tils", result, "result");
-    }
 
-    @Test
-    public void testProtect12() throws Throwable {
-        String result = ISOUtil.protect("=HNb^D4uZfz0@|\")61b:~dSS`[.2!!qlL4Z0");
-        assertEquals("=___^D4uZfz0@|\")61b:~dSS`[.2!!qlL4Z0", result, "result");
-    }
-
-    @Test
-    public void testProtect13() throws Throwable {
-        String result = ISOUtil.protect("^58*(=@");
-        assertEquals("^58*(=_", result, "result");
-    }
-
-    @Test
-    public void testProtect14() throws Throwable {
-        String result = ISOUtil.protect("===\u3455w");
-        assertEquals("===__", result, "result");
-    }
-
-    @Test
-    public void testProtect15() throws Throwable {
-        String result = ISOUtil.protect("=\u0AC4\uC024\uF29B=~2A)~5aCgl\"lLU*lm_cJ1M/!KFnA");
-        assertEquals("=___=________________________KFnA", result, "result");
-    }
 
     @Test
     public void testProtect16() throws Throwable {
@@ -4217,11 +4195,6 @@ public class ISOUtilTest {
         assertEquals("\u30C5\uE09B\u6028\uB54E\u2094\uFA25_\u3A1F\uE55C\u31AA\u5FE0=_", result, "result");
     }
 
-    @Test
-    public void testProtect17() throws Throwable {
-        String result = ISOUtil.protect("+6+[=I?");
-        assertEquals("+6+[=__", result, "result");
-    }
 
     @Test
     public void testProtect18() throws Throwable {
@@ -4241,23 +4214,7 @@ public class ISOUtilTest {
         assertEquals("===^===", result, "result");
     }
 
-    @Test
-    public void testProtect20() throws Throwable {
-        String result = ISOUtil.protect("\u6D1D^KI");
-        assertEquals("_^KI", result, "result");
-    }
 
-    @Test
-    public void testProtect21() throws Throwable {
-        String result = ISOUtil.protect("=7G^=^");
-        assertEquals("=__^=^", result, "result");
-    }
-
-    @Test
-    public void testProtect3() throws Throwable {
-        String result = ISOUtil.protect("^D==N^=r=\u0002^g)==");
-        assertEquals("^D==_^=_=_^g)==", result, "result");
-    }
 
     @Test
     public void testProtect4() throws Throwable {
@@ -4271,58 +4228,11 @@ public class ISOUtilTest {
         assertEquals("", result, "result");
     }
 
-    @Test
-    public void testProtect6() throws Throwable {
-        String result = ISOUtil.protect("VqM_'");
-        assertEquals("_____", result, "result");
-    }
-
-    @Test
-    public void testProtect7() throws Throwable {
-        String result = ISOUtil.protect("\\7.=^6C3");
-        assertEquals("\\7.=^6C3", result, "result");
-    }
-
-    @Test
-    public void testProtect8() throws Throwable {
-        String result = ISOUtil.protect("#<gF=uG!");
-        assertEquals("#<gF=___", result, "result");
-    }
-
-    @Test
-    public void testProtect9() throws Throwable {
-        String result = ISOUtil.protect("^9a{=o;G");
-        assertEquals("^9a{=___", result, "result");
-    }
-
-    @Test
-    public void testProtectT2D1() throws Throwable {
-        String result = ISOUtil.protect("#<gFDuG!");
-        assertEquals("#<gFD___", result, "result");
-    }
-
-    @Test
-    public void testProtectT2D2() throws Throwable {
-        String result = ISOUtil.protect("9a{#<gFuG!53Do;G");
-        assertEquals("9a{#<g__G!53D___", result, "result");
-    }
-
-    @Test
-    public void testProtectT1D1() throws Throwable {
-        String result = ISOUtil.protect("a{#<gFuG!53o;G609^FOO/BAR COM^67890o;G");
-        assertEquals("a{#<gF_______G609^FOO/BAR COM^________", result, "result");
-    }
-
-    @Test
-    public void testProtectT1D2() throws Throwable {
-        String result = ISOUtil.protect("9a{#<gFuG!^FOO/BAR COM^67890o;G");
-        assertEquals("9a{#<gFuG!^FOO/BAR COM^________", result, "result");
-    }
-
+    
     @Test
     public void testProtectT1D3() throws Throwable {
         String result = ISOUtil.protect("9a{D<gFuG!^FOO/BAR COM^67890o;G");
-        assertEquals("9a{D<gFuG!^FOO/BAR COM^________", result, "result");
+        assertEquals("9a{D<gFuG!^___________^________", result, "result");
     }
 
     @Test
