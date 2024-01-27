@@ -156,6 +156,8 @@ public class Q2 implements FileFilter, Runnable {
     private String metricsPath;
 
     private Counter instancesCounter = Metrics.counter("jpos.q2.instances");
+    private boolean noShutdownHook;
+    private long shutdownHookDelay = 0L;
     
     public Q2 (String[] args) {
         super();
@@ -225,7 +227,8 @@ public class Q2 implements FileFilter, Runnable {
             factory = new QFactory(loaderName, this);
             writePidFile();
             initSystemLogger();
-            addShutdownHook();
+            if (!noShutdownHook)
+                addShutdownHook();
             q2Thread = Thread.currentThread();
             q2Thread.setContextClassLoader(loader);
             if (cli != null)
@@ -427,10 +430,13 @@ public class Q2 implements FileFilter, Runnable {
         Runtime.getRuntime().addShutdownHook (
             new Thread ("Q2-ShutdownHook") {
                 public void run () {
+                    log.info ("shutting down (hook/" + shutdownHookDelay + ")");
+                    if (shutdownHookDelay > 0)
+                        ISOUtil.sleep(shutdownHookDelay);
                     shuttingDown = true;
                     shutdown.countDown();
                     if (q2Thread != null) {
-                        log.info ("shutting down (hook)");
+                        log.info ("shutting down (join/" + SHUTDOWN_TIMEOUT + ")");
                         try {
                             q2Thread.join (SHUTDOWN_TIMEOUT);
                         } catch (InterruptedException ignored) {
@@ -722,9 +728,11 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("sa", "ssh-authorized-keys", true, "Path to authorized key file (defaults to 'cfg/authorized_keys')");
         options.addOption ("su", "ssh-user", true, "SSH user (defaults to 'admin')");
         options.addOption ("sh", "ssh-host-key-file", true, "SSH host key file, defaults to 'cfg/hostkeys.ser'");
+        options.addOption ("sd", "shutdown-delay", true, "Shutdown delay in seconds (defaults to immediate)");
         options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
         options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
         options.addOption ("Nf", "no-jfr", false, "Disables Java Flight Recorder");
+        options.addOption ("Nh", "no-shutdown-hook", false, "Disable shutdown hook");
         options.addOption ("E", "environment", true, "Environment name.\nCan be given multiple times (applied in order, and values may override previous ones)");
         options.addOption ("Ed", "envdir", true, "Environment file directory, defaults to cfg");
         options.addOption ("mp", "metrics-port", true, "Metrics port");
@@ -785,18 +793,21 @@ public class Q2 implements FileFilter, Runnable {
             if (line.hasOption("mp"))
                 metricsPort = Integer.parseInt(line.getOptionValue("mp"));
             metricsPath = line.hasOption("mP") ? line.getOptionValue("mP") : "/metrics";
-        } catch (MissingArgumentException e) {
+            noShutdownHook = line.hasOption("Nh");
+            shutdownHookDelay = line.hasOption ("sd") ? 1000L*Integer.parseInt(line.getOptionValue("sd")) : 0;
+
+            if (noShutdownHook && shutdownHookDelay > 0)
+                throw new IllegalArgumentException ("--no-shutdown-hook incompatible with --shutdown-delay argument");
+        } catch (MissingArgumentException | IllegalArgumentException | IllegalAccessError |
+                 UnrecognizedOptionException e) {
             System.out.println("ERROR: " + e.getMessage());
-            System.exit(1);
-        } catch (IllegalAccessError | UnrecognizedOptionException e) {
-            System.out.println(e.getMessage());
             System.exit(1);
         } catch (Exception e) {
             e.printStackTrace ();
             System.exit (1);
         }
     }
-    private void deployBundle (File bundle, boolean encrypt) 
+    private void deployBundle (File bundle, boolean encrypt)
         throws JDOMException, IOException, 
                 ISOException, GeneralSecurityException
     {
