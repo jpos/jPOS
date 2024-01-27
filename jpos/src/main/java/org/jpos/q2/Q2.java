@@ -436,7 +436,8 @@ public class Q2 implements FileFilter, Runnable {
                     shuttingDown = true;
                     shutdown.countDown();
                     if (q2Thread != null) {
-                        log.info ("shutting down (join/" + SHUTDOWN_TIMEOUT + ")");
+                        if (shutdownHookDelay > 0)
+                            log.info ("shutting down (join/" + SHUTDOWN_TIMEOUT + ")");
                         try {
                             q2Thread.join (SHUTDOWN_TIMEOUT);
                         } catch (InterruptedException ignored) {
