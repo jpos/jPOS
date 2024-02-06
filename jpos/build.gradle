@@ -1,6 +1,6 @@
 plugins {
    id "org.gradlex.extra-java-module-info" version "1.4.1"
-   id "org.gradlex.java-module-dependencies" version "1.4"
+   id "org.gradlex.java-module-dependencies" version "1.6"
    id "org.owasp.dependencycheck" version "8.3.1"
 
    // id 'checkstyle'
@@ -8,6 +8,7 @@ plugins {
 
 extraJavaModuleInfo {
     failOnMissingModuleInfo.set(false)
+    def sshdVersion = ((String) libs.sshd.orNull).split(":")[-1] // there has to be a better way to get the version
 
     automaticModule ('org.jdom:jdom2', 'org.jdom2')
     automaticModule ('commons-cli:commons-cli', 'org.apache.commons.cli')
@@ -45,33 +46,35 @@ extraJavaModuleInfo {
     }
 }
 
-dependencies {
-    api libraries.jdom
-    api libraries.javatuples
-    api libraries.jline
-    api libraries.beanshell
-    api libraries.commons_cli
-    api libraries.bouncycastle
-    api libraries.slf4j_api
-    api libraries.hdrhistogram
+dependencies { 
+    api libs.jdom
+    api libs.javatuples
+    api libs.jline
+    api libs.beanshell
+    api libs.bcprov
+    api libs.bcpg
+    api libs.commonscli
+    api libs.slf4japi
+    api libs.hdrhistogram
+    
+    implementation libs.yaml;
+    implementation libs.jdbm
+    implementation libs.sleepycatje
+    implementation libs.micrometercore
+    implementation libs.micrometerprometheus
+    implementation libs.sshd
+    implementation libs.eddsa
 
-    implementation libraries.yaml;
-    implementation libraries.jdbm
-    implementation libraries.sleepycat_je
-    implementation libraries.micrometer
-    implementation libraries.sshd
-    implementation libraries.eddsa
-
-    testImplementation libraries.commons_lang3
-    testImplementation libraries.hamcrest
-    testImplementation libraries.xmlunit
-    testImplementation libraries.junit
+    testImplementation libs.commonslang3
+    testImplementation libs.hamcrest
+    testImplementation libs.xmlunit
+    testImplementation libs.junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation (libraries.mockito) {
+    testImplementation (libs.mockito) {
         exclude(module: 'hamcrest-core')
     }
-    testImplementation libraries.mockito_jupiter
+    testImplementation libs.mockitojupiter
 
     //  JSONPackager on hold
     //    compile (libraries.jsonsimple) {

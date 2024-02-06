@@ -2,3 +2,36 @@ include 'jpos'
 
 rootProject.name = 'jpos'
 
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            library('jdom', 'org.jdom', 'jdom2').version('2.0.6.1')
+            library('jdbm', 'jdbm:jdbm:1.0')
+
+            library('sleepycatje', 'com.sleepycat:je:18.3.12')
+            library('commonscli', 'commons-cli:commons-cli:1.5.0')
+            library('commonslang3', 'org.apache.commons:commons-lang3:3.12.0')
+            library('jline', 'org.jline:jline:3.23.0')
+            library('beanshell', 'org.apache-extras.beanshell:bsh:2.0b6')
+            library('javatuples', 'org.javatuples:javatuples:1.2')
+            library('mockito', 'org.mockito:mockito-core:5.4.0')
+            library('mockitojupiter', 'org.mockito:mockito-junit-jupiter:5.4.0')
+            library('xmlunit', 'xmlunit:xmlunit:1.6')
+            library('junit', 'org.junit.jupiter:junit-jupiter:5.9.2')
+
+            library('bcprov', "org.bouncycastle:bcprov-lts8on:2.73.2")
+            library('bcpg', "org.bouncycastle:bcpg-lts8on:2.73.2")
+
+            library('hamcrest', 'org.hamcrest:hamcrest:2.2')
+            library('sshd', 'org.apache.sshd', 'sshd-core').version('2.10.0')
+            library('eddsa',  'net.i2p.crypto:eddsa:0.3.0')
+            library('slf4japi', 'org.slf4j:slf4j-api:1.7.36')
+            library('slf4jnop', 'org.slf4j:slf4j-nop:1.7.36')
+            library('hdrhistogram', 'org.hdrhistogram:HdrHistogram:2.1.12')
+            library('yaml', 'org.yaml:snakeyaml:2.0')
+            library('micrometercore', 'io.micrometer:micrometer-core:1.11.2')
+            library('micrometerprometheus', 'io.micrometer:micrometer-registry-prometheus:1.11.2')
+        }
+    }
+}
+
