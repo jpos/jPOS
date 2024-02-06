@@ -17,14 +17,17 @@
  */
 
 package org.jpos.metrics;
+
+import io.micrometer.core.instrument.Tags;
+
 public enum MeterInfo {
     TM_ACTIVE_SESSIONS("jpos.tm.active.sessions", "TransactionManager activeSessions"),
     TM_OPERATION("jpos.tm.op", "TransactionManager operation"),
     TM_COUNTER("jpos.tm.cnt", "TransactionManager counter"),
     ISOSERVER_CONNECTION_COUNT("jpos.server.connections", "Incoming active connections"),
     ISOCHANNEL_CONNECTION_COUNT("jpos.channel.connections", "Outgoing active connections"),
-    ISOMSG_OUT ("jpos.isomsg.out", "Transmitted messages"),
-    ISOMSG_IN ("jpos.isomsg.in", "Received messages"),
+    ISOMSG_OUT ("jpos.isomsg", "Transmitted messages", Tags.of ("direction", "out")),
+    ISOMSG_IN ("jpos.isomsg", "Received messages", Tags.of ("direction", "in")),
     CHANNEL_ACTIVE_CONNECTIONS("jpos.channel.connections", "Active outgoing connections"),
     MUX_STATUS("jpos.mux.status", "MUX Status"),
     MUX_TX("jpos.mux.tx", "MUX tx counter"),
@@ -35,10 +38,15 @@ public enum MeterInfo {
 
     final String id;
     final String description;
+    final Tags tags;
 
     MeterInfo(String id, String description) {
+        this (id, description, null);
+    }
+    MeterInfo(String id, String description, Tags tags) {
         this.id = id;
         this.description = description;
+        this.tags = tags;
     }
 
     public String id() {
@@ -48,4 +56,8 @@ public enum MeterInfo {
     public String description() {
         return description;
     };
+
+    public Tags add (Tags tags) {
+        return tags.and(this.tags);
+    }
 }
