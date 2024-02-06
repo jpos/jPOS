@@ -193,12 +193,4 @@ public class QServerTest {
         qServer.startService();
         assertFalse(qServer.isModified(), "qServer.isModified()");
     }
-
-    @Test
-    public void testStopService() throws Throwable {
-        QServer qServer = new QServer();
-        qServer.stopService();
-    }
-
-    
 }

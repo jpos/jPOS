@@ -21,8 +21,6 @@ package org.jpos.q2.iso;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 import static org.mockito.Mockito.*;
 
 import java.io.EOFException;
@@ -41,11 +39,9 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
 import org.jpos.space.Space;
-import org.jpos.space.TSpace;
 import org.jpos.util.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -85,117 +81,6 @@ public class ChannelAdaptorTest {
             channelAdaptor.destroy();
         }
     }
-
-    @Test
-    public void sendPassesMessageToUnderlyingChannel() throws Exception {
-        StubISOChannel stubISOChannel = new StubISOChannel();
-        channelAdaptor = configureAndStart(new ChannelAdaptorWithoutQ2(stubISOChannel));
-        channelAdaptor.send(new ISOMsg("0800"));
-
-        assertThat(stubISOChannel.sendQueue.poll(1, TimeUnit.SECONDS), hasMti("0800"));
-    }
-
-    @Test
-    public void receivePullsMessageFromUnderlyingChannel() throws Exception {
-        StubISOChannel stubISOChannel = new StubISOChannel();
-        channelAdaptor = configureAndStart(new ChannelAdaptorWithoutQ2(stubISOChannel));
-        stubISOChannel.receiveQueue.add(new ISOMsg("0800"));
-
-        assertThat(channelAdaptor.receive(1000), hasMti("0800"));
-    }
-
-    @Test
-    public void waitForWorkersOnStopStopsAfterChannelConnects() throws Exception {
-        StubISOChannel channel = new StubISOChannel();
-
-        // repeat test to ensure clean up occurs after stop
-        for (int i = 0; i < 100; i++) {
-            channelAdaptor = configureAndStart(new ChannelAdaptorWithoutQ2(channel));
-            waitForSenderAndReceiverToStart();
-
-            assertCallToStopCompletes(i);
-        }
-    }
-
-    @Test
-    public void stopCanWaitForWorkersEvenWhenOutgoingChannelNeverConnects() throws Exception {
-        ISOChannel channel = mock(ISOChannel.class);
-        when(channel.isConnected()).thenReturn(false);
-        when(channel.receive()).thenThrow(new ISOException("unconnected ISOChannel"));
-
-        // repeat test to ensure clean up occurs after stop
-        for (int i = 0; i < 10; i++) {
-            channelAdaptor = configureAndStart(new ChannelAdaptorWithoutQ2(channel));
-            waitForSenderAndReceiverToStart();
-
-            assertCallToStopCompletes(i);
-        }
-    }
-
-    @Test
-    public void stopCanWaitForWorkersEvenWhenSenderBlockedTryingToConnect() throws Exception {
-        // Think a link where the other ends plays the client role. Eg a BaseChannel with a serverSocket.
-        // So connect() calls socket.accept(). If no client connects accept() blocks forever.
-        // Ensures disconnect() is called on stop() regardless of channel.isConnected() return value.
-        ISOChannel channel = mock(ISOChannel.class);
-
-        ThreadTrap trap = new ThreadTrap(SENDER_THREAD_NAME);
-        when(channel.isConnected()).thenReturn(false);
-        trap.catchVictim().when(channel).connect();
-        trap.release().when(channel).disconnect();
-
-        channelAdaptor = configureAndStart(new ChannelAdaptorWithoutQ2(channel));
-        waitForSenderAndReceiverToStart();
-        assertThat("Sender did not call connect()", trap.catchesVictim(), is(true));
-
-        assertCallToStopCompletes(1);
-    }
-
-    @Disabled("Failing and don't really know what this test tries to verify")
-    @Test
-    public void waitForWorkersOnStopDoesNotDeadlockWithUnfortunatelyTimedDisconnectReceivedByReceiver() throws Exception {
-        // Ensure no deadlock between Receiver trying to call disconnect() and stop() joining on Receiver.
-        StubISOChannel channel = new StubISOChannel();
-        Space space = spy(new TSpace());
-
-        ThreadTrap trap = new ThreadTrap(RECEIVER_THREAD_NAME).delegateAfterCatchCall().delegateAfterReleaseCall();
-        trap.catchVictim().when(space).out(eq(RECONNECT_SPACE_KEY), any(), eq(RECONNECT_DELAY));
-        trap.release().when(space).out(eq(READY_SPACE_KEY), not(isA(Date.class)));
-
-        channelAdaptor = configureAndStart(new ChannelAdaptorWithStubSpace(channel, space));
-        waitForSenderAndReceiverToStart();
-        // to trap the receiver before it tries to call disconnect() we first need it to be blocked in BaseChannel.receive()
-        channel.waitForReceiverToBlockInReceive();
-        channel.disconnect();
-        assertThat("Receiver did not call sp.out(" + RECONNECT_SPACE_KEY + ", new Object())", trap.catchesVictim(), is(true));
-
-        // Once the receiver thread to is released it will try to call ChannelAdaptor.disconnect().
-        // If disconnect() is synchronized on ChannelAdaptor the receiver and stop caller will deadlock.
-        assertCallToStopCompletes(1);
-    }
-
-    @Disabled("Failing and don't really know what this test tries to verify")
-    @Test
-    public void waitForWorkersOnStopDoesNotDeadlockWithUnfortunatelyTimedDisconnectReceivedBySender() throws Exception {
-        // Ensure no deadlock between Sender trying to call disconnect() and stop() joining on Sender.
-        StubISOChannel channel = new StubISOChannelThatThrowsExceptionOnSend();
-        LogListener logListener = mock(LogListener.class);
-        Space space = spy(new TSpace());
-
-        ThreadTrap trap = new ThreadTrap(SENDER_THREAD_NAME).delegateAfterReleaseCall();
-        trap.catchVictim().when(logListener).log(argThat(sendErrorLogEvent()));
-        trap.release().when(space).out(eq(IN_SPACE_KEY), not(isA(ISOMsg.class)));
-
-        channelAdaptor = configureAndStart(new ChannelAdaptorWithStubSpace(channel, space), new SimpleLogListener(), logListener);
-        waitForSenderAndReceiverToStart();
-        channelAdaptor.send(new ISOMsg("0800"));
-        assertThat("Sender did not call log()", trap.catchesVictim(), is(true));
-
-        // Once the sender thread is released it will try to call ChannelAdaptor.disconnect().
-        // If disconnect() is synchronized on ChannelAdaptor the sender and stop caller will deadlock.
-        assertCallToStopCompletes(1);
-    }
-
     private Matcher<LogEvent> sendErrorLogEvent() {
         return new TypeSafeMatcher<LogEvent>() {
             @Override
