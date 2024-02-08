@@ -20,17 +20,24 @@ package org.jpos.util;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.jpos.util.LogFileTestUtils.getStringFromCompressedFile;
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.io.FileMatchers.anExistingFile;
+import static org.hamcrest.MatcherAssert.*;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Properties;
 import java.util.zip.Deflater;
@@ -40,6 +47,8 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
+import org.jpos.q2.QFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -427,6 +436,65 @@ public class DailyLogListenerTest {
 		listener.destroy();
 	}
 
+    @Test
+    public void testDeleteOldLogsWithCustomMaxDepth() throws ConfigurationException, IOException, IllegalAccessException {
+        Path parent = logRotationTestDirectory.getDirectory().resolve("parent");
+        //create a file at level 0 in condition to be deleted.
+        Path level0file = Files.createTempFile(logRotationTestDirectory.getDirectory(), "child", ".log");
+        assertThat("level 0 file should have been created", level0file.toFile(), is(anExistingFile()));
+        Files.setLastModifiedTime(level0file, FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS))); //old enough
+        //create a file at level 1 in condition to be deleted.
+        Files.createDirectory(parent);
+        Path level1file = Files.createTempFile(parent, "child", ".log");
+        assertThat("level 1 file should have been created", level1file.toFile(), is(anExistingFile()));
+        Files.setLastModifiedTime(level1file, FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS))); //old enough
+
+        try (DailyLogListener listener = new DailyLogListener()) {
+            SimpleConfiguration cfg = new SimpleConfiguration();
+            cfg.put("prefix", logRotationTestDirectory.getFile("q2").toString());
+            cfg.put("max-depth-deletion", "2");
+            cfg.put("delete-regex", "^child.*\\.log");
+            cfg.put("maxage", "1"); //created files are much older than 1s
+            QFactory.autoconfigure(listener, cfg);
+            listener.setConfiguration(cfg);
+
+            listener.deleteOldLogs();
+        }
+        assertThat("level 1 file should have been deleted", level1file.toFile(), is(not(anExistingFile())));
+        assertThat("level 0 file should have been deleted", level0file.toFile(), is(not(anExistingFile())));
+        Files.delete(parent);
+
+    }
+    @Test
+    public void testDeleteOldLogsWithoutCustomMaxDepth() throws ConfigurationException, IOException, IllegalAccessException {
+        Path parent = logRotationTestDirectory.getDirectory().resolve("parent");
+        //create a file at level 0 in condition to be deleted.
+        Path level0file = Files.createTempFile(logRotationTestDirectory.getDirectory(), "child", ".log");
+        assertThat("level 0 file should have been created", level0file.toFile(), is(anExistingFile()));
+        Files.setLastModifiedTime(level0file, FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS))); //old enough
+        //create a file at level 1 in condition to be deleted.
+        Files.createDirectory(parent);
+        Path level1file = Files.createTempFile(parent, "child", ".log");
+        assertThat("level 1 file should have been created", level1file.toFile(), is(anExistingFile()));
+        Files.setLastModifiedTime(level1file, FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS))); //old enough
+
+        try (DailyLogListener listener = new DailyLogListener()) {
+            SimpleConfiguration cfg = new SimpleConfiguration();
+            cfg.put("prefix", logRotationTestDirectory.getFile("q2").toString());
+            cfg.put("delete-regex", "^child.*\\.log");
+            cfg.put("maxage", "1000");
+            QFactory.autoconfigure(listener, cfg);
+            listener.setConfiguration(cfg);
+
+            listener.deleteOldLogs();
+        }
+        assertThat("level 1 file should have not been deleted", level1file.toFile(), is(anExistingFile()));
+        assertThat("level 0 file should have been deleted", level0file.toFile(), is(not(anExistingFile())));
+
+        Files.delete(level1file); //so it doesn't give problems in windows
+        Files.delete(parent);
+
+    }
 	@Test
 	@Disabled("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
 	public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
