@@ -40,6 +40,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -95,7 +96,7 @@ public class ISOServer extends Observable
     protected Configuration cfg;
     private boolean shutdown = false;
     private ServerSocket serverSocket;
-    private Map channels;
+    private Map<String, WeakReference<ServerChannel>> channels;
     protected boolean ignoreISOExceptions;
     protected List<ISOServerEventListener> serverListeners = null;
 
@@ -118,7 +119,7 @@ public class ISOServer extends Observable
             new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
         listeners = new Vector();
         name = "";
-        channels = new HashMap();
+        channels = new ConcurrentHashMap<>();
         cnt = new int[SIZEOF_CNT];
         serverListeners = new ArrayList<ISOServerEventListener>();
     }
@@ -759,26 +760,21 @@ public class ISOServer extends Observable
         return sb.toString();
     }
     @Override
-    public void dump (PrintStream p, String indent) {
-        p.println (indent + getCountersAsString());
-        Iterator iter = channels.entrySet().iterator();
-        String inner = indent + "  ";
-        for (int i=0; iter.hasNext(); i++) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected() && c instanceof BaseChannel) {
-                StringBuilder sb = new StringBuilder ();
-                int[] cc = ((BaseChannel)c).getCounters();
-                sb.append (inner);
-                sb.append (entry.getKey());
-                sb.append (": rx=");
-                sb.append (Integer.toString (cc[ISOChannel.RX]));
-                sb.append (", tx=");
-                sb.append (Integer.toString (cc[ISOChannel.TX]));
-                sb.append (", last=");
-                sb.append (Long.toString(lastTxn));
-                p.println (sb.toString());
+    public void dump(PrintStream p, String indent) {
+        String counters = getCountersAsString();
+        p.println (indent + counters);
+
+        for (Map.Entry<String, WeakReference<ServerChannel>> entry : channels.entrySet()) {
+            String key = entry.getKey();
+            //Ignore last as it is a special key with the last channel used and would result in duplication.
+            if (!LAST.equals(key)) {
+                ISOChannel c = entry.getValue().get();
+                if (c != null && c.isConnected() && c instanceof BaseChannel) {
+                    int[] cc = ((BaseChannel) c).getCounters();
+                    String line = String.format("%s  %s: rx=%d, tx=%d, last=%d",
+                            indent, key, cc[ISOChannel.RX], cc[ISOChannel.TX], lastTxn);
+                    p.println(line);
+                }
             }
         }
     }
