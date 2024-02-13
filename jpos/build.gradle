@@ -54,16 +54,16 @@ dependencies {
     api libs.bcprov
     api libs.bcpg
     api libs.commonscli
-    api libs.slf4japi
-    api libs.hdrhistogram
+    // api libs.slf4japi
+    api libs.micrometercore
+    api libs.micrometerprometheus
     
     implementation libs.yaml;
     implementation libs.jdbm
     implementation libs.sleepycatje
-    implementation libs.micrometercore
-    implementation libs.micrometerprometheus
     implementation libs.sshd
     implementation libs.eddsa
+    implementation libs.hdrhistogram
 
     testImplementation libs.commonslang3
     testImplementation libs.hamcrest
