@@ -1,0 +1,51 @@
+[versions]
+jdom = "2.0.6.1"
+sleepycatje = "18.3.12"
+commonscli = "1.5.0"
+commonslang3 = "3.12.0"
+jline = "3.23.0"
+beanshell = "2.0b6"
+javatuples = "1.2"
+mockito = "5.4.0"
+mockitojupiter = "5.4.0"
+xmlunit = "1.6"
+junit = "5.9.2"
+bcprov = "2.73.2"
+bcpg = "2.73.2"
+hamcrest = "2.2"
+sshd = "2.10.0"
+eddsa = "0.3.0"
+slf4japi = "2.0.12"
+slf4jnop = "2.0.12"
+hdrhistogram = "2.1.12"
+yaml = "2.0"
+micrometercore = "1.11.2"
+micrometerprometheus = "1.11.2"
+jdbm = '1.0'
+
+[libraries]
+jdom = { module = "org.jdom:jdom2", version.ref = "jdom" }
+jdbm = { module = "jdbm:jdbm", version.ref='jdbm' }
+sleepycatje = { module = "com.sleepycat:je", version.ref = "sleepycatje" }
+commonscli = { module = "commons-cli:commons-cli", version.ref = "commonscli" }
+commonslang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonslang3" }
+jline = { module = "org.jline:jline", version.ref = "jline" }
+beanshell = { module = "org.apache-extras.beanshell:bsh", version.ref = "beanshell" }
+javatuples = { module = "org.javatuples:javatuples", version.ref = "javatuples" }
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockitojupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockitojupiter" }
+xmlunit = { module = "xmlunit:xmlunit", version.ref = "xmlunit" }
+junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+bcprov = { module = "org.bouncycastle:bcprov-lts8on", version.ref = "bcprov" }
+bcpg = { module = "org.bouncycastle:bcpg-lts8on", version.ref = "bcpg" }
+hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
+sshd = { module = "org.apache.sshd:sshd-core", version.ref = "sshd" }
+eddsa = { module = "net.i2p.crypto:eddsa", version.ref = "eddsa" }
+slf4japi = { module = "org.slf4j:slf4j-api", version.ref = "slf4japi" }
+slf4jnop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jnop" }
+hdrhistogram = { module = "org.hdrhistogram:HdrHistogram", version.ref = "hdrhistogram" }
+yaml = { module = "org.yaml:snakeyaml", version.ref = "yaml" }
+micrometercore = { module = "io.micrometer:micrometer-core", version.ref = "micrometercore" }
+micrometerprometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerprometheus" }
+
+
