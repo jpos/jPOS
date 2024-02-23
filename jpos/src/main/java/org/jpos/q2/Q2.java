@@ -89,6 +89,7 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 
 import static java.util.ResourceBundle.getBundle;
 
+
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -158,7 +159,6 @@ public class Q2 implements FileFilter, Runnable {
     private Counter instancesCounter = Metrics.counter("jpos.q2.instances");
     private boolean noShutdownHook;
     private long shutdownHookDelay = 0L;
-    
     public Q2 (String[] args) {
         super();
         this.args = args;
@@ -1227,6 +1227,8 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     private void registerMicroMeter () {
+        System.setProperty("slf4j.internal.verbosity","ERROR");
+
         meterRegistry.clear(); // start Q2 off a fresh meter registry
         new ClassLoaderMetrics().bindTo(meterRegistry);
         new JvmMemoryMetrics().bindTo(meterRegistry);
