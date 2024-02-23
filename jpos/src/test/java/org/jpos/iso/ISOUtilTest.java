@@ -4187,7 +4187,17 @@ public class ISOUtilTest {
         assertEquals("=====^===========^====^===", result, "result");
     }
 
+    @Test
+    public void testProtectExp() {
+        String result = ISOUtil.protect("1234");
+        assertEquals("____", result, "result");
+    }
 
+    @Test
+    public void testProtectCvv() {
+        String result = ISOUtil.protect("123");
+        assertEquals("___", result, "result");
+    }
 
     @Test
     public void testProtect16() throws Throwable {
@@ -4219,7 +4229,7 @@ public class ISOUtilTest {
     @Test
     public void testProtect4() throws Throwable {
         String result = ISOUtil.protect("=");
-        assertEquals("=", result, "result");
+        assertEquals("_", result, "result");
     }
 
     @Test

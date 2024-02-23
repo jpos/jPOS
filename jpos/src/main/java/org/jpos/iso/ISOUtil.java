@@ -906,14 +906,16 @@ public class ISOUtil {
 
     public static String protect(String s, char mask) {
         // Validation for minimum length
-        if (s.length() < 10) { // 6 (BIN) + 4 (last digits) = 10
-            return s; // nothing to do
+        StringBuilder ps = new StringBuilder(s);
+        if (s.length() <= 4) {
+            char[] maskedArray = new char[s.length()];
+            Arrays.fill(maskedArray, mask);// 6 (BIN) + 4 (last digits) = 10
+            return new String(maskedArray);
         }
-        StringBuilder protectedTrack = new StringBuilder(s);
 
         // Identify the positions of separators (^ and =)
         String separator = s.contains("^") ? "^" : "=";
-        int firstSeparatorIndex = protectedTrack.indexOf(separator);
+        int firstSeparatorIndex = ps.indexOf(separator);
         if (firstSeparatorIndex < 6) {
             return s; // nothing to do
         }
@@ -921,15 +923,15 @@ public class ISOUtil {
 
         // Replace characters with underscore except BIN, last four digits and separators
         for (int i = 6; i < lastDigitIndex; i++) {
-            protectedTrack.setCharAt(i, mask);
+            ps.setCharAt(i, mask);
         }
-        for (int i = firstSeparatorIndex + 1; i < protectedTrack.length(); i++) {
-            char c = protectedTrack.charAt(i);
+        for (int i = firstSeparatorIndex + 1; i < ps.length(); i++) {
+            char c = ps.charAt(i);
             if ((c != '=' && c != '^')) {
-                protectedTrack.setCharAt(i, mask);
+                ps.setCharAt(i, mask);
             }
         }
-        return protectedTrack.toString();
+        return ps.toString();
     }
 
     public static String protect(String s) {
