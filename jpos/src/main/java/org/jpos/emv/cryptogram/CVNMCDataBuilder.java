@@ -49,8 +49,13 @@ public class CVNMCDataBuilder implements CryptogramDataBuilder {
     }
 
     @Override
+    public String buildARQCRequest_padded(TLVList data, IssuerApplicationData iad, PaddingMethod paddingMethod) {
+        return paddingMethod.apply(buildARQCRequest(data, iad));
+    }
+
+    @Override
     public String getDefaultARPCRequest(boolean approved) {
         return approved ? "0012" : "9900";
     }
-    
+
 }
