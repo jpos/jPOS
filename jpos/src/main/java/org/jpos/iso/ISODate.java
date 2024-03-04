@@ -167,12 +167,18 @@ public class ISODate {
      */
     public static Date parseISODate (String d, long currentTime, TimeZone timeZone) {
         int YY = 0;
+
+        Calendar cal = new GregorianCalendar();
+        cal.setTimeZone(timeZone);
+        Date now = new Date(currentTime);
+        cal.setTime (now);
+
         if (d.length() == 14) {
             YY = Integer.parseInt(d.substring (0, 4));
             d = d.substring (4);
         }
         else if (d.length() == 12) {
-            YY = 2000 + Integer.parseInt(d.substring (0, 2));
+            YY = calculateNearestFullYear(Integer.parseInt(d.substring(0, 2)), cal);
             d = d.substring (2);
         } 
         int MM = Integer.parseInt(d.substring (0, 2))-1;
@@ -180,12 +186,7 @@ public class ISODate {
         int hh = Integer.parseInt(d.substring (4, 6));
         int mm = Integer.parseInt(d.substring (6, 8));
         int ss = Integer.parseInt(d.substring (8,10));
-
-        Calendar cal = new GregorianCalendar();
-        cal.setTimeZone(timeZone);
-        Date now = new Date(currentTime);
-
-        cal.setTime (now);
+        
         cal.set (Calendar.MONTH, MM);
         cal.set (Calendar.DATE, DD);
         cal.set (Calendar.HOUR_OF_DAY, hh);
@@ -323,5 +324,29 @@ public class ISODate {
       year = year.substring(1);
       return year + day;
     }
-}
 
+    /**
+     * Calculates the closest year in full YYYY format based on a two-digit year input.
+     * The closest year is determined in relation to the current year provided by the Calendar instance.
+     *
+     * @param year The two-digit year to be converted (e.g., 23 for 2023 or 2123).
+     * @param now  The current date provided as a Calendar instance used for reference.
+     * @return The closest full year in YYYY format.
+     * @throws IllegalArgumentException if the input year is not between 0 and 99.
+     */
+    private static int calculateNearestFullYear(int year, Calendar now) {
+        if (year < 0 || year > 99) {
+            throw new IllegalArgumentException("Year must be between 0 and 99");
+        }
+
+        int currentYear = now.get(Calendar.YEAR); // e.g., 2023
+        int currentCentury = currentYear - currentYear % 100; // e.g., 2000 for 2023
+        int possibleYear = currentCentury + year; // e.g., 2023 for year 23
+
+        // Adjust to the closest century if needed
+        if (Math.abs(year - currentYear % 100) > 50) {
+            possibleYear += (year > currentYear % 100) ? -100 : 100;
+        }
+        return possibleYear;
+    }
+}

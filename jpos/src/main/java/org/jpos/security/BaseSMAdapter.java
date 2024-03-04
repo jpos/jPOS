@@ -2035,7 +2035,7 @@ public class BaseSMAdapter<T>
      * @param atc
      * @param upn
      * @param txnData
-     * @return true if ARQC/TC/AAC is falid or false if not
+     * @return true if ARQC/TC/AAC is valid or false if not
      * @throws SMException
      */
     protected boolean verifyARQCImpl(MKDMethod mkdm, SKDMethod skdm, T imkac

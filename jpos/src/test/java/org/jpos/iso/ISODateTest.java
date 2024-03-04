@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -183,5 +184,12 @@ public class ISODateTest {
     public void testParseISODate2DigitYear() {
         java.util.Date result = ISODate.parseISODate("101227235657", aus);
         assertThat(result.getTime(), is(1293458217000L));
+    }
+
+    @Test
+    public void testPivotYear() {
+        Date future = ISODate.parseISODate("20990101000000");
+        assertEquals ("202306", ISODate.formatDate(ISODate.parseISODate("230601000000"), "yyyyMM"));
+        assertEquals ("210106", ISODate.formatDate(ISODate.parseISODate("010601000000", future.getTime()), "yyyyMM"));
     }
 }
