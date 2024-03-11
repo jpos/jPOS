@@ -60,7 +60,7 @@ public class ChannelAdaptor
     boolean waitForWorkersOnStop;
     private Thread receiver;
     private Thread sender;
-    private final Object disconnectLock = Boolean.TRUE;
+    private final Object disconnectLock = new Object();
 
     public ChannelAdaptor () {
         super ();
