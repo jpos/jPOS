@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Environment implements Loggeable {
     private static final String DEFAULT_ENVDIR = "cfg";         // default dir for the env file (relative to cwd), overridable with sys prop "jpos.envdir"
@@ -49,7 +50,7 @@ public class Environment implements Loggeable {
     private static int SP_PREFIX_LENGTH = SP_PREFIX.length();
     private String errorString;
     private ServiceLoader<EnvironmentProvider> serviceLoader;
-
+    
     static {
         try {
             INSTANCE = new Environment();
@@ -268,7 +269,13 @@ public class Environment implements Loggeable {
         for (Map.Entry<String,Object> entry : c.entrySet()) {
             String p = prefix == null ? entry.getKey() : (prefix + "." + entry.getKey());
             if (entry.getValue() instanceof Map) {
-                flat(properties, p, (Map<String,Object>)entry.getValue(), dereference);
+                flat(properties, p, (Map<String, Object>) entry.getValue(), dereference);
+            } else if (entry.getValue() instanceof List<?> listParams) {
+                List<String> list = listParams.stream()
+                  .map(Object::toString)
+                  .map(str -> dereference ? Environment.get(str) : str)
+                  .collect(Collectors.toList());
+                properties.put (p, ISOUtil.commaEncode(list.toArray(new String[0])));
             } else {
                 Object obj = entry.getValue();
                 properties.put (p, (dereference && obj instanceof String ?
