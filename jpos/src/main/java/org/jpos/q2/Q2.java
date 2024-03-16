@@ -80,6 +80,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
@@ -161,10 +163,11 @@ public class Q2 implements FileFilter, Runnable {
     private long shutdownHookDelay = 0L;
     public Q2 (String[] args) {
         super();
-        this.args = args;
+        parseCmdLine (args, true);
+        this.args = environmentArgs(args);
         startTime = Instant.now();
         instanceId = UUID.randomUUID();
-        parseCmdLine (args);
+        parseCmdLine (this.args, false);
         libDir     = new File (deployDir, "lib");
         dirMap     = new TreeMap<>();
         deployDir.mkdirs ();
@@ -710,7 +713,7 @@ public class Q2 implements FileFilter, Runnable {
         }
         return s;
     }
-    private void parseCmdLine (String[] args) {
+    private void parseCmdLine (String[] args, boolean environmentOnly) {
         CommandLineParser parser = new DefaultParser ();
 
         Options options = new Options ();
@@ -743,6 +746,17 @@ public class Q2 implements FileFilter, Runnable {
             System.setProperty("log4j2.formatMsgNoLookups", "true"); // log4shell prevention
 
             CommandLine line = parser.parse (options, args);
+            // set up envdir and env before other parts of the system, so env is available
+            // force reload if any of the env options was changed
+            if (line.hasOption("Ed")) {
+                System.setProperty("jpos.envdir", line.getOptionValue("Ed"));
+            }
+            if (line.hasOption("E")) {
+                System.setProperty("jpos.env", ISOUtil.commaEncode(line.getOptionValues("E")));
+            }
+
+            if (environmentOnly)
+
             if (line.hasOption ("v")) {
                 displayVersion();
                 System.exit (0);
@@ -753,14 +767,6 @@ public class Q2 implements FileFilter, Runnable {
                 System.exit (0);
             } 
 
-            // set up envdir and env before other parts of the system, so env is available
-            // force reload if any of the env options was changed
-            if (line.hasOption("Ed")) {
-                System.setProperty("jpos.envdir", line.getOptionValue("Ed"));
-            }
-            if (line.hasOption("E")) {
-                System.setProperty("jpos.env", ISOUtil.commaEncode(line.getOptionValues("E")));
-            }
 
             if (line.hasOption ("c")) {
                 cli = new CLI(this, line.getOptionValue("c"), line.hasOption("i"));
@@ -1236,5 +1242,13 @@ public class Q2 implements FileFilter, Runnable {
         new ProcessorMetrics().bindTo(meterRegistry);
         new JvmThreadMetrics().bindTo(meterRegistry);
         meterRegistry.add (prometheusRegistry);
+    }
+
+    public String[] environmentArgs (String[] args) {
+        String envArgs = Environment.getEnvironment().getProperty("${q2.args}", null);
+        return (envArgs != null ?
+            Stream.concat(
+              Arrays.stream(ISOUtil.commaDecode(envArgs)), Arrays.stream(args))
+                .toArray(String[]::new) : args);
     }
 }
