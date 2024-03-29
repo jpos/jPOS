@@ -848,10 +848,11 @@ public class ISOMsg extends ISOComponent
      *
      * @param m The ISOMsg to merge into this ISOMsg. It must not be {@code null}.
      *          The method does nothing if {@code m} is {@code null}.
+     * @param mergeHeader A boolean flag indicating whether to merge the header of the input message into this message.
      *
      */
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public void merge (ISOMsg m) {
+    public void merge (ISOMsg m, boolean mergeHeader) {
         for (int i : m.fields.keySet()) {
             try {
                 if (i >= 0 && m.hasField(i))
@@ -860,8 +861,18 @@ public class ISOMsg extends ISOComponent
                 // should never happen
             }
         }
-        if (m.header != null)
+        if (mergeHeader && m.header != null)
             header = (ISOHeader) m.header.clone();
+    }
+
+    /*
+     * Merges the content of the specified ISOMsg into this ISOMsg instance, excluding the header.
+     * This method is a convenience wrapper around {@link #merge(ISOMsg, boolean)} with the {@code mergeHeader}
+     * parameter set to {@code false} for backward compatibility, indicating that the header of the input message
+     * will not be merged.
+     */
+    public void merge (ISOMsg m) {
+        merge (m, false);
     }
 
     /**
