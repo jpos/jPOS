@@ -5072,4 +5072,17 @@ public class ISOUtilTest {
         assertEquals("", ISOUtil.charDecode("a:b:c", ':', 4), "error getting part 4 of  \"a:b:c\"");
         assertEquals("b", ISOUtil.charDecode(":b:c", ':', 1), "error getting part 1 of  \":b:c\"");
     }
+
+    @Test
+    public void testUTF () {
+        String s = "- \uD83D\uDC7D\uD83D\uDC94LTUS Lei\u0091s 19 Ñandú Rally\u0092sINUS";
+        String expectedLatin = "-     LTUS Lei\u0091s 19 Ñandú Rally\u0092sINUS";
+        String expectedASCII = "-     LTUS Lei s 19  and  Rally sINUS";
+        String d = ISOUtil.toLatin(s);
+        assertEquals(s.length(), d.length());
+        assertEquals(expectedLatin, d);
+        d = ISOUtil.toASCII(s);
+        assertEquals(s.length(), d.length());
+        assertEquals(expectedASCII, d);
+    }
 }

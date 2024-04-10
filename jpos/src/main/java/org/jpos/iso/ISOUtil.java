@@ -1733,4 +1733,32 @@ public class ISOUtil {
             return i < split.length ? split[i] : "";
         }
     }
+
+    public static String toUnicodeString(String input) {
+        StringBuilder sb = new StringBuilder();
+        for (char c : input.toCharArray()) {
+            sb.append(String.format("\\u%04x", (int) c));
+        }
+        return sb.toString();
+    }
+
+    public static String toASCII(String s) {
+        return toSingleByte (s, 0x7F);
+    }
+    public static String toLatin(String s) {
+        return toSingleByte (s, 0xFF);
+    }
+    
+    private static String toSingleByte(String s, int mask) {
+        StringBuilder sb = new StringBuilder();
+        s.codePoints().forEach(cp -> {
+            if (cp > mask) {
+                sb.append(" ");
+                if (cp > 0xFFFF) // multi-byte character
+                    sb.append(" ");
+            } else
+                sb.appendCodePoint(cp); // Append the single-byte character
+        });
+        return sb.toString();
+    }
 }
