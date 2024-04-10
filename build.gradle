@@ -42,7 +42,7 @@ subprojects {
     if (project.hasProperty("lint")) {
       // gradle -Plint ...
       tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:preview" 
+        options.compilerArgs << "-Xlint:preview" << "-Xlint:unchecked" << "-Xlint:deprecation"
       } 
     }
     java {
