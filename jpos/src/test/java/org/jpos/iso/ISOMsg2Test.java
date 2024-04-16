@@ -20,13 +20,7 @@ package org.jpos.iso;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -641,12 +635,16 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         ISOMsg m = new ISOMsg();
         m.recalcBitMap();
-        byte[] value = new byte[0];
-        m.set(3, value);
+        m.set(3, "000000");
+        m.setHeader("ISOHEADER".getBytes());
         iSOMsg.merge(m);
         assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
         assertEquals(3, iSOMsg.maxField, "iSOMsg.maxField");
         assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
+        assertEquals("000000", iSOMsg.getString(3));
+        assertNull(iSOMsg.getHeader());
+        iSOMsg.merge(m, true);
+        assertArrayEquals("ISOHEADER".getBytes(), iSOMsg.getHeader());
     }
 
     @Test

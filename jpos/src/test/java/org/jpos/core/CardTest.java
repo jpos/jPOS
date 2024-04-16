@@ -183,4 +183,81 @@ public class CardTest  {
 
         assertEquals("41111111", c.getBin(8), "pan");
     }
+
+    @Test
+    public void testBuildTrack1Data() throws Throwable {
+        // Load card data
+        Track1.Builder track1Builder = Track1.builder();
+        track1Builder.pan("4111111111111111");
+        track1Builder.nameOnCard("NAME ON CARD TEST");
+        track1Builder.exp("2011");
+        track1Builder.serviceCode("123");
+        track1Builder.cvv("4567");
+        track1Builder.discretionaryData("1234567890");
+
+        // Construct the Track1 data based on the card data provided
+        Track1 track1 = track1Builder.build();
+
+        // Loads the card values from the previously generated Track1
+        // to validate if those values match the original ones.
+        Track1 track1Bis = Track1.builder().track(track1.getTrack()).build();
+
+        assertEquals(track1, track1Bis, "Card data values don't match original ones.");
+    }
+
+    @Test
+    public void testBuildTrack1DataPatternDoesNotMatch() throws Throwable {
+
+        String originalTrack1 = "%B4111111111111111^NAME ON CARD TEST^201112345671234567890";
+
+        // Load card data from track data input
+        Track1.Builder builder = Track1.builder().track(originalTrack1);
+
+        // Override card data with empty PAN
+        builder.pan("");
+
+        // Construct the Track1 data based on the card data provided
+        Track1 track1 = builder.buildTrackData().build();
+
+        // Generated track1 doesn't match the pattern. The track attribute keeps the original value
+        assertEquals(originalTrack1, track1.getTrack());
+    }
+
+    @Test
+    public void testBuildTrack2Data() throws Throwable {
+        // Load card data
+        Track2.Builder track2Builder = Track2.builder();
+        track2Builder.pan("4111111111111111");
+        track2Builder.exp("2011");
+        track2Builder.serviceCode("123");
+        track2Builder.cvv("4567");
+        track2Builder.discretionaryData("123456789");
+
+        // Construct the Track2 data based on the card data provided
+        Track2 track2 = track2Builder.build();
+
+        // Loads the card values from the previously generated Track2
+        // to validate if those values match the original ones.
+        Track2 track2Bis = Track2.builder().track(track2.getTrack()).build();
+
+        assertEquals(track2, track2Bis, "Card data values don't match original ones.");
+    }
+
+    @Test
+    public void testBuildTrack2DataPatternDoesNotMatch() throws Throwable {
+
+        String originalTrack2 = "4111111111111111=20111234567123456789";
+
+        // Load card data from track data input
+        Track2.Builder builder = Track2.builder().track(originalTrack2);
+
+        // Override card data with empty PAN
+        builder.pan("");
+
+        // Construct the Track2 data based on the card data provided
+        Track2 track2 = builder.buildTrackData().build();
+
+        // Generated track2 doesn't match the pattern. The track attribute keeps the original value
+        assertEquals(originalTrack2, track2.getTrack());
+    }
 }
