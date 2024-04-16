@@ -22,7 +22,6 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.FSDISOMsg;
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import java.util.List;
 
@@ -68,6 +67,7 @@ public class FSDProtectedLogListener implements LogListener, Configurable
     String[] protectFields = null;
     String[] wipeFields    = null;
     String[] truncateFields    = null;
+    boolean truncateAddEllipsis = false;
     Configuration cfg   = null;
     public static final String WIPED = "[WIPED]";
     public static final byte[] BINARY_WIPED = ISOUtil.hex2byte ("AA55AA55");
@@ -94,6 +94,7 @@ public class FSDProtectedLogListener implements LogListener, Configurable
         truncateFields  = ISOUtil.toStringArray (cfg.get ("truncate", ""));
         protectFields   = ISOUtil.toStringArray (cfg.get ("protect", ""));
         wipeFields      = ISOUtil.toStringArray (cfg.get ("wipe", ""));
+        truncateAddEllipsis = cfg.getBoolean("truncate-add-ellipsis", false);
     }
     public synchronized LogEvent log (LogEvent ev) {
         synchronized (ev.getPayLoad()) {
@@ -133,7 +134,7 @@ public class FSDProtectedLogListener implements LogListener, Configurable
 
     private void checkTruncated(FSDMsg m) {
         for (String truncateField : truncateFields) {
-            String truncate[] = truncateField.split(":");
+            String [] truncate = truncateField.split(":");
             if (truncate.length == 2) {
                 String f = truncate[0];
                 int len = Integer.parseInt(truncate[1]);
@@ -144,7 +145,7 @@ public class FSDProtectedLogListener implements LogListener, Configurable
                     // NOPMD: NOP
                 }
                 if (v != null && v.length() > len) {
-                    m.set(f, v.substring(0, len));
+                    m.set(f, v.substring(0, len) + (truncateAddEllipsis ? "...":""));
                 }
             }
         }
