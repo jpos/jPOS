@@ -20,6 +20,7 @@ package org.jpos.iso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.*;
 
 /**
@@ -348,5 +349,22 @@ public class ISODate {
             possibleYear += (year > currentYear % 100) ? -100 : 100;
         }
         return possibleYear;
+    }
+
+    public static String formatDuration(Duration d) {
+        long days = d.toDays();
+        long hours = d.toHoursPart();
+        long minutes = d.toMinutesPart();
+        long seconds = d.toSecondsPart();
+        StringJoiner sj = new StringJoiner(", ");
+        if (days > 0)
+            sj.add(days + "d");
+        if (hours > 0)
+            sj.add(hours + "h");
+        if (minutes > 0)
+            sj.add(minutes + "m");
+        if (seconds > 0 || sj.length() == 0)
+            sj.add(seconds + "s");
+        return sj.toString();
     }
 }
