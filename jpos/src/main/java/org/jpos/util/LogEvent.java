@@ -44,6 +44,7 @@ public class LogEvent {
     private Instant dumpedAt;
     private boolean honorSourceLogger;
     private boolean noArmor;
+    private boolean hasException;
 
     public LogEvent (String tag) {
         super();
@@ -78,6 +79,8 @@ public class LogEvent {
     }
     public void addMessage (Object msg) {
         payLoad.add (msg);
+        if (msg instanceof Throwable)
+            hasException = true;
     }
     public void addMessage (String tagname, String message) {
         payLoad.add ("<"+tagname+">"+message+"</"+tagname+">");
@@ -95,8 +98,7 @@ public class LogEvent {
         if (noArmor) {
             p.println("");
         } else {
-            if (dumpedAt == null)
-                dumpedAt = Instant.now();
+            dumpedAt = getDumpedAt();
             StringBuilder sb = new StringBuilder(indent);
             sb.append ("<log realm=\"");
             sb.append (getRealm());
@@ -228,6 +230,9 @@ public class LogEvent {
         return toString("");
     }
 
+    public boolean hasException() {
+        return hasException;
+    }
     /**
      * This is a hack for backward compatibility after accepting PR67
      * @see <a href="https://github.com/jpos/jPOS/pull/67">PR67</a>
@@ -235,5 +240,14 @@ public class LogEvent {
      */
     public boolean isHonorSourceLogger() {
         return honorSourceLogger;
+    }
+
+    public synchronized Instant getDumpedAt() {
+        if (dumpedAt == null)
+            dumpedAt = Instant.now();
+        return dumpedAt;
+    }
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }
