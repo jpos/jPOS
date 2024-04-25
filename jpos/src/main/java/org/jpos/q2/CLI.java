@@ -26,6 +26,8 @@ import org.jline.terminal.TerminalBuilder;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CLI implements Runnable {
     final private static String DEFAULT_PROMPT = "q2> ";
@@ -47,6 +49,7 @@ public class CLI implements Runnable {
     }
 
     public CLI(Q2 q2, InputStream in, OutputStream rawout, String line, boolean keepRunning, boolean interactive) throws IOException {
+        Logger.getLogger("org.jline").setLevel(Level.WARNING);
         this.q2 = q2;
         PrintStream out = rawout instanceof PrintStream ? (PrintStream) rawout : new PrintStream(rawout);
         ctx = buildCLIContext(in, out);
