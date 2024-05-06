@@ -19,8 +19,9 @@ slf4japi = "2.0.12"
 slf4jnop = "2.0.12"
 hdrhistogram = "2.1.12"
 yaml = "2.0"
-micrometercore = "1.11.2"
-micrometerprometheus = "1.11.2"
+micrometercore = "1.12.5"
+micrometerprometheus = "1.12.5"
+jackson = '2.17.0'
 jdbm = '1.0'
 
 [libraries]
@@ -47,5 +48,7 @@ hdrhistogram = { module = "org.hdrhistogram:HdrHistogram", version.ref = "hdrhis
 yaml = { module = "org.yaml:snakeyaml", version.ref = "yaml" }
 micrometercore = { module = "io.micrometer:micrometer-core", version.ref = "micrometercore" }
 micrometerprometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerprometheus" }
-
+jacksonCore = { module = 'com.fasterxml.jackson.core:jackson-core', version.ref = 'jackson' }
+jacksonDataBind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson' }
+jacksonDataTypeJSR310 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson' }
 
