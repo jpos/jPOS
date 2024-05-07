@@ -27,7 +27,7 @@ extraJavaModuleInfo {
 
         exports('org.apache.sshd.server')
         exports('org.apache.sshd.server.auth.pubkey')
-	exports('org.apache.sshd.server.session')
+	    exports('org.apache.sshd.server.session')
         exports('org.apache.sshd.server.channel')
         exports('org.apache.sshd.server.command')
         exports('org.apache.sshd.server.shell')
@@ -57,6 +57,9 @@ dependencies {
     api libs.slf4japi
     api libs.micrometercore
     api libs.micrometerprometheus
+    api libs.jacksonCore
+    api libs.jacksonDataBind
+    api libs.jacksonDataTypeJSR310
     
     implementation libs.yaml;
     implementation libs.jdbm
@@ -114,11 +117,27 @@ def jposCopySpec = copySpec {
         include 'cfg/*.jks'
         include 'cfg/*.ser'
         include 'cfg/authorized_keys'
-        fileMode 0400
     }
     from(file("${project.buildDir}/libs/${q2ArchiveJarName}"))
     into("lib") {
         from(configurations.runtimeClasspath)
+    }
+    filePermissions {
+       user {
+         read = true
+         write = false
+         execute = false
+       }
+       group {
+         read = false
+         write = false
+         execute = false
+       }
+       other {
+         read = false
+         write = false
+         execute = false
+       }
     }
 }
 
