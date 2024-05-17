@@ -122,6 +122,7 @@ def jposCopySpec = copySpec {
     into("lib") {
         from(configurations.runtimeClasspath)
     }
+    /*
     filePermissions {
        user {
          read = true
@@ -139,6 +140,7 @@ def jposCopySpec = copySpec {
          execute = false
        }
     }
+    */
 }
 
 task listJars {
