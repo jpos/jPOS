@@ -186,7 +186,35 @@ public class Track1 {
             return this;
         }
 
+        /**
+         * Constructs the Track1 data based on the card data provided.
+         * The generated Track1 data is validated using the pattern.
+         * If the Track1 data doesn't match the pattern, the track attribute keeps the original value.
+         * @return this builder.
+         */
+        public Builder buildTrackData() {
+            StringBuilder track1 = new StringBuilder("%");
+            track1.append("B");
+            track1.append(this.pan);
+            track1.append("^");
+            track1.append(this.nameOnCard);
+            track1.append("^");
+            track1.append(this.exp);
+            track1.append(this.serviceCode);
+            track1.append(this.cvv);
+            track1.append(this.discretionaryData);
+
+            Matcher matcher = this.pattern.matcher(track1);
+            int cnt = matcher.groupCount();
+            if (matcher.find() && cnt >= 2)
+                this.track = track1.toString();
+
+            return this;
+        }
+
         public Track1 build() {
+            if (this.track == null)
+                buildTrackData();
             return new Track1(this);
         }
     }

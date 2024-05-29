@@ -642,6 +642,8 @@ public class ISOMsg2Test {
         assertEquals(3, iSOMsg.maxField, "iSOMsg.maxField");
         assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
         assertEquals("000000", iSOMsg.getString(3));
+        assertNull(iSOMsg.getHeader());
+        iSOMsg.merge(m, true);
         assertArrayEquals("ISOHEADER".getBytes(), iSOMsg.getHeader());
     }
 
