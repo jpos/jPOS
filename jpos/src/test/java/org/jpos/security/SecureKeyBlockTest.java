@@ -235,7 +235,7 @@ public class SecureKeyBlockTest {
         String tr31 = "C0088P0TN00E000054CF02CF89CCC36897E3D4AC22D7BBECA1CBD08296A315A47228274A2FAE03EA699AF35F";
         SecureKeyBlock key = SecureKeyBlockBuilder.newBuilder().build(tr31);
         key.dump(System.out, "  ");
-        // Serialize instance.lkajsdf
+        // Serialize instance.
         Object obj = key;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(baos);
