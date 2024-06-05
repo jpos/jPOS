@@ -18,6 +18,7 @@
 
 package org.jpos.security;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,7 +30,7 @@ import org.jpos.iso.ISOUtil;
  * <p>
  * Each value repesents bytes 5-6 of the Keyblok Header.
  */
-public class KeyUsage {
+public class KeyUsage implements Serializable {
 
     protected static final Map<String, KeyUsage> TR31MAP =  new LinkedHashMap<>();
 
