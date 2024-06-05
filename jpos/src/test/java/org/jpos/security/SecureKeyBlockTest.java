@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.bouncycastle.util.Arrays;
 import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -250,6 +250,6 @@ public class SecureKeyBlockTest {
         assertEquals(key.getModeOfUse(), key2.getModeOfUse());
         assertEquals(key.getKeyUsage().getCode(), key2.getKeyUsage().getCode());
         assertEquals(key.getAlgorithm().getCode(), key2.getAlgorithm().getCode());
-        assertTrue(Arrays.areEqual(key.getKeyBytes(), key2.getKeyBytes()));
+        assertTrue(Arrays.equals(key.getKeyBytes(), key2.getKeyBytes()));
     }
 }
