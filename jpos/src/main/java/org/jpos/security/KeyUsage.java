@@ -32,6 +32,8 @@ import org.jpos.iso.ISOUtil;
  */
 public class KeyUsage implements Serializable {
 
+    private static final long serialVersionUID = -5504819939017756749L;
+
     protected static final Map<String, KeyUsage> TR31MAP =  new LinkedHashMap<>();
 
     /**
