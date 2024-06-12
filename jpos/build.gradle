@@ -60,6 +60,7 @@ dependencies {
     api libs.jacksonCore
     api libs.jacksonDataBind
     api libs.jacksonDataTypeJSR310
+    api libs.jacksonDataFormatXML
     
     implementation libs.yaml;
     implementation libs.jdbm
