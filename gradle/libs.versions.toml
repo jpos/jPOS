@@ -21,7 +21,7 @@ hdrhistogram = "2.1.12"
 yaml = "2.0"
 micrometercore = "1.12.5"
 micrometerprometheus = "1.12.5"
-jackson = '2.17.0'
+jackson = '2.17.1'
 jdbm = '1.0'
 
 [libraries]
@@ -51,4 +51,5 @@ micrometerprometheus = { module = "io.micrometer:micrometer-registry-prometheus"
 jacksonCore = { module = 'com.fasterxml.jackson.core:jackson-core', version.ref = 'jackson' }
 jacksonDataBind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson' }
 jacksonDataTypeJSR310 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson' }
+jacksonDataFormatXML = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml', version.ref = 'jackson' }
 
