@@ -43,6 +43,10 @@ import org.jdom2.output.XMLOutputter;
 import org.jpos.core.Environment;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
+import org.jpos.log.evt.Start;
+import org.jpos.log.evt.Stop;
+import org.jpos.log.evt.Deploy;
+import org.jpos.log.evt.UnDeploy;
 import org.jpos.metrics.PrometheusService;
 import org.jpos.q2.install.ModuleUtils;
 // import org.jpos.q2.ssh.SshService;
@@ -321,10 +325,12 @@ public class Q2 implements FileFilter, Runnable {
         return ready();
     }
     public void shutdown (boolean join) {
+        if (log != null)
+            log.info (auditStop(Duration.between(startTime, Instant.now())));
         shutdown.countDown();
         unregisterQ2();
         if (q2Thread != null) {
-            log.info ("shutting down");
+            // log.info ("shutting down");
             q2Thread.interrupt ();
             if (join) {
                 try {
@@ -436,6 +442,7 @@ public class Q2 implements FileFilter, Runnable {
                     log.info ("shutting down (hook/" + shutdownHookDelay + ")");
                     if (shutdownHookDelay > 0)
                         ISOUtil.sleep(shutdownHookDelay);
+                    log.info (auditStop(Duration.between(startTime, Instant.now())));
                     shuttingDown = true;
                     shutdown.countDown();
                     if (q2Thread != null) {
@@ -453,6 +460,7 @@ public class Q2 implements FileFilter, Runnable {
                             // exception.
                         }
                     }
+                    log.info (auditStop(Duration.between(startTime, Instant.now())));
                 }
             }
         );
@@ -522,10 +530,10 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     private void undeploy (File f) {
-        QEntry qentry = (QEntry) dirMap.get (f);
+        QEntry qentry = dirMap.get (f);
         try {
             if (log != null)
-                log.trace ("undeploying:" + f.getCanonicalPath());
+                log.info (new UnDeploy(f.getCanonicalPath(), true));
 
             if (qentry.isQBean()) {
                 Object obj      = qentry.getObject ();
@@ -533,7 +541,7 @@ public class Q2 implements FileFilter, Runnable {
                 factory.destroyQBean (this, name, obj);
             }
             if (log != null)
-                log.info ("undeployed:" + f.getCanonicalPath());
+                log.info (new UnDeploy(f.getCanonicalPath(), false));
 
         } catch (Exception e) {
             getLog().warn ("undeploy", e);
@@ -557,7 +565,10 @@ public class Q2 implements FileFilter, Runnable {
 
     private boolean deploy (File f) {
         LogEvent evt = log != null ? log.createInfo() : null;
+        boolean enabled = false;
+        String filePath = "";
         try {
+            filePath = f.getCanonicalPath();
             QEntry qentry = dirMap.get (f);
             SAXBuilder builder = createSAXBuilder();
             Document doc;
@@ -579,19 +590,16 @@ public class Q2 implements FileFilter, Runnable {
                     return false;
                 }
             }
-            if (QFactory.isEnabled(rootElement)) {
-                if (evt != null) {
-                    evt.addMessage("deploy: " + f.getCanonicalPath());
-                }
+            enabled = QFactory.isEnabled(rootElement);
+            if (evt != null)
+                evt.addMessage(new Deploy(f.getCanonicalPath(), enabled));
+            if (enabled) {
                 Object obj = factory.instantiate (this, factory.expandEnvProperties(rootElement));
                 qentry.setObject (obj);
-
                 ObjectInstance instance = factory.createQBean (
                     this, doc.getRootElement(), obj
                 );
                 qentry.setInstance (instance);
-            } else if (evt != null) {
-                evt.addMessage("deploy ignored (enabled='" + QFactory.getEnabledAttribute(rootElement) + "'): " + f.getCanonicalPath());
             }
         } 
         catch (InstanceAlreadyExistsException e) {
@@ -621,8 +629,10 @@ public class Q2 implements FileFilter, Runnable {
             // This will also save deploy error repeats...
             return false;
         } finally {
-            if (evt != null)
+            if (evt != null) {
+                // evt.addMessage(new Deploy(Instant.now(), filePath, enabled));
                 Logger.log(evt);
+            }
         }
         return true ;
     }
@@ -653,11 +663,11 @@ public class Q2 implements FileFilter, Runnable {
                 getLog().warn ("init-system-logger", e);
             }
         }
-        Environment env = Environment.getEnvironment();
-        getLog().info("Q2 started, deployDir=" + deployDir.getAbsolutePath() + ", environment=" + env.getName());
-        if (env.getErrorString() != null)
-            getLog().error(env.getErrorString());
-
+//        Environment env = Environment.getEnvironment();
+//        getLog().info("Q2 started, deployDir=" + deployDir.getAbsolutePath() + ", environment=" + env.getName());
+//        if (env.getErrorString() != null)
+//            getLog().error(env.getErrorString());
+        getLog().info (auditStart());
     }
     public Log getLog () {
         if (log == null) {
@@ -766,8 +776,6 @@ public class Q2 implements FileFilter, Runnable {
                 helpFormatter.printHelp ("Q2", options);
                 System.exit (0);
             } 
-
-
             if (line.hasOption ("c")) {
                 cli = new CLI(this, line.getOptionValue("c"), line.hasOption("i"));
             } else if (line.hasOption ("i")) 
@@ -1250,5 +1258,27 @@ public class Q2 implements FileFilter, Runnable {
             Stream.concat(
               Arrays.stream(ISOUtil.commaDecode(envArgs)), Arrays.stream(args))
                 .toArray(String[]::new) : args);
+    }
+
+    private Start auditStart() {
+        Environment env = Environment.getEnvironment();
+        String envName = env.getName();
+        if (env.getErrorString() != null)
+            envName = envName + " (" + env.getErrorString() + ")";
+        return new Start(
+          getQ2().getInstanceId(),
+          getVersion(),
+          getAppVersionString(),
+          getDeployDir().getAbsolutePath(),
+          envName
+        );
+    }
+
+    private Stop auditStop(Duration dur) {
+        return new Stop(
+          Instant.now(),
+          getInstanceId(),
+          dur
+        );
     }
 }

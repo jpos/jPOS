@@ -26,11 +26,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
@@ -185,6 +187,7 @@ public class RotateLogListenerTest {
             // when: a rotation is executed
             listener.logRotate();
 
+            DirectoryStream<Path> stream  = Files.newDirectoryStream(logRotationTestDirectory.getDirectory());
             // then: new events should end up in the current file and old events in the archived file
             listener.log(new LogEvent("Message 2"));
 
@@ -194,6 +197,8 @@ public class RotateLogListenerTest {
             assertTrue(currentLogFileContents.contains("<logger "), "Logger element should have been opened in the current file");
             assertFalse(currentLogFileContents.contains("</logger>"), "Logger element should not have been closed in the current file");
 
+
+
             String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
             assertTrue(archivedLogFile1Contents.contains("Message 1"), "Archived log file should contain the first message");
             assertFalse(archivedLogFile1Contents.contains("Message 2"), "Archived log file should not contain the second message");
@@ -202,6 +207,7 @@ public class RotateLogListenerTest {
 
             // when: another rotation is executed
             listener.logRotate();
+
 
             // then: new events should end up in the current file and old events in the archived files
             listener.log(new LogEvent("Message 3"));
@@ -243,7 +249,6 @@ public class RotateLogListenerTest {
         logRotationTestDirectory.allowNewFileCreation();
 
         String logFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
-        System.out.println("logFileContents = " + logFileContents);
         assertTrue(logFileContents.contains("Message 1"), "Log file should contain first message");
         assertTrue(logFileContents.contains("Message 2"), "Log file should contain second message");
         assertFalse(logFileContents.contains("</logger>"), "Logger element should not have been closed");
@@ -320,6 +325,7 @@ public class RotateLogListenerTest {
         }
         logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
+        listener.setConfiguration((Element) null); // we need to call this in order to simulate LoggerAdaptor behavior and run postConfiguration LogWriter stuff
         return listener;
     }
 }

@@ -22,9 +22,7 @@ import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
-import org.jpos.util.LogEventOutputStream;
-import org.jpos.util.LogListener;
-import org.jpos.util.Logger;
+import org.jpos.util.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -76,7 +74,20 @@ public class LoggerAdaptor extends QBeanSupport {
             String clazz = e.getAttributeValue("class");
             LogListener listener = factory.newInstance(clazz);
             factory.setConfiguration(listener, e);
+            attemptToAddWriter (e.getChild("writer"), listener);
             logger.addListener(listener);
+        }
+    }
+
+    private void attemptToAddWriter (Element e, LogListener listener) throws ConfigurationException {
+        if (e != null) {
+            QFactory factory = getServer().getFactory();
+            if (QFactory.isEnabled(e)) {
+                String clazz = e.getAttributeValue("class");
+                LogEventWriter writer = factory.newInstance(clazz);
+                factory.setConfiguration(writer, e);
+                listener.setLogEventWriter (writer);
+            }
         }
     }
 }

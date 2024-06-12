@@ -27,5 +27,7 @@ import java.util.EventListener;
  */
 public interface LogListener extends EventListener {
     LogEvent log(LogEvent ev);
+    default void setLogEventWriter (LogEventWriter w) {
+        // do nothing, for backward compatibility
+    }
 }
-

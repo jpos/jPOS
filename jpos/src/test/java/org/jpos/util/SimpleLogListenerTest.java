@@ -86,33 +86,12 @@ public class SimpleLogListenerTest {
         simpleLogListener.setConfiguration(root);
         assertNull(simpleLogListener.writer);
     }
-
-    @Test
-    void testSetConfigurationShouldThrowConfigurationExceptionOnNewInstanceFailure() {
-        SimpleLogListener simpleLogListener = new SimpleLogListener();
-        Element root = new Element("root");
-        Element we = new Element("writer");
-        Element prop = new Element("property");
-        we.setAttribute("class", "org.jpos.util.FakeLogEventWriter");
-        we.addContent(prop);
-        root.addContent(we);
-        assertThrows(ConfigurationException.class, () -> simpleLogListener.setConfiguration(root));
-    }
-
-    @Test
-    void testSetConfigurationShouldThrowConfigurationExceptionWhenWriterClassAttributeMissing() {
-        SimpleLogListener simpleLogListener = new SimpleLogListener();
-        Element root = new Element("root");
-        Element we = new Element("writer");
-        root.addContent(we);
-        assertThrows(ConfigurationException.class, () -> simpleLogListener.setConfiguration(root));
-    }
-
+    
     @Test
     void testShouldClosePrintStreamOnNonNullWriter() {
         SimpleLogListener simpleLogListener = new SimpleLogListener();
         LogEventWriter logEventWriter = mock(LogEventWriter.class);
-        simpleLogListener.accept(logEventWriter);
+        simpleLogListener.setLogEventWriter(logEventWriter);
         simpleLogListener.setPrintStream(new PrintStream(System.out));
         assertNotNull(simpleLogListener.p);
         simpleLogListener.close();
@@ -125,7 +104,7 @@ public class SimpleLogListenerTest {
         SimpleLogListener simpleLogListener = new SimpleLogListener();
         LogEventWriter logEventWriter = mock(LogEventWriter.class);
         PrintStream printStream = new PrintStream(System.out);
-        simpleLogListener.accept(logEventWriter);
+        simpleLogListener.setLogEventWriter(logEventWriter);
         simpleLogListener.setPrintStream(printStream);
         verify(logEventWriter).setPrintStream(printStream);
     }
@@ -134,7 +113,7 @@ public class SimpleLogListenerTest {
     void testShouldLogUsingWriter() {
         SimpleLogListener simpleLogListener = new SimpleLogListener();
         LogEventWriter writer = mock(LogEventWriter.class);
-        simpleLogListener.accept(writer);
+        simpleLogListener.setLogEventWriter(writer);
         LogEvent ev = new LogEvent();
         simpleLogListener.log(ev);
         verify(writer).write(ev);

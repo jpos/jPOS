@@ -41,7 +41,7 @@ public class Caller {
         }
         return sb.append(st.getMethodName())
           .append(':')
-          .append(Integer.toString(st.getLineNumber()))
+          .append(st.getLineNumber())
           .toString();
     }
     public static String shortClassName(String clazz) {

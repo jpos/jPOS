@@ -94,10 +94,10 @@ public class Logger implements LogProducer,Configurable
             l = getLogger(Q2.LOGGER_NAME);
         }
         if (l != null && l.hasListeners ()) {
-            Iterator i = l.listeners.iterator();
+            Iterator<LogListener> i = l.listeners.iterator();
             while (i.hasNext() && evt != null) {
                 try {
-                    evt = ((LogListener) i.next()).log(evt);
+                    evt = i.next().log(evt);
                 } catch (ConcurrentModificationException e) {
                     break;
                 } catch (Throwable t) {

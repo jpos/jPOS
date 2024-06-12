@@ -16,24 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.util;
+package org.jpos.log.evt;
 
-import org.jpos.log.LogRenderer;
-import org.jpos.log.LogRendererRegistry;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.jpos.log.AuditLogEvent;
 
-import java.io.PrintStream;
+public record UnDeploy(String path, @JacksonXmlProperty(isAttribute = true) boolean start) implements AuditLogEvent { }
 
-/**
- * @author apr@cs.com.uy
- * @version $Id$
- */
-public interface Loggeable {
-    void dump(PrintStream p, String indent);
-    default void dump(PrintStream p, String indent, LogRenderer.Type type) {
-        var renderer = LogRendererRegistry.getRenderer(this.getClass(), type);
-        if (renderer != null)
-            renderer.render (this, p, indent);
-        else
-            dump (p, indent);
-    }
-}

@@ -36,6 +36,7 @@ import java.util.Properties;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
+import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
@@ -465,6 +466,7 @@ public class DailyLogListenerTest {
         configuration.setProperty("maxsize", "1000000");
         logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
+        listener.setConfiguration((Element) null);
         return listener;
     }
 

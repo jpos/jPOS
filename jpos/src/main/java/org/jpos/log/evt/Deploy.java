@@ -16,24 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.util;
+package org.jpos.log.evt;
 
-import org.jpos.log.LogRenderer;
-import org.jpos.log.LogRendererRegistry;
-
-import java.io.PrintStream;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.jpos.log.AuditLogEvent;
 
 /**
- * @author apr@cs.com.uy
- * @version $Id$
+ * Represents a deployment configuration with a specific path and an enabled status.
+ *
+ * <p>This record is used as part of the audit log events in the system to track deployment actions.</p>
+ *
+ * @param path the path where the deployment is located
+ * @param enabled a boolean flag indicating whether the deployment is enabled
  */
-public interface Loggeable {
-    void dump(PrintStream p, String indent);
-    default void dump(PrintStream p, String indent, LogRenderer.Type type) {
-        var renderer = LogRendererRegistry.getRenderer(this.getClass(), type);
-        if (renderer != null)
-            renderer.render (this, p, indent);
-        else
-            dump (p, indent);
-    }
-}
+
+public record Deploy(String path, @JacksonXmlProperty(isAttribute = true) boolean enabled) implements AuditLogEvent { }

@@ -19,13 +19,10 @@
 package org.jpos.util;
 
 import org.jdom2.Element;
-import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.XmlConfigurable;
-import org.jpos.q2.SimpleConfigurationFactory;
 
 import java.io.PrintStream;
-import java.util.function.Consumer;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -33,13 +30,13 @@ import java.util.function.Consumer;
  * @see org.jpos.core.Configurable
  * @since jPOS 1.2
  */
-public class SimpleLogListener implements LogListener, XmlConfigurable, Consumer<LogEventWriter> {
+public class SimpleLogListener implements LogListener, XmlConfigurable, Destroyable {
     LogEventWriter writer = null;
     PrintStream p;
 
     public SimpleLogListener () {
         super();
-        p = System.out;
+        setPrintStream(System.out);
     }
     public SimpleLogListener (PrintStream p) {
         this ();
@@ -75,39 +72,20 @@ public class SimpleLogListener implements LogListener, XmlConfigurable, Consumer
     }
 
     @Override
-    public void accept(LogEventWriter writer) {
-        if (p != null) {
-            writer.setPrintStream(p);
-        }
+    public void setLogEventWriter (LogEventWriter writer) {
         this.writer = writer;
+        if (p != null)
+            writer.setPrintStream(p);
     }
 
     @Override
     public void setConfiguration(Element e) throws ConfigurationException {
-        Element ew = e.getChild("writer");
-        LogEventWriter writer;
-        if (ew != null) {
-            String clazz = ew.getAttributeValue("class");
-            if (clazz != null) {
-                try {
-                    writer = (LogEventWriter) Class.forName(clazz).newInstance();
-                } catch (Exception ex) {
-                    throw new ConfigurationException(ex);
-                }
-                if (writer != null) {
-                    if (writer instanceof Configurable) {
-                        SimpleConfigurationFactory factory = new SimpleConfigurationFactory();
-                        ((Configurable) writer).setConfiguration(factory.getConfiguration(ew));
-                    }
-                    if (writer instanceof XmlConfigurable) {
-                        ((XmlConfigurable) writer).setConfiguration(ew);
-                    }
-                    accept(writer);
-                }
-            } else {
-                throw new ConfigurationException("The writer configuration requires a class attribute");
-            }
-        }
+        // nothing to do for now
+    }
+
+    @Override
+    public void destroy () {
+        if (writer != null)
+            writer.close();
     }
 }
-

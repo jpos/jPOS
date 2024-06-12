@@ -16,24 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.util;
+package org.jpos.log;
 
-import org.jpos.log.LogRenderer;
-import org.jpos.log.LogRendererRegistry;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.jpos.log.evt.*;
 
-import java.io.PrintStream;
+@JsonTypeInfo(
+  use = JsonTypeInfo.Id.NAME,
+  include = JsonTypeInfo.As.PROPERTY,
+  property = "t"
+)
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = Start.class, name = "start"),
+  @JsonSubTypes.Type(value = Stop.class, name = "stop"),
+  @JsonSubTypes.Type(value = Deploy.class, name = "deploy"),
+  @JsonSubTypes.Type(value = UnDeploy.class, name = "undeploy"),
+  @JsonSubTypes.Type(value = LogMessage.class, name = "msg")
+})
 
-/**
- * @author apr@cs.com.uy
- * @version $Id$
- */
-public interface Loggeable {
-    void dump(PrintStream p, String indent);
-    default void dump(PrintStream p, String indent, LogRenderer.Type type) {
-        var renderer = LogRendererRegistry.getRenderer(this.getClass(), type);
-        if (renderer != null)
-            renderer.render (this, p, indent);
-        else
-            dump (p, indent);
-    }
-}
+public sealed interface AuditLogEvent permits LogMessage, Deploy, UnDeploy, Start, Stop { }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2022 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,17 +23,25 @@ import org.jpos.log.LogRendererRegistry;
 
 import java.io.PrintStream;
 
-/**
- * @author apr@cs.com.uy
- * @version $Id$
- */
-public interface Loggeable {
-    void dump(PrintStream p, String indent);
-    default void dump(PrintStream p, String indent, LogRenderer.Type type) {
-        var renderer = LogRendererRegistry.getRenderer(this.getClass(), type);
-        if (renderer != null)
-            renderer.render (this, p, indent);
-        else
-            dump (p, indent);
+public class XmlLogWriter implements LogEventWriter {
+    private PrintStream ps;
+    private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.XML);
+
+    @Override
+    public void write(LogEvent ev) {
+        renderer.render(ev, ps, "");
+    }
+
+    @Override
+    public void setPrintStream(PrintStream ps) {
+        this.ps = ps;
+    }
+
+    @Override
+    public void close() {
+        if (ps != System.out && ps != System.err) {
+            ps.close();
+        }
     }
 }
+

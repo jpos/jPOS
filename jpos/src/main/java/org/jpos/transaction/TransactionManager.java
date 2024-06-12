@@ -18,7 +18,9 @@
 
 package org.jpos.transaction;
 
-import io.micrometer.core.instrument.*;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.binder.BaseUnits;
@@ -115,6 +117,7 @@ public class TransactionManager
 
     private Gauge activeSessionsGauge;
     private Counter transactionCounter;
+    private boolean freezeLog;
 
     @Override
     public void initService () throws ConfigurationException {
@@ -410,6 +413,7 @@ public class TransactionManager
         } catch (Exception e) {
             throw new ConfigurationException (e);
         }
+        freezeLog = cfg.getBoolean("freeze-log", true);
     }
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
@@ -480,7 +484,7 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery cr) {
                 context = recover (cr, id, context, pp, true);
                 if (evt != null)
-                    evt.addMessage (" commit-recover: " + getName(p));
+                    evt.addMessage (Trace.of("commit-recover", getName(p)));
             }
             if (hasStatusListeners)
                 notifyStatusListeners (
@@ -488,7 +492,7 @@ public class TransactionManager
                 );
             commitOrAbort (p, id, context, pp, this::commit);
             if (evt != null) {
-                evt.addMessage ("         commit: " + getName(p));
+                evt.addMessage (Trace.of("commit", getName(p)));
                 if (prof != null)
                     prof.checkPoint (" commit: " + getName(p));
             }
@@ -503,7 +507,7 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery cr) {
                 context = recover (cr, id, context, pp, true);
                 if (evt != null)
-                    evt.addMessage ("  abort-recover: " + getName(p));
+                    evt.addMessage (Trace.of("abort-recover", getName(p)));
             }
             if (hasStatusListeners)
                 notifyStatusListeners (
@@ -512,7 +516,7 @@ public class TransactionManager
 
             commitOrAbort (p, id, context, pp, this::abort);
             if (evt != null) {
-                evt.addMessage ("          abort: " + getName(p));
+                evt.addMessage (Trace.of("abort", getName(p)));
                 if (prof != null)
                     prof.checkPoint ("  abort: " + getName(p));
             }
@@ -528,7 +532,7 @@ public class TransactionManager
                 return ((AbortParticipant)p).prepareForAbort (id, context);
             }
         } catch (Throwable t) {
-            getLog().warn ("PREPARE-FOR-ABORT: " + Long.toString (id), t);
+            getLog().warn ("PREPARE-FOR-ABORT: " + id, t);
         } finally {
             getParams(p).timers.prepareForAbortTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null)
@@ -544,7 +548,7 @@ public class TransactionManager
             setThreadName(id, "prepare", p);
             return p.prepare (id, context);
         } catch (Throwable t) {
-            getLog().warn ("PREPARE: " + Long.toString (id), t);
+            getLog().warn ("PREPARE: " + id, t);
         } finally {
             getParams(p).timers.prepareTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null) {
@@ -561,7 +565,7 @@ public class TransactionManager
             setThreadName(id, "commit", p);
             p.commit(id, context);
         } catch (Throwable t) {
-            getLog().warn ("COMMIT: " + Long.toString (id), t);
+            getLog().warn ("COMMIT: " + id, t);
         } finally {
             getParams(p).timers.commitTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null)
@@ -616,7 +620,7 @@ public class TransactionManager
                 action = prepareOrAbort (p, id, context, pp, this::prepareForAbort);
 
                 if (evt != null && p instanceof AbortParticipant) {
-                    evt.addMessage("prepareForAbort: " + getName(p));
+                    evt.addMessage(Trace.of("prepareForAbort", getName(p)));
                     if (prof != null)
                         prof.checkPoint ("prepareForAbort: " + getName(p));
                 }
@@ -640,14 +644,14 @@ public class TransactionManager
                 retry  = (action & RETRY) == RETRY;
 
                 if (evt != null) {
-                    evt.addMessage ("        prepare: "
-                            + getName(p)
-                            + (abort ? " ABORTED" : " PREPARED")
+                    evt.addMessage (Trace.of("prepare", getName(p),
+                            (abort ? " ABORTED" : " PREPARED")
                             + (timeout ? " TIMEOUT" : "")
                             + (maxTime ? " MAX_TIMEOUT" : "")
                             + (retry ? " RETRY" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
-                            + ((action & NO_JOIN) == NO_JOIN ? " NO_JOIN" : ""));
+                            + ((action & NO_JOIN) == NO_JOIN ? " NO_JOIN" : ""))
+                    );
                     if (prof != null)
                         prof.checkPoint ("prepare: " + getName(p));
                 }
@@ -770,9 +774,7 @@ public class TransactionManager
         throws ConfigurationException
     {
         QFactory factory = getFactory();
-        TransactionParticipant participant =
-            factory.newInstance (QFactory.getAttributeValue (e, "class")
-        );
+        TransactionParticipant participant = factory.newInstance (QFactory.getAttributeValue (e, "class"));
         factory.setLogger (participant, e);
         QFactory.invoke (participant, "setTransactionManager", this, TransactionManager.class);
         factory.setConfiguration (participant, e);
@@ -980,8 +982,8 @@ public class TransactionManager
      * @param prof profiler (may be null)
      * @return FrozenLogEvent
      */
-    protected FrozenLogEvent freeze(Serializable context, LogEvent evt, Profiler prof) {
-        return new FrozenLogEvent(evt);
+    protected LogEvent freeze(Serializable context, LogEvent evt, Profiler prof) {
+        return freezeLog ? new FrozenLogEvent(evt) : evt;
     }
 
     public class RetryTask implements Runnable {
@@ -1084,6 +1086,8 @@ public class TransactionManager
     public static Long getId() {
         return tlId.get();
     }
+
+
     private void notifyStatusListeners
             (int session, TransactionStatusEvent.State state, long id, String info, Serializable context)
     {
@@ -1194,6 +1198,18 @@ public class TransactionManager
         io.micrometer.core.instrument.Timer abortTimer,
         io.micrometer.core.instrument.Timer snapshotTimer)
     { }
+    public record Trace (String phase, String message, String info) {
+        @Override
+        public String toString() {
+            return "%15s: %s%s".formatted(phase, message, info);
+        }
+        public static Trace of (String phase, String message) {
+            return new Trace (phase, message, "");
+        }
+        public static Trace of (String phase, String message, String info) {
+            return new Trace (phase, message, info);
+        }
+    }
 
     private Set<String> getSet (Element e) {
         return e != null ? new HashSet<>(Arrays.asList(ISOUtil.commaDecode(e.getTextTrim()))) : Collections.emptySet();
