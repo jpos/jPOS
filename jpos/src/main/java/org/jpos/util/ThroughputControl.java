@@ -18,7 +18,7 @@
 
 package org.jpos.util;
 
-import java.time.Instant;
+import java.time.Duration;
 
 /**
  * ThroughputControl limits the throughput 
@@ -43,8 +43,8 @@ public class ThroughputControl {
     private int[] period;
     private int[] max;
     private int[] cnt;
-    private long[] start;
-    private long[] sleep;
+    private Duration[] start;
+    private Duration[] sleep;
 
     /**
      * @param maxTransactions Transaction count threshold.
@@ -64,13 +64,13 @@ public class ThroughputControl {
         period = new int[l];
         max = new int[l];
         cnt = new int[l];
-        start = new long[l];
-        sleep = new long[l];
+        start = new Duration[l];
+        sleep = new Duration[l];
         for (int i=0; i<l; i++) {
             this.max[i]    = maxTransactions[i];
             this.period[i] = periodInMillis[i];
-            this.sleep[i]  = Math.min(Math.max (periodInMillis[i]/10, 500L),50L);
-            this.start[i]  = Instant.now().toEpochMilli();
+            this.sleep[i]  = Duration.ofMillis(Math.min(Math.max (periodInMillis[i]/10, 500L),50L));
+            this.start[i]  = Duration.ofNanos(System.nanoTime());
         }
     }
 
@@ -83,7 +83,7 @@ public class ThroughputControl {
      */
     public long control() {
         boolean delayed = false;
-        long init = Instant.now().toEpochMilli();
+        Duration init = Duration.ofNanos(System.nanoTime());
         for (int i=0; i<cnt.length; i++) {
             synchronized (this) {
                 cnt[i]++;
@@ -92,13 +92,13 @@ public class ThroughputControl {
                 if (cnt[i] > max[i]) {
                     delayed = true;
                     try { 
-                        Thread.sleep (sleep[i]); 
+                        Thread.sleep (sleep[i].toMillis());
                     } catch (InterruptedException e) { }
                 }
                 synchronized (this) {
-                    long now = Instant.now().toEpochMilli();
-                    if (now - start[i] > period[i]) {
-                        long elapsed = now - start[i];
+                    Duration now = Duration.ofNanos(System.nanoTime());
+                    if (now.minus(start[i]).toMillis() > period[i]) {
+                        long elapsed = now.minus(start[i]).toMillis();
                         int  allowed = (int) (elapsed * max[i] / period[i]);
                         start[i] = now;
                         cnt[i] = Math.max (cnt[i] - allowed, 0);
@@ -106,7 +106,7 @@ public class ThroughputControl {
                 }
             } while (cnt[i] > max[i]);
         }
-        return delayed ? Instant.now().toEpochMilli() - init : 0L;
+        return delayed ? Duration.ofNanos(System.nanoTime()).minus(init).toMillis() : 0L;
     }
 }
 
