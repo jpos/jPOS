@@ -38,7 +38,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     protected Map entries;
     protected TSpace sl;    // space listeners
     public static final long GCDELAY = 5*1000;
-    private static final long GCLONG = 60*1000;
+    private static final long GCLONG = 60_000L;
     private static final long NRD_RESOLUTION = 500L;
     private static final int MAX_ENTRIES_IN_DUMP = 1000;
     private static final long ONE_MILLION = 1_000_000L;         // multiplier millis --> nanos
@@ -213,7 +213,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     public void gc () {
         gc(0);
-        if (System.nanoTime() - lastLongGC > GCLONG) {
+        if (System.nanoTime() - lastLongGC > GCLONG*ONE_MILLION) {
             gc(1);
             lastLongGC = System.nanoTime();
         }
