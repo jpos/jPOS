@@ -906,16 +906,16 @@ public class ISOUtil {
 
     public static String protect(String s, char mask) {
         // Validation for minimum length
-        StringBuilder ps = new StringBuilder(s);
         if (s.length() <= 4) {
             char[] maskedArray = new char[s.length()];
             Arrays.fill(maskedArray, mask);// 6 (BIN) + 4 (last digits) = 10
             return new String(maskedArray);
         }
+        StringBuilder ps = new StringBuilder(s);
 
         // Identify the positions of separators (^ and =)
-        String separator = s.contains("^") ? "^" : "=";
-        int firstSeparatorIndex = ps.indexOf(separator);
+        String separator = s.contains("^") ? "^" : s.contains("=") ? "=" : null;
+        int firstSeparatorIndex = separator != null ? ps.indexOf(separator) : s.length();
         if (firstSeparatorIndex < 6) {
             return s; // nothing to do
         }
@@ -925,15 +925,16 @@ public class ISOUtil {
         for (int i = 6; i < lastDigitIndex; i++) {
             ps.setCharAt(i, mask);
         }
-        for (int i = firstSeparatorIndex + 1; i < ps.length(); i++) {
-            char c = ps.charAt(i);
-            if ((c != '=' && c != '^')) {
-                ps.setCharAt(i, mask);
+        if (separator != null) {
+            for (int i = firstSeparatorIndex + 1; i < ps.length(); i++) {
+                char c = ps.charAt(i);
+                if ((c != '=' && c != '^')) {
+                    ps.setCharAt(i, mask);
+                }
             }
         }
         return ps.toString();
     }
-
     public static String protect(String s) {
         return protect(s, '_');
     }

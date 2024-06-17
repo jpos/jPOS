@@ -4238,6 +4238,12 @@ public class ISOUtilTest {
         assertEquals("", result, "result");
     }
 
+    @Test
+    public void testPan() throws Throwable {
+        String result = ISOUtil.protect("4111111111111111");
+        assertEquals("411111______1111", result, "result");
+    }
+
     
     @Test
     public void testProtectT1D3() throws Throwable {
