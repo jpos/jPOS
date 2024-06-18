@@ -36,6 +36,10 @@ import javax.management.ReflectionException;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.jdom2.Text;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.annotation.Config;
 import org.jpos.iso.ISOFieldValidator;
 import org.jpos.iso.IVA_ALPHANUM;
 import org.jpos.q2.iso.ChannelAdaptor;
@@ -499,4 +503,20 @@ public class QFactory2Test {
         q2.stop();
     }
 
+    enum QFactoryTestEnum {
+        TEST1, TEST2, TEST3
+    }
+    
+    class EnumConfigurable implements Configurable {
+        @Config("enum")
+        QFactoryTestEnum testEnum;
+        @Override
+        public void setConfiguration(Configuration cfg) throws ConfigurationException {
+            
+        }
+    }
+    
+    @Test
+    public void testAutoconfigureEnum() throws Throwable {
+    }
 }
