@@ -69,6 +69,7 @@ public class ConfigAnnotationTest {
         cfg.put("myints", new String[] {"1", "2"});
         cfg.put("mylongs", new String[] {"1", "2", "3"});
         cfg.put("mydoubles", new String[] {"1.1", "2.2", "3.3"});
+        cfg.put("myenum", MyEnum.ONE.name());
         QFactory.autoconfigure(bean, cfg);
         assertEquals("My String", bean.getMystring());
         assertEquals(1000, bean.getMyint());
@@ -76,13 +77,16 @@ public class ConfigAnnotationTest {
         assertThat("mydouble should have the configured value", bean.getMydouble(), is(1000.1));
         assertEquals("My Child String", bean.getChildString());
         assertTrue(bean.isMyboolean());
+        assertThat("myenum should be ONE", bean.getMyenum(), is(MyEnum.ONE));
         assertThat("myarray should have the configured values", bean.getMyarray(), is(new String[]{"one", "two"}));
         assertThat("myints should have the configured values", bean.getMyints(), is(new int[]{1, 2}));
         assertThat("mylongs should have the configured values", bean.getMylongs(), is(new long[]{1, 2, 3}));
         assertThat("mydoubles should have the configured values", bean.getMydoubles(), is(new double[]{1.1, 2.2, 3.3}));
     }
 
-
+    enum MyEnum {
+        ONE, TWO, THREE
+    }
     public static class MyAutoConfigurable {
         @Config("mystring")
         private String mystring;
@@ -108,9 +112,12 @@ public class ConfigAnnotationTest {
         @Config("mylongs")
         private long[] mylongs;
         
+        @Config("myenum")
+        private MyEnum myenum;
+
         @Config("mydoubles")
         private double[] mydoubles;
-
+        
         public String getMystring() {
             return mystring;
         }
@@ -128,6 +135,10 @@ public class ConfigAnnotationTest {
         }
 
         public boolean isMyboolean() {return myboolean; }
+
+        public MyEnum getMyenum() {
+            return myenum;
+        }
 
         public String[] getMyarray() {
             return myarray;
@@ -148,12 +159,14 @@ public class ConfigAnnotationTest {
         @Override
         public String toString() {
             return "MyAutoConfigurable{" +
-              "mystring='" + mystring + '\'' +
-              ", myint=" + myint +
-              ", mylong=" + mylong +
-              ", myarray=[" + String.join(", ", myarray)+"]" + 
-              '}';
+                    "mystring='" + mystring + '\'' +
+                    ", myint=" + myint +
+                    ", mylong=" + mylong +
+                    ", myenum=" + myenum +
+                    ", myarray=[" + String.join(", ", myarray) + "]" +
+                    '}';
         }
+
     }
 
     public static class MyChildAutoConfigurable extends MyAutoConfigurable {

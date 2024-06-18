@@ -465,6 +465,8 @@ public class QFactory {
                             field.set(obj, cfg.getDouble(config.value()));
                         else if (c.isAssignableFrom(boolean.class) || c.isAssignableFrom(Boolean.class))
                             field.set(obj, cfg.getBoolean(config.value()));
+                        else if (c.isEnum()) 
+                            field.set(obj, Enum.valueOf((Class<Enum>) c, v));
                         else if (c.isArray()) {
                             Class<?> ct = c.getComponentType();
                             if (ct.isAssignableFrom(String.class))
