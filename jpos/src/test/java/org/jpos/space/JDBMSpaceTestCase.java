@@ -24,18 +24,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import jdbm.RecordManagerOptions;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Profiler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Properties;
 
 @SuppressWarnings("unchecked")
 public class JDBMSpaceTestCase {
@@ -43,7 +44,9 @@ public class JDBMSpaceTestCase {
     JDBMSpace<String,Object> sp;
     @BeforeEach
     public void setUp (TestInfo testInfo, @TempDir Path filename) {
-        sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace (testInfo.getDisplayName(), filename.toString());
+        Properties props = new Properties();
+        props.put(RecordManagerOptions.DISABLE_TRANSACTIONS, "true");
+        sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace (testInfo.getDisplayName(), filename.toString(), props);
         sp.run();
     }
     @AfterEach
@@ -168,7 +171,6 @@ public class JDBMSpaceTestCase {
         assertNull (sp.rdp ("PUSH"));
     }
     @Test
-    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testOutExpire() {
         sp.out ("OUT", "ONE", 1000L);
         sp.out ("OUT", "TWO", 2000L);
@@ -184,7 +186,6 @@ public class JDBMSpaceTestCase {
         assertNull (sp.rdp ("OUT"));
     }
     @Test
-    @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testPushExpire() {
         sp.push ("PUSH", "FOUR", 4000L);
         sp.push ("PUSH", "THREE", 3000L);
