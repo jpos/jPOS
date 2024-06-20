@@ -25,7 +25,8 @@ ext {
         slf4j_api: "org.slf4j:slf4j-api:1.7.32",
         slf4j_nop: "org.slf4j:slf4j-nop:1.7.32",
         hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.12',
-        yaml: "org.yaml:snakeyaml:2.0"
+        yaml: "org.yaml:snakeyaml:2.0",
+        bytebuddy: "net.bytebuddy:byte-buddy:1.14.10"
     ]
 }
 
