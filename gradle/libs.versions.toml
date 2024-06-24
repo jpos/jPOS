@@ -3,7 +3,8 @@ jdom = "2.0.6.1"
 sleepycatje = "18.3.12"
 commonscli = "1.5.0"
 commonslang3 = "3.12.0"
-jline = "3.22.0"
+jline = "3.26.1"
+jna = '5.14.0'
 beanshell = "2.0b6"
 javatuples = "1.2"
 mockito = "5.12.0"
@@ -31,6 +32,7 @@ sleepycatje = { module = "com.sleepycat:je", version.ref = "sleepycatje" }
 commonscli = { module = "commons-cli:commons-cli", version.ref = "commonscli" }
 commonslang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonslang3" }
 jline = { module = "org.jline:jline", version.ref = "jline" }
+jna = { module = 'net.java.dev.jna:jna', version.ref = 'jna' }
 beanshell = { module = "org.apache-extras.beanshell:bsh", version.ref = "beanshell" }
 javatuples = { module = "org.javatuples:javatuples", version.ref = "javatuples" }
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
