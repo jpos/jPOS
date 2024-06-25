@@ -27,7 +27,7 @@ extraJavaModuleInfo {
 
         exports('org.apache.sshd.server')
         exports('org.apache.sshd.server.auth.pubkey')
-	    exports('org.apache.sshd.server.session')
+        exports('org.apache.sshd.server.session')
         exports('org.apache.sshd.server.channel')
         exports('org.apache.sshd.server.command')
         exports('org.apache.sshd.server.shell')
@@ -50,6 +50,7 @@ dependencies {
     api libs.jdom
     api libs.javatuples
     api libs.jline
+    api libs.jna
     api libs.beanshell
     api libs.bcprov
     api libs.bcpg
