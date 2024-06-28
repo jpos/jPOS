@@ -31,7 +31,7 @@ public final class LogEventJsonLogRenderer implements LogRenderer<LogEvent> {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         SimpleModule module = new SimpleModule();
-        module.addSerializer(JDOMException.class, new ThrowableSerializer());
+        module.addSerializer(Throwable.class, new ThrowableSerializer());
         mapper.registerModule(module);
     }
 

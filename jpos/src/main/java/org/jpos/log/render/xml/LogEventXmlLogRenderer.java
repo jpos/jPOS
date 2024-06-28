@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.jdom2.JDOMException;
 import org.jpos.log.AuditLogEvent;
 
 import org.jpos.log.LogRenderer;
@@ -32,7 +31,7 @@ public final class LogEventXmlLogRenderer implements LogRenderer<LogEvent> {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         SimpleModule module = new SimpleModule();
-        module.addSerializer(JDOMException.class, new ThrowableSerializer());
+        module.addSerializer(Throwable.class, new ThrowableSerializer());
         mapper.registerModule(module);
     }
 
