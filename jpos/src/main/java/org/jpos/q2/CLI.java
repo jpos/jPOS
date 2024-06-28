@@ -49,7 +49,7 @@ public class CLI implements Runnable {
     }
 
     public CLI(Q2 q2, InputStream in, OutputStream rawout, String line, boolean keepRunning, boolean interactive) throws IOException {
-        Logger.getLogger("org.jline").setLevel(Level.WARNING);
+        Logger.getLogger("org.jline").setLevel(Level.SEVERE);
         this.q2 = q2;
         PrintStream out = rawout instanceof PrintStream ? (PrintStream) rawout : new PrintStream(rawout);
         ctx = buildCLIContext(in, out);
@@ -198,9 +198,11 @@ public class CLI implements Runnable {
     }
 
     private Terminal buildTerminal (InputStream in, OutputStream out) throws IOException {
-        TerminalBuilder builder = TerminalBuilder.builder();
-        builder.streams(in,out).system(System.in == in);
+        TerminalBuilder builder = TerminalBuilder.builder()
+          .streams(in,out)
+          .system(System.in == in);
         Terminal t = builder.build();
+
         Attributes attr = t.getAttributes();
         attr.getOutputFlags().addAll(
           EnumSet.of(Attributes.OutputFlag.ONLCR, Attributes.OutputFlag.OPOST)
