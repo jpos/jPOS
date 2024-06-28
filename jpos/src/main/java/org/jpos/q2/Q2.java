@@ -43,10 +43,8 @@ import org.jdom2.output.XMLOutputter;
 import org.jpos.core.Environment;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
-import org.jpos.log.evt.Start;
-import org.jpos.log.evt.Stop;
-import org.jpos.log.evt.Deploy;
-import org.jpos.log.evt.UnDeploy;
+import org.jpos.log.AuditLogEvent;
+import org.jpos.log.evt.*;
 import org.jpos.metrics.PrometheusService;
 import org.jpos.q2.install.ModuleUtils;
 // import org.jpos.q2.ssh.SshService;
@@ -69,7 +67,6 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import java.io.*;
 import java.lang.management.ManagementFactory;
-import java.net.InetSocketAddress;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -165,6 +162,7 @@ public class Q2 implements FileFilter, Runnable {
     private Counter instancesCounter = Metrics.counter("jpos.q2.instances");
     private boolean noShutdownHook;
     private long shutdownHookDelay = 0L;
+
     public Q2 (String[] args) {
         super();
         parseCmdLine (args, true);
@@ -204,7 +202,6 @@ public class Q2 implements FileFilter, Runnable {
         started = true;
         Thread.currentThread().setName ("Q2-"+getInstanceId().toString());
         startJFR();
-
         instancesCounter.increment();
 
         Path dir = Paths.get(deployDir.getAbsolutePath());
@@ -325,8 +322,9 @@ public class Q2 implements FileFilter, Runnable {
         return ready();
     }
     public void shutdown (boolean join) {
-        if (log != null)
-            log.info (auditStop(Duration.between(startTime, Instant.now())));
+        if (log != null) {
+            audit(auditStop(Duration.between(startTime, Instant.now())));
+        }
         shutdown.countDown();
         unregisterQ2();
         if (q2Thread != null) {
@@ -439,15 +437,14 @@ public class Q2 implements FileFilter, Runnable {
         Runtime.getRuntime().addShutdownHook (
             new Thread ("Q2-ShutdownHook") {
                 public void run () {
-                    log.info ("shutting down (hook/" + shutdownHookDelay + ")");
+                    audit (new Shutdown(getInstanceId(), shutdownHookDelay));
                     if (shutdownHookDelay > 0)
                         ISOUtil.sleep(shutdownHookDelay);
-                    log.info (auditStop(Duration.between(startTime, Instant.now())));
+                    
+                    audit(auditStop(Duration.between(startTime, Instant.now())));
                     shuttingDown = true;
                     shutdown.countDown();
                     if (q2Thread != null) {
-                        if (shutdownHookDelay > 0)
-                            log.info ("shutting down (join/" + SHUTDOWN_TIMEOUT + ")");
                         try {
                             q2Thread.join (SHUTDOWN_TIMEOUT);
                         } catch (InterruptedException ignored) {
@@ -460,7 +457,6 @@ public class Q2 implements FileFilter, Runnable {
                             // exception.
                         }
                     }
-                    log.info (auditStop(Duration.between(startTime, Instant.now())));
                 }
             }
         );
@@ -564,7 +560,7 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     private boolean deploy (File f) {
-        LogEvent evt = log != null ? log.createInfo() : null;
+        LogEvent evt = log != null ? log.createInfo().withTraceId(getInstanceId()) : null;
         boolean enabled = false;
         String filePath = "";
         try {
@@ -610,27 +606,27 @@ public class Q2 implements FileFilter, Runnable {
             * Rename it out of the way.
             * 
             */
-            tidyFileAway(f,DUPLICATE_EXTENSION);
+            tidyFileAway(f,DUPLICATE_EXTENSION, evt);
             if (evt != null)
                 evt.addMessage(e);
             return false;
         }
         catch (Exception e) {
-            if (evt != null)
+            if (evt != null) {
                 evt.addMessage(e);
-            tidyFileAway(f,ERROR_EXTENSION);
+            }
+            tidyFileAway(f,ERROR_EXTENSION, evt);
             // This will also save deploy error repeats...
             return false;
         } 
         catch (Error e) {
             if (evt != null)
                 evt.addMessage(e);
-            tidyFileAway(f,ENV_EXTENSION);
+            tidyFileAway(f,ENV_EXTENSION, evt);
             // This will also save deploy error repeats...
             return false;
         } finally {
             if (evt != null) {
-                // evt.addMessage(new Deploy(Instant.now(), filePath, enabled));
                 Logger.log(evt);
             }
         }
@@ -663,11 +659,7 @@ public class Q2 implements FileFilter, Runnable {
                 getLog().warn ("init-system-logger", e);
             }
         }
-//        Environment env = Environment.getEnvironment();
-//        getLog().info("Q2 started, deployDir=" + deployDir.getAbsolutePath() + ", environment=" + env.getName());
-//        if (env.getErrorString() != null)
-//            getLog().error(env.getErrorString());
-        getLog().info (auditStart());
+        audit (auditStart());
     }
     public Log getLog () {
         if (log == null) {
@@ -765,7 +757,8 @@ public class Q2 implements FileFilter, Runnable {
                 System.setProperty("jpos.env", ISOUtil.commaEncode(line.getOptionValues("E")));
             }
 
-            if (environmentOnly)
+            if (environmentOnly) // first call just to properly parse environment, in order to get optional q2.args from yaml
+                return;
 
             if (line.hasOption ("v")) {
                 displayVersion();
@@ -913,16 +906,22 @@ public class Q2 implements FileFilter, Runnable {
         return doc;
     }
 
-    private void tidyFileAway (File f, String extension) {
+    private void tidyFileAway (File f, String extension, LogEvent evt) {
         File rename = new File(f.getAbsolutePath()+"."+extension);
         while (rename.exists()){
             rename = new File(rename.getAbsolutePath()+"."+extension);
         }
-        if (f.renameTo(rename)){
-            getLog().warn("Tidying "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It will be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
-        }
-        else {
-            getLog().warn("Error Tidying. Could not tidy  "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It could not be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
+        if (evt != null) {
+            if (f.renameTo(rename)){
+                evt.addMessage(
+                  new DeployActivity(DeployActivity.Action.RENAME, String.format ("%s to %s", f.getAbsolutePath(), rename.getAbsolutePath()))
+                );
+            }
+            else {
+                evt.addMessage(
+                  new DeployActivity(DeployActivity.Action.RENAME_ERROR, String.format ("%s to %s", f.getAbsolutePath(), rename.getAbsolutePath()))
+                );
+            }
         }
     }
 
@@ -972,14 +971,13 @@ public class Q2 implements FileFilter, Runnable {
             }
         }
     }
-    private void logVersion () {
+    private void logVersion () throws IOException {
         long now = System.currentTimeMillis();
         if (now - lastVersionLog > 86400000L) {
-            LogEvent evt = getLog().createLogEvent("version");
-            evt.addMessage(getVersionString());
-            Logger.log(evt);
+            License l = PGPHelper.getLicense();
+            audit(l);
             lastVersionLog = now;
-            while (running() && (PGPHelper.checkLicense() & 0xF0000) != 0)
+            while (running() && (l.status() & 0xF0000) != 0)
                 relax(60000L);
         }
     }
@@ -1129,21 +1127,22 @@ public class Q2 implements FileFilter, Runnable {
     private boolean waitForChanges (WatchService service) throws InterruptedException {
         WatchKey key = service.poll (SCAN_INTERVAL, TimeUnit.MILLISECONDS);
         if (key != null) {
-            LogEvent evt = getLog().createInfo();
+            LogEvent evt = getLog().createInfo().withTraceId(getInstanceId());
             for (WatchEvent<?> ev : key.pollEvents()) {
                 if (ev.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-                    evt.addMessage(String.format ("created %s/%s", deployDir.getName(), ev.context()));
+                    evt.addMessage(new DeployActivity(DeployActivity.Action.CREATE, String.format ("%s/%s", deployDir.getName(), ev.context())));
                 } else if (ev.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
-                    evt.addMessage(String.format ("removed %s/%s", deployDir.getName(), ev.context()));
+                    evt.addMessage(new DeployActivity(DeployActivity.Action.DELETE, String.format ("%s/%s", deployDir.getName(), ev.context())));
                 } else if (ev.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
-                    evt.addMessage(String.format ("modified %s/%s", deployDir.getName(), ev.context()));
+                    evt.addMessage(new DeployActivity(DeployActivity.Action.MODIFY, String.format ("%s/%s", deployDir.getName(), ev.context())));
                 }
             }
             Logger.log(evt);
             if (!key.reset()) {
-                getLog().warn(String.format (
-                  "deploy directory '%s' no longer valid",
-                  deployDir.getAbsolutePath())
+                getLog().warn(
+                  String.format (
+                    "deploy directory '%s' no longer valid",
+                    deployDir.getAbsolutePath())
                 );
                 return false; // deploy directory no longer valid
             }
@@ -1260,6 +1259,10 @@ public class Q2 implements FileFilter, Runnable {
                 .toArray(String[]::new) : args);
     }
 
+    private void audit (AuditLogEvent sal) {
+        Logger.log(getLog().createInfo(sal).withTraceId(getInstanceId()));
+    }
+
     private Start auditStart() {
         Environment env = Environment.getEnvironment();
         String envName = env.getName();
@@ -1276,7 +1279,6 @@ public class Q2 implements FileFilter, Runnable {
 
     private Stop auditStop(Duration dur) {
         return new Stop(
-          Instant.now(),
           getInstanceId(),
           dur
         );

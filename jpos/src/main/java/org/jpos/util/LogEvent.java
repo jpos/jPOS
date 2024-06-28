@@ -45,6 +45,7 @@ public class LogEvent {
     private boolean honorSourceLogger;
     private boolean noArmor;
     private boolean hasException;
+    private String traceId;
 
     public LogEvent (String tag) {
         super();
@@ -110,6 +111,9 @@ public class LogEvent {
                 sb.append (" lifespan=\"");
                 sb.append (elapsed);
                 sb.append ("ms\"");
+            }
+            if (traceId != null) {
+                sb.append (String.format (" trace-id=\"%s\"", traceId));
             }
             sb.append ('>');
             p.println (sb.toString());
@@ -196,6 +200,25 @@ public class LogEvent {
     }
     public String getRealm() {
         return source != null ? source.getRealm() : "";
+    }
+    public LogEvent withTraceId (String traceId) {
+        this.traceId = traceId;
+        return this;
+    }
+    public LogEvent withTraceId (UUID uuid) {
+        this.traceId = uuid.toString().replace("-", "");
+        return this;
+    }
+    public LogEvent withTraceId () {
+        getTraceId();
+        return this;
+    }
+    public String getTraceId() {
+        synchronized(getPayLoad()) {
+            if (traceId == null)
+                traceId = UUID.randomUUID().toString().replace("-","");
+            return traceId;
+        }
     }
 
     /**

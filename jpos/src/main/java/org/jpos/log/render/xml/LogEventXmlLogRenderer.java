@@ -2,13 +2,17 @@ package org.jpos.log.render.xml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.jdom2.JDOMException;
 import org.jpos.log.AuditLogEvent;
 
 import org.jpos.log.LogRenderer;
 import org.jpos.log.evt.LogEvt;
 import org.jpos.log.evt.LogMessage;
+import org.jpos.log.evt.ThrowableAuditLogEvent;
+import org.jpos.log.render.ThrowableSerializer;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Loggeable;
 
@@ -16,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.Duration;
 import java.util.List;
-import java.util.UUID;
 
 public final class LogEventXmlLogRenderer implements LogRenderer<LogEvent> {
     private final XmlMapper mapper = new XmlMapper();
@@ -27,18 +30,25 @@ public final class LogEventXmlLogRenderer implements LogRenderer<LogEvent> {
 
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(JDOMException.class, new ThrowableSerializer());
+        mapper.registerModule(module);
     }
 
     @Override
     public void render(LogEvent evt, PrintStream ps, String indent) {
         List<AuditLogEvent> events = evt.getPayLoad()
           .stream()
-          .map (obj -> obj instanceof AuditLogEvent ? (AuditLogEvent) obj : new LogMessage(dump(obj)))
-          .toList();
+          .map (obj -> switch (obj) {
+              case AuditLogEvent ale -> ale;
+              case Throwable t -> new ThrowableAuditLogEvent(t);
+              default -> new LogMessage(dump(obj));
+          }).toList();
         long elapsed = Duration.between(evt.getCreatedAt(), evt.getDumpedAt()).toMillis();
         LogEvt ev = new LogEvt (
           evt.getDumpedAt(),
-          UUID.randomUUID(),
+          evt.getTraceId(),
           evt.getRealm(),
           evt.getTag(),
           elapsed == 0L ? null : elapsed,

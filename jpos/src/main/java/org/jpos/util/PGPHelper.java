@@ -34,6 +34,7 @@ import org.bouncycastle.openpgp.operator.PBESecretKeyDecryptor;
 import org.bouncycastle.openpgp.operator.bc.*;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
 import org.jpos.iso.ISOUtil;
+import org.jpos.log.evt.License;
 import org.jpos.q2.Q2;
 import org.jpos.q2.install.ModuleUtils;
 import org.jpos.security.SystemSeed;
@@ -424,6 +425,9 @@ public class PGPHelper {
         return decrypt (encrypted, new FileInputStream(keyIn), password);
     }
 
+    public static License getLicense() throws IOException {
+        return new License(getLicensee(), checkLicense());
+    }
 
     private static PGPPublicKey[] readPublicKeys(InputStream in, String[] ids)
       throws IOException, PGPException

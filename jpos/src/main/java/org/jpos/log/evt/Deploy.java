@@ -22,7 +22,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.jpos.log.AuditLogEvent;
 
 /**
- * Represents a deployment configuration with a specific path and an enabled status.
+ * Represents a deployment action
  *
  * <p>This record is used as part of the audit log events in the system to track deployment actions.</p>
  *

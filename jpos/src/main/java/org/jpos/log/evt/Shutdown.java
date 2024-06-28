@@ -20,17 +20,13 @@ package org.jpos.log.evt;
 
 import org.jpos.log.AuditLogEvent;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Represents the stopping log entry, marking the completion of a log instance (end of file/run).
+ * System initiates shutdown sequence
  *
  * @param id      The unique identifier of the Q2 instance, corresponding to the {@link UUID} initialized at the
  *                start of the process. This ID links the stop event directly with its corresponding start event.
- * @param uptime The duration between the {@link Start} event and this {@link Stop} event for the specific log instance,
- *                given as a {@link Duration}. This measures the total time taken for the event, providing insights into
- *                performance and operational efficiency.
+ * @param delay   Shutdown delay in millis
  */
-public record Stop(UUID id, Duration uptime) implements AuditLogEvent { }
+public record Shutdown(UUID id, long delay) implements AuditLogEvent { }

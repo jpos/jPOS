@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2010 Alejandro P. Revilla
+ * Copyright (C) 2000-2023 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,20 +18,15 @@
 
 package org.jpos.log.evt;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.jpos.log.AuditLogEvent;
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
 
-@JacksonXmlRootElement(localName = "log")
-public record LogEvt(
-  @JacksonXmlProperty(isAttribute = true) Instant ts,
-  @JacksonXmlProperty(isAttribute = true) @JsonProperty("trace-id") String traceId,
-  @JacksonXmlProperty(isAttribute = true) String realm,
-  @JacksonXmlProperty(isAttribute = true) String tag,
-  @JacksonXmlProperty(isAttribute = true) Long elapsed,
-  @JsonProperty("evt") @JacksonXmlElementWrapper(useWrapping = false) List<AuditLogEvent> events) { }
+public record License(String license, @JacksonXmlProperty(isAttribute = true) int status) implements AuditLogEvent {
+    @Override
+    public String toString() {
+        return "License{" +
+          "license='" + license + '\'' +
+          ", status=" + Integer.toString(status,16) +
+          '}';
+    }
+}

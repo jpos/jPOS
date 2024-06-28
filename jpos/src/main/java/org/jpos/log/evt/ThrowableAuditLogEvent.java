@@ -19,18 +19,17 @@
 package org.jpos.log.evt;
 
 import org.jpos.log.AuditLogEvent;
+import org.jpos.util.Caller;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.UUID;
+import java.util.StringJoiner;
 
-/**
- * Represents the stopping log entry, marking the completion of a log instance (end of file/run).
- *
- * @param id      The unique identifier of the Q2 instance, corresponding to the {@link UUID} initialized at the
- *                start of the process. This ID links the stop event directly with its corresponding start event.
- * @param uptime The duration between the {@link Start} event and this {@link Stop} event for the specific log instance,
- *                given as a {@link Duration}. This measures the total time taken for the event, providing insights into
- *                performance and operational efficiency.
- */
-public record Stop(UUID id, Duration uptime) implements AuditLogEvent { }
+public record ThrowableAuditLogEvent(Throwable ex) implements AuditLogEvent {
+    @Override
+    public String toString() {
+        StackTraceElement[] st = ex.getStackTrace();
+        StringJoiner sj = new StringJoiner(",");
+        for (int i=0; i<Math.min(st.length, 10); i++)
+            sj.add(Caller.info(ex.getStackTrace()[i]));
+        return String.format("%s (%s)", ex, sj);
+    }
+}

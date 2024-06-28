@@ -11,10 +11,11 @@ import java.time.ZoneId;
 public final class LogEventMarkdownRenderer implements LogRenderer<LogEvent> {
     @Override
     public void render(LogEvent evt, PrintStream ps, String indent) {
-        ps.printf ("## %s %s %s%s%n",
+        ps.printf ("## %s %s %s [%s]%s%n",
           LocalDateTime.ofInstant(evt.getDumpedAt(), ZoneId.systemDefault()),
           evt.getRealm(),
           evt.getTag(),
+          evt.getTraceId(),
           evt.hasException() ? " (*)" : ""
         );
 

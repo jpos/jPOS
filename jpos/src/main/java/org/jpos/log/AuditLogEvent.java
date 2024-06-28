@@ -32,7 +32,11 @@ import org.jpos.log.evt.*;
   @JsonSubTypes.Type(value = Stop.class, name = "stop"),
   @JsonSubTypes.Type(value = Deploy.class, name = "deploy"),
   @JsonSubTypes.Type(value = UnDeploy.class, name = "undeploy"),
-  @JsonSubTypes.Type(value = LogMessage.class, name = "msg")
+  @JsonSubTypes.Type(value = LogMessage.class, name = "msg"),
+  @JsonSubTypes.Type(value = Shutdown.class, name = "shutdown"),
+  @JsonSubTypes.Type(value = DeployActivity.class, name = "deploy-activity"),
+  @JsonSubTypes.Type(value = ThrowableAuditLogEvent.class, name = "throwable"),
+  @JsonSubTypes.Type(value = License.class, name = "license")
 })
 
-public sealed interface AuditLogEvent permits LogMessage, Deploy, UnDeploy, Start, Stop { }
+public sealed interface AuditLogEvent permits Deploy, DeployActivity, ThrowableAuditLogEvent, License, LogMessage, Shutdown, Start, Stop, UnDeploy { }

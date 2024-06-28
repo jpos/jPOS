@@ -30,8 +30,12 @@ public class Caller {
     public static String info() {
         return info(1);
     }
+
     public static String info(int pos) {
-        StackTraceElement st = Thread.currentThread().getStackTrace()[2+pos];
+        return info (Thread.currentThread().getStackTrace()[2+pos]);
+    }
+
+    public static String info (StackTraceElement st) {
         String clazz = st.getClassName();
         Matcher matcher = FQCN.matcher(clazz);
         StringBuilder sb = new StringBuilder();
@@ -44,6 +48,8 @@ public class Caller {
           .append(st.getLineNumber())
           .toString();
     }
+
+
     public static String shortClassName(String clazz) {
         Matcher matcher = FQCN.matcher(clazz);
         StringBuilder sb = new StringBuilder();

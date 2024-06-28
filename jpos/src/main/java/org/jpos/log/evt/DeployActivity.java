@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2010 Alejandro P. Revilla
+ * Copyright (C) 2000-2023 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,20 +18,20 @@
 
 package org.jpos.log.evt;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.jpos.log.AuditLogEvent;
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
 
-@JacksonXmlRootElement(localName = "log")
-public record LogEvt(
-  @JacksonXmlProperty(isAttribute = true) Instant ts,
-  @JacksonXmlProperty(isAttribute = true) @JsonProperty("trace-id") String traceId,
-  @JacksonXmlProperty(isAttribute = true) String realm,
-  @JacksonXmlProperty(isAttribute = true) String tag,
-  @JacksonXmlProperty(isAttribute = true) Long elapsed,
-  @JsonProperty("evt") @JacksonXmlElementWrapper(useWrapping = false) List<AuditLogEvent> events) { }
+/**
+ * Represents activity in the deployment directory
+ *
+ * <p>This record is used as part of the audit log events in the system to track deployment actions.</p>
+ *
+ * @param action deploy action
+ * @param info additional info (such as the path) related to the deployment descriptor
+ */
+
+public record DeployActivity(@JacksonXmlProperty(isAttribute = true) Action action, String info) implements AuditLogEvent {
+    public enum Action {
+        CREATE, DELETE, MODIFY, RENAME, RENAME_ERROR
+    }
+}
