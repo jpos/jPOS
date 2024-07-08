@@ -673,8 +673,8 @@ public class Q2 implements FileFilter, Runnable {
     public MBeanServer getMBeanServer () {
         return server;
     }
-    public long getUptime() {
-        return Duration.between(startTime, Instant.now()).toMillis();
+    public Duration getUptime() {
+        return Duration.between(startTime, Instant.now());
     }
     public void displayVersion () {
         System.out.println(getVersionString());

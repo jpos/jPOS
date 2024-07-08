@@ -25,7 +25,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.jpos.log.AuditLogEvent;
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 @JacksonXmlRootElement(localName = "log")
 public record LogEvt(

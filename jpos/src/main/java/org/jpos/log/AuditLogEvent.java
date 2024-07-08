@@ -36,7 +36,8 @@ import org.jpos.log.evt.*;
   @JsonSubTypes.Type(value = Shutdown.class, name = "shutdown"),
   @JsonSubTypes.Type(value = DeployActivity.class, name = "deploy-activity"),
   @JsonSubTypes.Type(value = ThrowableAuditLogEvent.class, name = "throwable"),
-  @JsonSubTypes.Type(value = License.class, name = "license")
+  @JsonSubTypes.Type(value = License.class, name = "license"),
+  @JsonSubTypes.Type(value = SysInfo.class, name = "sysinfo"),
 })
 
-public sealed interface AuditLogEvent permits Deploy, DeployActivity, ThrowableAuditLogEvent, License, LogMessage, Shutdown, Start, Stop, UnDeploy { }
+public sealed interface AuditLogEvent permits Deploy, DeployActivity, License, LogMessage, Shutdown, Start, Stop, SysInfo, ThrowableAuditLogEvent, UnDeploy { }

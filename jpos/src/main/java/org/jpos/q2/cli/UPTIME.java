@@ -25,6 +25,6 @@ import org.jpos.q2.CLIContext;
 @SuppressWarnings("unused")
 public class UPTIME implements CLICommand {
     public void exec(CLIContext ctx, String[] args) throws Exception {
-        ctx.println(ISOUtil.millisToString(ctx.getCLI().getQ2().getUptime()));
+        ctx.println(ISOUtil.millisToString(ctx.getCLI().getQ2().getUptime().toMillis()));
     }
 }

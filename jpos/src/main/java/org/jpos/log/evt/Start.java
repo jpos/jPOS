@@ -20,7 +20,6 @@ package org.jpos.log.evt;
 
 import org.jpos.log.AuditLogEvent;
 
-import java.time.Instant;
 import java.util.UUID;
 
 /**

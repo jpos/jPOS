@@ -6,6 +6,7 @@ org.jpos.log.render.xml.LoggeableXmlLogRenderer
 org.jpos.log.render.xml.LogEventXmlLogRenderer
 
 org.jpos.log.render.markdown.ProfilerMarkdownRenderer
+org.jpos.log.render.markdown.SysInfoMarkdownRenderer
 org.jpos.log.render.markdown.ContextMarkdownRenderer
 org.jpos.log.render.markdown.LoggeableMarkdownLogRenderer
 org.jpos.log.render.markdown.LogEventMarkdownRenderer

@@ -23,6 +23,10 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.Environment;
 import org.jpos.core.annotation.Config;
 import org.jpos.iso.ISOUtil;
+import org.jpos.log.AuditLogEvent;
+import org.jpos.log.evt.KV;
+import org.jpos.log.evt.ProcessOutput;
+import org.jpos.log.evt.SysInfo;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.util.*;
@@ -38,15 +42,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
-import java.time.zone.ZoneOffsetTransition;
-import java.time.zone.ZoneOffsetTransitionRule;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
-
-import static io.micrometer.core.instrument.Metrics.globalRegistry;
 
 /**
  * Periodically dumps Thread and memory usage
@@ -56,10 +55,10 @@ import static io.micrometer.core.instrument.Metrics.globalRegistry;
  * @see Logger
  */
 public class SystemMonitor extends QBeanSupport
-        implements Runnable, SystemMonitorMBean, Loggeable
+        implements Runnable, SystemMonitorMBean
 {
     private long sleepTime = 60 * 60 * 1000;
-    private long delay = 0;
+    private long drift = 0;
     private boolean detailRequired = false;
     private Thread me = null;
     private static final int MB = 1024*1024;
@@ -81,7 +80,6 @@ public class SystemMonitor extends QBeanSupport
     @Override
     public void startService() {
         try {
-            log.info("Starting SystemMonitor");
             me = Thread.ofVirtual().name("SystemMonitor").start(this);
         } catch (Exception e) {
             log.warn("error starting service", e);
@@ -89,7 +87,6 @@ public class SystemMonitor extends QBeanSupport
     }
 
     public void stopService() {
-        log.info("Stopping SystemMonitor");
         interruptMainThread();
     }
     public void destroyService() throws InterruptedException {
@@ -116,70 +113,39 @@ public class SystemMonitor extends QBeanSupport
         return detailRequired;
     }
 
-    private void dumpThreads(ThreadGroup g, PrintStream p, String indent) {
+    private List<KV> generateThreadInfo () {
+        List<KV> threads = new ArrayList<>();
         Thread.getAllStackTraces().entrySet().stream()
           .sorted(Comparator.comparingLong(e -> e.getKey().threadId()))
           .forEach((e -> {
-              Thread t = e.getKey();
-              p.printf("%s%d: %s:%s%n", indent, t.threadId(), t.getThreadGroup().getName(), t.getName());
-              if (dumpStackTrace) {
-                  int i = 0;
-                  for (var s : e.getValue()) {
-                      if (++i > stackTraceDepth)
-                          break;
-                      p.printf("%s    %s%n", indent, s);
-                  }
-              }
+            Thread t = e.getKey();
+            StackTraceElement[] stackTrace = e.getValue();
+            String currentMethodInfo = stackTrace.length > 0 ?
+              "%s.%s(%s:%d)".formatted(stackTrace[0].getClassName(), stackTrace[0].getMethodName(),
+              stackTrace[0].getFileName(), stackTrace[0].getLineNumber()) :
+              "";
+              threads.add(new KV(
+                "%s:%d".formatted(t.getThreadGroup(), t.threadId()),
+                "%s - %s".formatted(t.getName(), currentMethodInfo)
+              ));
           }));
-    }
-
-    private void dumpMeters(PrintStream p, String indent) {
-        AtomicBoolean isFirst = new AtomicBoolean(true);
-        getServer().getMeterRegistry().getMeters()
-          .stream()
-          .sorted(Comparator.comparing(meter -> meter.getId().getName()))
-          .forEach(meter -> {
-            String prefix = indent + (isFirst.getAndSet(false) ? "       meters: " : "               ");
-            p.printf("%s%s %s %s%n", prefix, meter.getId().getName(), meter.getId().getTags(), meter.measure());
-        });
-    }
-
-    void showThreadGroup(ThreadGroup g, PrintStream p, String indent) {
-        if (g.getParent() != null)
-            showThreadGroup(g.getParent(), p, indent + "  ");
-        else
-            dumpThreads(g, p, indent + "    ");
+        return threads;
     }
 
     public void run() {
         localHost = getLocalHost();
         processName = ManagementFactory.getRuntimeMXBean().getName();
         while (running()) {
-            dumping.lock();
-            try {
-                frozenDump = generateFrozenDump ("");
-                log.info(this);
-                frozenDump = null;
-            } finally {
-                dumping.unlock();
-            }
+            dumpSystemInfo();
             try {
                 long expected = System.currentTimeMillis() + sleepTime;
                 Thread.sleep(sleepTime);
-                delay = System.currentTimeMillis() - expected;
-            } catch (InterruptedException ignored) {
-            }
+                drift = System.currentTimeMillis() - expected;
+            } catch (InterruptedException ignored) { }
         }
-        frozenDump = generateFrozenDump ("");
-        log.info(this);
-        frozenDump = null;
+        dumpSystemInfo();
     }
-    public void dump (PrintStream p, String indent) {
-        if (frozenDump == null)
-            frozenDump = generateFrozenDump(indent);
-        p.print(frozenDump);
-        dumpMetrics();
-    }
+
     @Override
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         super.setConfiguration(cfg);
@@ -192,7 +158,7 @@ public class SystemMonitor extends QBeanSupport
     }
 
     private long getServerUptimeAsMillisecond() {
-        return getServer().getUptime();
+        return getServer().getUptime().toMillis();
     }
 
     private String getInstanceIdAsString() {
@@ -208,75 +174,6 @@ public class SystemMonitor extends QBeanSupport
         } catch (Exception e) {
             return e.getMessage();
         }
-    }
-    private String generateFrozenDump(String indent) {
-        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-        ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream p = new PrintStream(baos);
-        String newIndent = indent + "  ";
-        Runtime r = getRuntimeInstance();
-        ZoneId zi = ZoneId.systemDefault();
-        Instant instant = Instant.now();
-
-        File cwd = new File(".");
-        String freeSpace = ISOUtil.readableFileSize(cwd.getFreeSpace());
-        String usableSpace = ISOUtil.readableFileSize(cwd.getUsableSpace());
-        p.printf ("%s           OS: %s (%s)%n", indent, System.getProperty("os.name"), System.getProperty("os.version"));
-        int maxKeyLength = 0;
-        try {
-            maxKeyLength = Cipher.getMaxAllowedKeyLength("AES");
-        } catch (NoSuchAlgorithmException ignored) { }
-        p.printf("%s         Java: %s (%s) AES-%s%n", indent,
-          System.getProperty("java.version"),
-          System.getProperty("java.vendor"),
-          maxKeyLength == Integer.MAX_VALUE ? "secure" : Integer.toString(maxKeyLength)
-        );
-        p.printf ("%s  environment: %s%n", indent, Environment.getEnvironment().getName());
-        p.printf ("%s process name: %s%n", indent, processName);
-        p.printf ("%s    user name: %s%n", indent, System.getProperty("user.name"));
-        p.printf ("%s         host: %s%n", indent, localHost);
-        p.printf ("%s          cwd: %s%n", indent, System.getProperty("user.dir"));
-        p.printf ("%s   free space: %s%n", indent, freeSpace);
-
-        if (!freeSpace.equals(usableSpace))
-            p.printf ("%s usable space: %s%n", indent, usableSpace);
-        p.printf ("%s      version: %s (%s)%n", indent, Q2.getVersion(), getRevision());
-        p.printf ("%s     instance: %s%n", indent, getInstanceIdAsString());
-        p.printf ("%s       uptime: %s (%f)%n", indent, ISOUtil.millisToString(getServerUptimeAsMillisecond()), loadAverage());
-        p.printf ("%s   processors: %d%n", indent, r.availableProcessors());
-        p.printf ("%s       drift : %d%n", indent, delay);
-        p.printf ("%smemory(t/u/f): %d/%d/%d%n", indent,
-                r.totalMemory()/MB, (r.totalMemory() - r.freeMemory())/MB, r.freeMemory()/MB);
-        p.printf ("%s         args: %s%n", indent, String.join(",", ManagementFactory.getRuntimeMXBean().getInputArguments()));
-        dumpGCStats(p, indent);
-        p.printf("%s     encoding: %s%n", indent, Charset.defaultCharset());
-        p.printf("%s     timezone: %s (%s) %s%n", indent, zi,
-                zi.getDisplayName(TextStyle.FULL, Locale.getDefault()),
-                zi.getRules().getOffset(instant).toString());
-        p.printf("%swatch service: %s%n", indent, getServer().getWatchServiceClassname());
-        p.printf("%s  metrics dir: %s%n", indent, metricsDir);
-        List<ZoneOffsetTransitionRule> l = zi.getRules().getTransitionRules();
-        for (ZoneOffsetTransitionRule tr : l) {
-            p.printf("%s         rule: %s%n", indent, tr.toString());
-        }
-        ZoneOffsetTransition tran = zi.getRules().nextTransition(instant);
-        if (tran != null) {
-            Instant in = tran.getInstant();
-            p.printf("%s   transition: %s (%s)%n", indent, in, in.atZone(zi));
-        }
-        p.printf("%s        clock: %d %s%n", indent, System.currentTimeMillis() / 1000L, instant);
-        p.printf("%s thread count: %d%n", indent, mxBean.getThreadCount());
-        p.printf("%s peak threads: %d%n", indent, mxBean.getPeakThreadCount());
-        dumpMeters(p, indent);
-
-        showThreadGroup(Thread.currentThread().getThreadGroup(), p, newIndent);
-        NameRegistrar.getInstance().dump(p, indent, detailRequired);
-        for (String s : scripts) {
-            p.printf("%s%s:%n", indent, s);
-            exec(s, p, newIndent);
-        }
-        return baos.toString();
     }
     private void exec (String script, PrintStream ps, String indent) {
         try {
@@ -318,16 +215,6 @@ public class SystemMonitor extends QBeanSupport
         }
     }
 
-    private void dumpGCStats(PrintStream p, String indent) {
-        long totalCount = 0;
-        long totalTime = 0;
-        for(GarbageCollectorMXBean gc : ManagementFactory.getGarbageCollectorMXBeans()) {
-            totalCount += Math.max(gc.getCollectionCount(), 0L);
-            totalTime += Math.max(gc.getCollectionTime(), 0L);
-        }
-        p.printf ("%s     GC Stats: %d/%d%n", indent, totalCount, totalTime);
-    }
-
     private void interruptMainThread() {
         if (me != null) {
             dumping.lock();
@@ -336,6 +223,130 @@ public class SystemMonitor extends QBeanSupport
             } finally {
                 dumping.unlock();
             }
+        }
+    }
+
+    private LogEvent generateSystemInfo () {
+        LogEvent evt = new LogEvent().withTraceId(getServer().getInstanceId());
+        List<AuditLogEvent> events = new ArrayList<>();
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
+        Runtime r = getRuntimeInstance();
+        ZoneId zi = ZoneId.systemDefault();
+        Instant instant = Instant.now();
+        File cwd = new File(".");
+        String freeSpace = ISOUtil.readableFileSize(cwd.getFreeSpace());
+        String usableSpace = ISOUtil.readableFileSize(cwd.getUsableSpace());
+        int maxKeyLength = 0;
+        try {
+            maxKeyLength = Cipher.getMaxAllowedKeyLength("AES");
+        } catch (NoSuchAlgorithmException ignored) { }
+
+        long totalMemory = r.totalMemory();
+        long freeMemory = r.freeMemory();
+        long usedMemory = totalMemory - freeMemory;
+        long maxMemory = r.maxMemory();
+        long gcTotalCnt = 0;
+        long gcTotalTime = 0;
+        for(GarbageCollectorMXBean gc : ManagementFactory.getGarbageCollectorMXBeans()) {
+            gcTotalCnt += Math.max(gc.getCollectionCount(), 0L);
+            gcTotalTime += Math.max(gc.getCollectionTime(), 0L);
+        }
+        evt.addMessage (new SysInfo(
+          System.getProperty("os.name"),
+          System.getProperty("os.version"),
+          System.getProperty("java.version"),
+          System.getProperty("java.vendor"),
+          maxKeyLength == Integer.MAX_VALUE ? "secure" : Integer.toString(maxKeyLength),
+          localHost,
+          System.getProperty("user.name"),
+          System.getProperty("user.dir"),
+          getServer().getWatchServiceClassname(),
+          Environment.getEnvironment().getName(),
+          String.join(",", runtimeMXBean.getInputArguments()),
+          Charset.defaultCharset(),
+          String.format("%s (%s) %s %s%s",
+            zi, zi.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+            zi.getRules().getOffset(instant),
+            zi.getRules().getTransitionRules().toString(),
+            Optional.ofNullable(zi.getRules().nextTransition(instant))
+              .map(transition -> " " + transition)
+              .orElse("")
+          ),
+          processName,
+          freeSpace,
+          usableSpace,
+          Q2.getVersion(),
+          Q2.getRevision(),
+          getServer().getInstanceId(),
+          getServer().getUptime(),
+          loadAverage(),
+          r.availableProcessors(),
+          drift,
+          maxMemory/MB,
+          totalMemory/MB,
+          freeMemory/MB,
+          usedMemory/MB,
+          gcTotalCnt,
+          gcTotalTime,
+          mxBean.getThreadCount(),
+          mxBean.getPeakThreadCount(),
+          NameRegistrar.getAsMap()
+            .entrySet()
+            .stream()
+            .map(entry -> new KV(entry.getKey(), entry.getValue().toString()))
+            .collect(Collectors.toList()),
+          generateThreadInfo(),
+          runScripts()
+        ));
+        return evt;
+
+    }
+
+    private List<ProcessOutput> runScripts() {
+        List<ProcessOutput> l = new ArrayList<>();
+        for (String s : scripts) {
+            l.add(exec(s));
+        }
+        return l;
+    }
+
+    private ProcessOutput exec(String script) {
+        StringBuilder stdout = new StringBuilder();
+        StringBuilder stderr = new StringBuilder();
+        try {
+            ProcessBuilder pb = new ProcessBuilder(QExec.parseCommandLine(script));
+            Process p = pb.start();
+            // Capture standard output
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+                stdout.append(reader.lines().collect(Collectors.joining(System.lineSeparator())));
+            }
+            // Capture error output
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+                String errorOutput = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+                if (!errorOutput.isEmpty()) {
+                    stderr.append(reader.lines().collect(Collectors.joining(System.lineSeparator())));
+                }
+            }
+            p.waitFor();
+        } catch (Exception e) {
+            stderr.append("Exception: ").append(e.getMessage());
+            e.printStackTrace(new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) {
+                    stdout.append((char) b);
+                }
+            }));
+        }
+        return new ProcessOutput (script, stdout.toString(), stderr.isEmpty() ? null : stderr.toString());
+    }
+
+    private void dumpSystemInfo () {
+        dumping.lock();
+        try {
+            Logger.log(generateSystemInfo());
+        } finally {
+            dumping.unlock();
         }
     }
 }
