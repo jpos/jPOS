@@ -139,8 +139,8 @@ public class Console {
                                 new SecureDESKey(keyLength,commandParams[1].toUpperCase(), commandParams[2],""));
                     }
                     else if (commandName.toUpperCase().compareTo("IK") == 0) {
-                        SecureDESKey KEKunderLMK = new SecureDESKey((short)Integer.parseInt(commandParams[3]),
-                                commandParams[4].toUpperCase(), commandParams[5], commandParams[6]);
+                        SecureDESKey KEKunderLMK = new SecureDESKey((short)Integer.parseInt(commandParams[4]),
+                                commandParams[5].toUpperCase(), commandParams[6], commandParams[7]);
                         sm.importKey(keyLength, commandParams[1].toUpperCase(),
                                 ISOUtil.hex2byte(commandParams[2]), KEKunderLMK, true);
                     }
