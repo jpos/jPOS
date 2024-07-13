@@ -1,19 +1,33 @@
 #!/bin/sh
 
-cd $(dirname $0)/.. || exit 1
+cd "$(dirname "$0")/.." || exit 1
 rm -f deploy/shutdown.xml
 
-if [ -f jpos.pid ] && ps -p $(cat jpos.pid) > /dev/null 2>&1
+if [ -f jpos.pid ] && ps -p "$(cat jpos.pid)" > /dev/null 2>&1
 then
    echo "Process $(cat jpos.pid) is running"
 else
   rm -f jpos.pid
+
+  # Separate -D parameters from other parameters
+  JAVA_OPTS=""
+  OTHER_OPTS=""
+  for arg in "$@"; do
+    case $arg in
+      -D*)
+        JAVA_OPTS="$JAVA_OPTS $arg"
+        ;;
+      *)
+        OTHER_OPTS="$OTHER_OPTS $arg"
+        ;;
+    esac
+  done
+
+  mkdir -p log 
   exec java -server \
     -Xmx4G \
     --enable-preview \
     -Xlog:gc:log/gc.log \
-    -jar @jarname@  --pid="jpos.pid" "$@"
+    $JAVA_OPTS -jar @jarname@  --pid="jpos.pid" $OTHER_OPTS
 fi
 
-# -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 \
-# --show-module-resolution \
