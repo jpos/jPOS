@@ -27,6 +27,8 @@ import org.jpos.core.handlers.exception.ExceptionHandlerAware;
 import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.iso.header.BaseHeader;
 import org.jpos.jfr.ChannelEvent;
+import org.jpos.log.evt.Connect;
+import org.jpos.log.evt.Disconnect;
 import org.jpos.util.*;
 
 import javax.net.ssl.SSLSocket;
@@ -107,15 +109,17 @@ public abstract class BaseChannel extends Observable
 
     private Counter msgOutCounter;
     private Counter msgInCounter;
+    private final UUID uuid;
 
     private final Map<Class<? extends Exception>, List<ExceptionHandler>> exceptionHandlers = new HashMap<>();
-    
+
     /**
      * constructor shared by server and client
      * ISOChannels (which have different signatures)
      */
     public BaseChannel () {
         super();
+        uuid = UUID.randomUUID();
         cnt = new int[SIZEOF_CNT];
         name = "";
         incomingFilters = new ArrayList();
@@ -357,21 +361,25 @@ public abstract class BaseChannel extends Observable
                 int ii = nextHostPort++ % hosts.length;
                 h = hosts[ii];
                 p = ports[ii];
-                evt.addMessage ("Try " + i + " " + h+":" + p);
                 s = newSocket (h, p);
-                evt.addMessage ("  Connected to %s:%d (%d)".formatted(
-                    s.getInetAddress().getHostAddress(),
-                    s.getPort(),
-                    s.getLocalPort())
+                evt.addMessage(new Connect(
+                  s.getInetAddress().getHostAddress(),
+                  s.getPort(),
+                  s.getLocalPort(), null)
                 );
                 break;
             } catch (IOException e) {
-                evt.addMessage ("  " + e.getMessage());
                 lastIOException = e;
+                evt.addMessage(
+                  new Connect(h, p, 0, "%s:%d %s (%s)".formatted(
+                      h, p, Caller.shortClassName(lastIOException.getClass().getName()), Caller.info(1)
+                    )
+                  )
+                );
             }
         }
         if (s == null)
-            throw new IOException ("%s:%d %s (%s)".formatted(h, p, lastIOException, Caller.info(1)));
+            throw new IOException ("%s:%d %s (%s)".formatted(h, p, Caller.shortClassName(lastIOException.getClass().getName()), Caller.info(1)));
         return s;
     }
     /**
@@ -434,24 +442,22 @@ public abstract class BaseChannel extends Observable
     public void connect () throws IOException {
         ChannelEvent jfr = new ChannelEvent.Connect();
         jfr.begin();
-        LogEvent evt = new LogEvent (this, "connect");
+        LogEvent evt = new LogEvent (this, "connect").withTraceId(uuid);
         try {
             socket = newSocket (hosts, ports, evt);
             if (getHost() != null)
                 jfr.setDetail("%s:%d".formatted(getHost(), getPort()));
             connect(socket);
             jfr.append("%d".formatted(socket.getLocalPort()));
+            evt.withTraceId(getSocketUUID());
             applyTimeout();
-            Logger.log (evt);
         } catch (IOException e) {
             jfr = new ChannelEvent.ConnectionException(jfr.getDetail());
             jfr.begin();
             jfr.append (e.getMessage());
-            evt.addMessage (jfr.getDetail());
-            evt.addMessage(e);
-            Logger.log (evt);
             throw e;
         } finally {
+            Logger.log (evt);
             jfr.commit();
         }
     }
@@ -627,7 +633,7 @@ public abstract class BaseChannel extends Observable
     {
         ChannelEvent jfr = new ChannelEvent.Send();
         jfr.begin();
-        LogEvent evt = new LogEvent (this, "send");
+        LogEvent evt = new LogEvent (this, "send").withTraceId(getSocketUUID());
         try {
             if (!isConnected())
                 throw new IOException ("unconnected ISOChannel");
@@ -766,7 +772,7 @@ public abstract class BaseChannel extends Observable
 
         byte[] b=null;
         byte[] header=null;
-        LogEvent evt = new LogEvent (this, "receive");
+        LogEvent evt = new LogEvent (this, "receive").withTraceId(getSocketUUID());
         ISOMsg m = createMsg ();  // call createMsg instead of createISOMsg for 
                                   // backward compatibility
         m.setSource (this);
@@ -780,7 +786,6 @@ public abstract class BaseChannel extends Observable
                 if (expectKeepAlive) {
                     while (len == 0) {
                         //If zero length, this is a keep alive msg
-                        Logger.log(new LogEvent(this, "receive", "Zero length keep alive message received"));
                         len  = getMessageLength();
                     }
                 }
@@ -834,23 +839,12 @@ public abstract class BaseChannel extends Observable
                 evt.addMessage (ISOUtil.hexdump (b));
             }
             throw e;
-        } catch (EOFException e) {
+        } catch (IOException e) {
+            evt.addMessage (
+              new Disconnect(socket.getInetAddress().getHostAddress(), socket.getPort(), socket.getLocalPort(),
+                "%s (%s)".formatted(Caller.shortClassName(e.getClass().getName()), Caller.info()), e.getMessage())
+            );
             closeSocket();
-            evt.addMessage ("<peer-disconnect/>");
-            throw e;
-        } catch (SocketException e) {
-            closeSocket();
-            if (usable)
-                evt.addMessage ("<peer-disconnect>" + e.getMessage() + "</peer-disconnect>");
-            throw e;
-        } catch (InterruptedIOException e) {
-            closeSocket();
-            evt.addMessage ("<io-timeout/>");
-            throw e;
-        } catch (IOException e) { 
-            closeSocket();
-            if (usable) 
-                evt.addMessage (e);
             throw e;
         } catch (Exception e) {
             closeSocket();
@@ -1222,5 +1216,11 @@ public abstract class BaseChannel extends Observable
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
         }
+    }
+
+    private UUID getSocketUUID() {
+        return socket != null ?
+          new UUID(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() ^ socket.hashCode()) :
+          uuid;
     }
 }

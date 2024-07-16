@@ -306,15 +306,15 @@ public class ChannelAdaptor
                         ((BaseChannel)channel).sendKeepAlive();
                     }
                 } catch (ISOFilter.VetoException e) { 
-                    getLog().warn ("channel-sender-"+in, e.getMessage ());
+                    // getLog().warn ("channel-sender-"+in, e.getMessage ());
                 } catch (ISOException e) {
-                    getLog().warn ("channel-sender-"+in, e.getMessage ());
+                    // getLog().warn ("channel-sender-"+in, e.getMessage ());
                     if (!ignoreISOExceptions) {
                         disconnect ();
                     }
                     ISOUtil.sleep (1000); // slow down on errors
                 } catch (Exception e) { 
-                    getLog().warn ("channel-sender-"+in, e.getMessage ());
+                    // getLog().warn ("channel-sender-"+in, e.getMessage ());
                     disconnect ();
                     ISOUtil.sleep (1000);
                 }
@@ -343,10 +343,10 @@ public class ChannelAdaptor
                     else
                         sp.out (out, m);
                 } catch (ISOFilter.VetoException e) {
-                    getLog().warn ("channel-receiver-"+out+"-veto-exception", e.getMessage());
+                    // getLog().warn ("channel-receiver-"+out+"-veto-exception", e.getMessage());
                 } catch (ISOException e) {
                     if (running()) {
-                        getLog().warn ("channel-receiver-"+out, e);
+                        // getLog().warn ("channel-receiver-"+out, e);
                         if (!ignoreISOExceptions) {
                             sp.out (reconnect, Boolean.TRUE, delay);
                             disconnect ();
@@ -356,7 +356,7 @@ public class ChannelAdaptor
                     }
                 } catch (SocketTimeoutException | EOFException e) {
                     if (running()) {
-                        getLog().warn ("channel-receiver-"+out, "Read timeout / EOF - reconnecting");
+                        // getLog().warn ("channel-receiver-"+out, "Read timeout / EOF - reconnecting");
                         sp.out (reconnect, Boolean.TRUE, delay);
                         disconnect ();
                         sp.out (in, Boolean.TRUE); // wake-up Sender
@@ -364,7 +364,7 @@ public class ChannelAdaptor
                     }
                 } catch (Exception e) { 
                     if (running()) {
-                        getLog().warn ("channel-receiver-"+out, e);
+                        // getLog().warn ("channel-receiver-"+out, e);
                         sp.out (reconnect, Boolean.TRUE, delay);
                         disconnect ();
                         sp.out (in, Boolean.TRUE); // wake-up Sender
