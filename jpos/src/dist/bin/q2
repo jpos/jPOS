@@ -10,7 +10,7 @@ else
   rm -f jpos.pid
 
   # Separate -D parameters from other parameters
-  JAVA_OPTS=""
+  JAVA_OPTS="${JAVA_OPTS:-}"
   OTHER_OPTS=""
   for arg in "$@"; do
     case $arg in
