@@ -209,6 +209,10 @@ public class LogEvent {
         this.traceId = uuid.toString().replace("-", "");
         return this;
     }
+    public LogEvent add (Object o) {
+        addMessage(o);
+        return this;
+    }
     public LogEvent withTraceId () {
         getTraceId();
         return this;
