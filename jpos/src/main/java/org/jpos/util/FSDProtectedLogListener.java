@@ -134,7 +134,7 @@ public class FSDProtectedLogListener implements LogListener, Configurable
 
     private void checkTruncated(FSDMsg m) {
         for (String truncateField : truncateFields) {
-            String truncate[] = truncateField.split(":");
+            String [] truncate = truncateField.split(":");
             if (truncate.length == 2) {
                 String f = truncate[0];
                 int len = Integer.parseInt(truncate[1]);
