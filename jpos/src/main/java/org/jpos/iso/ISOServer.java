@@ -339,6 +339,9 @@ public class ISOServer extends Observable
                 }
             }
             try {
+                WeakReference wr = new WeakReference (channel);
+                channels.put (channel.getName(), wr);
+                channels.put (LAST, wr);
                 for (;;) {
                     try {
                         ISOMsg m = channel.receive();
@@ -508,9 +511,6 @@ public class ISOServer extends Observable
                         if (cnt[CONNECT]++ % 100 == 0) {
                             purgeChannels ();
                         }
-                        WeakReference wr = new WeakReference (channel);
-                        channels.put (channel.getName(), wr);
-                        channels.put (LAST, wr);
                         pool.execute (createSession(channel));
                         setChanged ();
                         notifyObservers (this);
