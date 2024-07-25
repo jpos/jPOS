@@ -101,7 +101,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
     public void setConfiguration(Element xml) throws ConfigurationException {
         for (Element ep : xml.getChildren("endpoint")) {
             String destination = QFactory.getAttributeValue(ep, "destination");
-            StringTokenizer st = new StringTokenizer(ep.getText());
+            StringTokenizer st = new StringTokenizer(Environment.get(ep.getTextTrim()));
             while (st.hasMoreElements()) {
                 BinRange br = new BinRange(destination, st.nextToken());
                 binranges.add(br);
@@ -110,7 +110,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
         for (Element re : xml.getChildren("regexp")) {
             String destination = QFactory.getAttributeValue(re, "destination");
             regexps.add(
-              new PanRegExp(QFactory.getAttributeValue(re, "destination"), re.getTextTrim())
+              new PanRegExp(QFactory.getAttributeValue(re, "destination"), Environment.get(re.getTextTrim()))
             );
         }
         LogEvent evt = Log.getLog(Q2.LOGGER_NAME, this.getClass().getName()).createLogEvent("config");
