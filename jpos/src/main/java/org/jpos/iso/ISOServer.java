@@ -29,17 +29,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EventObject;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -95,7 +85,7 @@ public class ISOServer extends Observable
     protected Configuration cfg;
     private boolean shutdown = false;
     private ServerSocket serverSocket;
-    private Map channels;
+    private Map<String,WeakReference<ISOChannel>> channels;
     protected boolean ignoreISOExceptions;
     protected List<ISOServerEventListener> serverListeners = null;
 
@@ -118,7 +108,7 @@ public class ISOServer extends Observable
             new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
         listeners = new Vector();
         name = "";
-        channels = new HashMap();
+        channels = Collections.synchronizedMap(new HashMap<>());
         cnt = new int[SIZEOF_CNT];
         serverListeners = new ArrayList<ISOServerEventListener>();
     }
@@ -266,17 +256,12 @@ public class ISOServer extends Observable
         }
     }
     private void purgeChannels () {
-        Iterator iter = channels.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c == null || !c.isConnected()) {
-                iter.remove ();
-            }
-        }
+        channels.entrySet().removeIf(entry -> {
+            WeakReference<ISOChannel> ref = entry.getValue();
+            ISOChannel c = ref.get();
+            return c == null || !c.isConnected();
+        });
     }
-
 
     @Override
     public ServerSocket createServerSocket(int port) throws IOException {
