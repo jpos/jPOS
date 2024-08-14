@@ -27,7 +27,8 @@ import java.util.stream.Collectors;
 
 public class Metrics implements Loggeable {
     private Histogram template;
-    private Map<String, Histogram> metrics = new ConcurrentHashMap<>();
+    private Map<String,Histogram> metrics = new ConcurrentHashMap<>();
+    private double conversion = 1;
 
     public Metrics(Histogram template) {
         super();
@@ -75,18 +76,19 @@ public class Metrics implements Loggeable {
           .forEach(e -> dumpPercentiles(ps, indent, e.getKey(), e.getValue().copy()));
     }
 
-    private void dumpPercentiles(PrintStream ps, String indent, String key, Histogram h) {
-        ps.printf("%s%s min=%d, max=%d, mean=%.4f stddev=%.4f 90%%=%d, 99%%=%d, 99.9%%=%d, 99.99%%=%d tot=%d size=%d%n",
+    private void dumpPercentiles (PrintStream ps, String indent, String key, Histogram h) {
+          ps.printf("%s%s min=%.7f, max=%.7f, mean=%.7f stddev=%.7f P50=%.7f, P90=%.7f, P99=%.7f, P99.9=%.7f, P99.99=%.7f tot=%d size=%d%n",
           indent,
           key,
-          h.getMinValue(),
-          h.getMaxValue(),
-          h.getMean(),
-          h.getStdDeviation(),
-          h.getValueAtPercentile(90.0),
-          h.getValueAtPercentile(99.0),
-          h.getValueAtPercentile(99.9),
-          h.getValueAtPercentile(99.99),
+          h.getMinValue()/conversion,
+          h.getMaxValue()/conversion,
+          h.getMean()/conversion,
+          h.getStdDeviation()/conversion,
+          h.getValueAtPercentile(50.0)/conversion,                    
+          h.getValueAtPercentile(90.0)/conversion,
+          h.getValueAtPercentile(99.0)/conversion,
+          h.getValueAtPercentile(99.9)/conversion,
+          h.getValueAtPercentile(99.99)/conversion,
           h.getTotalCount(),
           h.getEstimatedFootprintInBytes()
         );
@@ -105,5 +107,15 @@ public class Metrics implements Loggeable {
           .stream()
           .sorted(Map.Entry.comparingByKey())
           .forEach(e -> dumpHistogram(dir, prefix + e.getKey(), e.getValue().copy()));
+    }
+
+    /**
+     * @param conversion
+     *            This is used to divide the percentile values while dumping. 
+     *            If you are using nano seconds to record and want to display the numbers in millis then conversion can be set to 1000000.
+     *            By default conversion is set to 1.
+     */
+    public void setConversion(double conversion) {
+        this.conversion = conversion;
     }
 }
