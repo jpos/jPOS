@@ -18,19 +18,14 @@
 
 package org.jpos.log.evt;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.jpos.log.AuditLogEvent;
-import java.time.Instant;
-import java.util.List;
 
-@JacksonXmlRootElement(localName = "log")
-public record LogEvt(
-  @JacksonXmlProperty(isAttribute = true) Instant ts,
-  @JacksonXmlProperty(isAttribute = true) @JsonProperty("trace-id") String traceId,
-  @JacksonXmlProperty(isAttribute = true) String realm,
-  @JacksonXmlProperty(isAttribute = true) String tag,
-  @JacksonXmlProperty(isAttribute = true) Long lifespan,
-  @JsonProperty("evt") @JacksonXmlElementWrapper(useWrapping = false) List<AuditLogEvent> events) { }
+import java.net.InetAddress;
+
+public record Listen(
+  int port,
+  @JsonInclude(JsonInclude.Include.NON_NULL) InetAddress bindAddr,
+  int permits,
+  int backlog
+) implements AuditLogEvent {  }

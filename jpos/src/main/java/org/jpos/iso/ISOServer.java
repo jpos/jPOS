@@ -42,9 +42,9 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.jfr.ChannelEvent;
+import org.jpos.log.AuditLogEvent;
+import org.jpos.log.evt.*;
 import org.jpos.util.*;
-
-import static org.jpos.jfr.ChannelEvent.*;
 
 /**
  * Accept ServerChannel sessions and forwards them to ISORequestListeners
@@ -96,6 +96,7 @@ public class ISOServer extends Observable
     private int permitsCount = DEFAULT_MAX_SESSIONS;
     private static final long SMALL_RELAX = 250;
     private static final long LONG_RELAX = 5000;
+    private final UUID uuid = UUID.randomUUID();
 
    /**
     * @param port port to listen
@@ -259,18 +260,12 @@ public class ISOServer extends Observable
             }
         }
     }
-    private void purgeChannels () {
-        Iterator iter = channels.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c == null || !c.isConnected()) {
-                iter.remove ();
-            }
-        }
+    private void purgeChannels() {
+        channels.entrySet().removeIf(entry -> {
+            ISOChannel channel = entry.getValue().get();
+            return channel == null || !channel.isConnected();
+        });
     }
-
 
     @Override
     public ServerSocket createServerSocket(int port) throws IOException {
@@ -309,9 +304,17 @@ public class ISOServer extends Observable
         public void run() {
             setChanged ();
             notifyObservers ();
+            UUID sessionUUID = uuid;
+            String sessionInfo = "";
             if (channel instanceof BaseChannel baseChannel) {
-                LogEvent ev = new LogEvent (this, "session-start", connectionCount.get() + "/" + permitsCount);
                 Socket socket = baseChannel.getSocket ();
+                sessionInfo = socket.toString();
+                sessionUUID = getSocketUUID(socket);
+                LogEvent ev = new LogEvent()
+                  .withSource(this)
+                  .withTraceId(sessionUUID)
+                  .add(new SessionStart(connectionCount.get(), permitsCount, sessionInfo)
+                );
                 if (!checkPermission (socket, ev))
                     return;
                 realm = realm + "/" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
@@ -319,6 +322,9 @@ public class ISOServer extends Observable
                     baseChannel.setCounters(bc.getMsgInCounter(), bc.getMsgOutCounter());
             }
             try {
+                WeakReference<ISOChannel> wr = new WeakReference<> (channel);
+                channels.put (channel.getName(), wr);
+                channels.put (LAST, wr); // we are most likely the last one
                 while (true) try {
                     ISOMsg m = channel.receive();
                     lastTxn = System.currentTimeMillis();
@@ -353,7 +359,12 @@ public class ISOServer extends Observable
                 Logger.log (new LogEvent (this, "session-error", ex));
                 fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
             }
-            Logger.log (new LogEvent (this, "session-end ", connectionCount.decrementAndGet() + "/" + permitsCount));
+            Logger.log(new LogEvent()
+              .withSource(this)
+              .withTraceId(sessionUUID)
+              .add(new SessionEnd(connectionCount.get(), permitsCount, sessionInfo)
+              )
+            );
         }
         @Override
         public void setLogger (Logger logger, String realm) {
@@ -462,16 +473,12 @@ public class ISOServer extends Observable
                 if (permits.availablePermits() <= 0) {
                     LockSupport.parkNanos(Duration.ofMillis(SMALL_RELAX).toNanos());
                     if (round % 240 == 0 && cfg.getBoolean("permits-exhaustion-warning", true)) {
-                        log ("warn", "permits exhausted " + serverSocket.toString());
+                        log(new Warning("permits exhausted " + serverSocket.toString()));
                     }
                     continue;
                 }
                 serverSocket = socketFactory.createServerSocket(port);
-                log ("iso-server",
-                    "listening on " + (bindAddr != null ? bindAddr + ":" : "port ") + port
-                    + ", permits=" + permits.availablePermits()
-                    + (backlog > 0 ? ", backlog="+backlog : "")
-                );
+                log (new Listen(port, bindAddr, permits.availablePermits(), backlog));
                 while (!shutdown) {
                     try {
                         if (permits.availablePermits() <= 0) {
@@ -483,7 +490,7 @@ public class ISOServer extends Observable
                                 serverSocket.close();
                                 fireEvent(new ISOServerShutdownEvent(this));
                             } catch (IOException e){
-                                log ("iso-server", Caller.info() + ":" + e.getMessage());
+                                log (new ThrowableAuditLogEvent(e));
                             } finally {
                                 jfr.commit();
                             }
@@ -491,13 +498,9 @@ public class ISOServer extends Observable
                         }
                         final ServerChannel channel = (ServerChannel) clientSideChannel.clone();
                         channel.accept (serverSocket);
-
                         if (connectionCount.getAndIncrement() % 100 == 0) {
                             purgeChannels ();
                         }
-                        WeakReference<ISOChannel> wr = new WeakReference<> (channel);
-                        channels.put (channel.getName(), wr);
-                        channels.put (LAST, wr);
                         executor.submit (() -> {
                             try {
                                 permits.acquireUninterruptibly();
@@ -514,17 +517,17 @@ public class ISOServer extends Observable
                         }
                     } catch (SocketException e) {
                         if (!shutdown) {
-                            Logger.log (new LogEvent (this, "iso-server", e));
+                            log (new ThrowableAuditLogEvent(e));
                             relax();
                             continue serverLoop;
                         }
                     } catch (IOException e) {
-                        Logger.log (new LogEvent (this, "iso-server", e));
+                        log (new ThrowableAuditLogEvent(e));
                         relax();
                     }
                 } // while !shutdown
             } catch (Throwable e) {
-                Logger.log (new LogEvent (this, "iso-server", e));
+                log (new ThrowableAuditLogEvent(e));
                 relax();
             }
         }
@@ -552,7 +555,7 @@ public class ISOServer extends Observable
     public static ISOServer getServer (String name)
         throws NameRegistrar.NotFoundException
     {
-        return (ISOServer) NameRegistrar.get ("server."+name);
+        return NameRegistrar.get ("server."+name);
     }
     /**
      * @return this ISOServer's name ("" if no name was set)
@@ -654,11 +657,11 @@ public class ISOServer extends Observable
         StringBuilder sb = new StringBuilder ();
         int cnt[] = getCounters();
         sb.append ("connected=");
-        sb.append (Integer.toString(cnt[2]));
+        sb.append (cnt[2]);
         sb.append (", rx=");
-        sb.append (Integer.toString(cnt[0]));
+        sb.append (cnt[0]);
         sb.append (", tx=");
-        sb.append (Integer.toString(cnt[1]));
+        sb.append (cnt[1]);
         sb.append (", last=");
         sb.append (lastTxn);
         if (lastTxn > 0) {
@@ -740,12 +743,12 @@ public class ISOServer extends Observable
                 sb.append (inner);
                 sb.append (entry.getKey());
                 sb.append (": rx=");
-                sb.append (Integer.toString (cc[ISOChannel.RX]));
+                sb.append (cc[ISOChannel.RX]);
                 sb.append (", tx=");
-                sb.append (Integer.toString (cc[ISOChannel.TX]));
+                sb.append (cc[ISOChannel.TX]);
                 sb.append (", last=");
-                sb.append (Long.toString(lastTxn));
-                p.println (sb.toString());
+                sb.append (lastTxn);
+                p.println (sb);
             }
         }
     }
@@ -766,7 +769,7 @@ public class ISOServer extends Observable
             try {
                 l.handleISOServerEvent(event);
             }
-            catch (Exception ignore) {
+            catch (Throwable ignore) {
                 /*
                  * Don't want an exception from a handler to exit the loop or
                  * let it bubble up.
@@ -781,8 +784,16 @@ public class ISOServer extends Observable
         }
     }
 
+    private void log (AuditLogEvent log) {
+        Logger.log(new LogEvent()
+          .withSource(this)
+          .withTraceId(uuid)
+          .add(log)
+        );
+    }
+
     private void log (String level, String message) {
-        LogEvent evt = new LogEvent (this, level);
+        LogEvent evt = new LogEvent (this, level).withTraceId(uuid);
         evt.addMessage (message);
         Logger.log (evt);
     }
@@ -790,5 +801,10 @@ public class ISOServer extends Observable
     public int getActiveConnections () {
         return permitsCount - permits.availablePermits();
     }
-}
 
+    private UUID getSocketUUID(Socket socket) {
+        return socket != null ?
+          new UUID(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() ^ socket.hashCode()) :
+          uuid;
+    }
+}

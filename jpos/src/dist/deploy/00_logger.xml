@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor">
+<logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor" realm="system">
   <property name="redirect" value="stdout, stderr" />
-  <!-- log-listener class="org.jpos.util.FlatLogListener" /-->
-  <log-listener class="org.jpos.util.SimpleLogListener" />
 
-  <log-listener class="org.jpos.util.DailyLogListener">
+  <log-listener class="org.jpos.util.SimpleLogListener" enabled="${log.simple:true}" />
+
+  <log-listener class="org.jpos.util.SimpleLogListener" enabled="${log.xml:false}">
+    <writer class="org.jpos.util.XmlLogWriter" enabled="true" />
+  </log-listener>
+
+  <log-listener class="org.jpos.util.SimpleLogListener" enabled="${log.json:false}">
+    <writer class="org.jpos.util.JsonLogWriter" enabled="true" />
+  </log-listener>
+
+  <log-listener class="org.jpos.util.SimpleLogListener" enabled="${log.markdown:false}">
+    <writer class="org.jpos.util.MarkdownLogWriter" enabled="true" />
+  </log-listener>
+
+<!--  <log-listener class="org.jpos.util.SimpleLogListener" enabled="true">-->
+<!--    <writer class="org.jpos.util.TxtLogWriter" enabled="true" />-->
+<!--  </log-listener>-->
+
+  <log-listener class="org.jpos.util.DailyLogListener" enabled="true">
     <property name="window" value="86400" /> <!-- optional, default one day -->
     <!--needed-->
     <property name="prefix" value="log/q2" />

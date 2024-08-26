@@ -1,6 +1,6 @@
-/*
+package org.jpos.log.evt;/*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2010 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,12 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+import org.jpos.log.AuditLogEvent;
 
-import java.util.EventObject;
-
-public final class ISOServerShutdownEvent extends EventObject implements ISOServerEvent {
-    public ISOServerShutdownEvent(Object source) {
-        super(source);
-    }
+public record SessionStart(int connections, int permits, String info) implements AuditLogEvent {
 }

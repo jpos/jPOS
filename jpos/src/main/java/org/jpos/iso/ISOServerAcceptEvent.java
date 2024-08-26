@@ -19,8 +19,9 @@
 package org.jpos.iso;
 
 import java.lang.ref.WeakReference;
+import java.util.EventObject;
 
-public class ISOServerAcceptEvent extends java.util.EventObject {
+public final class ISOServerAcceptEvent extends EventObject implements ISOServerEvent {
     private WeakReference<ISOChannel> channelRef;
     public ISOServerAcceptEvent(ISOServer source, ISOChannel channel) {
         super(source);
