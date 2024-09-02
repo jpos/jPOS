@@ -18,8 +18,6 @@
 
 package org.jpos.log.evt;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.jpos.log.AuditLogEvent;
 
-public record UnDeploy(String path, @JacksonXmlProperty(isAttribute = true) boolean start) implements AuditLogEvent { }
-
+public record UnDeploy(String path) implements AuditLogEvent { }

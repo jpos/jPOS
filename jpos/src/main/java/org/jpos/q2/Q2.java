@@ -527,20 +527,22 @@ public class Q2 implements FileFilter, Runnable {
 
     private void undeploy (File f) {
         QEntry qentry = dirMap.get (f);
+        LogEvent evt = log != null ? log.createInfo().withTraceId(getInstanceId()) : null;
         try {
-            if (log != null)
-                log.info (new UnDeploy(f.getCanonicalPath(), true));
+            if (evt != null)
+                evt.addMessage (new UnDeploy(f.getCanonicalPath()));
 
             if (qentry.isQBean()) {
                 Object obj      = qentry.getObject ();
                 ObjectName name = qentry.getObjectName ();
                 factory.destroyQBean (this, name, obj);
             }
-            if (log != null)
-                log.info (new UnDeploy(f.getCanonicalPath(), false));
-
         } catch (Exception e) {
-            getLog().warn ("undeploy", e);
+            if (evt != null)
+                evt.addMessage (e);
+        } finally {
+            if (evt != null)
+                Logger.log(evt);
         }
     }
 
@@ -561,10 +563,8 @@ public class Q2 implements FileFilter, Runnable {
 
     private boolean deploy (File f) {
         LogEvent evt = log != null ? log.createInfo().withTraceId(getInstanceId()) : null;
-        boolean enabled = false;
-        String filePath = "";
+        boolean enabled;
         try {
-            filePath = f.getCanonicalPath();
             QEntry qentry = dirMap.get (f);
             SAXBuilder builder = createSAXBuilder();
             Document doc;
