@@ -24,7 +24,7 @@ public final class SysInfoMarkdownRenderer implements LogRenderer<SysInfo> {
         Map<String,Object> entries = extractEntriesToMap(sysinfo);
         int width = maxLength(entries);
         final String fmt = STR."| %-\{width}s | %s |%n";
-        ps.println ("## SystemMonitor");
+        ps.println ("### SystemMonitor");
         ps.print (row(fmt, "id", "value"));
         ps.print (row(fmt, "-".repeat(width), "-----"));
         entries.forEach((k, v) -> {
@@ -51,7 +51,7 @@ public final class SysInfoMarkdownRenderer implements LogRenderer<SysInfo> {
     }
 
     private void renderNameRegistrar(List<KV> entries, PrintStream ps, String fmt, int width) {
-        ps.println ("### NameRegistrar");
+        ps.println ("#### NameRegistrar");
         ps.print (row(fmt, "id", "component"));
         ps.print (row(fmt, "-".repeat(width), "---------"));
         entries.forEach(kv -> {
@@ -61,7 +61,7 @@ public final class SysInfoMarkdownRenderer implements LogRenderer<SysInfo> {
     }
 
     private void renderThreads(List<KV> entries, PrintStream ps, String fmt, int width) {
-        ps.println ("### Threads");
+        ps.println ("#### Threads");
         ps.print (row(fmt, "thread", "info"));
         ps.print (row(fmt, "-".repeat(width), "----"));
         entries.forEach(kv -> {
@@ -72,7 +72,7 @@ public final class SysInfoMarkdownRenderer implements LogRenderer<SysInfo> {
 
     private void renderScripts(List<ProcessOutput> entries, PrintStream ps) {
         entries.forEach (processOutput -> {
-            ps.printf ("### %s%n", processOutput.name());
+            ps.printf ("#### %s%n", processOutput.name());
             if (!processOutput.stdout().isEmpty()) {
                 ps.println ("```");
                 ps.println (processOutput.stdout());
