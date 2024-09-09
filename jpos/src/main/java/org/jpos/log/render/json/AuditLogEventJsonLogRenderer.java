@@ -2,7 +2,6 @@ package org.jpos.log.render.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jpos.log.AuditLogEvent;
 import org.jpos.log.LogRenderer;
