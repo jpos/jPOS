@@ -5,8 +5,8 @@ org.jpos.log.render.json.AuditLogEventJsonLogRenderer
 org.jpos.log.render.xml.LoggeableXmlLogRenderer
 org.jpos.log.render.xml.LogEventXmlLogRenderer
 
-org.jpos.log.render.markdown.ProfilerMarkdownRenderer
-org.jpos.log.render.markdown.SysInfoMarkdownRenderer
+#org.jpos.log.render.markdown.ProfilerMarkdownRenderer
+#org.jpos.log.render.markdown.SysInfoMarkdownRenderer
 org.jpos.log.render.markdown.ContextMarkdownRenderer
 org.jpos.log.render.markdown.LoggeableMarkdownLogRenderer
 org.jpos.log.render.markdown.LogEventMarkdownRenderer
@@ -15,7 +15,7 @@ org.jpos.log.render.markdown.ObjectMarkdownLogRenderer
 org.jpos.log.render.markdown.ByteArrayMarkdownLogRenderer
 org.jpos.log.render.markdown.ThrowableMarkdownLogRenderer
 org.jpos.log.render.markdown.ElementMarkdownLogRenderer
-org.jpos.log.render.markdown.TransactionManagerTraceMarkdownLogRenderer
-org.jpos.log.render.markdown.TransactionManagerTraceArrayMarkdownLogRenderer
+#org.jpos.log.render.markdown.TransactionManagerTraceMarkdownLogRenderer
+#org.jpos.log.render.markdown.TransactionManagerTraceArrayMarkdownLogRenderer
 
 org.jpos.log.render.txt.ObjectTxtLogRenderer
