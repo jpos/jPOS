@@ -24,12 +24,12 @@ public final class ContextMarkdownRenderer implements LogRenderer<Context> {
     private void formatEntry (String key, Object value, PrintStream ps) {
         LogRenderer<Object> renderer = LogRendererRegistry.getRenderer(value.getClass(), Type.MARKDOWN);
         if (renderer != null) {
-            ps.printf ("### %s%n", key);
+            ps.printf ("#### %s%n", key);
             // ps.printf ("> %s%n%n", Caller.shortClassName(renderer.getClass().getCanonicalName()));
             renderer.render (value, ps, "");
         } else {
             ps.printf ("No renderer could be found for class %s%n", value.getClass());
-            ps.printf ("### %s%n```%n", key);
+            ps.printf ("#### %s%n```%n", key);
             ps.println(value);
             ps.println("```");
         }
