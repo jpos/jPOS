@@ -1,8 +1,6 @@
 package org.jpos.log.render.txt;
 
 import org.jpos.log.LogRenderer;
-import org.jpos.util.Loggeable;
-
 import java.io.PrintStream;
 
 public final class ObjectTxtLogRenderer implements LogRenderer<Object> {
