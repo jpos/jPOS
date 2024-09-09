@@ -43,7 +43,8 @@ import org.jpos.log.evt.*;
   @JsonSubTypes.Type(value = Disconnect.class, name = "disconnect"),
   @JsonSubTypes.Type(value = Listen.class, name = "listen"),
   @JsonSubTypes.Type(value = SessionStart.class, name = "session-start"),
-  @JsonSubTypes.Type(value = SessionEnd.class, name = "session-end")
+  @JsonSubTypes.Type(value = SessionEnd.class, name = "session-end"),
+  @JsonSubTypes.Type(value = Txn.class, name = "txn")
 })
 
-public sealed interface AuditLogEvent permits Connect, Deploy, DeployActivity, Disconnect, License, Listen, LogMessage, SessionEnd, SessionStart, Shutdown, Start, Stop, SysInfo, ThrowableAuditLogEvent, UnDeploy, Warning { }
+public sealed interface AuditLogEvent permits Connect, Deploy, DeployActivity, Disconnect, License, Listen, LogMessage, SessionEnd, SessionStart, Shutdown, Start, Stop, SysInfo, ThrowableAuditLogEvent, Txn, UnDeploy, Warning { }
