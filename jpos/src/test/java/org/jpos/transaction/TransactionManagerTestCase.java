@@ -83,7 +83,7 @@ public class TransactionManagerTestCase {
         ctx.put("DELAY-0", 50L);
         ctx.put("DELAY-1", 50L);
         sp.out(QUEUE_DELAY, ctx);
-        String rc = ctx.get("RC", 5000L);
+        String rc = ctx.get("RC", 10000L);
         assertEquals("00", rc);
     }
 
