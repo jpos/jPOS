@@ -23,11 +23,4 @@ jobs:
           arguments: publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Delete older SNAPSHOT versions
-        uses: smartsquaregmbh/delete-old-packages@v0.8.1
-        with:
-          keep: 1
-          version-pattern: "^\\d+\\.\\d+\\.\\d+-SNAPSHOT$"
-          names: |
-            org.jpos.jpos
 
