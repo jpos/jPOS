@@ -1,0 +1,33 @@
+name: Publish SNAPSHOT to GitHub Packages
+on:
+  push:
+    branches:
+      - next
+jobs:
+  publish:
+    runs-on: ubuntu-latest 
+    permissions: 
+      contents: read
+      packages: write 
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '22'
+          distribution: 'corretto'
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v3
+      - name: Publish package
+        uses: gradle/gradle-build-action@v3
+        with:
+          arguments: publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Delete older SNAPSHOT versions
+        uses: smartsquaregmbh/delete-old-packages@v0.8.1
+        with:
+          keep: 1
+          version-pattern: "^\\d+\\.\\d+\\.\\d+-SNAPSHOT$"
+          names: |
+            org.jpos.jpos
+
