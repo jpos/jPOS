@@ -30,6 +30,7 @@ import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.log.evt.Txn;
 import org.jpos.metrics.MeterInfo;
 import org.jpos.function.TriConsumer;
 import org.jpos.function.TriFunction;
@@ -91,9 +92,6 @@ public class TransactionManager
     private String tailLock;
     private final List<TransactionStatusListener> statusListeners = new ArrayList<>();
     private boolean hasStatusListeners;
-    private boolean debug;
-    private boolean debugContext;
-    private boolean profiler;
     private boolean doRecover;
     private boolean callSelectorOnAbort;
     private boolean abortOnMisconfiguredGroups;
@@ -118,6 +116,7 @@ public class TransactionManager
     private Gauge activeSessionsGauge;
     private Counter transactionCounter;
     private boolean freezeLog;
+    private UUID uuid = UUID.randomUUID();
 
     @Override
     public void initService () throws ConfigurationException {
@@ -262,6 +261,8 @@ public class TransactionManager
         int action = -1;
         id = nextId ();
         TMEvent tme = new TMEvent(getName(), id);
+        Txn txn = new Txn(getName(), id);
+
         tme.begin();
         try {
             setThreadLocal(id, context);
@@ -273,16 +274,12 @@ public class TransactionManager
             abort = false;
             members = new ArrayList<> ();
             iter = getParticipants (DEFAULT_GROUP).iterator();
-            if (debug) {
-                evt = getLog().createLogEvent(
-                  "debug",
-                  "%s:%d".formatted(Thread.currentThread().getName(), id)
-                );
-                if (debugContext) {
-                    evt.addMessage (context);
-                }
-                prof = new Profiler();
-            }
+            evt = new LogEvent()
+              .withSource(log)
+              .withTraceId(getTraceId(id));
+            evt.addMessage(txn);
+            evt.addMessage(context);
+            prof = new Profiler();
             snapshot (id, context, PREPARING);
             action = prepare (session, id, context, members, iter, abort, evt, prof, chronometer);
             switch (action) {
@@ -373,11 +370,6 @@ public class TransactionManager
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         super.setConfiguration (cfg);
-        debug = cfg.getBoolean ("debug", true);
-        debugContext = cfg.getBoolean ("debug-context", debug);
-        profiler = cfg.getBoolean ("profiler", debug); 
-        if (profiler || debugContext)
-            debug = true; // profiler and/or debugContext needs debug
         doRecover = cfg.getBoolean ("recover", true);
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
         retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
@@ -397,8 +389,7 @@ public class TransactionManager
                 throw new ConfigurationException("max-active-sessions < max-sessions");
         }
         callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", true);
-        if (profiler)
-            metrics = new Metrics(new AtomicHistogram(cfg.getLong("metrics-highest-trackable-value", 60000), 2));
+        metrics = new Metrics(new AtomicHistogram(cfg.getLong("metrics-highest-trackable-value", 60000), 2));
         abortOnMisconfiguredGroups = cfg.getBoolean("abort-on-misconfigured-groups");
 
         try {
@@ -1028,26 +1019,6 @@ public class TransactionManager
         }
     }
 
-    @Override
-    public void setDebug (boolean debug) {
-        this.debug = debug;
-    }
-
-    @Override
-    public boolean getDebugContext() {
-        return debugContext;
-    }
-
-    @Override
-    public void setDebugContext (boolean debugContext) {
-        this.debugContext = debugContext;
-    }
-
-    @Override
-    public boolean getDebug() {
-        return debug;
-    }
-
     /**
      * This method returns the number of sessions that can be started at this point in time
      * @return number of sessions
@@ -1287,5 +1258,9 @@ public class TransactionManager
     private Timer addTimer (Timer m) {
         meters.add (m);
         return m;
+    }
+
+    private UUID getTraceId (long transactionId) {
+        return new UUID(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() ^ transactionId);
     }
 }
