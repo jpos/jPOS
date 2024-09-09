@@ -227,7 +227,8 @@ public class SystemMonitor extends QBeanSupport
     }
 
     private LogEvent generateSystemInfo () {
-        LogEvent evt = new LogEvent().withTraceId(getServer().getInstanceId());
+        LogEvent evt = new LogEvent(this.getLog(), "info")
+          .withTraceId(getServer().getInstanceId());
         List<AuditLogEvent> events = new ArrayList<>();
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
         ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
