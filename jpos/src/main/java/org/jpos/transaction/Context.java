@@ -18,6 +18,7 @@
 
 package org.jpos.transaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
@@ -29,7 +30,6 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Stream;
@@ -416,6 +416,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return map;
     }
 
+    @JsonIgnore
     public Map<Object,Object> getMapClone() {
         Map<Object,Object> cloned = Collections.synchronizedMap (new LinkedHashMap<>());
         synchronized(getMap()) {
