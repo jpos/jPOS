@@ -37,7 +37,7 @@ public class CVNCPADataBuilderTest {
 
         assertEquals(
                 "0000000100000000000010000840000000108008409807040011111111580034560FA500A03800000000000000000000000F01000000000000000000000000000080000000000000",
-                builder.buildARQCRequest_padded(data, iad, builder.ISO9797Method2)
+                builder.buildARQCRequest_padded(data, iad)
         );
     }
 }

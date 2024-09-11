@@ -36,7 +36,6 @@ public class CVN10DataBuilder implements CryptogramDataBuilder {
         return approved ? "0000" : "9900";
     }
 
-
     @Override
     public String buildARQCRequest(TLVList data, IssuerApplicationData iad) {
         StringBuilder sb = new StringBuilder();
@@ -46,7 +45,7 @@ public class CVN10DataBuilder implements CryptogramDataBuilder {
     }
 
     @Override
-    public String buildARQCRequest_padded(TLVList data, IssuerApplicationData iad, PaddingMethod paddingMethod){
-        return paddingMethod.apply(buildARQCRequest(data, iad));
+    public PaddingMethod getPaddingMethod() {
+        return PaddingMethod.ISO9797Method1;
     }
 }

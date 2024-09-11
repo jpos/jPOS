@@ -49,7 +49,7 @@ public class CVN18DataBuilder implements CryptogramDataBuilder {
     }
 
     @Override
-    public String buildARQCRequest_padded(TLVList data, IssuerApplicationData iad, PaddingMethod paddingMethod) {
-        return paddingMethod.apply(buildARQCRequest(data, iad));
+    public PaddingMethod getPaddingMethod() {
+        return PaddingMethod.ISO9797Method1;
     }
 }
