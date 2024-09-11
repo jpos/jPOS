@@ -12,10 +12,10 @@ public class CPACryptogramTest {
     @Test
     void test(){
         CPACryptogram spec = new CPACryptogram();
-        assertEquals(spec.paddingMethod, CryptogramDataBuilder.ISO9797Method2);
         assertEquals(spec.getMKDMethod(), MKDMethod.OPTION_A);
         assertEquals(spec.getSKDMethod(), SKDMethod.EMV_CSKD);
         assertEquals(spec.getARPCMethod(), ARPCMethod.METHOD_2);
         assertTrue(spec.getDataBuilder() instanceof CVNCPADataBuilder);
+        assertEquals(CryptogramDataBuilder.PaddingMethod.ISO9797Method2, spec.getDataBuilder().getPaddingMethod());
     }
 }
