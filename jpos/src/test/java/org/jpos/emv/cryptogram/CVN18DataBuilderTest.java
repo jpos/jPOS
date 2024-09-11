@@ -58,7 +58,7 @@ class CVN18DataBuilderTest {
 
         assertEquals(
                 "00000000010000000000000008400000000000084018123101ABCDEF101800000106011203000000",
-                builder.buildARQCRequest_padded(data, iad, builder.ISO9797Method1)
+                builder.buildARQCRequest_padded(data, iad)
         );
 
 

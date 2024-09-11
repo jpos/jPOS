@@ -20,7 +20,7 @@ public class CVNCPADataBuilder implements CryptogramDataBuilder {
     }
 
     @Override
-    public String buildARQCRequest_padded(TLVList data, IssuerApplicationData iad, PaddingMethod paddingMethod) {
-        return paddingMethod.apply(buildARQCRequest(data, iad));
+    public PaddingMethod getPaddingMethod() {
+        return PaddingMethod.ISO9797Method2;
     }
 }
