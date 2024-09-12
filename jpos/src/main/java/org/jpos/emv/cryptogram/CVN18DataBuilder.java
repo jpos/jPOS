@@ -50,6 +50,6 @@ public class CVN18DataBuilder implements CryptogramDataBuilder {
 
     @Override
     public PaddingMethod getPaddingMethod() {
-        return PaddingMethod.ISO9797Method1;
+        return PaddingMethod.ISO9797Method2;
     }
 }
