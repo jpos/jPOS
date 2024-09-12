@@ -53,6 +53,10 @@ class CVNMCDataBuilderTest {
                 "000000010000000000001000084000000010800840980704001111111158003456608003220000",
                 builder.buildARQCRequest(data, iad)
         );
+        assertEquals(
+                "00000001000000000000100008400000001080084098070400111111115800345660800322000080",
+                builder.buildARQCRequest_padded(data, iad)
+        );
 
     }
 
