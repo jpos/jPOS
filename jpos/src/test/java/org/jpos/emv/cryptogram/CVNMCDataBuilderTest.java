@@ -57,7 +57,6 @@ class CVNMCDataBuilderTest {
                 "00000001000000000000100008400000001080084098070400111111115800345660800322000080",
                 builder.buildARQCRequest_padded(data, iad)
         );
-
     }
 
 
