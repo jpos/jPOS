@@ -59,6 +59,5 @@ class CVN10DataBuilderTest {
                 "00000000010000000000000008400000000000084018123101ABCDEF101800000203000000000000",
                 builder.buildARQCRequest_padded(data, iad)
         );
-
     }
 }
