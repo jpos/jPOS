@@ -60,6 +60,5 @@ class CVN10DataBuilderTest {
                 builder.buildARQCRequest_padded(data, iad)
         );
 
-
     }
 }
