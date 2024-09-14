@@ -79,7 +79,7 @@ public class TSpaceTestCase implements SpaceListener {
         sp.out("testExpiration_Key", "ABC", 50);
         assertEquals("ABC", sp.rdp("testExpiration_Key"));
         try {
-            Thread.sleep(60);
+            Thread.sleep(75); // allow for low system timer accuracy
         } catch (InterruptedException e) {
         }
         assertNull(sp.rdp("testExpiration_Key"), "ABC");
@@ -136,7 +136,7 @@ public class TSpaceTestCase implements SpaceListener {
         sp.out("testGC_Key", "XYZ", 50);
         assertEquals("ABC", sp.rdp("testGC_Key"));
         try {
-            Thread.sleep(60);
+            Thread.sleep(75); // allow for low system timer accuracy
         } catch (InterruptedException e) {
         }
         assertEquals("testGC_Key", sp.getKeysAsString());
