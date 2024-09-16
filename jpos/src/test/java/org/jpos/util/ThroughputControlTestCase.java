@@ -32,23 +32,24 @@ public class ThroughputControlTestCase {
         ThroughputControl tc = new ThroughputControl (2, 1000);
         Instant start = Instant.now();
         assertTrue (tc.control() == 0L, "Control should return 0L");
+        // Allow for low system timer accuracy via a tolerance of 25 milliseconds either way:
         assertTrue (
-                Duration.between(start, Instant.now()).toMillis() < 1000L,
+                Duration.between(start, Instant.now()).toMillis() < 1000L + 25L,
                 "Elapsed time should be less than one second"
         );
         tc.control();
         assertTrue (
-                Duration.between(start, Instant.now()).toMillis() < 1000L,
+                Duration.between(start, Instant.now()).toMillis() < 1000L + 25L,
                 "Elapsed time should still be less than one second"
         );
         tc.control();
         assertTrue (
-                Duration.between(start, Instant.now()).toMillis() > 1000L,
+                Duration.between(start, Instant.now()).toMillis() > 1000L - 25L,
                 "Elapsed time should be greater than one second"
         );
         tc.control();
         assertTrue (
-                Duration.between(start, Instant.now()).toMillis() < 2000L,
+                Duration.between(start, Instant.now()).toMillis() < 2000L - 25L,
                 "second transaction should be less than two seconds"
         );
     }
