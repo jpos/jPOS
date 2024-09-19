@@ -4,7 +4,6 @@ import org.jpos.log.LogRenderer;
 import org.jpos.log.evt.KV;
 import org.jpos.log.evt.ProcessOutput;
 import org.jpos.log.evt.SysInfo;
-import org.jpos.util.Profiler;
 
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +14,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.lang.StringTemplate.STR;
 
 public final class SysInfoMarkdownRenderer implements LogRenderer<SysInfo> {
 
@@ -23,7 +21,7 @@ public final class SysInfoMarkdownRenderer implements LogRenderer<SysInfo> {
     public void render(SysInfo sysinfo, PrintStream ps, String indent) {
         Map<String,Object> entries = extractEntriesToMap(sysinfo);
         int width = maxLength(entries);
-        final String fmt = STR."| %-\{width}s | %s |%n";
+        final String fmt = "| %-" + width + "s | %s |%n";
         ps.println ("### SystemMonitor");
         ps.print (row(fmt, "id", "value"));
         ps.print (row(fmt, "-".repeat(width), "-----"));
