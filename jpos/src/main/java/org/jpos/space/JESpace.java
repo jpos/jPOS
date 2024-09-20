@@ -44,7 +44,6 @@ import java.util.concurrent.TimeUnit;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Log;
 import org.jpos.util.Loggeable;
-import org.jpos.util.Profiler;
 
 /**
  * BerkeleyDB Jave Edition based persistent space implementation
@@ -71,10 +70,13 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     static final Map<String,Space> spaceRegistrar = 
         new HashMap<String,Space> ();
 
-    public JESpace(String name, String params) throws SpaceError {
+    public JESpace(String name, String params) {
+        this(name, params, new EnvironmentConfig());
+    }
+
+    JESpace(String name, String params, EnvironmentConfig envConfig) throws SpaceError {
         super();
         try {
-            EnvironmentConfig envConfig = new EnvironmentConfig();
             StoreConfig storeConfig = new StoreConfig();
             String[] p = ISOUtil.commaDecode(params);
             String path = p[0];
@@ -323,11 +325,15 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
         dbe.close();
     }
 
-    public synchronized static JESpace getSpace (String name, String path)
+    public static JESpace getSpace (String name, String path) {
+        return getSpace(name, path, new EnvironmentConfig());
+    }
+
+    synchronized static JESpace getSpace (String name, String path, EnvironmentConfig envConfig)
     {
         JESpace sp = (JESpace) spaceRegistrar.get (name);
         if (sp == null) {
-            sp = new JESpace(name, path);
+            sp = new JESpace(name, path, envConfig);
             spaceRegistrar.put (name, sp);
         }
         return sp;
