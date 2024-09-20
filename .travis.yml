@@ -1,18 +1,11 @@
 sudo: required
-dist: xenial
+dist: trusty
 addons:
   apt:
     packages: haveged
 language: java
 jdk:
-  - openjdk8
-  - openjdk9
-  - openjdk10
-  - openjdk11
-  - openjdk12
-  - openjdk13
-  - openjdk14
-  - openjdk15
+  - oraclejdk8
 before_script:
   - echo $JAVA_OPTS
   - export JAVA_OPTS=-Xmx4G
@@ -32,10 +25,3 @@ env:
 notifications:
   slack:
     secure: opKU+4jJWYuhq5STCVW2cvxEq/1/xY17xpxGKoJXWA+RbhPo+viT5uJLmb67HwdmvQNwUVAW6uOLO7SDOmpGh5oAwpI74DrA0y6uEzN6GgzutZDBY5oCMRYCGi/5xNOuzDdsryDtSJvXWLxyCysnTrAqqQ9XdOnRK/ZqSIeQg+s=
-matrix:
-  include:
-    - jdk: oraclejdk8
-      dist: trusty
-  allow_failures:
-    - jdk: openjdk9
-    - jdk: openjdk10
