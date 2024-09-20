@@ -1,7 +1,7 @@
 [versions]
 jdom = "2.0.6.1"
 sleepycatje = "18.3.12"
-commonscli = "1.5.0"
+commonscli = "1.9.0"
 commonslang3 = "3.12.0"
 jline = "3.26.1"
 jna = '5.14.0'
