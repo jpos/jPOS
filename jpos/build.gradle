@@ -37,6 +37,7 @@ extraJavaModuleInfo {
         exports('org.apache.sshd.common.config.keys')
         exports('org.apache.sshd.common.util.security.eddsa')
         exports('org.apache.sshd.common.cipher')
+        exports('org.apache.sshd.common.channel')
         exports('org.apache.sshd.common.keyprovider')
         exports('org.apache.sshd.common.util.buffer')
         exports('org.apache.sshd.common.util.security')
@@ -51,6 +52,7 @@ dependencies {
     api libs.javatuples
     api libs.jline
     api libs.jna
+    api libs.jansi
     api libs.beanshell
     api libs.bcprov
     api libs.bcpg

@@ -5,6 +5,7 @@ commonscli = "1.9.0"
 commonslang3 = "3.17.0"
 jline = "3.26.3"
 jna = '5.15.0'
+jansi = '2.4.1'
 beanshell = "2.0b6"
 javatuples = "1.2"
 mockito = "5.13.0"
@@ -33,6 +34,7 @@ commonscli = { module = "commons-cli:commons-cli", version.ref = "commonscli" }
 commonslang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonslang3" }
 jline = { module = "org.jline:jline", version.ref = "jline" }
 jna = { module = 'net.java.dev.jna:jna', version.ref = 'jna' }
+jansi = { module = 'org.fusesource.jansi:jansi', version.ref = 'jansi' }
 beanshell = { module = "org.apache-extras.beanshell:bsh", version.ref = "beanshell" }
 javatuples = { module = "org.javatuples:javatuples", version.ref = "javatuples" }
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
