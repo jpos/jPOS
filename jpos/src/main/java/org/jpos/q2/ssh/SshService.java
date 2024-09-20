@@ -59,8 +59,7 @@ public class SshService extends QBeanSupport implements SshCLIContextMBean
         CliShellFactory csf = new CliShellFactory(getServer(), prefixes);
         sshd.setShellFactory(csf);
         sshd.setCommandFactory(csf);
-
-
+        
         sshd.setUserAuthFactories(Collections.singletonList(new UserAuthPublicKeyFactory()));
         sshd.setPublickeyAuthenticator(new AuthorizedKeysFileBasedPKA(username, authorizedKeysFilename));
         sshd.start();
@@ -72,14 +71,12 @@ public class SshService extends QBeanSupport implements SshCLIContextMBean
     {
         log.info("Stopping SSHD");
         if(sshd!=null) {
-            new Thread() {
-                public void run() {
-                    try {
-                        sshd.stop(true);
-                    } catch (IOException ignored) { }
-                    sshd=null;
-                }
-            }.start();
+            new Thread(() -> {
+                try {
+                    sshd.stop(true);
+                } catch (IOException ignored) { }
+                sshd=null;
+            }).start();
         }
     }
 

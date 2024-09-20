@@ -28,6 +28,9 @@ import org.apache.sshd.server.session.ServerSession;
 import org.apache.sshd.server.session.ServerSessionAware;
 import org.apache.sshd.server.shell.ShellFactory;
 import org.apache.sshd.server.ExitCallback;
+import org.jline.terminal.Attributes;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.jpos.q2.CLI;
 import org.jpos.q2.Q2;
 import org.jpos.util.Log;
@@ -35,6 +38,7 @@ import org.jpos.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.EnumSet;
 
 public class CliShellFactory implements Factory<Command>, CommandFactory, ShellFactory {
     Q2 q2;
@@ -89,7 +93,7 @@ public class CliShellFactory implements Factory<Command>, CommandFactory, ShellF
         }
 
         public void start(ChannelSession channel, Environment env) throws IOException {
-            cli = new SshCLI(q2, args != null ? null : in, out, args, args == null);
+            cli = new SshCLI(q2, args != null ? null : in, out, env, args, args == null);
             try {
                 cli.setServerSession(serverSession);
                 cli.start();
@@ -108,8 +112,8 @@ public class CliShellFactory implements Factory<Command>, CommandFactory, ShellF
     public class SshCLI extends CLI {
         ServerSession serverSession = null;
 
-        public SshCLI(Q2 q2, InputStream in, OutputStream out, String line, boolean keepRunning) throws IOException {
-            super(q2, in, out, line, keepRunning, true);
+        public SshCLI(Q2 q2, InputStream in, OutputStream out, Environment env, String line, boolean keepRunning) throws IOException {
+            super(q2, in, out, env, line, keepRunning, true);
         }
 
         protected boolean running() {
