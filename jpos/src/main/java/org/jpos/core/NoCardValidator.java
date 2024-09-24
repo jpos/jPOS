@@ -20,8 +20,8 @@ package org.jpos.core;
 
 public class NoCardValidator implements CardValidator {
 
-	@Override
-	public void validate(Card card) throws InvalidCardException {
+    @Override
+    public void validate(Card card) throws InvalidCardException {
         return;
-	}
+    }
 }
