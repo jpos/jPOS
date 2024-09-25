@@ -79,7 +79,8 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
         this.requestName = cfg.get("request", ContextConstants.REQUEST.toString());
         this.destinationName = cfg.get ("destination", ContextConstants.DESTINATION.toString());
         this.defaultDestination = cfg.get("default-destination", null);
-        this.validator =  cfg.getBoolean("ignore-luhn") ?
+        this.validator = cfg.getBoolean("ignore-card-validations") ?
+          new NoCardValidator() : cfg.getBoolean("ignore-luhn") ?
           new IgnoreLuhnCardValidator() : Card.Builder.DEFAULT_CARD_VALIDATOR;
         this.failOnNoRoute = cfg.getBoolean("fail");
     }
