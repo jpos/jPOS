@@ -5,19 +5,18 @@
 
 ## Documentation
 
-Visit [http://jpos.org/learn](http://jpos.org/learn).
+Visit [https://jpos.org/docs/welcome](https://jpos.org/docs/welcome).
 
 ## Resources
 
-Visit [http://jpos.org/resources](http://jpos.org/resources) for additional information.
+Visit [https://jpos.org/resources](https://jpos.org/resources) for additional information.
 
 
 ## License
 
-Affero GPLv3 Visit [http://jpos.org/license](http://jpos.org/license).
-
-Commercial-friendly licensing available: [Contact form](http://jpos.org/main/contact?p=license).
+Affero GPLv3 Visit [https://jpos.org/license](https://jpos.org/license).
 
 [jpos-logo]: http://jpos.org/images/jpos.png
-[jpos-url]: http://jpos.org
+[jpos-url]: https://jpos.org
 [![Gitter](https://badges.gitter.im/jpos/jPOS.svg)](https://gitter.im/jpos/jPOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
