@@ -1,5 +1,5 @@
 ext {
-    bcVersion = '2.73.2'
+    bcVersion = '2.73.6'
     libraries = [
         jdom: 'org.jdom:jdom2:2.0.6.1',
         jdbm: 'jdbm:jdbm:1.0',
