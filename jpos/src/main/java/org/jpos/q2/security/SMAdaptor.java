@@ -56,6 +56,7 @@ public class SMAdaptor extends QBeanSupport implements SMAdaptorMBean
         sm = (SMAdapter) factory.newInstance (getImpl ());
         factory.setLogger  (sm, e);
         factory.setConfiguration (sm, e);
+        NameRegistrar.register (getName (), sm);
     }
 
     public void setImpl (String clazz) {
@@ -64,10 +65,6 @@ public class SMAdaptor extends QBeanSupport implements SMAdaptorMBean
 
     public String getImpl() {
         return clazz;
-    }
-
-    protected void startService () throws Exception {
-        NameRegistrar.register (getName (), sm);
     }
     protected void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
