@@ -401,8 +401,12 @@ public class Q2 implements FileFilter, Runnable {
                 long deployed   = qentry.getDeployed ();
                 if (deployed == 0) {
                     if (deploy(f)) {
-                        if (qentry.isQBean ())
-                            startList.add (qentry.getInstance());
+                        if (qentry.isQBean ()) {
+                            if (qentry.isEagerStart())
+                                start(qentry.getInstance());
+                            else
+                                startList.add(qentry.getInstance());
+                        }
                         qentry.setDeployed (f.lastModified ());
                     } else {
                         // deploy failed, clean up.
@@ -587,8 +591,9 @@ public class Q2 implements FileFilter, Runnable {
                 }
             }
             enabled = QFactory.isEnabled(rootElement);
+            qentry.setEagerStart(QFactory.isEagerStart(rootElement));
             if (evt != null)
-                evt.addMessage(new Deploy(f.getCanonicalPath(), enabled));
+                evt.addMessage(new Deploy(f.getCanonicalPath(), enabled, qentry.isEagerStart()));
             if (enabled) {
                 Object obj = factory.instantiate (this, factory.expandEnvProperties(rootElement));
                 qentry.setObject (obj);
@@ -1043,6 +1048,7 @@ public class Q2 implements FileFilter, Runnable {
         long deployed;
         ObjectInstance instance;
         Object obj;
+        boolean eagerStart;
         public QEntry () {
             super();
         }
@@ -1077,6 +1083,14 @@ public class Q2 implements FileFilter, Runnable {
         }
         public boolean isQPersist () {
             return obj instanceof QPersist;
+        }
+
+        public boolean isEagerStart() {
+            return eagerStart;
+        }
+
+        public void setEagerStart(boolean eagerStart) {
+            this.eagerStart = eagerStart;
         }
     }
 

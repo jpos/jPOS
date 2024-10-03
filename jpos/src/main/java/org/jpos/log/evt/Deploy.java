@@ -18,6 +18,7 @@
 
 package org.jpos.log.evt;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.jpos.log.AuditLogEvent;
 
@@ -28,6 +29,20 @@ import org.jpos.log.AuditLogEvent;
  *
  * @param path the path where the deployment is located
  * @param enabled a boolean flag indicating whether the deployment is enabled
+ * @param eager a boolean flag indicating whether the QBean requires eager-start
  */
 
-public record Deploy(String path, @JacksonXmlProperty(isAttribute = true) boolean enabled) implements AuditLogEvent { }
+public record Deploy(
+  String path,
+  @JacksonXmlProperty(isAttribute = true) boolean enabled,
+  @JacksonXmlProperty(isAttribute = true) @JsonInclude(JsonInclude.Include.NON_DEFAULT) boolean eager
+) implements AuditLogEvent {
+    @Override
+    public String toString() {
+        return "Deploy{" +
+          "path='" + path + '\'' +
+          ", enabled=" + enabled +
+          (eager ? ", eager=" + eager : "")+
+          '}';
+    }
+}
