@@ -431,15 +431,26 @@ public class QFactory {
         }
     }
 
-    public static boolean isEnabled (Element e) {
-        String enabledAttribute = getEnabledAttribute(e);
-        return "true".equalsIgnoreCase(enabledAttribute) ||
-          "yes".equalsIgnoreCase(enabledAttribute) ||
-          enabledAttribute.contains(Environment.getEnvironment().getName());
+    public static boolean isEnabled(Element e) {
+        return isTrue(getEnabledAttribute(e));
+    }
+    public static boolean isEagerStart(Element e) {
+        return isTrue(getEagerStartAttribute(e));
+    }
+    private static boolean isTrue(String attribute) {
+        return "true".equalsIgnoreCase(attribute) ||
+          "yes".equalsIgnoreCase(attribute) ||
+          attribute.contains(Environment.getEnvironment().getName());
     }
 
     public static String getEnabledAttribute (Element e) {
-       return Environment.get(e.getAttributeValue("enabled", "true"));
+       return getAttribute(e, "enabled", "true");
+    }
+    public static String getEagerStartAttribute (Element e) {
+        return getAttribute(e, "eager-start", "false");
+    }
+    private static String getAttribute (Element e, String attr, String def) {
+        return Environment.get(e.getAttributeValue(attr, def));
     }
 
     @SuppressWarnings("rawtypes")

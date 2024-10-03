@@ -393,8 +393,12 @@ public class Q2 implements FileFilter, Runnable {
                         qentry.setDeployed (f.lastModified ());
                     }
                     else if (deploy(f)) {
-                        if (qentry.isQBean ())
-                            startList.add (qentry.getInstance());
+                        if (qentry.isQBean ()) {
+                            if (qentry.isEagerStart())
+                                start(qentry.getInstance());
+                            else
+                                startList.add(qentry.getInstance());
+                        }
                         qentry.setDeployed (f.lastModified ());
                     } else {
                         // deploy failed, clean up.
@@ -580,15 +584,15 @@ public class Q2 implements FileFilter, Runnable {
                 }
             }
             if (QFactory.isEnabled(rootElement)) {
-                if (evt != null)
-                    evt.addMessage("deploy: " + f.getCanonicalPath());
                 Object obj = factory.instantiate (this, rootElement);
                 qentry.setObject (obj);
-
+                qentry.setEagerStart(QFactory.isEagerStart(rootElement));
                 ObjectInstance instance = factory.createQBean (
                     this, doc.getRootElement(), obj
                 );
                 qentry.setInstance (instance);
+                if (evt != null)
+                    evt.addMessage("deploy: " + f.getCanonicalPath() + (qentry.isEagerStart() ? " (eager-start)" : ""));
             } else if (evt != null) {
                 evt.addMessage("deploy ignored (enabled='" + QFactory.getEnabledAttribute(rootElement) + "'): " + f.getCanonicalPath());
             }
@@ -1061,6 +1065,7 @@ public class Q2 implements FileFilter, Runnable {
         ObjectInstance instance;
         Object obj;
         boolean osgiBundle;
+        boolean eagerStart;
         public QEntry (boolean osgiBundle) {
             super();
             this.osgiBundle = osgiBundle;
@@ -1099,6 +1104,14 @@ public class Q2 implements FileFilter, Runnable {
         }
         public boolean isQPersist () {
             return obj instanceof QPersist;
+        }
+
+        public boolean isEagerStart() {
+            return eagerStart;
+        }
+
+        public void setEagerStart(boolean eagerStart) {
+            this.eagerStart = eagerStart;
         }
     }
 
