@@ -299,7 +299,7 @@ public class ISOUtil {
         return d.toString();
     }
     /**
-     * converts a a byte array to a String with padding support
+     * converts a byte array to a String with padding support
      * @param b - HEX representation
      * @param offset - starting offset
      * @param len - BCD field len
