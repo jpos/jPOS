@@ -16,7 +16,7 @@ module org.jpos.jpos {
     requires jdk.httpserver;
     requires micrometer.core;
     requires micrometer.registry.prometheus;
-    requires org.apache.sshd;
+    requires org.apache.sshd.core;
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.datatype.jsr310;

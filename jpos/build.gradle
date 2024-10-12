@@ -1,5 +1,5 @@
 plugins {
-   id "org.gradlex.extra-java-module-info" version "1.4.1"
+   id "org.gradlex.extra-java-module-info" version "1.9"
    id "org.gradlex.java-module-dependencies" version "1.6"
    id "org.owasp.dependencycheck" version "8.3.1"
 
@@ -10,18 +10,13 @@ extraJavaModuleInfo {
     failOnMissingModuleInfo.set(false)
     def sshdVersion = ((String) libs.sshd.orNull).split(":")[-1] // there has to be a better way to get the version
 
-    automaticModule ('org.jdom:jdom2', 'org.jdom2')
-    automaticModule ('commons-cli:commons-cli', 'org.apache.commons.cli')
     automaticModule ('org.javatuples:javatuples', 'org.javatuples')
     automaticModule ('org.hdrhistogram:HdrHistogram', 'org.hdrhistogram.HdrHistogram')
-    automaticModule ('org.jline:jline', 'org.jline')
     automaticModule ('org.apache-extras.beanshell:bsh', 'bsh')
     automaticModule ('com.sleepycat:je', 'com.sleepycat.je')
     automaticModule ('jdbm:jdbm', 'org.jdbm')
-    automaticModule ('io.micrometer:micrometer-core', "micrometer.core")
-    automaticModule ('io.micrometer:micrometer-registry-prometheus', "micrometer.registry.prometheus")
 
-    module ('org.apache.sshd:sshd-core',  'org.apache.sshd', "${sshdVersion}") {
+    module ('org.apache.sshd:sshd-core',  'org.apache.sshd.core', "${sshdVersion}") {
         mergeJar('org.apache.sshd:sshd-common')
         mergeJar('net.i2p.crypto:eddsa')
 
