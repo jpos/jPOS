@@ -433,6 +433,16 @@ public class ISOUtilTest {
     }
 
     @Test
+    public void testpadISO9797Method2() {
+        byte[] data = ISOUtil.hex2byte("010203");
+        byte[] result = ISOUtil.padISO9797Method2(data);
+        assertEquals("0102038000000000", ISOUtil.hexString(result));
+        data = ISOUtil.hex2byte("01020304010203");
+        result = ISOUtil.padISO9797Method2(data);
+        assertEquals("0102030401020380", ISOUtil.hexString(result));
+    }
+
+    @Test
     public void testByte2BitSet() throws Throwable {
         byte[] b = new byte[9];
         BitSet result = ISOUtil.byte2BitSet(b, 0, true);

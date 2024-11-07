@@ -240,7 +240,7 @@ public class JCESecurityModuleTest {
       }
 
       byte[] getDataPad80() {
-          return paddingISO9797Method2(getDataNoPad());
+          return ISOUtil.padISO9797Method2(getDataNoPad());
       }
 
       byte[] getATC() {
@@ -250,22 +250,6 @@ public class JCESecurityModuleTest {
       byte[] getUPN() {
           return dm.get("UPN");
       }
-
-    }
-
-    /**
-     * ISO/IEC 9797-1 padding method 2
-     * @param d da to be padded
-     * @return padded data
-     */
-    static byte[] paddingISO9797Method2(byte[] d) {
-        //Padding - first byte 0x80 rest 0x00
-        byte[] t = new byte[d.length - d.length%8 + 8];
-        System.arraycopy(d, 0, t, 0, d.length);
-        for (int i=d.length;i<t.length;i++)
-          t[i] = (byte)(i==d.length?0x80:0x00);
-        d = t;
-        return d;
     }
 
     @Test

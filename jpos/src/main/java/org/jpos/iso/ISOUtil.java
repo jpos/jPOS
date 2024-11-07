@@ -210,6 +210,21 @@ public class ISOUtil {
             d.append('0');
         return d.toString();
     }
+
+    /**
+     * Pads {@code data} as per ISO/IEC 9797-1, method 2.
+     * @param data Data to be padded.
+     * @return Returns {@code data} padded as per ISO/IEC 9797-1, method 2.
+     */
+    public static byte[] padISO9797Method2(byte[] data) {
+        byte[] t = new byte[data.length - data.length % 8 + 8];
+        System.arraycopy(data, 0, t, 0, data.length);
+        for (int i = data.length; i < t.length; i++)
+            t[i] = (byte) (i == data.length ? 0x80 : 0x00);
+        data = t;
+        return data;
+    }
+
     /**
      * converts to BCD
      * @param s - the number
