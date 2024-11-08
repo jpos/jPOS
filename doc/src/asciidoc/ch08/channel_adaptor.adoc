@@ -166,7 +166,7 @@ specific to the channel, so they go inside the 'channel' element, not
 the outer 'channel-adaptor' element.
 =====
 
-=== Channel timeout, keep-alive, connection-timeout
+=== Channel timeout, keep-alive, connect-timeout
 
 We strongly recommend that you add a channel-level timeout (expressed in 
 milliseconds). There are many situations where a network connection can
@@ -185,7 +185,7 @@ Setting the keep-alive (+true/false+) would set the low level +SO_KEEPALIVE+
 flag at the socket level for situations where no network management messages
 are exchanged.
 
-The +connection-timeout+ property can be used to set a smaller timeout at
+The +connect-timeout+ property can be used to set a smaller timeout at
 connect time, this is useful when combined with the +alternate-host+ and
 +alternate-port+ set of properties.
 
@@ -194,7 +194,7 @@ connect time, this is useful when combined with the +alternate-host+ and
  <channel class="org.jpos.iso.channel.NACChannel" 
     ....
     ....
-    <property name="connection-timeout" value="15000" />  <!-- 15 seconds -->
+    <property name="connect-timeout" value="15000" />  <!-- 15 seconds -->
     <property name="timeout" value="300000" />            <!-- five minutes -->
     <property name="keep-alive" value="true" />
     ....
