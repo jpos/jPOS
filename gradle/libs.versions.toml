@@ -12,8 +12,7 @@ mockito = "5.13.0"
 mockitojupiter = "5.13.0"
 xmlunit = "1.6"
 junit = "5.11.0"
-bcprov = "2.73.6"
-bcpg = "2.73.6"
+bouncycastle = "1.79"
 hamcrest = "3.0"
 sshd = "2.13.2"
 eddsa = "0.3.0"
@@ -41,8 +40,8 @@ mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockitojupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockitojupiter" }
 xmlunit = { module = "xmlunit:xmlunit", version.ref = "xmlunit" }
 junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-bcprov = { module = "org.bouncycastle:bcprov-lts8on", version.ref = "bcprov" }
-bcpg = { module = "org.bouncycastle:bcpg-lts8on", version.ref = "bcpg" }
+bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
+bcpg = { module = "org.bouncycastle:bcpg-jdk18on", version.ref = "bouncycastle" }
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 sshd = { module = "org.apache.sshd:sshd-core", version.ref = "sshd" }
 eddsa = { module = "net.i2p.crypto:eddsa", version.ref = "eddsa" }
