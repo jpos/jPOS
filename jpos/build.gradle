@@ -1,7 +1,7 @@
 plugins {
    id "org.gradlex.extra-java-module-info" version "1.9"
-   id "org.gradlex.java-module-dependencies" version "1.6"
-   id "org.owasp.dependencycheck" version "8.3.1"
+   id "org.gradlex.java-module-dependencies" version "1.8"
+   id "org.owasp.dependencycheck" version "11.1.0"
 
    // id 'checkstyle'
 }
@@ -49,7 +49,6 @@ dependencies {
     api libs.jna
     api libs.jansi
     api libs.beanshell
-    api libs.bcprov
     api libs.bcpg
     api libs.commonscli
     api libs.slf4japi
