@@ -37,7 +37,6 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.log.evt.License;
 import org.jpos.q2.Q2;
 import org.jpos.q2.install.ModuleUtils;
-import org.jpos.security.SystemSeed;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
