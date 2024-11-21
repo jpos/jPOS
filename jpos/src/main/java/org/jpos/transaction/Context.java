@@ -459,7 +459,11 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         Object value = entry.getValue();
         if (value instanceof Loggeable) {
             p.println();
-            ((Loggeable) value).dump(p, indent + " ");
+            try {
+                ((Loggeable) value).dump(p, indent + " ");
+            } catch (Exception ex) {
+                ex.printStackTrace(p);
+            }
             p.print(indent);
         } else if (value instanceof Element) {
             p.println();
@@ -489,10 +493,15 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
             ((LogEvent) value).dump(p, indent);
             p.print(indent);
         } else if (value != null) {
-            LogUtil.dump(p, indent, value.toString());
+            try {
+                LogUtil.dump(p, indent, value.toString());
+            } catch (Exception ex) {
+                ex.printStackTrace(p);
+            }
         }
         p.println();
     }
+
     /**
      * return a LogEvent used to store trace information
      * about this transaction.
