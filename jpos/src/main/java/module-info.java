@@ -12,7 +12,6 @@ module org.jpos.jpos {
     requires com.sleepycat.je;
     requires org.jdbm;
     requires org.bouncycastle.pg;
-    requires org.bouncycastle.lts.prov;
     requires jdk.httpserver;
     requires micrometer.core;
     requires micrometer.registry.prometheus;
@@ -21,6 +20,7 @@ module org.jpos.jpos {
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.fasterxml.jackson.dataformat.xml;
+    requires org.bouncycastle.provider;
     //    requires net.i2p.crypto.eddsa;
 
     exports org.jpos.iso.packager;
