@@ -120,4 +120,13 @@ public class Metrics implements Loggeable {
     public void setConversion(double conversion) {
         this.conversion = conversion;
     }
+    
+    /**
+     * Reset any value counts accumulated thus far.
+     */
+    public void reset() {
+        metrics.values()
+               .forEach(Histogram::reset);
+    }
+ 
 }
