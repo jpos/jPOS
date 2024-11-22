@@ -128,5 +128,17 @@ public class Metrics implements Loggeable {
         metrics.values()
                .forEach(Histogram::reset);
     }
+
+    /**
+     * Resets histograms whose keys start with the given prefix using the Histogram.reset() method.
+     *
+     * @param prefix the prefix used to filter histograms to reset
+     */
+    public void reset(String prefix) {
+        metrics.entrySet()
+                .stream()
+                .filter(e -> e.getKey().startsWith(prefix))
+                .forEach(e -> e.getValue().reset());
+    }
  
 }
