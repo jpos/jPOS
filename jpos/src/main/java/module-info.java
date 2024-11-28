@@ -23,6 +23,7 @@ module org.jpos.jpos {
     requires org.bouncycastle.provider;
     //    requires net.i2p.crypto.eddsa;
 
+    exports org.jpos.iso.channel;
     exports org.jpos.iso.packager;
     exports org.jpos.iso.validator;
     exports org.jpos.iso;
