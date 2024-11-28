@@ -112,8 +112,8 @@ public class BaseSMAdapter<T>
      * @throws NotFoundException
      * @see NameRegistrar
      */
-    public static SMAdapter getSMAdapter (String name) throws NameRegistrar.NotFoundException {
-        return  (SMAdapter)NameRegistrar.get("s-m-adapter." + name);
+    public static <T> SMAdapter<T> getSMAdapter (String name) throws NameRegistrar.NotFoundException {
+        return  NameRegistrar.get("s-m-adapter." + name);
     }
 
     @Override
