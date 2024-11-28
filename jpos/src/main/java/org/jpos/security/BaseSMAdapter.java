@@ -39,7 +39,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * <p>
  * Provides base functionality for the actual Security Module Adapter.
@@ -56,6 +55,7 @@ public class BaseSMAdapter<T>
     protected String realm = null;
     protected Configuration cfg;
     private String name;
+    private boolean debug;
 
     public BaseSMAdapter () {
         super();
@@ -71,6 +71,7 @@ public class BaseSMAdapter<T>
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
+        debug = cfg.getBoolean("debug", false);
     }
 
     @Override
@@ -112,8 +113,8 @@ public class BaseSMAdapter<T>
      * @throws NotFoundException
      * @see NameRegistrar
      */
-    public static SMAdapter getSMAdapter (String name) throws NameRegistrar.NotFoundException {
-        return  (SMAdapter)NameRegistrar.get("s-m-adapter." + name);
+    public static <T> SMAdapter<T> getSMAdapter (String name) throws NameRegistrar.NotFoundException {
+        return  NameRegistrar.get("s-m-adapter." + name);
     }
 
     @Override
@@ -131,7 +132,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -150,7 +151,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -169,7 +170,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -190,7 +191,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -214,7 +215,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -237,7 +238,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -257,7 +258,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -279,7 +280,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -300,7 +301,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -328,7 +329,7 @@ public class BaseSMAdapter<T>
             throw e instanceof SMException ? (SMException) e : new SMException(e);
         } 
         finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return result;
     }
@@ -347,7 +348,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -367,7 +368,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -391,7 +392,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -419,7 +420,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -449,7 +450,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -470,7 +471,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -500,7 +501,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
       return result;
     }
@@ -525,7 +526,7 @@ public class BaseSMAdapter<T>
           evt.addMessage(e);
           throw  e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-          Logger.log(evt);
+          logEvent(evt);
       }
     }
 
@@ -557,7 +558,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
       return result;
     }
@@ -592,7 +593,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
       return result;
     }
@@ -619,7 +620,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -654,7 +655,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
       return result;
     }
@@ -692,7 +693,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
       return result;
     }
@@ -723,7 +724,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -748,7 +749,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
       return result;
     }
@@ -773,7 +774,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return result;
     }
@@ -798,7 +799,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return result;
     }
@@ -823,7 +824,7 @@ public class BaseSMAdapter<T>
           evt.addMessage(e);
           throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-          Logger.log(evt);
+          logEvent(evt);
       }
       return result;
     }
@@ -849,7 +850,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -874,7 +875,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
     }
 
@@ -899,7 +900,7 @@ public class BaseSMAdapter<T>
           evt.addMessage(e);
           throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-          Logger.log(evt);
+          logEvent(evt);
       }
       return r;
     }
@@ -927,7 +928,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -957,7 +958,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
     }
 
@@ -1000,7 +1001,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -1029,7 +1030,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -1064,7 +1065,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -1102,7 +1103,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -1130,7 +1131,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -1178,7 +1179,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
       } finally {
-        Logger.log(evt);
+        logEvent(evt);
       }
     }
 
@@ -1219,7 +1220,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return encData;
     }
@@ -1261,7 +1262,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return decData;
     }
@@ -1281,7 +1282,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -1301,7 +1302,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -1320,7 +1321,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -1340,7 +1341,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return  result;
     }
@@ -1364,7 +1365,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return result;
     }
@@ -1388,7 +1389,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return result;
     }
@@ -1411,7 +1412,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return result;
     }
@@ -1443,7 +1444,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(ex);
             throw new SMException(ex);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return result;
     }
@@ -1475,7 +1476,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(ex);
             throw new SMException(ex);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
         return result;
     }
@@ -1491,7 +1492,7 @@ public class BaseSMAdapter<T>
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
         } finally {
-            Logger.log(evt);
+            logEvent(evt);
         }
     }
 
@@ -2310,4 +2311,8 @@ public class BaseSMAdapter<T>
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
+    private void logEvent(LogEvent evt) {
+        if (debug)
+            Logger.log(evt);
+    }
 }
