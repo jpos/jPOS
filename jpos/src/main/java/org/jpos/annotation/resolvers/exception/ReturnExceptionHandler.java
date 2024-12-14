@@ -9,7 +9,7 @@ import org.jpos.transaction.TransactionParticipant;
 
 public interface ReturnExceptionHandler {
     boolean isMatch(Throwable e);
-    int doReturn(TransactionParticipant p, Context ctx, Throwable obj);
+    int doReturn(Object p, Context ctx, Throwable obj);
 
     default void configure(Method m) {}
     

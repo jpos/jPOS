@@ -28,6 +28,8 @@ import org.jpos.annotation.AnnotatedParticipant;
 import org.jpos.annotation.ContextKey;
 import org.jpos.annotation.ContextKeys;
 import org.jpos.annotation.Prepare;
+import org.jpos.annotation.Commit;
+import org.jpos.annotation.Abort;
 import org.jpos.annotation.Registry;
 import org.jpos.annotation.Return;
 import org.jpos.core.Configuration;
@@ -50,7 +52,11 @@ public class AnnotatedParticipantWrapperTest {
     private static final String HANDLER = "handler";
     
     public static class TxnSupport implements TransactionParticipant {
-        public int  prepare(long id, Serializable context) {
+        public final int  prepare(long id, Serializable context) {
+            return doPrepare(id, (Context) context);
+        }
+        
+        public int doPrepare(long id, Context ctx) {
             return TransactionConstants.ABORTED;
         }
         
@@ -62,6 +68,38 @@ public class AnnotatedParticipantWrapperTest {
         @Prepare(result = TransactionConstants.PREPARED | TransactionConstants.READONLY)
         @Return("CARD")
         public Object getCard(Context ctx, @ContextKey("DB") Object db, @Registry Long someKey) throws Exception {
+            Assertions.assertNotNull(ctx);
+            Assertions.assertNotNull(db);
+            Assertions.assertEquals(2, someKey);
+            return new Object();
+        }
+    }
+    
+    @AnnotatedParticipant
+    public static class AnnotatedParticipantNoTxnSupport {
+        @Prepare(result = TransactionConstants.PREPARED | TransactionConstants.READONLY)
+        @Return("CARD")
+        public Object getCard(Context ctx, @ContextKey("DB") Object db, @Registry Long someKey) throws Exception {
+            Assertions.assertNotNull(ctx);
+            Assertions.assertNotNull(db);
+            Assertions.assertEquals(2, someKey);
+            return new Object();
+        }
+        
+        public void setConfiguration(Configuration cfg) {}
+        
+        @Abort
+        @Return("CARD")
+        public Object getCardAbort(Context ctx, @ContextKey("DB") Object db, @Registry Long someKey) throws Exception {
+            Assertions.assertNotNull(ctx);
+            Assertions.assertNotNull(db);
+            Assertions.assertEquals(2, someKey);
+            return new Object();
+        }
+
+        @Commit
+        @Return("CARD")
+        public Object getCardCommit(Context ctx, @ContextKey("DB") Object db, @Registry Long someKey) throws Exception {
             Assertions.assertNotNull(ctx);
             Assertions.assertNotNull(db);
             Assertions.assertEquals(2, someKey);
@@ -93,6 +131,15 @@ public class AnnotatedParticipantWrapperTest {
         TxnSupport pw = AnnotatedParticipantWrapper.wrap(p);
         assertAnnotatedParticipant(ctx, pw);
         
+        // Test wrapper annotation
+        AnnotatedParticipantNoTxnSupport pwn = new AnnotatedParticipantNoTxnSupport();
+        pwn.setConfiguration(cfg);
+        assertTrue(AnnotatedParticipantWrapper.isMatch(pwn));
+        TransactionParticipant pt = AnnotatedParticipantWrapper.wrap(pwn);
+        assertAnnotatedParticipant(ctx, pt);
+        ctx.remove("CARD");
+        pt.commit(0, ctx);
+        assertNotNull(ctx.get("CARD"));
     }
     
     @Test
@@ -103,22 +150,28 @@ public class AnnotatedParticipantWrapperTest {
         when(q2.getFactory()).thenReturn(f);
         doReturn(new RegularParticipantTest()).when(f).newInstance(RegularParticipantTest.class.getCanonicalName());
         doReturn(new AnnotatedParticipantTest()).when(f).newInstance(AnnotatedParticipantTest.class.getCanonicalName());
+        doReturn(new AnnotatedParticipantNoTxnSupport()).when(f).newInstance(AnnotatedParticipantNoTxnSupport.class.getCanonicalName());
         txnMgr.setServer(q2);
         txnMgr.setName("txnMgr");
         txnMgr.setConfiguration(new SimpleConfiguration());
         
         String regParticipantXml = "<participant class=\"" + RegularParticipantTest.class.getCanonicalName() + "\"/>";
         String annotatedParticipantXml = "<participant class=\"" + AnnotatedParticipantTest.class.getCanonicalName() + "\"/>";
+        String annotatedParticipantNoTxnSupportXml = "<participant class=\"" + AnnotatedParticipantNoTxnSupport.class.getCanonicalName() + "\"/>";
         
         Context ctx = new Context();
         ctx.put("DB", new Object());
         NameRegistrar.register("someKey", 2L);
         
-        TxnSupport p = (TxnSupport) getParticipant(txnMgr, regParticipantXml);
+        TransactionParticipant p = (TxnSupport) getParticipant(txnMgr, regParticipantXml);
         assertRegularParticipant(ctx, p, false);
         
-        p = (TxnSupport) getParticipant(txnMgr, annotatedParticipantXml);
+        p = getParticipant(txnMgr, annotatedParticipantXml);
         assertAnnotatedParticipant(ctx, p);
+        
+        p = getParticipant(txnMgr, annotatedParticipantNoTxnSupportXml);
+        assertAnnotatedParticipant(ctx, p);
+        
     }
         
     
@@ -532,12 +585,13 @@ public class AnnotatedParticipantWrapperTest {
         ctx.put(HANDLER, handler);
     }
 
-    protected void assertAnnotatedParticipant(Context ctx, TxnSupport p) {
+    protected void assertAnnotatedParticipant(Context ctx, TransactionParticipant p) {
+        ctx.remove("CARD");
         assertEquals(TransactionConstants.PREPARED | TransactionConstants.READONLY, p.prepare(0, ctx));
         assertNotNull(ctx.get("CARD"));
     }
 
-    protected void assertRegularParticipant(Context ctx, TxnSupport p, boolean ignoreAnnotation) {
+    protected void assertRegularParticipant(Context ctx, TransactionParticipant p, boolean ignoreAnnotation) {
         if (!ignoreAnnotation) {
             assertFalse(AnnotatedParticipantWrapper.isMatch(p));
         }

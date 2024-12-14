@@ -805,7 +805,7 @@ public class TransactionManager
         throws ConfigurationException
     {
         QFactory factory = getFactory();
-        TransactionParticipant participant =
+        Object participant =
             factory.newInstance (QFactory.getAttributeValue (e, "class")
         );
         factory.setLogger (participant, e);
@@ -816,14 +816,17 @@ public class TransactionManager
             realm = ":" + realm;
         else
             realm = "";
-        names.put(participant, Caller.shortClassName(participant.getClass().getName())+realm);
         if (participant instanceof Destroyable) {
             destroyables.add((Destroyable) participant);
         }
         if (AnnotatedParticipantWrapper.isMatch(participant)) {
             participant = AnnotatedParticipantWrapper.wrap(participant);
         }
-        return participant;
+        TransactionParticipant rParticipant = (TransactionParticipant) participant;
+        
+        names.put(rParticipant, Caller.shortClassName(participant.getClass().getName())+realm);
+        
+        return rParticipant;
     }
 
     @Override

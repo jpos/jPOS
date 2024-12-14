@@ -28,7 +28,7 @@ public class RegistryResolver implements ResolverServiceProvider {
         }
 
         @Override
-        public <T> T getValue(TransactionParticipant participant, Context ctx) {
+        public <T> T getValue(Object participant, Context ctx) {
             return NameRegistrar.getIfExists(registryKey);
         }
 

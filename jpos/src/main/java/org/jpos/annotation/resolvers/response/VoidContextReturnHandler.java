@@ -14,7 +14,6 @@ public class VoidContextReturnHandler implements ReturnHandlerProvider {
 
     @Override
     public ReturnHandler resolve(Method m) {
-        final int jPosRes = m.getAnnotation(Prepare.class).result();
-        return (participant, ctx, res) -> jPosRes;
+        return (participant, ctx, res) -> getJPosResult(m);
     }    
 }

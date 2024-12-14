@@ -21,7 +21,6 @@ public class MultiValueContextReturnHandler implements ReturnHandlerProvider {
     public ReturnHandler resolve(Method m) {
         Return r = m.getAnnotation(Return.class);
         final String[] keys = r.value();
-        final int jPosRes = m.getAnnotation(Prepare.class).result();
         return (participant, ctx, res) -> {
             Map resMap = (Map) res;
             for(String key: keys) {
@@ -29,7 +28,7 @@ public class MultiValueContextReturnHandler implements ReturnHandlerProvider {
                     ctx.put(key, resMap.get(key));
                 }
             }
-            return jPosRes;
+            return getJPosResult(m);
         };
     }
 }

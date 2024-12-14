@@ -9,5 +9,5 @@ import org.jpos.transaction.TransactionParticipant;
 public interface Resolver {
     default void configure(Parameter f) throws ConfigurationException {
     }
-    <T> T getValue(TransactionParticipant participant, Context ctx);
+    <T> T getValue(Object participant, Context ctx);
 }

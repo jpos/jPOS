@@ -16,7 +16,7 @@ public class GenericExceptionHandlerProvider implements ReturnExceptionHandlerPr
         }
 
         @Override
-        public int doReturn(TransactionParticipant p, Context ctx, Throwable t) {
+        public int doReturn(Object p, Context ctx, Throwable t) {
             ctx.log("prepare exception in " + this.getClass().getName());
             ctx.log(t);
             setResultCode(ctx, CMF.INTERNAL_ERROR);

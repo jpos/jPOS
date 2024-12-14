@@ -20,12 +20,11 @@ public class SingleValueContextReturnHandler implements ReturnHandlerProvider {
     public ReturnHandler resolve(Method m) {
         Return r = m.getAnnotation(Return.class);
         final String key = r.value()[0];
-        final int jPosRes = m.getAnnotation(Prepare.class).result();
         return (participant, ctx, res) -> {
             if (res != null) {
                 ctx.put(key, res);
             }
-            return jPosRes;
+            return getJPosResult(m);
         };
     }
 }

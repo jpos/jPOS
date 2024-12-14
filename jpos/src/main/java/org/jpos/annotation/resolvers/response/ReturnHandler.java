@@ -6,7 +6,7 @@ import org.jpos.transaction.Context;
 import org.jpos.transaction.TransactionParticipant;
 
 public interface ReturnHandler {
-    int doReturn(TransactionParticipant p, Context ctx, Object obj);
+    int doReturn(Object p, Context ctx, Object obj);
     
     default void configure(Method m) {}
 }

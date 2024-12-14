@@ -40,7 +40,7 @@ public class ContextPassThruResolver implements ResolverServiceProvider {
                  }
             }
             @Override
-            public <T> T getValue(TransactionParticipant participant, Context ctx) {
+            public <T> T getValue(Object participant, Context ctx) {
                 return (T) new ContextView(ctx, readWrite, readOnly, writeOnly);
             }
              
@@ -48,7 +48,7 @@ public class ContextPassThruResolver implements ResolverServiceProvider {
         } else {
             return new Resolver() {
                 @Override
-                public <T> T getValue(TransactionParticipant participant, Context ctx) {
+                public <T> T getValue(Object participant, Context ctx) {
                     return (T) ctx;
                 }
             };
