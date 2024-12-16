@@ -18,6 +18,7 @@
 
 package org.jpos.transaction;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOException;
@@ -65,9 +66,9 @@ import java.io.Serializable;
  *</pre>
  **/
 
- public class ProtectDebugInfo implements AbortParticipant {
-     private String[] protectedEntrys;
-     private String[] wipedEntrys;
+ public class ProtectDebugInfo implements AbortParticipant, Configurable {
+     private String[] protectedEntries;
+     private String[] wipedEntries;
      private String[] protectFSD;
      private String[] protectISO;
      private String[] wipeISO;
@@ -87,10 +88,10 @@ import java.io.Serializable;
      }
      private void protect (Context ctx) {
          /* wipe by removing entries from the context  */
-         for (String s: wipedEntrys)
+         for (String s: wipedEntries)
              ctx.remove(s);
          /* Protect entry items */
-         for (String s: protectedEntrys) {
+         for (String s: protectedEntries) {
              Object o = ctx.get (s);
              if (o instanceof ISOMsg){
                  ISOMsg m = ctx.get (s);
@@ -177,8 +178,8 @@ import java.io.Serializable;
          return s != null ? ISOUtil.protect (s) : s;
      }
      public void setConfiguration (Configuration cfg) throws ConfigurationException {
-         this.protectedEntrys = cfg.getAll("protect-entry");
-         this.wipedEntrys = cfg.getAll("wipe-entry");
+         this.protectedEntries = cfg.getAll("protect-entry");
+         this.wipedEntries = cfg.getAll("wipe-entry");
          this.protectFSD = cfg.getAll("protect-FSDMsg");
          this.protectISO = cfg.getAll("protect-ISOMsg");
          this.wipeISO = cfg.getAll("wipe-ISOMsg");
