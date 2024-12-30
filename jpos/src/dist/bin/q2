@@ -3,31 +3,36 @@
 cd "$(dirname "$0")/.." || exit 1
 rm -f deploy/shutdown.xml
 
-if [ -f jpos.pid ] && ps -p "$(cat jpos.pid)" > /dev/null 2>&1
+# Separate -D parameters and handle --pid argument
+JAVA_OPTS="${JAVA_OPTS:-}"
+OTHER_OPTS=""
+PID_FILE="jpos.pid"  # Default value
+
+for arg in "$@"; do
+  case $arg in
+    -D*)
+      JAVA_OPTS="$JAVA_OPTS $arg"
+      ;;
+    --pid=*)
+      PID_FILE="${arg#--pid=}"
+      ;;
+    *)
+      OTHER_OPTS="$OTHER_OPTS $arg"
+      ;;
+  esac
+done
+
+# Check if the process defined by the PID file is running
+if [ -f "$PID_FILE" ] && ps -p "$(cat "$PID_FILE")" > /dev/null 2>&1
 then
-   echo "Process $(cat jpos.pid) is running"
+   echo "Process $(cat "$PID_FILE") is running"
 else
-  rm -f jpos.pid
+  rm -f "$PID_FILE"
 
-  # Separate -D parameters from other parameters
-  JAVA_OPTS="${JAVA_OPTS:-}"
-  OTHER_OPTS=""
-  for arg in "$@"; do
-    case $arg in
-      -D*)
-        JAVA_OPTS="$JAVA_OPTS $arg"
-        ;;
-      *)
-        OTHER_OPTS="$OTHER_OPTS $arg"
-        ;;
-    esac
-  done
-
-  mkdir -p log 
+  mkdir -p log
   exec java -server \
     -Xmx4G \
     --enable-preview \
     -Xlog:gc:log/gc.log \
-    $JAVA_OPTS -jar @jarname@  --pid="jpos.pid" $OTHER_OPTS
+    $JAVA_OPTS -jar @jarname@ --pid="$PID_FILE" $OTHER_OPTS
 fi
-
