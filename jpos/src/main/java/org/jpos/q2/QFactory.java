@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
@@ -505,6 +507,15 @@ public class QFactory {
     public static Element expandEnvProperties(Element e) {
        expandEnvProperties(e, Environment.getEnvironment());
        return e;
+    }
+
+    public static ExecutorService executorService(boolean virtual) {
+        return virtual ?
+            Executors.newVirtualThreadPerTaskExecutor() :
+            Executors.newThreadPerTaskExecutor(
+              Thread.ofPlatform().inheritInheritableThreadLocals(true)
+                .factory()
+            );
     }
 
     /**
