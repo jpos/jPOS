@@ -147,7 +147,7 @@ public class GenericPackager
 
         try
         {
-            String loggerName = cfg.get("packager-logger");
+            String loggerName = cfg.get("packager-logger", null);
             if (loggerName != null)
                 setLogger(Logger.getLogger (loggerName),
                            cfg.get ("packager-realm"));
