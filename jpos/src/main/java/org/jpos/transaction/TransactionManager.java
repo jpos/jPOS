@@ -133,11 +133,7 @@ public class TransactionManager
         groups = new HashMap<>();
         initParticipants (getPersist());
         initStatusListeners (getPersist());
-        executor = Executors.newThreadPerTaskExecutor(
-          Thread.ofVirtual()
-          .inheritInheritableThreadLocals(false)
-          .name(getName())
-          .factory());
+        executor = QFactory.executorService(cfg.getBoolean("virtual-threads", true));
 
         if (!filtersAdded.getAndSet(true)) {
             getServer().getMeterRegistry().config().meterFilter(new MeterFilter() {
@@ -239,8 +235,8 @@ public class TransactionManager
                     });
                 }
                 else {
-                    ISOUtil.sleep(100L);
                     iisp.push(queue, context);  // push it back
+                    ISOUtil.sleep(100L);
                 }
             }
         }

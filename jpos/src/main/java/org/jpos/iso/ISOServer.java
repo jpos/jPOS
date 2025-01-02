@@ -44,6 +44,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.jfr.ChannelEvent;
 import org.jpos.log.AuditLogEvent;
 import org.jpos.log.evt.*;
+import org.jpos.q2.QFactory;
 import org.jpos.util.*;
 
 /**
@@ -117,7 +118,6 @@ public class ISOServer extends Observable
         channels = Collections.synchronizedMap(new HashMap<>());
         serverListeners = Collections.synchronizedList(new ArrayList<>());
 
-        executor = Executors.newVirtualThreadPerTaskExecutor();
         if (maxSessions > 0)
             permitsCount = maxSessions;
         permits = new Semaphore(permitsCount);
@@ -143,6 +143,7 @@ public class ISOServer extends Observable
         if (socketFactory != this && socketFactory instanceof Configurable) {
             ((Configurable)socketFactory).setConfiguration (cfg);
         }
+        executor = QFactory.executorService(cfg.getBoolean("virtual-threads", false));
     }
 
     // Helper method to setConfiguration. Handles "allow" and "deny" params

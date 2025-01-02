@@ -85,7 +85,7 @@ public class ChannelAdaptor
     public void initService() throws ConfigurationException {
         initSpaceAndQueues();
         NameRegistrar.register (getName(), this);
-        executor = Executors.newVirtualThreadPerTaskExecutor();
+        executor = QFactory.executorService(cfg.getBoolean("virtual-threads", false));
     }
     public void startService () {
         try {
