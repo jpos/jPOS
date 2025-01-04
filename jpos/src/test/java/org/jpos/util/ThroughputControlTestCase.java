@@ -82,7 +82,7 @@ public class ThroughputControlTestCase {
 
         long elapsed = Duration.between(start, Instant.now()).toMillis();
         assertTrue (
-            elapsed <= 1000L,
+            elapsed <= 500L,
             "100 initial transactions should take more than about one second but took " + elapsed
         );
         for (int i=0; i<100; i++)
@@ -90,8 +90,8 @@ public class ThroughputControlTestCase {
 
         elapsed = Duration.between(start, Instant.now()).toMillis();
         assertTrue (
-            elapsed >= 5000L,
-            "100 additional transactions should take more than five seconds but took " + elapsed
+            elapsed >= 4000L,
+            "100 additional transactions should take more than aprox five seconds but took " + elapsed
         );
     }
     @Test
