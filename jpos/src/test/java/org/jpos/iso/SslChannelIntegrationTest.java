@@ -38,9 +38,7 @@ import org.jpos.iso.channel.XMLChannel;
 import org.jpos.iso.packager.XMLPackager;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogListener;
-import org.jpos.util.ThreadPool;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -84,7 +82,7 @@ public class SslChannelIntegrationTest {
 
         isoServer.shutdown();
 
-        assertThrows(SocketTimeoutException.class, () -> {
+        assertThrows(EOFException.class, () -> {
             clientChannel.receive();
         }, "clientChannel should be closed");
     }

@@ -32,7 +32,6 @@ import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -97,6 +96,7 @@ public class ISOServer extends Observable
     private int permitsCount = DEFAULT_MAX_SESSIONS;
     private static final long SMALL_RELAX = 250;
     private static final long LONG_RELAX = 5000;
+    private static final long SHUTDOWN_WAIT = 15000;
     private final UUID uuid = UUID.randomUUID();
 
    /**
@@ -232,6 +232,14 @@ public class ISOServer extends Observable
                 shutdownChannels();
             }
         });
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(SHUTDOWN_WAIT, TimeUnit.MILLISECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
     private void shutdownServer () {
         try {
@@ -239,8 +247,7 @@ public class ISOServer extends Observable
                 serverSocket.close ();
                 fireEvent(new ISOServerShutdownEvent(this));
             }
-            executor.awaitTermination(LONG_RELAX, TimeUnit.SECONDS);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             fireEvent(new ISOServerShutdownEvent(this));
             Logger.log (new LogEvent (this, "shutdown", e));
         }
