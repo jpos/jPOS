@@ -267,7 +267,7 @@ public class TransactionManager
             if (hasStatusListeners)
                 notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
 
-            TimeProvider timeProvider = getTimeProvider();
+            Chronometer chronometer = new Chronometer(getStart(context));
 
             abort = false;
             members = new ArrayList<> ();
