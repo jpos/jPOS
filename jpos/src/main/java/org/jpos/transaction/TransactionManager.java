@@ -43,6 +43,7 @@ import org.jpos.util.*;
 
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
@@ -117,6 +118,8 @@ public class TransactionManager
     private Counter transactionCounter;
     private boolean freezeLog;
     private UUID uuid = UUID.randomUUID();
+
+    private boolean cmeter;
 
     @Override
     public void initService () throws ConfigurationException {
@@ -265,7 +268,8 @@ public class TransactionManager
             if (hasStatusListeners)
                 notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
 
-            Chronometer chronometer = new Chronometer(getStart(context));
+            Chronometer chronometer = cmeter ? new Chronometer(getStart(context)) : null;
+            long starttime = System.currentTimeMillis();
 
             abort = false;
             members = new ArrayList<> ();
@@ -277,7 +281,7 @@ public class TransactionManager
             evt.addMessage(context);
             prof = new Profiler();
             snapshot (id, context, PREPARING);
-            action = prepare (session, id, context, members, iter, abort, evt, prof, chronometer);
+            action = prepare (session, id, context, members, iter, abort, evt, prof, chronometer, starttime);
             switch (action) {
                 case PREPARED:
                     if (members.size() > 0) {
@@ -401,6 +405,8 @@ public class TransactionManager
             throw new ConfigurationException (e);
         }
         freezeLog = cfg.getBoolean("freeze-log", true);
+
+        cmeter = cfg.getBoolean("chronometer", true);
     }
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
@@ -512,7 +518,7 @@ public class TransactionManager
     protected int prepareForAbort
         (TransactionParticipant p, long id, Serializable context) 
     {
-        Chronometer c = new Chronometer();
+        Chronometer c = cmeter ? new Chronometer() : null;
         try {
             if (p instanceof AbortParticipant) {
                 setThreadName(id, "prepareForAbort", p);
@@ -521,25 +527,29 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("PREPARE-FOR-ABORT: " + id, t);
         } finally {
-            getParams(p).timers.prepareForAbortTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
-            if (metrics != null)
-                metrics.record(getName(p) + "-prepare-for-abort", c.elapsed());
+            if (cmeter && c != null) {
+                getParams(p).timers.prepareForAbortTimer.record(c.elapsed(), TimeUnit.MILLISECONDS);
+                if (metrics != null)
+                    metrics.record(getName(p) + "-prepare-for-abort", c.elapsed());
+            }
         }
         return ABORTED | NO_JOIN;
     }
     protected int prepare 
         (TransactionParticipant p, long id, Serializable context) 
     {
-        Chronometer c = new Chronometer();
+        Chronometer c = cmeter ? new Chronometer() : null;
         try {
             setThreadName(id, "prepare", p);
             return p.prepare (id, context);
         } catch (Throwable t) {
             getLog().warn ("PREPARE: " + id, t);
         } finally {
-            getParams(p).timers.prepareTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
-            if (metrics != null) {
-                metrics.record(getName(p) + "-prepare", c.elapsed());
+            if (cmeter && c != null) {
+                getParams(p).timers.prepareTimer.record(c.elapsed(), TimeUnit.MILLISECONDS);
+                if (metrics != null) {
+                    metrics.record(getName(p) + "-prepare", c.elapsed());
+                }
             }
         }
         return ABORTED;
@@ -547,35 +557,39 @@ public class TransactionManager
     protected void commit 
         (TransactionParticipant p, long id, Serializable context) 
     {
-        Chronometer c = new Chronometer();
+        Chronometer c = cmeter ? new Chronometer() : null;
         try {
             setThreadName(id, "commit", p);
             p.commit(id, context);
         } catch (Throwable t) {
             getLog().warn ("COMMIT: " + id, t);
         } finally {
-            getParams(p).timers.commitTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
-            if (metrics != null)
-                metrics.record(getName(p) + "-commit", c.elapsed());
+            if (cmeter && c != null) {
+                getParams(p).timers.commitTimer.record(c.elapsed(), TimeUnit.MILLISECONDS);
+                if (metrics != null)
+                    metrics.record(getName(p) + "-commit", c.elapsed());
+            }
         }
     }
     protected void abort 
         (TransactionParticipant p, long id, Serializable context) 
     {
-        Chronometer c = new Chronometer();
+        Chronometer c = cmeter ? new Chronometer() : null;
         try {
             setThreadName(id, "abort", p);
             p.abort(id, context);
         } catch (Throwable t) {
             getLog().warn ("ABORT: " + id, t);
         } finally {
-            getParams(p).timers.abortTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
-            if (metrics != null)
-                metrics.record(getName(p) + "-abort", c.elapsed());
+            if (cmeter && c != null) {
+                getParams(p).timers.abortTimer.record(c.elapsed(), TimeUnit.MILLISECONDS);
+                if (metrics != null)
+                    metrics.record(getName(p) + "-abort", c.elapsed());
+            }
         }
     }
     protected int prepare
-        (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof, Chronometer chronometer)
+        (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof, Chronometer chronometer, long startTime)
     {
         boolean retry = false;
         for (int i=0; iter.hasNext (); i++) {
@@ -589,10 +603,10 @@ public class TransactionManager
             TransactionParticipant p = iter.next();
 
             ParticipantParams pp = getParams(p);
-            if (!abort && pp.maxTime > 0 && chronometer.elapsed() > pp.maxTime) {
+            if (!abort && pp.maxTime > 0 && (chronometer != null ? chronometer.elapsed() : (System.currentTimeMillis() - startTime)) > pp.maxTime) {
                 abort = true;
                 if (evt != null)
-                    evt.addMessage("    forcedAbort: " + getName(p) + " elapsed=" + chronometer.elapsed());
+                    evt.addMessage("    forcedAbort: " + getName(p) + " elapsed=" + (chronometer != null ? chronometer.elapsed() : (System.currentTimeMillis() - startTime)));
             }
 
             TMEvent jfr;
@@ -620,10 +634,15 @@ public class TransactionManager
                 jfr = new TMEvent.Prepare("%s:%s".formatted(getName(), p.getClass().getName()), id);
                 jfr.begin();
 
-                chronometer.lap();
+                Long lapStartTime = null;
+                if(chronometer != null) {
+                    chronometer.lap();
+                } else {
+                    lapStartTime = System.currentTimeMillis();
+                }
                 action = prepareOrAbort (p, id, context, pp, this::prepare);
-                boolean timeout = pp.timeout > 0 && chronometer.partial() > pp.timeout;
-                boolean maxTime = pp.maxTime > 0 && chronometer.elapsed() > pp.maxTime;
+                boolean timeout = pp.timeout > 0 && (chronometer != null ? chronometer.partial() : System.currentTimeMillis() - lapStartTime) > pp.timeout;
+                boolean maxTime = pp.maxTime > 0 && (chronometer != null ? chronometer.elapsed() : System.currentTimeMillis() - startTime) > pp.timeout;
                 if (timeout || maxTime)
                     action &= (PREPARED ^ 0xFFFF);
 
@@ -645,18 +664,20 @@ public class TransactionManager
             }
 
             if ((action & READONLY) == 0) {
-                Chronometer c = new Chronometer();
+                Chronometer c = cmeter ? new Chronometer() : null;
                 snapshot (id, context);
-                getParams(p).timers.snapshotTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
-                if (metrics != null)
-                    metrics.record(getName(p) + "-snapshot", c.elapsed());
+                if(cmeter && c != null) {
+                    getParams(p).timers.snapshotTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
+                    if (metrics != null)
+                        metrics.record(getName(p) + "-snapshot", c.elapsed());
+                }
             }
             if ((action & NO_JOIN) == 0) {
                 members.add (p);
             }
             if (p instanceof GroupSelector && ((action & PREPARED) == PREPARED || callSelectorOnAbort)) {
                 String groupName = null;
-                Chronometer c = new Chronometer();
+                Chronometer c = cmeter ? new Chronometer() : null;
                 try {
                     groupName = ((GroupSelector)p).select (id, context);
                 } catch (Exception e) {
@@ -665,7 +686,7 @@ public class TransactionManager
                     else 
                         getLog().error ("       selector: " + getName(p) + " " + e.getMessage());
                 } finally {
-                    if (metrics != null)
+                    if (metrics != null && cmeter && c != null)
                         metrics.record(getName(p) + "-selector", c.lap());
                 }
                 if (evt != null) {
@@ -1081,13 +1102,13 @@ public class TransactionManager
     }
 
     private String getName(TransactionParticipant p) {
-        return getParams(p).name();
+        return cmeter ? getParams(p).name() : p.getClass().getName();
     }
 
     private ParticipantParams getParams (TransactionParticipant p) {
         return Optional.ofNullable(params.get(p)).orElse(
           new ParticipantParams(p.getClass().getName(), 0L, 0L, Collections.emptySet(), Collections.emptySet(), Collections.emptySet(),
-            getOrCreateTimers(p))
+            cmeter ? getOrCreateTimers(p) : null)
         );
     }
 
