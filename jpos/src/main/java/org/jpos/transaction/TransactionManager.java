@@ -43,7 +43,6 @@ import org.jpos.util.*;
 
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
@@ -280,7 +279,7 @@ public class TransactionManager
             evt.addMessage(context);
             prof = new Profiler();
             snapshot (id, context, PREPARING);
-            action = prepare (session, id, context, members, iter, abort, evt, prof, timeProvider);
+            action = prepare (session, id, context, members, iter, abort, evt, prof, chronometer);
             switch (action) {
                 case PREPARED:
                     if (members.size() > 0) {
@@ -405,7 +404,7 @@ public class TransactionManager
         }
         freezeLog = cfg.getBoolean("freeze-log", true);
 
-        cmeter = cfg.getBoolean("chronometer", true);
+        cmeter = cfg.getBoolean("cmeter", true);
     }
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
@@ -517,7 +516,7 @@ public class TransactionManager
     protected int prepareForAbort
         (TransactionParticipant p, long id, Serializable context) 
     {
-        TimeProvider c = getTimeProvider();
+        Chronometer c = new Chronometer();
         try {
             if (p instanceof AbortParticipant) {
                 setThreadName(id, "prepareForAbort", p);
@@ -526,25 +525,27 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("PREPARE-FOR-ABORT: " + id, t);
         } finally {
-            getParams(p).timers.prepareForAbortTimer.record(c.getElapsed(), TimeUnit.MILLISECONDS);
+            if (cmeter)
+                getParams(p).timers.prepareForAbortTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null)
-                metrics.record(getName(p) + "-prepare-for-abort", c.getElapsed());
+                metrics.record(getName(p) + "-prepare-for-abort", c.elapsed());
         }
         return ABORTED | NO_JOIN;
     }
     protected int prepare 
         (TransactionParticipant p, long id, Serializable context) 
     {
-        TimeProvider c = getTimeProvider();
+        Chronometer c = new Chronometer();
         try {
             setThreadName(id, "prepare", p);
             return p.prepare (id, context);
         } catch (Throwable t) {
             getLog().warn ("PREPARE: " + id, t);
         } finally {
-            getParams(p).timers.prepareTimer.record(c.getElapsed(), TimeUnit.MILLISECONDS);
+            if (cmeter)
+                getParams(p).timers.prepareTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null) {
-                metrics.record(getName(p) + "-prepare", c.getElapsed());
+                metrics.record(getName(p) + "-prepare", c.elapsed());
             }
         }
         return ABORTED;
@@ -552,35 +553,37 @@ public class TransactionManager
     protected void commit 
         (TransactionParticipant p, long id, Serializable context) 
     {
-        TimeProvider c = getTimeProvider();
+        Chronometer c = new Chronometer();
         try {
             setThreadName(id, "commit", p);
             p.commit(id, context);
         } catch (Throwable t) {
             getLog().warn ("COMMIT: " + id, t);
         } finally {
-            getParams(p).timers.commitTimer.record(c.getElapsed(), TimeUnit.MILLISECONDS);
+            if (cmeter)
+                getParams(p).timers.commitTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null)
-                metrics.record(getName(p) + "-commit", c.getElapsed());
+                metrics.record(getName(p) + "-commit", c.elapsed());
         }
     }
     protected void abort 
         (TransactionParticipant p, long id, Serializable context) 
     {
-        TimeProvider c = getTimeProvider();
+        Chronometer c = new Chronometer();
         try {
             setThreadName(id, "abort", p);
             p.abort(id, context);
         } catch (Throwable t) {
             getLog().warn ("ABORT: " + id, t);
         } finally {
-            getParams(p).timers.abortTimer.record(c.getElapsed(), TimeUnit.MILLISECONDS);
+            if (cmeter)
+                getParams(p).timers.abortTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null)
-                metrics.record(getName(p) + "-abort", c.getElapsed());
+                metrics.record(getName(p) + "-abort", c.elapsed());
         }
     }
     protected int prepare
-        (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof, TimeProvider timeProvider)
+        (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof, Chronometer chronometer)
     {
         boolean retry = false;
         for (int i=0; iter.hasNext (); i++) {
@@ -594,10 +597,10 @@ public class TransactionManager
             TransactionParticipant p = iter.next();
 
             ParticipantParams pp = getParams(p);
-            if (!abort && pp.maxTime > 0 && timeProvider.getElapsed() > pp.maxTime) {
+            if (!abort && pp.maxTime > 0 && chronometer.elapsed() > pp.maxTime) {
                 abort = true;
                 if (evt != null)
-                    evt.addMessage("    forcedAbort: " + getName(p) + " elapsed=" + timeProvider.getElapsed());
+                    evt.addMessage("    forcedAbort: " + getName(p) + " elapsed=" + chronometer.elapsed());
             }
 
             TMEvent jfr;
@@ -625,10 +628,10 @@ public class TransactionManager
                 jfr = new TMEvent.Prepare("%s:%s".formatted(getName(), p.getClass().getName()), id);
                 jfr.begin();
 
-                timeProvider.lap();
+                chronometer.lap();
                 action = prepareOrAbort (p, id, context, pp, this::prepare);
-                boolean timeout = pp.timeout > 0 && timeProvider.getPartial() > pp.timeout;
-                boolean maxTime = pp.maxTime > 0 && timeProvider.getElapsed() > pp.timeout;
+                boolean timeout = pp.timeout > 0 && chronometer.partial() > pp.timeout;
+                boolean maxTime = pp.maxTime > 0 && chronometer.elapsed() > pp.maxTime;
                 if (timeout || maxTime)
                     action &= (PREPARED ^ 0xFFFF);
 
@@ -650,19 +653,19 @@ public class TransactionManager
             }
 
             if ((action & READONLY) == 0) {
-                TimeProvider c = getTimeProvider();
+                Chronometer c = new Chronometer();
                 snapshot (id, context);
-                getParams(p).timers.snapshotTimer.record (c.getElapsed(), TimeUnit.MILLISECONDS);
+                if (cmeter)
+                    getParams(p).timers.snapshotTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
                 if (metrics != null)
-                    metrics.record(getName(p) + "-snapshot", c.getElapsed());
-
+                    metrics.record(getName(p) + "-snapshot", c.elapsed());
             }
             if ((action & NO_JOIN) == 0) {
                 members.add (p);
             }
             if (p instanceof GroupSelector && ((action & PREPARED) == PREPARED || callSelectorOnAbort)) {
                 String groupName = null;
-                TimeProvider c = getTimeProvider();
+                Chronometer c = new Chronometer();
                 try {
                     groupName = ((GroupSelector)p).select (id, context);
                 } catch (Exception e) {
@@ -672,7 +675,7 @@ public class TransactionManager
                         getLog().error ("       selector: " + getName(p) + " " + e.getMessage());
                 } finally {
                     if (metrics != null)
-                        metrics.record(getName(p) + "-selector", c.getElapsed());
+                        metrics.record(getName(p) + "-selector", c.lap());
                 }
                 if (evt != null) {
                     evt.addMessage ("       selector: '" + groupName +"'");
@@ -782,7 +785,7 @@ public class TransactionManager
                 getSet(e.getChild("requires")),
                 getSet(e.getChild("provides")),
                 getSet(e.getChild("optional")),
-                getOrCreateTimers(participant)
+                cmeter ? getOrCreateTimers(participant) : null
               )
             );
         } catch (Exception ex) {
@@ -1264,63 +1267,5 @@ public class TransactionManager
 
     private UUID getTraceId (long transactionId) {
         return new UUID(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() ^ transactionId);
-    }
-
-    private interface TimeProvider {
-        long getElapsed();
-        long getPartial();
-        void lap();
-    }
-
-    class ChronometerProvider implements TimeProvider {
-        private final Chronometer chronometer;
-
-        public ChronometerProvider() {
-            this.chronometer = new Chronometer();
-        }
-
-        @Override
-        public long getElapsed() {
-            return chronometer.elapsed();
-        }
-
-        @Override
-        public long getPartial() {
-            return chronometer.partial();
-        }
-
-        @Override
-        public void lap() {
-            chronometer.lap();
-        }
-    }
-
-    class SystemTimeProvider implements TimeProvider {
-        private final long startTime;
-        private long lapStartTime;
-
-        public SystemTimeProvider() {
-            this.startTime = System.currentTimeMillis();
-            this.lapStartTime = System.currentTimeMillis();
-        }
-
-        @Override
-        public long getElapsed() {
-            return System.currentTimeMillis() - startTime;
-        }
-
-        @Override
-        public long getPartial() {
-            return System.currentTimeMillis() - lapStartTime;
-        }
-
-        @Override
-        public void lap() {
-            this.lapStartTime = System.currentTimeMillis();
-        }
-    }
-
-    private TimeProvider getTimeProvider() {
-        return cmeter ? new ChronometerProvider() : new SystemTimeProvider();
     }
 }
