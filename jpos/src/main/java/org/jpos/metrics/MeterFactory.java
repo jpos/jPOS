@@ -65,19 +65,22 @@ public class MeterFactory {
 
     @SuppressWarnings("unchecked")
     private static <T extends Meter> T createMeter(MeterRegistry registry, MeterInfo meterInfo, Tags tags, Callable<T> creator) {
-        try {
-            metersLock.lock();
-            T meter = (T) Search.in(registry).name(meterInfo.id()).tags(meterInfo.add(tags)).meter();
-            if (meter == null) {
-                try {
+        T meter = (T) Search.in(registry).name(meterInfo.id()).tags(meterInfo.add(tags)).meter();
+        if (meter == null) {
+            try {
+                metersLock.lock();
+                // Double-check after acquiring the lock,
+                meter = (T) Search.in(registry).name(meterInfo.id()).tags(meterInfo.add(tags)).meter();
+                if (meter == null) {
                     meter = creator.call();
-                } catch (Exception e) {
-                    throw new RuntimeException (e);
                 }
+                return meter;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                metersLock.unlock();
             }
-            return meter;
-        } finally {
-            metersLock.unlock();
         }
+        return meter;
     }
 }
