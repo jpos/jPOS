@@ -126,6 +126,8 @@ public class TransactionManager
         sp  = SpaceFactory.getSpace (cfg.get ("space"));
         isp = iisp = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space", this.toString()));
+        doRecover = cfg.getBoolean ("recover", psp instanceof PersistentSpace);
+
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
         head = Math.max (initCounter (HEAD, tail), tail);
         initTailLock ();
@@ -134,7 +136,7 @@ public class TransactionManager
         initParticipants (getPersist());
         initStatusListeners (getPersist());
         executor = QFactory.executorService(cfg.getBoolean("virtual-threads", true));
-
+        
         if (!filtersAdded.getAndSet(true)) {
             getServer().getMeterRegistry().config().meterFilter(new MeterFilter() {
                 @Override
@@ -366,7 +368,6 @@ public class TransactionManager
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         super.setConfiguration (cfg);
-        doRecover = cfg.getBoolean ("recover", true);
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
         retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
         pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
@@ -704,7 +705,7 @@ public class TransactionManager
     protected List<TransactionParticipant> getParticipants (long id) {
     	// Use a local copy of participant to avoid adding the 
         // GROUP participant to the DEFAULT_GROUP
-    	List<TransactionParticipant> participantsChain = new ArrayList();
+    	List<TransactionParticipant> participantsChain = new ArrayList<>();
         List<TransactionParticipant> participants = getParticipants (DEFAULT_GROUP);
         // Add DEFAULT_GROUP participants 
         participantsChain.addAll(participants);
@@ -829,7 +830,7 @@ public class TransactionManager
         }
     }
     protected void initTailLock () {
-        tailLock = TAILLOCK + "." + Integer.toString (this.hashCode());
+        tailLock = TAILLOCK + "." + this.hashCode();
         sp.put (tailLock, TAILLOCK);
     }
     protected void checkTail () {
@@ -1081,11 +1082,11 @@ public class TransactionManager
     }
 
     private String getName(TransactionParticipant p) {
-        return getParams(p).name();
+        return p.getClass().getName();
     }
 
     private ParticipantParams getParams (TransactionParticipant p) {
-        return Optional.ofNullable(params.get(p)).orElse(
+        return Optional.ofNullable(params.get(p)).orElseGet(() ->
           new ParticipantParams(p.getClass().getName(), 0L, 0L, Collections.emptySet(), Collections.emptySet(), Collections.emptySet(),
             getOrCreateTimers(p))
         );
@@ -1234,8 +1235,8 @@ public class TransactionManager
     }
 
     private Timers getOrCreateTimers(TransactionParticipant p) {
-        var mr = getServer().getMeterRegistry();
         String participantShortName = Caller.shortClassName(p.getClass().getName());
+        var mr = getServer().getMeterRegistry();
         var tags = Tags.of("name", getName(), "participant", participantShortName);
         if (p instanceof LogSource ls) {
             String realm = ls.getRealm();
