@@ -44,7 +44,6 @@ import java.util.concurrent.TimeUnit;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Log;
 import org.jpos.util.Loggeable;
-import org.jpos.util.Profiler;
 
 /**
  * BerkeleyDB Jave Edition based persistent space implementation
@@ -53,7 +52,7 @@ import org.jpos.util.Profiler;
  * @since 1.6.5
  */
 @SuppressWarnings("unchecked")
-public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Runnable {
+public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpace, Loggeable, Runnable {
     Environment dbe = null;
     EntityStore store = null;
     PrimaryIndex<Long, Ref> pIndex = null;

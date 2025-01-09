@@ -43,7 +43,7 @@ import java.util.*;
  * @since 1.4.7
  */
 @SuppressWarnings("unchecked")
-public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
+public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentSpace {
     protected HTree htree;
     protected RecordManager recman;
     protected static final Serializer refSerializer = new Ref ();
