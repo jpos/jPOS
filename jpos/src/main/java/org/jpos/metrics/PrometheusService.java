@@ -42,6 +42,7 @@ public class PrometheusService extends QBeanSupport {
             server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext(path, httpExchange -> {
                 String response = registry.scrape();
+                httpExchange.getResponseHeaders().add("Content-Type", "text/plain; version=0.0.4");
                 httpExchange.sendResponseHeaders(200, response.getBytes().length);
                 try (OutputStream os = httpExchange.getResponseBody()) {
                     os.write(response.getBytes());
