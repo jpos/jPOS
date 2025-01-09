@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.CountDownLatch;
 
 
 public class ThroughputControlTestCase {
@@ -55,20 +56,22 @@ public class ThroughputControlTestCase {
     }
     @Test
     public void testFifty () throws Exception {
-        ThroughputControl tc = new ThroughputControl (10, 1000);
-        Instant start = Instant.now();
-        for (int i=0; i<50; i++)
+        ThroughputControl tc = new ThroughputControl(10, 1000);
+        long start = System.nanoTime();
+        for (int i = 0; i < 50; i++)
             tc.control();
 
-        long elapsed = Duration.between(start, Instant.now()).toMillis();
-        assertTrue (
-            elapsed >= 4000L,
-            "50 transactions should take at least 4 seconds but took " + elapsed
+        long elapsed = (System.nanoTime() - start) / 1_000_000; // Convert to milliseconds
+        assertTrue(
+          elapsed >= 4000L,
+          "50 transactions should take at least 4 seconds but took " + elapsed
         );
-        assertTrue (
-            elapsed < 4500L,
-            "50 transactions shouldn't take more than aprox 4 seconds but took " + elapsed
+        assertTrue(
+          elapsed < 4500L,
+          "50 transactions shouldn't take more than approximately 4.5 seconds but took " + elapsed
         );
+
+
     }
     @Test
     public void testDualPeriod () throws Exception {
@@ -96,24 +99,32 @@ public class ThroughputControlTestCase {
     }
     @Test
     public void testMultiThread() throws Exception {
-        final ThroughputControl tc = new ThroughputControl (2, 1000);
-        Instant start = Instant.now();
-        Thread[] t = new Thread[10];
-        for (int i=0; i<10; i++) {
-            t[i] = new Thread() {
-                public void run() {
+        final ThroughputControl tc = new ThroughputControl(2, 1000);
+        int threadCount = 10;
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch endLatch = new CountDownLatch(threadCount);
+        long start = System.nanoTime();
+
+        for (int i = 0; i < threadCount; i++) {
+            new Thread(() -> {
+                try {
+                    startLatch.await(); // Ensure all threads start together
                     tc.control();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    endLatch.countDown(); // Signal thread completion
                 }
-            };
-            t[i].start();
+            }).start();
         }
-        for (int i=0; i<10; i++) {
-            t[i].join();
-        }
-        long elapsed = Duration.between(start, Instant.now()).toMillis();
-        assertTrue (
-            elapsed > 4000L && elapsed < 5000L,
-            "10 transactions should take about four seconds but took " + elapsed
+
+        startLatch.countDown(); // Release all threads
+        endLatch.await(); // Wait for all threads to finish
+
+        long elapsed = (System.nanoTime() - start) / 1_000_000; // Convert to milliseconds
+        assertTrue(
+          elapsed > 4000L && elapsed < 5000L,
+          "10 transactions should take about four seconds but took " + elapsed
         );
     }
 }

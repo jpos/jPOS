@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2024 jPOS Software SRL
+ * Copyright (C) 2000-2023 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,7 @@
 
 package org.jpos.util;
 
-import org.jpos.iso.ISOUtil;
-
 import java.time.Instant;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * ThroughputControl limits the throughput 
@@ -46,90 +42,80 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ThroughputControl {
     private int[] period;
     private int[] max;
-    private AtomicInteger[] cnt;
+    private int[] cnt;
     private long[] start;
     private long[] sleep;
-    private static final long MIN_SLEEP = 50L;
-    private static final long MAX_SLEEP = 500L;
-    private final ReentrantLock[] locks;
-
-    /***
-     * @param max Maximum TPP allowed.
-     * @param periodInMillis Duration (in milliseconds) for the monitoring period.
-     */
-    public ThroughputControl(int max, int periodInMillis) {
-        this(
-          new int[]{max},
-          new int[]{periodInMillis}
-        );
-    }
 
     /**
-     * Constructor with multiple periods
-     *
-     * @param maxTPP Maximum TPS allowed.
-     * @param periodInMillis Duration (in milliseconds) for each period.
+     * @param maxTransactions Transaction count threshold.
+     * @param periodInMillis Time window, expressed in milliseconds.
      */
-    public ThroughputControl(int[] maxTPP, int[] periodInMillis) {
+    public ThroughputControl (int maxTransactions, int periodInMillis) {
+        this (new int[] { maxTransactions },
+              new int[] { periodInMillis });
+    }
+    /**
+     * @param maxTransactions An array with transaction count thresholds.
+     * @param periodInMillis An array of time windows, expressed in milliseconds.
+     */
+    public ThroughputControl (int[] maxTransactions, int[] periodInMillis) {
         super();
-        int l = maxTPP.length;
-        this.period = new int[l];
-        this.max = new int[l];
-        this.cnt = new AtomicInteger[l];
-        this.start = new long[l];
-        this.sleep = new long[l];
-        this.locks = new ReentrantLock[l];
-
-        for (int i = 0; i < l; i++) {
-            this.max[i] = maxTPP[i]; // Start at minimum Transactions per Period.
+        int l = maxTransactions.length;
+        period = new int[l];
+        max = new int[l];
+        cnt = new int[l];
+        start = new long[l];
+        sleep = new long[l];
+        for (int i=0; i<l; i++) {
+            this.max[i]    = maxTransactions[i];
             this.period[i] = periodInMillis[i];
-            this.sleep[i] = Math.min(Math.max(periodInMillis[i] / 10, MIN_SLEEP), MAX_SLEEP);
-            this.start[i] = Instant.now().toEpochMilli();
-            this.cnt[i] = new AtomicInteger(0);
-            this.locks[i] = new ReentrantLock();
+            this.sleep[i]  = Math.min(Math.max (periodInMillis[i]/10, 500L),50L);
+            this.start[i]  = Instant.now().toEpochMilli();
         }
     }
 
-
     /**
-     * control should be called on every transaction.
-     * it may sleep for a while in order to control the system throughput
-     *
-     * @return aprox sleep time or zero if no sleep
+     * This method should be called on every transaction.
+     * It will pause the thread for a while when the threshold is reached 
+     * in order to control the process throughput.
+     * 
+     * @return Returns sleep time in milliseconds when threshold is reached. Otherwise, zero.
      */
     public long control() {
-        long init = Instant.now().toEpochMilli();
         boolean delayed = false;
-
-        for (int i = 0; i < cnt.length; i++) {
-            locks[i].lock();
-            try {
-                cnt[i].incrementAndGet();
-                if (cnt[i].get() > max[i]) {
+        long init = Instant.now().toEpochMilli();
+        for (int i=0; i<cnt.length; i++) {
+            synchronized (this) {
+                cnt[i]++;
+            }
+            do {
+                if (cnt[i] > max[i]) {
                     delayed = true;
-                    long sleepTime = calculateSleepTime(i);
-                    if (sleepTime > 0) {
-                        Thread.sleep(sleepTime);
+                    try { 
+                        Thread.sleep (sleep[i]); 
+                    } catch (InterruptedException e) { }
+                }
+                synchronized (this) {
+                    long now = Instant.now().toEpochMilli();
+                    if (now - start[i] > period[i]) {
+                        long elapsed = now - start[i];
+                        int  allowed = (int) (elapsed * max[i] / period[i]);
+                        start[i] = now;
+                        cnt[i] = Math.max (cnt[i] - allowed, 0);
                     }
                 }
-                checkAndReset(i);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } finally {
-                locks[i].unlock();
-            }
+            } while (cnt[i] > max[i]);
         }
-
         return delayed ? Instant.now().toEpochMilli() - init : 0L;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ThroughputControl [");
         for (int i = 0; i < max.length; i++) {
             sb.append(String.format(
-              "%d: max = %d, period = %dms",
-              i, max[i], period[i]
+                "%d: max = %d, period = %dms",
+                i, max[i], period[i]
             ));
             if (i < max.length - 1) {
                 sb.append("; ");
@@ -138,26 +124,5 @@ public class ThroughputControl {
         sb.append("]");
         return sb.toString();
     }
-
-    private long calculateSleepTime(int i) {
-        long now = Instant.now().toEpochMilli();
-        long elapsed = now - start[i];
-        if (elapsed < period[i]) {
-            return period[i] - elapsed;
-        }
-        return 0;
-    }
-
-    private void checkAndReset(int i) {
-        long now = Instant.now().toEpochMilli();
-        if (now - start[i] > period[i]) {
-            long elapsed = now - start[i];
-            int allowed = (int) (elapsed * max[i] / period[i]);
-            start[i] = now;
-            cnt[i].addAndGet(-allowed);
-            if (cnt[i].get() < 0) {
-                cnt[i].set(0);
-            }
-        }
-    }
 }
+
