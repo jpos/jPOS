@@ -158,6 +158,7 @@ public class Q2 implements FileFilter, Runnable {
     private PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
     private int metricsPort;
     private String metricsPath;
+    private final String statusPath = "/jpos/q2/status";
 
     private Counter instancesCounter = Metrics.counter("jpos.q2.instances");
     private boolean noShutdownHook;
@@ -244,7 +245,7 @@ public class Q2 implements FileFilter, Runnable {
             }
             if (metricsPort != 0) {
                 deployElement(
-                  PrometheusService.createDescriptor(metricsPort, metricsPath),
+                  PrometheusService.createDescriptor(metricsPort, metricsPath, statusPath),
                   "00_prometheus-" + getInstanceId() + ".xml", false, true);
             }
 

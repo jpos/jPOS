@@ -33,6 +33,8 @@ public class PrometheusService extends QBeanSupport {
     private int port;
     @Config("path")
     private String path;
+    @Config("status-path")
+    private String statusPath;
     private HttpServer server;
 
     @Override
@@ -48,6 +50,16 @@ public class PrometheusService extends QBeanSupport {
                     os.write(response.getBytes());
                 }
             });
+            if (statusPath != null) {
+                server.createContext(statusPath, httpExchange -> {
+                    String response = getServer().running() ? "running\n" : "stopping\n";
+                    httpExchange.getResponseHeaders().add("Content-Type", "text/plain");
+                    httpExchange.sendResponseHeaders(200, response.getBytes().length);
+                    try (OutputStream os = httpExchange.getResponseBody()) {
+                        os.write(response.getBytes());
+                    }
+                });
+            }
             Thread.ofVirtual().start(server::start);
         } catch (IOException e) {
             getLog().warn(e);
@@ -60,10 +72,12 @@ public class PrometheusService extends QBeanSupport {
         server.stop(2);
     }
 
-    public static Element createDescriptor (int port, String path) {
+    public static Element createDescriptor (int port, String path, String statusPath) {
         return new Element("prometheus")
           .addContent(createProperty ("port", Integer.toString(port)))
-          .addContent (createProperty ("path", path));
+          .addContent (createProperty ("path", path))
+          .addContent (createProperty ("status-path", statusPath));
+
     }
     private static Element createProperty (String name, String value) {
         return new Element ("property")
