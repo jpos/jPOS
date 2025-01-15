@@ -257,7 +257,7 @@ public class TransactionManager
         evt = null;
         thread.setName (getName() + "-" + session + ":idle");
         int action = -1;
-        id = head.incrementAndGet ();
+        id = head.getAndIncrement ();
         TMEvent tme = new TMEvent(getName(), id);
         Txn txn = new Txn(getName(), id);
 
@@ -835,6 +835,9 @@ public class TransactionManager
         snapshot (id, context, null);
     }
     protected void snapshot (long id, Serializable context, Integer status) {
+        if (!doRecover && status != DONE)
+            return; // nothing to do
+
         var jfr = new TMEvent.Snapshot(getName()+":"+status, id);
         jfr.begin();
 
