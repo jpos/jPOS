@@ -164,7 +164,32 @@ public class Q2 implements FileFilter, Runnable {
     private boolean noShutdownHook;
     private long shutdownHookDelay = 0L;
 
-    public Q2 (String[] args) {
+    /**
+     * Constructs a new {@code Q2} instance with the specified command-line arguments and class loader.
+     * This constructor initializes various configurations, processes command-line arguments,
+     * sets up directories, and registers necessary components for the application.
+     *
+     * @param args an array of {@code String} containing the command-line arguments.
+     * @param classLoader the {@code ClassLoader} to be used by the application.
+     *                    If {@code null}, the class loader of the current class is used.
+     *
+     * <p>Key Initialization Steps:</p>
+     * <ul>
+     *     <li>Parses the command-line arguments twice:
+     *         once before environment variable substitution and once after.</li>
+     *     <li>Initializes the deployment directory and library directory (`lib`).</li>
+     *     <li>Generates a unique instance identifier for the application instance.</li>
+     *     <li>Sets the application start time to the current moment.</li>
+     *     <li>Registers MicroMeter metrics and Q2-specific components.</li>
+     * </ul>
+     *
+     * <p>Note: The {@code deployDir} directory is created if it does not already exist.</p>
+     *
+     * @see #parseCmdLine(String[], boolean)
+     * @see #registerMicroMeter()
+     * @see #registerQ2()
+     */
+    public Q2 (String[] args, ClassLoader classLoader) {
         super();
         parseCmdLine (args, true);
         this.args = environmentArgs(args);
@@ -174,13 +199,56 @@ public class Q2 implements FileFilter, Runnable {
         libDir     = new File (deployDir, "lib");
         dirMap     = new TreeMap<>();
         deployDir.mkdirs ();
-        mainClassLoader = getClass().getClassLoader();
+        mainClassLoader = classLoader == null ? getClass().getClassLoader() : classLoader;
         registerMicroMeter();
         registerQ2();
     }
+
+    /**
+     * Constructs a new {@code Q2} instance with the specified command-line arguments
+     * and the default class loader.
+     *
+     * @param args an array of {@code String} containing the command-line arguments.
+     *             If no arguments are provided, the application initializes with
+     *             default settings.
+     *
+     * <p>This constructor delegates to {@link #Q2(String[], ClassLoader)} with
+     * a {@code null} class loader, causing the default class loader to be used.</p>
+     *
+     * @see #Q2(String[], ClassLoader)
+     */
+    public Q2 (String[] args) {
+        this (args, null);
+    }
+
+    /**
+     * Constructs a new {@code Q2} instance with no command-line arguments
+     * and the default class loader.
+     *
+     * <p>This constructor is equivalent to calling {@code Q2(new String[]{})}.
+     * It initializes the application with default settings.</p>
+     *
+     * @see #Q2(String[], ClassLoader)
+     * @see #Q2(String[])
+     */
+    
     public Q2 () {
         this (new String[] {});
     }
+
+    /**
+     * Constructs a new {@code Q2} instance with the specified deployment directory
+     * and the default class loader.
+     *
+     * @param deployDir a {@code String} specifying the path to the deployment directory.
+     *                  This is passed as a command-line argument using the {@code -d} option.
+     *
+     * <p>This constructor is equivalent to calling {@code Q2(new String[]{"-d", deployDir})}.
+     * It sets the deployment directory and initializes the application.</p>
+     *
+     * @see #Q2(String[], ClassLoader)
+     * @see #Q2(String[])
+     */
     public Q2 (String deployDir) {
         this (new String[] { "-d", deployDir });
     }
