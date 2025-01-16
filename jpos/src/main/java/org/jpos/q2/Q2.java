@@ -141,7 +141,7 @@ public class Q2 implements FileFilter, Runnable {
     private boolean noShutdownHook;
     private long shutdownHookDelay = 0L;
     
-    public Q2 (String[] args, BundleContext bundleContext) {
+    public Q2 (String[] args, BundleContext bundleContext, ClassLoader classLoader) {
         super();
         this.args = args;
         startTime = Instant.now();
@@ -150,10 +150,15 @@ public class Q2 implements FileFilter, Runnable {
         libDir     = new File (deployDir, "lib");
         dirMap     = new TreeMap<>();
         deployDir.mkdirs ();
-        mainClassLoader = getClass().getClassLoader();
+        mainClassLoader = classLoader == null ? getClass().getClassLoader() : classLoader;
         this.bundleContext = bundleContext;
         registerQ2();
     }
+
+    public Q2 (String[] args, BundleContext bundleContext) {
+        this(args, bundleContext, null);
+    }
+
     public Q2 () {
         this (new String[] {}, null );
     }
