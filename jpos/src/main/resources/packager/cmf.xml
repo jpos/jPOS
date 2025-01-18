@@ -885,7 +885,7 @@
   <isofieldpackager
       id="113"
       length="9999"
-      name="jCard private use"
+      name="TPP private use"
       class="org.jpos.iso.IFB_LLLLBINARY"
       packager="org.jpos.iso.packager.GenericSubFieldPackager">
       <isofield
@@ -1073,6 +1073,21 @@
           length="9999"
           name="Additional Data - reserved for private use"
           class="org.jpos.iso.IFB_LLLLCHAR" />
+      <isofield
+          id="69"
+          length="40"
+          name="Card Token"
+          class="org.jpos.iso.IF_CHAR" />
+      <isofield
+          id="70"
+          length="19"
+          name="Transaction ID"
+          class="org.jpos.iso.IFB_NUMERIC" />
+      <isofield
+          id="71"
+          length="19"
+          name="Transaction GroupID"
+          class="org.jpos.iso.IFB_NUMERIC" />
   </isofieldpackager>
   <isofield
       id="114"
