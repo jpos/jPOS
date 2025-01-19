@@ -33,10 +33,10 @@ import org.bouncycastle.openpgp.operator.KeyFingerPrintCalculator;
 import org.bouncycastle.openpgp.operator.PBESecretKeyDecryptor;
 import org.bouncycastle.openpgp.operator.bc.*;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
+import org.jpos.core.Environment;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.q2.install.ModuleUtils;
-import org.jpos.security.SystemSeed;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -45,9 +45,12 @@ public class PGPHelper {
     private static KeyFingerPrintCalculator fingerPrintCalculator = new BcKeyFingerprintCalculator();
     private static final String PUBRING = "META-INF/.pgp/pubring.asc";
     private static final String SIGNER = "license@jpos.org";
+    private static int node;
     static {
         if(Security.getProvider("BC") == null)
             Security.addProvider(new BouncyCastleProvider());
+
+        node = Integer.parseInt(Environment.get("${q2.node:1}"));
     }
 
     private static boolean verifySignature(InputStream in, PGPPublicKey pk) throws IOException, PGPException {
@@ -205,7 +208,9 @@ public class PGPHelper {
                             }
                             matcher = p2.matcher(s);
                             if (matcher.find() && matcher.groupCount() == 2) {
-                                rc |= Integer.parseInt(matcher.group(2));
+                                int n = Integer.parseInt(matcher.group(2));
+                                node = n >= node ? node : 0;
+                                rc |= n;
                             }
                             if (s.contains(h)) {
                                 rc &= 0xEFFFF;
@@ -246,6 +251,10 @@ public class PGPHelper {
     }
     public static String getLicenseeHash() throws IOException, NoSuchAlgorithmException {
         return ISOUtil.hexString(hash(getLicensee()));
+    }
+
+    public static int node () {
+        return node;
     }
 
     /**

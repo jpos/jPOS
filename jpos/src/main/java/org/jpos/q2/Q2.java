@@ -140,7 +140,7 @@ public class Q2 implements FileFilter, Runnable {
 
     private boolean noShutdownHook;
     private long shutdownHookDelay = 0L;
-    
+
     public Q2 (String[] args, BundleContext bundleContext, ClassLoader classLoader) {
         super();
         this.args = args;
@@ -352,11 +352,15 @@ public class Q2 implements FileFilter, Runnable {
         return watchServiceClassname;
     }
 
+    public int node() {
+        return PGPHelper.node();
+    }
+
     public static Q2 getQ2() {
-        return (Q2) NameRegistrar.getIfExists(JMX_NAME);
+        return NameRegistrar.getIfExists(JMX_NAME);
     }
     public static Q2 getQ2(long timeout) {
-        return (Q2) NameRegistrar.get(JMX_NAME, timeout);
+        return NameRegistrar.get(JMX_NAME, timeout);
     }
 
     private boolean isXml(File f) {
@@ -695,14 +699,14 @@ public class Q2 implements FileFilter, Runnable {
         StringBuilder vs = new StringBuilder();
         if (appVersionString != null) {
             vs.append(
-              String.format ("jPOS %s %s/%s%s (%s)%n%s%s",
-                getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), appVersionString, getLicensee()
+              String.format ("jPOS %s %s/%s%s (%s/%d)%n%s%s",
+                getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), PGPHelper.node(), appVersionString, getLicensee()
               )
             );
         } else {
             vs.append(
-              String.format("jPOS %s %s/%s%s (%s) %s",
-                    getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), getLicensee()
+              String.format("jPOS %s %s/%s%s (%s/%d) %s",
+                    getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), PGPHelper.node(), getLicensee()
               )
             );
         }
