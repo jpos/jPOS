@@ -114,7 +114,7 @@ subprojects {
     }
 
     signing {
-        required { !isSnapshot }
+        required = { !isSnapshot }
         sign publishing.publications.mavenJava
     }
 

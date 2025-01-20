@@ -190,7 +190,7 @@ artifacts {
 task dist (type: Tar) { 
     dependsOn 'jar', 'assemble', 'sourceJar'
     compression = Compression.GZIP
-    includeEmptyDirs true
+    includeEmptyDirs=true
     with jposCopySpec
     into "jpos-$project.version"
     archiveExtension="tar.gz"
@@ -198,8 +198,8 @@ task dist (type: Tar) {
 
 task zip (type: Zip) { 
     dependsOn 'q2jar', 'assemble', 'sourceJar'
-    includeEmptyDirs true
-    includeEmptyDirs true
+    includeEmptyDirs=true
+    includeEmptyDirs=true
     with jposCopySpec
     into "jpos-$project.version"
 }
@@ -257,11 +257,14 @@ class BuildTimestampTask extends DefaultTask {
     @OutputFile
     File outputFile
 
+    @Input
+    String version
+
     @TaskAction
     public void writeFile() {
         new File(outputFile.parent).mkdirs()
         Properties props=new Properties()
-        props.put("version", project.version);
+        props.put("version", version);
         props.put("buildTimestamp", new Date().format("yyyy-MM-dd HH:mm:ss z"));
         props.store(new FileOutputStream(outputFile),"Revision Properties")
     }
@@ -277,6 +280,7 @@ task createRevisionPropertyFile(type: GitRevisionTask) {
 
 task createBuildTimestampPropertyFile(type: BuildTimestampTask) {
     outputFile = "$sourceSets.main.output.resourcesDir/org/jpos/q2/buildinfo.properties" as File
+    version = project.version
 }
 
 processResources.dependsOn createBuildTimestampPropertyFile, createRevisionPropertyFile
@@ -284,9 +288,12 @@ processResources.outputs.upToDateWhen{ false } // issue with Gradle 2.4 confused
 
 task installApp(type: Sync) {
     dependsOn q2jar
-    delete "${project.buildDir}/install/${project.name}/cfg"
-    description 'Installs jPOS based application'
-    into { file("${project.buildDir}/install/${project.name}") }
+    def buildDir = project.buildDir
+    def projectName = project.name
+
+    delete "${buildDir}/install/${projectName}/cfg"
+    description = 'Installs jPOS based application'
+    into { file("${buildDir}/install/${projectName}") }
     with jposCopySpec
 }
 
