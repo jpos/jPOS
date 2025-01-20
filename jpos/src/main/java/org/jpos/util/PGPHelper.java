@@ -54,11 +54,16 @@ public class PGPHelper {
         String nodeString = Environment.get("${q2.node:1}");
         Pattern pattern = Pattern.compile("\\d+");
 
-        node = (nodeString == null || nodeString.isEmpty())
-          ? 1
-          : (pattern.matcher(nodeString).find()
-          ? Integer.parseInt(pattern.matcher(nodeString).group())
-          : 1);
+        try {
+            Matcher matcher = pattern.matcher(nodeString);
+            node = (nodeString == null || nodeString.isEmpty())
+              ? 1 // Default value if nodeString is null or empty
+              : (matcher.find()
+              ? Integer.parseInt(matcher.group()) // Use matched digits if found
+              : 1); // Default value if no match is found
+        } catch (Throwable e) {
+            node = 0; // Fallback to default value in case of any exception
+        }
     }
 
     private static boolean verifySignature(InputStream in, PGPPublicKey pk) throws IOException, PGPException {
