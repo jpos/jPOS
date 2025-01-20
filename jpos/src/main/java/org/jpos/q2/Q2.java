@@ -439,6 +439,9 @@ public class Q2 implements FileFilter, Runnable {
         return NameRegistrar.get(JMX_NAME, timeout);
     }
 
+    public int node() {
+        return PGPHelper.node();
+    }
     private boolean isXml(File f) {
         return f != null && f.getName().toLowerCase().endsWith(".xml");
     }
