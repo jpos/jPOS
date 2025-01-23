@@ -106,6 +106,7 @@ public abstract class BaseChannel extends Observable
     private static final int DEFAULT_TIMEOUT = 300000;
     private int nextHostPort = 0;
     private boolean roundRobin = false;
+    private boolean debugIsoError = true;
 
     private Counter msgOutCounter;
     private Counter msgInCounter;
@@ -834,7 +835,7 @@ public abstract class BaseChannel extends Observable
                 evt.addMessage ("--- header ---");
                 evt.addMessage (ISOUtil.hexdump (header));
             }
-            if (b != null) {
+            if (b != null && debugIsoError) {
                 evt.addMessage ("--- data ---");
                 evt.addMessage (ISOUtil.hexdump (b));
             }
@@ -1097,6 +1098,7 @@ public abstract class BaseChannel extends Observable
         keepAlive = cfg.getBoolean ("keep-alive", false);
         expectKeepAlive = cfg.getBoolean ("expect-keep-alive", false);
         roundRobin = cfg.getBoolean ("round-robin", false);
+        debugIsoError = cfg.getBoolean ("debug-iso-error", true);
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
         try {
