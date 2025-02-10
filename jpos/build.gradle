@@ -309,6 +309,7 @@ task viewTests (description: 'Open Test Reports') {
 test {
   minHeapSize = "4G" 
   maxHeapSize = "8G"
+  maxParallelForks = 4 // easy with the parallel execution as some time sensitive tests may fail on small hardware
 }
 
 tasks.withType(JavaCompile) {
