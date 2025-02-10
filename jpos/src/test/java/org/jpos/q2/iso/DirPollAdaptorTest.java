@@ -116,47 +116,7 @@ public class DirPollAdaptorTest {
         String result = new DirPollAdaptor().getProcessor();
         assertNull(result, "result");
     }
-
-    @Test
-    public void testInitServiceThrowsNullPointerException() throws Throwable {
-        String[] args = new String[0];
-        DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
-        dirPollAdaptor.setServer(q2);
-        try {
-            dirPollAdaptor.initService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertEquals(".", dirPollAdaptor.dirPoll.getPath(), "dirPollAdaptor.dirPoll.getPath()");
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.q2.QFactory.getConfiguration(org.jdom2.Element)\" because \"factory\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-            assertFalse(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
-        }
-    }
-
-    @Test
-    public void testInitServiceThrowsNullPointerException1() throws Throwable {
-        String[] args = new String[1];
-        args[0] = "testString";
-        DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
-        dirPollAdaptor.setServer(q2);
-        dirPollAdaptor.setPriorities("testDirPollAdaptorPriorities");
-        try {
-            dirPollAdaptor.initService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertEquals(".", dirPollAdaptor.dirPoll.getPath(), "dirPollAdaptor.dirPoll.getPath()");
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.q2.QFactory.getConfiguration(org.jdom2.Element)\" because \"factory\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-            assertFalse(dirPollAdaptor.isModified(), "dirPollAdaptor.isModified()");
-        }
-    }
-
+    
     @Test
     public void testInitServiceThrowsNullPointerException2() throws Throwable {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();

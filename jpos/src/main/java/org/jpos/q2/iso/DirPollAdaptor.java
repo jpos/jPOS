@@ -18,6 +18,10 @@
 
 package org.jpos.q2.iso;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.q2.QBeanSupport;
@@ -40,7 +44,7 @@ public class DirPollAdaptor
     int poolSize;
     long pollInterval;
     protected DirPoll dirPoll;
-    protected Thread dirPollThread = null;
+    protected ExecutorService dirPollExecutor;
 
     public DirPollAdaptor () {
         super ();
@@ -52,7 +56,11 @@ public class DirPollAdaptor
         QFactory factory = getServer().getFactory();
         dirPoll  = createDirPoll();
         dirPoll.setPath (getPath ());
-        dirPoll.setThreadPool (new ThreadPool (1, poolSize));
+        if(cfg.getBoolean("virtual-threads", true)) {
+            dirPoll.setThreadPool(Executors.newFixedThreadPool(poolSize, Thread.ofVirtual().factory()));
+        }else {
+            dirPoll.setThreadPool(Executors.newFixedThreadPool(poolSize, Thread.ofPlatform().inheritInheritableThreadLocals(true).factory()));
+        }
         dirPoll.setPollInterval (pollInterval);
         if (priorities != null)
             dirPoll.setPriorities (priorities);
@@ -81,26 +89,22 @@ public class DirPollAdaptor
             throw new IllegalStateException("Not initialized!");
         }
         synchronized (dirPoll) {
-            dirPollThread = new Thread(dirPoll);
-            dirPollThread.start();
+            dirPollExecutor =  Executors.newVirtualThreadPerTaskExecutor();
+            dirPollExecutor.submit(dirPoll);
         }
     }
 
     protected void stopService () throws Exception {
         dirPoll.destroy ();
         synchronized (dirPoll) {
-            if (dirPollThread != null) {
-                long shutdownTimeout = cfg.getLong("shutdown-timeout", 60000);
-                try {
-                    dirPollThread.join(shutdownTimeout);
-                } catch (InterruptedException e) {
-
+            long shutdownTimeout = cfg.getLong("shutdown-timeout", 60000);
+            dirPollExecutor.shutdown();
+            try {
+                if (!dirPollExecutor.awaitTermination(shutdownTimeout, TimeUnit.MILLISECONDS)) {
+                    dirPollExecutor.shutdownNow();
                 }
-                if (dirPollThread.isAlive()) {
-                    getLog().warn(getName() + " - dirPoll thread did not finish in " + shutdownTimeout + " milliseconds. Interrupting thread now.");
-                    dirPollThread.interrupt();
-                }
-                dirPollThread = null;
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
     }

@@ -26,6 +26,9 @@ import org.jpos.iso.ISOException;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * DirPoll operates on a set of directories which defaults to
@@ -61,7 +64,7 @@ public class DirPoll extends SimpleLogSource
     private int currentPriority;
     private String basePath;
     private String responseSuffix;
-    private ThreadPool pool;
+    private ExecutorService executor;
     private Object processor;
     private final Object shutdownMonitor = new Object();
 
@@ -74,12 +77,14 @@ public class DirPoll extends SimpleLogSource
     private boolean acceptZeroLength = false;
     private boolean regexPriorityMatching = false;
     private List<String> poolBatchFiles = new ArrayList<>();
-
+    private static final long SHUTDOWN_WAIT = 15000;
+    protected Configuration cfg;
+    
     public DirPoll () {
         prio = new Vector();
         setPollInterval(1000);
         setPath (".");
-        pool = null;
+        executor = null;
     }
     public synchronized void setPath(String base) {
         this.basePath = base;
@@ -189,6 +194,7 @@ public class DirPoll extends SimpleLogSource
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException
     {
+    	this.cfg = cfg;
         if (cfg != null) {
             if (processor instanceof Configurable) {
                 ((Configurable) processor).setConfiguration (cfg);
@@ -226,9 +232,10 @@ public class DirPoll extends SimpleLogSource
             prio = v;
         }
     }
-    public synchronized void setThreadPool (ThreadPool pool) {
-        this.pool = pool;
+    public synchronized void setThreadPool (ExecutorService executor) {
+        this.executor = executor;
     }
+    
     //--------------------------------------- FilenameFilter implementation
     public boolean accept(File dir, String name) {
         boolean result;
@@ -274,7 +281,7 @@ public class DirPoll extends SimpleLogSource
                     f = scan();
                 }
                 if (f != null) {
-                    getPool().execute (new ProcessorRunner (f));
+                    executor.submit(new ProcessorRunner (f));
                     Thread.yield(); // be nice
                 }
                 else {
@@ -301,6 +308,17 @@ public class DirPoll extends SimpleLogSource
         synchronized (shutdownMonitor) {
             shutdown = true;
             shutdownMonitor.notifyAll();
+
+            if (executor != null) {
+                executor.shutdown();
+                try {
+                    if (!executor.awaitTermination(SHUTDOWN_WAIT, TimeUnit.MILLISECONDS)) {
+                        executor.shutdownNow();
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
     }
 
@@ -391,10 +409,15 @@ public class DirPoll extends SimpleLogSource
         return null;
     }
 
-    private synchronized ThreadPool getPool() {
-        if (pool == null)
-            pool = new ThreadPool (1, 10);
-        return pool;
+    private synchronized ExecutorService getExecutor() {
+        if (executor == null) {
+        	if (cfg.getBoolean("virtual-threads", true)) {
+        		 executor = Executors.newFixedThreadPool(10, Thread.ofVirtual().factory());
+        	} else {
+        		executor = Executors.newFixedThreadPool(10, Thread.ofPlatform().inheritInheritableThreadLocals(true).factory());
+        	}
+        }
+        return executor;
     }
 
     // ------------------------------------------------ inner interfaces

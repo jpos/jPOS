@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +52,7 @@ public class DirPollOperationTest {
         dirPoll = new DirPoll();
         dirPoll.setPath(basePath);
         dirPoll.setPollInterval(DIRPOLL_CHECK_INTERVAL);
+        dirPoll.setThreadPool(Executors.newFixedThreadPool(1, Thread.ofVirtual().factory()));
         dirPoll.setProcessor(new DirPoll.FileProcessor() {
             @Override
             public void process(File name) {
