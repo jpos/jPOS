@@ -25,6 +25,7 @@ import io.micrometer.core.instrument.binder.BaseUnits;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.Environment;
+import org.jpos.core.annotation.Config;
 import org.jpos.core.handlers.exception.ExceptionHandlerAware;
 import org.jpos.core.handlers.exception.ExceptionHandlerConfigAware;
 import org.jpos.iso.*;
@@ -43,9 +44,11 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.SocketTimeoutException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -77,12 +80,15 @@ public class ChannelAdaptor
 
     private Counter msgOutCounter;
     private Counter msgInCounter;
+    @Config("soft-stop") private long softStop;
 
     public ChannelAdaptor () {
         super ();
         resetCounters();
     }
     public void initService() throws ConfigurationException {
+        if (softStop < 0)
+            throw new ConfigurationException ("Invalid soft-stop %d".formatted(Long.valueOf(softStop)));
         initSpaceAndQueues();
         NameRegistrar.register (getName(), this);
         executor = QFactory.executorService(cfg.getBoolean("virtual-threads", false));
@@ -291,7 +297,8 @@ public class ChannelAdaptor
         }
         public void run () {
             Thread.currentThread().setName ("channel-sender-" + in);
-            while (running ()){
+
+            while (running()){
                 try {
                     checkConnection ();
                     if (!running())
@@ -328,7 +335,25 @@ public class ChannelAdaptor
         }
         public void run () {
             Thread.currentThread().setName ("channel-receiver-"+out);
-            while (running()) {
+            boolean shuttingDown = false;
+            Instant shutdownDeadline = null;
+            final Duration gracePeriod = Duration.ofMillis(softStop);
+            while (true) {
+                if (!shuttingDown && !running()) {
+                    if (gracePeriod.isZero())
+                        break;
+                    shuttingDown = true;
+                    shutdownDeadline = Instant.now().plus(gracePeriod);
+                    getLog().info("soft-stop (%s)".formatted(shutdownDeadline.atZone(ZoneId.systemDefault())));
+                }
+                final boolean shouldExit = shuttingDown
+                  ? Instant.now().isAfter(shutdownDeadline)
+                  : !running();
+
+                if (shouldExit) {
+                    getLog().info ("stop");
+                    break;
+                }
                 try {
                     Object r = sp.rd (ready, 5000L);
                     if (r == null) {
