@@ -49,6 +49,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -75,6 +77,7 @@ public class ChannelAdaptor
     private final Object disconnectLock = Boolean.TRUE;
 
     private ExecutorService executor;
+    private ScheduledExecutorService scheduledExcecutor;
 
     private Gauge connectionsGauge;
 
@@ -92,6 +95,11 @@ public class ChannelAdaptor
         initSpaceAndQueues();
         NameRegistrar.register (getName(), this);
         executor = QFactory.executorService(cfg.getBoolean("virtual-threads", false));
+        scheduledExcecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
+        });
     }
     public void startService () {
         try {
@@ -108,14 +116,14 @@ public class ChannelAdaptor
     public void stopService () {
         try {
             sp.out (in, Boolean.TRUE);
-            if (channel != null)
-                disconnect();
-            if (waitForWorkersOnStop) {
-                executor.awaitTermination(5L, TimeUnit.SECONDS);
-                if (!writeOnly) {
-                    sp.put(ready, new Date());
-                }
+            if (channel != null) {
+                if (softStop > 0L)
+                    disconnectLater(softStop);
+                else
+                    disconnect();
             }
+            if (waitForWorkersOnStop)
+                executor.awaitTermination(Math.max(5000L, softStop), TimeUnit.MILLISECONDS);
             sender = null;
             receiver = null;
             removeMeters();
@@ -397,6 +405,7 @@ public class ChannelAdaptor
                     }
                 }
             }
+            disconnect();
         }
     }
     protected void checkConnection () {
@@ -430,6 +439,10 @@ public class ChannelAdaptor
                 getLog().warn("disconnect", e);
             }
         }
+    }
+    private void disconnectLater(long delayInMillis) {
+         SpaceUtil.wipe(sp, ready);
+         scheduledExcecutor.schedule(this::disconnect, delayInMillis, TimeUnit.MILLISECONDS);
     }
     public synchronized void setHost (String host) {
         setProperty (getProperties ("channel"), "host", host);
