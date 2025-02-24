@@ -28,6 +28,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 /**
@@ -38,34 +39,35 @@ public class ModuleUtils
     private static final String MODULES_UUID_DIR = "META-INF/modules/uuids/";
     private static final String MODULES_RKEYS_DIR = "META-INF/modules/rkeys/";
 
-    public static List<String> getModuleEntries(String prefix) throws IOException
-    {
-        List<String> result=new ArrayList<String>();
+    public static List<String> getModuleEntries(String prefix) throws IOException {
+        List<String> result = new ArrayList<>();
 
         Enumeration<URL> urls = ModuleUtils.class.getClassLoader().getResources(prefix);
-        while (urls.hasMoreElements())
-        {
+        while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
-            if(url==null) return Collections.emptyList();
+            if (url == null) continue;
 
-            try
-            {
-                final List<String> lst = url.getProtocol().equals("jar") ?
-                                         resolveModuleEntriesFromJar(url,prefix) :
-                                         resolveModuleEntriesFromFiles(url,prefix);
-                result.addAll(lst);
-            }
-            catch (URISyntaxException e)
-            {
-                throw new IOException("Bad URL",e);
+            try {
+                List<String> entries;
+                String protocol = url.getProtocol();
+                if ("jar".equals(protocol)) {
+                    entries = resolveModuleEntriesFromJar(url, prefix);
+                } else if ("file".equals(protocol)) {
+                    entries = resolveModuleEntriesFromFiles(url, prefix);
+                } else {
+                    // Unsupported protocol, skip with optional logging
+                    continue;
+                }
+                result.addAll(entries);
+            } catch (URISyntaxException e) {
+                throw new IOException("Bad URL: " + url, e);
             }
         }
         return result;
     }
 
-    public static List<String> getModulesUUIDs () throws IOException {
-        return ModuleUtils.getModuleEntries(MODULES_UUID_DIR)
-          .stream()
+    public static List<String> getModulesUUIDs() throws IOException {
+        return getModuleEntries(MODULES_UUID_DIR).stream()
           .sorted()
           .map(p -> p.substring(MODULES_UUID_DIR.length()))
           .collect(Collectors.toList());
@@ -81,60 +83,49 @@ public class ModuleUtils
 
     public static String getSystemHash() throws IOException, NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        boolean updated = false;
-        for (String s : getModulesUUIDs()) {
-            digest.update(s.getBytes());
-            updated = true;
-        }
-        return updated ? Base64.getEncoder().encodeToString(digest.digest()) : "";
+        List<String> uuids = getModulesUUIDs();
+        if (uuids.isEmpty()) return "";
+
+        uuids.forEach(uuid -> digest.update(uuid.getBytes()));
+        return Base64.getEncoder().encodeToString(digest.digest());
     }
 
-    private static List<String> resolveModuleEntriesFromFiles(URL url,String _prefix) throws URISyntaxException
-    {
-        final String prefix=_prefix.endsWith("/")?_prefix:_prefix+"/";
-
-        List<String> resourceList =new ArrayList<String>();
-
-        final URI uri = url.toURI();
-        File f=new File(uri);
-        addFiles(f,prefix, resourceList);
-
+    private static List<String> resolveModuleEntriesFromFiles(URL url, String prefix)
+      throws URISyntaxException {
+        String normalizedPrefix = prefix.endsWith("/") ? prefix : prefix + "/";
+        List<String> resourceList = new ArrayList<>();
+        File dir = new File(url.toURI());
+        addFiles(dir, normalizedPrefix, resourceList);
         return resourceList;
     }
 
-    private static void addFiles(File f,String prefix,List<String> resourceList)
-    {
-        File files[]=f.listFiles();
-        if(files==null) return;
-        
-        for (File file : files)
-        {
-            if(file.isDirectory())
-            {
-                addFiles(file,prefix+file.getName()+"/", resourceList);
-            }
-            else
-            {
-                resourceList.add(prefix+file.getName());
+    private static void addFiles(File dir, String prefix, List<String> resourceList) {
+        File[] files = dir.listFiles();
+        if (files == null) return;
+
+        for (File file : files) {
+            if (file.isDirectory()) {
+                addFiles(file, prefix + file.getName() + "/", resourceList);
+            } else {
+                resourceList.add(prefix + file.getName());
             }
         }
     }
 
-    private static List<String> resolveModuleEntriesFromJar(URL url,String _prefix) throws IOException
-    {
-        final String prefix=_prefix.endsWith("/")?_prefix:_prefix+"/";
+    private static List<String> resolveModuleEntriesFromJar(URL url, String prefix)
+      throws IOException {
+        String normalizedPrefix = prefix.endsWith("/") ? prefix : prefix + "/";
+        List<String> resourceList = new ArrayList<>();
 
-        List<String> resourceList =new ArrayList<String>();
-
-        JarURLConnection conn=(JarURLConnection)url.openConnection();
-        Enumeration entries=conn.getJarFile().entries();
-        while (entries.hasMoreElements())
-        {
-            JarEntry entry = (JarEntry) entries.nextElement();
-            String name=entry.getName();
-            if(name.startsWith(prefix) && !entry.isDirectory())
-            {
-                resourceList.add(name);
+        JarURLConnection conn = (JarURLConnection) url.openConnection();
+        try (JarFile jarFile = conn.getJarFile()) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String name = entry.getName();
+                if (name.startsWith(normalizedPrefix) && !entry.isDirectory()) {
+                    resourceList.add(name);
+                }
             }
         }
         return resourceList;
