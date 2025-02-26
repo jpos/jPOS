@@ -77,7 +77,7 @@ public class ChannelAdaptor
     private final Object disconnectLock = Boolean.TRUE;
 
     private ExecutorService executor;
-    private ScheduledExecutorService scheduledExcecutor;
+    private ScheduledExecutorService scheduledExecutor;
 
     private Gauge connectionsGauge;
 
@@ -95,11 +95,9 @@ public class ChannelAdaptor
         initSpaceAndQueues();
         NameRegistrar.register (getName(), this);
         executor = QFactory.executorService(cfg.getBoolean("virtual-threads", false));
-        scheduledExcecutor = Executors.newSingleThreadScheduledExecutor(r -> {
-            Thread t = new Thread(r);
-            t.setDaemon(true);
-            return t;
-        });
+        scheduledExecutor = Executors.newSingleThreadScheduledExecutor(
+            Thread.ofVirtual().factory()
+        );
     }
     public void startService () {
         try {
@@ -409,9 +407,7 @@ public class ChannelAdaptor
         }
     }
     protected void checkConnection () {
-        while (running() && 
-                sp.rdp (reconnect) != null)
-        {
+        while (running() && sp.rdp (reconnect) != null) {
             ISOUtil.sleep(1000);
         }
         while (running() && !channel.isConnected ()) {
@@ -442,7 +438,7 @@ public class ChannelAdaptor
     }
     private void disconnectLater(long delayInMillis) {
          SpaceUtil.wipe(sp, ready);
-         scheduledExcecutor.schedule(this::disconnect, delayInMillis, TimeUnit.MILLISECONDS);
+         scheduledExecutor.schedule(this::disconnect, delayInMillis, TimeUnit.MILLISECONDS);
     }
     public synchronized void setHost (String host) {
         setProperty (getProperties ("channel"), "host", host);
@@ -478,7 +474,7 @@ public class ChannelAdaptor
         lastTxn = 0l;
     }
     public String getCountersAsString () {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         append (sb, "tx=", tx);
         append (sb, ", rx=", rx);
         append (sb, ", connects=", connects);
@@ -515,7 +511,7 @@ public class ChannelAdaptor
     protected Space grabSpace (Element e) {
         return SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
-    protected void append (StringBuffer sb, String name, int value) {
+    protected void append (StringBuilder sb, String name, int value) {
         sb.append (name);
         sb.append (value);
     }
