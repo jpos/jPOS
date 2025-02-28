@@ -296,8 +296,21 @@ public class ChannelAdaptor
                         break;
                     Object o = sp.in (in, delay);
                     if (o instanceof ISOMsg) {
+                        if (!channel.isConnected()) {
+                            // push back the message so it can be handled by another channel adaptor
+                            sp.push(in, o);
+                            continue;
+                        }
                         channel.send ((ISOMsg) o);
                         tx++;
+                    } else if (o instanceof Integer) {
+                        if ((int)o != hashCode()) {
+                            // STOP indicator seems to be for another channel adaptor
+                            // sharing the same queue push it back and allow the companion
+                            // channel to get it
+                            sp.push (in, o, 500L);
+                            ISOUtil.sleep (1000L); // larger sleep so that the indicator has time to timeout
+                        }
                     }
                     else if (keepAlive && channel.isConnected() && channel instanceof BaseChannel) {
                         ((BaseChannel)channel).sendKeepAlive();
@@ -345,7 +358,7 @@ public class ChannelAdaptor
                         if (!ignoreISOExceptions) {
                             sp.out (reconnect, Boolean.TRUE, delay);
                             disconnect ();
-                            sp.out (in, Boolean.TRUE); // wake-up Sender
+                            sp.push (in, hashCode()); // wake-up Sender
                         }
                         ISOUtil.sleep(1000);
                     }
@@ -354,7 +367,7 @@ public class ChannelAdaptor
                         getLog().warn ("channel-receiver-"+out, "Read timeout / EOF - reconnecting");
                         sp.out (reconnect, Boolean.TRUE, delay);
                         disconnect ();
-                        sp.out (in, Boolean.TRUE); // wake-up Sender
+                        sp.push (in, hashCode()); // wake-up Sender
                         ISOUtil.sleep(1000);
                     }
                 } catch (Exception e) { 
@@ -362,7 +375,7 @@ public class ChannelAdaptor
                         getLog().warn ("channel-receiver-"+out, e);
                         sp.out (reconnect, Boolean.TRUE, delay);
                         disconnect ();
-                        sp.out (in, Boolean.TRUE); // wake-up Sender
+                        sp.push (in, hashCode()); // wake-up Sender
                         ISOUtil.sleep(1000);
                     }
                 }
