@@ -29,6 +29,9 @@ import java.io.Serializable;
 
 public class Debug extends Log implements AbortParticipant {
     public int prepare (long id, Serializable o) {
+        if (o instanceof Context ctx) {
+            ctx.log("Debug::prepare");
+        }
         Logger.log (createEvent ("prepare", id, (Context) o));
         return PREPARED | READONLY;
     }
