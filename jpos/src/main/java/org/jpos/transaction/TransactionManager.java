@@ -59,6 +59,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Metrics;
 
+import static org.jpos.transaction.ContextConstants.LOGEVT;
 import static org.jpos.transaction.ContextConstants.TIMESTAMP;
 
 @SuppressWarnings("unchecked")
@@ -1164,6 +1165,18 @@ public class TransactionManager
             } else {
                 Context c = ctx.clone(pp.requires.toArray(), pp.optional.toArray());
                 action = preparationFunction.apply(p, id, c);
+                if (!pp.requires.contains(LOGEVT.toString())) {
+                    // if we are not inheriting parent's log event and there's a log event
+                    // in the childs context, copy it.
+                    LogEvent evt = c.get(LOGEVT.toString());
+                    if (evt != null) {
+                        LogEvent parentLogEvent = ctx.getLogEvent();
+                        synchronized (parentLogEvent) {
+                            parentLogEvent.getPayLoad().addAll(evt.getPayLoad());
+                        }
+                        c.remove(LOGEVT.toString());
+                    }
+                }
                 ctx.merge(c.clone(pp.provides.toArray()));
             }
         } else {
