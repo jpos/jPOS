@@ -136,18 +136,17 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return Arrays.stream(keys)
           .flatMap(obj -> obj instanceof Object[] ? Arrays.stream((Object[]) obj) : Stream.of(obj))
           .allMatch(key -> {
-              if (key instanceof String s) {
-                  s = s.strip();
-                  if (s.contains("|")) {
-                      return Arrays.stream(s.split("\\|"))
-                        .map(String::strip)
-                        .anyMatch(m::containsKey);
-                  } else {
-                      return m.containsKey(s);
-                  }
+              if (key == null) {
+                  return m.containsKey(null);  // Explicit null check
               }
-              return m.containsKey(key);
-          });
+              String s = (key instanceof String a ? a : key.toString()).strip();
+              if (s.contains("|")) {
+                  return Arrays.stream(s.split("\\|"))
+                    .map(String::strip)
+                    .anyMatch(m::containsKey);
+              }
+              return m.containsKey(s);
+        });
     }
 
     /**
@@ -358,12 +357,26 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
      */
     public Context clone(Object... keys) {
         Context clonedContext = new Context();
-        Map<Object,Object> m = getMap();
-        Map<Object,Object> pm = getPMap();
+        Map<Object, Object> m = getMap();
+        Map<Object, Object> pm = getPMap();
         Arrays.stream(keys)
           .flatMap(obj -> obj instanceof Object[] ? Arrays.stream((Object[]) obj) : Stream.of(obj))
-          .flatMap(obj -> obj instanceof String s ? Arrays.stream(s.strip().split("\\|")).map(String::strip) : Stream.of(obj))
-          .filter(m::containsKey)
+          .flatMap(obj -> {
+              if (obj == null) {
+                  return Stream.of((Object) null);  // Handle null as a key
+              } else if (obj instanceof String s) {
+                  s = s.strip();
+                  return Arrays.stream(s.split("\\|"))
+                    .map(String::strip)
+                    .map(str -> (Object) str);  // Split strings into keys
+              } else {
+                  String s = obj.toString().strip();  // Convert non-String to String
+                  return Arrays.stream(s.split("\\|"))
+                    .map(String::strip)
+                    .map(str -> (Object) str);
+              }
+          })
+          .filter(m::containsKey)  // Check if the key exists in the map
           .forEachOrdered(key -> clonedContext.put(key, m.get(key), pm.containsKey(key)));
         return clonedContext;
     }
