@@ -42,6 +42,8 @@ import org.jpos.q2.install.ModuleUtils;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import static org.bouncycastle.bcpg.ArmoredOutputStream.VERSION_HDR;
+
 public class PGPHelper {
     private static KeyFingerPrintCalculator fingerPrintCalculator = new BcKeyFingerprintCalculator();
     private static final String PUBRING = "META-INF/.pgp/pubring.asc";
@@ -303,7 +305,9 @@ public class PGPHelper {
         ByteArrayOutputStream encOut = new ByteArrayOutputStream();
         OutputStream out = encOut;
         if (armor) {
-            out = new ArmoredOutputStream(out);
+            out = ArmoredOutputStream.builder()
+              .setVersion("BCPG/jPOS " + Q2.getVersion())
+              .build(out);
         }
         ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 
