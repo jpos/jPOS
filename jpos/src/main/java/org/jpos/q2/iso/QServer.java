@@ -348,11 +348,12 @@ public class QServer
             }
             else if ("ALL".equals(sendMethod)) {
                 String channelNames = getISOChannelNames();
+                String[] channelName;
                 if (channelNames != null) {
-                    StringTokenizer tok = new StringTokenizer(channelNames, " ");
-                    while (tok.hasMoreTokens()) {
+                    channelName = channelNames.split(" (?=\\d+ \\S+:\\S+)");
+                    for (String s : channelName) {
                         try {
-                            ISOChannel c = server.getISOChannel(tok.nextToken());
+                            ISOChannel c = server.getISOChannel(s);
                             if (c == null) {
                                 throw new ISOException("Server has no active connections");
                             }
@@ -368,15 +369,9 @@ public class QServer
             }
             else if ("RR".equals(sendMethod)) {
                 String channelNames = getISOChannelNames();
-                int i =0;
                 String[] channelName;
                 if (channelNames != null) {
-                    StringTokenizer tok = new StringTokenizer(channelNames, " ");
-                    channelName = new String[tok.countTokens()];
-                    while (tok.hasMoreTokens()) {
-                        channelName[i] = tok.nextToken();
-                        i++;
-                    }
+                    channelName = channelNames.split(" (?=\\d+ \\S+:\\S+)");
                     try {
                         ISOChannel c = server.getISOChannel(channelName[msgn.incrementAndGet() % channelName.length]);
                         if (c == null) {
