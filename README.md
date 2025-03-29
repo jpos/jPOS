@@ -2,6 +2,7 @@
 
 [![Javadocs](http://www.javadoc.io/badge/org.jpos/jpos.svg)](http://www.javadoc.io/doc/org.jpos/jpos)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
+[![libs.tech recommends](https://libs.tech/project/1057490/badge.svg)](https://libs.tech/project/1057490/jpos)
 
 ## Documentation
 
