@@ -117,7 +117,7 @@ public class ISOCurrencyTest {
         c.put("191", "HRK"); cD.put("191", 2); // Kuna CROATIA 
         c.put("192", "CUP"); cD.put("192", 2); // Cuban Peso CUBA 
         c.put("931", "CUC"); cD.put("931", 2); // Peso Convertible CUBA 
-        c.put("532", "ANG"); cD.put("532", 2); // Netherlands Antillean Guilder CURAÇAO 
+        c.put("532", "XCG"); cD.put("532", 2); // Netherlands Antillean Guilder CURAÇAO - changed March 31 2025
         c.put("978", "EUR"); cD.put("978", 2); // Euro CYPRUS 
         c.put("203", "CZK"); cD.put("203", 2); // Czech Koruna CZECH REPUBLIC (THE) 
         c.put("208", "DKK"); cD.put("208", 2); // Danish Krone DENMARK 
@@ -266,8 +266,7 @@ public class ISOCurrencyTest {
         c.put("690", "SCR"); cD.put("690", 2); // Seychelles Rupee SEYCHELLES 
         c.put("694", "SLL"); cD.put("694", 2); // Leone SIERRA LEONE 
         c.put("702", "SGD"); cD.put("702", 2); // Singapore Dollar SINGAPORE 
-        c.put("532", "ANG"); cD.put("532", 2); // Netherlands Antillean Guilder SINT MAARTEN (DUTCH PART) 
-        c.put("978", "EUR"); cD.put("978", 2); // Euro SLOVAKIA 
+        c.put("978", "EUR"); cD.put("978", 2); // Euro SLOVAKIA
         c.put("978", "EUR"); cD.put("978", 2); // Euro SLOVENIA 
         c.put("090", "SBD"); cD.put("090", 2); // Solomon Islands Dollar SOLOMON ISLANDS 
         c.put("706", "SOS"); cD.put("706", 2); // Somali Shilling SOMALIA 
@@ -327,7 +326,7 @@ public class ISOCurrencyTest {
                 Currency currencyByCode = ISOCurrency.getCurrency(code);
                 assertEquals(cD.get(code).intValue(), currencyByCode.getDecimals(), "Decimal digits do not match for " + currencyByCode);
                 assertEquals(c.get(code), currencyByCode.getAlphaCode(), "Name does not match for " + currencyByCode);
-            } catch (Throwable ignored) {
+            } catch (Exception ignored) {
                 msg.append(c.get(code) + "=" +
                         code + " " +  cD.get(code) +
                         " //"  + ignored.getMessage() + "\n");
