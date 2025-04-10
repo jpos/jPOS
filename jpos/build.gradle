@@ -6,38 +6,11 @@ plugins {
 
 extraJavaModuleInfo {
     failOnMissingModuleInfo.set(false)
-    def sshdVersion = ((String) libs.sshd.orNull).split(":")[-1] // there has to be a better way to get the version
-
     automaticModule ('org.javatuples:javatuples', 'org.javatuples')
     automaticModule ('org.hdrhistogram:HdrHistogram', 'org.hdrhistogram.HdrHistogram')
     automaticModule ('org.apache-extras.beanshell:bsh', 'bsh')
     automaticModule ('com.sleepycat:je', 'com.sleepycat.je')
     automaticModule ('jdbm:jdbm', 'org.jdbm')
-
-    module ('org.apache.sshd:sshd-core',  'org.apache.sshd.core', "${sshdVersion}") {
-        mergeJar('org.apache.sshd:sshd-common')
-        mergeJar('net.i2p.crypto:eddsa')
-
-        exports('org.apache.sshd.server')
-        exports('org.apache.sshd.server.auth.pubkey')
-        exports('org.apache.sshd.server.session')
-        exports('org.apache.sshd.server.channel')
-        exports('org.apache.sshd.server.command')
-        exports('org.apache.sshd.server.shell')
-
-        exports('org.apache.sshd.server.keyprovider')
-        exports('org.apache.sshd.common')
-        exports('org.apache.sshd.common.config.keys')
-        exports('org.apache.sshd.common.util.security.eddsa')
-        exports('org.apache.sshd.common.cipher')
-        exports('org.apache.sshd.common.channel')
-        exports('org.apache.sshd.common.keyprovider')
-        exports('org.apache.sshd.common.util.buffer')
-        exports('org.apache.sshd.common.util.security')
-        exports('org.apache.sshd.common.config.keys.impl')
-        exports('net.i2p.crypto.eddsa')
-        exports('net.i2p.crypto.eddsa.spec')
-    }
 }
 
 dependencies { 
@@ -60,8 +33,6 @@ dependencies {
     implementation libs.yaml;
     implementation libs.jdbm
     implementation libs.sleepycatje
-    implementation libs.sshd
-    implementation libs.eddsa
     implementation libs.hdrhistogram
 
     testImplementation libs.commonslang3

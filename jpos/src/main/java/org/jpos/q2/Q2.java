@@ -47,8 +47,6 @@ import org.jpos.log.AuditLogEvent;
 import org.jpos.log.evt.*;
 import org.jpos.metrics.PrometheusService;
 import org.jpos.q2.install.ModuleUtils;
-// import org.jpos.q2.ssh.SshService;
-import org.jpos.q2.ssh.SshService;
 import org.jpos.security.SystemSeed;
 import org.jpos.util.Log;
 import org.jpos.util.LogEvent;
@@ -142,7 +140,6 @@ public class Q2 implements FileFilter, Runnable {
     private String name = JMX_NAME;
     private long lastVersionLog;
     private String watchServiceClassname;
-    private boolean enableSsh;
     private boolean disableDeployScan;
     private boolean disableDynamicClassloader;
     private boolean disableJFR;
@@ -307,10 +304,6 @@ public class Q2 implements FileFilter, Runnable {
             if (cli != null)
                 cli.start();
             initConfigDecorator();
-            if (enableSsh) {
-                deployElement(SshService.createDescriptor(sshPort, sshUser, sshAuthorizedKeys, sshHostKeyFile),
-                  "05_sshd-" + getInstanceId() + ".xml", false, true);
-            }
             if (metricsPort != 0) {
                 deployElement(
                   PrometheusService.createDescriptor(metricsPort, metricsPath, statusPath),
@@ -806,11 +799,6 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("c","command", true, "Command to execute");
         options.addOption ("p", "pid-file", true, "Store project's pid");
         options.addOption ("n", "name", true, "Optional name (defaults to 'Q2')");
-        options.addOption ("s", "ssh", false, "Enable SSH server");
-        options.addOption ("sp", "ssh-port", true, "SSH port (defaults to 2222)");
-        options.addOption ("sa", "ssh-authorized-keys", true, "Path to authorized key file (defaults to 'cfg/authorized_keys')");
-        options.addOption ("su", "ssh-user", true, "SSH user (defaults to 'admin')");
-        options.addOption ("sh", "ssh-host-key-file", true, "SSH host key file, defaults to 'cfg/hostkeys.ser'");
         options.addOption ("sd", "shutdown-delay", true, "Shutdown delay in seconds (defaults to immediate)");
         options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
         options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
@@ -870,7 +858,6 @@ public class Q2 implements FileFilter, Runnable {
             disableDeployScan = line.hasOption("Ns");
             disableDynamicClassloader = line.hasOption("Nd");
             disableJFR = line.hasOption("Nf");
-            enableSsh = line.hasOption("s");
             sshPort = Integer.parseInt(line.getOptionValue("sp", "2222"));
             sshAuthorizedKeys = line.getOptionValue ("sa", "cfg/authorized_keys");
             sshUser = line.getOptionValue("su", "admin");

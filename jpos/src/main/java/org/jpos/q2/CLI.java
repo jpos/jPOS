@@ -18,12 +18,9 @@
 
 package org.jpos.q2;
 
-import org.apache.sshd.server.Environment;
-import org.apache.sshd.server.Signal;
 import org.jline.reader.*;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Attributes;
-import org.jline.terminal.Size;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
@@ -48,10 +45,10 @@ public class CLI implements Runnable {
     private History mainHistory;
 
     public CLI(Q2 q2, String line, boolean keepRunning) throws IOException {
-        this(q2, System.in, System.out, null, line, keepRunning, true);
+        this(q2, System.in, System.out, line, keepRunning, true);
     }
 
-    public CLI(Q2 q2, InputStream in, OutputStream rawout, Environment env, String line, boolean keepRunning, boolean interactive) throws IOException {
+    public CLI(Q2 q2, InputStream in, OutputStream rawout, String line, boolean keepRunning, boolean interactive) throws IOException {
         Logger.getLogger("org.jline").setLevel(Level.SEVERE);
         this.q2 = q2;
         PrintStream out = rawout instanceof PrintStream ? (PrintStream) rawout : new PrintStream(rawout);
@@ -61,7 +58,7 @@ public class CLI implements Runnable {
         this.interactive = interactive;
         this.mainHistory = new DefaultHistory();
         if (interactive) {
-            terminal = buildTerminal(in, out, env);
+            terminal = terminal = buildTerminal(in, out);
         }
         initCmdInterface(getCompletionPrefixes(), mainHistory);
     }
@@ -189,7 +186,7 @@ public class CLI implements Runnable {
     }
 
     public static void exec (InputStream in, OutputStream out, String command) throws Exception {
-        CLI cli = new CLI(Q2.getQ2(), in, out, null, command, false, false);
+        CLI cli = new CLI(Q2.getQ2(), in, out, command, false, false);
         cli.start();
         cli.stop();
     }
@@ -200,34 +197,19 @@ public class CLI implements Runnable {
         return out.toString();
     }
 
-    protected Terminal buildTerminal (InputStream in, OutputStream out, Environment env) throws IOException {
+    protected Terminal buildTerminal (InputStream in, OutputStream out) throws IOException {
         TerminalBuilder builder = TerminalBuilder.builder()
-          .streams(in,out)
-          .system(System.in == in);
-        if (env != null) {
-            builder.size(getSize(env));
-            env.addSignalListener((_, _) -> {
-                  terminal.setSize(getSize(env));
-                  terminal.raise(Terminal.Signal.WINCH);
-              }, Signal.WINCH);
-        }
+            .streams(in,out)
+            .system(System.in == in);
         Terminal t = builder.build();
-
         Attributes attr = t.getAttributes();
         attr.getOutputFlags().addAll(
-          EnumSet.of(Attributes.OutputFlag.ONLCR, Attributes.OutputFlag.OPOST)
+            EnumSet.of(Attributes.OutputFlag.ONLCR, Attributes.OutputFlag.OPOST)
         );
-
         t.setAttributes(attr);
-        return t;
+         return t;
     }
 
-    private Size getSize (Environment env) {
-        return new Size(
-          Integer.parseInt(env.getEnv().get(Environment.ENV_COLUMNS)),
-          Integer.parseInt(env.getEnv().get(Environment.ENV_LINES))
-        );
-    }
 
     private LineReader buildReader(Terminal terminal, String[] completionPrefixes, History history) throws IOException {
         LineReader reader = LineReaderBuilder.builder()

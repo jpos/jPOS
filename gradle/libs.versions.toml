@@ -14,8 +14,6 @@ xmlunit = "1.6"
 junit = "5.11.0"
 bouncycastle = "1.79"
 hamcrest = "3.0"
-sshd = "2.13.2"
-eddsa = "0.3.0"
 slf4japi = "2.0.12"
 slf4jnop = "2.0.12"
 hdrhistogram = "2.2.2"
@@ -43,8 +41,6 @@ junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 bcpg = { module = "org.bouncycastle:bcpg-jdk18on", version.ref = "bouncycastle" }
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
-sshd = { module = "org.apache.sshd:sshd-core", version.ref = "sshd" }
-eddsa = { module = "net.i2p.crypto:eddsa", version.ref = "eddsa" }
 slf4japi = { module = "org.slf4j:slf4j-api", version.ref = "slf4japi" }
 slf4jnop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jnop" }
 hdrhistogram = { module = "org.hdrhistogram:HdrHistogram", version.ref = "hdrhistogram" }
