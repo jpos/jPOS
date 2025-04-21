@@ -312,15 +312,21 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
     }
 
     /**
-     * Creates a deep copy of the current Context object.
+     * Creates a copy of the current Context object.
      * <p>
-     * This method clones the Context object, including its internal maps,
-     * while preserving the thread-safety of the resulting Context instance.
-     * The cloned Context will have the same entries as the original,
-     * but modifications to one will not affect the other.
+     * This method clones the Context object, creating new synchronized map containers
+     * that are independent of the original. However, the keys and values themselves
+     * are <b>not cloned</b> - both Context instances will share references to the same
+     * key/value objects. Structural changes (add/remove operations) to one Context's
+     * maps will not affect the other, but modifications to mutable key/value objects
+     * will be visible in both Contexts.
+     * </p>
+     * <p>
+     * The cloned Context preserves the thread-safety characteristics through
+     * {@code Collections.synchronizedMap} wrappers.
      * </p>
      *
-     * @return a deep copy of the current Context object
+     * @return a copy of the current Context object with independent map containers
      * @throws AssertionError if cloning is not supported, which should not happen
      */
     @Override
