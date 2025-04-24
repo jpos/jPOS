@@ -45,7 +45,7 @@ public final class LogEventJsonLogRenderer implements LogRenderer<LogEvent> {
     public LogEventJsonLogRenderer() {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        // mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         SimpleModule module = new SimpleModule();
         module.addSerializer(Throwable.class, new ThrowableSerializer());
