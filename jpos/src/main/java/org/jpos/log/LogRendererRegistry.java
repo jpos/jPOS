@@ -20,7 +20,6 @@ package org.jpos.log;
 
 import java.io.PrintStream;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A registry for managing {@link LogRenderer} instances associated with specific class types and renderer types.
