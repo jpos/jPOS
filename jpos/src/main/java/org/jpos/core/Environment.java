@@ -271,9 +271,11 @@ public class Environment implements Loggeable {
                 flat(properties, p, (Map<String,Object>)entry.getValue(), dereference);
             } else {
                 Object obj = entry.getValue();
-                properties.put (p, (dereference && obj instanceof String ?
-                                    Environment.get((String) obj) :
-                                    entry.getValue().toString()));
+                if (obj != null) {
+                    properties.put(p, (dereference && obj instanceof String ?
+                      Environment.get((String) obj) :
+                      obj.toString()));
+                }
             }
         }
     }
