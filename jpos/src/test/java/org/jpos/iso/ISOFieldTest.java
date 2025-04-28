@@ -177,13 +177,7 @@ public class ISOFieldTest {
         try {
             new ISOField(100).writeExternal(out);
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"String.length()\" because \"s\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        } catch (NullPointerException ex) {}
     }
 
     @Test

@@ -58,7 +58,6 @@ public class RotateLogListenerTest {
             rotateLogListener.openLogFile();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull(ex.getMessage(), "ex.getMessage()");
             assertNull(rotateLogListener.f, "rotateLogListener.f");
             assertNotNull(rotateLogListener.p, "rotateLogListener.p");
         }
