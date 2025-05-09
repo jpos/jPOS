@@ -18,8 +18,8 @@ slf4japi = "2.0.12"
 slf4jnop = "2.0.12"
 hdrhistogram = "2.2.2"
 yaml = "2.0"
-micrometercore = "1.12.5"
-micrometerprometheus = "1.12.5"
+micrometercore = "1.14.6"
+micrometerprometheus = "1.14.6"
 jackson = '2.17.2'
 jdbm = '1.0'
 
