@@ -23,7 +23,6 @@ dependencies {
     api libs.beanshell
     api libs.bcpg
     api libs.commonscli
-    api libs.slf4japi
     api libs.micrometercore
     api libs.micrometerprometheus
     api libs.jacksonCore

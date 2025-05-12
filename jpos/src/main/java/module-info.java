@@ -8,7 +8,6 @@ module org.jpos.jpos {
     requires org.hdrhistogram.HdrHistogram;
     requires org.jline;
     requires bsh;
-    requires org.slf4j;
     requires com.sleepycat.je;
     requires org.jdbm;
     requires org.bouncycastle.pg;
