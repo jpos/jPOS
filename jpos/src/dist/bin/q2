@@ -31,7 +31,7 @@ else
   mkdir -p log
   exec java -server \
     -Xmx4G \
-    --enable-preview \
+    --enable-native-access=ALL-UNNAMED \
     -Xlog:gc:log/gc.log \
     "${JAVA_OPTS[@]}" -jar @jarname@ --pid="$PID_FILE" "${OTHER_OPTS[@]}"
 fi
