@@ -19,9 +19,12 @@
 package org.jpos.q2;
 
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
+import io.micrometer.core.instrument.config.MeterFilter;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import jdk.jfr.Configuration;
@@ -45,6 +48,7 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.log.AuditLogEvent;
 import org.jpos.log.evt.*;
+import org.jpos.metrics.MeterInfo;
 import org.jpos.metrics.PrometheusService;
 import org.jpos.q2.install.ModuleUtils;
 import org.jpos.security.SystemSeed;
@@ -1316,12 +1320,31 @@ public class Q2 implements FileFilter, Runnable {
         System.setProperty("slf4j.internal.verbosity","ERROR");
 
         meterRegistry.clear(); // start Q2 off a fresh meter registry
+        meterRegistry.config().meterFilter(new MeterFilter() {
+            @Override
+            public DistributionStatisticConfig configure(Meter.Id id, DistributionStatisticConfig config) {
+                if (id.getName().equals(MeterInfo.TM_OPERATION.id())) {
+                    return DistributionStatisticConfig.builder().serviceLevelObjectives(
+                        Duration.ofMillis(10).toNanos(),
+                        Duration.ofMillis(100).toNanos(),
+                        Duration.ofMillis(500).toNanos(),
+                        Duration.ofMillis(1000).toNanos(),
+                        Duration.ofMillis(5000).toNanos(),
+                        Duration.ofMillis(15000).toNanos())
+                      .build()
+                      .merge(config);
+                }
+                return config;
+            }
+        });
         new ClassLoaderMetrics().bindTo(meterRegistry);
         new JvmMemoryMetrics().bindTo(meterRegistry);
         new JvmGcMetrics().bindTo(meterRegistry);
         new ProcessorMetrics().bindTo(meterRegistry);
         new JvmThreadMetrics().bindTo(meterRegistry);
         meterRegistry.add (prometheusRegistry);
+
+
     }
 
     public String[] environmentArgs (String[] args) {

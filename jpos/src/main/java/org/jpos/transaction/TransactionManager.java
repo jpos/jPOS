@@ -24,8 +24,6 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.binder.BaseUnits;
-import io.micrometer.core.instrument.config.MeterFilter;
-import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
@@ -43,10 +41,8 @@ import org.jpos.util.*;
 
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.time.Instant;
@@ -62,11 +58,12 @@ import org.jpos.util.Metrics;
 import static org.jpos.transaction.ContextConstants.LOGEVT;
 import static org.jpos.transaction.ContextConstants.TIMESTAMP;
 
+
 @SuppressWarnings("unchecked")
 public class TransactionManager 
     extends QBeanSupport 
-    implements Runnable, TransactionConstants, TransactionManagerMBean, Loggeable, MetricsProvider
-{
+    implements Runnable, TransactionConstants, TransactionManagerMBean, Loggeable, MetricsProvider {
+
     public static final String  CONTEXT    = "$CONTEXT.";
     public static final String  STATE      = "$STATE.";
     public static final String  GROUPS     = "$GROUPS.";
@@ -114,7 +111,6 @@ public class TransactionManager
     private TPS tps;
     private ExecutorService executor;
     private final List<Meter> meters = new ArrayList<>();
-    private static AtomicBoolean filtersAdded = new AtomicBoolean();
 
     private Gauge activeSessionsGauge;
     private Counter transactionCounter;
@@ -130,33 +126,12 @@ public class TransactionManager
         isp = iisp = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space", this.toString()));
         doRecover = cfg.getBoolean ("recover", psp instanceof PersistentSpace);
-
         tail.set(cfg.getLong ("initial-tail", 1));
         head.set(tail.get());
         groups = new HashMap<>();
         initParticipants (getPersist());
         initStatusListeners (getPersist());
         executor = QFactory.executorService(cfg.getBoolean("virtual-threads", true));
-        
-        if (!filtersAdded.getAndSet(true)) {
-            getServer().getMeterRegistry().config().meterFilter(new MeterFilter() {
-                @Override
-                public DistributionStatisticConfig configure(Meter.Id id, DistributionStatisticConfig config) {
-                    if (id.getName().equals(MeterInfo.TM_OPERATION.id())) {
-                        return DistributionStatisticConfig.builder().serviceLevelObjectives(
-                            Duration.ofMillis(10).toNanos(),
-                            Duration.ofMillis(100).toNanos(),
-                            Duration.ofMillis(500).toNanos(),
-                            Duration.ofMillis(1000).toNanos(),
-                            Duration.ofMillis(5000).toNanos(),
-                            Duration.ofMillis(15000).toNanos())
-                          .build()
-                          .merge(config);
-                    }
-                    return config;
-                }
-            });
-        }
     }
 
     @Override
@@ -1219,21 +1194,23 @@ public class TransactionManager
     }
 
     private Timers getOrCreateTimers(TransactionParticipant p) {
-        String participantShortName = Caller.shortClassName(p.getClass().getName());
-        var mr = getServer().getMeterRegistry();
-        var tags = Tags.of("name", getName(), "participant", participantShortName);
-        if (p instanceof LogSource ls) {
-            String realm = ls.getRealm();
-            if ((realm != null) && !realm.isEmpty())
-                tags = tags.and("realm", realm.trim());
-        }
-        return new Timers(
-          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare"))),
-          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare-for-abort"))),
-          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "commit"))),
-          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "abort"))),
-          addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "snapshot")))
-        );
+        return Optional.ofNullable(params.get(p)).map(ParticipantParams::timers).orElseGet(() -> {
+            String participantShortName = Caller.shortClassName(p.getClass().getName());
+            var mr = getServer().getMeterRegistry();
+            var tags = Tags.of("name", getName(), "participant", participantShortName);
+            if (p instanceof LogSource ls) {
+                String realm = ls.getRealm();
+                if ((realm != null) && !realm.isEmpty())
+                    tags = tags.and("realm", realm.trim());
+            }
+            return new Timers(
+              addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare"))),
+              addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare-for-abort"))),
+              addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "commit"))),
+              addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "abort"))),
+              addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "snapshot")))
+            );
+        });
     }
 
     private Timer addTimer (Timer m) {
