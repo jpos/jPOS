@@ -59,9 +59,12 @@ public class MeterFactory {
             .register(registry));
     }
 
-    public static void remove (MeterRegistry registry, Meter meter) {
-        registry.getMeters().remove(meter);
+    public static <T extends Meter> T removeAndNullify (MeterRegistry registry, T meter) {
+        if (meter != null)
+            registry.remove(meter);
+        return null;
     }
+
 
     @SuppressWarnings("unchecked")
     private static <T extends Meter> T createMeter(MeterRegistry registry, MeterInfo meterInfo, Tags tags, Callable<T> creator) {

@@ -534,7 +534,7 @@ public class ChannelAdaptor
           MeterFactory.gauge
             (registry, MeterInfo.ISOCHANNEL_CONNECTION_COUNT,
               tags,
-              BaseUnits.THREADS,
+              BaseUnits.SESSIONS,
               () -> isConnected() ? 1 : 0
             );
 
@@ -543,8 +543,8 @@ public class ChannelAdaptor
     }
     private void removeMeters() {
         var registry = getServer().getMeterRegistry();
-        registry.remove(connectionsGauge);
-        registry.remove(msgInCounter);
-        registry.remove(msgOutCounter);
+        connectionsGauge = MeterFactory.removeAndNullify(registry, connectionsGauge);
+        msgInCounter = MeterFactory.removeAndNullify(registry, msgInCounter);
+        msgOutCounter = MeterFactory.removeAndNullify(registry, msgOutCounter);
     }
 }
