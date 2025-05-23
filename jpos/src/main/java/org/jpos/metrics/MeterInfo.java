@@ -21,7 +21,7 @@ package org.jpos.metrics;
 import io.micrometer.core.instrument.Tags;
 
 public enum MeterInfo {
-    TM_ACTIVE_SESSIONS("jpos.tm.active.sessions", "TransactionManager activeSessions"),
+    TM_ACTIVE ("jpos.tm.active", "TransactionManager activeSessions"),
     TM_OPERATION("jpos.tm.op", "TransactionManager operation"),
     TM_COUNTER("jpos.tm.cnt", "TransactionManager counter"),
     ISOSERVER_CONNECTION_COUNT("jpos.server.connections", "Incoming active connections"),
