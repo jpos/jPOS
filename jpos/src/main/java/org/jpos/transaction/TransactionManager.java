@@ -367,7 +367,7 @@ public class TransactionManager
 
         try {
             activeSessionsGauge = MeterFactory.gauge
-              (getServer().getMeterRegistry(), MeterInfo.TM_ACTIVE_SESSIONS, Tags.of("name", getName()), BaseUnits.THREADS, activeSessions::get
+              (getServer().getMeterRegistry(), MeterInfo.TM_ACTIVE_SESSIONS, Tags.of("name", getName()), BaseUnits.SESSIONS, activeSessions::get
             );
             transactionCounter = MeterFactory.counter
               (getServer().getMeterRegistry(), MeterInfo.TM_COUNTER, Tags.of("name", getName())
