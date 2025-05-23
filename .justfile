@@ -9,3 +9,6 @@ publish:
 
 test args="":
     gradle clean test --rerun-tasks --info {{args}}
+
+metrics:
+    curl http://localhost:18583/metrics
