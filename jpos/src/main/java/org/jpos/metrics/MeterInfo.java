@@ -31,9 +31,9 @@ public enum MeterInfo {
     CHANNEL_ACTIVE_CONNECTIONS("jpos.channel.connections", "Active outgoing connections"),
     MUX_STATUS("jpos.mux.status", "MUX Status"),
     MUX_TX("jpos.mux.tx", "MUX tx counter"),
-    MUX_RX("jpos.mux.rx", "MUX rx counter"),
-    MUX_EXPIRED("jpos.mux.expired.cnt", "MUX expired counter"),
-    MUX_RESPONSE_TIME("jpos.mux.timer", "MUX response timer"),
+    MUX_RX ("jpos.mux.rx", "MUX rx counter"),
+    MUX_RX_MATCH("jpos.mux.rx.match", "MUX rx match counter"),
+    MUX_RESPONSE_TIMER("jpos.mux.timer", "MUX response timer"),
     CHANNEL_STATUS("jpos.channel.status", "Channel status");
 
     final String id;
