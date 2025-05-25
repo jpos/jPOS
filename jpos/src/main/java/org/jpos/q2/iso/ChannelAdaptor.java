@@ -542,9 +542,6 @@ public class ChannelAdaptor
         msgOutCounter = MeterFactory.counter(registry, MeterInfo.ISOMSG_OUT, tags);
     }
     private void removeMeters() {
-        var registry = getServer().getMeterRegistry();
-        connectionsGauge = MeterFactory.removeAndNullify(registry, connectionsGauge);
-        msgInCounter = MeterFactory.removeAndNullify(registry, msgInCounter);
-        msgOutCounter = MeterFactory.removeAndNullify(registry, msgOutCounter);
+        MeterFactory.remove (getServer().getMeterRegistry(), connectionsGauge, msgInCounter, msgOutCounter);
     }
 }

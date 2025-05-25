@@ -18,15 +18,20 @@
 
 package org.jpos.q2.iso;
 
+import io.micrometer.core.instrument.*;
+import io.micrometer.core.instrument.Timer;
 import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.Environment;
 import org.jpos.iso.*;
+import org.jpos.metrics.MeterFactory;
+import org.jpos.metrics.MeterInfo;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
 import org.jpos.util.*;
+import org.jpos.util.Metrics;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -60,6 +65,16 @@ public class QMUX
     private volatile int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
     private volatile long lastTxn = 0L;
     private boolean listenerRegistered;
+
+    private Gauge statusGauge;
+    private Gauge rxPendingGauge;
+    private Timer responseTimer;
+
+    private Counter txCounter;
+    private Counter rxCounter;
+    private Counter rxMatchCounter;
+    private Counter rxUnhandledCounter;
+    
     public QMUX () {
         super ();
         listeners = new ArrayList<>();
@@ -91,6 +106,7 @@ public class QMUX
             mtiMapping = new String[] { nomap, nomap, "0022446689" };
         addListeners ();
         unhandled = Environment.get(e.getChildTextTrim ("unhandled"));
+        initMeters();
         NameRegistrar.register ("mux."+getName (), this);
     }
     public void startService () {
@@ -108,6 +124,7 @@ public class QMUX
     public void stopService () {
         listenerRegistered = false;
         sp.removeListener (in, this);
+        removeMeters();
     }
     public void destroyService () {
         NameRegistrar.unregister ("mux."+getName ());
@@ -144,6 +161,7 @@ public class QMUX
         else
             sp.out (out, m);
 
+        txCounter.increment();
         ISOMsg resp;
         try {
             synchronized (this) { tx++; rxPending++; }
@@ -158,11 +176,10 @@ public class QMUX
                 resp = (ISOMsg) isp.in (key, 10000);
             }
             synchronized (this) {
-                if (resp != null) 
-                {
+                if (resp != null) {
                     rx++;
                     lastTxn = System.currentTimeMillis();
-                }else {
+                } else {
                     rxExpired++;
                     if (m.getDirection() != ISOMsg.OUTGOING)
                         txExpired++;
@@ -173,8 +190,10 @@ public class QMUX
         }
         long elapsed = c.elapsed();
         metrics.record("all", elapsed);
-        if (resp != null)
+        if (resp != null) {
+            responseTimer.record(elapsed, TimeUnit.MILLISECONDS);
             metrics.record("ok", elapsed);
+        }
         return resp;
     }
     public void request (ISOMsg m, long timeout, ISOResponseListener rl, Object handBack)
@@ -219,17 +238,19 @@ public class QMUX
         Object obj = sp.inp (k);
         if (obj instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) obj;
+            rxCounter.increment();
             try {
                 if (isNotifyEligible(m)) {
                     String key = getKey (m);
                     String req = key + ".req";
                     Object r = isp.inp (req);
                     if (r != null) {
-                        if (r instanceof AsyncRequest) {
-                            ((AsyncRequest) r).responseReceived (m);
+                        if (r instanceof AsyncRequest ar) {
+                            ar.responseReceived (m);
                         } else {
                             isp.out (key, m);
                         }
+                        rxMatchCounter.increment();
                         return;
                     }
                 }
@@ -422,11 +443,12 @@ public class QMUX
     protected void processUnhandled (ISOMsg m) {
         ISOSource source = m.getSource();
         source = source != null ? source : this;
-        Iterator iter = listeners.iterator();
+        rxUnhandledCounter.increment();
+        Iterator<ISORequestListener> iter = listeners.iterator();
         if (iter.hasNext())
             synchronized (this) { rxForwarded++; }
         while (iter.hasNext())
-            if (((ISORequestListener)iter.next()).process (source, m))
+            if (iter.next().process (source, m))
                 return;
         if (unhandled != null) {
             synchronized (this) { rxUnhandled++; }
@@ -456,6 +478,7 @@ public class QMUX
         if (!isConnected())
             throw new ISOException ("MUX is not connected");
         sp.out (out, m);
+        txCounter.increment();
     }
 
     public boolean isConnected() {
@@ -544,5 +567,37 @@ public class QMUX
             metrics.record("all", chrono.elapsed());
             rl.expired(handBack);
         }
+    }
+
+    private void initMeters() {
+        var tags = io.micrometer.core.instrument.Tags.of("name", getName());
+        var registry = getServer().getMeterRegistry();
+        statusGauge =
+          MeterFactory.gauge
+            (registry, MeterInfo.MUX_STATUS,
+              tags,
+              null,
+              () -> isConnected() ? 1 : 0
+            );
+
+        rxPendingGauge =
+          MeterFactory.gauge
+            (registry, MeterInfo.MUX_RX_PENDING,
+              tags,
+              null,
+              () -> rxPending
+            );
+
+        txCounter = MeterFactory.counter(registry, MeterInfo.MUX_TX, tags);
+        rxCounter = MeterFactory.counter(registry, MeterInfo.MUX_RX, tags);
+        rxMatchCounter = MeterFactory.counter(registry, MeterInfo.MUX_MATCH, tags.and("type", "match"));
+        rxUnhandledCounter = MeterFactory.counter(registry, MeterInfo.MUX_UNHANDLED, tags.and("type", "unhandled"));
+        responseTimer = MeterFactory.timer(registry, MeterInfo.MUX_RESPONSE_TIMER, tags);
+    }
+
+    private void removeMeters() {
+        MeterFactory.remove (getServer().getMeterRegistry(),
+          statusGauge, rxPendingGauge, txCounter, rxCounter, rxMatchCounter, rxUnhandledCounter, responseTimer
+        );
     }
 }

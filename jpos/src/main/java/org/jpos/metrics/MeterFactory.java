@@ -27,6 +27,8 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.search.Search;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -59,12 +61,9 @@ public class MeterFactory {
             .register(registry));
     }
 
-    public static <T extends Meter> T removeAndNullify (MeterRegistry registry, T meter) {
-        if (meter != null)
-            registry.remove(meter);
-        return null;
+    public static void remove  (MeterRegistry registry, Meter... meters) {
+        Arrays.stream(meters).filter(Objects::nonNull).forEach(registry::remove);
     }
-
 
     @SuppressWarnings("unchecked")
     private static <T extends Meter> T createMeter(MeterRegistry registry, MeterInfo meterInfo, Tags tags, Callable<T> creator) {
