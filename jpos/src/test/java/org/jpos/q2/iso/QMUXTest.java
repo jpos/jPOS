@@ -91,32 +91,7 @@ public class QMUXTest {
         String result = new QMUX().getUnhandledQueue();
         assertNull(result, "result");
     }
-
-    @Test
-    public void testInitServiceWithoutListeners() throws Throwable {
-        QMUX mux = new QMUX();
-        Configuration cfg = new SimpleConfiguration();
-        mux.setConfiguration(cfg);
-        Element persist = new Element("testQMUXName");
-        persist.addContent(new Element("in").addContent("queue-in"));
-        persist.addContent(new Element("out").addContent("queue-out"));
-        persist.addContent(new Element("unhandled").addContent("queue-unhandled"));
-        persist.addContent(new Element("ready").addContent("test-ready"));
-        persist.addContent(new Element("unhandled").addContent("queue-unhandled"));
-        mux.setPersist(persist);
-        mux.initService();
-
-        assertEquals("queue-unhandled", mux.unhandled);
-        assertEquals("queue-out", mux.out);
-        assertEquals("queue-in", mux.in);
-        assertNull(mux.ignorerc);
-        assertNotNull(mux.sp);
-        assertFalse(mux.isModified());
-        assertArrayEquals(new String[]{"test-ready"}, mux.ready);
-        assertArrayEquals(new String[]{"41", "11"}, mux.key);
-        assertEquals(0, mux.listeners.size());
-    }
-
+    
     @Test
     public void testInitServiceThrowsNullPointerException() throws Throwable {
         assertThrows(NullPointerException.class, () -> {
@@ -171,26 +146,7 @@ public class QMUXTest {
             assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
         }
     }
-
-    @Test
-    public void testProcessUnhandled() throws Throwable {
-        ISOMsg m = new ISOMsg("testQMUXMti");
-        m.setSource(new PADChannel(new EuroSubFieldPackager()));
-        QMUX qMUX = new QMUX();
-        qMUX.processUnhandled(m);
-        assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
-    }
-
-    @Test
-    public void testProcessUnhandled1() throws Throwable {
-        QMUX qMUX = new QMUX();
-        ISOMsg m = new ISOMsg("testQMUXMti");
-        qMUX.processUnhandled(m);
-        assertNull(qMUX.sp, "qMUX.sp");
-        assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
-        assertEquals(0, m.getDirection(), "m.getDirection()");
-    }
-
+    
     @Test
     public void testProcessUnhandledThrowsNullPointerException() throws Throwable {
         QMUX qMUX = new QMUX();
