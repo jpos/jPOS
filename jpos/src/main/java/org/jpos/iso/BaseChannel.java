@@ -35,6 +35,7 @@ import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -86,6 +87,7 @@ public abstract class BaseChannel extends Observable
     protected boolean usable;
     protected boolean overrideHeader;
     private String name;
+    private long sendTimeout = 15000L;
     // private int serverPort = -1;
     protected DataInputStream serverIn;
     protected DataOutputStream serverOut;
@@ -623,13 +625,38 @@ public abstract class BaseChannel extends Observable
         serverOut.write(b, offset, len);
     }
     /**
-     * sends an ISOMsg over the TCP/IP session
-     * @param m the Message to be sent
-     * @exception IOException
-     * @exception ISOException
-     * @exception ISOFilter.VetoException;
+     * Sends the specified {@link ISOMsg} over this ISOChannel.
+     * <p>
+     * This method performs the following steps:
+     * <ul>
+     *   <li>Verifies the channel is connected.</li>
+     *   <li>Sets the message direction to {@link ISOMsg#OUTGOING}.</li>
+     *   <li>Retrieves and sets a dynamic packager for the message.</li>
+     *   <li>Applies all registered outgoing filters, allowing them to modify or veto the message.</li>
+     *   <li>Packs the message and writes its length, header, body, and trailer to the underlying stream,
+     *       protected by a locking mechanism to ensure thread safety.</li>
+     *   <li>Flushes the output stream and increments message counters.</li>
+     *   <li>Notifies observers of the sent message.</li>
+     *   <li>Logs both the message and the send operation through {@link ChannelEvent} and {@link LogEvent}.</li>
+     * </ul>
+     *
+     * If a {@link VetoException} is thrown by a filter, the message is not sent, and the exception is logged.
+     *
+     * @param m the ISO message to be sent. The message will be modified in-place: its direction and packager
+     *          will be updated, and filters may alter its content.
+     *
+     * @throws IOException if the channel is not connected, if the output stream fails, if locking times out,
+     *                     or if an unexpected I/O error occurs.
+     * @throws ISOException if packing the message fails or other ISO-specific issues occur.
+     * @throws VetoException if an outgoing filter vetoes the message.
+     *
+     * @see ISOMsg
+     * @see ISOPackager
+     * @see ISOFilter
+     * @see ChannelEvent
+     * @see LogEvent
      */
-    public void send (ISOMsg m) 
+    public void send (ISOMsg m)
         throws IOException, ISOException
     {
         ChannelEvent jfr = new ChannelEvent.Send();
@@ -646,19 +673,23 @@ public abstract class BaseChannel extends Observable
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
             m.setPackager (p); // and could have dropped packager as well
             byte[] b = pack(m);
-            serverOutLock.lock();
-            try  {
-                sendMessageLength(b.length + getHeaderLength(m));
-                sendMessageHeader(m, b.length);
-                sendMessage (b, 0, b.length);
-                sendMessageTrailer(m, b);
-                serverOut.flush ();
-            } finally {
-                serverOutLock.unlock();
+
+            if (serverOutLock.tryLock(sendTimeout, TimeUnit.MILLISECONDS)) {
+                try  {
+                    sendMessageLength(b.length + getHeaderLength(m));
+                    sendMessageHeader(m, b.length);
+                    sendMessage (b, 0, b.length);
+                    sendMessageTrailer(m, b);
+                    serverOut.flush ();
+                    cnt[TX]++;
+                    if (msgOutCounter != null)
+                        msgOutCounter.increment();
+                } finally {
+                    serverOutLock.unlock();
+                }
+            } else {
+                disconnect();
             }
-            cnt[TX]++;
-            if (msgOutCounter != null)
-                msgOutCounter.increment();
             setChanged();
             notifyObservers(m);
             jfr.setDetail(m.toString());
@@ -1074,6 +1105,7 @@ public abstract class BaseChannel extends Observable
         String h    = cfg.get    ("host");
         int port    = cfg.getInt ("port");
         maxPacketLength = cfg.getInt ("max-packet-length", 100000);
+        sendTimeout = cfg.getLong ("send-timeout", sendTimeout);
         if (h != null && h.length() > 0) {
             if (port == 0)
                 throw new ConfigurationException 
