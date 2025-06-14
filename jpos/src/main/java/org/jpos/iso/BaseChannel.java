@@ -33,12 +33,17 @@ import org.jpos.util.NameRegistrar;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /*
  * BaseChannel was ISOChannel. Now ISOChannel is an interface
@@ -84,6 +89,7 @@ public abstract class BaseChannel extends Observable
     private boolean expectKeepAlive;
     private boolean soLingerOn = true;
     private int soLingerSeconds = 5;
+    protected long sendTimeout = 15000L;
     private Configuration cfg;
     protected boolean usable;
     protected boolean overrideHeader;
@@ -93,7 +99,7 @@ public abstract class BaseChannel extends Observable
     protected DataOutputStream serverOut;
     // The lock objects should be final, and never changed, but due to the clone() method, they must be set there.
     protected Object serverInLock = new Object();
-    protected Object serverOutLock = new Object();
+    protected Semaphore serverOutSemaphore = new Semaphore(1);
     protected ISOPackager packager;
     protected ServerSocket serverSocket = null;
     protected List<ISOFilter> incomingFilters, outgoingFilters;
@@ -106,10 +112,12 @@ public abstract class BaseChannel extends Observable
     protected String originalRealm = null;
     protected byte[] header = null;
     private static final int DEFAULT_TIMEOUT = 300000;
+    private static final int DEFAULT_TX_TIMEOUT = 15000;
     private int nextHostPort = 0;
     private boolean roundRobin = false;
 
     private final Map<Class<? extends Exception>, List<ExceptionHandler>> exceptionHandlers = new HashMap<>();
+
 
     /**
      * constructor shared by server and client
@@ -280,10 +288,13 @@ public abstract class BaseChannel extends Observable
                 new BufferedInputStream (socket.getInputStream ())
             );
         }
-        synchronized (serverOutLock) {
+        serverOutSemaphore.acquireUninterruptibly();
+        try {
             serverOut = new DataOutputStream(
-                new BufferedOutputStream(socket.getOutputStream(), 2048)
+              new BufferedOutputStream(socket.getOutputStream(), 2048)
             );
+        } finally {
+            serverOutSemaphore.release();
         }
         postConnectHook();
         usable = true;
@@ -382,8 +393,9 @@ public abstract class BaseChannel extends Observable
     protected void applyTimeout () throws SocketException {
         if (socket != null) {
             socket.setKeepAlive(keepAlive);
-            if (timeout >= 0)
+            if (timeout >= 0) {
                 socket.setSoTimeout(timeout);
+            }
         }
     }
     /**
@@ -553,7 +565,7 @@ public abstract class BaseChannel extends Observable
     protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException { 
         serverIn.readFully(b, offset, len);
     }
-    protected int getMessageLength() throws IOException, ISOException {
+    protected int getMessageLength() throws IOException, ISOException, InterruptedException {
         return -1;
     }
     protected int getHeaderLength() { 
@@ -587,25 +599,35 @@ public abstract class BaseChannel extends Observable
         LogEvent evt = new LogEvent (this, "send");
         try {
             if (!isConnected())
-                throw new IOException ("unconnected ISOChannel");
+                throw new IOException("unconnected ISOChannel");
             m.setDirection(ISOMsg.OUTGOING);
             ISOPackager p = getDynamicPackager(m);
-            m.setPackager (p);
-            m = applyOutgoingFilters (m, evt);
-            evt.addMessage (m);
+            m.setPackager(p);
+            m = applyOutgoingFilters(m, evt);
+            evt.addMessage(m);
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
-            m.setPackager (p); // and could have dropped packager as well
+            m.setPackager(p); // and could have dropped packager as well
             byte[] b = pack(m);
-            synchronized (serverOutLock) {
-                sendMessageLength(b.length + getHeaderLength(m));
-                sendMessageHeader(m, b.length);
-                sendMessage (b, 0, b.length);
-                sendMessageTrailer(m, b);
-                serverOut.flush ();
+
+            if (serverOutSemaphore.tryAcquire(sendTimeout, TimeUnit.MILLISECONDS)) {
+                try {
+                    sendMessageLength(b.length + getHeaderLength(m));
+                    sendMessageHeader(m, b.length);
+                    sendMessage(b, 0, b.length);
+                    sendMessageTrailer(m, b);
+                    serverOut.flush();
+                    cnt[TX]++;
+                } finally {
+                    serverOutSemaphore.release();
+                }
+                setChanged();
+                notifyObservers(m);
+            } else {
+                disconnect();
             }
-            cnt[TX]++;
-            setChanged();
-            notifyObservers(m);
+        } catch (SocketException e) {
+            evt.addMessage(e.toString());
+            throw e;
         } catch (VetoException e) {
             //if a filter vets the message it was not added to the event
             evt.addMessage (m);
@@ -616,6 +638,7 @@ public abstract class BaseChannel extends Observable
             throw e;
         } catch (IOException e) {
             evt.addMessage (e);
+            // closeSocket();
             throw e;
         } catch (Exception e) {
             evt.addMessage (e);
@@ -638,11 +661,17 @@ public abstract class BaseChannel extends Observable
         try {
             if (!isConnected())
                 throw new ISOException ("unconnected ISOChannel");
-            synchronized (serverOutLock) {
-                serverOut.write(b);
-                serverOut.flush();
+            if (serverOutSemaphore.tryAcquire(sendTimeout, TimeUnit.MILLISECONDS)) {
+                try {
+                    serverOut.write(b);
+                    serverOut.flush();
+                    cnt[TX]++;
+                } finally {
+                    serverOutSemaphore.release();
+                }
+            } else {
+                disconnect();
             }
-            cnt[TX]++;
             setChanged();
         } catch (Exception e) {
             evt.addMessage (e);
@@ -655,12 +684,15 @@ public abstract class BaseChannel extends Observable
      * Sends a high-level keep-alive message (zero length)
      * @throws IOException on exception
      */
-    public void sendKeepAlive () throws IOException {
-        synchronized (serverOutLock) {
-            sendMessageLength(0);
-            serverOut.flush ();
+    public void sendKeepAlive () throws IOException, InterruptedException {
+        if (serverOutSemaphore.tryAcquire(sendTimeout, TimeUnit.MILLISECONDS)) {
+            try {
+                sendMessageLength(0);
+                serverOut.flush ();
+            } finally {
+                serverOutSemaphore.release();
+            }
         }
-
     }
 
     public boolean isExpectKeepAlive() {
@@ -708,7 +740,7 @@ public abstract class BaseChannel extends Observable
         byte[] b=null;
         byte[] header=null;
         LogEvent evt = new LogEvent (this, "receive");
-        ISOMsg m = createMsg ();  // call createMsg instead of createISOMsg for 
+        ISOMsg m = createMsg ();  // call createMsg instead of createISOMsg for
                                   // backward compatibility
         m.setSource (this);
         try {
@@ -1006,6 +1038,7 @@ public abstract class BaseChannel extends Observable
         String h    = cfg.get    ("host");
         int port    = cfg.getInt ("port");
         maxPacketLength = cfg.getInt ("max-packet-length", 100000);
+        sendTimeout = cfg.getLong ("send-timeout", sendTimeout);
         if (h != null && h.length() > 0) {
             if (port == 0)
                 throw new ConfigurationException 
@@ -1115,8 +1148,10 @@ public abstract class BaseChannel extends Observable
         if (s != null) {
             try {
                 s.setSoLinger (soLingerOn, soLingerSeconds);
-                if (shutdownSupportedBySocket(s) && !isSoLingerForcingImmediateTcpReset())
-                    s.shutdownOutput();  // This will force a TCP FIN to be sent on regular sockets,
+                if (shutdownSupportedBySocket(s) && !isSoLingerForcingImmediateTcpReset()) {
+                    s.shutdownOutput();  // This will force a TCP FIN to be sent on regular
+                    s.shutdownInput();
+                }// sockets,
             } catch (SocketException e) {
                 // NOPMD
                 // safe to ignore - can be closed already
@@ -1140,7 +1175,7 @@ public abstract class BaseChannel extends Observable
             // This should be safe as the only code that calls BaseChannel.clone() is ISOServer.run(),
             // and it immediately calls accept(ServerSocket) which does a connect(), and that sets the stream objects.
             channel.serverInLock = new Object();
-            channel.serverOutLock = new Object();
+            channel.serverOutSemaphore = new Semaphore(1);
             channel.serverIn = null;
             channel.serverOut = null;
             channel.usable = false;

@@ -27,6 +27,7 @@ import org.jpos.util.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ISOChannel implementation - VISA's VAP framing
@@ -171,7 +172,7 @@ public class VAPChannel extends BaseChannel {
 
         serverOut.write(h.pack());
     }
-    protected int getMessageLength() throws IOException, ISOException {
+    protected int getMessageLength() throws IOException, ISOException, InterruptedException {
         int l = 0;
         byte[] b = new byte[4];
         // ignore VAP polls (0 message length)
@@ -180,9 +181,13 @@ public class VAPChannel extends BaseChannel {
             l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
 
             if (replyKeepAlive && l == 0) {
-                synchronized (serverOutLock) {
-                    serverOut.write(b);
-                    serverOut.flush();
+                if (serverOutSemaphore.tryAcquire(sendTimeout, TimeUnit.MILLISECONDS)) {
+                    try {
+                        serverOut.write(b);
+                        serverOut.flush();
+                    } finally {
+                        serverOutSemaphore.release();
+                    }
                     if (debugPoll)
                         Logger.log(new LogEvent(this, "poll"));
                 }

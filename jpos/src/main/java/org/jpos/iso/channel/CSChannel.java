@@ -24,6 +24,7 @@ import org.jpos.iso.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ISOChannel implementation - CS standard Channel<br>
@@ -90,16 +91,20 @@ public class CSChannel extends BaseChannel {
      * @return the Message len
      * @exception IOException, ISOException
      */
-    protected int getMessageLength() throws IOException, ISOException {
+    protected int getMessageLength() throws IOException, ISOException, InterruptedException {
         int l = 0;
         byte[] b = new byte[4];
         while (l == 0) {
             serverIn.readFully(b,0,4);
             l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
             if (replyKeepAlive && l == 0) {
-                synchronized (serverOutLock) {
-                    serverOut.write(b);
-                    serverOut.flush();
+                try {
+                    if (serverOutSemaphore.tryAcquire(sendTimeout, TimeUnit.MILLISECONDS)) {
+                        serverOut.write(b);
+                        serverOut.flush();
+                    }
+                } finally {
+                    serverOutSemaphore.release();
                 }
             }
         }

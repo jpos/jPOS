@@ -25,6 +25,7 @@ import org.jpos.core.ConfigurationException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ISOChannel implementation suitable for OASIS Ltd &copy; hosts<br>
@@ -104,7 +105,7 @@ public class ASCIIChannel extends BaseChannel {
      * @return the Message len
      * @exception IOException, ISOException
      */
-    protected int getMessageLength() throws IOException, ISOException {
+    protected int getMessageLength() throws IOException, ISOException, InterruptedException {
         int l = 0;
         byte[] b = new byte[lengthDigits];
         while (l == 0) {
@@ -112,10 +113,13 @@ public class ASCIIChannel extends BaseChannel {
             try {
                 if ((l=Integer.parseInt(new String(b))) == 0 &&
                     isExpectKeepAlive()) {
-
-                    synchronized (serverOutLock) {
-                        serverOut.write(b);
-                        serverOut.flush();
+                    try {
+                        if (serverOutSemaphore.tryAcquire(sendTimeout, TimeUnit.MILLISECONDS)) {
+                            serverOut.write(b);
+                            serverOut.flush();
+                        }
+                    } finally {
+                        serverOutSemaphore.release();
                     }
                 }
             } catch (NumberFormatException e) {
