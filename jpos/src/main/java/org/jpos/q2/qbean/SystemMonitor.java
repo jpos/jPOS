@@ -37,6 +37,7 @@ import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
@@ -44,7 +45,6 @@ import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneOffsetTransitionRule;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Periodically dumps Thread and memory usage
@@ -56,8 +56,8 @@ import java.util.Map;
 public class SystemMonitor extends QBeanSupport
         implements Runnable, SystemMonitorMBean, Loggeable
 {
-    private long sleepTime = 60 * 60 * 1000;
-    private long delay = 0;
+    private Duration sleepTime = Duration.ofHours(1);
+    private Duration delay = Duration.ZERO;
     private boolean detailRequired = false;
     private Thread me = null;
     private static final int MB = 1024*1024;
@@ -86,14 +86,14 @@ public class SystemMonitor extends QBeanSupport
     }
 
     public synchronized void setSleepTime(long sleepTime) {
-        this.sleepTime = sleepTime;
+        this.sleepTime = Duration.ofMillis(sleepTime);
         setModified(true);
         if (me != null)
             me.interrupt();
     }
 
     public synchronized long getSleepTime() {
-        return sleepTime;
+        return sleepTime.toMillis();
     }
 
     public synchronized void setDetailRequired(boolean detail) {
@@ -129,9 +129,9 @@ public class SystemMonitor extends QBeanSupport
             log.info(this);
             frozenDump = null;
             try {
-                long expected = System.currentTimeMillis() + sleepTime;
-                Thread.sleep(sleepTime);
-                delay = System.currentTimeMillis() - expected;
+                Duration expected = Duration.ofNanos(System.nanoTime()).plus(sleepTime);
+                Thread.sleep(sleepTime.toMillis());
+                delay = Duration.ofNanos(System.nanoTime()).minus(expected);
             } catch (InterruptedException ignored) {
             }
         }
@@ -235,7 +235,7 @@ public class SystemMonitor extends QBeanSupport
             Instant in = tran.getInstant();
             p.printf("%s   transition: %s (%s)%n", indent, in, in.atZone(zi));
         }
-        p.printf("%s        clock: %d %s%n", indent, System.currentTimeMillis() / 1000L, instant);
+        p.printf("%s        clock: %d %s%n", indent, Instant.now().getEpochSecond(), instant);
         if (hasSecurityManager())
             p.printf("%s  sec-manager: %s%n", indent, getSecurityManager());
         p.printf("%s thread count: %d%n", indent, mxBean.getThreadCount());
