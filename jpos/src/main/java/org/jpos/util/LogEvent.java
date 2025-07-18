@@ -22,6 +22,10 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jpos.jfr.LogEventDump;
+import org.jpos.log.LogRenderer;
+import org.jpos.log.LogRendererRegistry;
+import org.jpos.log.evt.SysInfo;
+import org.jpos.log.render.txt.SysInfoTxtLogRenderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -116,7 +120,7 @@ public class LogEvent {
                 sb.append (String.format (" trace-id=\"%s\"", traceId));
             }
             sb.append ('>');
-            p.println (sb.toString());
+            p.println (sb);
         }
         return indent + "  ";
     }
@@ -181,7 +185,11 @@ public class LogEvent {
                             }
                             p.println("");
                         } else if (o != null) {
-                            p.println(newIndent + o.toString());
+                            LogRenderer<Object> renderer = LogRendererRegistry.getRenderer(o.getClass(), LogRenderer.Type.TXT);
+                            if (renderer != null)
+                                renderer.render(o, p, newIndent);
+                            else
+                                p.println(newIndent + o);
                         } else {
                             p.println(newIndent + "null");
                         }

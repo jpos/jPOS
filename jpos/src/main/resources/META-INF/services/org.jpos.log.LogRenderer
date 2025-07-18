@@ -19,3 +19,5 @@ org.jpos.log.render.markdown.ElementMarkdownLogRenderer
 #org.jpos.log.render.markdown.TransactionManagerTraceArrayMarkdownLogRenderer
 
 org.jpos.log.render.txt.ObjectTxtLogRenderer
+org.jpos.log.render.txt.SysInfoTxtLogRenderer
+
