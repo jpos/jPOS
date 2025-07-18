@@ -247,6 +247,11 @@ public class FSDMsg implements Loggeable, Cloneable {
         return pack().getBytes(charset);
     }
 
+	    protected String get (String id, String type, int length, String defValue, String separator)
+        throws ISOException
+    {
+	    return get(id,type,length,defValue,separator,true);
+    }
     protected String get (String id, String type, int length, String defValue, String separator, boolean unPad)
         throws ISOException
     {
