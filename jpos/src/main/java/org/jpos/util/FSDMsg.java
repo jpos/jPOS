@@ -27,8 +27,15 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
 
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -240,7 +247,12 @@ public class FSDMsg implements Loggeable, Cloneable {
         return pack().getBytes(charset);
     }
 
-    protected String get (String id, String type, int length, String defValue, String separator)
+	    protected String get (String id, String type, int length, String defValue, String separator)
+        throws ISOException
+    {
+	    return get(id,type,length,defValue,separator,true);
+    }
+    protected String get (String id, String type, int length, String defValue, String separator, boolean unPad)
         throws ISOException
     {
         String value = fields.get (id);
@@ -288,7 +300,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 break;
         }
 
-        if (lengthLength == 0 && (!isSeparated(separator) || isBinary(type) || EOM_SEPARATOR.equals(separator)))
+        if (lengthLength == 0 && (!isSeparated(separator) || isBinary(type) || EOM_SEPARATOR.equals(separator) ||(isSeparated(separator) && !unPad)))
           return value;
         else {
             if (lengthLength > 0) {
@@ -373,6 +385,10 @@ public class FSDMsg implements Loggeable, Cloneable {
             if (type != null && separator == null) {
             	separator = getSeparatorType (type);
             }
+            boolean unPad = true;
+            if (separator != null && elem.getAttributeValue("pack_unpad") != null) {
+                unPad = Boolean.valueOf(elem.getAttributeValue("pack_unpad"));
+            }
             boolean key  = "true".equals (elem.getAttributeValue ("key"));
             Map properties = key ? loadProperties(elem) : Collections.EMPTY_MAP;
             String defValue = elem.getText();
@@ -380,7 +396,7 @@ public class FSDMsg implements Loggeable, Cloneable {
             if (!properties.isEmpty()) {
             	defValue = defValue.replace("\n", "").replace("\t", "").replace("\r", "");
             }
-            String value = get (id, type, length, defValue, separator);
+            String value = get (id, type, length, defValue, separator, unPad);
             sb.append (value);
 
             if (isSeparated(separator)) {
