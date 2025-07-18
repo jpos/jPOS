@@ -12,3 +12,8 @@ test args="":
 
 metrics:
     curl http://localhost:18583/metrics
+
+[no-cd]
+lint:
+    gradle -Plint clean jar
+
