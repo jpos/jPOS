@@ -76,6 +76,7 @@ public class ISOUtil {
     @Deprecated
     public static final String ENCODING  = "ISO8859_1";
     public static final Pattern unicodePattern = Pattern.compile("u00([0-9a-fA-F]{2})+");
+    private static final Pattern NUMERIC_PATTERN = Pattern.compile("\\d+");
 
     /**
      * Default charset for bytes transmissions over network
@@ -1761,5 +1762,90 @@ public class ISOUtil {
                 sb.appendCodePoint(cp); // Append the single-byte character
         });
         return sb.toString();
+    }
+
+
+    /**
+     * Computes Luhn algorithm sum for a numeric string.
+     * @param number The numeric string to process
+     * @param includesCheckDigit true if the number already includes a check digit, false otherwise
+     * @return The computed sum
+     * @throws ISOException for invalid input
+     */
+    private static int computeLuhnSum(String number, boolean includesCheckDigit) throws ISOException {
+        if (number == null || number.isEmpty() || !NUMERIC_PATTERN.matcher(number).matches()) {
+            throw new ISOException("Invalid input: must be non-empty numeric string");
+        }
+
+        int sum = 0;
+        // When the number includes check digit, we don't double the rightmost digit (the check digit)
+        // When calculating check digit, we start doubling from the rightmost digit
+        boolean shouldDouble = !includesCheckDigit;
+        for (int i = number.length() - 1; i >= 0; i--) {
+            int digit = Character.getNumericValue(number.charAt(i));
+            if (shouldDouble) {
+                digit *= 2;
+                if (digit > 9){
+                    digit = (digit % 10) + (digit / 10);
+                }
+            }
+            sum += digit;
+            shouldDouble = !shouldDouble;
+        }
+        return sum;
+    }
+
+    /**
+     * Calculates Luhn check digit for a numeric string.
+     * The Luhn algorithm is commonly used for credit card numbers, IMEI numbers, etc.
+     *
+     * @param number Number WITHOUT check digit (must be numeric string)
+     * @return Check digit (0-9)
+     * @throws ISOException for invalid input (null, empty, or non-numeric)
+     * @since 3.0.0
+     */
+    public static int calculateLuhnCheckDigit(String number) throws ISOException {
+        if (number == null || number.isEmpty()) {
+            throw new ISOException("Number cannot be null or empty");
+        }
+
+        int sum = computeLuhnSum(number, false);
+        return (10 - (sum % 10)) % 10;
+    }
+
+    /**
+     * Validates a number using the Luhn algorithm.
+     * The Luhn algorithm is commonly used for credit card numbers, IMEI numbers, etc.
+     *
+     * @param number Number WITH check digit (must be numeric string with at least 2 digits)
+     * @return true if the number passes Luhn validation, false otherwise
+     * @throws ISOException for invalid input (null, too short, or non-numeric)
+     * @since 3.0.0
+     */
+    public static boolean isValidLuhn(String number) throws ISOException {
+        if (number == null || number.length() < 2) {
+            throw new ISOException("Number must contain at least 2 digits");
+        }
+
+        if (!NUMERIC_PATTERN.matcher(number).matches()) {
+            throw new ISOException("Number must contain only digits");
+        }
+
+        return computeLuhnSum(number, true) % 10 == 0;
+    }
+
+    /**
+     * Convenience method to validate a number using the Luhn algorithm without throwing exceptions.
+     *
+     * @param number Number WITH check digit
+     * @return true if valid, false if invalid or malformed
+     * @since 3.0.0
+     */
+    public static boolean isValidLuhnSafe(String number) {
+        try {
+            return isValidLuhn(number);
+        } catch (ISOException e) {
+            return false;
+        }
     }
 }

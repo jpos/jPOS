@@ -5091,4 +5091,54 @@ public class ISOUtilTest {
         assertEquals(s.length(), d.length());
         assertEquals(expectedASCII, d);
     }
+
+    @Test
+    public void testCalculateLuhnCheckDigit() throws ISOException {
+        assertEquals(8, ISOUtil.calculateLuhnCheckDigit("79927398713"));
+        assertEquals(2, ISOUtil.calculateLuhnCheckDigit("424242424242424"));
+        assertEquals(8, ISOUtil.calculateLuhnCheckDigit("1"));
+        assertEquals(7, ISOUtil.calculateLuhnCheckDigit("123456789"));
+    }
+
+    @Test
+    public void testCalculateLuhnCheckDigitInvalidInput() {
+        assertThrows(ISOException.class, () -> ISOUtil.calculateLuhnCheckDigit(null));
+        assertThrows(ISOException.class, () -> ISOUtil.calculateLuhnCheckDigit(""));
+        assertThrows(ISOException.class, () -> ISOUtil.calculateLuhnCheckDigit("123abc"));
+    }
+
+    @Test
+    public void testIsValidLuhn() throws ISOException {
+        assertTrue(ISOUtil.isValidLuhn("4532015112830366"));  // Valid Visa
+        assertTrue(ISOUtil.isValidLuhn("18"));                // Simple valid
+
+        assertFalse(ISOUtil.isValidLuhn("4532015112830367")); // Invalid
+        assertFalse(ISOUtil.isValidLuhn("19"));               // Simple invalid
+    }
+
+    @Test
+    public void testIsValidLuhnInvalidInput() {
+        assertThrows(ISOException.class, () -> ISOUtil.isValidLuhn(null));
+        assertThrows(ISOException.class, () -> ISOUtil.isValidLuhn("1"));     // Too short
+        assertThrows(ISOException.class, () -> ISOUtil.isValidLuhn("123abc"));
+    }
+
+    @Test
+    public void testIsValidLuhnSafe() {
+        assertTrue(ISOUtil.isValidLuhnSafe("4532015112830366"));   // Valid
+        assertFalse(ISOUtil.isValidLuhnSafe("4532015112830367"));  // Invalid
+        assertFalse(ISOUtil.isValidLuhnSafe(null));               // Malformed
+        assertFalse(ISOUtil.isValidLuhnSafe(""));                 // Malformed
+        assertFalse(ISOUtil.isValidLuhnSafe("123abc"));           // Malformed
+    }
+
+    @Test
+    public void testLuhnIntegration() throws ISOException {
+        // Test that calculate and validate work together
+        String number = "79927398713";
+        int checkDigit = ISOUtil.calculateLuhnCheckDigit(number);
+        String fullNumber = number + checkDigit;
+        assertTrue(ISOUtil.isValidLuhn(fullNumber));
+    }
+
 }
