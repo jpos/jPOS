@@ -20,4 +20,4 @@ org.jpos.log.render.markdown.ElementMarkdownLogRenderer
 
 org.jpos.log.render.txt.ObjectTxtLogRenderer
 org.jpos.log.render.txt.SysInfoTxtLogRenderer
-
+org.jpos.log.render.txt.LicenseTxtLogRenderer
