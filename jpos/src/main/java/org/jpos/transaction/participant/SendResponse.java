@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2024 jPOS Software SRL
+ * Copyright (C) 2000-2025 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import java.io.Serializable;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.annotation.Config;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOSource;
 import org.jpos.space.LocalSpace;
@@ -42,24 +43,30 @@ public class SendResponse implements AbortParticipant, Configurable {
     private long timeout = 70000L;
     private HeaderStrategy headerStrategy;
 
+    @Config("abort-on-closed")
+    private boolean abortOnClosed = true;
+
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
-        ISOSource source = (ISOSource) ctx.get (this.source);
-        if (source == null || !source.isConnected())
+        ISOSource source = ctx.get (this.source);
+        if (source == null ||
+            abortOnClosed && !source.isConnected())
             return ABORTED | READONLY | NO_JOIN;
 
         return PREPARED | READONLY;
     }
+
     public void commit (long id, Serializable context) {
         sendResponse(id, (Context) context);
     }
     public void abort (long id, Serializable context) {
         sendResponse(id, (Context) context);
     }
+
     private void sendResponse (long id, Context ctx) {
-        ISOSource src = (ISOSource) ctx.get (source);
-        ISOMsg m = (ISOMsg) ctx.get(request);
-        ISOMsg resp = (ISOMsg) ctx.get (response);
+        ISOSource src = ctx.get (source);
+        ISOMsg m = ctx.get(request);
+        ISOMsg resp = ctx.get (response);
         try {
             if (ctx.getResult().hasInhibit()) {
                 ctx.log("*** RESPONSE INHIBITED ***");
