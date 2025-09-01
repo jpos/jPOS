@@ -32,6 +32,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Stack;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -49,12 +50,9 @@ public class XMLPackager extends DefaultHandler
 {
     protected Logger logger = null;
     protected String realm = null;
-    private ByteArrayOutputStream out;
-    private PrintStream p;
     private XMLReader reader;
     private Stack stk;
-
-    private Lock lock = new ReentrantLock();
+    private Lock parserLock = new ReentrantLock();
 
     public static final String ISOMSG_TAG    = "isomsg";
     public static final String ISOFIELD_TAG  = "field";
@@ -74,12 +72,6 @@ public class XMLPackager extends DefaultHandler
 
     public XMLPackager() throws ISOException {
         super();
-        out = new ByteArrayOutputStream();
-        try {
-            p   = new PrintStream(out, false, "utf-8");
-        } catch (UnsupportedEncodingException ignored) {
-            // utf-8 is a supported encoding
-        }
         stk = new Stack();
         try {
             reader = createXMLReader();
@@ -100,20 +92,19 @@ public class XMLPackager extends DefaultHandler
 
     public byte[] pack (ISOComponent c) throws ISOException {
         LogEvent evt = new LogEvent (this, "pack");
+
         try {
-            if (!(c instanceof ISOMsg))
+            if (!(c instanceof ISOMsg m))
                 throw new ISOException ("cannot pack "+c.getClass());
-            ISOMsg m = (ISOMsg) c;
-            byte[] b;
-            lock.lock();
-            try {
-                m.setDirection(0);  // avoid "direction=xxxxxx" in XML msg
-                m.dump (p, "");
-                b = out.toByteArray();
-                out.reset();
-            } finally {
-                lock.unlock();
-            }
+
+            // heuristics for initial size 40: a typical <field> with 2 chars of id + 12 of value + 2 indent
+            ByteArrayOutputStream out = new ByteArrayOutputStream(40 * (m.getChildren().size()+2));
+            PrintStream p = new PrintStream(out, false, StandardCharsets.UTF_8);
+
+            m.setDirection(0);  // avoid "direction=xxxxxx" in XML msg
+            m.dump (p, "");
+            byte[] b = out.toByteArray();
+
             if (logger != null)
                 evt.addMessage (m);
             return b;
@@ -125,25 +116,30 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
-    public int unpack (ISOComponent c, byte[] b)
-        throws ISOException
-    {
+    public int unpack (ISOComponent c, byte[] b) throws ISOException {
+        unpack(c, new InputSource(new ByteArrayInputStream(b)));
+        return b.length;
+    }
+
+    public void unpack (ISOComponent c, InputStream in) throws ISOException, IOException {
+        unpack(c, new InputSource(in));
+    }
+
+    private void unpack (ISOComponent c, InputSource in) throws ISOException {
         LogEvent evt = new LogEvent (this, "unpack");
-        lock.lock();
+
+        parserLock.lock();
         try {
-            if (!(c instanceof ISOMsg))
-                throw new ISOException
-                    ("Can't call packager on non Composite");
+            if (!(c instanceof ISOMsg m))
+                throw new ISOException("Can't call packager on non Composite");
 
             while (!stk.empty())    // purge from possible previous error
                 stk.pop();
 
-            InputSource src = new InputSource (new ByteArrayInputStream(b));
-            reader.parse (src);
+            reader.parse (in);
             if (stk.empty())
                 throw new ISOException ("error parsing");
 
-            ISOMsg m = (ISOMsg) c;
             ISOMsg m1 = (ISOMsg) stk.pop();
             m.merge (m1);
             m.setHeader (m1.getHeader());
@@ -152,7 +148,6 @@ public class XMLPackager extends DefaultHandler
 
             if (logger != null)
                 evt.addMessage (m);
-            return b.length;
         } catch (ISOException e) {
             evt.addMessage (e);
             throw e;
@@ -164,45 +159,7 @@ public class XMLPackager extends DefaultHandler
             throw new ISOException (e.toString());
         } finally {
             Logger.log (evt);
-            lock.unlock();
-        }
-    }
-
-    public void unpack (ISOComponent c, InputStream in)
-        throws ISOException, IOException
-    {
-        LogEvent evt = new LogEvent (this, "unpack");
-        lock.lock();
-        try {
-            if (!(c instanceof ISOMsg))
-                throw new ISOException
-                    ("Can't call packager on non Composite");
-
-            while (!stk.empty())    // purge from possible previous error
-                stk.pop();
-
-            reader.parse (new InputSource (in));
-            if (stk.empty())
-                throw new ISOException ("error parsing");
-
-            ISOMsg m = (ISOMsg) c;
-            ISOMsg m1 = (ISOMsg) stk.pop();
-            m.merge (m1);
-            m.setHeader (m1.getHeader());
-
-            fixupBinary(m, binaryFields);
-
-            if (logger != null)
-                evt.addMessage (m);
-        } catch (ISOException e) {
-            evt.addMessage (e);
-            throw e;
-        } catch (SAXException e) {
-            evt.addMessage (e);
-            throw new ISOException (e.toString());
-        } finally {
-            Logger.log (evt);
-            lock.unlock();
+            parserLock.unlock();
         }
     }
 
@@ -270,6 +227,7 @@ public class XMLPackager extends DefaultHandler
                 ("ISOException unpacking "+fieldNumber);
         }
     }
+
     public void characters (char ch[], int start, int length) {
         Object obj = stk.peek();
         if (obj instanceof ISOField) {
@@ -295,6 +253,7 @@ public class XMLPackager extends DefaultHandler
             }
         }
     }
+
     public void endElement (String ns, String name, String qname)
         throws SAXException
     {
