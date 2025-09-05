@@ -268,14 +268,25 @@ task installApp(type: Sync) {
     with jposCopySpec
 }
 
-task viewTests (description: 'Open Test Reports') {
-    doLast {
-        java.awt.Desktop.desktop.browse (
-            new File("${buildDir}/reports/tests/test", 'index.html').toURI()
-        )
+
+abstract class OpenBrowserTask extends DefaultTask {
+    @InputFile
+    abstract RegularFileProperty getFile()
+
+    @TaskAction
+    void open() {
+        def f = file.get().asFile
+        if (!f.exists()) {
+            throw new GradleException("Target file not found: ${f}")
+        }
+        java.awt.Desktop.desktop.browse(f.toURI())
     }
 }
 
+tasks.register('viewTests', OpenBrowserTask) {
+    description = 'Open Test Reports'
+    file.set(layout.buildDirectory.file('reports/tests/test/index.html'))
+}
 
 test {
   minHeapSize = "4G" 
