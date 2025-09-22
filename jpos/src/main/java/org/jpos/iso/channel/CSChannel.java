@@ -71,7 +71,7 @@ public class CSChannel extends BaseChannel {
      * @exception IOException
      * @see ISOPackager
      */
-    public CSChannel (ISOPackager p, ServerSocket serverSocket) 
+    public CSChannel (ISOPackager p, ServerSocket serverSocket)
         throws IOException
     {
         super(p, serverSocket);
@@ -96,9 +96,11 @@ public class CSChannel extends BaseChannel {
         while (l == 0) {
             serverIn.readFully(b,0,4);
             l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
-            if (replyKeepAlive && l == 0) {
+            if (l == 0 &&
+                (replyKeepAlive || isExpectKeepAlive()))
+            {
+                serverOutLock.lock();
                 try {
-                    serverOutLock.lock();
                     serverOut.write(b);
                     serverOut.flush();
                 } finally {
@@ -108,9 +110,9 @@ public class CSChannel extends BaseChannel {
         }
         return l;
     }
-    protected int getHeaderLength() { 
+    protected int getHeaderLength() {
         // CS Channel does not support header
-        return 0; 
+        return 0;
     }
     protected void sendMessageHeader(ISOMsg m, int len) {
         // CS Channel does not support header

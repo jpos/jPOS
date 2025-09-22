@@ -27,7 +27,7 @@ import java.net.ServerSocket;
 
 /**
  * ISOChannel implementation - American Express
- * 
+ *
  * @author marksalter@dsl.pipex.com
  * @version $Id: AmexChannel.java,v 1.5 2006/01/27 10:36:18 mark Exp $
  * @see ISOMsg
@@ -36,77 +36,82 @@ import java.net.ServerSocket;
  */
 public class AmexChannel extends BaseChannel {
 
-	/**
-	 * Public constructor (used by Class.forName("...").newInstance())
-	 */
-	public AmexChannel() {
-		super();
-	}
+    /**
+     * Public constructor (used by Class.forName("...").newInstance())
+     */
+    public AmexChannel() {
+        super();
+    }
 
-	/**
-	 * Construct client ISOChannel
-	 * 
-	 * @param host
-	 *            server TCP Address
-	 * @param port
-	 *            server port number
-	 * @param p
-	 *            an ISOPackager (should be ISO87BPackager)
-	 * @see org.jpos.iso.packager.ISO87BPackager
-	 */
-	public AmexChannel(String host, int port, ISOPackager p) {
-		super(host, port, p);
-	}
+    /**
+     * Construct client ISOChannel
+     *
+     * @param host
+     *            server TCP Address
+     * @param port
+     *            server port number
+     * @param p
+     *            an ISOPackager (should be ISO87BPackager)
+     * @see org.jpos.iso.packager.ISO87BPackager
+     */
+    public AmexChannel(String host, int port, ISOPackager p) {
+        super(host, port, p);
+    }
 
-	/**
-	 * Construct server ISOChannel
-	 * 
-	 * @param p
-	 *            an ISOPackager (should be ISO87BPackager)
-	 * @exception IOException
-	 * @see org.jpos.iso.packager.ISO87BPackager
-	 */
-	public AmexChannel(ISOPackager p) throws IOException {
-		super(p);
-	}
+    /**
+     * Construct server ISOChannel
+     *
+     * @param p
+     *            an ISOPackager (should be ISO87BPackager)
+     * @exception IOException
+     * @see org.jpos.iso.packager.ISO87BPackager
+     */
+    public AmexChannel(ISOPackager p) throws IOException {
+        super(p);
+    }
 
-	/**
-	 * constructs a server ISOChannel associated with a Server Socket
-	 * 
-	 * @param p
-	 *            an ISOPackager
-	 * @param serverSocket
-	 *            where to accept a connection
-	 * @exception IOException
-	 * @see ISOPackager
-	 */
-	public AmexChannel(ISOPackager p, ServerSocket serverSocket)
-			throws IOException {
-		super(p, serverSocket);
-	}
+    /**
+     * constructs a server ISOChannel associated with a Server Socket
+     *
+     * @param p
+     *            an ISOPackager
+     * @param serverSocket
+     *            where to accept a connection
+     * @exception IOException
+     * @see ISOPackager
+     */
+    public AmexChannel(ISOPackager p, ServerSocket serverSocket)
+        throws IOException {
+        super(p, serverSocket);
+    }
 
-	protected void sendMessageLength(int len) throws IOException {
-		serverOut.write(len+2 >> 8);
-		serverOut.write(len+2);
-	}
+    protected void sendMessageLength(int len) throws IOException {
+        serverOut.write(len+2 >> 8);
+        serverOut.write(len+2);
+    }
 
-	protected int getMessageLength() throws IOException, ISOException {
-		int l = 0;
-		byte[] b = new byte[2];
-		// ignore polls (0 message length)
-		while (l == 0) {
-			serverIn.readFully(b, 0, 2);
-			l = ((int) b[0] & 0xFF) << 8 | (int) b[1] & 0xFF;
-			if (l == 0) {
-				serverOut.write(b);
-				serverOut.flush();
-				Logger.log(new LogEvent(this, "poll"));
-			}
-		}
-		// Message length includes length itself, so adjust the message total down by 2
-		l = l - 2;
+    protected int getMessageLength() throws IOException, ISOException {
+        int l = 0;
+        byte[] b = new byte[2];
+        // ignore polls (0 message length)
+        while (l == 0) {
+            serverIn.readFully(b, 0, 2);
+            l = ((int) b[0] & 0xFF) << 8 | (int) b[1] & 0xFF;
+            if (l == 0 && isExpectKeepAlive()) {
+                serverOutLock.lock();
+                try {
+                    serverOut.write(b);
+                    serverOut.flush();
+                } finally {
+                    serverOutLock.unlock();
+                }
+                Logger.log(new LogEvent(this, "poll"));
+            }
+        }
+        // Message length includes length itself, so adjust the message total down by 2
+        l = l - 2;
 
-		return l;
-	}
+        return l;
+    }
 
 }

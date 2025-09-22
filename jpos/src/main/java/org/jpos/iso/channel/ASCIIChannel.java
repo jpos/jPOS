@@ -113,9 +113,12 @@ public class ASCIIChannel extends BaseChannel {
                 if ((l=Integer.parseInt(new String(b))) == 0 &&
                     isExpectKeepAlive()) {
 
-                    synchronized (serverOutLock) {
+                    serverOutLock.lock();
+                    try {
                         serverOut.write(b);
                         serverOut.flush();
+                    } finally {
+                        serverOutLock.unlock();
                     }
                 }
             } catch (NumberFormatException e) {
