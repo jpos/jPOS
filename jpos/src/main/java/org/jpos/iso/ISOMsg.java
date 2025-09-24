@@ -193,6 +193,12 @@ public class ISOMsg extends ISOComponent
      */
     public void setPackager (ISOPackager p) {
         packager = p;
+        if (packager == null) {
+            for (Object o : fields.values()) {
+                if (o instanceof ISOMsg)
+                    ((ISOMsg) o).setPackager(null);
+            }
+        }
     }
     /**
      * @return the peer packager
