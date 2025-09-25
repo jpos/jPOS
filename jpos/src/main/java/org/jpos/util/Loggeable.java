@@ -26,5 +26,17 @@ import java.io.PrintStream;
  */
 public interface Loggeable {
     void dump(PrintStream p, String indent);
+    
+    default void dump() {
+        dump("");
+    }
+    
+    default void dump(PrintStream p) {
+        dump(p, "");
+    }
+    
+    default void dump(String indent) {
+        dump(System.out, indent);
+    }
 }
 
