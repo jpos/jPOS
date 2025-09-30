@@ -18,6 +18,25 @@
 
 package org.jpos.core;
 
+/**
+ * A card validator implementation that performs no validation.
+ *
+ * <p>This validator is useful in scenarios where card validation should be
+ * completely bypassed, such as testing environments or when using external
+ * validation services.</p>
+ *
+ * <p>Usage example:</p>
+ * <pre>{@code
+ * SelectDestination participant = new SelectDestination();
+ * Configuration cfg = new SimpleConfiguration();
+ * cfg.put("ignore-card-validations", "true");
+ * participant.setConfiguration(cfg);
+ * }</pre>
+ *
+ * @see CardValidator
+ * @see org.jpos.transaction.participant.SelectDestination
+ * @since 3.0.1
+ */
 public class NoCardValidator implements CardValidator {
 
     @Override

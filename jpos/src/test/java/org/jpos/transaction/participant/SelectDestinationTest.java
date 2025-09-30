@@ -20,7 +20,9 @@ package org.jpos.transaction.participant;
 
 
 import org.jdom2.Element;
-import org.jpos.core.*;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.ISOMsg;
 import org.jpos.rc.CMF;
 import org.jpos.rc.Result;
@@ -164,6 +166,35 @@ public class SelectDestinationTest implements TransactionConstants {
         assertEquals("DEFAULT", ctx.getString(DESTINATION.toString()), "Invalid Destination");
     }
 
+    @Test
+    public void testNoCardValidatorWithNullCard() {
+        cfg.put("ignore-card-validations", "true");
+        p.setConfiguration(cfg);
+        Context ctx = new Context();
+        ISOMsg m = new ISOMsg("2100");
+        // No PAN field - should not fail
+        ctx.put(ContextConstants.REQUEST.toString(), m);
+        int action = p.prepare(1L, ctx);
+        assertEquals(PREPARED | NO_JOIN | READONLY, action);
+        assertEquals("LOCAL", ctx.getString(DESTINATION.toString()));
+    }
+
+    @Test
+    public void testNoCardValidatorWithInvalidTrackData() {
+        cfg.put("ignore-card-validations", "true");
+        p.setConfiguration(cfg);
+        Context ctx = new Context();
+        ISOMsg m = new ISOMsg("2100");
+        m.set(2, "4111111111111111");
+        m.set(35, "4111111111111112=9901"); // Invalid Track2
+        ctx.put(ContextConstants.REQUEST.toString(), m);
+        int action = p.prepare(1L, ctx);
+        // Should succeed because NoCardValidator is used
+        assertEquals(PREPARED | NO_JOIN | READONLY, action);
+        // Should still route despite invalid track data
+        Result rc = ctx.getResult();
+        assertFalse(rc.hasFailures(), "No failures expected with NoCardValidator");
+    }
 
     private ISOMsg createISOMsg(String pan) {
         ISOMsg m = new ISOMsg("2100");
