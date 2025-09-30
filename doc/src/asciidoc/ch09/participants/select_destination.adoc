@@ -60,3 +60,30 @@ the configuration, then the `default-destination` will be set.
 * *INVALID_CARD_OR_CARDHOLDER_NUMBER* when Card is present but invalid.
 * *ROUTING_ERROR* when no route could be found.
 
+=== Card Validation Options
+
+The `SelectDestination` participant supports three levels of card validation:
+
+. **Full Validation** (default): Uses `DefaultCardValidator` which performs:
+* Luhn checksum validation
+* Track data consistency checks
+* Service code validation
+* PAN/EXP field validation
+
+. **Luhn-Only Bypass**: Set `ignore-luhn=true` to use `IgnoreLuhnCardValidator`:
+* Skips Luhn checksum validation
+
+. **Complete Bypass**: Set `ignore-card-validations=true` to use `NoCardValidator`:
+* Skips all card validation
+* Useful for testing or when using external validation services
+
+[source,xml]
+----
+<participant class="org.jpos.transaction.participant.SelectDestination">
+  <property name="ignore-card-validations" value="true" />
+  <!-- OR -->
+  <property name="ignore-luhn" value="true" />
+  <!-- OR -->
+  <!-- No properties = full validation -->
+</participant>
+----
