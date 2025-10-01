@@ -95,7 +95,9 @@ public class QMUX
         for (Element keyElement : e.getChildren("key")) {
             String mtiOverride = QFactory.getAttributeValue(keyElement, "mti");
             if (mtiOverride != null && mtiOverride.length() >= 2) {
-                mtiKey.put (mtiOverride.substring(0,2), toStringArray(keyElement.getTextTrim(), ", ", null));
+                String pcode = sanitizePcode(QFactory.getAttributeValue(keyElement, "pcode"));
+                String mapKey = buildMtiKey(mtiOverride.substring(0,2), pcode);
+                mtiKey.put (mapKey, toStringArray(keyElement.getTextTrim(), ", ", null));
             } else {
                 key = toStringArray(e.getChildTextTrim("key"), ", ", DEFAULT_KEY);
             }
@@ -276,7 +278,16 @@ public class QMUX
             sb.append ('.');
         }
         boolean hasFields = false;
-        String[] k = mtiKey.getOrDefault(m.getMTI().substring(0,2), key);
+        String mti = m.getMTI();
+        String mtiPrefix = mti.substring(0,2);
+        String[] k = null;
+        String pcode = m.hasField(3) ? sanitizePcode(m.getString(3)) : null;
+        if (pcode != null) {
+            k = mtiKey.get(buildMtiKey(mtiPrefix, pcode));
+        }
+        if (k == null) {
+            k = mtiKey.getOrDefault(mtiPrefix, key);
+        }
         for (String f : k) {
             String v = m.getString(f);
             if (v != null) {
@@ -296,6 +307,17 @@ public class QMUX
         if (!hasFields)
             throw new ISOException ("Key fields not found - not sending " + sb.toString());
         return sb.toString();
+    }
+
+    private String sanitizePcode(String pcode) {
+        if (pcode == null)
+            return null;
+        String trimmed = pcode.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private String buildMtiKey(String mtiPrefix, String pcode) {
+        return pcode == null ? mtiPrefix : mtiPrefix + ':' + pcode;
     }
 
     @Override
