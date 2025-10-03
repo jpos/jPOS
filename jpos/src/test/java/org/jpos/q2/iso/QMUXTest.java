@@ -198,6 +198,90 @@ public class QMUXTest {
     }
 
     @Test
+    public void testGetKeyResolvesPcodeSpecificMapping() throws Exception {
+        QMUX qmux = createPcodeAwareQMUX("qmux-pcode-1");
+        try {
+            ISOMsg msg = new ISOMsg("0200");
+            msg.set(3, "381000");
+            msg.set(7, "0102030405");
+            msg.set(11, "123");
+
+            String key = qmux.getKey(msg);
+            assertEquals("test.out.0200102030405000123", key);
+        } finally {
+            qmux.destroyService();
+        }
+    }
+
+    @Test
+    public void testGetKeyResolvesDifferentPcodeMapping() throws Exception {
+        QMUX qmux = createPcodeAwareQMUX("qmux-pcode-2");
+        try {
+            ISOMsg msg = new ISOMsg("0200");
+            msg.set(3, "261000");
+            msg.set(7, "0102030405");
+            msg.set(11, "123");
+            msg.set(41, "TERM01");
+
+            String key = qmux.getKey(msg);
+            assertEquals("test.out.020010203040500012300000000000TERM01", key);
+        } finally {
+            qmux.destroyService();
+        }
+    }
+
+    @Test
+    public void testGetKeyFallbacksToMtiWhenPcodeNotPresent() throws Exception {
+        QMUX qmux = createPcodeAwareQMUX("qmux-pcode-3");
+        try {
+            ISOMsg msg = new ISOMsg("0200");
+            msg.set(3, "999999");
+            msg.set(7, "2001010101");
+            msg.set(11, "456");
+
+            String key = qmux.getKey(msg);
+            assertEquals("test.out.0202001010101000456", key);
+        } finally {
+            qmux.destroyService();
+        }
+    }
+
+    private QMUX createPcodeAwareQMUX(String name) throws Exception {
+        QMUX qmux = new QMUX();
+        qmux.setConfiguration(new SimpleConfiguration());
+        qmux.setPersist(createPcodePersist());
+        qmux.setName(name);
+        qmux.initService();
+        return qmux;
+    }
+
+    private Element createPcodePersist() {
+        Element persist = new Element("qmux");
+        persist.addContent(new Element("space").setText("testspace"));
+        persist.addContent(new Element("in").setText("test.in"));
+        persist.addContent(new Element("out").setText("test.out"));
+
+        Element mtiOnlyKey = new Element("key");
+        mtiOnlyKey.setAttribute("mti", "0200");
+        mtiOnlyKey.setText("7 11");
+        persist.addContent(mtiOnlyKey);
+
+        Element pcode381000 = new Element("key");
+        pcode381000.setAttribute("mti", "0200");
+        pcode381000.setAttribute("pcode", "381000");
+        pcode381000.setText("7 11");
+        persist.addContent(pcode381000);
+
+        Element pcode261000 = new Element("key");
+        pcode261000.setAttribute("mti", "0200");
+        pcode261000.setAttribute("pcode", "261000");
+        pcode261000.setText("7 11 41");
+        persist.addContent(pcode261000);
+
+        return persist;
+    }
+
+    @Test
     public void testSetInQueueThrowsNullPointerException() throws Throwable {
         QMUX qMUX = new QMUX();
         try {
