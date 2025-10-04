@@ -414,16 +414,18 @@ public class QServer
               BaseUnits.THREADS,
               server::getConnectionCount
           );
-        msgInCounter = MeterFactory.counter(registry, MeterInfo.ISOMSG_IN, tags);
-        msgOutCounter = MeterFactory.counter(registry, MeterInfo.ISOMSG_OUT, tags);
         if (channel instanceof BaseChannel baseChannel) {
              baseChannel.setCounters(msgInCounter, msgOutCounter);
+             baseChannel.setMeterRegistry(registry);
+             baseChannel.setServerName(getName());
         }
     }
     private void removeMeters() {
         var registry = getServer().getMeterRegistry();
          registry.remove(connectionsGauge);
-         registry.remove(msgInCounter);
-         registry.remove(msgOutCounter);
+        if (msgInCounter != null)
+            registry.remove(msgInCounter);
+         if (msgOutCounter != null)
+            registry.remove(msgOutCounter);
     }
 }

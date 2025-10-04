@@ -52,6 +52,10 @@ public class MeterFactory {
           () -> Counter.builder(meterInfo.id()).tags(meterInfo.add(tags)).description(meterInfo.description()).register(registry));
     }
 
+    public static Counter updateCounter(MeterRegistry registry, MeterInfo meterInfo, Tags tags) {
+        return Counter.builder(meterInfo.id()).tags(meterInfo.add(tags)).description(meterInfo.description()).register(registry);
+    }
+
     public static Gauge gauge(MeterRegistry registry, MeterInfo meterInfo, Tags tags, String unit, Supplier<Number> n) {
         return createMeter(registry, meterInfo, tags,
           () -> Gauge.builder(meterInfo.id(), n)
