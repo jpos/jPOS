@@ -318,6 +318,7 @@ public class ChannelAdaptor
                         }
                         channel.send ((ISOMsg) o);
                         tx++;
+                        incrementMsgOutCounter((ISOMsg) o);
                     } else if (o instanceof Integer) {
                         if ((int)o != hashCode()) {
                             // STOP indicator seems to be for another channel adaptor
@@ -378,7 +379,7 @@ public class ChannelAdaptor
                         continue;
                     }
                     ISOMsg m = channel.receive ();
-                    msgInCounter.increment();
+                    incrementMsgInCounter(m);
                     rx++;
                     lastTxn = System.currentTimeMillis();
                     if (timeout > 0)
@@ -537,11 +538,27 @@ public class ChannelAdaptor
               BaseUnits.SESSIONS,
               () -> isConnected() ? 1 : 0
             );
-
-        msgInCounter = MeterFactory.counter(registry, MeterInfo.ISOMSG_IN, tags);
-        msgOutCounter = MeterFactory.counter(registry, MeterInfo.ISOMSG_OUT, tags);
+    }
+    protected void incrementMsgInCounter(ISOMsg m) throws ISOException {
+        if (m != null && m.hasMTI()) {
+            var tags = Tags.of("name", getName(), "type", "client", "mti", m.getMTI());
+            msgInCounter = MeterFactory.updateCounter(getServer().getMeterRegistry(), MeterInfo.ISOMSG_IN, tags);
+            msgInCounter.increment();
+        }
+    }
+    protected void incrementMsgOutCounter(ISOMsg m) throws ISOException {
+        if (m != null && m.hasMTI()) {
+            var tags = Tags.of("name", getName(), "type", "client", "mti", m.getMTI());
+            msgOutCounter = MeterFactory.updateCounter(getServer().getMeterRegistry(), MeterInfo.ISOMSG_OUT, tags);
+            msgOutCounter.increment();
+        }
     }
     private void removeMeters() {
-        MeterFactory.remove (getServer().getMeterRegistry(), connectionsGauge, msgInCounter, msgOutCounter);
+        var registry = getServer().getMeterRegistry();
+        registry.remove(connectionsGauge);
+        if (msgInCounter != null)
+            registry.remove(msgInCounter);
+        if (msgOutCounter != null)
+            registry.remove(msgOutCounter);
     }
 }

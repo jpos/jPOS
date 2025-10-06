@@ -19,6 +19,8 @@
 package org.jpos.iso;
 
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tags;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -29,6 +31,8 @@ import org.jpos.iso.header.BaseHeader;
 import org.jpos.jfr.ChannelEvent;
 import org.jpos.log.evt.Connect;
 import org.jpos.log.evt.Disconnect;
+import org.jpos.metrics.MeterFactory;
+import org.jpos.metrics.MeterInfo;
 import org.jpos.util.*;
 
 import javax.net.ssl.SSLSocket;
@@ -112,6 +116,8 @@ public abstract class BaseChannel extends Observable
 
     private Counter msgOutCounter;
     private Counter msgInCounter;
+    private MeterRegistry meterRegistry;
+    private String serverName;
     private final UUID uuid;
 
     private final Map<Class<? extends Exception>, List<ExceptionHandler>> exceptionHandlers = new HashMap<>();
@@ -277,6 +283,18 @@ public abstract class BaseChannel extends Observable
     }
     public Counter getMsgOutCounter() {
         return msgOutCounter;
+    }
+    public void setMeterRegistry(MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
+    }
+    public MeterRegistry getMeterRegistry() {
+        return meterRegistry;
+    }
+    public String getServerName() {
+        return serverName != null ? serverName : getName();
+    }
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
     }
 
     /**
@@ -682,8 +700,7 @@ public abstract class BaseChannel extends Observable
                     sendMessageTrailer(m, b);
                     serverOut.flush ();
                     cnt[TX]++;
-                    if (msgOutCounter != null)
-                        msgOutCounter.increment();
+                    incrementMsgOutCounter(m);
                 } finally {
                     serverOutLock.unlock();
                 }
@@ -855,9 +872,7 @@ public abstract class BaseChannel extends Observable
             m = applyIncomingFilters (m, header, b, evt);
             m.setDirection(ISOMsg.INCOMING);
             cnt[RX]++;
-            if (msgInCounter != null) {
-                 msgInCounter.increment();
-            }
+            incrementMsgInCounter(m);
             setChanged();
             notifyObservers(m);
         } catch (ISOException e) {
@@ -1256,5 +1271,20 @@ public abstract class BaseChannel extends Observable
         return socket != null ?
           new UUID(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() ^ socket.hashCode()) :
           uuid;
+    }
+
+    protected void incrementMsgInCounter(ISOMsg m) throws ISOException {
+        if (meterRegistry != null && m != null && m.hasMTI()) {
+            var tags = Tags.of("name", getServerName(), "type", "server", "mti", m.getMTI());
+            msgInCounter = MeterFactory.updateCounter(meterRegistry, MeterInfo.ISOMSG_IN, tags);
+            msgInCounter.increment();
+        }
+    }
+    protected void incrementMsgOutCounter(ISOMsg m) throws ISOException {
+        if (meterRegistry != null && m != null && m.hasMTI()) {
+            var tags = Tags.of("name", getServerName(), "type", "server", "mti", m.getMTI());
+            msgOutCounter = MeterFactory.updateCounter(meterRegistry, MeterInfo.ISOMSG_OUT, tags);
+            msgOutCounter.increment();
+        }
     }
 }

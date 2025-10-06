@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.jpos.bsh.BSHFilter;
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
@@ -67,6 +69,8 @@ import org.jpos.iso.packager.ISO93BPackager;
 import org.jpos.iso.packager.ISOBaseValidatingPackager;
 import org.jpos.iso.packager.PostPackager;
 import org.jpos.iso.packager.XMLPackager;
+import org.jpos.metrics.MeterFactory;
+import org.jpos.metrics.MeterInfo;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
@@ -1170,5 +1174,53 @@ public class BaseChannelTest {
         BaseChannel aSCIIChannel = new ASCIIChannel();
         byte[] result = aSCIIChannel.streamReceive();
         assertEquals(0, result.length, "result.length");
+    }
+
+    @Test
+    public void testIncrementMsgInCounter() throws Exception {
+        BaseChannel channel = new XMLChannel(new XMLPackager());
+        channel.setServerName("test-server");
+        channel.setMeterRegistry(mock(MeterRegistry.class));
+
+        ISOMsg msg = mock(ISOMsg.class);
+        when(msg.hasMTI()).thenReturn(true);
+        when(msg.getMTI()).thenReturn("0200");
+
+        Counter counter = mock(Counter.class);
+        try (var mocked = mockStatic(MeterFactory.class)) {
+            mocked.when(() -> MeterFactory.updateCounter(any(), any(), any()))
+                    .thenReturn(counter);
+
+            channel.incrementMsgInCounter(msg);
+
+            mocked.verify(() -> MeterFactory.updateCounter(
+                    eq(channel.getMeterRegistry()), eq(MeterInfo.ISOMSG_IN), any()
+            ));
+            verify(counter).increment();
+        }
+    }
+
+    @Test
+    public void testIncrementMsgOutCounter() throws Exception {
+        BaseChannel channel = new XMLChannel(new XMLPackager());
+        channel.setServerName("test-server");
+        channel.setMeterRegistry(mock(MeterRegistry.class));
+
+        ISOMsg msg = mock(ISOMsg.class);
+        when(msg.hasMTI()).thenReturn(true);
+        when(msg.getMTI()).thenReturn("0210");
+
+        Counter counter = mock(Counter.class);
+        try (var mocked = mockStatic(MeterFactory.class)) {
+            mocked.when(() -> MeterFactory.updateCounter(any(), any(), any()))
+                    .thenReturn(counter);
+
+            channel.incrementMsgOutCounter(msg);
+
+            mocked.verify(() -> MeterFactory.updateCounter(
+                    eq(channel.getMeterRegistry()), eq(MeterInfo.ISOMSG_OUT), any()
+            ));
+            verify(counter).increment();
+        }
     }
 }
