@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * Allow runtime binding of jPOS's components (ISOChannels, Logger, MUXes, etc)
- * 
+ *
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
@@ -77,7 +77,7 @@ public class NameRegistrar implements Loggeable {
 
     /**
      * register object
-     * 
+     *
      * @param key
      *            - key with which the specified value is to be associated.
      * @param value
@@ -150,7 +150,11 @@ public class NameRegistrar implements Loggeable {
             String objectClassName = obj == null ? "<NULL>" : obj.getClass().getName();
             p.println(inner + key + ": " + objectClassName);
             if (detail && obj instanceof Loggeable) {
-                ((Loggeable) obj).dump(p, inner + "  ");
+                try {
+                    ((Loggeable) obj).dump(p, inner + "  ");
+                } catch (Exception e) {         // typically a NPE may be thrown from badly-initialized objects
+                    p.println(e.getMessage());
+                }
             }
         }
     }
