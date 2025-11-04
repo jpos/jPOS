@@ -129,6 +129,7 @@ jar {
 
 java {
    withSourcesJar()
+   withJavadocJar()
 }
 
 task q2jar (type: Jar) {
@@ -154,8 +155,8 @@ task sourceJar( type: Jar ) {
     from sourceSets.main.allSource
 }
 
-artifacts {
-    archives sourceJar, javadocJar
+tasks.named("assemble") {
+    dependsOn(tasks.named("sourcesJar"), tasks.named("javadocJar"))
 }
 
 task dist (type: Tar) { 
