@@ -39,6 +39,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.Text;
+import org.jdom2.Comment;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
@@ -106,7 +108,7 @@ public class Q2 implements FileFilter, Runnable {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
     public static final String LOGGER_NAME         = "Q2";
-    public static final String REALM               = "Q2.system"; 
+    public static final String REALM               = "Q2.system";
     public static final String LOGGER_CONFIG       = "00_logger.xml";
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
@@ -232,7 +234,7 @@ public class Q2 implements FileFilter, Runnable {
      * @see #Q2(String[], ClassLoader)
      * @see #Q2(String[])
      */
-    
+
     public Q2 () {
         this (new String[] {});
     }
@@ -417,7 +419,7 @@ public class Q2 implements FileFilter, Runnable {
         return args;
     }
     public boolean accept (File f) {
-        return f.canRead() && 
+        return f.canRead() &&
             (isXml(f) ||
                     recursive && f.isDirectory() && !"lib".equalsIgnoreCase (f.getName()));
     }
@@ -513,7 +515,7 @@ public class Q2 implements FileFilter, Runnable {
                     audit (new Shutdown(getInstanceId(), shutdownHookDelay));
                     if (shutdownHookDelay > 0)
                         ISOUtil.sleep(shutdownHookDelay);
-                    
+
                     audit(auditStop(Duration.between(startTime, Instant.now())));
                     shuttingDown = true;
                     shutdown.countDown();
@@ -524,7 +526,7 @@ public class Q2 implements FileFilter, Runnable {
                             // NOPMD nothing to do
                         } catch (NullPointerException ignored) {
                             // NOPMD
-                            // on thin Q2 systems where shutdown is very fast, 
+                            // on thin Q2 systems where shutdown is very fast,
                             // q2Thread can become null between the upper if and
                             // the actual join. Not a big deal so we ignore the
                             // exception.
@@ -671,14 +673,14 @@ public class Q2 implements FileFilter, Runnable {
                 );
                 qentry.setInstance (instance);
             }
-        } 
+        }
         catch (InstanceAlreadyExistsException e) {
            /*
             * Ok, the file we tried to deploy, holds an object
             *  that already has been deployed.
-            *  
+            *
             * Rename it out of the way.
-            * 
+            *
             */
             tidyFileAway(f,DUPLICATE_EXTENSION, evt);
             if (evt != null)
@@ -692,7 +694,7 @@ public class Q2 implements FileFilter, Runnable {
             tidyFileAway(f,ERROR_EXTENSION, evt);
             // This will also save deploy error repeats...
             return false;
-        } 
+        }
         catch (Error e) {
             if (evt != null)
                 evt.addMessage(e);
@@ -832,15 +834,15 @@ public class Q2 implements FileFilter, Runnable {
             if (line.hasOption ("v")) {
                 displayVersion();
                 System.exit (0);
-            } 
+            }
             if (line.hasOption ("h")) {
                 HelpFormatter helpFormatter = new HelpFormatter ();
                 helpFormatter.printHelp ("Q2", options);
                 System.exit (0);
-            } 
+            }
             if (line.hasOption ("c")) {
                 cli = new CLI(this, line.getOptionValue("c"), line.hasOption("i"));
-            } else if (line.hasOption ("i")) 
+            } else if (line.hasOption ("i"))
                 cli = new CLI(this, null, true);
 
             String dir = DEFAULT_DEPLOY_DIR;
@@ -884,7 +886,7 @@ public class Q2 implements FileFilter, Runnable {
         }
     }
     private void deployBundle (File bundle, boolean encrypt)
-        throws JDOMException, IOException, 
+        throws JDOMException, IOException,
                 ISOException, GeneralSecurityException
     {
         SAXBuilder builder = createSAXBuilder();
@@ -904,7 +906,8 @@ public class Q2 implements FileFilter, Runnable {
     {
         e = e.clone ();
 
-        XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
+        boolean pretty = "true".equalsIgnoreCase(Environment.get("template.pretty", "true"));
+        XMLOutputter out = new XMLOutputter (pretty ? Format.getPrettyFormat() : Format.getRawFormat());
         Document doc = new Document ();
         doc.setRootElement(e);
         File qbean = new File (deployDir, fileName);
@@ -955,7 +958,7 @@ public class Q2 implements FileFilter, Runnable {
         return secureDoc;
     }
 
-    protected Document decrypt (Document doc) 
+    protected Document decrypt (Document doc)
         throws GeneralSecurityException, IOException, JDOMException
     {
         Element root = doc.getRootElement ();
@@ -1098,15 +1101,6 @@ public class Q2 implements FileFilter, Runnable {
         return disableDynamicClassloader;
     }
 
-    public void deployTemplate (String template, String filename, String prefix)
-      throws IOException, JDOMException, GeneralSecurityException, ISOException, NullPointerException {
-        if (template.startsWith("jar:")) {
-            deployResourceTemplate(template.substring(4), filename, prefix);
-        } else {
-            deployFileTemplate(template, filename, prefix);
-        }
-    }
-
     public static class QEntry {
         long deployed;
         ObjectInstance instance;
@@ -1181,24 +1175,38 @@ public class Q2 implements FileFilter, Runnable {
         }
     }
 
-    private void deployResourceTemplate (String resource, String filename, String prefix)
-      throws IOException, JDOMException, GeneralSecurityException, ISOException {
-        SAXBuilder builder = new SAXBuilder();
-        try (InputStream is = loader.getResourceAsStream(resource)) {
-            Objects.requireNonNull(is, "resource " + resource + " not present");
-            String s = new String(is.readAllBytes()).replaceAll("__PREFIX__", prefix);
-            Document doc = builder.build(new ByteArrayInputStream(s.getBytes()));
-            deployElement (doc.getRootElement(), filename, false, true);
+    public void deployTemplate (String template, String filename, String prefix)
+      throws IOException, JDOMException, GeneralSecurityException, ISOException, NullPointerException {
+        if (template.startsWith("jar:")) {
+            deployResourceTemplate(template, filename, prefix);
+        } else {
+            deployFileTemplate(template, filename, prefix);
         }
     }
 
-    private void deployFileTemplate (String resource, String filename, String prefix) throws IOException, JDOMException, ISOException, GeneralSecurityException {
-        SAXBuilder builder = new SAXBuilder();
-        try (InputStream is = new FileInputStream(resource)) {
-            String s = new String(is.readAllBytes()).replaceAll("__PREFIX__", prefix);
-            Document doc = builder.build(new ByteArrayInputStream(s.getBytes()));
-            deployElement(doc.getRootElement(), filename, false, true);
+    private void deployResourceTemplate (String resourceUri, String filename, String prefix)
+      throws IOException, JDOMException, GeneralSecurityException, ISOException {
+        // Assume resourceUri starts with  "jar:"
+        try (InputStream is = loader.getResourceAsStream(resourceUri.substring(4))) {
+            Objects.requireNonNull(is, "resource " + resourceUri + " not present");
+            deployTemplateInternal(is, resourceUri, filename, prefix);
         }
+    }
+
+    private void deployFileTemplate (String resourceFile, String filename, String prefix) throws IOException, JDOMException, ISOException, GeneralSecurityException {
+        try (InputStream is = new FileInputStream(resourceFile)) {
+            deployTemplateInternal(is, resourceFile, filename, prefix);
+        }
+    }
+
+    private void deployTemplateInternal(InputStream is, String originalResource, String filename, String prefix) throws IOException, JDOMException, ISOException, GeneralSecurityException {
+        SAXBuilder builder = new SAXBuilder();
+        String s = new String(is.readAllBytes()).replaceAll("__PREFIX__", prefix);
+        Document doc = builder.build(new ByteArrayInputStream(s.getBytes()));
+        Element root = doc.getRootElement();
+        root.addContent(0, new Text("\n    "));
+        root.addContent(1, new Comment(" Source template "+originalResource+" "));
+        deployElement(root, filename, false, true);
     }
 
     private boolean waitForChanges (WatchService service) throws InterruptedException {
