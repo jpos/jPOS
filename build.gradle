@@ -24,13 +24,13 @@ subprojects {
     javadoc.failOnError = false
 
     java {
-       sourceCompatibility = JavaVersion.VERSION_23
-       targetCompatibility = JavaVersion.VERSION_23
+       sourceCompatibility = JavaVersion.VERSION_25
+       targetCompatibility = JavaVersion.VERSION_25
     }
 
     tasks.withType(JavaCompile) {
         // options.compilerArgs += '--enable-preview'
-        options.release = JavaVersion.VERSION_23.ordinal()
+        options.release = JavaVersion.VERSION_25.ordinal()
     }
     //tasks.withType(Test) {
     //    jvmArgs += '--enable-preview'
