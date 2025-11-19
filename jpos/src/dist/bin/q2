@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -euo pipefail
 cd "$(dirname "$0")/.." || exit 1
 rm -f deploy/shutdown.xml
 
@@ -15,6 +16,9 @@ for arg in "$@"; do
       ;;
     --pid=*)
       PID_FILE="${arg#--pid=}"
+      ;;
+    --debug)
+      JAVA_OPTS+=("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005")
       ;;
     *)
       OTHER_OPTS+=("$arg")
@@ -33,5 +37,6 @@ else
     -Xmx4G \
     --enable-native-access=ALL-UNNAMED \
     -Xlog:gc:log/gc.log \
-    "${JAVA_OPTS[@]}" -jar @jarname@ --pid="$PID_FILE" "${OTHER_OPTS[@]}"
+    ${JAVA_OPTS[@]+"${JAVA_OPTS[@]}"} -jar @jarname@ --pid="$PID_FILE" ${OTHER_OPTS[@]+"${OTHER_OPTS[@]}"}
 fi
+
