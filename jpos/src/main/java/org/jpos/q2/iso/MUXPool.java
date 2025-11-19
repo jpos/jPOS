@@ -22,12 +22,12 @@ import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -73,10 +73,22 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         } catch (NameRegistrar.NotFoundException ex) {
             throw new ConfigurationException (ex);
         }
+
+        initHandler(e.getChild("strategy-handler"));
         NameRegistrar.register ("mux."+getName (), this);
     }
     public void stopService () {
         NameRegistrar.unregister ("mux."+getName ());
+    }
+
+    protected void initHandler(Element e) throws ConfigurationException {
+        if (e == null)
+            return;
+
+        QFactory factory = getFactory();
+        strategyHandler = factory.newInstance(QFactory.getAttributeValue (e, "class"));
+        factory.setLogger(strategyHandler, e);
+        factory.setConfiguration(strategyHandler, e);
     }
 
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
