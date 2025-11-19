@@ -77,6 +77,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         initHandler(e.getChild("strategy-handler"));
         NameRegistrar.register ("mux."+getName (), this);
     }
+
     public void stopService () {
         NameRegistrar.unregister ("mux."+getName ());
     }
@@ -150,13 +151,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     }
 
     protected MUX firstAvailableMUX (long maxWait) {
-        do {
-            for (MUX m : mux)
-                if (isUsable(m))
-                    return m;
-            ISOUtil.sleep (1000);
-        } while (System.currentTimeMillis() < maxWait);
-        return null;
+        return nextAvailableMUX(0, maxWait);
     }
 
     protected MUX nextAvailableMUX (int mnumber, long maxWait) {
@@ -233,6 +228,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     }
 
     private MUX getMUX(ISOMsg m, long maxWait) {
+        // maxWait should be interpreted as currentTimeMillis "deadline"
         MUX mux = null;
         if (strategyHandler != null) {
              mux = strategyHandler.getMUX(this, m, maxWait);
