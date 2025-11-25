@@ -49,9 +49,10 @@ public class SendResponse implements AbortParticipant, Configurable {
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
         ISOSource source = ctx.get (this.source);
-        if (source == null ||
-            abortOnClosed && !source.isConnected())
+        if (abortOnClosed && (source == null || !source.isConnected())) {
+            ctx.log (this.source + " not present or not longer connected");
             return ABORTED | READONLY | NO_JOIN;
+        }
 
         return PREPARED | READONLY;
     }
