@@ -653,7 +653,7 @@ public class ISOServer extends Observable
             WeakReference ref = (WeakReference) entry.getValue();
             ISOChannel c = (ISOChannel) ref.get ();
             if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
-                if (i > 0) {
+                if (i > 0 && !sb.isEmpty()) {
                     sb.append (' ');
                 }
                 sb.append (entry.getKey());
