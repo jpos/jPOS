@@ -20,6 +20,7 @@ module org.jpos.jpos {
     requires com.fasterxml.jackson.dataformat.xml;
     requires org.bouncycastle.provider;
 
+    exports org.jpos.iso.channel;
     exports org.jpos.iso.packager;
     exports org.jpos.iso.validator;
     exports org.jpos.iso;
