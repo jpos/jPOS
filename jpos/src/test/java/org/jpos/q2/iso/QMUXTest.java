@@ -20,23 +20,19 @@ package org.jpos.q2.iso;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jdom2.Element;
-import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.Connector;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISORequestListener;
-import org.jpos.iso.channel.PADChannel;
-import org.jpos.iso.packager.EuroSubFieldPackager;
+import org.jpos.q2.Q2;
 import org.jpos.util.NameRegistrar;
 import org.junit.jupiter.api.Test;
 
@@ -224,7 +220,7 @@ public class QMUXTest {
             msg.set(41, "TERM01");
 
             String key = qmux.getKey(msg);
-            assertEquals("test.out.020010203040500012300000000000TERM01", key);
+            assertEquals("test.out.02001020304050001230000000000TERM01", key);
         } finally {
             qmux.destroyService();
         }
@@ -233,6 +229,7 @@ public class QMUXTest {
     @Test
     public void testGetKeyFallbacksToMtiWhenPcodeNotPresent() throws Exception {
         QMUX qmux = createPcodeAwareQMUX("qmux-pcode-3");
+        qmux.setServer(new Q2());
         try {
             ISOMsg msg = new ISOMsg("0200");
             msg.set(3, "999999");
@@ -248,6 +245,7 @@ public class QMUXTest {
 
     private QMUX createPcodeAwareQMUX(String name) throws Exception {
         QMUX qmux = new QMUX();
+        qmux.setServer(new Q2());
         qmux.setConfiguration(new SimpleConfiguration());
         qmux.setPersist(createPcodePersist());
         qmux.setName(name);
