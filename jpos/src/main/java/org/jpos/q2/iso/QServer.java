@@ -38,7 +38,6 @@ import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 
 import java.util.Iterator;
-import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -68,6 +67,7 @@ public class QServer
     private Gauge connectionsGauge;
     private Counter msgOutCounter;
     private Counter msgInCounter;
+    private static final String CHANNEL_NAME_REGEXP = " (?=\\d+ \\S+:\\S+)";
 
     public QServer () {
         super ();
@@ -350,7 +350,7 @@ public class QServer
                 String channelNames = getISOChannelNames();
                 String[] channelName;
                 if (channelNames != null) {
-                    channelName = channelNames.split(" (?=\\d+ \\S+:\\S+)");
+                    channelName = channelNames.split(CHANNEL_NAME_REGEXP);
                     for (String s : channelName) {
                         try {
                             ISOChannel c = server.getISOChannel(s);
@@ -371,7 +371,7 @@ public class QServer
                 String channelNames = getISOChannelNames();
                 String[] channelName;
                 if (channelNames != null) {
-                    channelName = channelNames.split(" (?=\\d+ \\S+:\\S+)");
+                    channelName = channelNames.split(CHANNEL_NAME_REGEXP);
                     try {
                         ISOChannel c = server.getISOChannel(channelName[msgn.incrementAndGet() % channelName.length]);
                         if (c == null) {
