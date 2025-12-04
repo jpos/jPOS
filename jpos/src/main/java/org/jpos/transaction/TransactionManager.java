@@ -1198,11 +1198,9 @@ public class TransactionManager
             String participantShortName = Caller.shortClassName(p.getClass().getName());
             var mr = getServer().getMeterRegistry();
             var tags = Tags.of("name", getName(), "participant", participantShortName);
-            if (p instanceof LogSource ls) {
-                String realm = ls.getRealm();
-                if ((realm != null) && !realm.isEmpty())
-                    tags = tags.and("realm", realm.trim());
-            }
+            String realm = (p instanceof LogSource ls) ? ls.getRealm() : null;
+            tags = tags.and("realm", (realm != null && !realm.isEmpty()) ? realm.trim() : "");
+
             return new Timers(
               addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare"))),
               addTimer(MeterFactory.timer(mr, MeterInfo.TM_OPERATION, tags.and("phase", "prepare-for-abort"))),
