@@ -28,6 +28,8 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -60,19 +62,32 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         checkEnabled = cfg.getBoolean("check-enabled");
         sp = grabSpace (e.getChild ("space"));
 
-        if (muxName != null)
-            mux = new MUX[muxName.length];
-        else
+        // Sanitize muxes list using only muxes that exist
+        if (muxName == null)
             throw new ConfigurationException(
-                String.format("<muxes> element not configured for %s '%s'",
-                    getClass().getName(), getName()));
+                String.format("<muxes> element not configured for %s '%s'", getClass().getName(), getName()));
 
-        try {
-            for (int i=0; i<mux.length; i++)
-                mux[i] = QMUX.getMUX (muxName[i]);
-        } catch (NameRegistrar.NotFoundException ex) {
-            throw new ConfigurationException (ex);
+        List<MUX> muxes = new ArrayList<>();
+        List<String> found = new ArrayList<>();
+        List<String> notFound = new ArrayList<>();
+        for (String s : muxName) {
+            MUX m = NameRegistrar.getIfExists("mux." + s);
+            if (m != null) {
+                found.add(s);
+                muxes.add(m);
+            } else
+                notFound.add(s);
         }
+
+        if (!notFound.isEmpty()) {
+            log.warn("MUXPool "+getName()+": some muxes not found and will be removed "+notFound);
+        }
+        if (muxes.isEmpty()) {
+            throw new ConfigurationException ("MUXPool "+getName()+" has no available muxes");
+        }
+
+        muxName = found.toArray(new String[0]);
+        mux = muxes.toArray(new MUX[0]);
 
         initHandler(e.getChild("strategy-handler"));
         NameRegistrar.register ("mux."+getName (), this);
@@ -201,8 +216,9 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     private MUX splitByDivisorMUX(ISOMsg m, long maxWait) {
         try{
             if(splitField != null && !"".equals(splitField)){
-                if(m.hasField(splitField) && ISOUtil.isNumeric(m.getString(splitField),10)){
-                    MUX mx = mux[(int)(Long.valueOf(m.getString(splitField))%mux.length)];
+                String split = m.getString(splitField);
+                if(split != null && ISOUtil.isNumeric(split, 10)){
+                    MUX mx = mux[Integer.parseInt(split) % mux.length];
                     if(isUsable(mx))
                         return mx;
                 }
