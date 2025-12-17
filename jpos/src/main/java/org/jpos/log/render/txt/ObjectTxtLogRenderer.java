@@ -24,7 +24,11 @@ import java.io.PrintStream;
 public final class ObjectTxtLogRenderer implements LogRenderer<Object> {
     @Override
     public void render(Object obj, PrintStream ps, String indent) {
-        ps.printf ("%s%s%n", indent, obj.toString().replaceAll("\\r\\n|\\r|\\n", ("\\\\n")));
+        String[] lines = String.valueOf(obj).split("\\R", -1);
+        for (String line : lines) {
+            ps.print(indent);
+            ps.println(line);
+        }
     }
     public Class<?> clazz() {
         return Object.class;
