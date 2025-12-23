@@ -1,7 +1,7 @@
 plugins {
-   id "org.gradlex.extra-java-module-info" version "1.9"
-   id "org.owasp.dependencycheck" version "11.1.0"
-   id 'org.cyclonedx.bom' version '2.3.0' 
+   id "org.gradlex.extra-java-module-info" version "1.13.1"
+   id "org.owasp.dependencycheck" version "12.1.9"
+   id 'org.cyclonedx.bom' version '3.1.0'
    // id 'checkstyle'
 }
 

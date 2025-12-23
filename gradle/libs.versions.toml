@@ -1,24 +1,24 @@
 [versions]
 jdom = "2.0.6.1"
 sleepycatje = "18.3.12"
-commonscli = "1.9.0"
-commonslang3 = "3.17.0"
-jline = "3.26.3"
-jna = '5.15.0'
+commonscli = "1.11.0"
+commonslang3 = "3.20.0"
+jline = "3.30.6"
+jna = '5.18.1'
 jansi = '2.4.1'
 beanshell = "2.0b6"
 javatuples = "1.2"
-mockito = "5.20.0"
-mockitojupiter = "5.18.0"
+mockito = "5.21.0"
+mockitojupiter = "5.21.0"
 xmlunit = "1.6"
-junit = "5.11.0"
-bouncycastle = "1.79"
+junit = "6.0.1"
+bouncycastle = "1.83"
 hamcrest = "3.0"
 hdrhistogram = "2.2.2"
-yaml = "2.0"
-micrometercore = "1.14.6"
-micrometerprometheus = "1.14.6"
-jackson = '2.17.2'
+yaml = "2.5"
+micrometercore = "1.16.1"
+micrometerprometheus = "1.16.1"
+jackson = '2.20.1'
 jdbm = '1.0'
 
 [libraries]
