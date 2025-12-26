@@ -27,6 +27,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.BindException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.time.Duration;
@@ -534,6 +535,11 @@ public class ISOServer extends Observable
                         relax();
                     }
                 } // while !shutdown
+            } catch (BindException e) {
+                warn(new Listen(port, bindAddr,
+                                permits.availablePermits(), backlog,
+                                "(round "+round+") "+e));
+                relax();
             } catch (Throwable e) {
                 log (new ThrowableAuditLogEvent(e));
                 relax();
@@ -790,6 +796,14 @@ public class ISOServer extends Observable
             }
 
         }
+    }
+
+    private void warn (AuditLogEvent log) {
+        Logger.log(new LogEvent(Log.WARN)
+          .withSource(this)
+          .withTraceId(uuid)
+          .add(log)
+        );
     }
 
     private void log (AuditLogEvent log) {
