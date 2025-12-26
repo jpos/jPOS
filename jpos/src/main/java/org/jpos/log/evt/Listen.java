@@ -27,5 +27,25 @@ public record Listen(
   int port,
   @JsonInclude(JsonInclude.Include.NON_NULL) InetAddress bindAddr,
   int permits,
-  int backlog
-) implements AuditLogEvent {  }
+  int backlog,
+  @JsonInclude(JsonInclude.Include.NON_NULL) String error
+) implements AuditLogEvent {
+
+    public Listen(int port,
+                  @JsonInclude(JsonInclude.Include.NON_NULL) InetAddress bindAddr,
+                  int permits,
+                  int backlog) {
+        this(port, bindAddr, permits, backlog, null);
+    }
+
+    @Override
+    public String toString() {
+        return "Listen[" +
+         "port=" + port +
+          ", bindAddr=" + bindAddr +
+          ", permits=" + permits +
+          ", backlog=" + backlog +
+          (error != null ? ", error='" + error + '\'' : "") +
+          ']';
+    }
+}
