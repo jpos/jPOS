@@ -3,7 +3,7 @@
  <property name="sessions"         value="1" />
  <property name="max-sessions"         value="256000" />
 <!-- <property name="max-active-sessions" value="100000" />-->
- <property name="input-space" value="tspace:txnmgrtest" />
+ <property name="input-space" value="lspace:txnmgrtest" />
  <property name="max-time" value="500000" />
 
  <participant class="org.jpos.transaction.participant.Delay" timeout="200000" max-time="300000">

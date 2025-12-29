@@ -60,7 +60,7 @@ public class TransactionManagerStress {
         recording.setDestination(outputPath);
         recording.start();
 
-        sp = SpaceFactory.getSpace("tspace:txnmgrtest");
+        sp = SpaceFactory.getSpace("lspace:txnmgrtest");
         Files.walk(Paths.get("build/resources/test/org/jpos/transaction")).forEach( s -> {
             if (Files.isRegularFile(s)) {
                 try {

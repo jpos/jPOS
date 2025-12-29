@@ -2,7 +2,7 @@
  <property name="queue"            value="TXNMGRTEST.DELAY" />
  <property name="sessions"         value="10" />
  <property name="max-sessions"         value="256" />
- <property name="input-space" value="tspace:txnmgrtest" />
+ <property name="input-space" value="lspace:txnmgrtest" />
  <property name="max-time" value="500" />
 
  <participant class="org.jpos.transaction.participant.Delay" timeout="100" max-time="150">

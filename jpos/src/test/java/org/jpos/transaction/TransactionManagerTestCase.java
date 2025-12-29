@@ -48,7 +48,7 @@ public class TransactionManagerTestCase {
 
     @BeforeAll
     public static void setUp (@TempDir Path deployDir) throws IOException {
-        sp = SpaceFactory.getSpace("tspace:txnmgrtest");
+        sp = SpaceFactory.getSpace("lspace:txnmgrtest");
         Files.walk(Paths.get("build/resources/test/org/jpos/transaction")).forEach( s -> {
             if (Files.isRegularFile(s)) {
                 try {
@@ -80,8 +80,8 @@ public class TransactionManagerTestCase {
     @Test
     public void testTransactionNoDelay() {
         Context ctx = new Context();
-        ctx.put("DELAY-0", 50L);
-        ctx.put("DELAY-1", 50L);
+        ctx.put("DELAY-0", 25L);
+        ctx.put("DELAY-1", 25L);
         sp.out(QUEUE_DELAY, ctx);
         String rc = ctx.get("RC", 10000L);
         assertEquals("00", rc);

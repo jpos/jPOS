@@ -1,7 +1,7 @@
 <txnmgr-test class="org.jpos.transaction.TransactionManager" logger="Q2">
  <property name="queue"            value="TXNMGRTEST" />
  <property name="sessions"         value="4" />
- <property name="input-space" value="tspace:txnmgrtest" />
+ <property name="input-space" value="lspace:txnmgrtest" />
  <property name="persistent-space" value="je:txnmgrtest" />
  <property name="debug-context" value="true" />
  <property name="debug" value="true" />
