@@ -18,6 +18,7 @@
 
 package org.jpos.iso;
 
+import org.jpos.core.Environment;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -26,12 +27,17 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 
 /**
  * various functions needed to pack/unpack ISO-8583 fields
@@ -86,6 +92,25 @@ public class ISOUtil {
     public static final byte RS  = 0x1D;
     public static final byte GS  = 0x1E;
     public static final byte ETX = 0x03;
+
+    /**
+     * BIN configuration, used to support 8 length bines
+     *
+     * Configured with the enviornment property ${jpos.util.bin.length}, it
+     * should be a comma separated list of bines.
+     *
+     * For example, if there are two 8 length bines "4000000" and "2000000",
+     * then this property should be:
+     *
+     * <code>
+     *  jpos.util.bin.length = 4000000,2000000
+     * </code>
+     *
+     * @see {@link org.jpos.core.Environment}
+     * @see #cleanBinCache()
+     * @see #protect(String, char)
+     **/
+    private static final AtomicReference<Set<String>> BIN_CONFIG = new AtomicReference<>();
 
     public static String ebcdicToAscii(byte[] e) {
         return EBCDIC.decode(ByteBuffer.wrap(e)).toString();
@@ -902,6 +927,26 @@ public class ISOUtil {
     public static String normalize (String s) {
         return normalize(s, true);
     }
+    private static Set<String> initBinConfig() {
+        String config = Environment.get("${jpos.util.bin.length}", "");
+        if (config == null || config.isEmpty()) {
+            BIN_CONFIG.set(Collections.emptySet());
+        }
+        String[] binArray = config.split(",");
+        Set<String> bines = new HashSet<String>();
+        Collections.addAll(bines, binArray);
+        BIN_CONFIG.set(bines);
+        return bines;
+    }
+    /**
+     * Clean the bin cache, see {@link #BIN_CONFIG}
+     *
+     * Call this method after changing the {@link Environment} so future calls to
+     * {@link #protect(String)} will re-calculate the bin list
+     **/
+    public static void cleanBinCache() {
+        BIN_CONFIG.set(null);
+    }
     /**
      * Protects PAN, Track2, CVC (suitable for logs).
      *
@@ -918,7 +963,14 @@ public class ISOUtil {
     public static String protect (String s, char mask) {
         StringBuilder sb = new StringBuilder();
         int len   = s.length();
-        int clear = len > 6 ? 6 : 0;
+        Set<String> bines = BIN_CONFIG.get();
+
+        if (bines == null) bines = initBinConfig();
+
+        int binLength = 6;
+        if (len >= 8 && bines.contains(s.substring(0, 8))) binLength = 8;
+
+        int clear = len > binLength ? binLength : 0;
         int lastFourIndex = -1;
         if (clear > 0) {
             lastFourIndex = s.indexOf ('=') - 4;
