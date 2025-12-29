@@ -97,11 +97,68 @@ public class EnvironmentTest {
         assertEquals("the numbers UNO and DOS and NaN",
                     Environment.get("the numbers ${test.one} and ${test.two} and ${test.three:NaN}"));
     }
-    
+
+    @Test
+    public void nestedExprUNO() {
+        assertEquals("the nested number is UNO",
+                    Environment.get("the nested number is ${test.one:${test.two:NaN}}"));
+    }
+
+    @Test
+    public void nestedExprDOS() {
+        assertEquals("the nested number is DOS",
+                    Environment.get("the nested number is ${test.ABC:${test.two:NaN}}"));
+    }
+
+    @Test
+    public void nestedExprNaN() {
+        assertEquals("the nested number is NaN",
+                    Environment.get("the nested number is ${test.ABC:${test.XYZ:NaN}}"));
+    }
+
+    @Test
+    public void equalsLogModeXMLTrue() {
+        assertEquals("true", Environment.get("${test.log_mode=xml}"));
+    }
+    @Test
+    public void notEqualsLogModeXMLFalse() {
+        assertEquals("false", Environment.get("${!test.log_mode=xml}"));
+    }
+
+    @Test
+    public void equalsLogModeJSONFalse() {
+        assertEquals("false", Environment.get("${test.log_mode=json}"));
+    }
+    @Test
+    public void equalsLogModeJSONTrue() {
+        assertEquals("true", Environment.get("${!test.log_mode=json}"));
+    }
+
+    @Test
+    public void equalsUnsetPropFalse() {
+        assertEquals("false", Environment.get("${test.unset=abc}"));
+    }
+    @Test
+    public void notEqualsUnsetPropTrue() {
+        assertEquals("true", Environment.get("${!test.unset=abc}"));
+    }
+
+    @Test
+    public void equalsWithNestedValue() {
+        System.setProperty("sys.one", "UNO");
+        assertEquals("true", Environment.get("${sys.one=${test.one}}"));
+    }
+    @Test
+    public void notEqualsWithNestedValue() {
+        System.setProperty("sys.one", "UNO");
+        assertEquals("false", Environment.get("${!sys.one=${test.one}}"));
+    }
+
+
     @Test
     public void multiLineExpression() {
-        assertEquals("The next sentence is true\nThe previous sentence is false\n", 
-                Environment.getEnvironment().getProperty("The next sentence is ${undefined-property:true}\n" + 
+        assertEquals("The next sentence is true\nThe previous sentence is false\n",
+                Environment.getEnvironment().getProperty("The next sentence is ${undefined-property:true}\n" +
                         "The previous sentence is ${undefined-property:false}\n"));
     }
 
