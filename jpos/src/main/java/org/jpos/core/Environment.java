@@ -37,8 +37,17 @@ public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
 
-    private static Pattern valuePattern = Pattern.compile("^((?:.|\n|\r)*)(\\$)([\\w]*)\\{([-!\\w.]+)(:(.*?))?\\}((?:.|\n|\r)*)$");
-    // make groups easier to read :-)                       111111111111112222233333333   4444444444455666665    77777777777777
+    private static Pattern valuePattern = Pattern.compile(      // make groups easier to read :-)
+        "^"+
+        "((?:.|\n|\r)*)"+     //   1: generic multiline text, as non-capturing group
+        "(\\$)"+              //   2: literal $
+        "([\\w]*)"+           //   3: possible prefix cfg|sys|env
+        "\\{"+                //
+        "([-!\\w.]+)"+        //   4: property name, includes ! for "not" expression
+        "([:=](.*?))?"+       // 5,6: optional default value or equals match
+        "\\}"+                //
+        "((?:.|\n|\r)*)"+     //   7: generic multiline text, as non-capturing group
+        "$");
 
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
     private static Environment INSTANCE;
@@ -50,7 +59,7 @@ public class Environment implements Loggeable {
     private static int SP_PREFIX_LENGTH = SP_PREFIX.length();
     private String errorString;
     private ServiceLoader<EnvironmentProvider> serviceLoader;
-    
+
     static {
         try {
             INSTANCE = new Environment();
@@ -138,38 +147,44 @@ public class Environment implements Loggeable {
                 boolean negated = false;
                 String previousR = r;
                 String gPrefix = m.group(3);
-                String gValue = m.group(4);
-                if (gValue.startsWith("!")) {
+                String gProp = m.group(4);
+                if (gProp.startsWith("!")) {
                     negated = true;
-                    gValue = gValue.substring(1);
+                    gProp = gProp.substring(1);
                 }
                 gPrefix = gPrefix != null ? gPrefix : "";
                 switch (gPrefix) {
                     case CFG_PREFIX:
-                        r = propRef.get().getProperty(gValue, null);
+                        r = propRef.get().getProperty(gProp, null);
                         break;
                     case SYSTEM_PREFIX:
-                        r = System.getProperty(gValue);
+                        r = System.getProperty(gProp);
                         break;
                     case ENVIRONMENT_PREFIX:
-                        r = System.getenv(gValue);
+                        r = System.getenv(gProp);
                         break;
                     default:
-                        if (gPrefix.length() == 0) {
-                            r = System.getenv(gValue);                              // ENV has priority
-                            r = r == null ? System.getenv(gValue.replace('.', '_').toUpperCase()) : r;
-                            r = r == null ? System.getProperty(gValue) : r;         // then System.property
-                            r = r == null ? propRef.get().getProperty(gValue) : r;  // then jPOS --environment
+                        if (gPrefix.isEmpty()) {
+                            r = System.getenv(gProp);                              // ENV has priority
+                            r = r == null ? System.getenv(gProp.replace('.', '_').toUpperCase()) : r;
+                            r = r == null ? System.getProperty(gProp) : r;         // then System.property
+                            r = r == null ? propRef.get().getProperty(gProp) : r;  // then jPOS --environment
                         } else {
                             return s; // do nothing - unknown prefix
                         }
                 }
 
                 String defValue = null;
-                if (r == null) {                                // unresolved property
-                    defValue = m.group(6);
-                    if (defValue != null)
-                        r = defValue;                           // use default value from now on
+                if (m.group(5) != null) {
+                    if (m.group(5).startsWith("=")) {
+                        r = r != null && r.equals(m.group(6)) ? "true" : "false";
+                    } else {                                            // ':' default case
+                        if (r == null) {                                // unresolved property
+                            defValue = m.group(6);
+                            if (defValue != null)
+                                r = defValue;                           // use default value from now on
+                        }
+                    }
                 }
 
                 if (r != null) {
@@ -190,8 +205,9 @@ public class Environment implements Loggeable {
                     if (m.group(1) != null) {
                         r = m.group(1) + r;
                     }
-                    if (m.group(7) != null)
+                    if (m.group(7) != null) {
                         r = r + m.group(7);
+                    }
 
                     m = valuePattern.matcher(r);
                 } else {                // property was undefined/unresolved and no default was provided

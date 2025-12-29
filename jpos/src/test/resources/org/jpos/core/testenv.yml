@@ -12,6 +12,8 @@ test:
   one: UNO
   two: DOS
 
+  log_mode: xml
+
 ---
 system:
   property:
