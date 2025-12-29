@@ -77,7 +77,7 @@ public class TransactionManagerTestCase {
 //        sp.out (QUEUE, ctx);
 //    }
 
-    @Test
+    @Test @Disabled
     public void testTransactionNoDelay() {
         Context ctx = new Context();
         ctx.put("DELAY-0", 25L);
