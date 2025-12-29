@@ -17,3 +17,7 @@ metrics:
 lint:
     gradle -Plint clean jar
 
+[no-cd]
+debug:
+    JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 q2
+
