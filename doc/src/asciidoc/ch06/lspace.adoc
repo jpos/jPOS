@@ -1,0 +1,187 @@
+[[lspace]]
+== LSpace
+
+LSpace is a Loom-optimized in-memory Space implementation designed for efficient operation with Java Virtual Threads (Project Loom).
+
+It can be instantiated using the `lspace:xxx` name (e.g., `SpaceFactory.getSpace("lspace:myspace")`).
+
+LSpace implements the LocalSpace interface (see <<local_space_interface>>) and provides a drop-in replacement for TSpace with significantly improved performance when using Virtual Threads.
+
+=== Why LSpace?
+
+Traditional space implementations like TSpace use global synchronization (`synchronized(this)`) which causes a _thundering herd problem_ when used with Virtual Threads. When a value is written to the space, **all** waiting threads wake up, even those waiting on completely different keys.
+
+With thousands of Virtual Threads (which are cheap to create), this creates massive unnecessary context-switching overhead.
+
+LSpace solves this by using **per-key locking**:
+
+* Each key has its own `ReentrantLock` and `Condition` variables
+* Only threads waiting on a specific key are woken up when that key is modified
+* No cross-key contention or spurious wakeups
+* Scales efficiently with thousands of concurrent Virtual Threads
+
+=== When to Use LSpace
+
+Use LSpace when:
+
+* Running on Java 21+ with Virtual Threads enabled
+* You have many concurrent threads accessing the space
+* Different threads wait on different keys (the common case)
+* You need maximum throughput and minimal latency
+
+Stick with TSpace when:
+
+* Running on older Java versions without Virtual Thread support
+* You have very few concurrent threads
+* Legacy compatibility is required
+
+[TIP]
+====
+LSpace is fully API-compatible with TSpace. You can switch between them by simply changing the space URI from `tspace:name` to `lspace:name` with no code changes.
+====
+
+=== Performance Characteristics
+
+.Comparison with TSpace
+[options="header", cols="3,4,4"]
+|===============
+|Scenario|TSpace|LSpace
+|10 threads on different keys|All wake up on each write|Only relevant thread wakes up
+|1000 Virtual Threads|Massive context switching|Minimal context switching
+|Memory overhead per key|~40 bytes|~100 bytes
+|API compatibility|LocalSpace|LocalSpace (100% compatible)
+|===============
+
+[NOTE]
+======
+The per-key locking strategy means LSpace uses slightly more memory than TSpace (approximately 100 bytes per active key for the lock and condition objects). This is negligible in most scenarios and is more than offset by the performance gains with Virtual Threads.
+======
+
+=== Sample LSpace Use
+
+.Creating and using an LSpace
+============
+[source,java]
+------------
+import org.jpos.space.Space;
+import org.jpos.space.SpaceFactory;
+
+// Create a Loom-optimized space
+Space sp = SpaceFactory.getSpace("lspace:myspace");
+
+// Use it exactly like TSpace
+sp.out("request", new ISOMsg());
+ISOMsg msg = (ISOMsg) sp.in("request", 5000);
+------------
+============
+
+.Virtual Thread example with multiple keys
+============
+[source,java]
+------------
+Space sp = SpaceFactory.getSpace("lspace:workers");
+
+// Start 1000 Virtual Threads, each waiting on a different key
+for (int i = 0; i < 1000; i++) {
+    final int workerId = i;
+    Thread.startVirtualThread(() -> {
+        while (running) {
+            // Each thread waits on its own key - no cross-key wakeups!
+            Object task = sp.in("worker-" + workerId, 1000);
+            if (task != null) {
+                processTask(task);
+            }
+        }
+    });
+}
+
+// Distribute work efficiently
+for (int i = 0; i < 10000; i++) {
+    int workerId = i % 1000;
+    sp.out("worker-" + workerId, createTask(i));
+    // Only the thread waiting on this specific key wakes up
+}
+------------
+============
+
+=== Implementation Details
+
+LSpace uses a `ConcurrentHashMap<K, KeyEntry>` where each `KeyEntry` contains:
+
+* A `ReentrantLock` for synchronizing access to that key's queue
+* A `Condition hasValue` for waiting threads to be signaled when a value is added
+* A `Condition isEmpty` for `nrd()` operations waiting for the key to become absent
+* A `LinkedList<Object>` queue for the values
+
+This architecture ensures that:
+
+* Different keys can be accessed concurrently without blocking each other
+* Only threads waiting on a specific key are woken when that key is modified
+* All `rd()` waiters are woken (non-destructive read allows multiple readers)
+* Exactly one `in()` waiter is woken (destructive read)
+
+[IMPORTANT]
+====
+When transitioning from empty to non-empty, LSpace uses `signalAll()` to wake all waiting threads on that key. This is necessary because both `in()` (destructive) and `rd()` (non-destructive) operations may be waiting. The overhead of extra wakeups is minimal with Virtual Threads compared to the benefit of correctness.
+====
+
+=== Best Practices
+
+When using LSpace with Virtual Threads:
+
+1. **Partition work across keys** rather than having many threads wait on a single key:
++
+[source,java]
+----
+// Good: Distributes load across multiple keys
+int shard = taskId % 10;
+sp.out("work-queue-" + shard, task);
+
+// Avoid: All threads contend on same key
+sp.out("work-queue", task);
+----
+
+2. **Use `rd()` for broadcast scenarios** where multiple consumers need to see the same event:
++
+[source,java]
+----
+// Configuration update - all waiting readers will see it
+sp.out("config-update", newConfig);
+----
+
+3. **Prefer smaller worker pools** with retry loops over massive thread counts:
++
+[source,java]
+----
+// Good: 100 workers with retry
+for (int i = 0; i < 100; i++) {
+    Thread.startVirtualThread(() -> {
+        while (running) {
+            Object work = sp.in("queue", 1000);
+            if (work != null) processWork(work);
+        }
+    });
+}
+----
+
+=== Migration from TSpace
+
+LSpace is designed as a drop-in replacement for TSpace:
+
+[source,java]
+----
+// Old code
+Space sp = SpaceFactory.getSpace("tspace:myspace");
+
+// New code - just change the prefix
+Space sp = SpaceFactory.getSpace("lspace:myspace");
+----
+
+All operations work identically:
+
+* `out()`, `push()`, `put()` - same behavior
+* `in()`, `rd()`, `inp()`, `rdp()`, `nrd()` - same behavior
+* Timeouts, expiration, garbage collection - same behavior
+* Listeners, templates - same behavior
+
+The only differences are internal implementation details that improve performance with Virtual Threads.

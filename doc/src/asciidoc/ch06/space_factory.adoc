@@ -4,6 +4,7 @@
 jPOS comes with several space implementations:
 
 * **TSpace** : An in-memory space footnote:[TSpace implements LocalSpace]
+* **LSpace** : A Loom-optimized in-memory space for Virtual Threads footnote:[LSpace implements LocalSpace]
 * **JDBMSpace** : a persistent JDBM based space implementation
 * **JESpace** : a persistent Berkeley DB Java Edition based implementation
 
@@ -52,6 +53,9 @@ followed by an optional name and optional parameter(s):
 |Type|Implementation
 |tspace|
 Creates or returns a reference to a previously-created instance of +TSpace+
+|lspace|
+Creates or returns a reference to a previously-created instance of +LSpace+,
+a Loom-optimized space designed for efficient operation with Virtual Threads
 |jdbm|
 Creates or returns a reference to a previously-created instance of
 +JDBMSpace+. This name accepts an optional
@@ -59,7 +63,7 @@ parameter (after the Space name) which is a path to the persistent
 store, e.g., +jdbm:myspace:/tmp/myspace+.
 |je|
 Creates or returns a reference to a previously-created instance of
-+JESpace+. This name accepts an optional parameter (after the Space name) 
++JESpace+. This name accepts an optional parameter (after the Space name)
 which is a path to the persistent store, e.g., +jdbm:myspace:/tmp/myjespace+.
 |spacelet|
 Returns a reference to a previously-created instance of +SpaceLet+

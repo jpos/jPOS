@@ -64,6 +64,7 @@ include::ch06/local_space_interface.adoc[]
 
 include::ch06/space_factory.adoc[]
 include::ch06/tspace.adoc[]
+include::ch06/lspace.adoc[]
 include::ch06/jdbm_space.adoc[]
 include::ch06/je_space.adoc[]
 include::ch06/space_interceptor.adoc[]

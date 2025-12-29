@@ -33,31 +33,35 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  *   <li>name
  *   <li>optional parameter
  *  </ul>
- * <p> 
+ * <p>
  * <p>
  *
  * Examples:
  *
  * <pre>
  *   // default unnamed space (tspace:default)
- *   Space sp = SpaceFactory.getSpace (); 
+ *   Space sp = SpaceFactory.getSpace ();
  *
  *   // transient space named "test"
- *   Space sp = SpaceFactory.getSpace ("transient:test");  
+ *   Space sp = SpaceFactory.getSpace ("transient:test");
+ *
+ *   // lspace (Loom-optimized) named "test"
+ *   Space sp = SpaceFactory.getSpace ("lspace:test");
  *
  *   // persistent space named "test"
- *   Space sp = SpaceFactory.getSpace ("persistent:test"); 
+ *   Space sp = SpaceFactory.getSpace ("persistent:test");
  *
  *   // jdbm space named test
  *   Space sp = SpaceFactory.getSpace ("jdbm:test");
  *
  *   // jdbm space named test, storage located in /tmp/test
- *   Space sp = SpaceFactory.getSpace ("jdbm:test:/tmp/test");  
+ *   Space sp = SpaceFactory.getSpace ("jdbm:test:/tmp/test");
  * </pre>
  *
  */
 public class SpaceFactory {
     public static final String TSPACE     = "tspace";
+    public static final String LSPACE     = "lspace";
     public static final String TRANSIENT  = "transient";
     public static final String PERSISTENT = "persistent";
     public static final String SPACELET   = "spacelet";
@@ -131,10 +135,12 @@ public class SpaceFactory {
         Space sp = null;
         if (TSPACE.equals (scheme) || TRANSIENT.equals (scheme)) {
             sp = new TSpace();
+        } else if (LSPACE.equals (scheme)) {
+            sp = new LSpace();
         } else if (JDBM.equals (scheme) || PERSISTENT.equals (scheme)) {
             if (param != null)
                 sp = JDBMSpace.getSpace (name, param);
-            else 
+            else
                 sp = JDBMSpace.getSpace (name);
         } else if (JE.equals (scheme)) {
             if (param != null)
