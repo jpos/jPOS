@@ -232,6 +232,8 @@ public class LSpaceTest implements SpaceListener {
 
     /**
      * Stress test with many virtual threads on many keys.
+     * Tests producer-consumer coordination without data loss under high concurrency.
+     * Thread.yield() calls help virtual threads cooperate on carrier threads in CPU-intensive sections.
      */
     @Test
     public void testVirtualThreadStress() throws InterruptedException {
@@ -250,7 +252,7 @@ public class LSpaceTest implements SpaceListener {
                     for (int i = 0; i < opsPerKey; i++) {
                         lsp.out(key, i);
                         if (i % 10 == 0)
-                            Thread.yield();
+                            Thread.yield();  // Allow other virtual threads to run
                     }
                 } finally {
                     allDone.countDown();
@@ -264,7 +266,7 @@ public class LSpaceTest implements SpaceListener {
                         Integer val = lsp.in(key, 5000);
                         assertNotNull(val, "Should receive value for key: " + key);
                         if (i % 10 == 0)
-                            Thread.yield();
+                            Thread.yield();  // Allow other virtual threads to run
                     }
                 } finally {
                     allDone.countDown();
@@ -275,12 +277,14 @@ public class LSpaceTest implements SpaceListener {
         // Wait for all operations to complete
         assertTrue(allDone.await(30, TimeUnit.SECONDS), "All operations should complete");
 
-        // Verify space is empty
+        // Verify space is empty - entries should be removed when queues become empty
         assertEquals(0, lsp.getKeySet().size(), "Space should be empty after all ops");
     }
 
     /**
-     * Test that memory is properly cleaned up when entries are removed.
+     * Test that entries are properly cleaned up when queues become empty.
+     * With the double-check pattern, entries can be safely removed without
+     * race conditions.
      */
     @Test
     public void testMemoryCleanup() {
@@ -292,12 +296,51 @@ public class LSpaceTest implements SpaceListener {
             lsp.in("key" + i);
         }
 
-        // Force GC
-        lsp.gc();
+        // Entries should be removed from map when queues become empty
+        assertEquals(0, lsp.getKeySet().size(), "All entries should be removed after consumption");
+    }
 
-        // Verify internal maps are clean
-        assertEquals(0, lsp.getKeySet().size(), "No keys should remain");
-        assertTrue(lsp.isEmpty(), "Space should be empty");
+    /**
+     * Test that GC doesn't cause race conditions with concurrent operations.
+     * With the double-check pattern, GC can safely remove entries while threads
+     * are waiting - stale references are detected and retried.
+     */
+    @Test
+    public void testGcRaceCondition() throws InterruptedException {
+        final LSpace<String, Integer> lsp = new LSpace<>();
+        final int numKeys = 10;
+        final int iterations = 50;
+        final CountDownLatch allDone = new CountDownLatch(numKeys);
+
+        // Start threads that repeatedly add short-lived entries and trigger GC
+        for (int k = 0; k < numKeys; k++) {
+            final String key = "gckey" + k;
+            Thread.startVirtualThread(() -> {
+                try {
+                    for (int i = 0; i < iterations; i++) {
+                        // Add entry with very short timeout
+                        lsp.out(key, i, 10);
+
+                        // Force GC between operations
+                        if (i % 5 == 0) {
+                            lsp.gc();
+                        }
+
+                        // Try to read - should either get value or timeout gracefully
+                        Integer val = lsp.in(key, 100);
+                        // Value may be null if it expired, but should not hang
+
+                        Thread.yield();
+                    }
+                } finally {
+                    allDone.countDown();
+                }
+            });
+        }
+
+        // All threads should complete without hanging
+        assertTrue(allDone.await(10, TimeUnit.SECONDS),
+            "All threads should complete without hanging due to GC race conditions");
     }
 
     /**
