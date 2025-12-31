@@ -98,16 +98,26 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             throw new NullPointerException("key=" + key + ", value=" + value);
         }
 
-        KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
+        while (true) {
+            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
-        entry.lock.lock();
-        try {
-            boolean wasEmpty = entry.queue.isEmpty();
-            entry.queue.addLast(value);
-            if (wasEmpty)
-                entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
-        } finally {
-            entry.lock.unlock();
+            entry.lock.lock();
+            try {
+                // Double-check: verify entry is still in map (prevent stale reference)
+                if (entries.get(key) != entry) {
+                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                    continue;
+                }
+
+                boolean wasEmpty = entry.queue.isEmpty();
+                entry.queue.addLast(value);
+                if (wasEmpty)
+                    entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
+
+                break;  // Success, exit retry loop
+            } finally {
+                entry.lock.unlock();
+            }
         }
 
         if (sl != null)
@@ -131,20 +141,30 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
         }
 
-        KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
+        while (true) {
+            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
-        entry.lock.lock();
-        try {
-            boolean wasEmpty = entry.queue.isEmpty();
-            entry.queue.addLast(v);
-            if (timeout > 0) {
-                entry.hasExpirable = true;
-                registerExpirable(key, timeout);
+            entry.lock.lock();
+            try {
+                // Double-check: verify entry is still in map (prevent stale reference)
+                if (entries.get(key) != entry) {
+                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                    continue;
+                }
+
+                boolean wasEmpty = entry.queue.isEmpty();
+                entry.queue.addLast(v);
+                if (timeout > 0) {
+                    entry.hasExpirable = true;
+                    registerExpirable(key, timeout);
+                }
+                if (wasEmpty)
+                    entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
+
+                break;  // Success, exit retry loop
+            } finally {
+                entry.lock.unlock();
             }
-            if (wasEmpty)
-                entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
-        } finally {
-            entry.lock.unlock();
         }
 
         if (sl != null)
@@ -161,16 +181,26 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         var jfr = new SpaceEvent("push", "" + key);
         jfr.begin();
 
-        KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
+        while (true) {
+            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
-        entry.lock.lock();
-        try {
-            boolean wasEmpty = entry.queue.isEmpty();
-            entry.queue.addFirst(value);  // LIFO behavior
-            if (wasEmpty)
-                entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
-        } finally {
-            entry.lock.unlock();
+            entry.lock.lock();
+            try {
+                // Double-check: verify entry is still in map (prevent stale reference)
+                if (entries.get(key) != entry) {
+                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                    continue;
+                }
+
+                boolean wasEmpty = entry.queue.isEmpty();
+                entry.queue.addFirst(value);  // LIFO behavior
+                if (wasEmpty)
+                    entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
+
+                break;  // Success, exit retry loop
+            } finally {
+                entry.lock.unlock();
+            }
         }
 
         if (sl != null)
@@ -192,20 +222,30 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
         }
 
-        KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
+        while (true) {
+            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
-        entry.lock.lock();
-        try {
-            boolean wasEmpty = entry.queue.isEmpty();
-            entry.queue.addFirst(v);  // LIFO behavior
-            if (timeout > 0) {
-                entry.hasExpirable = true;
-                registerExpirable(key, timeout);
+            entry.lock.lock();
+            try {
+                // Double-check: verify entry is still in map (prevent stale reference)
+                if (entries.get(key) != entry) {
+                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                    continue;
+                }
+
+                boolean wasEmpty = entry.queue.isEmpty();
+                entry.queue.addFirst(v);  // LIFO behavior
+                if (timeout > 0) {
+                    entry.hasExpirable = true;
+                    registerExpirable(key, timeout);
+                }
+                if (wasEmpty)
+                    entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
+
+                break;  // Success, exit retry loop
+            } finally {
+                entry.lock.unlock();
             }
-            if (wasEmpty)
-                entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
-        } finally {
-            entry.lock.unlock();
         }
 
         if (sl != null)
@@ -222,16 +262,26 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         var jfr = new SpaceEvent("put", "" + key);
         jfr.begin();
 
-        KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
+        while (true) {
+            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
-        entry.lock.lock();
-        try {
-            entry.queue.clear();
-            entry.queue.add(value);
-            entry.hasExpirable = false;
-            entry.hasValue.signalAll();  // Wake ALL readers since queue was replaced
-        } finally {
-            entry.lock.unlock();
+            entry.lock.lock();
+            try {
+                // Double-check: verify entry is still in map (prevent stale reference)
+                if (entries.get(key) != entry) {
+                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                    continue;
+                }
+
+                entry.queue.clear();
+                entry.queue.add(value);
+                entry.hasExpirable = false;
+                entry.hasValue.signalAll();  // Wake ALL readers since queue was replaced
+
+                break;  // Success, exit retry loop
+            } finally {
+                entry.lock.unlock();
+            }
         }
 
         if (sl != null)
@@ -253,21 +303,31 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
         }
 
-        KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
+        while (true) {
+            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
-        entry.lock.lock();
-        try {
-            entry.queue.clear();
-            entry.queue.add(v);
-            if (timeout > 0) {
-                entry.hasExpirable = true;
-                registerExpirable(key, timeout);
-            } else {
-                entry.hasExpirable = false;
+            entry.lock.lock();
+            try {
+                // Double-check: verify entry is still in map (prevent stale reference)
+                if (entries.get(key) != entry) {
+                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                    continue;
+                }
+
+                entry.queue.clear();
+                entry.queue.add(v);
+                if (timeout > 0) {
+                    entry.hasExpirable = true;
+                    registerExpirable(key, timeout);
+                } else {
+                    entry.hasExpirable = false;
+                }
+                entry.hasValue.signalAll();  // Wake ALL readers since queue was replaced
+
+                break;  // Success, exit retry loop
+            } finally {
+                entry.lock.unlock();
             }
-            entry.hasValue.signalAll();  // Wake ALL readers since queue was replaced
-        } finally {
-            entry.lock.unlock();
         }
 
         if (sl != null)
