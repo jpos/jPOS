@@ -48,6 +48,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * </ul>
  * </p>
  *
+ * Concurrency notes (core safety invariants):
+ * - Never remove a KeyEntry from entries while threads are waiting on that entry's hasValue Condition,
+ *   otherwise those waiters can be stranded forever (future out() creates a new KeyEntry+Condition).
+ * - Blocking rd()/in() must never return null unless interrupted (or timed out for timed variants).
+ *
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since 3.0
@@ -57,18 +62,19 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private final ConcurrentHashMap<K, KeyEntry> entries;
     private volatile LocalSpace<K, SpaceListener<K,V>> sl;    // space listeners
 
-    public static final long GCDELAY = 5*1000;
+    public static final long GCDELAY = 5 * 1000;
     private static final long GCLONG = 60_000L;
     private static final long NRD_RESOLUTION = 500L;
     private static final int MAX_ENTRIES_IN_DUMP = 1000;
-    private static final long ONE_MILLION = 1_000_000L;         // multiplier millis --> nanos
+
+    private static final long ONE_MILLION = 1_000_000L; // millis -> nanos
+    private static final long NO_TIMEOUT = -1L;
 
     private final Set<K>[] expirables;
     private long lastLongGC = System.nanoTime();
 
     /**
      * Per-key synchronization and queue structure.
-     * Each key gets its own KeyEntry with isolated lock and condition variables.
      */
     private static class KeyEntry {
         final ReentrantLock lock = new ReentrantLock();
@@ -80,10 +86,10 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     public LSpace() {
         super();
-        this.entries = new ConcurrentHashMap<>(256);  // Initial capacity to reduce resizing
+        this.entries = new ConcurrentHashMap<>(256);
         this.expirables = new Set[] {
-            ConcurrentHashMap.newKeySet(),
-            ConcurrentHashMap.newKeySet()
+          ConcurrentHashMap.newKeySet(),
+          ConcurrentHashMap.newKeySet()
         };
         SpaceFactory.getGCExecutor().scheduleAtFixedRate(this, GCDELAY, GCDELAY, TimeUnit.MILLISECONDS);
     }
@@ -103,18 +109,15 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
             entry.lock.lock();
             try {
-                // Double-check: verify entry is still in map (prevent stale reference)
-                if (entries.get(key) != entry) {
-                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                if (entries.get(key) != entry)
                     continue;
-                }
 
                 boolean wasEmpty = entry.queue.isEmpty();
                 entry.queue.addLast(value);
                 if (wasEmpty)
-                    entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
+                    entry.hasValue.signalAll();
 
-                break;  // Success, exit retry loop
+                break;
             } finally {
                 entry.lock.unlock();
             }
@@ -137,31 +140,28 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
 
         Object v = value;
-        if (timeout > 0) {
+        if (timeout > 0)
             v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
-        }
 
         while (true) {
             KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
             entry.lock.lock();
             try {
-                // Double-check: verify entry is still in map (prevent stale reference)
-                if (entries.get(key) != entry) {
-                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                if (entries.get(key) != entry)
                     continue;
-                }
 
                 boolean wasEmpty = entry.queue.isEmpty();
                 entry.queue.addLast(v);
+
                 if (timeout > 0) {
                     entry.hasExpirable = true;
                     registerExpirable(key, timeout);
                 }
                 if (wasEmpty)
-                    entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
+                    entry.hasValue.signalAll();
 
-                break;  // Success, exit retry loop
+                break;
             } finally {
                 entry.lock.unlock();
             }
@@ -186,18 +186,15 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
             entry.lock.lock();
             try {
-                // Double-check: verify entry is still in map (prevent stale reference)
-                if (entries.get(key) != entry) {
-                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                if (entries.get(key) != entry)
                     continue;
-                }
 
                 boolean wasEmpty = entry.queue.isEmpty();
-                entry.queue.addFirst(value);  // LIFO behavior
+                entry.queue.addFirst(value);
                 if (wasEmpty)
-                    entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
+                    entry.hasValue.signalAll();
 
-                break;  // Success, exit retry loop
+                break;
             } finally {
                 entry.lock.unlock();
             }
@@ -218,31 +215,28 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         jfr.begin();
 
         Object v = value;
-        if (timeout > 0) {
+        if (timeout > 0)
             v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
-        }
 
         while (true) {
             KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
             entry.lock.lock();
             try {
-                // Double-check: verify entry is still in map (prevent stale reference)
-                if (entries.get(key) != entry) {
-                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                if (entries.get(key) != entry)
                     continue;
-                }
 
                 boolean wasEmpty = entry.queue.isEmpty();
-                entry.queue.addFirst(v);  // LIFO behavior
+                entry.queue.addFirst(v);
+
                 if (timeout > 0) {
                     entry.hasExpirable = true;
                     registerExpirable(key, timeout);
                 }
                 if (wasEmpty)
-                    entry.hasValue.signalAll();  // Wake ALL readers (multiple rd() can read same value)
+                    entry.hasValue.signalAll();
 
-                break;  // Success, exit retry loop
+                break;
             } finally {
                 entry.lock.unlock();
             }
@@ -267,18 +261,17 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
             entry.lock.lock();
             try {
-                // Double-check: verify entry is still in map (prevent stale reference)
-                if (entries.get(key) != entry) {
-                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                if (entries.get(key) != entry)
                     continue;
-                }
 
                 entry.queue.clear();
                 entry.queue.add(value);
                 entry.hasExpirable = false;
-                entry.hasValue.signalAll();  // Wake ALL readers since queue was replaced
+                // If old contents had expirables, they are now unreachable; cleanup sets now.
+                unregisterExpirable(key);
 
-                break;  // Success, exit retry loop
+                entry.hasValue.signalAll();
+                break;
             } finally {
                 entry.lock.unlock();
             }
@@ -299,32 +292,30 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         jfr.begin();
 
         Object v = value;
-        if (timeout > 0) {
+        if (timeout > 0)
             v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
-        }
 
         while (true) {
             KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
             entry.lock.lock();
             try {
-                // Double-check: verify entry is still in map (prevent stale reference)
-                if (entries.get(key) != entry) {
-                    // Entry was removed/replaced between computeIfAbsent and lock, retry
+                if (entries.get(key) != entry)
                     continue;
-                }
 
                 entry.queue.clear();
                 entry.queue.add(v);
+
                 if (timeout > 0) {
                     entry.hasExpirable = true;
                     registerExpirable(key, timeout);
                 } else {
                     entry.hasExpirable = false;
+                    unregisterExpirable(key);
                 }
-                entry.hasValue.signalAll();  // Wake ALL readers since queue was replaced
 
-                break;  // Success, exit retry loop
+                entry.hasValue.signalAll();
+                break;
             } finally {
                 entry.lock.unlock();
             }
@@ -369,200 +360,11 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         return inKey((K) key);
     }
 
-    private V inKey(K key) {
-        V result = null;
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                // Double-check: verify entry is still in map (prevent stale reference)
-                if (entries.get(key) != entry) {
-                    // Entry was removed/replaced between computeIfAbsent and lock, retry
-                    continue;
-                }
-
-                while (result == null) {
-                    result = (V) getHead(entry, key, true);
-                    if (result != null)
-                        break;
-
-                    try {
-                        entry.hasValue.await();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-
-                    // After waking, verify entry is still current
-                    if (entries.get(key) != entry) {
-                        break;  // Entry replaced, retry outer loop
-                    }
-                }
-
-                // Cleanup empty entry if we still own it
-                if (entries.get(key) == entry && entry.queue.isEmpty()) {
-                    entries.remove(key, entry);
-                    entry.isEmpty.signalAll();
-                }
-
-                return result;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-    }
-
-    private V inTemplate(Template tmpl) {
-        K key = (K) tmpl.getKey();
-        V result = null;
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                // Double-check: verify entry is still in map
-                if (entries.get(key) != entry) {
-                    continue;
-                }
-
-                while (result == null) {
-                    result = (V) getObject(entry, key, tmpl, true);
-                    if (result != null)
-                        break;
-
-                    try {
-                        entry.hasValue.await();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-
-                    // After waking, verify entry is still current
-                    if (entries.get(key) != entry) {
-                        break;
-                    }
-                }
-
-                // Cleanup empty entry if we still own it
-                if (entries.get(key) == entry && entry.queue.isEmpty()) {
-                    entries.remove(key, entry);
-                    entry.isEmpty.signalAll();
-                }
-
-                return result;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-    }
-
     @Override
     public V in(Object key, long timeout) {
         if (key instanceof Template)
             return inTemplate((Template) key, timeout);
         return inKey((K) key, timeout);
-    }
-
-    private V inKey(K key, long timeout) {
-        V result = null;
-        long deadline = System.nanoTime() + timeout * ONE_MILLION;
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                // Double-check: verify entry is still in map
-                if (entries.get(key) != entry) {
-                    continue;
-                }
-
-                while (result == null) {
-                    result = (V) getHead(entry, key, true);
-                    if (result != null)
-                        break;
-
-                    long remaining = deadline - System.nanoTime();
-                    if (remaining <= 0)
-                        break;
-
-                    try {
-                        entry.hasValue.awaitNanos(remaining);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-
-                    // After waking, verify entry is still current
-                    if (entries.get(key) != entry) {
-                        break;
-                    }
-                }
-
-                // Cleanup empty entry if we still own it
-                if (entries.get(key) == entry && entry.queue.isEmpty()) {
-                    entries.remove(key, entry);
-                    entry.isEmpty.signalAll();
-                }
-
-                return result;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-    }
-
-    private V inTemplate(Template tmpl, long timeout) {
-        K key = (K) tmpl.getKey();
-        V result = null;
-        long deadline = System.nanoTime() + timeout * ONE_MILLION;
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                // Double-check: verify entry is still in map
-                if (entries.get(key) != entry) {
-                    continue;
-                }
-
-                while (result == null) {
-                    result = (V) getObject(entry, key, tmpl, true);
-                    if (result != null)
-                        break;
-
-                    long remaining = deadline - System.nanoTime();
-                    if (remaining <= 0)
-                        break;
-
-                    try {
-                        entry.hasValue.awaitNanos(remaining);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-
-                    // After waking, verify entry is still current
-                    if (entries.get(key) != entry) {
-                        break;
-                    }
-                }
-
-                // Cleanup empty entry if we still own it
-                if (entries.get(key) == entry && entry.queue.isEmpty()) {
-                    entries.remove(key, entry);
-                    entry.isEmpty.signalAll();
-                }
-
-                return result;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
     }
 
     @Override
@@ -572,83 +374,6 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         return rdKey((K) key);
     }
 
-    private V rdKey(K key) {
-        V result = null;
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                // Double-check: verify entry is still in map
-                if (entries.get(key) != entry) {
-                    continue;
-                }
-
-                while (result == null) {
-                    result = (V) getHead(entry, key, false);
-                    if (result != null)
-                        break;
-
-                    try {
-                        entry.hasValue.await();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-
-                    // After waking, verify entry is still current
-                    if (entries.get(key) != entry) {
-                        break;
-                    }
-                }
-
-                return result;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-    }
-
-    private V rdTemplate(Template tmpl) {
-        K key = (K) tmpl.getKey();
-        V result = null;
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                // Double-check: verify entry is still in map
-                if (entries.get(key) != entry) {
-                    continue;
-                }
-
-                while (result == null) {
-                    result = (V) getObject(entry, key, tmpl, false);
-                    if (result != null)
-                        break;
-
-                    try {
-                        entry.hasValue.await();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-
-                    // After waking, verify entry is still current
-                    if (entries.get(key) != entry) {
-                        break;
-                    }
-                }
-
-                return result;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-    }
-
     @Override
     public V rd(Object key, long timeout) {
         if (key instanceof Template)
@@ -656,107 +381,19 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         return rdKey((K) key, timeout);
     }
 
-    private V rdKey(K key, long timeout) {
-        V result = null;
-        long deadline = System.nanoTime() + timeout * ONE_MILLION;
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                // Double-check: verify entry is still in map
-                if (entries.get(key) != entry) {
-                    continue;
-                }
-
-                while (result == null) {
-                    result = (V) getHead(entry, key, false);
-                    if (result != null)
-                        break;
-
-                    long remaining = deadline - System.nanoTime();
-                    if (remaining <= 0)
-                        break;
-
-                    try {
-                        entry.hasValue.awaitNanos(remaining);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-
-                    // After waking, verify entry is still current
-                    if (entries.get(key) != entry) {
-                        break;
-                    }
-                }
-
-                return result;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-    }
-
-    private V rdTemplate(Template tmpl, long timeout) {
-        K key = (K) tmpl.getKey();
-        V result = null;
-        long deadline = System.nanoTime() + timeout * ONE_MILLION;
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                // Double-check: verify entry is still in map
-                if (entries.get(key) != entry) {
-                    continue;
-                }
-
-                while (result == null) {
-                    result = (V) getObject(entry, key, tmpl, false);
-                    if (result != null)
-                        break;
-
-                    long remaining = deadline - System.nanoTime();
-                    if (remaining <= 0)
-                        break;
-
-                    try {
-                        entry.hasValue.awaitNanos(remaining);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-
-                    // After waking, verify entry is still current
-                    if (entries.get(key) != entry) {
-                        break;
-                    }
-                }
-
-                return result;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-    }
-
     @Override
     public void nrd(Object key) {
         K k = (K) key;
         while (true) {
             KeyEntry entry = entries.get(k);
-
             if (entry == null)
-                return;  // Key not present
+                return;
 
             entry.lock.lock();
             try {
                 Object obj = getHead(entry, k, false);
                 if (obj == null)
-                    return;  // Queue is empty
+                    return;
 
                 try {
                     entry.isEmpty.await(NRD_RESOLUTION, TimeUnit.MILLISECONDS);
@@ -773,24 +410,22 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     @Override
     public V nrd(Object key, long timeout) {
         K k = (K) key;
-        long now = System.nanoTime();
-        long deadline = now + timeout * ONE_MILLION;
+        long deadline = System.nanoTime() + timeout * ONE_MILLION;
 
         while (true) {
             KeyEntry entry = entries.get(k);
-
             if (entry == null)
-                return null;  // Key not present
+                return null;
 
             entry.lock.lock();
             try {
                 V obj = (V) getHead(entry, k, false);
                 if (obj == null)
-                    return null;  // Queue is empty
+                    return null;
 
                 long remaining = deadline - System.nanoTime();
                 if (remaining <= 0)
-                    return obj;  // Timeout, return current value
+                    return obj;
 
                 long waitTime = Math.min(NRD_RESOLUTION * ONE_MILLION, remaining);
                 try {
@@ -816,25 +451,20 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public boolean existAny(K[] keys, long timeout) {
-        long now = System.nanoTime();
-        long deadline = now + timeout * ONE_MILLION;
-        long pollInterval = 10 * ONE_MILLION;  // 10ms in nanos
+        long deadline = System.nanoTime() + timeout * ONE_MILLION;
+        long pollInterval = 10 * ONE_MILLION;
 
         while (true) {
-            // Check all keys
             for (K key : keys) {
                 if (rdp(key) != null)
                     return true;
             }
 
-            // Check timeout
             long remaining = deadline - System.nanoTime();
             if (remaining <= 0)
                 return false;
 
-            // Sleep briefly
-            long sleepTime = Math.min(pollInterval, remaining);
-            LockSupport.parkNanos(sleepTime);
+            LockSupport.parkNanos(Math.min(pollInterval, remaining));
         }
     }
 
@@ -843,7 +473,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         try {
             gc();
         } catch (Exception e) {
-            e.printStackTrace(); // this should never happen
+            e.printStackTrace(); // should never happen
         }
     }
 
@@ -859,29 +489,26 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         var jfr = new SpaceEvent("gc", Integer.toString(generation));
         jfr.begin();
 
-        // Snapshot keys to check (avoid concurrent modification)
         Set<K> keysToCheck = new HashSet<>(expirables[generation]);
         expirables[generation].clear();
 
-        // Check each key (no global lock)
         for (K key : keysToCheck) {
             KeyEntry entry = entries.get(key);
-
             if (entry == null)
-                continue;  // Already removed
+                continue;
 
             entry.lock.lock();
             try {
                 boolean stillHasExpirable = false;
+                boolean sawAnyExpirable = false;
 
                 Iterator<Object> iterator = entry.queue.iterator();
                 while (iterator.hasNext()) {
                     Object obj = iterator.next();
-
                     if (obj instanceof Expirable) {
+                        sawAnyExpirable = true;
                         Object value = ((Expirable) obj).getValue();
-
-                        if (value == null) {  // Expired
+                        if (value == null) {
                             iterator.remove();
                         } else {
                             stillHasExpirable = true;
@@ -893,25 +520,25 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
                 if (stillHasExpirable) {
                     expirables[generation].add(key);
+                    // Queue might have changed (expired items removed), wake any rd/in waiters.
+                    entry.hasValue.signalAll();
+                } else {
+                    // No longer has expirables anywhere; ensure we don't keep the key in either generation set.
+                    if (sawAnyExpirable)
+                        unregisterExpirable(key);
                 }
 
-                // Safe to remove empty entries: double-check pattern in blocking methods
-                // prevents race conditions from stale references
+                // Apply the same safe empty-entry policy used everywhere else.
                 if (entry.queue.isEmpty()) {
-                    entries.remove(key, entry);
-                    entry.isEmpty.signalAll();
-                } else {
-                    // Wake readers since queue may have changed (expired items removed)
-                    entry.hasValue.signalAll();
+                    postFetchHousekeeping(key, entry);
                 }
             } finally {
                 entry.lock.unlock();
             }
 
-            Thread.yield();  // Be nice to other threads
+            Thread.yield();
         }
 
-        // Cleanup listener space
         if (sl != null && sl.getKeySet().isEmpty()) {
             sl = null;
         }
@@ -968,7 +595,6 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     public String getKeysAsString() {
         StringBuilder sb = new StringBuilder();
         Object[] keys = entries.keySet().toArray();
-
         for (int i = 0; i < keys.length; i++) {
             if (i > 0)
                 sb.append(' ');
@@ -982,7 +608,6 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         var jfr = new SpaceEvent("dump", "");
         jfr.begin();
 
-        Object[] keys;
         int size = entries.size();
         if (size > MAX_ENTRIES_IN_DUMP * 100) {
             p.printf("%sWARNING - space too big, size=%d%n", indent, size);
@@ -990,7 +615,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             return;
         }
 
-        keys = entries.keySet().toArray();
+        Object[] keys = entries.keySet().toArray();
 
         int i = 0;
         for (Object key : keys) {
@@ -1005,8 +630,8 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
         int exp0 = expirables[0].size();
         int exp1 = expirables[1].size();
-
         p.printf("%s    gcinfo: %d,%d%n", indent, exp0, exp1);
+
         jfr.commit();
     }
 
@@ -1019,7 +644,6 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             return;
         }
 
-        // Get snapshot of listeners - sl is LSpace so access via package-private entries
         Object[] listeners = null;
         LSpace<K, SpaceListener<K,V>> lsl = (LSpace<K, SpaceListener<K,V>>) sl;
         KeyEntry slEntry = lsl.entries.get((K) key);
@@ -1046,11 +670,9 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
 
     /**
-     * Non-standard method (required for space replication) - use with care
-     * @return underlying entry map
+     * Non-standard method (required for space replication) - use with care.
      */
     public Map getEntries() {
-        // For compatibility - return a snapshot as Map<K, List>
         Map<K, List> result = new HashMap<>();
         for (Map.Entry<K, KeyEntry> e : entries.entrySet()) {
             KeyEntry entry = e.getValue();
@@ -1065,8 +687,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
 
     /**
-     * Non-standard method (required for space replication) - use with care
-     * @param entries underlying entry map
+     * Non-standard method (required for space replication) - use with care.
      */
     public void setEntries(Map entries) {
         this.entries.clear();
@@ -1079,54 +700,114 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             try {
                 entry.queue.clear();
                 entry.queue.addAll(list);
+                // Conservatively: if replication injects Expirables, caller should also registerExpirable appropriately.
+                // We do not attempt to infer expirables here.
             } finally {
                 entry.lock.unlock();
             }
         }
     }
 
-    // ========== Private Helper Methods ==========
+    // ========== Blocking (deduplicated) ==========
+
+    private V inKey(K key) {
+        return awaitValue(key, entry -> getHead(entry, key, true), NO_TIMEOUT);
+    }
+
+    private V inKey(K key, long timeout) {
+        return awaitValue(key, entry -> getHead(entry, key, true), timeout);
+    }
+
+    private V rdKey(K key) {
+        return awaitValue(key, entry -> getHead(entry, key, false), NO_TIMEOUT);
+    }
+
+    private V rdKey(K key, long timeout) {
+        return awaitValue(key, entry -> getHead(entry, key, false), timeout);
+    }
+
+    private V inTemplate(Template tmpl) {
+        K key = (K) tmpl.getKey();
+        return awaitValue(key, entry -> getObject(entry, key, tmpl, true), NO_TIMEOUT);
+    }
+
+    private V inTemplate(Template tmpl, long timeout) {
+        K key = (K) tmpl.getKey();
+        return awaitValue(key, entry -> getObject(entry, key, tmpl, true), timeout);
+    }
+
+    private V rdTemplate(Template tmpl) {
+        K key = (K) tmpl.getKey();
+        return awaitValue(key, entry -> getObject(entry, key, tmpl, false), NO_TIMEOUT);
+    }
+
+    private V rdTemplate(Template tmpl, long timeout) {
+        K key = (K) tmpl.getKey();
+        return awaitValue(key, entry -> getObject(entry, key, tmpl, false), timeout);
+    }
+
+    // ========== Non-blocking helpers ==========
 
     /**
      * Get head of queue (non-blocking version for rdp/inp).
-     * Does not require lock to be held.
+     * Uses safe empty-entry cleanup via postFetchHousekeeping to avoid orphaning waiters.
      */
     private Object getHeadNonBlocking(K key, boolean remove) {
         KeyEntry entry = entries.get(key);
         if (entry == null)
             return null;
 
-        Object result = null;
         entry.lock.lock();
         try {
-            // Double-check: verify entry is still in map
-            if (entries.get(key) != entry) {
-                return null;  // Entry was removed, treat as empty
-            }
+            if (entries.get(key) != entry)
+                return null;
 
-            result = getHead(entry, key, remove);
+            Object result = getHead(entry, key, remove);
 
-            // Cleanup empty entry if we still own it and remove was requested
-            if (remove && entries.get(key) == entry && entry.queue.isEmpty()) {
-                entries.remove(key, entry);
-                entry.isEmpty.signalAll();
+            if (remove) {
+                // If remove emptied the queue, postFetchHousekeeping will handle safe removal/signals.
+                postFetchHousekeeping(key, entry);
             }
+            return result;
         } finally {
             entry.lock.unlock();
         }
+    }
 
-        return result;
+    /**
+     * Get object matching template (non-blocking version for rdp/inp).
+     * Uses safe empty-entry cleanup via postFetchHousekeeping to avoid orphaning waiters.
+     */
+    private Object getObjectNonBlocking(Template tmpl, boolean remove) {
+        K key = (K) tmpl.getKey();
+        KeyEntry entry = entries.get(key);
+        if (entry == null)
+            return null;
+
+        entry.lock.lock();
+        try {
+            if (entries.get(key) != entry)
+                return null;
+
+            Object result = getObject(entry, key, tmpl, remove);
+
+            if (remove) {
+                postFetchHousekeeping(key, entry);
+            }
+            return result;
+        } finally {
+            entry.lock.unlock();
+        }
     }
 
     /**
      * Get head of queue.
-     * MUST be called with entry.lock held!
+     * MUST be called with entry.lock held.
      */
     private Object getHead(KeyEntry entry, K key, boolean remove) {
         Object result = null;
         boolean wasExpirable = false;
 
-        // Consume expired entries at head
         while (result == null && !entry.queue.isEmpty()) {
             Object obj = entry.queue.getFirst();
 
@@ -1134,7 +815,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                 Object value = ((Expirable) obj).getValue();
                 wasExpirable = true;
 
-                if (value == null) {  // Expired
+                if (value == null) {
                     entry.queue.removeFirst();
                     continue;
                 } else {
@@ -1149,7 +830,6 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             }
         }
 
-        // Update hasExpirable flag
         if (entry.queue.isEmpty()) {
             entry.hasExpirable = false;
             if (wasExpirable)
@@ -1160,39 +840,8 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
 
     /**
-     * Get object matching template (non-blocking version for rdp/inp).
-     */
-    private Object getObjectNonBlocking(Template tmpl, boolean remove) {
-        K key = (K) tmpl.getKey();
-        KeyEntry entry = entries.get(key);
-        if (entry == null)
-            return null;
-
-        Object result = null;
-        entry.lock.lock();
-        try {
-            // Double-check: verify entry is still in map
-            if (entries.get(key) != entry) {
-                return null;  // Entry was removed, treat as empty
-            }
-
-            result = getObject(entry, key, tmpl, remove);
-
-            // Cleanup empty entry if we still own it and remove was requested
-            if (remove && entries.get(key) == entry && entry.queue.isEmpty()) {
-                entries.remove(key, entry);
-                entry.isEmpty.signalAll();
-            }
-        } finally {
-            entry.lock.unlock();
-        }
-
-        return result;
-    }
-
-    /**
      * Get object matching template.
-     * MUST be called with entry.lock held!
+     * MUST be called with entry.lock held.
      */
     private Object getObject(KeyEntry entry, K key, Template tmpl, boolean remove) {
         Object result = null;
@@ -1204,8 +853,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
             if (obj instanceof Expirable) {
                 Object value = ((Expirable) obj).getValue();
-
-                if (value == null) {  // Expired
+                if (value == null) {
                     iterator.remove();
                     wasExpirable = true;
                     continue;
@@ -1231,6 +879,8 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         return result;
     }
 
+    // ========== Listener-space helpers ==========
+
     private LocalSpace<K, SpaceListener<K,V>> getSL() {
         if (sl == null) {
             synchronized (this) {
@@ -1250,6 +900,94 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         expirables[1].remove(k);
     }
 
+    // ========== Blocking core (shared) ==========
+
+    @FunctionalInterface
+    private interface Fetcher {
+        Object fetch(KeyEntry entry);
+    }
+
+    /**
+     * Common blocking wait-loop for rd/in operations (key or template).
+     *
+     * Ensures:
+     * - No premature null returns due to entry replacement (retries outer loop).
+     * - Timed variants remove empty computeIfAbsent-created entries on timeout/interrupt (postFetchHousekeeping).
+     * - Does not orphan waiters because postFetchHousekeeping refuses to remove if hasValue waiters exist.
+     */
+    @SuppressWarnings("unchecked")
+    private V awaitValue(K key, Fetcher fetcher, long timeoutMillis) {
+        final boolean timed = timeoutMillis != NO_TIMEOUT;
+        final long deadlineNanos = timed ? System.nanoTime() + timeoutMillis * ONE_MILLION : 0L;
+
+        for (;;) {
+            final KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
+
+            entry.lock.lock();
+            try {
+                if (entries.get(key) != entry)
+                    continue;
+
+                for (;;) {
+                    Object obj = fetcher.fetch(entry);
+                    if (obj != null) {
+                        postFetchHousekeeping(key, entry);
+                        return (V) obj;
+                    }
+
+                    if (!timed) {
+                        try {
+                            entry.hasValue.await();
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                            // Avoid leaking an empty entry created by computeIfAbsent for a waiter that got interrupted.
+                            postFetchHousekeeping(key, entry);
+                            return null;
+                        }
+                    } else {
+                        long remaining = deadlineNanos - System.nanoTime();
+                        if (remaining <= 0) {
+                            // Avoid leaking empty entries created by computeIfAbsent when timing out.
+                            postFetchHousekeeping(key, entry);
+                            return null;
+                        }
+                        try {
+                            entry.hasValue.awaitNanos(remaining);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                            postFetchHousekeeping(key, entry);
+                            return null;
+                        }
+                    }
+
+                    // If someone removed/replaced the entry, restart outer loop to bind to the current entry.
+                    if (entries.get(key) != entry)
+                        break;
+                }
+            } finally {
+                entry.lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Housekeeping that must run under entry.lock:
+     * - Wake nrd waiters when queue becomes empty.
+     * - Remove entry only if queue is empty AND no waiters are parked on hasValue (prevents orphaning).
+     */
+    private void postFetchHousekeeping(K key, KeyEntry entry) {
+        if (!entry.queue.isEmpty())
+            return;
+
+        // Always wake nrd waiters when empty.
+        entry.isEmpty.signalAll();
+
+        // Remove only when safe (no hasValue waiters).
+        if (entries.get(key) == entry && !entry.lock.hasWaiters(entry.hasValue)) {
+            entries.remove(key, entry);
+        }
+    }
+
     /**
      * Expirable wrapper for values with timeout.
      */
@@ -1257,11 +995,6 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         private static final long serialVersionUID = 0xA7F22BF5;
 
         Object value;
-
-        /**
-         * When to expire, in the future, as given by monotonic System.nanoTime().
-         * IMPORTANT: always use a nanosec offset from System.nanoTime()!
-         */
         long expires;
 
         Expirable(Object value, long expires) {
@@ -1277,9 +1010,9 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         @Override
         public String toString() {
             return getClass().getName()
-                    + "@" + Integer.toHexString(hashCode())
-                    + ",value=" + value.toString()
-                    + ",expired=" + isExpired();
+              + "@" + Integer.toHexString(hashCode())
+              + ",value=" + value.toString()
+              + ",expired=" + isExpired();
         }
 
         Object getValue() {
@@ -1289,9 +1022,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         @Override
         public int compareTo(Object other) {
             long diff = this.expires - ((Expirable) other).expires;
-            return diff > 0 ? 1 :
-                   diff < 0 ? -1 :
-                   0;
+            return diff > 0 ? 1 : diff < 0 ? -1 : 0;
         }
     }
 }

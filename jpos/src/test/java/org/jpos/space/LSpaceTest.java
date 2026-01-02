@@ -441,4 +441,295 @@ public class LSpaceTest implements SpaceListener {
         assertEquals(numReaders, successCount.get(),
             "All " + numReaders + " rd() waiters should have read the same value");
     }
+
+    /**
+     * Regression test:
+     * If an entry is removed while there are threads blocked on hasValue for that key,
+     * those waiters can be stranded forever (future out() creates a new KeyEntry+Condition).
+     *
+     * This test uses:
+     * - N waiters blocked on in(key)
+     * - one consumer thread does an inp(key) *after* a value is produced, making the queue empty
+     * - then a producer publishes N values
+     *
+     * Expected:
+     * - all waiters must complete (none stranded).
+     *
+     * This test fails on implementations that remove the entry in inp()/non-blocking removal paths
+     * without checking hasWaiters(hasValue).
+     */
+    @Test
+    public void testNoOrphanedWaitersWhenInpEmptiesQueue() throws Exception {
+        final LSpace<String, String> lsp = new LSpace<>();
+        final String key = "orphanInpKey";
+
+        final int waiters = 25;
+        final CountDownLatch allWaitingStarted = new CountDownLatch(waiters);
+        final CountDownLatch allWaitersDone = new CountDownLatch(waiters);
+        final AtomicInteger received = new AtomicInteger(0);
+
+        // Spawn waiters that will block indefinitely until values arrive.
+        for (int i = 0; i < waiters; i++) {
+            Thread.startVirtualThread(() -> {
+                allWaitingStarted.countDown();
+                String v = lsp.in(key); // indefinite wait
+                if (v != null) {
+                    received.incrementAndGet();
+                }
+                allWaitersDone.countDown();
+            });
+        }
+
+        assertTrue(allWaitingStarted.await(2, TimeUnit.SECONDS),
+          "Waiters should start promptly");
+        Thread.sleep(100); // give time to actually park on hasValue
+
+        // Publish one value and immediately remove it using inp(). This makes the queue empty.
+        // If inp() removes the entry unsafely, existing waiters can be stranded on the old Condition.
+        lsp.out(key, "warmup");
+        assertEquals("warmup", lsp.inp(key), "inp should remove the warmup value");
+
+        // Now publish one value per waiter; all waiters must complete.
+        for (int i = 0; i < waiters; i++) {
+            lsp.out(key, "v" + i);
+        }
+
+        assertTrue(allWaitersDone.await(5, TimeUnit.SECONDS),
+          "All waiters should complete; stranded waiters indicate an orphaned Condition bug");
+        assertEquals(waiters, received.get(), "All waiters should have received a value");
+    }
+
+    /**
+     * Regression test:
+     * GC must not remove a KeyEntry while threads are awaiting hasValue on that key,
+     * otherwise those waiters can be stranded forever.
+     *
+     * This test:
+     * - starts waiters blocked on in(key) (indefinite)
+     * - publishes an expirable that will expire quickly
+     * - calls gc() to remove the expired element (queue becomes empty)
+     * - then publishes enough values for all waiters
+     *
+     * Expected:
+     * - no waiters are stranded; all complete.
+     *
+     * This fails if gc() removes the entry without guarding against hasValue waiters.
+     */
+    @Test
+    public void testNoOrphanedWaitersWhenGcEmptiesQueue() throws Exception {
+        final LSpace<String, String> lsp = new LSpace<>();
+        final String key = "orphanGcKey";
+
+        final int waiters = 25;
+        final CountDownLatch allWaitingStarted = new CountDownLatch(waiters);
+        final CountDownLatch allWaitersDone = new CountDownLatch(waiters);
+        final AtomicInteger received = new AtomicInteger(0);
+
+        for (int i = 0; i < waiters; i++) {
+            Thread.startVirtualThread(() -> {
+                allWaitingStarted.countDown();
+                String v = lsp.in(key); // indefinite wait
+                if (v != null) {
+                    received.incrementAndGet();
+                }
+                allWaitersDone.countDown();
+            });
+        }
+
+        assertTrue(allWaitingStarted.await(2, TimeUnit.SECONDS));
+        Thread.sleep(100);
+
+        // Publish a very short-lived expirable and let it expire.
+        lsp.out(key, "exp", 10);
+        Thread.sleep(50);
+
+        // Force GC; it will remove expired value and potentially empty the queue.
+        // If GC removes the entry while there are waiters, they can be stranded.
+        lsp.gc();
+
+        // Now publish one value per waiter.
+        for (int i = 0; i < waiters; i++) {
+            lsp.out(key, "v" + i);
+        }
+
+        assertTrue(allWaitersDone.await(5, TimeUnit.SECONDS),
+          "All waiters should complete; stranded waiters indicate a GC orphaning bug");
+        assertEquals(waiters, received.get(), "All waiters should have received a value");
+    }
+
+    /**
+     * Leak-prevention test:
+     * Timed in(key, timeout) uses computeIfAbsent and may create an empty entry even if no producer ever writes.
+     * After timeout returns null, the empty entry must be cleaned up (not retained forever).
+     *
+     * This test:
+     * - calls in("leakKey", 10) and expects null
+     * - asserts the key is not present afterwards
+     *
+     * This fails if awaitValue returns null on timeout without housekeeping.
+     */
+    @Test
+    public void testTimedInTimeoutDoesNotLeakEntry() {
+        final LSpace<String, String> lsp = new LSpace<>();
+        final String key = "leakTimedInKey";
+
+        assertNull(lsp.in(key, 10), "Expected timeout to return null");
+        assertFalse(lsp.getKeySet().contains(key),
+          "Empty entry created by timed in() must be removed after timeout");
+        assertEquals(0, lsp.getKeySet().size(), "Space should remain empty after timeout-only access");
+    }
+
+    /**
+     * Leak-prevention test for rd(key, timeout):
+     * same as timed in(), but non-destructive.
+     */
+    @Test
+    public void testTimedRdTimeoutDoesNotLeakEntry() {
+        final LSpace<String, String> lsp = new LSpace<>();
+        final String key = "leakTimedRdKey";
+
+        assertNull(lsp.rd(key, 10), "Expected timeout to return null");
+        assertFalse(lsp.getKeySet().contains(key),
+          "Empty entry created by timed rd() must be removed after timeout");
+        assertEquals(0, lsp.getKeySet().size(), "Space should remain empty after timeout-only access");
+    }
+
+    /**
+     * Correctness test:
+     * Untimed in(key) must not return null unless interrupted.
+     *
+     * This test attempts to exercise "mapping changed" / "entry replaced" logic by:
+     * - starting an untimed in(key) waiter
+     * - concurrently creating/removing the entry via a timed wait (which may remove the entry on timeout)
+     * - then publishing a value
+     *
+     * Expected:
+     * - the untimed waiter must return the value (not null), and must not get stuck.
+     *
+     * This tends to fail on implementations that:
+     * - break out of inner loops on entries.get(key) != entry and then return result (null),
+     * - or orphan the waiter by removing the entry it is awaiting on.
+     */
+    @Test
+    public void testUntimedInDoesNotReturnNullOnEntryChurn() throws Exception {
+        final LSpace<String, String> lsp = new LSpace<>();
+        final String key = "churnKey";
+
+        final CountDownLatch waiterStarted = new CountDownLatch(1);
+        final CountDownLatch waiterDone = new CountDownLatch(1);
+        final AtomicInteger gotValue = new AtomicInteger(0);
+
+        Thread waiter = Thread.startVirtualThread(() -> {
+            waiterStarted.countDown();
+            String v = lsp.in(key); // indefinite
+            if (v != null) {
+                gotValue.incrementAndGet();
+            }
+            waiterDone.countDown();
+        });
+
+        assertTrue(waiterStarted.await(1, TimeUnit.SECONDS));
+        Thread.sleep(50);
+
+        // Churn: a timed in() that times out may create and then remove an empty entry.
+        // Run it a few times to increase chances of mapping churn.
+        for (int i = 0; i < 25; i++) {
+            assertNull(lsp.in(key, 1));
+        }
+
+        // Now publish a value; waiter must receive it.
+        lsp.out(key, "value");
+        assertTrue(waiterDone.await(2, TimeUnit.SECONDS),
+          "Untimed waiter should complete after value is produced");
+        assertEquals(1, gotValue.get(), "Untimed in() should not return null under churn");
+        waiter.join(1000);
+    }
+
+    /**
+     * Similar churn test for rd(key) (untimed):
+     * - rd() should not return null once a value is produced (and should complete).
+     */
+    @Test
+    public void testUntimedRdDoesNotReturnNullOnEntryChurn() throws Exception {
+        final LSpace<String, String> lsp = new LSpace<>();
+        final String key = "churnRdKey";
+
+        final CountDownLatch waiterStarted = new CountDownLatch(1);
+        final CountDownLatch waiterDone = new CountDownLatch(1);
+        final AtomicInteger gotValue = new AtomicInteger(0);
+
+        Thread waiter = Thread.startVirtualThread(() -> {
+            waiterStarted.countDown();
+            String v = lsp.rd(key); // indefinite
+            if (v != null) {
+                gotValue.incrementAndGet();
+            }
+            waiterDone.countDown();
+        });
+
+        assertTrue(waiterStarted.await(1, TimeUnit.SECONDS));
+        Thread.sleep(50);
+
+        // Churn via timed rd() timeouts (create/remove entries).
+        for (int i = 0; i < 25; i++) {
+            assertNull(lsp.rd(key, 1));
+        }
+
+        lsp.out(key, "value");
+        assertTrue(waiterDone.await(2, TimeUnit.SECONDS),
+          "Untimed rd waiter should complete after value is produced");
+        assertEquals(1, gotValue.get(), "Untimed rd() should not return null under churn");
+        waiter.join(1000);
+    }
+
+    /**
+     * Targeted race test for non-blocking inp():
+     * Ensure inp() removal does not remove the entry if there are waiters,
+     * but still allows the entry to be removed once waiters are gone.
+     *
+     * This is a “liveness + cleanup” combined check:
+     * - start waiters
+     * - do warmup out+inp (empties queue)
+     * - provide values and let waiters drain
+     * - ensure key removed after all consumed (no retention).
+     */
+    @Test
+    public void testEntryEventuallyRemovedAfterWaitersDrain() throws Exception {
+        final LSpace<String, String> lsp = new LSpace<>();
+        final String key = "eventualRemovalKey";
+
+        final int waiters = 10;
+        final CountDownLatch started = new CountDownLatch(waiters);
+        final CountDownLatch done = new CountDownLatch(waiters);
+
+        for (int i = 0; i < waiters; i++) {
+            Thread.startVirtualThread(() -> {
+                started.countDown();
+                assertNotNull(lsp.in(key), "Waiter should eventually get a value");
+                done.countDown();
+            });
+        }
+
+        assertTrue(started.await(2, TimeUnit.SECONDS));
+        Thread.sleep(100);
+
+        // Warmup: create the emptying scenario.
+        lsp.out(key, "warmup");
+        assertEquals("warmup", lsp.inp(key));
+
+        // Feed values.
+        for (int i = 0; i < waiters; i++) {
+            lsp.out(key, "v" + i);
+        }
+
+        assertTrue(done.await(5, TimeUnit.SECONDS));
+
+        // Now the key should be removable (no queue, no waiters). Give a small grace window.
+        // Any correct housekeeping should remove it promptly.
+        for (int i = 0; i < 50 && lsp.getKeySet().contains(key); i++) {
+            Thread.sleep(10);
+        }
+        assertFalse(lsp.getKeySet().contains(key),
+          "KeyEntry should be removed once queue is empty and no waiters remain");
+    }
 }
