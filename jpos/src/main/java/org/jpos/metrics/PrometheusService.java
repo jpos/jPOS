@@ -38,7 +38,7 @@ public class PrometheusService extends QBeanSupport {
     private HttpServer server;
 
     @Override
-    protected void startService() throws ConfigurationException {
+    protected void initService() throws ConfigurationException {
         try {
             final var registry =  getServer().getPrometheusMeterRegistry();
             server = HttpServer.create(new InetSocketAddress(port), 0);
