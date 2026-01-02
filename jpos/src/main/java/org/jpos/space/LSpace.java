@@ -94,6 +94,17 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         SpaceFactory.getGCExecutor().scheduleAtFixedRate(this, GCDELAY, GCDELAY, TimeUnit.MILLISECONDS);
     }
 
+    // -------------------------
+    // JFR tagging helper (patch)
+    // -------------------------
+    private String jfrTag(Object keyOrTemplate) {
+        if (keyOrTemplate instanceof Template) {
+            Object k = ((Template) keyOrTemplate).getKey();
+            return "" + k;
+        }
+        return "" + keyOrTemplate;
+    }
+
     @Override
     public void out(K key, V value) {
         var jfr = new SpaceEvent("out", "" + key);
@@ -355,88 +366,128 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public V in(Object key) {
-        if (key instanceof Template)
-            return inTemplate((Template) key);
-        return inKey((K) key);
+        String op = key instanceof Template ? "in:tmpl" : "in";
+        var jfr = new SpaceEvent(op, jfrTag(key));
+        jfr.begin();
+        try {
+            if (key instanceof Template)
+                return inTemplate((Template) key);
+            return inKey((K) key);
+        } finally {
+            jfr.commit();
+        }
     }
 
     @Override
     public V in(Object key, long timeout) {
-        if (key instanceof Template)
-            return inTemplate((Template) key, timeout);
-        return inKey((K) key, timeout);
+        String op = key instanceof Template ? "in:tim:tmpl" : "in:tim";
+        var jfr = new SpaceEvent(op, jfrTag(key));
+        jfr.begin();
+        try {
+            if (key instanceof Template)
+                return inTemplate((Template) key, timeout);
+            return inKey((K) key, timeout);
+        } finally {
+            jfr.commit();
+        }
     }
 
     @Override
     public V rd(Object key) {
-        if (key instanceof Template)
-            return rdTemplate((Template) key);
-        return rdKey((K) key);
+        String op = key instanceof Template ? "rd:tmpl" : "rd";
+        var jfr = new SpaceEvent(op, jfrTag(key));
+        jfr.begin();
+        try {
+            if (key instanceof Template)
+                return rdTemplate((Template) key);
+            return rdKey((K) key);
+        } finally {
+            jfr.commit();
+        }
     }
 
     @Override
     public V rd(Object key, long timeout) {
-        if (key instanceof Template)
-            return rdTemplate((Template) key, timeout);
-        return rdKey((K) key, timeout);
+        String op = key instanceof Template ? "rd:tim:tmpl" : "rd:tim";
+        var jfr = new SpaceEvent(op, jfrTag(key));
+        jfr.begin();
+        try {
+            if (key instanceof Template)
+                return rdTemplate((Template) key, timeout);
+            return rdKey((K) key, timeout);
+        } finally {
+            jfr.commit();
+        }
     }
 
     @Override
     public void nrd(Object key) {
-        K k = (K) key;
-        while (true) {
-            KeyEntry entry = entries.get(k);
-            if (entry == null)
-                return;
-
-            entry.lock.lock();
-            try {
-                Object obj = getHead(entry, k, false);
-                if (obj == null)
+        var jfr = new SpaceEvent("nrd", "" + key);
+        jfr.begin();
+        try {
+            K k = (K) key;
+            while (true) {
+                KeyEntry entry = entries.get(k);
+                if (entry == null)
                     return;
 
+                entry.lock.lock();
                 try {
-                    entry.isEmpty.await(NRD_RESOLUTION, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException ignored) {
-                    Thread.currentThread().interrupt();
-                    return;
+                    Object obj = getHead(entry, k, false);
+                    if (obj == null)
+                        return;
+
+                    try {
+                        entry.isEmpty.await(NRD_RESOLUTION, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException ignored) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
+                } finally {
+                    entry.lock.unlock();
                 }
-            } finally {
-                entry.lock.unlock();
             }
+        } finally {
+            jfr.commit();
         }
     }
 
     @Override
     public V nrd(Object key, long timeout) {
-        K k = (K) key;
-        long deadline = System.nanoTime() + timeout * ONE_MILLION;
+        var jfr = new SpaceEvent("nrd:tim", "" + key);
+        jfr.begin();
+        try {
+            K k = (K) key;
+            long deadline = System.nanoTime() + timeout * ONE_MILLION;
 
-        while (true) {
-            KeyEntry entry = entries.get(k);
-            if (entry == null)
-                return null;
-
-            entry.lock.lock();
-            try {
-                V obj = (V) getHead(entry, k, false);
-                if (obj == null)
+            while (true) {
+                KeyEntry entry = entries.get(k);
+                if (entry == null)
                     return null;
 
-                long remaining = deadline - System.nanoTime();
-                if (remaining <= 0)
-                    return obj;
-
-                long waitTime = Math.min(NRD_RESOLUTION * ONE_MILLION, remaining);
+                entry.lock.lock();
                 try {
-                    entry.isEmpty.awaitNanos(waitTime);
-                } catch (InterruptedException ignored) {
-                    Thread.currentThread().interrupt();
-                    return obj;
+                    V obj = (V) getHead(entry, k, false);
+                    if (obj == null)
+                        return null;
+
+                    long remaining = deadline - System.nanoTime();
+                    if (remaining <= 0)
+                        return obj;
+
+                    long waitTime = Math.min(NRD_RESOLUTION * ONE_MILLION, remaining);
+                    try {
+                        entry.isEmpty.awaitNanos(waitTime);
+                    } catch (InterruptedException ignored) {
+                        Thread.currentThread().interrupt();
+                        return obj;
+                    }
+                } finally {
+                    entry.lock.unlock();
                 }
-            } finally {
-                entry.lock.unlock();
             }
+        } finally {
+            jfr.commit();
         }
     }
 
@@ -451,20 +502,26 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public boolean existAny(K[] keys, long timeout) {
-        long deadline = System.nanoTime() + timeout * ONE_MILLION;
-        long pollInterval = 10 * ONE_MILLION;
+        var jfr = new SpaceEvent("existAny:tim", Integer.toString(keys != null ? keys.length : 0));
+        jfr.begin();
+        try {
+            long deadline = System.nanoTime() + timeout * ONE_MILLION;
+            long pollInterval = 10 * ONE_MILLION;
 
-        while (true) {
-            for (K key : keys) {
-                if (rdp(key) != null)
-                    return true;
+            while (true) {
+                for (K key : keys) {
+                    if (rdp(key) != null)
+                        return true;
+                }
+
+                long remaining = deadline - System.nanoTime();
+                if (remaining <= 0)
+                    return false;
+
+                LockSupport.parkNanos(Math.min(pollInterval, remaining));
             }
-
-            long remaining = deadline - System.nanoTime();
-            if (remaining <= 0)
-                return false;
-
-            LockSupport.parkNanos(Math.min(pollInterval, remaining));
+        } finally {
+            jfr.commit();
         }
     }
 
