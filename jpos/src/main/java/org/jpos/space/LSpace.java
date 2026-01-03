@@ -1002,14 +1002,13 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                             return null;
                         }
                     } else {
-                        long remaining = deadlineNanos - System.nanoTime();
-                        if (remaining <= 0) {
-                            // Avoid leaking empty entries created by computeIfAbsent when timing out.
-                            postFetchHousekeeping(key, entry);
-                            return null;
-                        }
                         try {
-                            entry.hasValue.awaitNanos(remaining);
+                            long remaining = entry.hasValue.awaitNanos(deadlineNanos - System.nanoTime());
+                            if (remaining <= 0) {
+                                // Avoid leaking empty entries created by computeIfAbsent when timing out.
+                                postFetchHousekeeping(key, entry);
+                                return null;
+                            }
                         } catch (InterruptedException ie) {
                             Thread.currentThread().interrupt();
                             postFetchHousekeeping(key, entry);
@@ -1020,11 +1019,11 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                     // If someone removed/replaced the entry, restart outer loop to bind to the current entry.
                     if (entries.get(key) != entry)
                         break;
-                }
+                } // inner loop
             } finally {
                 entry.lock.unlock();
             }
-        }
+        } // outer loop
     }
 
     /**
