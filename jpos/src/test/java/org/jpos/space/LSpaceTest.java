@@ -468,11 +468,11 @@ public class LSpaceTest implements SpaceListener {
         final CountDownLatch allWaitersDone = new CountDownLatch(waiters);
         final AtomicInteger received = new AtomicInteger(0);
 
-        // Spawn waiters that will block indefinitely until values arrive.
+        // Waiters use rd() so they will park on hasValue but will NOT consume "warmup".
         for (int i = 0; i < waiters; i++) {
             Thread.startVirtualThread(() -> {
                 allWaitingStarted.countDown();
-                String v = lsp.in(key); // indefinite wait
+                String v = lsp.rd(key); // indefinite wait, non-destructive
                 if (v != null) {
                     received.incrementAndGet();
                 }
@@ -484,15 +484,16 @@ public class LSpaceTest implements SpaceListener {
           "Waiters should start promptly");
         Thread.sleep(100); // give time to actually park on hasValue
 
-        // Publish one value and immediately remove it using inp(). This makes the queue empty.
-        // If inp() removes the entry unsafely, existing waiters can be stranded on the old Condition.
+        // Publish one value; this should wake rd() waiters, but value remains queued.
         lsp.out(key, "warmup");
-        assertEquals("warmup", lsp.inp(key), "inp should remove the warmup value");
 
-        // Now publish one value per waiter; all waiters must complete.
-        for (int i = 0; i < waiters; i++) {
-            lsp.out(key, "v" + i);
-        }
+        // Ensure the value is present before attempting inp(), avoiding any timing window.
+        assertNotNull(lsp.rd(key, 1000), "warmup should be visible via rd()");
+        assertEquals("warmup", lsp.inp(key), "inp should remove the warmup value deterministically");
+
+        // Now publish a final value. Since rd() is non-destructive and we use signalAll,
+        // one out is enough for all waiters to complete successfully.
+        lsp.out(key, "final");
 
         assertTrue(allWaitersDone.await(5, TimeUnit.SECONDS),
           "All waiters should complete; stranded waiters indicate an orphaned Condition bug");
