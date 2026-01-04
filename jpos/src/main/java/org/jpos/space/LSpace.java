@@ -745,14 +745,13 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
         ensureOpen();
         var jfr = new SpaceEvent("notify", "" + key);
         jfr.begin();
-
-        if (sl == null) {
+        LocalSpace<K, SpaceListener<K,V>> localSl = sl;  // Capture volatile read once
+        if (localSl == null) {
             jfr.commit();
             return;
         }
-
         Object[] listeners = null;
-        LSpace<K, SpaceListener<K,V>> lsl = (LSpace<K, SpaceListener<K,V>>) sl;
+        LSpace<K, SpaceListener<K,V>> lsl = (LSpace<K, SpaceListener<K,V>>) localSl;
         KeyEntry slEntry = lsl.entries.get((K) key);
         if (slEntry != null) {
             slEntry.lock.lock();
@@ -1092,7 +1091,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
                             Thread.currentThread().interrupt();
                             // Avoid leaking an empty entry created by computeIfAbsent for a waiter that got interrupted.
                             postFetchHousekeeping(key, entry);
-                            break; // re-enter outer loop
+                            break;
                         }
                     } else {
                         try {

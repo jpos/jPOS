@@ -18,6 +18,7 @@
 
 package org.jpos.space;
 
+import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -712,16 +713,17 @@ public class LSpaceTest implements SpaceListener {
         for (int i = 0; i < waiters; i++) {
             Thread.startVirtualThread(() -> {
                 started.countDown();
+                assertEquals("warmup", lsp.rd(key));
+                ISOUtil.sleep(100);
                 assertNotNull(lsp.in(key), "Waiter should eventually get a value");
                 done.countDown();
             });
         }
 
         assertTrue(started.await(2, TimeUnit.SECONDS));
-        Thread.sleep(100);
-
         // Warmup: create the emptying scenario.
         lsp.out(key, "warmup");
+        Thread.sleep(100);
         assertEquals("warmup", lsp.inp(key));
 
         // Feed values.
@@ -811,6 +813,7 @@ public class LSpaceTest implements SpaceListener {
             lsp.close();
         }
     }
+    @Test
     public void testOperationsThrowAfterClose() {
         LSpace<String, String> sp = new LSpace<>();
 
