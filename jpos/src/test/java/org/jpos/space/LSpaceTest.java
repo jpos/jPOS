@@ -18,6 +18,7 @@
 
 package org.jpos.space;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +42,12 @@ public class LSpaceTest implements SpaceListener {
 
     @BeforeEach
     public void setUp() {
-        sp = new LSpace<String, Object>();
+        sp = new LSpace<>();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        sp.close();
     }
 
     @Override
@@ -732,5 +738,107 @@ public class LSpaceTest implements SpaceListener {
         }
         assertFalse(lsp.getKeySet().contains(key),
           "KeyEntry should be removed once queue is empty and no waiters remain");
+    }
+
+    @Test
+    public void testGcDoesNotLoseExpirableKeysUnderConcurrentRegistration() throws Exception {
+        final LSpace<String, String> lsp = new LSpace<>();
+        try {
+            final int keyCount = 200;
+            final String[] keys = new String[keyCount];
+            for (int i = 0; i < keyCount; i++) {
+                keys[i] = "expKey-" + i;
+            }
+
+            // Run GC concurrently while we register expirables at a high rate.
+            final long runMillis = 750; // keep test fast but high enough to hit the window
+            final long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(runMillis);
+
+            final CountDownLatch started = new CountDownLatch(2);
+            final CountDownLatch done = new CountDownLatch(2);
+
+            Thread gcThread = Thread.startVirtualThread(() -> {
+                started.countDown();
+                try {
+                    while (System.nanoTime() < deadline) {
+                        lsp.gc();
+                        // Encourage interleavings.
+                        Thread.yield();
+                    }
+                } finally {
+                    done.countDown();
+                }
+            });
+
+            Thread producerThread = Thread.startVirtualThread(() -> {
+                started.countDown();
+                int i = 0;
+                try {
+                    while (System.nanoTime() < deadline) {
+                        // Very short timeout => value will expire quickly and should be removed by GC.
+                        // Spread registrations across many keys.
+                        String k = keys[i++ % keyCount];
+                        lsp.out(k, "v", 5); // 5ms
+                        if ((i & 0x3F) == 0) {
+                            Thread.yield();
+                        }
+                    }
+                } finally {
+                    done.countDown();
+                }
+            });
+
+            assertTrue(started.await(1, TimeUnit.SECONDS), "Worker threads must start");
+            assertTrue(done.await(5, TimeUnit.SECONDS), "Worker threads must complete");
+
+            // Let all expirables expire.
+            Thread.sleep(50);
+
+            // Now run several GC cycles to ensure all expired wrappers are removed and entries cleaned up.
+            // IMPORTANT: Do not call rdp/inp on these keys; that could clean them up and mask the bug.
+            for (int i = 0; i < 25; i++) {
+                lsp.gc();
+                Thread.sleep(5);
+            }
+
+            // After expiry + repeated GC, there should be no keys left.
+            // If expirable keys were "lost" due to the copy+clear race, some entries can remain forever.
+            assertEquals(0, lsp.getKeySet().size(),
+              "All expired expirable entries should be removed by GC; " +
+                "non-empty keyset indicates lost expirable-key tracking under concurrent registration");
+        } finally {
+            // With the lifecycle patch, this prevents the scheduled GC task from pinning the instance.
+            lsp.close();
+        }
+    }
+    public void testOperationsThrowAfterClose() {
+        LSpace<String, String> sp = new LSpace<>();
+
+        sp.close();
+
+        // A representative sample of externally visible operations that must fail once closed.
+        assertThrows(IllegalStateException.class, () -> sp.out("k", "v"));
+        assertThrows(IllegalStateException.class, () -> sp.out("k", "v", 1000L));
+        assertThrows(IllegalStateException.class, () -> sp.push("k", "v"));
+        assertThrows(IllegalStateException.class, () -> sp.push("k", "v", 1000L));
+        assertThrows(IllegalStateException.class, () -> sp.put("k", "v"));
+        assertThrows(IllegalStateException.class, () -> sp.put("k", "v", 1000L));
+
+        assertThrows(IllegalStateException.class, () -> sp.rdp("k"));
+        assertThrows(IllegalStateException.class, () -> sp.inp("k"));
+        assertThrows(IllegalStateException.class, () -> sp.in("k"));
+        assertThrows(IllegalStateException.class, () -> sp.in("k", 10L));
+        assertThrows(IllegalStateException.class, () -> sp.rd("k"));
+        assertThrows(IllegalStateException.class, () -> sp.rd("k", 10L));
+        assertThrows(IllegalStateException.class, () -> sp.nrd("k"));
+        assertThrows(IllegalStateException.class, () -> sp.nrd("k", 10L));
+
+        assertThrows(IllegalStateException.class, () -> sp.size("k"));
+        assertThrows(IllegalStateException.class, sp::getKeySet);
+        assertThrows(IllegalStateException.class, sp::isEmpty);
+        assertThrows(IllegalStateException.class, sp::getKeysAsString);
+
+        // Close must be idempotent.
+        assertDoesNotThrow(sp::close);
     }
 }

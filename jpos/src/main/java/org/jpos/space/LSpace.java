@@ -23,9 +23,12 @@ import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.lang.ref.Cleaner;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
@@ -58,9 +61,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 3.0
  */
 @SuppressWarnings("unchecked")
-public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
+public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCloseable {
     private final ConcurrentHashMap<K, KeyEntry> entries;
-    private volatile LocalSpace<K, SpaceListener<K,V>> sl;    // space listeners
+    private volatile LocalSpace<K, SpaceListener<K,V>> sl;
+    private final ScheduledFuture<?> gcFuture;
+    private final Object[] expLocks = new Object[] { new Object(), new Object() };
 
     public static final long GCDELAY = 5 * 1000;
     private static final long GCLONG = 60_000L;
@@ -72,6 +77,10 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     private final Set<K>[] expirables;
     private long lastLongGC = System.nanoTime();
+    private final AtomicBoolean closed = new AtomicBoolean(false);
+    private static final Cleaner CLEANER = Cleaner.create();
+    private final Cleaner.Cleanable cleanable;
+    private final CleaningState cleaningState;
 
     /**
      * Per-key synchronization and queue structure.
@@ -91,7 +100,9 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
           ConcurrentHashMap.newKeySet(),
           ConcurrentHashMap.newKeySet()
         };
-        SpaceFactory.getGCExecutor().scheduleAtFixedRate(this, GCDELAY, GCDELAY, TimeUnit.MILLISECONDS);
+        this.gcFuture = SpaceFactory.getGCExecutor().scheduleAtFixedRate(this, GCDELAY, GCDELAY, TimeUnit.MILLISECONDS);
+        this.cleaningState = new CleaningState(gcFuture, entries, expirables);
+        this.cleanable = CLEANER.register(this, cleaningState);
     }
 
     // -------------------------
@@ -107,6 +118,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void out(K key, V value) {
+        ensureOpen();
         var jfr = new SpaceEvent("out", "" + key);
         jfr.begin();
 
@@ -142,6 +154,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void out(K key, V value, long timeout) {
+        ensureOpen();
         var jfr = new SpaceEvent("out:tim", "" + key);
         jfr.begin();
 
@@ -186,6 +199,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void push(K key, V value) {
+        ensureOpen();
         if (key == null || value == null)
             throw new NullPointerException("key=" + key + ", value=" + value);
 
@@ -219,6 +233,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void push(K key, V value, long timeout) {
+        ensureOpen();
         if (key == null || value == null)
             throw new NullPointerException("key=" + key + ", value=" + value);
 
@@ -261,6 +276,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void put(K key, V value) {
+        ensureOpen();
         if (key == null || value == null)
             throw new NullPointerException("key=" + key + ", value=" + value);
 
@@ -296,6 +312,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void put(K key, V value, long timeout) {
+        ensureOpen();
         if (key == null || value == null)
             throw new NullPointerException("key=" + key + ", value=" + value);
 
@@ -340,6 +357,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public V rdp(Object key) {
+        ensureOpen();
         var jfr = new SpaceEvent("rdp", "" + key);
         jfr.begin();
         try {
@@ -353,6 +371,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public V inp(Object key) {
+        ensureOpen();
         var jfr = new SpaceEvent("inp", "" + key);
         jfr.begin();
         try {
@@ -366,6 +385,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public V in(Object key) {
+        ensureOpen();
         String op = key instanceof Template ? "in:tmpl" : "in";
         var jfr = new SpaceEvent(op, jfrTag(key));
         jfr.begin();
@@ -380,6 +400,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public V in(Object key, long timeout) {
+        ensureOpen();
         String op = key instanceof Template ? "in:tim:tmpl" : "in:tim";
         var jfr = new SpaceEvent(op, jfrTag(key));
         jfr.begin();
@@ -394,6 +415,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public V rd(Object key) {
+        ensureOpen();
         String op = key instanceof Template ? "rd:tmpl" : "rd";
         var jfr = new SpaceEvent(op, jfrTag(key));
         jfr.begin();
@@ -408,6 +430,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public V rd(Object key, long timeout) {
+        ensureOpen();
         String op = key instanceof Template ? "rd:tim:tmpl" : "rd:tim";
         var jfr = new SpaceEvent(op, jfrTag(key));
         jfr.begin();
@@ -422,6 +445,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void nrd(Object key) {
+        ensureOpen();
         var jfr = new SpaceEvent("nrd", "" + key);
         jfr.begin();
         try {
@@ -434,9 +458,10 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                 entry.lock.lock();
                 try {
                     Object obj = getHead(entry, k, false);
-                    if (obj == null)
+                    if (obj == null) {
+                        postFetchHousekeeping(k, entry);
                         return;
-
+                    }
                     try {
                         entry.isEmpty.await(NRD_RESOLUTION, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException ignored) {
@@ -454,6 +479,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public V nrd(Object key, long timeout) {
+        ensureOpen();
         var jfr = new SpaceEvent("nrd:tim", "" + key);
         jfr.begin();
         try {
@@ -468,9 +494,10 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                 entry.lock.lock();
                 try {
                     V obj = (V) getHead(entry, k, false);
-                    if (obj == null)
+                    if (obj == null) {
+                        postFetchHousekeeping(k, entry);
                         return null;
-
+                    }
                     long remaining = deadline - System.nanoTime();
                     if (remaining <= 0)
                         return obj;
@@ -493,6 +520,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public boolean existAny(K[] keys) {
+        ensureOpen();
         for (K key : keys) {
             if (rdp(key) != null)
                 return true;
@@ -502,6 +530,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public boolean existAny(K[] keys, long timeout) {
+        ensureOpen();
         var jfr = new SpaceEvent("existAny:tim", Integer.toString(keys != null ? keys.length : 0));
         jfr.begin();
         try {
@@ -527,6 +556,9 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void run() {
+        // Scheduler ticks may race with close(); treat closed as a no-op.
+        if (closed.get())
+            return;
         try {
             gc();
         } catch (Exception e) {
@@ -535,6 +567,10 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
 
     public void gc() {
+        // Avoid work after close if a scheduled tick slips through.
+        if (closed.get())
+            return;
+
         gc(0);
         if (System.nanoTime() - lastLongGC > GCLONG * ONE_MILLION) {
             gc(1);
@@ -543,12 +579,15 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
 
     private void gc(int generation) {
+        // gc() already guards closed; keep gc(int) lean.
         var jfr = new SpaceEvent("gc", Integer.toString(generation));
         jfr.begin();
 
-        Set<K> keysToCheck = new HashSet<>(expirables[generation]);
-        expirables[generation].clear();
-
+        Set<K> keysToCheck;
+        synchronized (expLocks[generation]) {
+            keysToCheck = new HashSet<>(expirables[generation]);
+            expirables[generation].clear();
+        }
         for (K key : keysToCheck) {
             KeyEntry entry = entries.get(key);
             if (entry == null)
@@ -576,7 +615,9 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                 entry.hasExpirable = stillHasExpirable;
 
                 if (stillHasExpirable) {
-                    expirables[generation].add(key);
+                    synchronized (expLocks[generation]) {
+                        expirables[generation].add(key);
+                    }
                     // Queue might have changed (expired items removed), wake any rd/in waiters.
                     entry.hasValue.signalAll();
                 } else {
@@ -605,6 +646,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public int size(Object key) {
+        ensureOpen();
         var jfr = new SpaceEvent("size", "" + key);
         jfr.begin();
 
@@ -625,31 +667,37 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void addListener(Object key, SpaceListener listener) {
+        ensureOpen();
         getSL().out((K) key, listener);
     }
 
     @Override
     public void addListener(Object key, SpaceListener listener, long timeout) {
+        ensureOpen();
         getSL().out((K) key, listener, timeout);
     }
 
     @Override
     public void removeListener(Object key, SpaceListener listener) {
+        ensureOpen();
         if (sl != null) {
             sl.inp((K) new ObjectTemplate(key, listener));
         }
     }
 
     public boolean isEmpty() {
+        ensureOpen();
         return entries.isEmpty();
     }
 
     @Override
     public Set<K> getKeySet() {
+        ensureOpen();
         return new HashSet<>(entries.keySet());
     }
 
     public String getKeysAsString() {
+        ensureOpen();
         StringBuilder sb = new StringBuilder();
         Object[] keys = entries.keySet().toArray();
         for (int i = 0; i < keys.length; i++) {
@@ -662,6 +710,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     @Override
     public void dump(PrintStream p, String indent) {
+        ensureOpen();
         var jfr = new SpaceEvent("dump", "");
         jfr.begin();
 
@@ -693,6 +742,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
 
     public void notifyListeners(Object key, Object value) {
+        ensureOpen();
         var jfr = new SpaceEvent("notify", "" + key);
         jfr.begin();
 
@@ -730,6 +780,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
      * Non-standard method (required for space replication) - use with care.
      */
     public Map getEntries() {
+        ensureOpen();
         Map<K, List> result = new HashMap<>();
         for (Map.Entry<K, KeyEntry> e : entries.entrySet()) {
             KeyEntry entry = e.getValue();
@@ -747,6 +798,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
      * Non-standard method (required for space replication) - use with care.
      */
     public void setEntries(Map entries) {
+        ensureOpen();
         this.entries.clear();
         for (Object o : entries.entrySet()) {
             Map.Entry e = (Map.Entry) o;
@@ -763,6 +815,29 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                 entry.lock.unlock();
             }
         }
+    }
+
+    /**
+     * Cancels the periodic GC task so this instance can be garbage-collected.
+     * Safe to call multiple times.
+     */
+    public void close() {
+        if (!closed.compareAndSet(false, true))
+            return;
+
+        if (gcFuture != null) {
+            gcFuture.cancel(false);
+        }
+        // If sl is an LSpace, allow it to release resources as well.
+        LocalSpace<K, SpaceListener<K,V>> s = sl;
+        if (s instanceof LSpace<?,?>) {
+            ((LSpace<?,?>) s).close();
+        }
+        sl = null;
+        entries.clear();
+        expirables[0].clear();
+        expirables[1].clear();
+        cleanable.clean(); // Eager cleanup
     }
 
     // ========== Blocking (deduplicated) ==========
@@ -936,25 +1011,41 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         return result;
     }
 
+    private void ensureOpen() {
+        if (closed.get())
+            throw new IllegalStateException("LSpace is closed");
+    }
+
     // ========== Listener-space helpers ==========
 
     private LocalSpace<K, SpaceListener<K,V>> getSL() {
+        ensureOpen();
         if (sl == null) {
             synchronized (this) {
-                if (sl == null)
+                ensureOpen();
+                if (sl == null) {
                     sl = new LSpace<>();
+                    cleaningState.sl = (AutoCloseable) sl;
+                }
             }
         }
         return sl;
     }
 
     private void registerExpirable(K k, long t) {
-        expirables[t > GCLONG ? 1 : 0].add(k);
+        int g = (t > GCLONG) ? 1 : 0;
+        synchronized (expLocks[g]) {
+            expirables[g].add(k);
+        }
     }
 
     private void unregisterExpirable(K k) {
-        expirables[0].remove(k);
-        expirables[1].remove(k);
+        synchronized (expLocks[0]) {
+            synchronized (expLocks[1]) {
+                expirables[0].remove(k);
+                expirables[1].remove(k);
+            }
+        }
     }
 
     // ========== Blocking core (shared) ==========
@@ -974,6 +1065,8 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
      */
     @SuppressWarnings("unchecked")
     private V awaitValue(K key, Fetcher fetcher, long timeoutMillis) {
+        ensureOpen();
+
         final boolean timed = timeoutMillis != NO_TIMEOUT;
         final long deadlineNanos = timed ? System.nanoTime() + timeoutMillis * ONE_MILLION : 0L;
 
@@ -999,7 +1092,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                             Thread.currentThread().interrupt();
                             // Avoid leaking an empty entry created by computeIfAbsent for a waiter that got interrupted.
                             postFetchHousekeeping(key, entry);
-                            return null;
+                            break; // re-enter outer loop
                         }
                     } else {
                         try {
@@ -1079,6 +1172,57 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         public int compareTo(Object other) {
             long diff = this.expires - ((Expirable) other).expires;
             return diff > 0 ? 1 : diff < 0 ? -1 : 0;
+        }
+    }
+
+    private static final class CleaningState implements Runnable {
+        private final ScheduledFuture<?> gcFuture;
+        private final ConcurrentHashMap<?,?> entries;
+        private final Set<?>[] expirables;
+
+        // We keep a reference to sl so we can cancel its scheduler too.
+        // This does not introduce a new retention path; it already hangs off the parent space.
+        private volatile AutoCloseable sl; // store as AutoCloseable to avoid generics pain
+
+        private final AtomicBoolean cleaned = new AtomicBoolean(false);
+
+        private CleaningState(ScheduledFuture<?> gcFuture,
+                              ConcurrentHashMap<?,?> entries,
+                              Set<?>[] expirables) {
+            this.gcFuture = gcFuture;
+            this.entries = entries;
+            this.expirables = expirables;
+        }
+
+        @Override
+        public void run() {
+            if (!cleaned.compareAndSet(false, true))
+                return;
+
+            try {
+                if (gcFuture != null)
+                    gcFuture.cancel(false);
+            } catch (Throwable ignored) { }
+
+            // Best-effort close of the listener space.
+            AutoCloseable s = sl;
+            if (s != null) {
+                try {
+                    s.close();
+                } catch (Throwable ignored) { }
+                sl = null;
+            }
+
+            try {
+                entries.clear();
+            } catch (Throwable ignored) { }
+
+            try {
+                expirables[0].clear();
+            } catch (Throwable ignored) { }
+            try {
+                expirables[1].clear();
+            } catch (Throwable ignored) { }
         }
     }
 }
