@@ -18,7 +18,6 @@
 
 package org.jpos.space;
 
-import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +25,8 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -849,4 +848,76 @@ public class LSpaceTest implements SpaceListener {
         // Close must be idempotent.
         assertDoesNotThrow(sp::close);
     }
+
+    /**
+     * Behavior test related to expiration + wakeups:
+     * Values that are expired but still physically present (as Expirable wrappers) should not prevent progress.
+     *
+     * This test tries to surface a case where producers append behind expired wrappers and waiters
+     * might not be signaled promptly. We do not assert an exact latency, only that progress occurs.
+     */
+    @Test
+    public void testExpiredHeadDoesNotBlockProgressIndefinitely() throws Exception {
+        final LSpace<String, String> lsp = new LSpace<>();
+        try {
+            final String key = "expiredHeadProgressKey";
+
+            // Put an expirable that will expire before the consumer starts.
+            lsp.out(key, "exp", 10);
+            Thread.sleep(50); // ensure expired
+
+            final CountDownLatch started = new CountDownLatch(1);
+            final CountDownLatch done = new CountDownLatch(1);
+            final AtomicReference<String> got = new AtomicReference<>();
+
+            Thread.startVirtualThread(() -> {
+                started.countDown();
+                got.set(lsp.in(key, 2000)); // must complete once a real value is produced
+                done.countDown();
+            });
+
+            assertTrue(started.await(1, TimeUnit.SECONDS));
+            Thread.sleep(50);
+
+            // Now publish a real value.
+            lsp.out(key, "real");
+
+            assertTrue(done.await(3, TimeUnit.SECONDS),
+              "Consumer should not be blocked indefinitely by expired head elements");
+            assertEquals("real", got.get(), "Consumer should receive the real value");
+        } finally {
+            lsp.close();
+        }
+    }
+
+    /**
+     * Invariant test (requires minimal test-only visibility in LSpace):
+     *
+     * put(key, value) with NO timeout must ensure the key is not tracked in either expirables generation.
+     * This is intentionally conservative: it also "self-heals" stale tracking membership.
+     *
+     * This test will pass on the old implementation and will fail on refactors that
+     * stop unconditionally unregistering expirables during non-timed put().
+     */
+    @Test
+    public void testPutWithoutTimeoutUntracksExpirableKeyEvenIfStale() {
+        final String key = "putUntracksExpirableStaleKey";
+
+        // Simulate a stale key tracked as expirable in both generations.
+        sp.forceTrackExpirableForTest(key, 0);
+        sp.forceTrackExpirableForTest(key, 1);
+
+        assertTrue(sp.isExpirableTrackedForTest(key, 0), "Precondition: key must be tracked in gen0");
+        assertTrue(sp.isExpirableTrackedForTest(key, 1), "Precondition: key must be tracked in gen1");
+
+        // Non-timed put must clear any expirable tracking for that key.
+        sp.put(key, "value");
+
+        assertFalse(sp.isExpirableTrackedForTest(key),
+          "Non-timed put() must remove the key from expirable tracking (self-healing invariant).");
+
+        // Sanity: value should be visible.
+        assertEquals("value", sp.rdp(key));
+    }
+
 }

@@ -1082,4 +1082,29 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
             } catch (Throwable ignored) { }
         }
     }
+
+    // =========================
+    // Test-only visibility hooks
+    // =========================
+    // Package-private on purpose (same package as tests).
+    // These methods are intended strictly for unit tests that validate internal invariants.
+    boolean isExpirableTrackedForTest(K key) {
+        synchronized (expLocks[0]) {
+            synchronized (expLocks[1]) {
+                return expirables[0].contains(key) || expirables[1].contains(key);
+            }
+        }
+    }
+
+    boolean isExpirableTrackedForTest(K key, int generation) {
+        synchronized (expLocks[generation]) {
+            return expirables[generation].contains(key);
+        }
+    }
+
+    void forceTrackExpirableForTest(K key, int generation) {
+        synchronized (expLocks[generation]) {
+            expirables[generation].add(key);
+        }
+    }
 }
