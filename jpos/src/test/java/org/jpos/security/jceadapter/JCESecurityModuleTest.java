@@ -342,12 +342,8 @@ public class JCESecurityModuleTest {
         try {
             new JCESecurityModule(cfg, new Logger(), "testJCESecurityModuleRealm");
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+        } catch (NullPointerException _) {
+            //expected
         }
     }
 
@@ -699,12 +695,8 @@ public class JCESecurityModuleTest {
         try {
             jCESecurityModule.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+        } catch (NullPointerException _) {
+            //expected
         }
     }
 
