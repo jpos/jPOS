@@ -178,7 +178,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      */
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
-        this.cfg = cfg;
+        super.setConfiguration(cfg);
         try {
             init(cfg.get("provider"), cfg.get("lmk", null), cfg.getBoolean("rebuildlmk"));
         } catch (SMException e) {
