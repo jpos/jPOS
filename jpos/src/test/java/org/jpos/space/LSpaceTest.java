@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -708,14 +709,18 @@ public class LSpaceTest implements SpaceListener {
 
         final int waiters = 10;
         final CountDownLatch started = new CountDownLatch(waiters);
+        final CountDownLatch waiterReadyToIn = new CountDownLatch(waiters);
         final CountDownLatch done = new CountDownLatch(waiters);
 
         for (int i = 0; i < waiters; i++) {
-            Thread.startVirtualThread(() -> {
+            Thread.ofVirtual().name("Waiter "+i).start(() -> {
                 started.countDown();
                 assertEquals("warmup", lsp.rd(key));
-                ISOUtil.sleep(100);
-                assertNotNull(lsp.in(key), "Waiter should eventually get a value");
+                waiterReadyToIn.countDown();
+                LockSupport.parkNanos(1_000_000L);
+                String v = lsp.in(key);
+                assertNotNull(v, "Waiter should eventually get a value");
+                assertTrue(v.startsWith("v"), "Waiter should get 'vN' where N=[0.."+(waiters-1)+"] but got '"+v+"'");
                 done.countDown();
             });
         }
@@ -723,7 +728,7 @@ public class LSpaceTest implements SpaceListener {
         assertTrue(started.await(2, TimeUnit.SECONDS));
         // Warmup: create the emptying scenario.
         lsp.out(key, "warmup");
-        Thread.sleep(100);
+        assertTrue(waiterReadyToIn.await(2, TimeUnit.SECONDS));
         assertEquals("warmup", lsp.inp(key));
 
         // Feed values.
