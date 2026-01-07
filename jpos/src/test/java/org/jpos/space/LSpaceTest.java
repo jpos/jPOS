@@ -889,4 +889,35 @@ public class LSpaceTest implements SpaceListener {
             lsp.close();
         }
     }
+
+    /**
+     * Invariant test (requires minimal test-only visibility in LSpace):
+     *
+     * put(key, value) with NO timeout must ensure the key is not tracked in either expirables generation.
+     * This is intentionally conservative: it also "self-heals" stale tracking membership.
+     *
+     * This test will pass on the old implementation and will fail on refactors that
+     * stop unconditionally unregistering expirables during non-timed put().
+     */
+    @Test
+    public void testPutWithoutTimeoutUntracksExpirableKeyEvenIfStale() {
+        final String key = "putUntracksExpirableStaleKey";
+
+        // Simulate a stale key tracked as expirable in both generations.
+        sp.forceTrackExpirableForTest(key, 0);
+        sp.forceTrackExpirableForTest(key, 1);
+
+        assertTrue(sp.isExpirableTrackedForTest(key, 0), "Precondition: key must be tracked in gen0");
+        assertTrue(sp.isExpirableTrackedForTest(key, 1), "Precondition: key must be tracked in gen1");
+
+        // Non-timed put must clear any expirable tracking for that key.
+        sp.put(key, "value");
+
+        assertFalse(sp.isExpirableTrackedForTest(key),
+          "Non-timed put() must remove the key from expirable tracking (self-healing invariant).");
+
+        // Sanity: value should be visible.
+        assertEquals("value", sp.rdp(key));
+    }
+
 }
