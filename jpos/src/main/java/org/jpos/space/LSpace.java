@@ -119,6 +119,14 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
         return "" + keyOrTemplate;
     }
 
+
+    // ========== Producer (enqueuing) operations ==========
+
+    @FunctionalInterface
+    private interface Enqueuer {
+        void enqueue(KeyEntry entry, Object value);
+    }
+
     @Override
     public void out(K key, V value) {
         out(key, value, NO_TIMEOUT);
@@ -126,47 +134,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
 
     @Override
     public void out(K key, V value, long timeout) {
-        ensureOpen();
-        var jfr = new SpaceEvent("out:tim", "" + key);
-        jfr.begin();
-        try {
-            if (key == null || value == null) {
-                throw new NullPointerException("key=" + key + ", value=" + value);
-            }
-    
-            Object v = value;
-            if (timeout > 0)
-                v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
-    
-            while (true) {
-                KeyEntry entry = entries.computeIfAbsent(key, KeyEntry()::new);
-    
-                entry.lock.lock();
-                try {
-                    if (entries.get(key) != entry)
-                        continue;
-    
-                    boolean wasEmpty = entry.queue.isEmpty();
-                    entry.queue.addLast(v);
-    
-                    if (timeout > 0) {
-                        entry.hasExpirable = true;
-                        registerExpirable(key, timeout);
-                    }
-                    if (wasEmpty)
-                        entry.hasValue.signalAll();
-    
-                    break;
-                } finally {
-                    entry.lock.unlock();
-                }
-            }
-    
-            if (sl != null)
-                notifyListeners(key, value);
-        } finally {
-            jfr.commit();
-        }
+        enqueueValue("out", key, value, timeout, (ent,v) -> ent.queue.addLast(v));
     }
 
     @Override
@@ -176,46 +144,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
 
     @Override
     public void push(K key, V value, long timeout) {
-        ensureOpen();
-        var jfr = new SpaceEvent("push:tim", "" + key);
-        jfr.begin();
-        try {
-            if (key == null || value == null)
-                throw new NullPointerException("key=" + key + ", value=" + value);
-    
-            Object v = value;
-            if (timeout > 0)
-                v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
-    
-            while (true) {
-                KeyEntry entry = entries.computeIfAbsent(key, KeyEntry::new);
-    
-                entry.lock.lock();
-                try {
-                    if (entries.get(key) != entry)
-                        continue;
-    
-                    boolean wasEmpty = entry.queue.isEmpty();
-                    entry.queue.addFirst(v);
-    
-                    if (timeout > 0) {
-                        entry.hasExpirable = true;
-                        registerExpirable(key, timeout);
-                    }
-                    if (wasEmpty)
-                        entry.hasValue.signalAll();
-    
-                    break;
-                } finally {
-                    entry.lock.unlock();
-                }
-            }
-    
-            if (sl != null)
-                notifyListeners(key, value);
-        } finally {
-            jfr.commit();
-        }
+        enqueueValue("push", key, value, timeout, (ent,v) -> ent.queue.addFirst(v));
     }
 
     @Override
@@ -225,8 +154,23 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
 
     @Override
     public void put(K key, V value, long timeout) {
+        enqueueValue("put", key, value, timeout, (ent,v) -> {
+            boolean wasEmpty = ent.queue.isEmpty();
+            ent.queue.clear();
+            ent.queue.addLast(v);
+            ent.hasExpirable = timeout > 0;
+            // If old contents had expirables, they are now unreachable; cleanup sets now.
+            if (!wasEmpty)
+                unregisterExpirable(key);
+        });
+    }
+
+    /**
+     * Common method for all enqueuing operations (out, push, put, with/out timeout)
+     */
+    private void enqueueValue(String opTag, K key, V value, long timeout, Enqueuer op) {
         ensureOpen();
-        var jfr = new SpaceEvent("put:tim", "" + key);
+        var jfr = new SpaceEvent(opTag + (timeout > 0 ? ":tim" : ""), "" + key);
         jfr.begin();
         try {
             if (key == null || value == null)
@@ -245,18 +189,17 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
                         continue;
                     }
 
-                    entry.queue.clear();
-                    entry.queue.add(v);
+                    op.enqueue(entry, v);
 
                     if (timeout > 0) {
                         entry.hasExpirable = true;
                         registerExpirable(key, timeout);
-                    } else {
-                        entry.hasExpirable = false;
-                        unregisterExpirable(key);
                     }
 
-                    entry.hasValue.signalAll();
+                    if (entry.queue.size() == 1) {  // was empty (or became empty after clear)
+                        entry.hasValue.signalAll(); // Wake ALL readers (multiple rd() can read same value)
+                    }
+
                     break;
                 } finally {
                     entry.lock.unlock();
