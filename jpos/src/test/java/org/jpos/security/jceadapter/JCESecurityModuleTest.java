@@ -44,6 +44,10 @@ import org.jpos.security.SMAdapter;
 import org.jpos.security.SMException;
 import org.jpos.security.SecureDESKey;
 import org.jpos.util.Logger;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogListener;
+import java.io.File;
+import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -1809,6 +1813,32 @@ public class JCESecurityModuleTest {
             "E09B073B4007541FAB76B04370451031",
             "4CBF5D51EA8525EF045EFED6E386D9D9");
         assertArrayEquals(ISOUtil.hex2byte("40D522"), sdk.getKeyCheckValue(), "3: KeyCheck was " + ISOUtil.hexString(sdk.getKeyCheckValue()));
+    }
+
+    @Test
+    public void testDebugPropertyEnablesLogging() throws Exception {
+        JCESecurityModule module = new JCESecurityModule();
+        Configuration cfg = new SimpleConfiguration();
+
+        File tempLmk = File.createTempFile("test-lmk", ".lmk");
+        tempLmk.deleteOnExit();
+
+        cfg.put("lmk", tempLmk.getAbsolutePath());
+        cfg.put("rebuildlmk", "true");
+        cfg.put("debug", "true");
+
+
+        module.setConfiguration(cfg);
+
+        Logger logger = new Logger();
+        LogListener listener = mock(LogListener.class);
+        logger.addListener(listener);
+        module.setLogger(logger, "test-realm");
+
+        // Generate a key to trigger logging
+        module.generateKey((short) 128, "ZPK");
+
+        verify(listener, times(1)).log(any(LogEvent.class));
     }
 
 }
