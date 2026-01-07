@@ -91,8 +91,6 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
         final Condition isEmpty = lock.newCondition();    // signaled when queue becomes empty (for nrd)
         final LinkedList<Object> queue = new LinkedList<>();
         volatile boolean hasExpirable = false;
-
-        KeyEntry(Object key) {/* key ignored, but could be used for debugging */}
     }
 
 
@@ -111,7 +109,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
     // -------------------------
     // JFR tagging helper (patch)
     // -------------------------
-    private static String jfrTag(Object keyOrTemplate) {
+    private String jfrTag(Object keyOrTemplate) {
         if (keyOrTemplate instanceof Template) {
             Object k = ((Template) keyOrTemplate).getKey();
             return "" + k;
@@ -155,12 +153,10 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
     @Override
     public void put(K key, V value, long timeout) {
         enqueueValue("put", key, value, timeout, (ent,v) -> {
-            boolean wasEmpty = ent.queue.isEmpty();
             ent.queue.clear();
             ent.queue.addLast(v);
             ent.hasExpirable = timeout > 0;
-            // If old contents had expirables, they are now unreachable; cleanup sets now.
-            if (!wasEmpty)
+            if (timeout <= 0)
                 unregisterExpirable(key);
         });
     }
@@ -181,7 +177,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
                 v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
 
             while (true) {
-                KeyEntry entry = entries.computeIfAbsent(key, KeyEntry::new);
+                KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
                 entry.lock.lock();
                 try {
@@ -661,7 +657,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
         for (var e : (Set<Map.Entry>)entries.entrySet()) {
             K key =  (K)e.getKey();
             List<V> list = (List<V>)e.getValue();
-            KeyEntry entry = this.entries.computeIfAbsent(key, KeyEntry::new);
+            KeyEntry entry = this.entries.computeIfAbsent(key, k -> new KeyEntry());
             entry.lock.lock();
             try {
                 entry.queue.clear();
@@ -928,7 +924,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
         final long deadlineNanos = timed ? System.nanoTime() + timeoutMillis * ONE_MILLION : 0L;
 
         for (;;) {
-            final KeyEntry entry = entries.computeIfAbsent(key, KeyEntry::new);
+            final KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
 
             entry.lock.lock();
             try {
