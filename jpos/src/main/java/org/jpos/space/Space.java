@@ -107,14 +107,14 @@ public interface Space<K,V> {
     V rdp(K key);
 
     /**
-     * Nrd (not read) waits forever until Key is not present in space
+     * Nrd (not read) waits forever until Key is not present in space.<br/>
      * Resolution for expiring entries is implementation dependant, but a minimum one-second is suggested.
      * @param key Entry's key
      */
     void nrd(K key);
 
     /**
-     * Nrd (not read) waits up to timeout until Key is not present in space
+     * Nrd (not read) waits up to timeout until Key is not present in space.<br/>
      * Resolution for expiring entries is implementation dependant, but a minimum one-second is suggested.
      * @param key Entry's key
      * @param timeout millis to wait
