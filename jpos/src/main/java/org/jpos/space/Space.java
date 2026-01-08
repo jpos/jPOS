@@ -39,7 +39,7 @@ package org.jpos.space;
  * @see <a href="http://www.cs.yale.edu/Linda/linda-lang.html">The Linda Coordination Language</a>
  */
 
-public interface Space<K,V> {
+public interface Space<K,V> extends AutoCloseable {
     /**
      * Write a new entry into the Space
      * @param key Entry's key
@@ -165,4 +165,7 @@ public interface Space<K,V> {
      * @param timeout timeout value in millis
      */
     void put(K key, V value, long timeout);
+
+    @Override
+    default void close() {}
 }

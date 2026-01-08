@@ -61,7 +61,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 3.0
  */
 @SuppressWarnings("unchecked")
-public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCloseable {
+public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private final ConcurrentHashMap<K, KeyEntry> entries;
     private volatile LocalSpace<K, SpaceListener<K,V>> sl;
     private final ScheduledFuture<?> gcFuture;
@@ -820,6 +820,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable, AutoCl
      * Cancels the periodic GC task so this instance can be garbage-collected.
      * Safe to call multiple times.
      */
+    @Override
     public void close() {
         if (!closed.compareAndSet(false, true))
             return;
