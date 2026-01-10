@@ -646,5 +646,12 @@ public class EnvironmentTest {
           "Unknown tokens inside verbatim must be inert; rest should expand");
     }
 
+    @Test
+    public void defaultContainingEmptyTokenSequence_doesNotBreakOuterDefaultParsing() {
+        System.clearProperty("jpos.xxx"); // ensure unset
 
+        assertEquals("A$A default:value${ B${B",
+          Environment.get("A$A ${jpos.xxx:default:value${} B${B"),
+          "Sequence ${} inside default must be treated as literal text for nesting purposes");
+    }
 }

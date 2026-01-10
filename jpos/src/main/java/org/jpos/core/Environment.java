@@ -335,7 +335,11 @@ public class Environment implements Loggeable {
         }
         // Undefined/unresolved and no default.
         // If negated and unresolved => "true", otherwise token removal is NOT desired
-        return negated ? "true" : originalTokenText;
+        if (negated) {
+            return "true";
+        }
+        // prefixed lookups resolve to empty when missing.
+        return t.prefix().isEmpty() ? originalTokenText : "";
     }
 
     private String resolveByPrefix(String prefix, String prop) {
@@ -553,11 +557,32 @@ public class Environment implements Loggeable {
         final int n = s.length();
         if (pos < 0 || pos >= n || s.charAt(pos) != '$')
             return false;
-        int i = pos + 1;
-        while (i < n && isWordChar(s.charAt(i))) i++;
-        return (i < n && s.charAt(i) == '{');
-    }
 
+        int i = pos + 1;
+
+        // prefix: [\w]* (may be empty)
+        while (i < n && isWordChar(s.charAt(i))) i++;
+
+        // must have '{'
+        if (i >= n || s.charAt(i) != '{')
+            return false;
+
+        int j = i + 1; // first char inside '{'
+        if (j >= n)
+            return false;
+
+        char first = s.charAt(j);
+
+        // Reject empty property name: "${}"
+        // Reject operator immediately: "${:...}" or "${=...}"
+        // In general, require at least one property-name char.
+        if (first == '}' || first == ':' || first == '=')
+            return false;
+
+        // And it must be a valid property-name char
+        return isPropChar(first);
+    }
+    
     private static boolean isWordChar(char c) {
         return (c == '_' ||
           (c >= '0' && c <= '9') ||

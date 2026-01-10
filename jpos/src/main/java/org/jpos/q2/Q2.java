@@ -1357,7 +1357,7 @@ public class Q2 implements FileFilter, Runnable {
 
     public String[] environmentArgs (String[] args) {
         String envArgs = Environment.getEnvironment().getProperty("${q2.args}", null);
-        return (envArgs != null ?
+        return (envArgs != null && !"${q2.args}".equals(envArgs) ?
             Stream.concat(
               Arrays.stream(ISOUtil.commaDecode(envArgs)), Arrays.stream(args))
                 .toArray(String[]::new) : args);
