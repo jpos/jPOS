@@ -654,4 +654,36 @@ public class EnvironmentTest {
           Environment.get("A$A ${jpos.xxx:default:value${} B${B"),
           "Sequence ${} inside default must be treated as literal text for nesting purposes");
     }
+
+    @Test
+    public void nestedDefault_priorityFallsBackToSecondThenLiteral() {
+        // Ensure both priorities are unset so we fall through to the literal default.
+        System.clearProperty("ut.first.priority");
+        System.clearProperty("ut.second.priority");
+
+        assertEquals("default",
+          Environment.get("${ut.first.priority:${ut.second.priority:default}}"),
+          "When ut.first.priority is unset, it must fall back to ut.second.priority; when that is also unset, it must return the literal default.");
+    }
+
+    @Test
+    public void nestedDefault_priorityUsesSecondWhenFirstUnset() {
+        System.clearProperty("ut.first.priority");
+        System.setProperty("ut.second.priority", "SECOND");
+
+        assertEquals("SECOND",
+          Environment.get("${ut.first.priority:${ut.second.priority:default}}"),
+          "When ut.first.priority is unset and ut.second.priority is set, it must return ut.second.priority.");
+    }
+
+    @Test
+    public void nestedDefault_priorityUsesFirstWhenSet() {
+        System.setProperty("ut.first.priority", "FIRST");
+        System.setProperty("ut.second.priority", "SECOND");
+
+        assertEquals("FIRST",
+          Environment.get("${ut.first.priority:${ut.second.priority:default}}"),
+          "When ut.first.priority is set, it must take precedence over ut.second.priority and the literal default.");
+    }
+
 }
