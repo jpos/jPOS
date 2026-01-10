@@ -26,10 +26,42 @@ import org.yaml.snakeyaml.scanner.ScannerException;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Manages environment-specific configuration for jPOS applications.
+ *
+ * <p>Environment provides property resolution with support for:
+ * <ul>
+ *     <li>YAML ({@code .yml}) and properties ({@code .cfg}) configuration files</li>
+ *     <li>Property expressions: {@code ${property.name}}</li>
+ *     <li>Default values: {@code ${property.name:default}}</li>
+ *     <li>Equality tests: {@code ${property.name=expected}}</li>
+ *     <li>Boolean negation: {@code ${!property.name}}</li>
+ *     <li>Prefix-specific lookups:
+ *         <ul>
+ *             <li>{@code $env{VAR}} - OS environment variable only</li>
+ *             <li>{@code $sys{prop}} - Java system property only</li>
+ *             <li>{@code $cfg{prop}} - Configuration file only</li>
+ *             <li>{@code $verb{text}} - Verbatim (no expansion)</li>
+ *         </ul>
+ *     </li>
+ *     <li>Nested expressions: {@code ${outer:${inner:default}}}</li>
+ * </ul>
+ *
+ * <p>The default property resolution order (for {@code ${prop}}) is:
+ * <ol>
+ *     <li>OS environment variable ({@code prop})</li>
+ *     <li>OS environment variable ({@code PROP} with dots replaced by underscores)</li>
+ *     <li>Java system property</li>
+ *     <li>Configuration file property</li>
+ * </ol>
+ *
+ * <p>Configuration is loaded from the directory specified by {@code jpos.envdir}
+ * (default: "cfg") with the filename from {@code jpos.env} (default: "default").
+ *
+ * @see EnvironmentProvider
+ */
 public class Environment implements Loggeable {
     private static final String DEFAULT_ENVDIR = "cfg";         // default dir for the env file (relative to cwd), overridable with sys prop "jpos.envdir"
 
@@ -37,19 +69,6 @@ public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
 
-    private static Pattern valuePattern = Pattern.compile(      // make groups easier to read :-)
-        "^"+
-        "((?:.|\n|\r)*)"+     //   1: generic multiline text, as non-capturing group
-        "(\\$)"+              //   2: literal $
-        "([\\w]*)"+           //   3: possible prefix cfg|sys|env
-        "\\{"+                //
-        "([-!\\w.]+)"+        //   4: property name, includes ! for "not" expression
-        "([:=](.*?))?"+       // 5,6: optional default value or equals match
-        "\\}"+                //
-        "((?:.|\n|\r)*)"+     //   7: generic multiline text, as non-capturing group
-        "$");
-
-    private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
     private static Environment INSTANCE;
 
     private String name;
@@ -59,6 +78,9 @@ public class Environment implements Loggeable {
     private static int SP_PREFIX_LENGTH = SP_PREFIX.length();
     private String errorString;
     private ServiceLoader<EnvironmentProvider> serviceLoader;
+    // Sentinel used to protect verbatim '$' so it is not expanded in later passes.
+    private static final String VERB_DOLLAR_SENTINEL = "\u0000$VERB_DOLLAR$\u0000";
+
 
     static {
         try {
@@ -85,31 +107,91 @@ public class Environment implements Loggeable {
         readConfig ();
     }
 
+    /**
+     * Returns the name of the current environment.
+     * Determined by the {@code jpos.env} system property, defaults to "default".
+     *
+     * @return the environment name
+     */
     public String getName() {
         return name;
     }
+
+    /**
+     * Returns the directory where environment configuration files are located.
+     * Determined by the {@code jpos.envdir} system property, defaults to "cfg".
+     *
+     * @return the environment directory path
+     */
     public String getEnvDir() {
         return envDir;
     }
 
+    /**
+     * Reloads the environment configuration from disk.
+     * Reads the {@code jpos.env} and {@code jpos.envdir} system properties
+     * and reloads the corresponding configuration files.
+     *
+     * @return the newly loaded Environment instance
+     * @throws IOException if an error occurs reading configuration files
+     */
     public static Environment reload() throws IOException {
         return (INSTANCE = new Environment());
     }
 
+    /**
+     * Returns the singleton Environment instance.
+     *
+     * @return the current Environment
+     */
     public static Environment getEnvironment() {
         return INSTANCE;
     }
+
+    /**
+     * Resolves a property expression using the singleton Environment.
+     * If the property cannot be resolved, returns the original expression.
+     *
+     * @param p the property expression to resolve (e.g., "${my.property}")
+     * @return the resolved value, or the original expression if unresolved
+     * @see #getProperty(String)
+     */
     public static String get (String p) {
         return getEnvironment().getProperty(p, p);
     }
+
+    /**
+     * Resolves a property expression using the singleton Environment.
+     * If the property cannot be resolved, returns the specified default.
+     *
+     * @param p the property expression to resolve
+     * @param def the default value to return if the property is unresolved
+     * @return the resolved value, or {@code def} if unresolved
+     * @see #getProperty(String, String)
+     */
     public static String get (String p, String def) {
         return getEnvironment().getProperty(p, def);
     }
+
+    /**
+     * Resolves a property expression with a default fallback.
+     *
+     * @param p the property expression to resolve
+     * @param def the default value to return if the property resolves to null
+     * @return the resolved value, or {@code def} if null
+     * @see #getProperty(String)
+     */
     public String getProperty (String p, String def) {
         String s = getProperty (p);
         return s != null ? s : def;
     }
 
+    /**
+     * Returns any error message from the last configuration load attempt.
+     * Typically set when YAML parsing fails.
+     *
+     * @return the error message, or null if no error occurred
+     */
     public String getErrorString() {
         return errorString;
     }
@@ -132,95 +214,359 @@ public class Environment implements Loggeable {
      * @return property value
      */
     public String getProperty (String s) {
-        String r = s;
-        if (s != null) {
-            Matcher m = verbPattern.matcher(s);
-            if (m.matches()) {                      // matches $verb{...}
-                return m.group(1);                  // return internal value, verbatim
-            }
+        if (s == null)
+            return null;
 
-            m = valuePattern.matcher(s);
-            if (!m.matches())                       // doesn't match $xxx{...} at all
-                return s;                           // return the whole thing
+        // Fast-path: no possible expressions.
+        if (s.indexOf('$') < 0)
+            return s;
 
-            while (m != null && m.matches()) {
-                boolean negated = false;
-                String previousR = r;
-                String gPrefix = m.group(3);
-                String gProp = m.group(4);
-                if (gProp.startsWith("!")) {
-                    negated = true;
-                    gProp = gProp.substring(1);
-                }
-                gPrefix = gPrefix != null ? gPrefix : "";
-                switch (gPrefix) {
-                    case CFG_PREFIX:
-                        r = propRef.get().getProperty(gProp, null);
-                        break;
-                    case SYSTEM_PREFIX:
-                        r = System.getProperty(gProp);
-                        break;
-                    case ENVIRONMENT_PREFIX:
-                        r = System.getenv(gProp);
-                        break;
-                    default:
-                        if (gPrefix.isEmpty()) {
-                            r = System.getenv(gProp);                              // ENV has priority
-                            r = r == null ? System.getenv(gProp.replace('.', '_').toUpperCase()) : r;
-                            r = r == null ? System.getProperty(gProp) : r;         // then System.property
-                            r = r == null ? propRef.get().getProperty(gProp) : r;  // then jPOS --environment
-                        } else {
-                            return s; // do nothing - unknown prefix
-                        }
-                }
-
-                String defValue = null;
-                if (m.group(5) != null) {
-                    if (m.group(5).startsWith("=")) {
-                        r = r != null && r.equals(m.group(6)) ? "true" : "false";
-                    } else {                                            // ':' default case
-                        if (r == null) {                                // unresolved property
-                            defValue = m.group(6);
-                            if (defValue != null)
-                                r = defValue;                           // use default value from now on
-                        }
-                    }
-                }
-
-                if (r != null) {
-                    for (EnvironmentProvider p : serviceLoader) {
-                        int l = p.prefix().length();
-                        if (r != null && r.length() > l && r.startsWith(p.prefix())) {
-                            r = p.get(r.substring(l));
-                        }
-                    }
-
-                    if (negated && r != null &&
-                        defValue == null)                       // we don't want to negate a default literal boolean!
-                    {
-                        String rNorm = r.trim().toLowerCase();
-                        r = notMap.getOrDefault(rNorm, r);      // if not a booleanish string, return unchanged
-                    }
-
-                    if (m.group(1) != null) {
-                        r = m.group(1) + r;
-                    }
-                    if (m.group(7) != null) {
-                        r = r + m.group(7);
-                    }
-
-                    m = valuePattern.matcher(r);
-                } else {                // property was undefined/unresolved and no default was provided
-                    if (negated)
-                        r = "true";     // a negated undefined is interpreted as true
-                    m = null;
-                }
-
-                if (Objects.equals(r, previousR))
-                    break;
+        if (s.startsWith("$verb{")) {
+            int closeIdx = s.indexOf('}', 6); // first '}' after "$verb{"
+            if (closeIdx == s.length() - 1 && s.length() > "$verb{}".length()) {
+                return s.substring(6, closeIdx);
             }
         }
+        String r = s;
+
+        // Bounded expansion + cycle detection
+        final int MAX_EXPANSION_STEPS = 256;
+        final int MAX_SEEN_STATES = 2048;
+
+        final Set<String> seen = new HashSet<>();
+        seen.add(r);
+
+        for (int step = 0; step < MAX_EXPANSION_STEPS; step++) {
+            String next = expandOnce(r);
+            if (Objects.equals(next, r))
+                break;
+            if (!seen.add(next))
+                break;
+            if (seen.size() > MAX_SEEN_STATES)
+                break;
+            r = next;
+        }
+        return unescapeVerbatimDollars(r);
+    }
+
+    /**
+     * Expands all occurrences of $...{...} in the input string in a single linear pass.
+     * This method is deliberately regex-free to avoid backtracking / stack overflow.
+     */
+    private String expandOnce(String in) {
+        StringBuilder out = new StringBuilder(in.length());
+        int i = 0;
+        boolean changed = false;
+
+        while (i < in.length()) {
+            char ch = in.charAt(i);
+            if (ch != '$') {
+                out.append(ch);
+                i++;
+                continue;
+            }
+
+            // Inline $verb{...}: verbatim payload, no expansion even across passes, Terminate at the first '}'
+            if (in.startsWith("$verb{", i)) {
+                int closeIdx = in.indexOf('}', i + 6);
+                if (closeIdx != -1) {
+                    String payload = in.substring(i + 6, closeIdx);
+                    out.append(escapeVerbatimDollars(payload));
+                    i = closeIdx + 1;
+                    changed = true;
+                    continue;
+                }
+                // If no closing brace found, fall through and treat '$' as literal (via parseToken failure path).
+            }
+            Token t = parseToken(in, i);
+            if (t == null) {
+                // Not a valid token; treat '$' as literal.
+                out.append('$');
+                i++;
+                continue;
+            }
+
+            String replacement = evaluateToken(t, in.substring(t.start(), t.endExclusive()));
+            if (replacement == null) {
+                return in;
+            }
+
+            out.append(replacement);
+            i = t.endExclusive();
+            changed = true;
+        }
+
+        return changed ? out.toString() : in;
+    }
+
+    private boolean isKnownPrefix(String prefix) {
+        return prefix.isEmpty()
+           || CFG_PREFIX.equals(prefix)
+           || SYSTEM_PREFIX.equals(prefix)
+           || ENVIRONMENT_PREFIX.equals(prefix);
+    }
+
+    private String evaluateToken(Token t, String originalTokenText) {
+        if (!isKnownPrefix(t.prefix())) {
+            return null; // expandOnce() will return the original input unchanged.
+        }
+        boolean negated = t.negated();
+        String defValueLiteral = null;
+
+        String resolved = resolveByPrefix(t.prefix(), t.property());
+
+        if (t.op() == '=') {
+            String rhsResolved = t.rhs() == null ? "" : getProperty(t.rhs());
+            resolved = (resolved != null && resolved.equals(rhsResolved)) ? "true" : "false";
+        } else if (t.op() == ':') {
+            // Default case. Keep literal default as-is; outer expansion passes will dereference it.
+            if (resolved == null) {
+                defValueLiteral = t.rhs(); // may be null or empty, both are meaningful
+                resolved = defValueLiteral;
+            }
+        } else {
+            // No op, resolved stays as-is (may be null).
+        }
+
+        if (resolved != null) {
+            resolved = applyProviderTransformations(resolved);
+            resolved = applyNegation(resolved, negated, defValueLiteral == null);
+            return resolved;
+        }
+        // Undefined/unresolved and no default.
+        // If negated and unresolved => "true", otherwise token removal is NOT desired
+        return negated ? "true" : originalTokenText;
+    }
+
+    private String resolveByPrefix(String prefix, String prop) {
+        return switch (prefix) {
+            case CFG_PREFIX -> propRef.get().getProperty(prop, null);
+            case SYSTEM_PREFIX -> System.getProperty(prop);
+            case ENVIRONMENT_PREFIX -> System.getenv(prop);
+            default -> prefix.isEmpty() ? resolveWithPriority(prop) : null;
+        };
+    }
+
+    /**
+     * Resolves a property using the default priority: ENV > System property > cfg file.
+     */
+    private String resolveWithPriority(String prop) {
+        String r = System.getenv(prop);
+        if (r == null) r = System.getenv(prop.replace('.', '_').toUpperCase());
+        if (r == null) r = System.getProperty(prop);
+        if (r == null) r = propRef.get().getProperty(prop);
         return r;
+    }
+
+    /**
+     * Applies EnvironmentProvider transformations. Some providers may return a value
+     * that still begins with the same provider prefix (e.g., obf(obf(x))).
+     * In that case, transformations are applied repeatedly until no provider matches
+     * or a safety limit is reached.
+     */
+    private String applyProviderTransformations(String value) {
+        String v = value;
+        if (v == null)
+            return null;
+
+        final int MAX_PROVIDER_STEPS = 32; // safety against misbehaving providers
+
+        for (int step = 0; step < MAX_PROVIDER_STEPS; step++) {
+            boolean changed = false;
+
+            for (EnvironmentProvider p : serviceLoader) {
+                String prefix = p.prefix();
+                int prefixLen = prefix.length();
+                if (v.length() > prefixLen && v.startsWith(prefix)) {
+                    String next = p.get(v.substring(prefixLen));
+                    if (next == null) {
+                        // Be conservative: if provider returns null, stop transforming and return current.
+                        return v;
+                    }
+                    if (!Objects.equals(next, v)) {
+                        v = next;
+                        changed = true;
+                    } else {
+                        // No progress; avoid tight loops.
+                        return v;
+                    }
+                    break; // restart from first provider on the new value
+                }
+            }
+
+            if (!changed)
+                return v;
+        }
+
+        // Safety stop: return the last value we reached.
+        return v;
+    }
+
+    /**
+     * Applies boolean negation if the token was negated and it's not a default literal.
+     */
+    private String applyNegation(String value, boolean negated, boolean canNegate) {
+        if (negated && canNegate) {
+            String normalized = value.trim().toLowerCase();
+            return notMap.getOrDefault(normalized, value);
+        }
+        return value;
+    }
+
+    /**
+     * Token parsed from $...{...}.
+     * @param start position of '$' in the input string
+     * @param endExclusive index just after the closing '}'
+     * @param prefix "", "cfg", "sys", "env", or unknown (unknown handled earlier)
+     * @param negated true if property name started with '!'
+     * @param property the property name (without '!' prefix)
+     * @param op operator: 0 (none), ':', or '='
+     * @param rhs default value or equals RHS (may be null/empty)
+     */
+    private record Token(int start, int endExclusive, String prefix, boolean negated, String property, char op, String rhs) {}
+
+    private Token parseToken(String s, int dollarPos) {
+        final int n = s.length();
+        int i = dollarPos;
+
+        if (i >= n || s.charAt(i) != '$')
+            return null;
+        i++; // skip '$'
+
+        // prefix: [\w]* (may be empty) until '{'
+        int prefixStart = i;
+        while (i < n && isWordChar(s.charAt(i))) {
+            i++;
+        }
+        if (i >= n || s.charAt(i) != '{') {
+            return null;
+        }
+        String prefix = s.substring(prefixStart, i);
+        i++; // skip '{'
+
+        // property name: [-!\w.]+ (but stop on ':' '=' or '}' )
+        if (i >= n)
+            return null;
+
+        boolean negated = false;
+        int propStart = i;
+
+        // read property characters
+        while (i < n) {
+            char c = s.charAt(i);
+            if (c == ':' || c == '=' || c == '}')
+                break;
+            if (!isPropChar(c))
+                return null;
+            i++;
+        }
+
+        if (i == propStart) // empty property name is not valid
+            return null;
+
+        String prop = s.substring(propStart, i);
+        if (prop.startsWith("!")) {
+            negated = true;
+            prop = prop.substring(1);
+            if (prop.isEmpty())
+                return null;
+        }
+
+        // operator?
+        if (i >= n)
+            return null;
+
+        char op = 0;
+        String rhs = null;
+
+        char c = s.charAt(i);
+        if (c == '}' ) {
+            // simple ${prop}
+            return new Token(dollarPos, i + 1, prefix, negated, prop, op, rhs);
+        } else if (c == ':' || c == '=') {
+            op = c;
+            i++; // skip op
+            int rhsStart = i;
+
+            // find matching '}' for this token, supporting nested $...{...} in RHS
+            int end = findTokenEnd(s, dollarPos);
+            if (end < 0)
+                return null;
+
+            // RHS is content between op and final '}' of this token.
+            rhs = s.substring(rhsStart, end);
+
+            return new Token(dollarPos, end + 1, prefix, negated, prop, op, rhs);
+        } else {
+            // unexpected character
+            return null;
+        }
+    }
+
+    /**
+     * Returns the index of the '}' that closes the token beginning at dollarPos, or -1 if not found.
+     * Supports nested tokens inside defaults/RHS by counting nested "$...{" starts.
+     */
+    private int findTokenEnd(String s, int dollarPos) {
+        final int n = s.length();
+        int i = dollarPos;
+
+        // We know s[dollarPos] == '$'. Find the first '{' that starts this token.
+        i++; // after '$'
+        while (i < n && isWordChar(s.charAt(i))) i++;
+        if (i >= n || s.charAt(i) != '{') return -1;
+        i++; // after the '{' of the outer token
+
+        int depth = 0; // nested token depth within RHS
+        while (i < n) {
+            char ch = s.charAt(i);
+
+            if (ch == '$' && looksLikeTokenStart(s, i)) {
+                // consume "$" + prefix + "{", and count as nested
+                depth++;
+                i++; // after '$'
+                while (i < n && isWordChar(s.charAt(i))) i++;
+                if (i < n && s.charAt(i) == '{') {
+                    i++; // after '{'
+                    continue;
+                } else {
+                    // Should not happen because looksLikeTokenStart checked it, but be defensive.
+                    continue;
+                }
+            }
+
+            if (ch == '}') {
+                if (depth == 0) {
+                    return i;
+                }
+                depth--;
+                i++;
+                continue;
+            }
+
+            i++;
+        }
+        return -1;
+    }
+
+    private boolean looksLikeTokenStart(String s, int pos) {
+        final int n = s.length();
+        if (pos < 0 || pos >= n || s.charAt(pos) != '$')
+            return false;
+        int i = pos + 1;
+        while (i < n && isWordChar(s.charAt(i))) i++;
+        return (i < n && s.charAt(i) == '{');
+    }
+
+    private static boolean isWordChar(char c) {
+        return (c == '_' ||
+          (c >= '0' && c <= '9') ||
+          (c >= 'A' && c <= 'Z') ||
+          (c >= 'a' && c <= 'z'));
+    }
+
+    private static boolean isPropChar(char c) {
+        return isWordChar(c) || c == '.' || c == '-' || c == '!';
     }
 
     @SuppressWarnings("unchecked")
@@ -280,6 +626,18 @@ public class Environment implements Loggeable {
         return false;
     }
 
+    /**
+     * Flattens a nested Map structure into a flat Properties object using dot notation.
+     * For example, a nested structure like {@code {server: {port: 8080}}} becomes
+     * the property {@code server.port=8080}.
+     *
+     * <p>List values are comma-encoded using {@link ISOUtil#commaEncode(String[])}.
+     *
+     * @param properties the Properties object to populate
+     * @param prefix the current key prefix (null for root level)
+     * @param c the Map to flatten
+     * @param dereference if true, resolve property expressions in string values
+     */
     @SuppressWarnings("unchecked")
     public static void flat (Properties properties, String prefix, Map<String,Object> c, boolean dereference) {
         for (Map.Entry<String,Object> entry : c.entrySet()) {
@@ -337,5 +695,13 @@ public class Environment implements Loggeable {
             }
         }
         return sb.toString();
+    }
+
+    private static String escapeVerbatimDollars(String s) {
+        return s == null ? null : s.replace("$", VERB_DOLLAR_SENTINEL);
+    }
+
+    private static String unescapeVerbatimDollars(String s) {
+        return s == null ? null : s.replace(VERB_DOLLAR_SENTINEL, "$");
     }
 }
