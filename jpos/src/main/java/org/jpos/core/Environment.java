@@ -688,7 +688,9 @@ public class Environment implements Loggeable {
     public void dump(final PrintStream p, String indent) {
         p.printf ("%s<environment name='%s' envdir='%s'>%n", indent, name, envDir);
         Properties properties = propRef.get();
-        properties.stringPropertyNames().stream().
+        properties.stringPropertyNames()
+          .stream()
+          .sorted().
           forEachOrdered(prop -> p.printf ("%s  %s=%s%n", indent, prop, properties.getProperty(prop)) );
         p.printf ("%s</environment>%n", indent);
     }
