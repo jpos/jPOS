@@ -88,10 +88,11 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private static class KeyEntry {
         final ReentrantLock lock = new ReentrantLock();
         final Condition hasValue = lock.newCondition();   // signaled when value added
-        final Condition isEmpty = lock.newCondition();     // signaled when queue becomes empty (for nrd)
+        final Condition isEmpty = lock.newCondition();    // signaled when queue becomes empty (for nrd)
         final LinkedList<Object> queue = new LinkedList<>();
         volatile boolean hasExpirable = false;
     }
+
 
     public LSpace() {
         super();
@@ -116,244 +117,98 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         return "" + keyOrTemplate;
     }
 
+
+    // ========== Producer (enqueuing) operations ==========
+
+    @FunctionalInterface
+    private interface Enqueuer {
+        void enqueue(KeyEntry entry, Object value);
+    }
+
     @Override
     public void out(K key, V value) {
-        ensureOpen();
-        var jfr = new SpaceEvent("out", "" + key);
-        jfr.begin();
-
-        if (key == null || value == null) {
-            jfr.commit();
-            throw new NullPointerException("key=" + key + ", value=" + value);
-        }
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                if (entries.get(key) != entry)
-                    continue;
-
-                boolean wasEmpty = entry.queue.isEmpty();
-                entry.queue.addLast(value);
-                if (wasEmpty)
-                    entry.hasValue.signalAll();
-
-                break;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-
-        if (sl != null)
-            notifyListeners(key, value);
-
-        jfr.commit();
+        out(key, value, NO_TIMEOUT);
     }
 
     @Override
     public void out(K key, V value, long timeout) {
-        ensureOpen();
-        var jfr = new SpaceEvent("out:tim", "" + key);
-        jfr.begin();
-
-        if (key == null || value == null) {
-            jfr.commit();
-            throw new NullPointerException("key=" + key + ", value=" + value);
-        }
-
-        Object v = value;
-        if (timeout > 0)
-            v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                if (entries.get(key) != entry)
-                    continue;
-
-                boolean wasEmpty = entry.queue.isEmpty();
-                entry.queue.addLast(v);
-
-                if (timeout > 0) {
-                    entry.hasExpirable = true;
-                    registerExpirable(key, timeout);
-                }
-                if (wasEmpty)
-                    entry.hasValue.signalAll();
-
-                break;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-
-        if (sl != null)
-            notifyListeners(key, value);
-
-        jfr.commit();
+        enqueueValue("out", key, value, timeout, (ent,v) -> ent.queue.addLast(v));
     }
 
     @Override
     public void push(K key, V value) {
-        ensureOpen();
-        if (key == null || value == null)
-            throw new NullPointerException("key=" + key + ", value=" + value);
-
-        var jfr = new SpaceEvent("push", "" + key);
-        jfr.begin();
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                if (entries.get(key) != entry)
-                    continue;
-
-                boolean wasEmpty = entry.queue.isEmpty();
-                entry.queue.addFirst(value);
-                if (wasEmpty)
-                    entry.hasValue.signalAll();
-
-                break;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-
-        if (sl != null)
-            notifyListeners(key, value);
-
-        jfr.commit();
+        push(key, value, NO_TIMEOUT);
     }
 
     @Override
     public void push(K key, V value, long timeout) {
-        ensureOpen();
-        if (key == null || value == null)
-            throw new NullPointerException("key=" + key + ", value=" + value);
-
-        var jfr = new SpaceEvent("push:tim", "" + key);
-        jfr.begin();
-
-        Object v = value;
-        if (timeout > 0)
-            v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                if (entries.get(key) != entry)
-                    continue;
-
-                boolean wasEmpty = entry.queue.isEmpty();
-                entry.queue.addFirst(v);
-
-                if (timeout > 0) {
-                    entry.hasExpirable = true;
-                    registerExpirable(key, timeout);
-                }
-                if (wasEmpty)
-                    entry.hasValue.signalAll();
-
-                break;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-
-        if (sl != null)
-            notifyListeners(key, value);
-
-        jfr.commit();
+        enqueueValue("push", key, value, timeout, (ent,v) -> ent.queue.addFirst(v));
     }
 
     @Override
     public void put(K key, V value) {
-        ensureOpen();
-        if (key == null || value == null)
-            throw new NullPointerException("key=" + key + ", value=" + value);
-
-        var jfr = new SpaceEvent("put", "" + key);
-        jfr.begin();
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                if (entries.get(key) != entry)
-                    continue;
-
-                entry.queue.clear();
-                entry.queue.add(value);
-                entry.hasExpirable = false;
-                // If old contents had expirables, they are now unreachable; cleanup sets now.
-                unregisterExpirable(key);
-
-                entry.hasValue.signalAll();
-                break;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-
-        if (sl != null)
-            notifyListeners(key, value);
-
-        jfr.commit();
+        put(key, value, NO_TIMEOUT);
     }
 
     @Override
     public void put(K key, V value, long timeout) {
-        ensureOpen();
-        if (key == null || value == null)
-            throw new NullPointerException("key=" + key + ", value=" + value);
-
-        var jfr = new SpaceEvent("put:tim", "" + key);
-        jfr.begin();
-
-        Object v = value;
-        if (timeout > 0)
-            v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
-
-        while (true) {
-            KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
-
-            entry.lock.lock();
-            try {
-                if (entries.get(key) != entry)
-                    continue;
-
-                entry.queue.clear();
-                entry.queue.add(v);
-
-                if (timeout > 0) {
-                    entry.hasExpirable = true;
-                    registerExpirable(key, timeout);
-                } else {
-                    entry.hasExpirable = false;
-                    unregisterExpirable(key);
-                }
-
-                entry.hasValue.signalAll();
-                break;
-            } finally {
-                entry.lock.unlock();
-            }
-        }
-
-        if (sl != null)
-            notifyListeners(key, value);
-
-        jfr.commit();
+        enqueueValue("put", key, value, timeout, (ent,v) -> {
+            ent.queue.clear();
+            ent.queue.addLast(v);
+            ent.hasExpirable = timeout > 0;
+            if (timeout <= 0)
+                unregisterExpirable(key);
+        });
     }
+
+    /**
+     * Common method for all enqueuing operations (out, push, put, with/out timeout)
+     */
+    private void enqueueValue(String opTag, K key, V value, long timeout, Enqueuer op) {
+        ensureOpen();
+        var jfr = new SpaceEvent(opTag + (timeout > 0 ? ":tim" : ""), "" + key);
+        jfr.begin();
+        try {
+            if (key == null || value == null)
+                throw new NullPointerException("key=" + key + ", value=" + value);
+
+            Object v = value;
+            if (timeout > 0)
+                v = new Expirable(value, System.nanoTime() + (timeout * ONE_MILLION));
+
+            while (true) {
+                KeyEntry entry = entries.computeIfAbsent(key, k -> new KeyEntry());
+
+                entry.lock.lock();
+                try {
+                    if (entries.get(key) != entry) {
+                        continue;
+                    }
+
+                    op.enqueue(entry, v);
+
+                    if (timeout > 0) {
+                        entry.hasExpirable = true;
+                        registerExpirable(key, timeout);
+                    }
+
+                    if (entry.queue.size() == 1) {  // was empty (or became empty after clear)
+                        entry.hasValue.signalAll(); // Wake ALL readers (multiple rd() can read same value)
+                    }
+
+                    break;
+                } finally {
+                    entry.lock.unlock();
+                }
+            }
+
+            if (sl != null)
+                notifyListeners(key, value);
+        } finally {
+            jfr.commit();
+        }
+    }
+
 
     @Override
     public V rdp(Object key) {
@@ -781,7 +636,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     public Map getEntries() {
         ensureOpen();
         Map<K, List> result = new HashMap<>();
-        for (Map.Entry<K, KeyEntry> e : entries.entrySet()) {
+        for (var e : entries.entrySet()) {
             KeyEntry entry = e.getValue();
             entry.lock.lock();
             try {
@@ -799,10 +654,9 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     public void setEntries(Map entries) {
         ensureOpen();
         this.entries.clear();
-        for (Object o : entries.entrySet()) {
-            Map.Entry e = (Map.Entry) o;
-            K key = (K) e.getKey();
-            List list = (List) e.getValue();
+        for (var e : (Set<Map.Entry>)entries.entrySet()) {
+            K key =  (K)e.getKey();
+            List<V> list = (List<V>)e.getValue();
             KeyEntry entry = this.entries.computeIfAbsent(key, k -> new KeyEntry());
             entry.lock.lock();
             try {
