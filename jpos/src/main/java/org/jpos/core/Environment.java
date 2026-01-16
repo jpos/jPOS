@@ -246,7 +246,9 @@ public class Environment implements Loggeable {
                 break;
             r = next;
         }
-        return unescapeVerbatimDollars(r);
+        r = unescapeVerbatimDollars(r);
+        // If no expansion happened (result equals input), return null so caller's default can be used
+        return r.equals(s) ? null : r;
     }
 
     /**

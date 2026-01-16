@@ -686,4 +686,9 @@ public class EnvironmentTest {
           "When ut.first.priority is set, it must take precedence over ut.second.priority and the literal default.");
     }
 
+    @Test
+    public void testDefaultParameter() {
+        assertNull(Environment.get("${not.present}", null));
+    }
+
 }

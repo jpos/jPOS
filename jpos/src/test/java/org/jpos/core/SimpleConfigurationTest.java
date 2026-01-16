@@ -517,7 +517,10 @@ public class SimpleConfigurationTest {
     public void testInvalidProperty() {
         SimpleConfiguration cfg = new SimpleConfiguration();
         cfg.put("host", "$invalid{jpos.url}");
-        assertEquals("$invalid{jpos.url}", cfg.get("host"));
+        // Unknown prefix expressions can't be expanded, so the default ("") is used
+        assertEquals("", cfg.get("host"));
+        // But with an explicit default, that default is returned
+        assertEquals("default", cfg.get("host", "default"));
     }
 
     @Test
