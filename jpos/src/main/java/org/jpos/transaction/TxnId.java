@@ -288,8 +288,8 @@ public class TxnId {
           utcTime.getYear() - 2000,
           utcTime.getDayOfYear(),
           utcTime.toLocalTime().toSecondOfDay(),
-          node,
-          transactionId
+          Math.floorMod(node, 1000),
+          Math.floorMod(transactionId, 100000L)
         );
     }
 

@@ -179,4 +179,21 @@ public class TxnIdTest {
         }
     }
 
+    @Test
+    public void testCreateFoldsLargeTransactionIdToSuffix() {
+        // Regression: create() must remain drop-in compatible with callers passing a full TM counter.
+        ZonedDateTime zdt = ZonedDateTime.of(2026, 1, 1, 0, 0, 0, 0, UTC);
+        TxnId id = TxnId.create(zdt, 0, 1525201791L);
+        // 1525201791 % 100000 = 1791 => formatted as 01791.
+        assertTrue(id.toString().endsWith("-01791"), "Expected suffix -01791, got " + id);
+    }
+
+    @Test
+    public void testCreateFoldsNegativeTransactionIdToSuffix() {
+        // If create() uses Math.floorMod(transactionId, 100000), negatives fold into [0..99999].
+        ZonedDateTime zdt = ZonedDateTime.of(2026, 1, 1, 0, 0, 0, 0, UTC);
+        TxnId id = TxnId.create(zdt, 0, -1L);
+        // floorMod(-1, 100000) = 99999.
+        assertTrue(id.toString().endsWith("-99999"), "Expected suffix -99999, got " + id);
+    }
 }
