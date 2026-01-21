@@ -57,11 +57,10 @@ public class NameRegistrarConcurrencyTest {
                         fail("key not found: " + key);
                     }
                     NameRegistrar.unregister(key);
-                    // Uncomment the sysout below to show that test were not
-                    // completed in order, the numbers should be interleaved
-                    // (not an ordered list) to hopefully show
-                    // the threads had the opportunity to step on each other;
-                    // i.e. thread safety of operations (and not just of Sysout!).
+                    // Uncomment the sysout below to show that tests were not
+                    // completed in order. The numbers should be interleaved
+                    // to demonstrate that threads had the opportunity to
+                    // step on each other, verifying thread safety of operations.
                     // If it were to run too fast, can insert a Thread.sleep
                     // part way through - say, after the register step above for
                     // 200 milliseconds.

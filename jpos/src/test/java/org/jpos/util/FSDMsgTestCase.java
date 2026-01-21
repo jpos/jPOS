@@ -131,9 +131,7 @@ public class FSDMsgTestCase {
         imsg.set("alphavardata", "");
         Assertions.assertEquals("0000", imsg.pack(), "Dummy separator no data");
 
-        imsg.set("length", "40"); // Too long data data will be silently
-                                  // truncated,
-        // not sure I like this behaviour!
+        imsg.set("length", "40"); // Too long data will be silently truncated
         imsg.set("alphavardata", "AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGhXXXXXXXX");
         Assertions.assertEquals("0040AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh",
                 imsg.pack(), "Dummy separator truncated data");
@@ -263,8 +261,7 @@ public class FSDMsgTestCase {
         m.set("alphavardata", "");
         Assertions.assertEquals("0000", m.pack(), "Dummy separator no data");
     
-        m.set("length", "40"); // Too long data data will be silently truncated,
-                               // not sure I like this behaviour!
+        m.set("length", "40"); // Too long data will be silently truncated
         m.set("alphavardata", "12345678123456781234567812345678XXXXXXXX");
         Assertions.assertEquals("004012345678123456781234567812345678",
                 m.pack(), "Dummy separator truncated data");
