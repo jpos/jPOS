@@ -59,7 +59,6 @@ public class LiteralBinaryInterpreter implements BinaryInterpreter
      */
     public int getPackedLength(int nBytes)
     {
-        // TODO Auto-generated method stub
         return nBytes;
     }
 }

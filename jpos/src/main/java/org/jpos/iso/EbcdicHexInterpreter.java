@@ -56,7 +56,6 @@ public class EbcdicHexInterpreter implements BinaryInterpreter
         byte[] ret = new byte[length];
         for (int i = 0; i < length; i++)
         {
-        	//TODO: what if the data is not EBCDIC? validation is required.
             byte hi = rawData[offset + i * 2];
             byte lo = rawData[offset + i * 2 + 1];
             int h = hi < (byte) 0xF0 ? 10 + hi - 0xC0 : hi - 0xF0;

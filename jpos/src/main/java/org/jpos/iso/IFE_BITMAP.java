@@ -97,7 +97,6 @@ public class IFE_BITMAP extends ISOBitMapPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-//    	TODO: calculate bytes to read based on bits 1, 65 on/off in the actual data 
     	int bytes;
     	byte [] b1 = ISOUtil.ebcdicToAsciiBytes (b, offset, getLength()*2 );
     	BitSet bmap = ISOUtil.hex2BitSet (b1, 0, getLength() << 3);

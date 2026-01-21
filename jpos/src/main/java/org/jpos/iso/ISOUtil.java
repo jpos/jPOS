@@ -363,8 +363,6 @@ public class ISOUtil {
         for (byte aB : b) {
             char c = (char) aB;
             if (Character.isISOControl(c)) {
-                // TODO: complete list of control characters,
-                // use a String[] instead of this weird switch
                 switch (c) {
                     case '\r':
                         d.append("{CR}");
@@ -497,7 +495,6 @@ public class ISOUtil {
         for (int i=0; i<len; i++) 
             if (b.get(i+1))                     // +1 because we don't use bit 0 of the BitSet
                 d[i >> 3] |= 0x80 >> i % 8;
-        //TODO: review why 2nd & 3rd bit map flags are set here??? 
         if (len>64)
             d[0] |= 0x80;
         if (len>128)
