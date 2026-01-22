@@ -62,7 +62,7 @@ public class QFactory {
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public Object instantiate (Q2 server, Element e) 
+    public Object instantiate (Q2 server, Element e)
         throws ReflectionException,
                MBeanException,
                InstanceNotFoundException
@@ -82,7 +82,7 @@ public class QFactory {
         return mserver.instantiate (clazz, loaderName);
     }
 
-    public ObjectInstance createQBean (Q2 server, Element e, Object obj) 
+    public ObjectInstance createQBean (Q2 server, Element e, Object obj)
         throws MalformedObjectNameException,
                InstanceAlreadyExistsException,
                InstanceNotFoundException,
@@ -102,7 +102,7 @@ public class QFactory {
             throw new InstanceAlreadyExistsException (name+" has already been deployed in another file.");
         }
         ObjectInstance instance = mserver.registerMBean (
-            obj, objectName 
+            obj, objectName
         );
         try {
             setAttribute (mserver, objectName, "Name", name);
@@ -115,7 +115,7 @@ public class QFactory {
             setAttribute (mserver, objectName, "Server", server);
             setAttribute (mserver, objectName, "Persist", e);
             configureQBean(mserver,objectName,e);
-            setConfiguration (obj, e);  // handle legacy (QSP v1) Configurables 
+            setConfiguration (obj, e);  // handle legacy (QSP v1) Configurables
 
             if (obj instanceof QBean)
                 mserver.invoke (objectName, "init",  null, null);
@@ -140,8 +140,7 @@ public class QFactory {
             } catch (Throwable t) {
                 getQ2().getLog().error(t);
             }
-            for (Object o : classpathElement.getChildren("url")) {
-                Element u = (Element) o;
+            for (Element u : classpathElement.getChildren("url")) {
                 try {
                     loader.addURL(u.getTextTrim());
                 } catch (MalformedURLException ex) {
@@ -152,8 +151,8 @@ public class QFactory {
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public void setAttribute 
-        (MBeanServer server, ObjectName objectName, 
+    public void setAttribute
+        (MBeanServer server, ObjectName objectName,
          String attribute, Object value)
         throws InstanceNotFoundException,
                MBeanException,
@@ -170,7 +169,7 @@ public class QFactory {
             // okay to fail (produced by some application servers instead of AttributeNotFoundException)
         }
     }
-    
+
     public void startQBean (Q2 server, ObjectName objectName)
         throws InstanceNotFoundException,
                MBeanException,
@@ -231,7 +230,7 @@ public class QFactory {
      * @throws ConfigurationException If an exception is found trying to create the object.
      */
     @SuppressWarnings("unchecked")
-    protected Object getObject(Element childElement) 
+    protected Object getObject(Element childElement)
         throws ConfigurationException
     {
         String type = childElement.getAttributeValue("type","java.lang.String");
@@ -245,7 +244,7 @@ public class QFactory {
         String value = childElement.getText();
         value = Environment.getEnvironment().getProperty(value, value);
         try {
-            Class attributeType = Class.forName(type);
+            Class<?> attributeType = Class.forName(type);
             if(Collection.class.isAssignableFrom(attributeType))
                 return getCollection(attributeType, childElement);
             else{
@@ -256,10 +255,10 @@ public class QFactory {
         } catch (Exception e1) {
             throw new ConfigurationException(e1);
         }
-        
+
     }
-    
-    
+
+
     /** Creats a collection from a definition element with the format.
      * <PRE>
      *    <{attr|item} type="...">
@@ -278,8 +277,8 @@ public class QFactory {
     {
         try{
             Collection<Object> col = (Collection<Object>) type.newInstance();
-            for (Object o : e.getChildren("item")) {
-                col.add(getObject((Element) o));
+            for (Element o : e.getChildren("item")) {
+                col.add(getObject(o));
             }
             return col;
         }catch(Exception e1){
@@ -316,6 +315,30 @@ public class QFactory {
             throws ConfigurationException
     {
         return newInstance(clazz.getName());
+    }
+
+    /**
+     * Creates a new instance from the values in {@code Element e}.<br/>
+     * If {@code autoConf} is true, it will set the logger from {@code Element e}
+     * and also trigger the autoconfiguration of properties and internal XML as
+     * given by {@link #setConfiguration(Object, Element)}.<br/>
+     * If the element's {@code enabled} attribute is false, nothing will be created and
+     * the method returns null.
+     *
+     * @param e The XML config
+     * @param autoConf whether to trigger QFactory autoconfiguration
+     * @return the new instance, or null if not enabled
+     * @throws ConfigurationException
+     */
+    public <T> T newInstance(Element e, boolean autoConf) throws ConfigurationException {
+        if (!QFactory.isEnabled(e))
+            return null;
+        T obj = newInstance(QFactory.getAttributeValue (e, "class"));
+        if (autoConf) {
+            setLogger       (obj, e);
+            setConfiguration(obj, e);
+        }
+        return obj;
     }
 
     public Configuration getConfiguration (Element e)
@@ -372,7 +395,7 @@ public class QFactory {
         return Environment.getEnvironment().getProperty(s, s);
     }
     public void setConfiguration (Object obj, Element e)
-        throws ConfigurationException 
+        throws ConfigurationException
     {
         try {
             Configuration cfg = getConfiguration (e);
@@ -394,8 +417,8 @@ public class QFactory {
     * @param p parameter
     * @throws ConfigurationException if method happens to throw an exception
     */
-    public static void invoke (Object obj, String m, Object p) 
-        throws ConfigurationException 
+    public static void invoke (Object obj, String m, Object p)
+        throws ConfigurationException
     {
         invoke (obj, m, p, p != null ? p.getClass() : null);
     }
@@ -410,8 +433,8 @@ public class QFactory {
     * @throws ConfigurationException if method happens to throw an exception
     */
    @SuppressWarnings("PMD.EmptyCatchBlock")
-    public static void invoke (Object obj, String m, Object p, Class pc) 
-        throws ConfigurationException 
+    public static void invoke (Object obj, String m, Object p, Class pc)
+        throws ConfigurationException
     {
         try {
             if (p!=null) {
@@ -479,7 +502,7 @@ public class QFactory {
                             field.set(obj, cfg.getDouble(config.value()));
                         else if (c.isAssignableFrom(boolean.class) || c.isAssignableFrom(Boolean.class))
                             field.set(obj, cfg.getBoolean(config.value()));
-                        else if (c.isEnum()) 
+                        else if (c.isEnum())
                             field.set(obj, Enum.valueOf((Class<Enum>) c, v));
                         else if (c.isArray()) {
                             Class<?> ct = c.getComponentType();
@@ -490,8 +513,8 @@ public class QFactory {
                             else if (ct.isAssignableFrom(long.class) || ct.isAssignableFrom(Long.class))
                                 field.set(obj, cfg.getLongs(config.value()));
                             else if (ct.isAssignableFrom(double.class) || ct.isAssignableFrom(Double.class))
-                                field.set(obj, cfg.getDoubles(config.value())); 
-                        } 
+                                field.set(obj, cfg.getDoubles(config.value()));
+                        }
                     }
                 }
             }
@@ -539,5 +562,5 @@ public class QFactory {
             }
         }
     }
-            
+
 }

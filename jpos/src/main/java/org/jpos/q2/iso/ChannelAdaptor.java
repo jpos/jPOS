@@ -235,13 +235,9 @@ public class ChannelAdaptor
     protected void addFilters (FilteredChannel channel, Element e, QFactory fact)
         throws ConfigurationException
     {
-        for (Object o : e.getChildren("filter")) {
-            Element f = (Element) o;
-            if (!QFactory.isEnabled(f)) continue;
-            String clazz = QFactory.getAttributeValue(f, "class");
-            ISOFilter filter = (ISOFilter) fact.newInstance(clazz);
-            fact.setLogger(filter, f);
-            fact.setConfiguration(filter, f);
+        for (Element f : e.getChildren("filter")) {
+            ISOFilter filter = fact.newInstance(f, true);
+            if (filter == null) continue;
             String direction = QFactory.getAttributeValue(f, "direction");
             if (direction == null)
                 channel.addFilter(filter);

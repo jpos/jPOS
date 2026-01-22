@@ -74,7 +74,7 @@ public class QMUX
     private Counter rxCounter;
     private Counter rxMatchCounter;
     private Counter rxUnhandledCounter;
-    
+
     public QMUX () {
         super ();
         listeners = new ArrayList<>();
@@ -104,7 +104,7 @@ public class QMUX
         }
         ready     = toStringArray(Environment.get(e.getChildTextTrim ("ready")));
         mtiMapping = toStringArray(Environment.get(e.getChildTextTrim ("mtimapping")));
-        if (mtiMapping == null || mtiMapping.length != 3) 
+        if (mtiMapping == null || mtiMapping.length != 3)
             mtiMapping = new String[] { nomap, nomap, "0022446689" };
         addListeners ();
         unhandled = Environment.get(e.getChildTextTrim ("unhandled"));
@@ -138,7 +138,7 @@ public class QMUX
      * @see NameRegistrar
      */
     public static MUX getMUX (String name)
-        throws NameRegistrar.NotFoundException 
+        throws NameRegistrar.NotFoundException
     {
         return (MUX) NameRegistrar.get ("mux."+name);
     }
@@ -349,7 +349,7 @@ public class QMUX
         return in;
     }
     public synchronized void setOutQueue (String out) {
-        this.out = out; 
+        this.out = out;
         getPersist().getChild("out").setText (out);
         setModified (true);
     }
@@ -373,17 +373,11 @@ public class QMUX
     }
 
     private void addListeners() throws ConfigurationException {
-        List<Element> rlisten = getPersist().getChildren("request-listener");
-        if (rlisten.isEmpty())
-            return;
-
         QFactory factory = getFactory ();
-        for (Element l : rlisten) {
-            ISORequestListener listener = (ISORequestListener) 
-                factory.newInstance (QFactory.getAttributeValue (l, "class"));
-            factory.setLogger        (listener, l);
-            factory.setConfiguration (listener, l);
-            addISORequestListener (listener);
+        for (Element l : getPersist().getChildren("request-listener")) {
+            ISORequestListener listener = factory.newInstance(l, true);
+            if (listener != null)
+                addISORequestListener (listener);
         }
     }
     public void addISORequestListener(ISORequestListener l) {
@@ -417,7 +411,7 @@ public class QMUX
         }
         return sb.toString();
     }
-    
+
     public int getTXCounter() {
         return tx;
     }
@@ -477,7 +471,7 @@ public class QMUX
             sp.out (unhandled, m, 120000);
         }
     }
-    private LocalSpace grabSpace (Element e) 
+    private LocalSpace grabSpace (Element e)
         throws ConfigurationException
     {
         String uri = e != null ? e.getText() : "";
@@ -544,7 +538,7 @@ public class QMUX
         return toStringArray(s, null,null);
     }
     private boolean shouldIgnore (ISOMsg m) {
-        if (m != null && ignorerc != null 
+        if (m != null && ignorerc != null
             && ignorerc.length() > 0 && m.hasField(39))
         {
             return ignorerc.contains(m.getString(39));
