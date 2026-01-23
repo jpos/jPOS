@@ -408,9 +408,10 @@ public class QServer
           MeterFactory.gauge
             (registry, MeterInfo.ISOSERVER_CONNECTION_COUNT,
               tags,
-              BaseUnits.THREADS,
-              server::getConnectionCount
+              BaseUnits.SESSIONS,
+              server::getActiveConnections
           );
+
         if (channel instanceof BaseChannel baseChannel) {
              baseChannel.setCounters(msgInCounter, msgOutCounter);
              baseChannel.setMeterRegistry(registry);
