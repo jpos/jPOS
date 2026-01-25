@@ -265,7 +265,7 @@ public class QServer
         QFactory factory = getFactory ();
         Element serverSocketFactoryElement = getPersist().getChild ("server-socket-factory");
         if (serverSocketFactoryElement != null) {
-            ISOServerSocketFactory serverSocketFactory= factory.newInstance(serverSocketFactoryElement, true);
+            ISOServerSocketFactory serverSocketFactory= factory.newInstance(serverSocketFactoryElement);
             if (serverSocketFactory != null)
                 server.setSocketFactory(serverSocketFactory);
         }
@@ -275,7 +275,7 @@ public class QServer
     private void addListeners () throws ConfigurationException {
         QFactory factory = getFactory ();
         for (Element l : getPersist().getChildren("request-listener")) {
-            ISORequestListener listener = factory.newInstance(l, true);
+            ISORequestListener listener = factory.newInstance(l);
             if (listener != null)
                 server.addISORequestListener (listener);
         }
@@ -284,7 +284,7 @@ public class QServer
     private void addISOServerConnectionListeners() throws ConfigurationException {
         QFactory factory = getFactory ();
         for (Element l : getPersist().getChildren("connection-listener")) {
-            ISOServerEventListener listener = factory.newInstance(l, true);
+            ISOServerEventListener listener = factory.newInstance(l);
             if (listener != null)
                 server.addServerEventListener(listener);
         }

@@ -375,7 +375,7 @@ public class QMUX
     private void addListeners() throws ConfigurationException {
         QFactory factory = getFactory ();
         for (Element l : getPersist().getChildren("request-listener")) {
-            ISORequestListener listener = factory.newInstance(l, true);
+            ISORequestListener listener = factory.newInstance(l);
             if (listener != null)
                 addISORequestListener (listener);
         }

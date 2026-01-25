@@ -319,25 +319,24 @@ public class QFactory {
 
     /**
      * Creates a new instance from the values in {@code Element e}.<br/>
-     * If {@code autoConf} is true, it will set the logger from {@code Element e}
-     * and also trigger the autoconfiguration of properties and internal XML as
-     * given by {@link #setConfiguration(Object, Element)}.<br/>
-     * If the element's {@code enabled} attribute is false, nothing will be created and
-     * the method returns null.
+     * <p>
+     * The method honors the {@code enabled} attribute in the given {@code Element e},
+     * returning null immediately if {@code enabled} is computed to a true-equivalent.</p>
+     * <p>
+     * It also calls {@link #setLogger} to set logger and realm, and {@link #setConfiguration(Object, Element)}
+     * to trigger the standard [auto]configuration sequence from properties and XML.</p>
      *
      * @param e The XML config
-     * @param autoConf whether to trigger QFactory autoconfiguration
      * @return the new instance, or null if not enabled
-     * @throws ConfigurationException
+     * @throws ConfigurationException if the instance can't be created (e.g. class not found)
+     *                                or the configuration process itself threw the exception.
      */
-    public <T> T newInstance(Element e, boolean autoConf) throws ConfigurationException {
+    public <T> T newInstance(Element e) throws ConfigurationException {
         if (!QFactory.isEnabled(e))
             return null;
         T obj = newInstance(QFactory.getAttributeValue (e, "class"));
-        if (autoConf) {
-            setLogger       (obj, e);
-            setConfiguration(obj, e);
-        }
+        setLogger       (obj, e);
+        setConfiguration(obj, e);
         return obj;
     }
 

@@ -196,8 +196,8 @@ public class OneShotChannelAdaptor
             
             String socketFactoryString = getSocketFactory();
             if (socketFactoryString != null && channel instanceof FactoryChannel) {
-                ISOClientSocketFactory sFac = (ISOClientSocketFactory) getFactory().newInstance(socketFactoryString);
-                if (sFac != null && sFac instanceof LogSource) {
+                ISOClientSocketFactory sFac = getFactory().newInstance(socketFactoryString);
+                if (sFac instanceof LogSource) {
                     ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
                 }
                 getFactory().setConfiguration (sFac, e);
@@ -214,10 +214,9 @@ public class OneShotChannelAdaptor
             
             String packagerName = QFactory.getAttributeValue (e, "packager");
 
-            ISOChannel channel   = (ISOChannel) f.newInstance (channelName);
-            ISOPackager packager;
+            ISOChannel channel = f.newInstance (channelName);
             if (packagerName != null) {
-                packager = (ISOPackager) f.newInstance (packagerName);
+                ISOPackager packager = f.newInstance (packagerName);
                 channel.setPackager (packager);
                 f.setConfiguration (packager, e);
             }

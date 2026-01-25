@@ -100,11 +100,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     protected void initHandler(Element e) throws ConfigurationException {
         if (e == null)
             return;
-
-        QFactory factory = getFactory();
-        strategyHandler = factory.newInstance(QFactory.getAttributeValue (e, "class"));
-        factory.setLogger(strategyHandler, e);
-        factory.setConfiguration(strategyHandler, e);
+        strategyHandler = getFactory().newInstance(e);
     }
 
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
