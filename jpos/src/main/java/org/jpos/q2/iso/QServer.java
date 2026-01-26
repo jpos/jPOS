@@ -260,56 +260,33 @@ public class QServer
     public String getCountersAsString (String isoChannelName) {
         return server.getCountersAsString (isoChannelName);
     }
+
     private void addServerSocketFactory () throws ConfigurationException {
         QFactory factory = getFactory ();
-        Element persist = getPersist ();
-
-        Element serverSocketFactoryElement = persist.getChild ("server-socket-factory");
-
-        if (serverSocketFactoryElement != null && QFactory.isEnabled(serverSocketFactoryElement))  {
-            ISOServerSocketFactory serverSocketFactory = factory.newInstance (
-                QFactory.getAttributeValue (serverSocketFactoryElement, "class"));
-            factory.setLogger        (serverSocketFactory, serverSocketFactoryElement);
-            factory.setConfiguration (serverSocketFactory, serverSocketFactoryElement);
-            server.setSocketFactory(serverSocketFactory);
+        Element serverSocketFactoryElement = getPersist().getChild ("server-socket-factory");
+        if (serverSocketFactoryElement != null) {
+            ISOServerSocketFactory serverSocketFactory= factory.newInstance(serverSocketFactoryElement);
+            if (serverSocketFactory != null)
+                server.setSocketFactory(serverSocketFactory);
         }
 
     }
 
-    private void addListeners ()
-        throws ConfigurationException
-    {
+    private void addListeners () throws ConfigurationException {
         QFactory factory = getFactory ();
-        Iterator iter = getPersist().getChildren (
-            "request-listener"
-        ).iterator();
-        while (iter.hasNext()) {
-            Element l = (Element) iter.next();
-            if (!QFactory.isEnabled(l))
-                continue;
-            ISORequestListener listener = factory.newInstance (QFactory.getAttributeValue (l, "class"));
-            factory.setLogger        (listener, l);
-            factory.setConfiguration (listener, l);
-            server.addISORequestListener (listener);
+        for (Element l : getPersist().getChildren("request-listener")) {
+            ISORequestListener listener = factory.newInstance(l);
+            if (listener != null)
+                server.addISORequestListener (listener);
         }
     }
 
-    private void addISOServerConnectionListeners()
-         throws ConfigurationException
-    {
-
+    private void addISOServerConnectionListeners() throws ConfigurationException {
         QFactory factory = getFactory ();
-        Iterator iter = getPersist().getChildren (
-            "connection-listener"
-        ).iterator();
-        while (iter.hasNext()) {
-            Element l = (Element) iter.next();
-            if (!QFactory.isEnabled(l))
-                continue;
-            ISOServerEventListener listener = factory.newInstance (QFactory.getAttributeValue (l, "class"));
-            factory.setLogger        (listener, l);
-            factory.setConfiguration (listener, l);
-            server.addServerEventListener(listener);
+        for (Element l : getPersist().getChildren("connection-listener")) {
+            ISOServerEventListener listener = factory.newInstance(l);
+            if (listener != null)
+                server.addServerEventListener(listener);
         }
     }
 
@@ -418,9 +395,10 @@ public class QServer
              baseChannel.setServerName(getName());
         }
     }
+
     private void removeMeters() {
         var registry = getServer().getMeterRegistry();
-         registry.remove(connectionsGauge);
+        registry.remove(connectionsGauge);
         if (msgInCounter != null)
             registry.remove(msgInCounter);
          if (msgOutCounter != null)

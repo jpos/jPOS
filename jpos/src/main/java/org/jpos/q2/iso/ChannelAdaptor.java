@@ -69,8 +69,8 @@ public class ChannelAdaptor
     boolean ignoreISOExceptions = false;
     boolean writeOnly = false;
     int rx, tx, connects;
-    long lastTxn = 0l;
-    long timeout = 0l;
+    long lastTxn = 0L;
+    long timeout = 0L;
     boolean waitForWorkersOnStop;
     private Thread receiver;
     private Thread sender;
@@ -202,16 +202,15 @@ public class ChannelAdaptor
         return out;
     }
 
-    public ISOChannel newChannel (Element e, QFactory f) 
+    public ISOChannel newChannel (Element e, QFactory f)
         throws ConfigurationException
     {
         String channelName  = QFactory.getAttributeValue (e, "class");
         String packagerName = QFactory.getAttributeValue (e, "packager");
 
-        ISOChannel channel   = (ISOChannel) f.newInstance (channelName);
-        ISOPackager packager;
+        ISOChannel channel = f.newInstance(channelName);
         if (packagerName != null) {
-            packager = (ISOPackager) f.newInstance (packagerName);
+            ISOPackager packager = f.newInstance(packagerName);
             channel.setPackager (packager);
             f.setConfiguration (packager, e);
         }
@@ -235,13 +234,9 @@ public class ChannelAdaptor
     protected void addFilters (FilteredChannel channel, Element e, QFactory fact)
         throws ConfigurationException
     {
-        for (Object o : e.getChildren("filter")) {
-            Element f = (Element) o;
-            if (!QFactory.isEnabled(f)) continue;
-            String clazz = QFactory.getAttributeValue(f, "class");
-            ISOFilter filter = (ISOFilter) fact.newInstance(clazz);
-            fact.setLogger(filter, f);
-            fact.setConfiguration(filter, f);
+        for (Element f : e.getChildren("filter")) {
+            ISOFilter filter = fact.newInstance(f);
+            if (filter == null) continue;
             String direction = QFactory.getAttributeValue(f, "direction");
             if (direction == null)
                 channel.addFilter(filter);
@@ -267,8 +262,8 @@ public class ChannelAdaptor
         ISOChannel c = newChannel (e, getFactory());
         String socketFactoryString = getSocketFactory();
         if (socketFactoryString != null && c instanceof FactoryChannel) {
-            ISOClientSocketFactory sFac = (ISOClientSocketFactory) getFactory().newInstance(socketFactoryString);
-            if (sFac != null && sFac instanceof LogSource) {
+            ISOClientSocketFactory sFac = getFactory().newInstance(socketFactoryString);
+            if (sFac instanceof LogSource) {
                 ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
             }
             getFactory().setConfiguration (sFac, e);
@@ -290,7 +285,7 @@ public class ChannelAdaptor
         keepAlive = "yes".equalsIgnoreCase (Environment.get(persist.getChildTextTrim ("keep-alive")));
         ignoreISOExceptions = "yes".equalsIgnoreCase (Environment.get(persist.getChildTextTrim ("ignore-iso-exceptions")));
         String t = Environment.get(persist.getChildTextTrim("timeout"));
-        timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
+        timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0L;
         ready   = getName() + ".ready";
         reconnect = getName() + ".reconnect";
         waitForWorkersOnStop = "yes".equalsIgnoreCase(Environment.get(persist.getChildTextTrim ("wait-for-workers-on-stop")));
@@ -484,7 +479,7 @@ public class ChannelAdaptor
 
     public void resetCounters () {
         rx = tx = connects = 0;
-        lastTxn = 0l;
+        lastTxn = 0L;
     }
     public String getCountersAsString () {
         StringBuilder sb = new StringBuilder();

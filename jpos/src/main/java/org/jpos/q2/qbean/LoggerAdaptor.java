@@ -37,8 +37,8 @@ public class LoggerAdaptor extends QBeanSupport {
     }
     protected void startService () throws ConfigurationException, IOException {
         logger.removeAllListeners ();
-        for (Object o : getPersist().getChildren("log-listener"))
-            addListener((Element) o);
+        for (Element lle : getPersist().getChildren("log-listener"))
+            addListener(lle);
 
         String redirect = cfg.get("redirect");
         long delay = cfg.getLong("delay", 500);
@@ -66,15 +66,12 @@ public class LoggerAdaptor extends QBeanSupport {
         //
         // logger.destroy ();
     }
-    private void addListener (Element e)
-        throws ConfigurationException
-    {
+
+    private void addListener (Element e) throws ConfigurationException {
         QFactory factory = getServer().getFactory();
-        if (QFactory.isEnabled(e)) {
-            String clazz = e.getAttributeValue("class");
-            LogListener listener = factory.newInstance(clazz);
-            factory.setConfiguration(listener, e);
-            attemptToAddWriter (e.getChild("writer"), listener);
+        LogListener listener = factory.newInstance(e);
+        if (listener != null) {
+            attemptToAddWriter(e.getChild("writer"), listener);
             logger.addListener(listener);
         }
     }
