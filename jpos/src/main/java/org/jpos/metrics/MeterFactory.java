@@ -52,8 +52,12 @@ public class MeterFactory {
           () -> Counter.builder(meterInfo.id()).tags(meterInfo.add(tags)).description(meterInfo.description()).register(registry));
     }
 
+    public static Counter updateCounter(MeterRegistry registry, String meterName, Tags tags, String description) {
+        return Counter.builder(meterName).tags(tags).description(description).register(registry);
+    }
+
     public static Counter updateCounter(MeterRegistry registry, MeterInfo meterInfo, Tags tags) {
-        return Counter.builder(meterInfo.id()).tags(meterInfo.add(tags)).description(meterInfo.description()).register(registry);
+        return updateCounter(registry, meterInfo.id(), meterInfo.add(tags), meterInfo.description());
     }
 
     public static Gauge gauge(MeterRegistry registry, MeterInfo meterInfo, Tags tags, String unit, Supplier<Number> n) {
@@ -71,8 +75,8 @@ public class MeterFactory {
 
     @SuppressWarnings("unchecked")
     private static <T extends Meter> T createMeter(MeterRegistry registry, MeterInfo meterInfo, Tags tags, Callable<T> creator) {
+        metersLock.lock();
         try {
-            metersLock.lock();
             T meter = (T) Search.in(registry).name(meterInfo.id()).tags(meterInfo.add(tags)).meter();
             if (meter == null) {
                 try {

@@ -629,10 +629,10 @@ public abstract class BaseChannel extends Observable
     }
     protected int getHeaderLength(byte[] b) { return 0; }
 
-    protected int getHeaderLength(ISOMsg m) {                                   
+    protected int getHeaderLength(ISOMsg m) {
         return !overrideHeader && m.getHeader() != null ?
             m.getHeader().length : getHeaderLength();
-    }                                                                           
+    }
 
     protected byte[] streamReceive() throws IOException {
         return new byte[0];
@@ -700,10 +700,10 @@ public abstract class BaseChannel extends Observable
                     sendMessageTrailer(m, b);
                     serverOut.flush ();
                     cnt[TX]++;
-                    incrementMsgOutCounter(m);
                 } finally {
                     serverOutLock.unlock();
                 }
+               incrementMsgOutCounter(m);
             } else {
                 disconnect();
             }
@@ -796,7 +796,7 @@ public abstract class BaseChannel extends Observable
     protected ISOMsg createISOMsg () {
         return packager.createISOMsg ();
     }
-	
+
     /**
      * Reads in a message header.
      *
@@ -822,8 +822,8 @@ public abstract class BaseChannel extends Observable
         byte[] b=null;
         byte[] header=null;
         LogEvent evt = new LogEvent (this, "receive").withTraceId(getSocketUUID());
-        ISOMsg m = createMsg ();  // call createMsg instead of createISOMsg for 
-                                  // backward compatibility
+        ISOMsg m = createMsg ();  // call createMsg instead of createISOMsg for backward compatibility
+
         m.setSource (this);
         try {
             if (!isConnected())

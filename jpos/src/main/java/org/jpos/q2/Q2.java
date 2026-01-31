@@ -1350,9 +1350,9 @@ public class Q2 implements FileFilter, Runnable {
         new JvmGcMetrics().bindTo(meterRegistry);
         new ProcessorMetrics().bindTo(meterRegistry);
         new JvmThreadMetrics().bindTo(meterRegistry);
+
+        prometheusRegistry.throwExceptionOnRegistrationFailure();
         meterRegistry.add (prometheusRegistry);
-
-
     }
 
     public String[] environmentArgs (String[] args) {

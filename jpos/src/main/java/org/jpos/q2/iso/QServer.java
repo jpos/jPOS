@@ -107,7 +107,6 @@ public class QServer
         }
 
         server = new ISOServer (port, (ServerChannel) channel, maxSessions);
-        initMeters(); // meters need 'server' to be initialized
         server.setLogger (log.getLogger(), getName() + ".server");
         server.setName (getName ());
         if (socketFactoryString != null) {
@@ -122,6 +121,7 @@ public class QServer
         addListeners ();// ISORequestListener
         addISOServerConnectionListeners();
         NameRegistrar.register (getName(), this);
+        initMeters(); // meters need 'server' to be initialized
         Executors.newVirtualThreadPerTaskExecutor().submit(server);
     }
     private void initIn() {
