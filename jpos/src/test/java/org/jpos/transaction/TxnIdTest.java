@@ -21,6 +21,10 @@ package org.jpos.transaction;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import static java.time.ZoneOffset.UTC;
@@ -44,7 +48,7 @@ public class TxnIdTest {
     public void testBigId() {
         try {
             TxnId.parse(Long.MAX_VALUE);
-            fail ("Should raise exception");
+            fail("Should raise exception");
         } catch (IllegalArgumentException ignored) { }
     }
 
@@ -52,15 +56,15 @@ public class TxnIdTest {
     public void testNegativeId() {
         try {
             TxnId.parse(-Long.MAX_VALUE);
-            fail ("Should raise exception");
+            fail("Should raise exception");
         } catch (IllegalArgumentException ignored) { }
     }
 
     @Test
     public void testInvalidRrn() {
         try {
-            TxnId id = TxnId.fromRrn(Long.toString(Long.MAX_VALUE,36));
-            fail ("Should raise exception - TxnId=" + id);
+            TxnId id = TxnId.fromRrn(Long.toString(Long.MAX_VALUE, 36));
+            fail("Should raise exception - TxnId=" + id);
         } catch (IllegalArgumentException e) {
             assertEquals("Invalid rrn 1y2p0ij32e8e7", e.getMessage());
         }
@@ -83,7 +87,6 @@ public class TxnIdTest {
         // Must fit DE-037.
         assertTrue(txnId.toRrn().length() <= 12);
     }
-
 
     @Test
     public void testCreateCompatibility() {
@@ -146,7 +149,6 @@ public class TxnIdTest {
         if (b.toRrn().length() > 12) fail("RRN too long: " + b.toRrn());
     }
 
-
     @Test
     public void testMaxSemanticallyValidCreateAt2473() {
         // The Javadoc statement we want to support:
@@ -195,5 +197,163 @@ public class TxnIdTest {
         TxnId id = TxnId.create(zdt, 0, -1L);
         // floorMod(-1, 100000) = 99999.
         assertTrue(id.toString().endsWith("-99999"), "Expected suffix -99999, got " + id);
+    }
+
+    /*
+     * Range/bounds tests for the new functionality.
+     */
+
+    @Test
+    public void testLowerUpperBoundInstantEncloseAllIdsInSecond() {
+        Instant t = Instant.parse("2026-01-01T12:34:56Z");
+
+        long lo = TxnId.lowerBoundId(t);
+        long hi = TxnId.upperBoundId(t);
+
+        assertTrue(lo <= hi);
+
+        TxnId a = TxnId.create(t, 0, 0L);
+        TxnId b = TxnId.create(t, 999, 99999L);
+        TxnId c = TxnId.create(t, 123, 45678L);
+
+        assertTrue(a.id() >= lo && a.id() <= hi, "a not in range");
+        assertTrue(b.id() >= lo && b.id() <= hi, "b not in range");
+        assertTrue(c.id() >= lo && c.id() <= hi, "c not in range");
+
+        assertEquals(TxnId.create(t, 0, 0L).id(), lo);
+        assertEquals(TxnId.create(t, 999, 99999L).id(), hi);
+    }
+
+    @Test
+    public void testIdRangeInstantInclusiveEndpoints() {
+        Instant from = Instant.parse("2026-01-01T00:00:00Z");
+        Instant to = Instant.parse("2026-01-01T00:00:00Z"); // same second
+
+        TxnId.TxnIdRange r = TxnId.idRange(from, to);
+        assertFalse(r.isEmpty());
+
+        assertEquals(TxnId.lowerBoundId(from), r.fromInclusive());
+        assertEquals(TxnId.upperBoundId(to), r.toInclusive());
+
+        TxnId x = TxnId.create(from, 7, 42L);
+        assertTrue(x.id() >= r.fromInclusive() && x.id() <= r.toInclusive());
+    }
+
+    @Test
+    public void testIdRangeInstantEmptyWhenFromAfterTo() {
+        Instant from = Instant.parse("2026-01-01T00:00:01Z");
+        Instant to = Instant.parse("2026-01-01T00:00:00Z");
+
+        TxnId.TxnIdRange r = TxnId.idRange(from, to);
+        assertTrue(r.isEmpty());
+        assertTrue(r.fromInclusive() > r.toInclusive());
+    }
+
+    @Test
+    public void testIdRangeLocalDateUtcMatchesExpectedInclusiveSeconds() {
+        ZoneId zone = ZoneOffset.UTC;
+        LocalDate d = LocalDate.of(2026, 1, 1);
+
+        TxnId.TxnIdRange r = TxnId.idRange(d, d, zone);
+        assertFalse(r.isEmpty());
+
+        Instant dayStart = d.atStartOfDay(zone).toInstant();
+        Instant nextStart = d.plusDays(1).atStartOfDay(zone).toInstant();
+        Instant dayEndInclusive = nextStart.minusSeconds(1);
+
+        assertEquals(TxnId.lowerBoundId(dayStart), r.fromInclusive());
+        assertEquals(TxnId.upperBoundId(dayEndInclusive), r.toInclusive());
+    }
+
+    @Test
+    public void testLocalDateLowerUpperHelpersConsistentWithRange() {
+        ZoneId zone = ZoneId.of("UTC");
+        LocalDate from = LocalDate.of(2026, 1, 1);
+        LocalDate to = LocalDate.of(2026, 1, 3);
+
+        TxnId.TxnIdRange r = TxnId.idRange(from, to, zone);
+
+        assertEquals(TxnId.lowerBoundId(from, zone), r.fromInclusive());
+        assertEquals(TxnId.upperBoundId(to, zone), r.toInclusive());
+    }
+
+    @Test
+    public void testIdRangeLocalDateOnDstGapDayIsNonEmptyAndConsistent() {
+        // DST start (gap) in US typically around early March.
+        ZoneId zone = ZoneId.of("America/New_York");
+        LocalDate d = LocalDate.of(2026, 3, 8);
+
+        TxnId.TxnIdRange r = TxnId.idRange(d, d, zone);
+        assertFalse(r.isEmpty());
+
+        assertEquals(TxnId.lowerBoundId(d, zone), r.fromInclusive());
+        assertEquals(TxnId.upperBoundId(d, zone), r.toInclusive());
+
+        Instant startUtc = d.atStartOfDay(zone).toInstant();
+        TxnId x = TxnId.create(startUtc, 0, 0L);
+        assertTrue(x.id() >= r.fromInclusive() && x.id() <= r.toInclusive());
+    }
+
+    @Test
+    public void testIdRangeLocalDateOnDstOverlapDayIsNonEmptyAndConsistent() {
+        // DST end (overlap) in US typically around early November.
+        ZoneId zone = ZoneId.of("America/New_York");
+        LocalDate d = LocalDate.of(2026, 11, 1);
+
+        TxnId.TxnIdRange r = TxnId.idRange(d, d, zone);
+        assertFalse(r.isEmpty());
+
+        assertEquals(TxnId.lowerBoundId(d, zone), r.fromInclusive());
+        assertEquals(TxnId.upperBoundId(d, zone), r.toInclusive());
+
+        Instant startUtc = d.atStartOfDay(zone).toInstant();
+        TxnId x = TxnId.create(startUtc, 999, 99999L);
+        assertTrue(x.id() >= r.fromInclusive() && x.id() <= r.toInclusive());
+    }
+
+    @Test
+    public void testIdRangeLocalDateTimeUtcInclusive() {
+        ZoneId zone = ZoneOffset.UTC;
+
+        LocalDateTime from = LocalDateTime.of(2026, 1, 1, 0, 0, 0);
+        LocalDateTime to = LocalDateTime.of(2026, 1, 1, 0, 0, 1);
+
+        TxnId.TxnIdRange r = TxnId.idRange(from, to, zone);
+        assertFalse(r.isEmpty());
+
+        Instant i0 = from.atZone(zone).toInstant();
+        Instant i1 = to.atZone(zone).toInstant();
+
+        assertEquals(TxnId.lowerBoundId(i0), r.fromInclusive());
+        assertEquals(TxnId.upperBoundId(i1), r.toInclusive());
+
+        TxnId a = TxnId.create(i0, 0, 0L);
+        TxnId b = TxnId.create(i1, 999, 99999L);
+
+        assertTrue(a.id() >= r.fromInclusive() && a.id() <= r.toInclusive());
+        assertTrue(b.id() >= r.fromInclusive() && b.id() <= r.toInclusive());
+    }
+
+    @Test
+    public void testIdRangeZonedDateTimeDelegatesToInstantRange() {
+        ZonedDateTime from = ZonedDateTime.of(2026, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        ZonedDateTime to = ZonedDateTime.of(2026, 1, 1, 0, 0, 10, 0, ZoneOffset.UTC);
+
+        TxnId.TxnIdRange r1 = TxnId.idRange(from, to);
+        TxnId.TxnIdRange r2 = TxnId.idRange(from.toInstant(), to.toInstant());
+
+        assertEquals(r2, r1);
+    }
+
+    @Test
+    public void testUpperBoundLocalDateUsesNextStartMinusOneSecond() {
+        ZoneId zone = ZoneOffset.UTC;
+        LocalDate d = LocalDate.of(2026, 1, 1);
+
+        Instant nextStart = d.plusDays(1).atStartOfDay(zone).toInstant();
+        Instant expectedEnd = nextStart.minusSeconds(1);
+
+        long upper = TxnId.upperBoundId(d, zone);
+        assertEquals(TxnId.upperBoundId(expectedEnd), upper);
     }
 }

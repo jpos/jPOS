@@ -20,6 +20,8 @@ package org.jpos.transaction;
 
 import java.io.File;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -72,6 +74,12 @@ import java.util.regex.Pattern;
  * <p><b>Time semantics.</b> All time components are encoded in UTC to avoid
  * daylight-saving and timezone ambiguity. The timestamp component has second
  * precision.</p>
+ *
+ * <p><b>Query-range semantics.</b> Because the numeric encoding is ordered by UTC time,
+ * callers can build inclusive numeric bounds for index range scans. For “between local
+ * dates” queries, this class provides DST-safe helpers that define a local day as the
+ * half-open interval {@code [startOfDay(d), startOfDay(d+1))} in the requested zone and
+ * then converts that to an inclusive UTC-second range.</p>
  */
 public class TxnId {
     private long id;
@@ -110,6 +118,45 @@ public class TxnId {
       Pattern.compile("^([\\d]{3})-([\\d]{3})-([\\d]{5})-([\\d]{3})-([\\d]{5})$");
 
     private static final ZoneId UTC = ZoneId.of("UTC");
+
+    /**
+     * Lowest node id used for inclusive range lower bounds.
+     */
+    private static final int MIN_NODE = 0;
+
+    /**
+     * Highest node id used for inclusive range upper bounds.
+     */
+    private static final int MAX_NODE = 999;
+
+    /**
+     * Lowest transaction suffix used for inclusive range lower bounds.
+     */
+    private static final long MIN_SUFFIX = 0L;
+
+    /**
+     * Highest transaction suffix used for inclusive range upper bounds.
+     */
+    private static final long MAX_SUFFIX = 99999L;
+
+    /**
+     * Inclusive numeric id range suitable for DB index range scans.
+     *
+     * <p>If {@link #isEmpty()} is {@code true}, the range contains no values and callers
+     * should skip querying (or deliberately query a range that returns no results).</p>
+     *
+     * @param fromInclusive inclusive lower bound.
+     * @param toInclusive inclusive upper bound.
+     */
+    public record TxnIdRange(long fromInclusive, long toInclusive) {
+        public boolean isEmpty() {
+            return fromInclusive > toInclusive;
+        }
+
+        public static TxnIdRange empty() {
+            return new TxnIdRange(1L, 0L);
+        }
+    }
 
     private TxnId() {
         super();
@@ -308,15 +355,6 @@ public class TxnId {
     /**
      * Parses a {@code TxnId} from its human-readable form {@code YYY-DDD-SSSSS-NNN-TTTTT}.
      *
-     * <p>Where:</p>
-     * <ul>
-     *   <li>{@code YYY}: years since 2000 (000..999).</li>
-     *   <li>{@code DDD}: day of year (001..366).</li>
-     *   <li>{@code SSSSS}: second of day (00000..86399).</li>
-     *   <li>{@code NNN}: node id (000..999).</li>
-     *   <li>{@code TTTTT}: transaction suffix (00000..99999).</li>
-     * </ul>
-     *
      * @param idString TxnId in {@code YYY-DDD-SSSSS-NNN-TTTTT} format (as produced by {@link #toString()}).
      * @return newly created TxnId.
      * @throws IllegalArgumentException if {@code idString} is invalid or out of range.
@@ -370,5 +408,167 @@ public class TxnId {
             throw new IllegalArgumentException("Invalid rrn " + rrn);
 
         return new TxnId(id);
+    }
+
+    /**
+     * Computes the lowest possible TxnId numeric value for the given UTC second,
+     * suitable for an inclusive range lower bound.
+     *
+     * <p>This uses {@code node=000} and {@code suffix=00000}.</p>
+     *
+     * @param instantUtc a timestamp whose {@link Instant#getEpochSecond()} is used.
+     * @return inclusive lower bound id.
+     */
+    public static long lowerBoundId(Instant instantUtc) {
+        Objects.requireNonNull(instantUtc, "instantUtc");
+        Instant t = Instant.ofEpochSecond(instantUtc.getEpochSecond());
+        return create(t, MIN_NODE, MIN_SUFFIX).id();
+    }
+
+    /**
+     * Computes the highest possible TxnId numeric value for the given UTC second,
+     * suitable for an inclusive range upper bound.
+     *
+     * <p>This uses {@code node=999} and {@code suffix=99999}.</p>
+     *
+     * @param instantUtc a timestamp whose {@link Instant#getEpochSecond()} is used.
+     * @return inclusive upper bound id.
+     */
+    public static long upperBoundId(Instant instantUtc) {
+        Objects.requireNonNull(instantUtc, "instantUtc");
+        Instant t = Instant.ofEpochSecond(instantUtc.getEpochSecond());
+        return create(t, MAX_NODE, MAX_SUFFIX).id();
+    }
+
+    /**
+     * Computes an inclusive numeric id range for the given UTC instant range.
+     *
+     * <p>Both ends are treated as inclusive at second precision. Any sub-second
+     * component is ignored.</p>
+     *
+     * @param fromUtc inclusive lower endpoint (UTC).
+     * @param toUtc inclusive upper endpoint (UTC).
+     * @return inclusive numeric id range; may be empty.
+     */
+    public static TxnIdRange idRange(Instant fromUtc, Instant toUtc) {
+        Objects.requireNonNull(fromUtc, "fromUtc");
+        Objects.requireNonNull(toUtc, "toUtc");
+
+        long fromSec = fromUtc.getEpochSecond();
+        long toSec = toUtc.getEpochSecond();
+        if (fromSec > toSec)
+            return TxnIdRange.empty();
+
+        long fromId = lowerBoundId(Instant.ofEpochSecond(fromSec));
+        long toId = upperBoundId(Instant.ofEpochSecond(toSec));
+        return new TxnIdRange(fromId, toId);
+    }
+
+    /**
+     * Computes an inclusive numeric id range for transactions between the given local dates,
+     * inclusive on both ends, in the provided time zone.
+     *
+     * <p>DST-safe strategy: define each local day as the half-open interval
+     * {@code [startOfDay(d), startOfDay(d+1))} in {@code zone}. This avoids constructing
+     * local “end of day” timestamps (which can be ambiguous on overlap days).
+     * The resulting UTC range is then made inclusive at second precision by subtracting
+     * one second from the exclusive end.</p>
+     *
+     * @param fromLocalDate inclusive start date in {@code zone}.
+     * @param toLocalDate inclusive end date in {@code zone}.
+     * @param zone time zone for interpreting local dates.
+     * @return inclusive numeric id range; may be empty.
+     */
+    public static TxnIdRange idRange(LocalDate fromLocalDate, LocalDate toLocalDate, ZoneId zone) {
+        Objects.requireNonNull(fromLocalDate, "fromLocalDate");
+        Objects.requireNonNull(toLocalDate, "toLocalDate");
+        Objects.requireNonNull(zone, "zone");
+
+        if (fromLocalDate.isAfter(toLocalDate))
+            return TxnIdRange.empty();
+
+        ZonedDateTime fromStart = fromLocalDate.atStartOfDay(zone);
+        ZonedDateTime toExclusiveStart = toLocalDate.plusDays(1L).atStartOfDay(zone);
+
+        long fromSec = fromStart.toInstant().getEpochSecond();
+        long toExclusiveSec = toExclusiveStart.toInstant().getEpochSecond();
+
+        // If the exclusive end is not strictly after the start, the interval is empty.
+        if (toExclusiveSec <= fromSec)
+            return TxnIdRange.empty();
+
+        long toInclusiveSec = toExclusiveSec - 1L;
+
+        return idRange(Instant.ofEpochSecond(fromSec), Instant.ofEpochSecond(toInclusiveSec));
+    }
+
+    /**
+     * Inclusive lower bound id for the start of the given local day in {@code zone}.
+     *
+     * @param localDate local date.
+     * @param zone zone in which the local day is defined.
+     * @return inclusive lower bound id.
+     */
+    public static long lowerBoundId(LocalDate localDate, ZoneId zone) {
+        Objects.requireNonNull(localDate, "localDate");
+        Objects.requireNonNull(zone, "zone");
+        return lowerBoundId(localDate.atStartOfDay(zone).toInstant());
+    }
+
+    /**
+     * Inclusive upper bound id for the end of the given local day in {@code zone}.
+     *
+     * <p>DST-safe: computed as one second before {@code startOfDay(localDate+1)} in {@code zone}.</p>
+     *
+     * @param localDate local date.
+     * @param zone zone in which the local day is defined.
+     * @return inclusive upper bound id.
+     */
+    public static long upperBoundId(LocalDate localDate, ZoneId zone) {
+        Objects.requireNonNull(localDate, "localDate");
+        Objects.requireNonNull(zone, "zone");
+
+        ZonedDateTime start = localDate.atStartOfDay(zone);
+        ZonedDateTime nextStart = localDate.plusDays(1L).atStartOfDay(zone);
+
+        long startSec = start.toInstant().getEpochSecond();
+        long nextStartSec = nextStart.toInstant().getEpochSecond();
+        if (nextStartSec <= startSec)
+            return 0L; // empty day interval (defensive)
+
+        return upperBoundId(Instant.ofEpochSecond(nextStartSec - 1L));
+    }
+
+    /**
+     * Inclusive range for local date-times in {@code zone}.
+     *
+     * <p>Note: this method interprets {@code fromLocalDateTime} and {@code toLocalDateTime} as local wall-clock
+     * times in {@code zone}. For DST gaps/overlaps, {@link ZonedDateTime#of(LocalDateTime, ZoneId)} applies the
+     * zone rules. If you need explicit overlap resolution (earlier vs later offset), pass {@link ZonedDateTime}
+     * values instead and use {@link #idRange(Instant, Instant)} or {@link #idRange(ZonedDateTime, ZonedDateTime)}.</p>
+     *
+     * @param fromLocalDateTime inclusive start time in {@code zone}.
+     * @param toLocalDateTime inclusive end time in {@code zone}.
+     * @param zone zone for interpreting local date-times.
+     * @return inclusive numeric id range; may be empty.
+     */
+    public static TxnIdRange idRange(LocalDateTime fromLocalDateTime, LocalDateTime toLocalDateTime, ZoneId zone) {
+        Objects.requireNonNull(fromLocalDateTime, "fromLocalDateTime");
+        Objects.requireNonNull(toLocalDateTime, "toLocalDateTime");
+        Objects.requireNonNull(zone, "zone");
+        return idRange(fromLocalDateTime.atZone(zone).toInstant(), toLocalDateTime.atZone(zone).toInstant());
+    }
+
+    /**
+     * Inclusive range for zoned date-times.
+     *
+     * @param from inclusive start time.
+     * @param to inclusive end time.
+     * @return inclusive numeric id range; may be empty.
+     */
+    public static TxnIdRange idRange(ZonedDateTime from, ZonedDateTime to) {
+        Objects.requireNonNull(from, "from");
+        Objects.requireNonNull(to, "to");
+        return idRange(from.toInstant(), to.toInstant());
     }
 }
