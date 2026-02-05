@@ -4,18 +4,23 @@ set -euo pipefail
 cd "$(dirname "$0")/.." || exit 1
 rm -f deploy/shutdown.xml
 
-# Initialize arrays for JAVA_OPTS and OTHER_OPTS.
+# Initialize arrays
 JAVA_OPTS=()
 OTHER_OPTS=()
-PID_FILE="jpos.pid"  # Default value
+
+PID_FILE="jpos.pid"
+USE_PID=true
 
 for arg in "$@"; do
-  case $arg in
+  case "$arg" in
     -D*)
       JAVA_OPTS+=("$arg")
       ;;
     --pid=*)
       PID_FILE="${arg#--pid=}"
+      ;;
+    --no-pid)
+      USE_PID=false
       ;;
     --debug)
       JAVA_OPTS+=("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005")
@@ -26,17 +31,34 @@ for arg in "$@"; do
   esac
 done
 
-# Check if the process defined by the PID file is running
-if [ -f "$PID_FILE" ] && ps -p "$(cat "$PID_FILE")" > /dev/null 2>&1; then
-   echo "Process $(cat "$PID_FILE") is running"
-else
+if $USE_PID; then
+  if [ -f "$PID_FILE" ] && ps -p "$(cat "$PID_FILE")" > /dev/null 2>&1; then
+    echo "Process $(cat "$PID_FILE") is running"
+    exit 1
+  fi
   rm -f "$PID_FILE"
-
-  mkdir -p log
-  exec java -server \
-    -Xmx4G \
-    --enable-native-access=ALL-UNNAMED \
-    -Xlog:gc:log/gc.log \
-    ${JAVA_OPTS[@]+"${JAVA_OPTS[@]}"} -jar @jarname@ --pid="$PID_FILE" ${OTHER_OPTS[@]+"${OTHER_OPTS[@]}"}
 fi
+
+mkdir -p log
+
+# Base JVM invocation
+CMD=(
+  java -server
+  -Xmx4G
+  --enable-native-access=ALL-UNNAMED
+  --sun-misc-unsafe-memory-access=allow
+  -Xlog:gc:log/gc.log
+  -jar @jarname@
+)
+
+# Only pass --pid if enabled
+if $USE_PID; then
+  CMD+=( --pid="$PID_FILE" )
+fi
+
+# Append opts (nounset-safe)
+CMD+=( ${JAVA_OPTS[@]+"${JAVA_OPTS[@]}"} )
+CMD+=( ${OTHER_OPTS[@]+"${OTHER_OPTS[@]}"} )
+
+exec "${CMD[@]}"
 
