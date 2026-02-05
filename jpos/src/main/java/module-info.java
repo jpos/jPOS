@@ -53,6 +53,8 @@ module org.jpos.jpos {
     exports org.jpos.log.render.markdown;
     exports org.jpos.log.evt;
     exports org.jpos.core.annotation;
+    exports org.jpos.metrics;
+    exports org.jpos.metrics.iso;
 
     uses org.jpos.core.EnvironmentProvider;
     uses org.jpos.log.LogRenderer;
