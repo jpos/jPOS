@@ -18,9 +18,6 @@
 
 package org.jpos.iso;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tags;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -31,8 +28,8 @@ import org.jpos.iso.header.BaseHeader;
 import org.jpos.jfr.ChannelEvent;
 import org.jpos.log.evt.Connect;
 import org.jpos.log.evt.Disconnect;
-import org.jpos.metrics.MeterFactory;
 import org.jpos.metrics.MeterInfo;
+import org.jpos.metrics.iso.ISOMsgMetrics;
 import org.jpos.util.*;
 
 import javax.net.ssl.SSLSocket;
@@ -45,7 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /*
  * BaseChannel was ISOChannel. Now ISOChannel is an interface
- * Revision: 1.34 Date: 2000/04/08 23:54:55 
+ * Revision: 1.34 Date: 2000/04/08 23:54:55
  */
 
 /**
@@ -61,7 +58,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * It now support the new Logger architecture so we will
  * probably setup ISOChannelPanel to be a LogListener instead
  * of being an Observer in future releases.
- * 
+ *
  * @author Alejandro P. Revilla
  * @author Bharavi Gade
  * @version $Revision$ $Date$
@@ -74,7 +71,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @SuppressWarnings("unchecked")
 public abstract class BaseChannel extends Observable
-    implements FilteredChannel, ClientChannel, ServerChannel, FactoryChannel, 
+    implements FilteredChannel, ClientChannel, ServerChannel, FactoryChannel, ISOMsgMetrics.Source,
                LogSource, Configurable, BaseChannelMBean, Cloneable, ExceptionHandlerAware
 {
     private Socket socket;
@@ -114,10 +111,8 @@ public abstract class BaseChannel extends Observable
     private boolean roundRobin = false;
     private boolean debugIsoError = true;
 
-    private Counter msgOutCounter;
-    private Counter msgInCounter;
-    private MeterRegistry meterRegistry;
-    private String serverName;
+    private ISOMsgMetrics isoMsgMetrics;
+
     private final UUID uuid;
 
     private final Map<Class<? extends Exception>, List<ExceptionHandler>> exceptionHandlers = new HashMap<>();
@@ -131,8 +126,8 @@ public abstract class BaseChannel extends Observable
         uuid = UUID.randomUUID();
         cnt = new int[SIZEOF_CNT];
         name = "";
-        incomingFilters = new ArrayList();
-        outgoingFilters = new ArrayList();
+        incomingFilters = new ArrayList<>();
+        outgoingFilters = new ArrayList<>();
         setHost(null, 0);
     }
 
@@ -166,9 +161,7 @@ public abstract class BaseChannel extends Observable
      * @exception IOException on error
      * @see ISOPackager
      */
-    public BaseChannel (ISOPackager p, ServerSocket serverSocket) 
-        throws IOException 
-    {
+    public BaseChannel (ISOPackager p, ServerSocket serverSocket) throws IOException {
         this();
         setPackager (p);
         setServerSocket (serverSocket);
@@ -185,7 +178,7 @@ public abstract class BaseChannel extends Observable
         this.hosts = new String[] { host };
         this.ports = new int[] { port };
     }
-    
+
     /**
      * initialize an ISOChannel
      * @param iface server TCP Address
@@ -195,7 +188,7 @@ public abstract class BaseChannel extends Observable
         this.localIface = iface;
         this.localPort = port;
     }
-    
+
 
     /**
      * @param host to connect (client ISOChannel)
@@ -274,27 +267,13 @@ public abstract class BaseChannel extends Observable
         return socket != null && usable;
     }
 
-    public void setCounters(Counter msgInCounter, Counter msgOutCounter) {
-        this.msgInCounter = msgInCounter;
-        this.msgOutCounter = msgOutCounter;
+    @Override
+    public void setISOMsgMetrics(ISOMsgMetrics metrics) {
+        isoMsgMetrics = metrics;
     }
-    public Counter getMsgInCounter() {
-        return msgInCounter;
-    }
-    public Counter getMsgOutCounter() {
-        return msgOutCounter;
-    }
-    public void setMeterRegistry(MeterRegistry meterRegistry) {
-        this.meterRegistry = meterRegistry;
-    }
-    public MeterRegistry getMeterRegistry() {
-        return meterRegistry;
-    }
-    public String getServerName() {
-        return serverName != null ? serverName : getName();
-    }
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
+    @Override
+    public ISOMsgMetrics getISOMsgMetrics() {
+        return isoMsgMetrics;
     }
 
     /**
@@ -367,7 +346,7 @@ public abstract class BaseChannel extends Observable
             throw new IOException (e.getMessage());
         }
     }
-    protected Socket newSocket (String[] hosts, int[] ports, LogEvent evt) 
+    protected Socket newSocket (String[] hosts, int[] ports, LogEvent evt)
         throws IOException
     {
         Socket s = null;
@@ -416,8 +395,8 @@ public abstract class BaseChannel extends Observable
         return serverSocket;
     }
 
-    /** 
-     * sets socket timeout (as suggested by 
+    /**
+     * sets socket timeout (as suggested by
      * Leonard Thomas <leonard@rhinosystemsinc.com>)
      * @param timeout in milliseconds
      * @throws SocketException on error
@@ -484,7 +463,7 @@ public abstract class BaseChannel extends Observable
     }
 
     /**
-     * Accepts connection 
+     * Accepts connection
      * @exception IOException
      */
     public void accept(ServerSocket s) throws IOException {
@@ -551,21 +530,21 @@ public abstract class BaseChannel extends Observable
      }
 
 
-    /** 
+    /**
      * Allow subclasses to override the Default header on
      * incoming messages.
      * @param image message image
      * @return ISOHeader instance
      */
     protected ISOHeader getDynamicHeader (byte[] image) {
-        return image != null ? 
+        return image != null ?
             new BaseHeader (image) : null;
     }
     protected void sendMessageLength(int len) throws IOException { }
-    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
+    protected void sendMessageHeader(ISOMsg m, int len) throws IOException {
         if (!isOverrideHeader() && m.getHeader() != null)
             serverOut.write(m.getHeader());
-        else if (header != null) 
+        else if (header != null)
             serverOut.write(header);
     }
     /**
@@ -618,13 +597,13 @@ public abstract class BaseChannel extends Observable
         getMessageTrailler();
     }
 
-    protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException { 
+    protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException {
         serverIn.readFully(b, offset, len);
     }
     protected int getMessageLength() throws IOException, ISOException {
         return -1;
     }
-    protected int getHeaderLength() { 
+    protected int getHeaderLength() {
         return header != null ? header.length : 0;
     }
     protected int getHeaderLength(byte[] b) { return 0; }
@@ -637,7 +616,7 @@ public abstract class BaseChannel extends Observable
     protected byte[] streamReceive() throws IOException {
         return new byte[0];
     }
-    protected void sendMessage (byte[] b, int offset, int len) 
+    protected void sendMessage (byte[] b, int offset, int len)
         throws IOException
     {
         serverOut.write(b, offset, len);
@@ -956,7 +935,7 @@ public abstract class BaseChannel extends Observable
             jfr.commit();
         }
         socket = null;
-    }   
+    }
     /**
      * Issues a disconnect followed by a connect
      * @exception IOException
@@ -978,7 +957,7 @@ public abstract class BaseChannel extends Observable
         return logger;
     }
     public String getOriginalRealm() {
-        return originalRealm == null ? 
+        return originalRealm == null ?
             this.getClass().getName() : originalRealm;
     }
     /**
@@ -1070,19 +1049,19 @@ public abstract class BaseChannel extends Observable
     public void removeOutgoingFilter (ISOFilter filter) {
         removeFilter (filter, ISOMsg.OUTGOING);
     }
-    protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt) 
+    protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt)
         throws VetoException
     {
         for (ISOFilter f :outgoingFilters)
             m = f.filter (this, m, evt);
         return m;
     }
-    protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
-        throws VetoException 
+    protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt)
+        throws VetoException
     {
         return applyIncomingFilters (m, null, null, evt);
     }
-    protected ISOMsg applyIncomingFilters (ISOMsg m, byte[] header, byte[] image, LogEvent evt) 
+    protected ISOMsg applyIncomingFilters (ISOMsg m, byte[] header, byte[] image, LogEvent evt)
         throws VetoException
     {
         for (ISOFilter f :incomingFilters) {
@@ -1114,7 +1093,7 @@ public abstract class BaseChannel extends Observable
     * @throws ConfigurationException
     */
     public void setConfiguration (Configuration cfg)
-        throws ConfigurationException 
+        throws ConfigurationException
     {
         this.cfg = cfg;
         String h    = cfg.get    ("host");
@@ -1123,7 +1102,7 @@ public abstract class BaseChannel extends Observable
         sendTimeout = cfg.getLong ("send-timeout", sendTimeout);
         if (h != null && h.length() > 0) {
             if (port == 0)
-                throw new ConfigurationException 
+                throw new ConfigurationException
                     ("invalid port for host '"+h+"'");
             setHost (h, port);
             setLocalAddress (cfg.get("local-iface", null),cfg.getInt("local-port"));
@@ -1274,17 +1253,13 @@ public abstract class BaseChannel extends Observable
     }
 
     protected void incrementMsgInCounter(ISOMsg m) throws ISOException {
-        if (meterRegistry != null && m != null && m.hasMTI()) {
-            var tags = Tags.of("name", getServerName(), "type", "server", "mti", m.getMTI());
-            msgInCounter = MeterFactory.updateCounter(meterRegistry, MeterInfo.ISOMSG_IN, tags);
-            msgInCounter.increment();
+        if (isoMsgMetrics != null) {
+            isoMsgMetrics.recordMessage(m, MeterInfo.ISOMSG_IN);
         }
     }
     protected void incrementMsgOutCounter(ISOMsg m) throws ISOException {
-        if (meterRegistry != null && m != null && m.hasMTI()) {
-            var tags = Tags.of("name", getServerName(), "type", "server", "mti", m.getMTI());
-            msgOutCounter = MeterFactory.updateCounter(meterRegistry, MeterInfo.ISOMSG_OUT, tags);
-            msgOutCounter.increment();
+        if (isoMsgMetrics != null) {
+            isoMsgMetrics.recordMessage(m, MeterInfo.ISOMSG_OUT);
         }
     }
 }

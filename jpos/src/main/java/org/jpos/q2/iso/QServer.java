@@ -18,7 +18,6 @@
 
 package org.jpos.q2.iso;
 
-import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.BaseUnits;
@@ -28,6 +27,7 @@ import org.jpos.core.Environment;
 import org.jpos.iso.*;
 import org.jpos.metrics.MeterFactory;
 import org.jpos.metrics.MeterInfo;
+import org.jpos.metrics.iso.ISOMsgMetrics;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.LocalSpace;
@@ -37,7 +37,6 @@ import org.jpos.space.SpaceListener;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 
-import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -56,7 +55,7 @@ public class QServer
     private int port = 0;
     private int maxSessions = 100;
     private String channelString, packagerString, socketFactoryString;
-    private ISOChannel channel = null;
+    private ISOChannel channel = null;       // is never connected; but passed to ISOServer as a clonable "template" for new connections
     private ISOServer server;
     protected LocalSpace sp;
     private String inQueue;
@@ -65,8 +64,6 @@ public class QServer
     AtomicInteger msgn = new AtomicInteger();
 
     private Gauge connectionsGauge;
-    private Counter msgOutCounter;
-    private Counter msgInCounter;
     private static final String CHANNEL_NAME_REGEXP = " (?=\\d+ \\S+:\\S+)";
 
     public QServer () {
@@ -86,7 +83,7 @@ public class QServer
             throw new ConfigurationException ("channel element missing");
         }
 
-        ChannelAdaptor adaptor = new ChannelAdaptor ();
+        ChannelAdaptor adaptor = new ChannelAdaptor ();     // leverage adaptor's newChannel logic
         channel = adaptor.newChannel (e, getFactory ());
     }
 
@@ -379,8 +376,10 @@ public class QServer
     }
 
     private void initMeters() {
-        var tags =  Tags.of("name", getName(), "type", "server");
+        var tags =  Tags.of("name", getName(),
+                            "type", "server");
         var registry = getServer().getMeterRegistry();
+
         connectionsGauge =
           MeterFactory.gauge
             (registry, MeterInfo.ISOSERVER_CONNECTION_COUNT,
@@ -389,19 +388,22 @@ public class QServer
               server::getActiveConnections
           );
 
-        if (channel instanceof BaseChannel baseChannel) {
-             baseChannel.setCounters(msgInCounter, msgOutCounter);
-             baseChannel.setMeterRegistry(registry);
-             baseChannel.setServerName(getName());
+        if (channel instanceof ISOMsgMetrics.Source ms) {
+            ISOMsgMetrics mtr = ms.getISOMsgMetrics();
+            if (mtr != null) {
+                mtr.addTags(tags);
+                mtr.register(registry);
+            }
         }
     }
 
     private void removeMeters() {
         var registry = getServer().getMeterRegistry();
         registry.remove(connectionsGauge);
-        if (msgInCounter != null)
-            registry.remove(msgInCounter);
-         if (msgOutCounter != null)
-            registry.remove(msgOutCounter);
+
+        if (channel instanceof ISOMsgMetrics.Source ms) {
+            ISOMsgMetrics mtr = ms.getISOMsgMetrics();
+            mtr.removeMeters();
+        }
     }
 }
