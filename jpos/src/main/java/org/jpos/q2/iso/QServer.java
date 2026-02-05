@@ -383,10 +383,10 @@ public class QServer
         connectionsGauge =
           MeterFactory.gauge
             (registry, MeterInfo.ISOSERVER_CONNECTION_COUNT,
-              tags,
+              tags.and("port", ""+getPort()),
               BaseUnits.SESSIONS,
               server::getActiveConnections
-          );
+            );
 
         if (channel instanceof ISOMsgMetrics.Source ms) {
             ISOMsgMetrics mtr = ms.getISOMsgMetrics();
