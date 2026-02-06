@@ -10,6 +10,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.BaseChannel;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.q2.Q2;
 import org.jpos.q2.iso.ChannelAdaptor;
@@ -41,7 +42,7 @@ public class ISOMsgCounterTest{
     }
 
     @Test
-    public void testFieldSets() throws ConfigurationException {
+    public void testFieldSets() throws ConfigurationException, ISOException {
         Configuration cfg = new SimpleConfiguration();
         cfg.put("fields", "rc:39, geo:scheme");               // overrides
 
@@ -53,6 +54,11 @@ public class ISOMsgCounterTest{
         assertEquals("itc",     fs.get("itc"));     // not overridden, single alias
         assertEquals("39",      fs.get("rc"));      // overridden, from rc alias to 39
         assertEquals("scheme",  fs.get("geo"));     // overridden from 113.27 to scheme
+
+        var m = new ISOMsg();
+        m.setMTI("0200");
+        m.set(3, "20");
+        assertEquals("0200.20", mc.resolveValExpr(m, "itc"), "itc alias not resolved correctly");
     }
 
     @Test

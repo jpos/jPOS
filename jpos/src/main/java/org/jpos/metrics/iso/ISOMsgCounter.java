@@ -16,15 +16,16 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
-    private final Map<String, Function<ISOMsg,String>> aliases= Map.of(
+    private final static Map<String, Function<ISOMsg,String>> aliases= Map.of(
             "mti",    (m) -> m.getString(0),
             "rc",     (m) -> m.getString(39),
-            "scheme", (m) -> m.getString("113.66"),
+            "scheme", (m) -> m.getString("113.66"),             // jPOS-CMF field
             "isemv",  (m) -> Boolean.toString(m.hasField(55)),
-            "ttype",  this::getTtype,
-            "itc",    this::getITC
+            "ttype",  ISOMsgCounter::getTtype,
+            "itc",    ISOMsgCounter::getITC
     );
 
     private MeterRegistry registry;
@@ -285,16 +286,17 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
         return tm;
     }
 
-    private String getTtype(ISOMsg m) {
+    private static String getTtype(ISOMsg m) {
         return m.hasField(3) ? m.getString(3).substring(0,2) : "";
     }
 
-    private String getITC(ISOMsg m) {
+    private static String getITC(ISOMsg m) {
         String mti = m.getString(0);
         if (mti == null || mti.trim().isEmpty()) return "";
         // some common fields to make an ITC from
-        var fields = Arrays.asList(mti, getTtype(m), m.getString(24), m.getString(25), m.getString(70));
-        return fields.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining("."));
+        return Stream.of(mti, getTtype(m), m.getString(24), m.getString(25), m.getString(70))
+                .filter(s -> s != null && !s.isEmpty())
+                .collect(Collectors.joining("."));
     }
 
 
