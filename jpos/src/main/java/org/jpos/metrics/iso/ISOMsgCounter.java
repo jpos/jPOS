@@ -110,7 +110,7 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
 
     @Override
     public void recordMessage(ISOMsg m) {
-        if (registry != null)  {
+        if (registry != null && m != null)  {
             throwIfFrozen(false);
             Tags ft = resolveFieldTags(m, fieldSet);
             Counter c = MeterFactory.updateCounter(registry,
@@ -124,7 +124,7 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
 
     @Override
     public void recordMessage(ISOMsg m, MeterInfo meterInfo) {
-        if (registry != null)  {
+        if (registry != null && m != null)  {
             throwIfFrozen(false);
             Tags ft = resolveFieldTags(m, fieldSet);
             String myName = getMetricName();

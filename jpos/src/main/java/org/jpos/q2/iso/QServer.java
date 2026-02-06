@@ -403,7 +403,8 @@ public class QServer
 
         if (channel instanceof ISOMsgMetrics.Source ms) {
             ISOMsgMetrics mtr = ms.getISOMsgMetrics();
-            mtr.removeMeters();
+            if (mtr != null)
+                mtr.removeMeters();
         }
     }
 }
