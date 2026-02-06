@@ -26,6 +26,7 @@ import org.jpos.iso.ISOException;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +61,7 @@ public class DirPoll extends SimpleLogSource
     private File badDir;
     private File runDir;
     private File archiveDir;
-    private Vector prio;
+    private List<String> prio;
     private int currentPriority;
     private String basePath;
     private String responseSuffix;
@@ -81,7 +82,7 @@ public class DirPoll extends SimpleLogSource
     protected Configuration cfg;
     
     public DirPoll () {
-        prio = new Vector();
+        prio = new CopyOnWriteArrayList<>();
         setPollInterval(1000);
         setPath (".");
         executor = null;
@@ -221,15 +222,15 @@ public class DirPoll extends SimpleLogSource
      */
     public void setPriorities (String priorities) {
         StringTokenizer st = new StringTokenizer (priorities);
-        Vector v = new Vector();
+        List<String> v = new ArrayList<>();
         while (st.hasMoreTokens()) {
             String ext = st.nextToken();
-            v.addElement (ext.equals ("*") ? "" : ext);
+            v.add (ext.equals ("*") ? "" : ext);
         }
         if (v.isEmpty())
-            v.addElement ("");
+            v.add ("");
         synchronized (this) {
-            prio = v;
+            prio = new CopyOnWriteArrayList<>(v);
         }
     }
     public synchronized void setThreadPool (ExecutorService executor) {
@@ -240,7 +241,7 @@ public class DirPoll extends SimpleLogSource
     public boolean accept(File dir, String name) {
         boolean result;
         String ext = currentPriority >= 0 ?
-                (String) prio.elementAt(currentPriority) : null;
+                prio.get(currentPriority) : null;
         if (ext != null) {
             if (isRegexPriorityMatching()) {
                 if (!name.matches(ext))
@@ -333,7 +334,7 @@ public class DirPoll extends SimpleLogSource
         archiveDir.mkdirs();
     }
     public void addPriority(String fileExtension) {
-        prio.addElement (fileExtension);
+        prio.add (fileExtension);
     }
 
     //----------------------------------------------------- private helpers
