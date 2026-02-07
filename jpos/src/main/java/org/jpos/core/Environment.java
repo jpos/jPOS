@@ -161,6 +161,20 @@ public class Environment implements Loggeable {
     }
 
     /**
+     * Resolves the given expression using the current {@link Environment}
+     * instance, applying the standard priority resolution rules.
+     *
+     * @param p the expression or literal value to resolve; may contain
+     *          placeholders using the {@code ${...}} syntax
+     * @return the resolved value after applying environment priority rules.
+     *
+     * @see Environment#resolveWithPriority(String)
+     * @see #getEnvironment()
+     */
+    public static String resolve (String p) {
+        return getEnvironment().resolveWithPriority(p);
+    }
+    /**
      * Resolves a property expression using the singleton Environment.
      * If the property cannot be resolved, returns the specified default.
      *
