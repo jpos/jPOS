@@ -18,7 +18,6 @@
 
 package org.jpos.q2.iso;
 
-import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.BaseUnits;
@@ -31,6 +30,8 @@ import org.jpos.core.handlers.exception.ExceptionHandlerConfigAware;
 import org.jpos.iso.*;
 import org.jpos.metrics.MeterFactory;
 import org.jpos.metrics.MeterInfo;
+import org.jpos.metrics.iso.ISOMsgCounter;
+import org.jpos.metrics.iso.ISOMsgMetrics;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
@@ -81,8 +82,6 @@ public class ChannelAdaptor
 
     private Gauge connectionsGauge;
 
-    private Counter msgOutCounter;
-    private Counter msgInCounter;
     @Config("soft-stop") private long softStop;
 
     public ChannelAdaptor () {
@@ -135,7 +134,7 @@ public class ChannelAdaptor
     }
 
     public synchronized void setReconnectDelay (long delay) {
-        getPersist().getChild ("reconnect-delay") 
+        getPersist().getChild ("reconnect-delay")
             .setText (Long.toString (delay));
         this.delay = delay;
         setModified (true);
@@ -202,9 +201,8 @@ public class ChannelAdaptor
         return out;
     }
 
-    public ISOChannel newChannel (Element e, QFactory f)
-        throws ConfigurationException
-    {
+    /** Parses a {@code <channel>}  element, returning an {@link ISOChannel} */
+    public ISOChannel newChannel (Element e, QFactory f) throws ConfigurationException {
         String channelName  = QFactory.getAttributeValue (e, "class");
         String packagerName = QFactory.getAttributeValue (e, "packager");
 
@@ -226,8 +224,58 @@ public class ChannelAdaptor
             addExceptionHandlers((ExceptionHandlerAware) channel, e, f);
         }
 
+        if (channel instanceof ISOMsgMetrics.Source metricsChannel) {
+            String type = "default";                                    // default alias, in case metrics not defined
+            String clazz = null;
+
+            Element met = e.getChild("metrics");
+            if (met != null) {
+                if (QFactory.isEnabled(met)) {
+                    clazz = QFactory.getAttributeValue(met, "class");
+                    String typeAttr = QFactory.getAttributeValue(met, "type");
+                    type =  (clazz != null)     ? "class"  :            // class attribute has precedence over type
+                            (typeAttr != null)  ? typeAttr :
+                            type;
+                } else {
+                    type = "none";                                      // <metrics enabled="false" /> equivalent to type="none"
+                }
+            }
+
+            ISOMsgMetrics m = switch (type) {
+                case "none" -> null;
+
+                case "default" -> {
+                    var mc = new ISOMsgCounter();
+                    if (met != null)
+                        f.setLogger(mc, met);
+                    else
+                        mc.setLogger(this.getLog().getLogger(), this.getRealm()+"/metrics");
+                    yield mc;
+                }
+
+                case "counter" -> {
+                    var mc = new ISOMsgCounter();
+                    f.setLogger(mc, met);
+                    f.setConfiguration(mc, met);
+                    yield mc;
+                }
+
+                case "class" -> {
+                    ISOMsgMetrics mc = f.newInstance(clazz);
+                    f.setLogger(mc, met);
+                    f.setConfiguration(mc, met);
+                    yield mc;
+                }
+
+                default -> throw new ConfigurationException("Unknown metric type '"+type+"'");
+            };
+
+            metricsChannel.setISOMsgMetrics(m);
+        } // metrics config
+
         if (getName () != null)
             channel.setName (getName ());
+
         return channel;
     }
 
@@ -252,7 +300,6 @@ public class ChannelAdaptor
     }
 
 
-
     protected ISOChannel initChannel () throws ConfigurationException {
         Element persist = getPersist ();
         Element e = persist.getChild ("channel");
@@ -260,6 +307,7 @@ public class ChannelAdaptor
             throw new ConfigurationException ("channel element missing");
 
         ISOChannel c = newChannel (e, getFactory());
+
         String socketFactoryString = getSocketFactory();
         if (socketFactoryString != null && c instanceof FactoryChannel) {
             ISOClientSocketFactory sFac = getFactory().newInstance(socketFactoryString);
@@ -269,8 +317,10 @@ public class ChannelAdaptor
             getFactory().setConfiguration (sFac, e);
             ((FactoryChannel)c).setSocketFactory(sFac);
         }
+
         return c;
     }
+
     protected void initSpaceAndQueues () throws ConfigurationException {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space"));
@@ -305,15 +355,14 @@ public class ChannelAdaptor
                     if (!running())
                         break;
                     Object o = sp.in (in, delay);
-                    if (o instanceof ISOMsg) {
+                    if (o instanceof ISOMsg m) {
                         if (!channel.isConnected()) {
                             // push back the message so it can be handled by another channel adaptor
                             sp.push(in, o);
                             continue;
                         }
-                        channel.send ((ISOMsg) o);
+                        channel.send(m);
                         tx++;
-                        incrementMsgOutCounter((ISOMsg) o);
                     } else if (o instanceof Integer) {
                         if ((int)o != hashCode()) {
                             // STOP indicator seems to be for another channel adaptor
@@ -326,7 +375,7 @@ public class ChannelAdaptor
                     else if (keepAlive && channel.isConnected() && channel instanceof BaseChannel) {
                         ((BaseChannel)channel).sendKeepAlive();
                     }
-                } catch (ISOFilter.VetoException e) { 
+                } catch (ISOFilter.VetoException e) {
                     // getLog().warn ("channel-sender-"+in, e.getMessage ());
                 } catch (ISOException e) {
                     // getLog().warn ("channel-sender-"+in, e.getMessage ());
@@ -334,7 +383,7 @@ public class ChannelAdaptor
                         disconnect ();
                     }
                     ISOUtil.sleep (1000); // slow down on errors
-                } catch (Exception e) { 
+                } catch (Exception e) {
                     // getLog().warn ("channel-sender-"+in, e.getMessage ());
                     disconnect ();
                     ISOUtil.sleep (1000);
@@ -374,7 +423,6 @@ public class ChannelAdaptor
                         continue;
                     }
                     ISOMsg m = channel.receive ();
-                    incrementMsgInCounter(m);
                     rx++;
                     lastTxn = System.currentTimeMillis();
                     if (timeout > 0)
@@ -401,7 +449,7 @@ public class ChannelAdaptor
                         sp.push (in, hashCode()); // wake-up Sender
                         ISOUtil.sleep(1000);
                     }
-                } catch (Exception e) { 
+                } catch (Exception e) {
                     if (running()) {
                         // getLog().warn ("channel-receiver-"+out, e);
                         sp.out (reconnect, Boolean.TRUE, delay);
@@ -523,9 +571,12 @@ public class ChannelAdaptor
         sb.append (name);
         sb.append (value);
     }
+
     private void initMeters() {
-        var tags = Tags.of("name", getName(), "type", "client");
+        var tags = Tags.of("name", getName(),
+                            "type", "client");
         var registry = getServer().getMeterRegistry();
+
         connectionsGauge =
           MeterFactory.gauge
             (registry, MeterInfo.ISOCHANNEL_CONNECTION_COUNT,
@@ -533,27 +584,24 @@ public class ChannelAdaptor
               BaseUnits.SESSIONS,
               () -> isConnected() ? 1 : 0
             );
-    }
-    protected void incrementMsgInCounter(ISOMsg m) throws ISOException {
-        if (m != null && m.hasMTI()) {
-            var tags = Tags.of("name", getName(), "type", "client", "mti", m.getMTI());
-            msgInCounter = MeterFactory.updateCounter(getServer().getMeterRegistry(), MeterInfo.ISOMSG_IN, tags);
-            msgInCounter.increment();
+
+        if (channel instanceof ISOMsgMetrics.Source ms) {
+            ISOMsgMetrics mtr = ms.getISOMsgMetrics();
+            if (mtr != null) {
+                mtr.addTags(tags);
+                mtr.register(registry);
+            }
         }
     }
-    protected void incrementMsgOutCounter(ISOMsg m) throws ISOException {
-        if (m != null && m.hasMTI()) {
-            var tags = Tags.of("name", getName(), "type", "client", "mti", m.getMTI());
-            msgOutCounter = MeterFactory.updateCounter(getServer().getMeterRegistry(), MeterInfo.ISOMSG_OUT, tags);
-            msgOutCounter.increment();
-        }
-    }
+
     private void removeMeters() {
         var registry = getServer().getMeterRegistry();
         registry.remove(connectionsGauge);
-        if (msgInCounter != null)
-            registry.remove(msgInCounter);
-        if (msgOutCounter != null)
-            registry.remove(msgOutCounter);
+
+        if (channel instanceof ISOMsgMetrics.Source ms) {
+            ISOMsgMetrics mtr = ms.getISOMsgMetrics();
+            if (mtr != null)
+                mtr.removeMeters();
+        }
     }
 }

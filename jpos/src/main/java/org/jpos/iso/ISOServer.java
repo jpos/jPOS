@@ -102,15 +102,14 @@ public class ISOServer extends Observable
 
    /**
     * @param port port to listen
-    * @param clientSide client side ISOChannel (where we accept connections)
+    * @param clientSide client side ISOChannel, used as a "clonable template" to accept new connections
     */
     public ISOServer(int port, ServerChannel clientSide, int maxSessions) {
         super();
         this.port = port;
         this.clientSideChannel = clientSide;
         this.clientPackager = clientSide.getPackager();
-        if (clientSide instanceof FilteredChannel) {
-            FilteredChannel fc = (FilteredChannel) clientSide;
+        if (clientSide instanceof FilteredChannel fc) {
             this.clientOutgoingFilters = fc.getOutgoingFilters();
             this.clientIncomingFilters = fc.getIncomingFilters();
         }
@@ -322,13 +321,11 @@ public class ISOServer extends Observable
                 LogEvent ev = new LogEvent()
                   .withSource(this)
                   .withTraceId(sessionUUID)
-                  .add(new SessionStart(connectionCount.get(), permitsCount, sessionInfo)
+                  .add(new SessionStart(getActiveConnections(), permitsCount, sessionInfo)
                 );
                 if (!checkPermission (socket, ev))
                     return;
                 realm = realm + "/" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
-                if (clientSideChannel instanceof BaseChannel bc)
-                    baseChannel.setCounters(bc.getMsgInCounter(), bc.getMsgOutCounter());
             }
             try {
                 WeakReference<ISOChannel> wr = new WeakReference<> (channel);
@@ -337,8 +334,8 @@ public class ISOServer extends Observable
                 while (true) try {
                     ISOMsg m = channel.receive();
                     lastTxn = System.currentTimeMillis();
-                    for (Object listener : listeners) {
-                        if (((ISORequestListener) listener).process(channel, m)) {
+                    for (ISORequestListener listener : listeners) {
+                        if (listener.process(channel, m)) {
                             break;
                         }
                     }
@@ -361,6 +358,7 @@ public class ISOServer extends Observable
             } catch (Throwable e) {
                 Logger.log (new LogEvent (this, "session-error", e));
             }
+
             try {
                 channel.disconnect();
                 fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
@@ -371,7 +369,7 @@ public class ISOServer extends Observable
             Logger.log(new LogEvent()
               .withSource(this)
               .withTraceId(sessionUUID)
-              .add(new SessionEnd(connectionCount.get(), permitsCount, sessionInfo)
+              .add(new SessionEnd(getActiveConnections(), permitsCount, sessionInfo)
               )
             );
         }
@@ -471,7 +469,6 @@ public class ISOServer extends Observable
     //-- This is the main run for this ISOServer's Thread
     @Override
     public void run() {
-        // ServerChannel  channel;
         if (socketFactory == null) {
             socketFactory = this;
         }
@@ -642,7 +639,7 @@ public class ISOServer extends Observable
      * @return ISOChannel under the given name
      */
     public ISOChannel getISOChannel (String name) {
-        WeakReference ref = (WeakReference) channels.get (name);
+        WeakReference ref = channels.get (name);
         if (ref != null) {
             return (ISOChannel) ref.get ();
         }

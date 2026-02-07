@@ -28,8 +28,9 @@ public enum MeterInfo {
     ISOSERVER_CONNECTION_COUNT("jpos.server.connections", "Incoming active connections"),
     ISOCHANNEL_CONNECTION_COUNT("jpos.channel.connections", "Outgoing active connections"),
 
-    ISOMSG_OUT ("jpos.isomsg", "Transmitted messages", Tags.of ("direction", "out")),
-    ISOMSG_IN ("jpos.isomsg", "Received messages", Tags.of ("direction", "in")),
+    ISOMSG_OUT("jpos.isomsg", "Transmitted messages", Tags.of ("direction", "out")),
+    ISOMSG_IN ("jpos.isomsg", "Received messages",    Tags.of ("direction", "in")),
+
     CHANNEL_ACTIVE_CONNECTIONS("jpos.channel.connections", "Active outgoing connections"),
     CHANNEL_STATUS("jpos.channel.status", "Channel status"),
 
