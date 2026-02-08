@@ -33,6 +33,7 @@ import java.io.ObjectOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * JDBM based persistent space implementation
@@ -47,7 +48,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
     protected HTree htree;
     protected RecordManager recman;
     protected static final Serializer refSerializer = new Ref ();
-    protected static final Map<String,Space> spaceRegistrar = new HashMap<String,Space> ();
+    protected static final Map<String,Space> spaceRegistrar = new ConcurrentHashMap<>();
     protected boolean autoCommit = true;
     protected String name;
     public static final long GCDELAY = 5*60*1000;
@@ -425,12 +426,12 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
     }
     public synchronized void put (K key, V value, long timeout) {
         while (inp (key) != null)
-            ; // NOPMD
+            Thread.onSpinWait(); // Java 9+ CPU hint to reduce spinning overhead
         out (key, value, timeout);
     }
     public synchronized void put (K key, V value) {
         while (inp (key) != null)
-            ; // NOPMD
+            Thread.onSpinWait(); // Java 9+ CPU hint to reduce spinning overhead
         out (key, value);
     }
     private void purge (Object key) throws IOException {
@@ -517,7 +518,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
             FastIterator iter = htree.keys ();
             Object obj;
             while ( (obj = iter.next()) != null) {
-                if (sb.length() > 0)
+                if (!sb.isEmpty())
                     sb.append (' ');
                 sb.append (obj.toString());
             }
