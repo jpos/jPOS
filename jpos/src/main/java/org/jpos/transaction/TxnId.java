@@ -323,9 +323,9 @@ public class TxnId {
      * encoded at second precision.</p>
      *
      * @param zonedDateTime transaction timestamp.
-     * @param node node id (0..999).
-     * @param transactionId per-node transaction suffix (0..99999). If your transaction manager uses a larger
-     *                      counter, pass {@code counter % 100000} explicitly to avoid silent truncation.
+     * @param node node id (0..999). Values outside this range are wrapped using modulo 1000.
+     * @param transactionId per-node transaction suffix (0..99999). Values outside this range are wrapped
+     *                      using modulo 100000.
      * @return newly created TxnId.
      */
     public static TxnId create(ZonedDateTime zonedDateTime, int node, long transactionId) {
