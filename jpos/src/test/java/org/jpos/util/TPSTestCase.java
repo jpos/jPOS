@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class TPSTestCase {
     @Test
@@ -34,17 +35,17 @@ public class TPSTestCase {
         for (int i=0; i<1000; i++)
             tps.tick();
         Instant nowDone = Instant.now();
-        Thread.sleep (1100L - Duration.between(nowInit, Instant.now()).toMillis()); // java.util.Timer is not accurate
-        assertEquals(1000, tps.intValue(), "Expected 1000 TPS");
-        assertEquals(1000, tps.intValue(), "Still expecting 1000 TPS on a second call");
-        Thread.sleep (2100L - Duration.between(nowDone, Instant.now()).toMillis());
+        sleepAtLeast(1100L - Duration.between(nowInit, Instant.now()).toMillis()); // scheduler is not perfectly accurate
+        assertInRange(tps.intValue(), 950, 1050, "Expected around 1000 TPS");
+        assertInRange(tps.intValue(), 950, 1050, "Still expecting around 1000 TPS on a second call");
+        sleepAtLeast(2100L - Duration.between(nowDone, Instant.now()).toMillis());
         assertTrue(tps.getAvg() >= 0.5, "Average should be aprox 0.5 but it's " + tps.getAvg());
-        Thread.sleep (3100L - Duration.between(nowDone, Instant.now()).toMillis());
+        sleepAtLeast(3100L - Duration.between(nowDone, Instant.now()).toMillis());
         assertEquals(
             0, tps.intValue(),
             "TPS should be zero but it's " + tps.intValue() + " (" + tps.floatValue() + ")"
         );
-        assertEquals(1000, tps.getPeak(), "Peak has to be 1000");
+        assertInRange(tps.getPeak(), 950, 1050, "Peak should be around 1000");
         tps.stop();
     }
     @Test
@@ -54,14 +55,39 @@ public class TPSTestCase {
         for (int i=0; i<1000; i++)
             tps.tick();
         Instant nowDone = Instant.now();
-        Thread.sleep (1050L - Duration.between(nowInit, Instant.now()).toMillis());
+        sleepAtLeast(1050L - Duration.between(nowInit, Instant.now()).toMillis());
         assertTrue(tps.intValue() >= 800, "Expected aprox 1000 TPS but was " + tps.intValue());
         assertTrue(tps.intValue() >= 800, "Still expecting aprox 1000 TPS on a second call");
-        Thread.sleep (2500L - Duration.between(nowDone, Instant.now()).toMillis());
+        sleepAtLeast(2500L - Duration.between(nowDone, Instant.now()).toMillis());
         assertEquals(
             0, tps.intValue(),
             "TPS should be zero but it's " + tps.intValue() + " (" + tps.floatValue() + ")"
         );
     }
-}
 
+    @Test
+    public void testManualUpdateWithSimulatedTime() {
+        AtomicLong now = new AtomicLong(1_000_000_000L);
+        TPS tps = new TPS(1000L, false, now::get);
+
+        for (int i = 0; i < 1000; i++)
+            tps.tick();
+
+        now.addAndGet(1_000_000_000L); // +1s
+        assertEquals(1000, tps.intValue(), "Expected exact 1000 TPS with simulated time");
+
+        now.addAndGet(1_000_000_000L); // +1s with no ticks
+        assertEquals(0, tps.intValue(), "Expected 0 TPS after idle interval");
+    }
+
+    private static void sleepAtLeast(long millis) throws InterruptedException {
+        if (millis > 0L) {
+            Thread.sleep(millis);
+        }
+    }
+
+    private static void assertInRange(int value, int minInclusive, int maxInclusive, String message) {
+        assertTrue(value >= minInclusive && value <= maxInclusive,
+          message + " (actual=" + value + ")");
+    }
+}
