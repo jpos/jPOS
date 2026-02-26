@@ -1,0 +1,237 @@
+/*
+ * jPOS Project [http://jpos.org]
+ * Copyright (C) 2000-2026 jPOS Software SRL
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.jpos.core;
+
+import org.jpos.security.SystemSeed;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+/**
+ * Manages encryption keys derived from SystemSeed.
+ * 
+ * <p>
+ * This class:
+ * <ul>
+ * <li>Derives a consistent key from SystemSeed (32 bytes = 256 bits)</li>
+ * <li>Supports multiple named keys for different encryption contexts</li>
+ * <li>Provides methods to encrypt/decrypt data using these keys</li>
+ * </ul>
+ */
+public class SystemKeyManager {
+    private static final String DEFAULT_KEY_NAME = "default";
+    private static final String DEFAULT_ENV_VAR = "JPOS_ENCRYPTION_KEY";
+    private static final int KEY_SIZE_BITS = 256;
+
+    private static final SystemKeyManager instance;
+    private static final ConcurrentMap<String, SecretKey> keys = new ConcurrentHashMap<>();
+
+    static {
+        try {
+            instance = new SystemKeyManager();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize SystemKeyManager", e);
+        }
+    }
+
+    private SystemKeyManager() {
+    }
+
+    /**
+     * Returns the singleton SystemKeyManager instance.
+     *
+     * @return the SystemKeyManager instance
+     */
+    public static SystemKeyManager getInstance() {
+        return instance;
+    }
+
+    /**
+     * Gets a key by name. Returns null if key doesn't exist.
+     *
+     * @param keyName the name of the key to get
+     * @return the SecretKey, or null if not found
+     */
+    public SecretKey getKey(String keyName) {
+        if (keyName == null || keyName.isEmpty()) {
+            keyName = DEFAULT_KEY_NAME;
+        }
+
+        return keys.get(keyName);
+    }
+
+    /**
+     * Gets the default key. Returns null if key doesn't exist.
+     *
+     * @return the default SecretKey, or null if not found
+     */
+    public SecretKey getDefaultKey() {
+        return getKey(DEFAULT_KEY_NAME);
+    }
+
+    /**
+     * Gets the Base64-encoded key by name.
+     *
+     * @param keyName the name of the key
+     * @return Base64-encoded key, or null if not found
+     */
+    public String getKeyBase64(String keyName) {
+        SecretKey key = getKey(keyName);
+        return key != null ? Base64.getEncoder().encodeToString(key.getEncoded()) : null;
+    }
+
+    /**
+     * Generates a new key from SystemSeed and stores it with the given name.
+     * The user is responsible for setting the environment variable manually.
+     *
+     * @param keyName the name to give the key
+     * @return the environment variable name where the key should be stored
+     */
+    public String generateKey(String keyName) {
+        if (keyName == null || keyName.isEmpty()) {
+            keyName = DEFAULT_KEY_NAME;
+        }
+
+        keys.computeIfAbsent(keyName, k -> {
+            try {
+                byte[] seed = SystemSeed.getSeed(0, 32);
+                KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+                keyGen.init(KEY_SIZE_BITS, new SecureRandom(seed));
+                return keyGen.generateKey();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to generate key from SystemSeed", e);
+            }
+        });
+
+        return getEnvVarName(keyName);
+    }
+
+    /**
+     * Generates a new default key from SystemSeed.
+     *
+     * @return the environment variable name where the key is stored
+     */
+    public String generateDefaultKey() {
+        return generateKey(DEFAULT_KEY_NAME);
+    }
+
+    private static final int IV_SIZE_BYTES = 12;
+    private static final int TAG_LENGTH_BITS = 128;
+
+    /**
+     * Encrypts data using the default key.
+     *
+     * @param data the data to encrypt
+     * @return encrypted data (with IV prepended)
+     */
+    public byte[] encrypt(byte[] data) {
+        return encrypt(data, DEFAULT_KEY_NAME);
+    }
+
+    /**
+     * Encrypts data using a named key.
+     *
+     * @param data    the data to encrypt
+     * @param keyName the name of the key to use
+     * @return encrypted data (with IV prepended)
+     */
+    public byte[] encrypt(byte[] data, String keyName) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            SecretKey key = getKey(keyName);
+
+            byte[] iv = new byte[IV_SIZE_BYTES];
+            new SecureRandom().nextBytes(iv);
+
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
+            cipher.init(Cipher.ENCRYPT_MODE, key, gcmParameterSpec);
+            byte[] ciphertext = cipher.doFinal(data);
+
+            byte[] result = new byte[iv.length + ciphertext.length];
+            System.arraycopy(iv, 0, result, 0, iv.length);
+            System.arraycopy(ciphertext, 0, result, iv.length, ciphertext.length);
+
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException("Encryption failed", e);
+        }
+    }
+
+    /**
+     * Decrypts data using the default key.
+     *
+     * @param encryptedData the encrypted data (with IV prepended)
+     * @return decrypted data
+     */
+    public byte[] decrypt(byte[] encryptedData) {
+        return decrypt(encryptedData, DEFAULT_KEY_NAME);
+    }
+
+    /**
+     * Decrypts data using a named key.
+     *
+     * @param encryptedData the encrypted data (with IV prepended)
+     * @param keyName       the name of the key to use
+     * @return decrypted data
+     */
+    public byte[] decrypt(byte[] encryptedData, String keyName) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            SecretKey key = getKey(keyName);
+
+            byte[] iv = new byte[IV_SIZE_BYTES];
+            System.arraycopy(encryptedData, 0, iv, 0, iv.length);
+
+            byte[] ciphertext = new byte[encryptedData.length - iv.length];
+            System.arraycopy(encryptedData, iv.length, ciphertext, 0, ciphertext.length);
+
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
+            cipher.init(Cipher.DECRYPT_MODE, key, gcmParameterSpec);
+            return cipher.doFinal(ciphertext);
+        } catch (Exception e) {
+            throw new RuntimeException("Decryption failed", e);
+        }
+    }
+
+    /**
+     * Gets the environment variable name for a key.
+     *
+     * @param keyName the name of the key
+     * @return the environment variable name
+     */
+    public String getEnvVarName(String keyName) {
+        if (keyName == null || keyName.isEmpty()) {
+            keyName = DEFAULT_KEY_NAME;
+        }
+        return DEFAULT_ENV_VAR + (DEFAULT_KEY_NAME.equals(keyName) ? "" : "_" + keyName.toUpperCase());
+    }
+
+    /**
+     * Clears all keys (for testing purposes).
+     */
+    public void clearKeys() {
+        keys.clear();
+    }
+}

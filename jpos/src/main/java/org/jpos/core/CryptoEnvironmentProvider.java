@@ -18,10 +18,10 @@
 
 package org.jpos.core;
 
-import org.jpos.iso.ISOUtil;
 import org.jpos.security.SystemSeed;
 
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
@@ -32,7 +32,7 @@ import java.util.Base64;
  * EnvironmentProvider that encrypts/decrypts values using AES256.
  * 
  * <p>
- * Format: {@code crypto::<base64-encoded-ciphertext>}
+ * Format: {@code enc::<base64-encoded-ciphertext>}
  * <ul>
  * <li>Algorithm: AES-256-GCM with authenticated encryption</li>
  * <li>Key: 32 bytes derived from SystemSeed using SHA-256</li>
@@ -49,16 +49,25 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
 
     @Override
     public String prefix() {
-        return "crypto::";
+        return "enc::";
     }
 
     @Override
     public String get(String config) {
         try {
-            // Remove the crypto:: prefix if present
+            String keyName = null;
             String encoded = config;
-            if (config.startsWith("crypto::")) {
-                encoded = config.substring(8);
+            
+            // Check for key name prefix: enc::keyname::encoded_data
+            if (config.startsWith("enc::")) {
+                String[] parts = config.substring(5).split("::", 2);
+                if (parts.length == 2) {
+                    keyName = parts[0];
+                    encoded = parts[1];
+                } else {
+                    // Default key
+                    encoded = config.substring(5);
+                }
             }
 
             byte[] decoded = Base64.getDecoder().decode(encoded);
@@ -72,9 +81,12 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             byte[] ciphertext = new byte[buf.remaining()];
             buf.get(ciphertext);
 
-            // Use first 32 bytes of SystemSeed as the 256-bit AES key
-            byte[] seed = SystemSeed.getSeed(0, 32);
-            SecretKeySpec keySpec = new SecretKeySpec(seed, ALGORITHM);
+            // Use SystemKeyManager to get the derived key
+            SecretKey key = SystemKeyManager.getInstance().getKey(keyName);
+            if (key == null) {
+                throw new RuntimeException("Key not found: " + keyName);
+            }
+            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), ALGORITHM);
 
             // Decrypt with GCM authentication
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -92,13 +104,29 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
      * Helper method to encrypt a value (for generating encrypted config).
      * 
      * @param value the plaintext value to encrypt
-     * @return base64-encoded ciphertext with crypto:: prefix
+     * @return base64-encoded ciphertext with enc:: prefix
      */
     public static String encrypt(String value) {
+        return encrypt(value, null);
+    }
+    
+    /**
+     * Helper method to encrypt a value with a named key.
+     * 
+     * @param value the plaintext value to encrypt
+     * @param keyName the name of the key to use (null for default)
+     * @return base64-encoded ciphertext with enc::keyname:: prefix
+     */
+    public static String encrypt(String value, String keyName) {
         try {
-            // Use first 32 bytes of SystemSeed as the 256-bit AES key
-            byte[] seed = SystemSeed.getSeed(0, 32);
-            SecretKeySpec keySpec = new SecretKeySpec(seed, ALGORITHM);
+            // Use SystemKeyManager to get the key, generating it if it doesn't exist
+            SecretKey key = SystemKeyManager.getInstance().getKey(keyName);
+            if (key == null) {
+                // Key doesn't exist, generate it
+                SystemKeyManager.getInstance().generateKey(keyName);
+                key = SystemKeyManager.getInstance().getKey(keyName);
+            }
+            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), ALGORITHM);
 
             // Generate secure random 12-byte IV
             byte[] iv = new byte[IV_SIZE_BYTES];
@@ -115,7 +143,14 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             buf.put(iv);
             buf.put(ciphertext);
 
-            return "crypto::" + Base64.getEncoder().encodeToString(buf.array());
+            String base64 = Base64.getEncoder().encodeToString(buf.array());
+            
+            // If keyName is provided, include it in the prefix
+            if (keyName != null && !keyName.isEmpty()) {
+                return "enc::" + keyName + "::" + base64;
+            } else {
+                return "enc::" + base64;
+            }
         } catch (Exception e) {
             throw new RuntimeException("Failed to encrypt value", e);
         }

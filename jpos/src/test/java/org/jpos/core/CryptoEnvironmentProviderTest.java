@@ -19,11 +19,9 @@
 package org.jpos.core;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@EnabledIf(value = "isJavaVersionSupported", disabledReason = "Requires Java 8+ for Base64 and Cipher API")
 public class CryptoEnvironmentProviderTest {
 
     @Test
@@ -31,10 +29,10 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String original = "localhost:3306/client?useSSL=false";
-        String encrypted = provider.encrypt(original);
+        String encrypted = CryptoEnvironmentProvider.encrypt(original);
 
         assertNotNull(encrypted);
-        assertTrue(encrypted.startsWith("crypto::"));
+        assertTrue(encrypted.startsWith("enc::"));
 
         String decrypted = provider.get(encrypted);
         assertEquals(original, decrypted);
@@ -45,7 +43,7 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String password = "secretpassword";
-        String encrypted = provider.encrypt(password);
+        String encrypted = CryptoEnvironmentProvider.encrypt(password);
 
         String decrypted = provider.get(encrypted);
         assertEquals(password, decrypted);
@@ -56,7 +54,7 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String username = "client";
-        String encrypted = provider.encrypt(username);
+        String encrypted = CryptoEnvironmentProvider.encrypt(username);
 
         String decrypted = provider.get(encrypted);
         assertEquals(username, decrypted);
@@ -67,8 +65,8 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String value = "test-value";
-        String encrypted1 = provider.encrypt(value);
-        String encrypted2 = provider.encrypt(value);
+        String encrypted1 = CryptoEnvironmentProvider.encrypt(value);
+        String encrypted2 = CryptoEnvironmentProvider.encrypt(value);
 
         assertNotEquals(encrypted1, encrypted2, "Each encryption should use a different IV");
     }
@@ -77,7 +75,7 @@ public class CryptoEnvironmentProviderTest {
     public void testDecryptEmptyString() {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
-        String encrypted = provider.encrypt("");
+        String encrypted = CryptoEnvironmentProvider.encrypt("");
         String decrypted = provider.get(encrypted);
 
         assertEquals("", decrypted);
@@ -88,7 +86,7 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String special = "p@ssw0rd!#$%^&*()";
-        String encrypted = provider.encrypt(special);
+        String encrypted = CryptoEnvironmentProvider.encrypt(special);
         String decrypted = provider.get(encrypted);
 
         assertEquals(special, decrypted);
@@ -99,7 +97,7 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String unicode = "密码123密码";
-        String encrypted = provider.encrypt(unicode);
+        String encrypted = CryptoEnvironmentProvider.encrypt(unicode);
         String decrypted = provider.get(encrypted);
 
         assertEquals(unicode, decrypted);
@@ -115,7 +113,7 @@ public class CryptoEnvironmentProviderTest {
         }
         String longValue = sb.toString();
 
-        String encrypted = provider.encrypt(longValue);
+        String encrypted = CryptoEnvironmentProvider.encrypt(longValue);
         String decrypted = provider.get(encrypted);
 
         assertEquals(longValue, decrypted);
@@ -125,7 +123,7 @@ public class CryptoEnvironmentProviderTest {
     public void testPrefixReturnsCrypto() {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
-        assertEquals("crypto::", provider.prefix());
+        assertEquals("enc::", provider.prefix());
     }
 
     @Test
@@ -142,10 +140,10 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String original = "test-value";
-        String encrypted = provider.encrypt(original);
+        String encrypted = CryptoEnvironmentProvider.encrypt(original);
 
         // Tamper with the ciphertext
-        String tampered = "crypto::" + encrypted.replaceFirst(".", "X");
+        String tampered = "enc::" + encrypted.replaceFirst(".", "X");
 
         assertRuntimeException(() -> {
             provider.get(tampered);
@@ -166,7 +164,7 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String url = "jdbc:mysql://localhost:3306/client?useSSL=false";
-        String encrypted = provider.encrypt(url);
+        String encrypted = CryptoEnvironmentProvider.encrypt(url);
         String decrypted = provider.get(encrypted);
 
         assertEquals(url, decrypted);
@@ -177,7 +175,7 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String url = "jdbc:postgresql://db.example.com:5432/mydb";
-        String encrypted = provider.encrypt(url);
+        String encrypted = CryptoEnvironmentProvider.encrypt(url);
         String decrypted = provider.get(encrypted);
 
         assertEquals(url, decrypted);
@@ -188,7 +186,7 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String value = "user=admin&password=secret&database=mydb";
-        String encrypted = provider.encrypt(value);
+        String encrypted = CryptoEnvironmentProvider.encrypt(value);
         String decrypted = provider.get(encrypted);
 
         assertEquals(value, decrypted);
@@ -199,10 +197,54 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String value = "user:pass@host:3306/db?param=value&another=123";
-        String encrypted = provider.encrypt(value);
+        String encrypted = CryptoEnvironmentProvider.encrypt(value);
         String decrypted = provider.get(encrypted);
 
         assertEquals(value, decrypted);
+    }
+
+    @Test
+    public void testEncryptDecryptWithKeyName() {
+        CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
+
+        // Generate the key first
+        SystemKeyManager.getInstance().generateKey("db");
+
+        String original = "my-database-password";
+        String encrypted = CryptoEnvironmentProvider.encrypt(original, "db");
+
+        assertNotNull(encrypted);
+        assertTrue(encrypted.startsWith("enc::db::"));
+
+        String decrypted = provider.get(encrypted);
+        assertEquals(original, decrypted);
+    }
+
+    @Test
+    public void testEncryptDecryptWithMultipleKeyNames() {
+        CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
+
+        // Generate keys first
+        SystemKeyManager.getInstance().generateKey("db");
+        SystemKeyManager.getInstance().generateKey("api");
+
+        String original = "test-value";
+        String encryptedDb = CryptoEnvironmentProvider.encrypt(original, "db");
+        String encryptedApi = CryptoEnvironmentProvider.encrypt(original, "api");
+
+        assertNotNull(encryptedDb);
+        assertNotNull(encryptedApi);
+
+        assertTrue(encryptedDb.startsWith("enc::db::"));
+        assertTrue(encryptedApi.startsWith("enc::api::"));
+
+        String decryptedDb = provider.get(encryptedDb);
+        String decryptedApi = provider.get(encryptedApi);
+
+        assertEquals(original, decryptedDb);
+        assertEquals(original, decryptedApi);
+
+        assertNotEquals(encryptedDb, encryptedApi, "Encrypted values should differ for different keys");
     }
 
     // Helper method to assert RuntimeException
@@ -216,12 +258,4 @@ public class CryptoEnvironmentProviderTest {
         }
     }
 
-    // Helper method to check Java version
-    private static boolean isJavaVersionSupported() {
-        String version = System.getProperty("java.version");
-        if (version != null && version.startsWith("1.")) {
-            return Integer.parseInt(version.substring(2)) >= 8;
-        }
-        return true; // Java 9+ uses different versioning
-    }
 }
