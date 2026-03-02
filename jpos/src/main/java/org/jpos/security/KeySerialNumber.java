@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2024 jPOS Software SRL
+ * Copyright (C) 2000-2026 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,6 @@ import java.io.PrintStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Objects;
-
 
 /**
  * Key Serial Number (also called Key Name in the ANSI X9.24).
@@ -96,7 +95,7 @@ public class KeySerialNumber implements Serializable, Loggeable {
      * @return a String representing the device ID.
      */
     public String getDeviceID () {
-        return  String.format ("%06X", deviceId);
+        return  String.format ("%05X", deviceId);
     }
 
     /**
@@ -119,7 +118,7 @@ public class KeySerialNumber implements Serializable, Loggeable {
      * @return a String representing the transaction counter.
      */
     public String getTransactionCounter () {
-        return  String.format ("%06X", transactionCounter);
+        return  String.format ("%05X", transactionCounter);
     }
 
     /**
