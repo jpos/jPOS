@@ -1,2 +1,3 @@
 org.jpos.core.FileEnvironmentProvider
 org.jpos.core.ObfEnvironmentProvider
+org.jpos.core.CryptoEnvironmentProvider
