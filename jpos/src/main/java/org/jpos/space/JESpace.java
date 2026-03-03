@@ -22,8 +22,8 @@ import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 
@@ -67,8 +67,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
     public static final long DEFAULT_LOCK_TIMEOUT = 120*1000L;
     private Future gcTask;
 
-    static final Map<String,Space> spaceRegistrar = 
-        new HashMap<String,Space> ();
+    static final Map<String,Space> spaceRegistrar = new ConcurrentHashMap<>();
 
     public JESpace(String name, String params) throws SpaceError {
         super();
@@ -263,12 +262,12 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
     }
     public synchronized void put (K key, V value, long timeout) {
         while (inp (key) != null)
-            ; // NOPMD
+            Thread.onSpinWait(); // Java 9+ CPU hint to reduce spinning overhead
         out (key, value, timeout);
     }
     public synchronized void put (K key, V value) {
         while (inp (key) != null)
-            ; // NOPMD
+            Thread.onSpinWait(); // Java 9+ CPU hint to reduce spinning overhead
         out (key, value);
     }
     public void gc () throws DatabaseException {

@@ -21,8 +21,6 @@ import org.jpos.jfr.SpaceEvent;
 import org.jpos.util.Loggeable;
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unchecked")
 public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     protected Map entries;
-    protected TSpace sl;    // space listeners
+    protected volatile TSpace<K,V> sl;    // space listeners
     public static final long GCDELAY = 5*1000;
     private static final long GCLONG = 60_000L;
     private static final long NRD_RESOLUTION = 500L;
@@ -498,7 +496,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         Object obj = null;
         List l = (List) entries.get (key);
         boolean wasExpirable = false;
-        while (obj == null && l != null && l.size() > 0) {
+        while (obj == null && l != null && !l.isEmpty()) {
             obj = l.get(0);
             if (obj instanceof Expirable) { 
                 obj = ((Expirable) obj).getValue();
