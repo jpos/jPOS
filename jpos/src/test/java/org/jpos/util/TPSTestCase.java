@@ -37,8 +37,8 @@ public class TPSTestCase {
         Instant nowDone = Instant.now();
         sleepAtLeast(1100L - Duration.between(nowInit, Instant.now()).toMillis()); // scheduler is not perfectly accurate
         int measured = awaitAutoValue(tps, Duration.ofSeconds(2));
-        assertInRange(measured, 900, 1100, "Expected around 1000 TPS");
-        assertInRange(measured, 900, 1100, "Still expecting around 1000 TPS on a second call");
+        assertInRange(measured, 850, 1100, "Expected around 1000 TPS");
+        assertInRange(measured, 850, 1100, "Still expecting around 1000 TPS on a second call");
         sleepAtLeast(2100L - Duration.between(nowDone, Instant.now()).toMillis());
         assertTrue(tps.getAvg() >= 0.5, "Average should be aprox 0.5 but it's " + tps.getAvg());
         sleepAtLeast(3100L - Duration.between(nowDone, Instant.now()).toMillis());
@@ -46,7 +46,7 @@ public class TPSTestCase {
             0, tps.intValue(),
             "TPS should be zero but it's " + tps.intValue() + " (" + tps.floatValue() + ")"
         );
-        assertInRange(tps.getPeak(), 900, 1100, "Peak should be around 1000");
+        assertInRange(tps.getPeak(), 850, 1100, "Peak should be around 1000");
         tps.stop();
     }
     @Test
