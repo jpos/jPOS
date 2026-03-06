@@ -28,14 +28,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class KeySerialNumberTest {
 
-
     @Test
-    public void testDump() throws Throwable {
+    public void testStringConstructor() throws Throwable {
         PrintStream p = new PrintStream(new ByteArrayOutputStream(), true, "UTF-8");
         Object[] objects = new Object[1];
         p.format("testKeySerialNumberParam1", objects);
-        new KeySerialNumber("FFFF987654", "3210E", "000008")
-                .dump(p, "testKeySerialNumberIndent");
+        KeySerialNumber ksn = new KeySerialNumber("FFFF987654", "3210E", "00008");
+        ksn.dump(p, "testKeySerialNumberIndent");
+        assertEquals("FFFF987654", ksn.getBaseKeyID());
+        assertEquals("3210E", ksn.getDeviceID());
+        assertEquals("00008", ksn.getTransactionCounter());
         assertTrue(true, "Test completed without Exception");
     }
 
@@ -44,8 +46,8 @@ public class KeySerialNumberTest {
         byte[] ksnBin = ISOUtil.hex2byte("9876543210E00008");
         KeySerialNumber ksn = new KeySerialNumber(ksnBin);
         assertEquals("FFFF987654", ksn.getBaseKeyID());
-        assertEquals("03210E", ksn.getDeviceID());
-        assertEquals("000008", ksn.getTransactionCounter());
+        assertEquals("3210E", ksn.getDeviceID());
+        assertEquals("00008", ksn.getTransactionCounter());
     }
 
     @Test

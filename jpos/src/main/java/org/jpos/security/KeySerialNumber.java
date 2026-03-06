@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-
 /**
  * Key Serial Number (also called Key Name in the ANSI X9.24).
  * Needed for deriving the Transaction Key when  DUKPT (Derived Unique Key Per
@@ -96,7 +95,7 @@ public class KeySerialNumber implements Serializable, Loggeable {
      * @return a String representing the device ID.
      */
     public String getDeviceID () {
-        return  String.format ("%06X", deviceId);
+        return  String.format ("%05X", deviceId);
     }
 
     /**
@@ -119,7 +118,7 @@ public class KeySerialNumber implements Serializable, Loggeable {
      * @return a String representing the transaction counter.
      */
     public String getTransactionCounter () {
-        return  String.format ("%06X", transactionCounter);
+        return  String.format ("%05X", transactionCounter);
     }
 
     /**
