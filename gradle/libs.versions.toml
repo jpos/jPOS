@@ -5,20 +5,21 @@ commonscli = "1.11.0"
 commonslang3 = "3.20.0"
 jline = "3.30.6"
 jna = '5.18.1'
-jansi = '2.4.1'
+jansi = '2.4.2'
 beanshell = "2.0b6"
 javatuples = "1.2"
-mockito = "5.21.0"
-mockitojupiter = "5.21.0"
+mapdb = "3.1.0"
+mockito = "5.23.0"
+mockitojupiter = "5.23.0"
 xmlunit = "1.6"
 junit = "6.0.1"
 bouncycastle = "1.83"
 hamcrest = "3.0"
 hdrhistogram = "2.2.2"
-yaml = "2.5"
+yaml = "2.6"
 micrometercore = "1.16.1"
 micrometerprometheus = "1.16.1"
-jackson = '2.20.1'
+jackson = '2.21.1'
 jdbm = '1.0'
 
 [libraries]
@@ -47,4 +48,5 @@ jacksonCore = { module = 'com.fasterxml.jackson.core:jackson-core', version.ref 
 jacksonDataBind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson' }
 jacksonDataTypeJSR310 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson' }
 jacksonDataFormatXML = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml', version.ref = 'jackson' }
+mapdb = { module = "org.mapdb:mapdb", version.ref = "mapdb" }
 
