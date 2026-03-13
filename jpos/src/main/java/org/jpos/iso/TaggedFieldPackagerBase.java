@@ -26,7 +26,7 @@ import java.io.ObjectOutput;
 
 /**
  * Base class and template for handling tagged fields.
- * <p/>
+ * <p>
  * This should support both fixed length and variable length tags.
  */
 public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {

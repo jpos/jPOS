@@ -91,12 +91,13 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
      *
      *
      * SelectDestination expects an XML configuration in the following format:
-     *
+     * <pre>{@code
      * <endpoint destination="XXX">
      *   4000000..499999
      *   4550000..455999
      *   5
      * </endpoint>
+     * }</pre>
      *
      */
     public void setConfiguration(Element xml) throws ConfigurationException {

@@ -30,9 +30,9 @@ import java.util.Map;
 
 /**
  * A specific log listener that filters logs based on
- * their priorities,
- * priorities are ordered as follows: TRACE < DEBUG < INFO < WARN < ERROR < FATAL
- * default priority is Log.INFO
+ * their priorities. Priorities are ordered as follows:
+ * {@code TRACE < DEBUG < INFO < WARN < ERROR < FATAL}.
+ * Default priority is {@code Log.INFO}.
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @version $Revision$ $Date$
  */

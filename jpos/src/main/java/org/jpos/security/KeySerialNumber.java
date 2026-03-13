@@ -101,7 +101,7 @@ public class KeySerialNumber implements Serializable, Loggeable {
     /**
      * Returns the deviceID as an array of bytes.
      *
-     * @ return a 3 bytes array representing the deviceID
+     * @return a 3 bytes array representing the deviceID
      */
     public byte[] getDeviceIDBytes () {
         ByteBuffer buf = ByteBuffer.allocate(8);
@@ -124,7 +124,7 @@ public class KeySerialNumber implements Serializable, Loggeable {
     /**
      * Returns the transaction counter as an array of bytes.
      *
-     * @ return a 3 byte array representing the transaction counter.
+     * @return a 3 byte array representing the transaction counter.
      */
     public byte[] getTransactionCounterBytes () {
         ByteBuffer buf = ByteBuffer.allocate(4);

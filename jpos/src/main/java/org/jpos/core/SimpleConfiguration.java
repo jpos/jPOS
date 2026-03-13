@@ -47,7 +47,7 @@ public class SimpleConfiguration implements Configuration, Serializable {
     }
 
     /**
-     * Returns the value of the configuration property named <tt>name</tt>, or the default value <tt>def</tt>.
+     * Returns the value of the configuration property named {@code name}, or the default value {@code def}.
      *
      * If the property value has the format <code>${xxx}</code> then its value is taken from a system property
      * if it exists, or an environment variable. System property takes priority over environment variable.
@@ -57,8 +57,8 @@ public class SimpleConfiguration implements Configuration, Serializable {
      *
      * @param name The configuration property key name.
      * @param def  The default value.
-     * @return  The value stored under <tt>name</tt>,
-     *          or <tt>def</tt> if there's no configuration property under the given <tt>name</tt>.
+     * @return  The value stored under {@code name},
+     *          or {@code def} if there's no configuration property under the given {@code name}.
      */
     public String get (String name, String def) {
         Object obj = props.get (name);

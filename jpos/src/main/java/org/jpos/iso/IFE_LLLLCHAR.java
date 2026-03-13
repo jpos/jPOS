@@ -19,8 +19,9 @@
 package org.jpos.iso;
 
 /**
+ * ISOFieldPackager EBCDIC variable-length character field with a 4-digit length prefix.
  *
- * @author edwin < edwinkun at gmail dot com >
+ * @author edwin (edwinkun at gmail dot com)
  */
 
 public class IFE_LLLLCHAR extends ISOStringFieldPackager 

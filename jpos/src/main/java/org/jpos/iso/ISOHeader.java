@@ -21,6 +21,7 @@ package org.jpos.iso;
 import java.io.Serializable;
 
 /**
+ * Represents the optional header portion of an ISO-8583 message frame.
  * @author Eoin.Flood@orbiscom.com
  */
 

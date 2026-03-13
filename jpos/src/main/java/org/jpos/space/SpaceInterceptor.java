@@ -23,6 +23,9 @@ package org.jpos.space;
  *
  * @author Alejandro Revilla
  * @since  1.4.7
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 public class SpaceInterceptor<K,V> implements Space<K,V> {
     protected Space<K,V> sp;

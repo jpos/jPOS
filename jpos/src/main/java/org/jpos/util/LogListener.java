@@ -22,6 +22,7 @@ package org.jpos.util;
 import java.util.EventListener;
 
 /**
+ * Implemented by objects that wish to receive and process {@link LogEvent} instances produced by a {@link Logger}.
  * @author apr@cs.com.uy
  * @version $Id$
  */

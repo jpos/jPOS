@@ -40,7 +40,7 @@ public class ISOField
 
     /**
      * No args constructor 
-     * <font size="-1">(required by Externalizable support on ISOMsg)</font>
+     * (required by Externalizable support on ISOMsg)
      */
     public ISOField () {
         fieldNumber = -1;

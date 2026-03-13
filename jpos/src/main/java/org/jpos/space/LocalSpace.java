@@ -21,8 +21,12 @@ package org.jpos.space;
 import java.util.Set;
 
 /**
+ * Extension of {@link Space} with blocking read/take operations and space-listener support.
  * @author Kris, Bharavi, Alejandro
  * @version $Revision$ $Date$
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 public interface LocalSpace<K,V> extends Space<K,V> {
     /**

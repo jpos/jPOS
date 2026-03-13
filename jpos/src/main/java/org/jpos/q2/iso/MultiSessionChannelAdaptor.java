@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
+ * Q2 QBean that manages multiple concurrent sessions over a single ISOChannel.
  * @author apr
  * @since 1.8.5
  */

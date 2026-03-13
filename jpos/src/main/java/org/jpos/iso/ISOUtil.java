@@ -1165,8 +1165,10 @@ public class ISOUtil {
      * Converts a String to an integer of base radix.
      * <br><br>
      * String constraints are:
+     * <ul>
      * <li>Number must be less than 10 digits</li>
      * <li>Number must be positive</li>
+     * </ul>
      * @param s String representation of number
      * @param radix Number base to use
      * @return integer value of number
@@ -1196,8 +1198,10 @@ public class ISOUtil {
      * Converts a String to an integer of radix 10.
      * <br><br>
      * String constraints are:
+     * <ul>
      * <li>Number must be less than 10 digits</li>
      * <li>Number must be positive</li>
+     * </ul>
      * @param s String representation of number
      * @return integer value of number
      * @throws NumberFormatException
@@ -1210,8 +1214,10 @@ public class ISOUtil {
      * Converts a character array to an integer of base radix.
      * <br><br>
      * Array constraints are:
+     * <ul>
      * <li>Number must be less than 10 digits</li>
      * <li>Number must be positive</li>
+     * </ul>
      * @param cArray Character Array representation of number
      * @param radix Number base to use
      * @return integer value of number
@@ -1241,8 +1247,10 @@ public class ISOUtil {
      * Converts a character array to an integer of radix 10.
      * <br><br>
      * Array constraints are:
+     * <ul>
      * <li>Number must be less than 10 digits</li>
      * <li>Number must be positive</li>
+     * </ul>
      * @param cArray Character Array representation of number
      * @return integer value of number
      * @throws NumberFormatException
@@ -1255,8 +1263,10 @@ public class ISOUtil {
      * Converts a byte array to an integer of base radix.
      * <br><br>
      * Array constraints are:
+     * <ul>
      * <li>Number must be less than 10 digits</li>
      * <li>Number must be positive</li>
+     * </ul>
      * @param bArray Byte Array representation of number
      * @param radix Number base to use
      * @return integer value of number
@@ -1286,8 +1296,10 @@ public class ISOUtil {
      * Converts a byte array to an integer of radix 10.
      * <br><br>
      * Array constraints are:
+     * <ul>
      * <li>Number must be less than 10 digits</li>
      * <li>Number must be positive</li>
+     * </ul>
      * @param bArray Byte Array representation of number
      * @return integer value of number
      * @throws NumberFormatException
@@ -1479,7 +1491,7 @@ public class ISOUtil {
 
     /**
      * Format a string containing a amount conversion rate in the proper format
-     * <p/>
+     * <p>
      * Format:
      * The leftmost digit (i.e., position 1) of this data element denotes the number of
      * positions the decimal separator must be moved from the right. Positions 2–8 of
@@ -1505,7 +1517,7 @@ public class ISOUtil {
 
     /**
      * Parse currency amount conversion rate string
-     * <p/>
+     * <p>
      * Suitble for parse fields 10 and 11
      *
      * @param convRate amount conversation rate

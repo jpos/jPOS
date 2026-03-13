@@ -32,6 +32,7 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 /**
+ * Helper utilities for jPOS module installation and descriptor processing.
  * @author vsalaman
  */
 public class ModuleUtils

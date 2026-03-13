@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * Utility that installs jPOS modules by resolving and deploying their artifacts into the Q2 deploy directory.
  * @author vsalaman
  */
 public class Install

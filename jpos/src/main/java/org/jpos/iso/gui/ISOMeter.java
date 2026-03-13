@@ -30,7 +30,7 @@ import java.awt.event.MouseListener;
  * ISOMsgPanel
  * Swing based GUI to ISOMsg
  * @author apr@cs.com.uy
- * @author Kris Leite <kleite at imcsoftware.com>
+ * @author Kris Leite (kleite at imcsoftware.com)
  * @see org.jpos.iso.ISOMsg
  */
 @SuppressWarnings("deprecation")

@@ -49,7 +49,6 @@ import java.util.concurrent.locks.ReentrantLock;
  *   <li>Full LocalSpace compatibility: Drop-in replacement with same API and behavior</li>
  *   <li>JFR instrumentation: All operations emit SpaceEvent for monitoring</li>
  * </ul>
- * </p>
  *
  * Concurrency notes (core safety invariants):
  * - Never remove a KeyEntry from entries while threads are waiting on that entry's hasValue Condition,
@@ -59,6 +58,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since 3.0
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 @SuppressWarnings("unchecked")
 public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {

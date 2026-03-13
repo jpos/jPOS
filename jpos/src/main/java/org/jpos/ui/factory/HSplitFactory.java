@@ -25,6 +25,7 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that creates a horizontal {@link javax.swing.JSplitPane} from XML.
  * @author Alejandro Revilla
  *
  * creates a horizontal split pane

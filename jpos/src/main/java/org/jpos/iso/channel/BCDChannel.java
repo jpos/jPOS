@@ -30,7 +30,7 @@ import java.net.ServerSocket;
  * Sends [LEN][TPDU][ISOMSG]
  * (len=2 bytes HEX)
  *
- * @author Mladen Mrkic <mmrkic@arius.co.yu>
+ * @author Mladen Mrkic (mmrkic@arius.co.yu)
  * @version $Revision: 2706 $ $Date: 2009-03-05 11:24:43 +0000 (Thu, 05 Mar 2009) $
  * @see ISOMsg
  * @see ISOException

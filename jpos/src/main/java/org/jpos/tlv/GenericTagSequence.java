@@ -21,6 +21,7 @@ package org.jpos.tlv;
 import org.jpos.iso.ISOException;
 
 /**
+ * A generic ordered sequence of {@link TagValue} elements.
  * @author Vishnu Pillai
  */
 public class GenericTagSequence extends TagSequenceBase {

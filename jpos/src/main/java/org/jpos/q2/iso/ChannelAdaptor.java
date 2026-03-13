@@ -56,6 +56,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Q2 QBean that wraps an {@link org.jpos.iso.ISOChannel} and exposes it as a managed, reconnecting service.
  * @author Alejandro Revilla
  */
 @SuppressWarnings("unchecked")

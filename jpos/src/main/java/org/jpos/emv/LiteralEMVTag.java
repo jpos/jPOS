@@ -23,6 +23,7 @@ import org.jpos.tlv.TLVDataFormat;
 
 
 /**
+ * An EMV tag whose value is represented as a literal string.
  * @author Vishnu Pillai
  */
 public class LiteralEMVTag extends EMVTag<String> {

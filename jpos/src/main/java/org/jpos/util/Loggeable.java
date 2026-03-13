@@ -24,6 +24,7 @@ import org.jpos.log.LogRendererRegistry;
 import java.io.PrintStream;
 
 /**
+ * Implemented by objects that can produce a human-readable log representation via {@link #dump(java.io.PrintStream, String)}.
  * @author apr@cs.com.uy
  * @version $Id$
  */

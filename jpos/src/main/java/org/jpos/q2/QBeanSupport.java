@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
+ * Convenience base class for QBean implementations; provides configuration, logging, and lifecycle support.
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */

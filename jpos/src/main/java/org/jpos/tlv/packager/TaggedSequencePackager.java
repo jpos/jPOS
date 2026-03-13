@@ -62,7 +62,7 @@ public class TaggedSequencePackager extends GenericPackager {
 
     /**
      * Specify a placeholder token so that we can determine the tag length.
-     * <p/>
+     * <p>
      * If the tags are all numeric and tags do not repeat, a numeric token may be a used like '00'.
      * Else, use a non numeric token e.g.: XX, ##, etc.
      *

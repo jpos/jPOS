@@ -25,6 +25,7 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
 
 /**
+ * A single TLV (Tag-Length-Value) message element.
  * @author bharavi
  */
 public class TLVMsg implements Loggeable {

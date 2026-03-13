@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
  * @author vsalaman@gmail.com
  * @author Jonathan.O'Connor@xcom.de
  * @version $Id$
- * @see "http://www.evertype.com/standards/iso4217/iso4217-en.html"
- *      "http://www.iso.org/iso/en/prods-services/popstds/currencycodeslist.html"
+ * @see <a href="http://www.evertype.com/standards/iso4217/iso4217-en.html">ISO 4217 currency codes</a>
+ * @see <a href="http://www.iso.org/iso/en/prods-services/popstds/currencycodeslist.html">ISO currency codes list</a>
  */
 public class ISOCurrency
 {

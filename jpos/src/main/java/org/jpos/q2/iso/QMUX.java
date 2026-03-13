@@ -40,6 +40,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Q2 QBean that implements a full-duplex ISO-8583 multiplexer over an {@link org.jpos.iso.ISOChannel}.
  * @author Alejandro Revilla
  */
 @SuppressWarnings("unchecked")
@@ -494,7 +495,7 @@ public class QMUX
      * @param m the Message to be sent
      * @throws java.io.IOException
      * @throws org.jpos.iso.ISOException
-     * @throws org.jpos.iso.ISOFilter.VetoException;
+     * @throws org.jpos.iso.ISOFilter.VetoException if a filter vetoes the message
      */
     public void send(ISOMsg m) throws IOException, ISOException {
         if (!isConnected())

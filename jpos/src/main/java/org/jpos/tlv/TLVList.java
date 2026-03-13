@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * An ordered list of TLV (Tag-Length-Value) records.
  * @author bharavi
  */
 
@@ -319,7 +320,7 @@ public class TLVList implements Serializable, Loggeable {
      * @param index zero based index of TLV message
      * @return TLV message instance
      * @throws IndexOutOfBoundsException if the index is out of range
-     * (index < 0 || index >= size())
+     * (index &lt; 0 || index &gt;= size())
      */
     public TLVMsg index(int index) throws IndexOutOfBoundsException {
         return tags.get(index);

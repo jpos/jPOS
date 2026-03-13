@@ -41,6 +41,8 @@ import java.util.Map;
  * @author Hani S. Kirollos
  * @author Robert Demski
  * @version $Revision$ $Date$
+
+ * @param <T> the SecureKey implementation type
  */
 public interface SMAdapter<T> {
     /**
@@ -231,7 +233,7 @@ public interface SMAdapter<T> {
 
     /**
      * PIN Block Format 35 is the required by Europay/MasterCard
-     * for their Pay Now & Pay Later products.
+     * for their Pay Now &amp; Pay Later products.
      */
     byte FORMAT35 = (byte)35;
 
@@ -1004,11 +1006,13 @@ public interface SMAdapter<T> {
      * <p>The EMV "Track 2 Equivalent Data", provided in the authorisation
      * message and originating from the contactless smart card, is the source
      * for the following data elements used in this function:
+     * <ul>
      * <li> {@code accountNo}
      * <li> {@code expDate}
      * <li> {@code serviceCode}
      * <li> {@code atc}
      * <li> {@code dCVV}
+     * </ul>
      *
      * @param accountNo The account number including BIN and the check digit
      * @param imkac the issuer master key for generating and verifying Application Cryptograms
@@ -1090,10 +1094,10 @@ public interface SMAdapter<T> {
      *            provided in the authorisation message and originating from
      *            the contactless smart card. Usually variable part of
      *            Discreditionary Data are replased by some static value.
-     *        <li>precomputed Initial Vector for <tt>CVC3</tt> calculation
-     *            <tt>(IVCVC3)</tt> which is a <tt>MAC</tt> calculated over
+     *        <li>precomputed Initial Vector for {@code CVC3} calculation
+     *            {@code (IVCVC3)} which is a {@code MAC} calculated over
      *            the static part of Track1 or Track2 data using the key derived
-     *            from <tt>MK-CVC3</tt>.
+     *            from {@code MK-CVC3}.
      *        </ul>
      * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
      *        is assumed.
@@ -1288,6 +1292,7 @@ public interface SMAdapter<T> {
      * @param padm padding method. If null {@code padm} is derived as follow:
      *    <blockquote>
      *    <table>
+     *      <caption>padm derivation rules</caption>
      *      <thead>
      *        <tr><th>{@code skdm} value</th><th>derived {@code padm} value</th></tr>
      *      </thead>

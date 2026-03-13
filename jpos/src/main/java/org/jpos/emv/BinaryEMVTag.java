@@ -23,6 +23,7 @@ import org.jpos.tlv.TLVDataFormat;
 
 
 /**
+ * An EMV tag whose value is represented as raw binary data.
  * @author Vishnu Pillai
  */
 public class BinaryEMVTag extends EMVTag<byte[]> {

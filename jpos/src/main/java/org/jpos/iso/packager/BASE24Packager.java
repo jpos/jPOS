@@ -23,7 +23,7 @@ import org.jpos.iso.*;
 /**
  * BASE24 Packager made from ISO 8583 v1987 ASCII Packager
  *
- * @author Mike Trank <mike@netcomsa.com>
+ * @author Mike Trank (mike@netcomsa.com)
  * @version $Id$
  * @see ISOPackager
  * @see ISOBasePackager

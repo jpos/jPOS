@@ -25,6 +25,7 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that creates a {@link javax.swing.JPanel} from XML.
  * @author Alejandro Revilla
  *
  * creates a panel (with an optional "id")

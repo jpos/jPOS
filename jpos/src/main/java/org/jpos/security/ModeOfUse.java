@@ -35,7 +35,7 @@ public enum ModeOfUse {
     ENCDEC          ('B', "Encryption and Decryption"),
 
     /**
-     * The key may be used to perform MAC calculation <i>(both generate &
+     * The key may be used to perform MAC calculation <i>(both generate &amp;
      * verify)</i> operations.
      */
     GENVER          ('C', "Verification and Generation of MAC, CVD"),

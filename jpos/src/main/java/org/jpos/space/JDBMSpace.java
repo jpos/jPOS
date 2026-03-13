@@ -41,6 +41,9 @@ import java.util.*;
  * @author Kris Leite
  * @version $Revision$ $Date$
  * @since 1.4.7
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 @SuppressWarnings("unchecked")
 public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentSpace {

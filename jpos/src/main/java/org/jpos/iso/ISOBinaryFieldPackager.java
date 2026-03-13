@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Marker interface for {@link org.jpos.iso.ISOFieldPackager} implementations that handle binary fields.
  * @author joconnor
  * @version $Revision$ $Date$
  */

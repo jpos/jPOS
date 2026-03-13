@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Abstract base for {@link TagSequence} implementations.
  * @author Vishnu Pillai
  */
 public abstract class TagSequenceBase implements TagSequence {

@@ -41,7 +41,7 @@ import org.jpos.security.Util;
  * Provides some higher level methods that are needed by the JCE Security Module, yet they are generic and can be used elsewhere.
  * </p>
  * <p>
- * It depends on the Java<font size=-1><sup>TM</sup></font> Cryptography Extension (JCE).
+ * It depends on the Java&trade; Cryptography Extension (JCE).
  * </p>
  * 
  * @author Hani S. Kirollos

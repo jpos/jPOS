@@ -123,12 +123,12 @@ public class ISOMsg extends ISOComponent
 
     /**
      * Sets optional trailer data.
-     * <p/>
+     * <p>
      * Note: The trailer data requires a customised channel that explicitly handles the trailer data from the ISOMsg.
      *
      * @param trailer The trailer data.
-     * @see BaseChannel#getMessageTrailer(ISOMsg).
-     * @see BaseChannel#sendMessageTrailer(ISOMsg, byte[]).
+     * @see BaseChannel#getMessageTrailer(ISOMsg)
+     * @see BaseChannel#sendMessageTrailer(ISOMsg, byte[])
      */
     public void setTrailer(byte[] trailer) {
         this.trailer = trailer;

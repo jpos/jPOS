@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Core interface for ISO-8583 packagers; responsible for packing and unpacking {@link org.jpos.iso.ISOMsg} instances.
  * @author apr
  * @version $Id$
  * @see ISOComponent

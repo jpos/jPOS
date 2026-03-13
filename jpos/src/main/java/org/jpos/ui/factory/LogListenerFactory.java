@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 /**
+ * UIFactory that creates a log-event viewer component from XML.
  * @author Alejandro Revilla
  *
  * a log listener component

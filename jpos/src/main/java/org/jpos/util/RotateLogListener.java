@@ -85,7 +85,6 @@ public class RotateLogListener extends SimpleLogListener
     * <ul>
     *     <li>h - hostname lookup</li>
     * </ul>
-    * </p>
     * <p>
     * When code replacement fails, the token will be replaced by the code preceded by a # to give an indication
     * of what failed.  This type of failure will not result in a startup failure.

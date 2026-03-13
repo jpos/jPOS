@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <ul>
  *   <li>Auto update.</li>
  *   <li>Manual update.</li>
- * </ul></p>
+ * </ul>
  *
  * <p>When operating in <b>auto update</b> mode, a shared scheduler is used and the
  * number of transactions (calls to tick()) is automatically calculated for

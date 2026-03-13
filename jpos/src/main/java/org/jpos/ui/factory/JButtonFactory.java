@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
+ * UIFactory that creates a {@link javax.swing.JButton} from XML.
  * @author Alejandro Revilla
  *
  * Creates a JButton

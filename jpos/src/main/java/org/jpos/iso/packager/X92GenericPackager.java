@@ -25,6 +25,7 @@ import org.jpos.iso.X92_BITMAP;
 import java.io.InputStream;
 
 /**
+ * ISO-8583 packager for the X9.2 generic message format.
  * @see GenericPackager
  * @author Alejandro Revilla
  * @version $$evision: $ $Date$

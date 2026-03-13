@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * UIFactory that creates a {@link javax.swing.JTabbedPane} from XML.
  * @author Alejandro Revilla
  *
  * creates a tabbed pane

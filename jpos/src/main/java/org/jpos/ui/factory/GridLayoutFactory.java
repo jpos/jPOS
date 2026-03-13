@@ -27,6 +27,7 @@ import java.awt.*;
 import java.util.Iterator;
 
 /**
+ * UIFactory that creates a {@link java.awt.GridLayout}-based panel from XML.
  * @author Alejandro Revilla
  *
  * creates a panel with a grid layout

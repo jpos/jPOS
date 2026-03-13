@@ -19,6 +19,7 @@
 package org.jpos.emv;
 
 /**
+ * Thrown when an EMV field uses a proprietary format that cannot be processed.
  * @author Vishnu Pillai
  */
 public class ProprietaryFormatException extends Exception {

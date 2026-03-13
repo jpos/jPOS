@@ -25,6 +25,7 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that creates a text component from XML.
  * @author Alejandro Revilla
  *
  * Creates a text editor

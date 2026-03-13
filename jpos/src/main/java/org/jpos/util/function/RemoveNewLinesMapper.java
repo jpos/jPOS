@@ -30,13 +30,13 @@ import java.nio.ByteBuffer;
  * Configuration options allow you to optionally combine multiple spaces into a single space and
  * opting not to add a newline at the end of the data.
  *
- * Example: <br>
- *     <pre>
- *         <output-mapper class="org.jpos.util.function.RemoveNewLinesMapper">
- *             <properties name="combine-spaces" value="true"/>
- *             <properties name="newline-at-end" value="false/>
- *         </output-mapper>
- *     </pre><br>
+ * Example:
+ * <pre>{@code
+ *     <output-mapper class="org.jpos.util.function.RemoveNewLinesMapper">
+ *         <property name="combine-spaces" value="true"/>
+ *         <property name="newline-at-end" value="false"/>
+ *     </output-mapper>
+ * }</pre>
  *
  * <b>NB. Do not set combine-spaces to true if you have data where spaces are significant.</b>
  *

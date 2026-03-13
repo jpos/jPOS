@@ -20,6 +20,7 @@ package org.jpos.util;
 
 
 /**
+ * Implemented by objects that own a {@link Logger} and can produce {@link LogEvent} instances.
  * @author apr@cs.com.uy
  * @version $Id$
  */

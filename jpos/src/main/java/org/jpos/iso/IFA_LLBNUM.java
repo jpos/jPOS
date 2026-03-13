@@ -25,7 +25,7 @@ import java.io.InputStream;
  * Value is represented in BCD
  * ISOFieldPackager Binary LLNUM
  *
- * @author Mladen Mrkic <mmrkic@arius.co.yu>
+ * @author Mladen Mrkic (mmrkic@arius.co.yu)
  *
  * @see ISOComponent
  */

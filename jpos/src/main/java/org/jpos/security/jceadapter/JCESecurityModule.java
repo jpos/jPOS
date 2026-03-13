@@ -715,11 +715,11 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * Derive ICC Master Key from Issuer Master Key and preformated PAN/PANSeqNo
      *
      * Compute two 8-byte numbers:
-     * <li> left part is a result of Tripple-DES encription {@code panpsn}
-     * with {@code imk} as the key
-     * <li> right part is a result of Tripple-DES binary inverted
-     * {@code panpsn} with {@code imk} as the key
-     * <li> concatenate left and right parts
+     * <ul>
+     * <li>left part is a result of Triple-DES encryption of {@code panpsn} with {@code imk} as the key</li>
+     * <li>right part is a result of Triple-DES encryption of binary-inverted {@code panpsn} with {@code imk} as the key</li>
+     * <li>concatenate left and right parts</li>
+     * </ul>
      * <br>
      * Described in EMV v4.2 Book 2, Annex A1.4.1 Master Key Derivation point 2
      *

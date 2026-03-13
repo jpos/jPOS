@@ -25,6 +25,7 @@ import org.jpos.core.XmlConfigurable;
 import java.io.PrintStream;
 
 /**
+ * A {@link LogListener} that writes log events to a {@link java.io.PrintStream} (default: {@code System.out}).
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @see org.jpos.core.Configurable

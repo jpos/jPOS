@@ -28,7 +28,7 @@ import java.net.ServerSocket;
 /**
  * Sends a four ASCII hex characters indicating message length (up to 0xffff)
  *
- * @author Mladen Mrkic <mmrkic@arius.co.yu>
+ * @author Mladen Mrkic (mmrkic@arius.co.yu)
  * @author apr
  * @version $Revision$ $Date$
  * @see ISOMsg

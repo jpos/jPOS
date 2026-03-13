@@ -21,6 +21,7 @@ package org.jpos.ui;
 import org.jdom2.Element;
 
 /**
+ * Implemented by UI components that need access to the parent {@link UI} controller.
  * @since 1.4.7
  * @author Alejandro Revilla
  * <p>

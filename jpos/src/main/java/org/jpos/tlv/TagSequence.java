@@ -25,8 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * An ordered sequence of {@link TagValue} elements of type {@code T}.
  * @author Vishnu Pillai
  *         Date: 4/11/14
+
+ * @param <T> the tag value type
  */
 public interface TagSequence<T> extends TagValue<T> {
 

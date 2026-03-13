@@ -19,10 +19,14 @@
 package org.jpos.space;
 
 /**
+ * Callback interface for objects that wish to be notified when entries are added to a {@link Space}.
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since 2.0
  * @see Space
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 public interface SpaceListener<K,V> {
     /**

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Marker interface for field packagers that produce padded/filled string values.
  * @author joconnor
  * @version $Revision$ $Date$
  */

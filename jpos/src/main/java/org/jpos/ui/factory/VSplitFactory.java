@@ -25,6 +25,7 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that creates a vertical {@link javax.swing.JSplitPane} from XML.
  * @author Alejandro Revilla
  *
  * creates a vertical split pane

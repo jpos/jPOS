@@ -310,7 +310,7 @@ public class GenericPackager
     {
         /**
          * Allow the application to resolve external entities.
-         * <p/>
+         * <p>
          * The strategy we follow is:<p>
          * We first check whether the DTD points to a well defined URI,
          * and resolve to our internal DTDs.<p>

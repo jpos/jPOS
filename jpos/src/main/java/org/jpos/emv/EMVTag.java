@@ -26,7 +26,10 @@ import java.io.Serializable;
 
 
 /**
+ * Abstract base for EMV (Europay/Mastercard/Visa) tag-value pairs.
  * @author Vishnu Pillai
+
+ * @param <T> the tag value type
  */
 public abstract class EMVTag<T> implements TagValue<T>, Serializable {
 

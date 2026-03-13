@@ -37,6 +37,9 @@ package org.jpos.space;
  * @see TSpace
  * @see SpaceError
  * @see <a href="http://www.cs.yale.edu/Linda/linda-lang.html">The Linda Coordination Language</a>
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 
 public interface Space<K,V> extends AutoCloseable {

@@ -31,7 +31,6 @@ import java.util.*;
  * It is typically the contents of ISOField(123).
  * For more information refer to ANSI X9.17: Financial Institution Key Mangement
  * (Wholesale).
- * </p>
  * @author Hani S. Kirollos
  * @version $Revision$ $Date$
  */

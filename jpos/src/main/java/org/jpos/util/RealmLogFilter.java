@@ -61,14 +61,14 @@ import java.util.Set;
  * will show all LogEvents before RealmLogFilter filters these
  * according to the list of enabled realms. <br>
  *
- * Reads values configured inside <enabled></enabled> or
- * <disabled></disabled> to choose elements of which realm to log.
- * If <enabled></enabled> is defined, these realms ONLY will be logged. Disabled will not be taken into account.
- * If the <disabled></disabled> realms are defined, only this will not be shown, the rest will.
+ * Reads values configured inside {@code <enabled>} or
+ * {@code <disabled>} to choose elements of which realm to log.
+ * If {@code <enabled>} is defined, these realms ONLY will be logged. Disabled will not be taken into account.
+ * If the {@code <disabled>} realms are defined, only this will not be shown, the rest will.
  * If none of them is defined the events will be logged.<br>
  *
  * Those realms that had events but were filtered will be saved. These are logged at a certain interval defined
- * by the property dump-interval in an <ignored-realms> tag. Once logged these filtered realms are reset.
+ * by the property dump-interval in an {@code <ignored-realms>} tag. Once logged these filtered realms are reset.
  *
  * @author Santiago Revilla
  * @author Alejandro Revilla

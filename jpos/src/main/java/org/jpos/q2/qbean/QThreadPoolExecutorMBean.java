@@ -21,6 +21,7 @@ package org.jpos.q2.qbean;
 import org.jpos.util.NameRegistrar.NotFoundException;
 
 /**
+ * JMX management interface for the Q2 thread-pool executor QBean.
  * @author dgrandemange
  * 
  */

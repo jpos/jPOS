@@ -19,6 +19,7 @@
 package org.jpos.iso;
 
 /**
+ * Marker interface for packagers that support tagged (TLV-style) ISO fields.
  * @author Vishnu Pillai
  *         Date: 1/22/14
  */

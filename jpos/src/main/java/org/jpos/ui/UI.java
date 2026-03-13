@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.*;
 
 /**
+ * Central controller for the jPOS Swing-based GUI; manages UI components and their factories.
  * @author Alejandro Revilla
  *
  * <p>jPOS UI main class</p>

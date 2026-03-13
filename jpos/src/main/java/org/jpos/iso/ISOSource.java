@@ -32,7 +32,7 @@ public interface ISOSource {
      * @param m the Message to be sent
      * @exception IOException
      * @exception ISOException
-     * @exception ISOFilter.VetoException;
+     * @exception org.jpos.iso.ISOFilter.VetoException if a filter vetoes the message
      */
     void send(ISOMsg m)
         throws IOException, ISOException;

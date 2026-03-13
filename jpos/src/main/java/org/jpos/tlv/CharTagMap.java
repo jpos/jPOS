@@ -33,7 +33,7 @@ import java.util.HashMap;
  *   <li>length is encoded as decimal characters
  * </ul>
  *
- * @author Grzegorz Wieczorek <grw1@wp.pl>
+ * @author Grzegorz Wieczorek (grw1@wp.pl)
  */
 public class CharTagMap extends HashMap<String, CharTag> {
 
@@ -50,11 +50,11 @@ public class CharTagMap extends HashMap<String, CharTag> {
      * This method creates default TLV tag map which works on TLV data with
      * followng parameters:
      * <ul>
-     *   <li><em>TT</em> - 2 <tt>ASCII</tt> characters of tag identifier
-     *   <li><em>LLL</em> - 3 <tt>ASCII</tt> encoded decimal digits represents
+     *   <li><em>TT</em> - 2 {@code ASCII} characters of tag identifier
+     *   <li><em>LLL</em> - 3 {@code ASCII} encoded decimal digits represents
      *      tag value length
      *   </li>
-     *   <li><em>VAL</em> - 0 or more <i>(up to 999)</i> <tt>ASCII</tt>
+     *   <li><em>VAL</em> - 0 or more <i>(up to 999)</i> {@code ASCII}
      *      encoded characters represents tag value
      *   </li>
      * </ul>

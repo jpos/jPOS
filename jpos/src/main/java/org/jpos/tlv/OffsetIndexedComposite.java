@@ -19,6 +19,7 @@
 package org.jpos.tlv;
 
 /**
+ * A composite TLV structure that supports offset-based indexed access to its elements.
  * @author Vishnu Pillai
  *         Date: 1/24/14
  */

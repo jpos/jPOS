@@ -19,6 +19,7 @@
 package org.jpos.tlv;
 
 /**
+ * TLV tag value implementation backed by a binary (byte[]) payload.
  * @author Vishnu Pillai
  */
 public class BinaryTagValue extends TagValueBase<byte[]> {

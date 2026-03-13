@@ -33,6 +33,7 @@ import java.util.Map;
 
 
 /**
+ * A {@link TagValue} whose value is a reference to an {@link org.jpos.iso.ISOMsg}.
  * @author Vishnu Pillai
  */
 public class ISOMsgRef {

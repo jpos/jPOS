@@ -392,7 +392,7 @@ public abstract class BaseChannel extends Observable
 
     /**
      * sets socket timeout (as suggested by
-     * Leonard Thomas <leonard@rhinosystemsinc.com>)
+     * Leonard Thomas (leonard@rhinosystemsinc.com))
      * @param timeout in milliseconds
      * @throws SocketException on error
      */
@@ -586,7 +586,7 @@ public abstract class BaseChannel extends Observable
      * Read some trailer data from this channel and optionally store it in the incoming ISOMsg.
      *
      * @param m The ISOMessage to store the trailer data.
-     * @see ISOMsg#setTrailer(byte[]).
+     * @see ISOMsg#setTrailer(byte[])
      */
     @SuppressWarnings("deprecation")
     protected void getMessageTrailer(ISOMsg m) throws IOException {
@@ -710,7 +710,7 @@ public abstract class BaseChannel extends Observable
      * @param b the byte array to be sent
      * @exception IOException
      * @exception ISOException
-     * @exception ISOFilter.VetoException;
+     * @exception org.jpos.iso.ISOFilter.VetoException if a filter vetoes the message
      */
     public void send (byte[] b) throws IOException, ISOException {
         var jfr = new ChannelEvent.Send();
@@ -1171,7 +1171,7 @@ public abstract class BaseChannel extends Observable
     /**
      * @param name the Channel's name (without the "channel." prefix)
      * @return ISOChannel instance with given name.
-     * @throws NameRegistrar.NotFoundException;
+     * @throws org.jpos.util.NameRegistrar.NotFoundException if not registered
      * @see NameRegistrar
      */
     public static ISOChannel getChannel (String name)

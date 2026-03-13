@@ -20,6 +20,7 @@ package org.jpos.iso;
 
 
 /**
+ * ISOFieldPackager for a binary-length-prefixed LLHECHAR field.
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent

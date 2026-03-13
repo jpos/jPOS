@@ -34,9 +34,9 @@ public interface ISOMsgMetrics {
     default Tags getTags() { return addTags(Tags.empty()); }
 
     /**
-     * Records an {@link ISOMsg} in the meter registry.<br/>
+     * Records an {@link ISOMsg} in the meter registry.<br>
      * The metric name and tags will be taken strictly from this object's
-     * configuration. <br/>
+     * configuration. <br>
      * If this object hasn't been successfully registered, it throws an
      * {@link IllegalStateException}.
      *
@@ -46,7 +46,7 @@ public interface ISOMsgMetrics {
     void recordMessage(ISOMsg m) throws IllegalStateException;
 
     /**
-     * Records an {@link ISOMsg} in the meter registry.<br/>
+     * Records an {@link ISOMsg} in the meter registry.<br>
      * Similar to {@link #recordMessage(ISOMsg)} but using the metric name, description and maybe some
      * tags taken from the {@link MeterInfo} argument.
      * <p>
@@ -64,7 +64,7 @@ public interface ISOMsgMetrics {
 
 
     /**
-     * Register this object to work with a given {@link MeterRegistry}.</br>
+     * Register this object to work with a given {@link MeterRegistry}.<br>
      *
      * This method may serve more than one purpose in the object's lifecycle:
      * <ul>
@@ -88,7 +88,7 @@ public interface ISOMsgMetrics {
     boolean register(MeterRegistry registry);
 
     /**
-     * It calls {@link #removeMeters()} and clears its internal reference to its {@link MeterRegistry}.<br/>
+     * It calls {@link #removeMeters()} and clears its internal reference to its {@link MeterRegistry}.<br>
      *
      * It will also "unfreeze" the object, making it available for reconfiguration.
      */
@@ -101,7 +101,7 @@ public interface ISOMsgMetrics {
 
     /**
      * A unique meter signature, concatenating the meter name, vertical pipe, comma-separated sorted list of all tag keys
-     * that this object produces.<br/>
+     * that this object produces.<br>
      * Default implementation uses the values from {@link #getMetricName()} and {@link #getTags()}.
      * A concrete implementation must make sure of gathering all the appropriate tag keys from internal config state
      * which may include more than what's returned by {@link #getTags()}.

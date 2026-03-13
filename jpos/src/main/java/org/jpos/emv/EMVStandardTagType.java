@@ -27,6 +27,7 @@ import java.util.Map;
 
 
 /**
+ * Enumeration of standard EMV tag types as defined in EMV specifications.
  * @author Vishnu Pillai
  */
 public enum EMVStandardTagType implements EMVTagType {

@@ -25,9 +25,9 @@ import org.jpos.iso.ISOUtil;
  * <p>
  * Processing format:
  * <ul>
- *   <li><tt>TAG</tt> - the identifier of the tag</li>
- *   <li><tt>LEN</tt> - the length <i>(encoded as decimal digits)</i> of the tag value</li>
- *   <li><tt>VAL</tt> - the value of the tag or missing if length is 0</li>
+ *   <li>{@code TAG} - the identifier of the tag</li>
+ *   <li>{@code LEN} - the length <i>(encoded as decimal digits)</i> of the tag value</li>
+ *   <li>{@code VAL} - the value of the tag or missing if length is 0</li>
  * </ul>
  *
  * @author Robert Demski &lt;drdemsey@gmail.com>

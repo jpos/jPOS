@@ -23,6 +23,7 @@ import org.jpos.util.LogEvent;
 import java.util.function.Function;
 
 /**
+ * Functional interface for transforming a {@link org.jpos.util.LogEvent}; used in log pipeline processing.
  * @author Alwyn Schoeman
  * @since 2.1.4
  */

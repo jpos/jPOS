@@ -44,6 +44,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
+ * Factory responsible for creating, configuring, and deploying QBean instances from XML deploy descriptors.
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
@@ -260,13 +261,13 @@ public class QFactory {
     }
 
 
-    /** Creats a collection from a definition element with the format.
-     * <PRE>
-     *    <{attr|item} type="...">
-     *        <item [type="..."]>...</item>
+    /** Creates a collection from a definition element with the format.
+     * <pre>{@code
+     *    <attr type="...">
+     *        <item type="...">...</item>
      *        ...
      *    </attr>
-     * </PRE>
+     * }</pre>
      * @param type class type
      * @param e the Element
      * @throws ConfigurationException

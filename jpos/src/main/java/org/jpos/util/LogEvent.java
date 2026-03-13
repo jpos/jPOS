@@ -38,6 +38,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 /**
+ * A single structured log event that carries a tag, realm, payload items, and optionally a {@link Throwable}.
  * @author @apr
  */
 public class LogEvent {

@@ -29,6 +29,7 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 /**
+ * UIFactory that creates an HTML-rendering {@link javax.swing.JEditorPane} from XML.
  * @author Alejandro Revilla
  *
  * Creates an html browser/editor

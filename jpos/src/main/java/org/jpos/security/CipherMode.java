@@ -21,7 +21,7 @@ package org.jpos.security;
 /**
  * Block cipher modes.
  *
- * @author Grzegorz Wieczorek <grw1@wp.pl>
+ * @author Grzegorz Wieczorek (grw1@wp.pl)
  */
 public enum CipherMode {
 

@@ -27,6 +27,7 @@ import org.jpos.util.Logger;
 import java.io.Serializable;
 
 /**
+ * A TransactionManager participant that uses BeanShell scripting to determine the next participant group.
  * @author  AMarques
  */
 public class BSHGroupSelector extends BSHTransactionParticipant implements GroupSelector {

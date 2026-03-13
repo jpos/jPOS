@@ -31,6 +31,7 @@ import java.util.Map;
 
 
 /**
+ * An {@link org.jpos.iso.ISOComponent} that carries a tagged (TLV) field.
  * @author Vishnu Pillai
  *
  */

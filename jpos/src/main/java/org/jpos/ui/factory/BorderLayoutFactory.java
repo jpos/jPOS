@@ -26,6 +26,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
+ * UIFactory that creates a {@link java.awt.BorderLayout}-based panel from XML.
  * @author Alejandro Revilla
  *
  * creates a panel with a Border layout

@@ -48,7 +48,7 @@ import org.jpos.space.SpaceFactory;
 /**
  * General purpose, Field Separator delimited message.
  *
- * <h1>How to use</h1>
+ * <h2>How to use</h2>
  * <p>
  * The message format (or schema) is defined in xml files containing a schema element, with an optional id attribute, and multiple
  * field elements. A field element is made up of the following attributes:
@@ -76,7 +76,6 @@ import org.jpos.space.SpaceFactory;
  * <dt>K</dt><dd>Constant. The value is specified by the field content. No padding is done.</dd>
  * <dt>N</dt><dd>Numeric. Padding, if any, is done with zeros to the left.</dd>
  * </dl>
- * </p>
  * <p>
  * Supported field separators are:
  * <dl>
@@ -90,7 +89,6 @@ import org.jpos.space.SpaceFactory;
  * <dt>DS</dt><dd>A dummy separator. This is similar to EOF, but the message stream must not end before it is allowed.</dd>
  * <dt>EOM</dt><dd>End of message separator. This reads all bytes available in the stream.
  * </dl>
- * </p>
  * <p>
  * Key fields allow you to specify a tree of possible message formats. The key fields are the fork points of the tree.
  * Multiple key fields are supported. It is also possible to have more key fields specified in appended schemas.

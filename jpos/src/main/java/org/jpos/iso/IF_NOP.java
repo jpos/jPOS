@@ -20,7 +20,8 @@ package org.jpos.iso;
 
 
 /**
- * @author apr@cs.com.uy & dflc@cs.com.uy
+ * A no-operation ISOFieldPackager; used as a placeholder for fields that require no packing/unpacking.
+ * @author apr@cs.com.uy, dflc@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  * @see IFA_LLNUM
@@ -40,7 +41,6 @@ public class IF_NOP extends ISOFieldPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
      */
     public byte[] pack (ISOComponent c) {
         return new byte[0];

@@ -48,6 +48,8 @@ import java.util.Map;
  * </p>
  * @author Hani S. Kirollos
  * @version $Revision$ $Date$
+
+ * @param <T> the SecureKey implementation type
  */
 public class BaseSMAdapter<T>
         implements SMAdapter<T>, Configurable, LogSource {

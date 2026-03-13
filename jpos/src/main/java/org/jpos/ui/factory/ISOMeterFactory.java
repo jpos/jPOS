@@ -31,12 +31,13 @@ import javax.swing.*;
 import java.util.Observable;
 
 /**
+ * UIFactory that creates an {@link org.jpos.iso.gui.ISOMeter} component from XML.
  * @author Alejandro Revilla
  *
  * Creates an ISOMeter component
  * i.e:
  * <pre>
- *  &lt;iso-meter idref="id" scroll="true|false" refresh="nnn"/&gt
+ *  &lt;iso-meter idref="id" scroll="true|false" refresh="nnn"/&gt;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */

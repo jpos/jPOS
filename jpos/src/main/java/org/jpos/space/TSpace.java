@@ -31,6 +31,9 @@ import java.util.concurrent.TimeUnit;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since !.4.9
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 
 @SuppressWarnings("unchecked")

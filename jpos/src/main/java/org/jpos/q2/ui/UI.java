@@ -24,6 +24,7 @@ import org.jpos.ui.UIObjectFactory;
 import org.jpos.util.NameRegistrar;
 
 /**
+ * Q2 QBean that bootstraps the jPOS Swing-based GUI.
  * @author Alejandro Revilla
  *
  * org.jpos.ui.UI adapter

@@ -88,7 +88,8 @@ public class CSChannel extends BaseChannel {
     }
     /**
      * @return the Message len
-     * @exception IOException, ISOException
+     * @exception IOException
+     * @exception ISOException
      */
     protected int getMessageLength() throws IOException, ISOException {
         int l = 0;

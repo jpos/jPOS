@@ -21,7 +21,10 @@ package org.jpos.tlv;
 import org.jpos.iso.ISOException;
 
 /**
+ * A typed tag-value pair used in TLV (Tag-Length-Value) processing.
  * @author Vishnu Pillai
+
+ * @param <T> the tag value type
  */
 public interface TagValue<T> {
 
