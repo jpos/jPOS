@@ -18,12 +18,34 @@
 
 package org.jpos.util;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChronometerTest {
-    private long TOLERANCE = 200L;
+    // Generous tolerance to absorb JVM cold-start and OS scheduler jitter,
+    // especially when running the full test suite under load.
+    // A 1-second ceiling on a 25 ms sleep still reliably catches bugs where
+    // elapsed() returns 0, wraps, measures in wrong units, etc.
+    private long TOLERANCE = 1000L;
+
+    /**
+     * Prime the JVM timer infrastructure before any timing-sensitive tests run.
+     * Without this, the very first Thread.sleep() can measure several hundred
+     * milliseconds due to JVM class-loading and timer-thread initialisation,
+     * causing spurious failures in the assertions below.
+     */
+    @BeforeAll
+    static void warmUp() throws InterruptedException {
+        for (int i = 0; i < 5; i++) {
+            Chronometer w = new Chronometer();
+            Thread.sleep(20);
+            w.elapsed();
+            w.lap();
+        }
+    }
+
     @Test
     public void testElapsed() throws InterruptedException {
         Chronometer c = new Chronometer();

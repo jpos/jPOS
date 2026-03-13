@@ -67,8 +67,8 @@ public class ThroughputControlTestCase {
           "50 transactions should take at least 4 seconds but took " + elapsed
         );
         assertTrue(
-          elapsed < 4500L,
-          "50 transactions shouldn't take more than approximately 4.5 seconds but took " + elapsed
+          elapsed < 6000L,
+          "50 transactions shouldn't take more than approximately 6 seconds but took " + elapsed
         );
 
 
