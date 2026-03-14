@@ -27,22 +27,29 @@ import java.util.regex.Pattern;
 import org.jline.terminal.Terminal;
 import org.jpos.iso.ISOUtil;
 
+/** Dispatches CLI command lines to the appropriate {@link CLICommand} implementation. */
 public class CLICommandInterface {
     CLIContext ctx;
     List<String> prefixes = new ArrayList<String>();
 
+    /** @return the list of registered command prefixes */
     public List<String> getPrefixes() {
         return prefixes;
     }
 
+    /** @param ctx the CLI context for this interface */
     public CLICommandInterface(CLIContext ctx) {
         this.ctx = ctx;
     }
 
+    /** @param prefix a command prefix to register */
     public void addPrefix(String prefix) {
         prefixes.add(prefix);
     }
 
+    /** @param line the full command line to execute
+     * @throws IOException on I/O failure
+     */
     public void execCommand(String line) throws IOException {
         String args[] = parseCommand(line);
         if (args.length == 0) {
@@ -91,6 +98,10 @@ public class CLICommandInterface {
         return cl.loadClass(className).newInstance();
     }
 
+    /** @param line the full command line to parse
+     * @return tokens: [prefix, command, args...]
+     * @throws IOException on I/O failure
+     */
     public String[] parseCommand(String line) throws IOException {
         if (line == null) {
             return new String[0];

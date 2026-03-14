@@ -21,6 +21,7 @@ package org.jpos.rc;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Common Message Format result codes used by jPOS Transaction Manager participants. */
 public enum CMF implements IRC {
     // Approved
     APPROVED         (0, true),
@@ -100,6 +101,7 @@ public enum CMF implements IRC {
     PAYMENT_DATE_INVALID(1057),
     PERSONAL_ID_NOT_FOUND(1058),
     SCHEDULED_TRANSACTION_EXISTS(1059),
+    /** Indicates the transaction was aborted at the terminal. */
     ABORTED_AT_TERMINAL(1060),
     UNSUPPORTED_TRANSACTION(1061),
     CASHBACK_NOT_ALLOWED(1062),
@@ -284,6 +286,7 @@ public enum CMF implements IRC {
     NOT_RECONCILED_TOTALS_PROVIDED(5004),
 
     // Administrative messages
+    /** Administrative message accepted. */
     ADMIN_MESSAGE_ACCEPTED(6000, true),
     // Retrieval / copy request reason codes (ISO 8583:2023)
     CARDHOLDER_DISPUTES_AMOUNT(6005),
@@ -323,11 +326,14 @@ public enum CMF implements IRC {
     KEY_EXCHANGE_VERIFICATION_OUT_OF_SYNC(8105),
 
     // Misc
+    /** Advice acknowledged with no financial impact. */
     ADVICE_ACK_NO_FINANCIAL(9000, true),
+    /** Advice accepted. */
     ADVICE_ACCEPTED(9001, true),
     MESSAGE_ERROR(9100),
     INVALID_TRANSACTION(9102),
     RETRY_TRANSACTION(9103),
+    /** Acquirer is not supported. */
     ACQUIRER_NOT_SUPPORTED(9105),
     CUTOVER_IN_PROCESS(9106),
     ISSUER_NOT_AVAILABLE(9107),
@@ -413,6 +419,11 @@ public enum CMF implements IRC {
         return inhibit;
     }
 
+    /**
+     * Looks up a CMF value by its integer code.
+     * @param i the integer code
+     * @return the matching IRC, or null if not found
+     */
     public static IRC valueOf(int i) {
         return lookupInt.get(i);
     }

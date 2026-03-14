@@ -29,7 +29,11 @@ import org.jpos.security.jceadapter.JCESecurityModule;
  *
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
+/** SSM CLI action for key check operations. */
+@SuppressWarnings("unused")
 public class CK extends SsmActionBase {
+    /** Default constructor. */
+    public CK() { super(); }
 
     @Override
     protected boolean checkUsage(CLIContext cli, String[] strings) {

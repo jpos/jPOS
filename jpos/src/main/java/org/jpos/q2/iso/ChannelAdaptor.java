@@ -304,8 +304,7 @@ public class ChannelAdaptor
     /**
      * Adds ISO filters from the XML configuration to the channel.
      * @param channel the channel to configure
-     * Adds ISOFilters from the XML configuration to the channel.
-     * @param channel the channel to add filters to
+     * Adds ISOFilters from the XML configuration to the given channel.
      * @param e the XML configuration element
      * @param fact the QFactory for creating filter instances
      * @throws ConfigurationException if a filter cannot be configured
@@ -622,6 +621,9 @@ public class ChannelAdaptor
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());
     }
+    /** @param e XML element whose text content is the space URI
+     * @return the Space instance
+     */
     protected Space grabSpace (Element e) {
         return SpaceFactory.getSpace (e != null ? e.getText() : "");
     }

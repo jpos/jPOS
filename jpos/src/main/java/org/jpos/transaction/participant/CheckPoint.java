@@ -25,8 +25,11 @@ import org.jpos.transaction.TransactionParticipant;
 
 import java.io.Serializable;
 
+/** TransactionManager participant that logs a check-point message. */
 public class CheckPoint implements TransactionParticipant, Configurable  {
     Configuration cfg;
+    /** Default constructor. */
+    public CheckPoint() { super(); }
     public int prepare (long id, Serializable o) {
         if (o instanceof Context) 
             ((Context)o).checkPoint (cfg.get ("message", "checkpoint"));

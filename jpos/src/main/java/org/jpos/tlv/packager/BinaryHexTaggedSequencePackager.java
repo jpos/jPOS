@@ -49,7 +49,9 @@ public class BinaryHexTaggedSequencePackager extends TaggedSequencePackager {
     /** Field packager for TLV tag fields. */
     public static class TagPackager extends ISOFieldPackager {
 
-        /** @param len tag field length
+        /**
+         * Creates a TagPackager with the given length and description.
+         * @param len tag field length
          * @param description field description
          */
         public TagPackager(int len, String description) {

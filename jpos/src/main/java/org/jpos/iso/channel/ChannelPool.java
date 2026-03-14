@@ -41,7 +41,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * A pool of {@link ISOChannel} instances; tries each in order until one connects.
  */
 public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneable {
+    /** Whether this pool is in a usable state. */
     boolean usable = true;
+    /** Registered name of this pool. */
     String name = "";
     /** Logger for this pool. */
     protected Logger logger;
@@ -173,11 +175,16 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
             }
         }
     }
-    /** @param channel the channel to add to the pool */
+    /**
+     * Adds a channel to the pool.
+     * @param channel the channel to add
+     */
     public void addChannel (ISOChannel channel) {
         pool.add (channel);
     }
-    /** @param name the NameRegistrar name of the channel to add
+    /**
+     * Adds a channel to the pool by its registered name.
+     * @param name the NameRegistrar name of the channel to add
      * @throws NameRegistrar.NotFoundException if name not found
      */
     public void addChannel (String name) 
@@ -185,17 +192,25 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     {
         pool.add (NameRegistrar.get ("channel."+name));
     }
-    /** @param channel the channel to remove */
+    /**
+     * Removes a channel from the pool.
+     * @param channel the channel to remove
+     */
     public void removeChannel (ISOChannel channel) {
         pool.remove (channel);
     }
-    /** @param name the channel name to remove
+    /**
+     * Removes a channel from the pool by its registered name.
+     * @param name the channel name to remove
      * @throws NameRegistrar.NotFoundException if name not found
      */
     public void removeChannel (String name) throws NameRegistrar.NotFoundException {
         pool.remove (NameRegistrar.get ("channel."+name));
     }
-    /** @return the number of channels in the pool */
+    /**
+     * Returns the number of channels in the pool.
+     * @return channel count
+     */
     public int size() {
         return pool.size();
     }

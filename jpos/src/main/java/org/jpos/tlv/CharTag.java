@@ -34,6 +34,7 @@ import org.jpos.iso.ISOUtil;
  */
 public class CharTag {
 
+    /** Number of bytes used to encode the tag length. */
     protected int lengthSize = 0x03;
 
     private final String tagId;

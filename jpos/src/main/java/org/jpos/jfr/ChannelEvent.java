@@ -27,6 +27,7 @@ import jdk.jfr.*;
 @Name("jpos.Channel")
 @StackTrace
 public class ChannelEvent extends Event {
+    /** JFR event detail string. */
     @Name("detail")
     /** Channel event detail string. */
     protected String detail;
@@ -40,12 +41,16 @@ public class ChannelEvent extends Event {
         this.detail = detail;
     }
 
-    /** @param detail new detail string */
+    /** Sets the event detail string.
+     * @param detail new detail string
+     */
     public void setDetail(String detail) {
         this.detail = detail;
     }
 
-    /** @return the event detail string */
+    /** Returns the event detail string.
+     * @return the event detail string
+     */
     public String getDetail() {
         return detail;
     }
@@ -98,7 +103,10 @@ public class ChannelEvent extends Event {
     /** JFR event for a channel connection exception. */
     @Name("jpos.Channel.ConnectionException")
     public static class ConnectionException extends ChannelEvent {
-        /** @param detail exception detail string */
+        /**
+         * Creates a ChannelEvent for a connection exception.
+         * @param detail exception detail string
+         */
         public ConnectionException(String detail) {
             super(detail);
         }
@@ -107,7 +115,10 @@ public class ChannelEvent extends Event {
     /** JFR event for a channel accept exception. */
     @Name("jpos.Channel.AcceptException")
     public static class AcceptException extends ChannelEvent {
-        /** @param detail exception detail string */
+        /**
+         * Creates a ChannelEvent for an accept exception.
+         * @param detail exception detail string
+         */
         public AcceptException(String detail) {
             super(detail);
         }
@@ -116,7 +127,10 @@ public class ChannelEvent extends Event {
     /** JFR event for a channel send exception. */
     @Name("jpos.Channel.SendException")
     public static class SendException extends ChannelEvent {
-        /** @param detail exception detail string */
+        /**
+         * Creates a ChannelEvent for a send exception.
+         * @param detail exception detail string
+         */
         public SendException(String detail) {
             super(detail);
         }

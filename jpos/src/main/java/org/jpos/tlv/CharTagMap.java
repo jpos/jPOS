@@ -35,6 +35,7 @@ import java.util.HashMap;
  *
  * @author Grzegorz Wieczorek (grw1@wp.pl)
  */
+/** A map of tag identifiers to {@link CharTag} instances. */
 public class CharTagMap extends HashMap<String, CharTag> {
 
     static final String EXCEPTION_PREFIX = "BAD TLV FORMAT:";
@@ -175,7 +176,9 @@ public class CharTagMap extends HashMap<String, CharTag> {
         return tag;
     }
 
-    /** @param tagId the tag identifier to validate
+    /**
+     * Validates that the given tag identifier is registered in this map.
+     * @param tagId the tag identifier to validate
      * @throws IllegalArgumentException if tagId is not a known tag
      */
     protected void validateTag(String tagId) throws IllegalArgumentException {

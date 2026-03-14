@@ -190,6 +190,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
+     * Returns a reconstructed track 2 string, or null if track 2 data is absent.
      * @return reconstructed track2 or null
      */
     public String getTrack2() {
