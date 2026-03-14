@@ -34,15 +34,25 @@ public class ConfigurationException extends ISOException {
     public ConfigurationException () {
         super();
     }
-    /** @param detail error message */
+    /**
+     * Creates a ConfigurationException with a detail message.
+     * @param detail error message
+     */
     public ConfigurationException (String detail) {
         super (detail);
     }
-    /** @param nested the root cause */
+    /**
+     * Creates a ConfigurationException wrapping a root cause.
+     * @param nested the root cause
+     */
     public ConfigurationException (Throwable nested) {
         super (nested);
     }
-    /** @param detail error message @param nested the root cause */
+    /**
+     * Creates a ConfigurationException with a detail message and root cause.
+     * @param detail error message
+     * @param nested the root cause
+     */
     public ConfigurationException (String detail, Throwable nested) {
         super (detail, nested);
     }

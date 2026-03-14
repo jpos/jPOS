@@ -253,7 +253,11 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return obj;
     }
 
-    /** @param key the map key @return the value as a String, or null */
+    /**
+     * Returns the value as a String, converting it if necessary.
+     * @param key the map key
+     * @return the value as a String, or null
+     */
     public String getString (Object key) {
         Object obj = getMap().get (key);
         if (obj instanceof String)
@@ -262,7 +266,12 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
             return obj.toString();
         return null;
     }
-    /** @param key the map key @param defValue default if not found @return the value as String or defValue */
+    /**
+     * Returns the value as a String, or a default if not found.
+     * @param key the map key
+     * @param defValue default if not found
+     * @return the value as String, or defValue
+     */
     public String getString (Object key, String defValue) {
         Object obj = getMap().get (key);
         if (obj instanceof String)
@@ -460,7 +469,11 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return cloned;
     }
 
-    /** @param p output stream @param indent indentation prefix */
+    /**
+     * Dumps all map entries to the output stream.
+     * @param p output stream
+     * @param indent indentation prefix
+     */
     protected void dumpMap (PrintStream p, String indent) {
         if (map != null) {
             getMapClone().entrySet().forEach(e -> dumpEntry(p, indent, e));

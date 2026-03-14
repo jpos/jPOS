@@ -51,7 +51,12 @@ public class Console {
         new Console().exec(System.out,System.err,args);
     }
 
-    /** @param outPS output stream @param errPS error stream @param args command-line arguments */
+    /**
+     * Runs the JCE security module console with the given I/O streams.
+     * @param outPS output stream
+     * @param errPS error stream
+     * @param args command-line arguments
+     */
     public void exec(PrintStream outPS,PrintStream errPS,String[] args)
     {
         JCESecurityModule sm = new JCESecurityModule();

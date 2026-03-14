@@ -23,7 +23,13 @@ import org.jpos.log.AuditLogEvent;
 
 /** Audit log event recording a channel connection attempt. */
 public record Connect(String host, int remotePort, int localPort, @JsonInclude(JsonInclude.Include.NON_NULL) String error) implements AuditLogEvent {
-    /** @param host remote host @param remotePort remote port @param localPort local port @param error error message, or null on success */
+    /**
+     * Creates a Connect event.
+     * @param host remote host
+     * @param remotePort remote port
+     * @param localPort local port
+     * @param error error message, or null on success
+     */
     public Connect(String host, int remotePort, int localPort, String error) {
         this.host = host;
         this.remotePort = remotePort;
@@ -31,7 +37,12 @@ public record Connect(String host, int remotePort, int localPort, @JsonInclude(J
         this.error = error;
     }
 
-    /** @param host remote host @param remotePort remote port @param localPort local port */
+    /**
+     * Creates a Connect event for a successful connection.
+     * @param host remote host
+     * @param remotePort remote port
+     * @param localPort local port
+     */
     public Connect(String host, int remotePort, int localPort) {
         this(host, remotePort, localPort, null);
     }

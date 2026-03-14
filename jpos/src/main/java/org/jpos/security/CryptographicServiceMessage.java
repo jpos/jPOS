@@ -64,6 +64,7 @@ public class CryptographicServiceMessage implements Loggeable {
         }
     }
 
+    /** Default constructor. */
     public CryptographicServiceMessage() {
     }
 
@@ -75,10 +76,18 @@ public class CryptographicServiceMessage implements Loggeable {
         setMCL(mcl);
     }
 
+    /**
+     * Sets the message class label.
+     * @param mcl the message class label (e.g. MCL_KSM, MCL_RSM)
+     */
     public void setMCL(String mcl) {
         this.mcl = mcl;
     }
 
+    /**
+     * Returns the message class label.
+     * @return the message class label
+     */
     public String getMCL() {
         return mcl;
     }

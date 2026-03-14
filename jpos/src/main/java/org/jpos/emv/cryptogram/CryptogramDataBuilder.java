@@ -33,7 +33,9 @@ import java.util.*;
  */
 public interface CryptogramDataBuilder {
 
+    /** Specifies the padding method applied when building cryptogram data. */
     enum PaddingMethod {
+        /** No padding is applied. */
         NO_PADDING,
 
         /**
@@ -76,6 +78,11 @@ public interface CryptogramDataBuilder {
             }
         };
 
+        /**
+         * Applies this padding method to the given hex string.
+         * @param data the hex string to pad
+         * @return the padded hex string
+         */
         public String apply(String data) {
             return data;
         }

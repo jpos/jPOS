@@ -24,7 +24,12 @@ import org.jpos.core.ConfigurationException;
 
 /** Factory for creating {@link org.jpos.core.Configuration} from XML elements. */
 public interface ConfigurationFactory {
-    /** @param e XML configuration element @return a Configuration built from the element @throws ConfigurationException on error */
+    /**
+     * Builds a Configuration from the given XML element.
+     * @param e XML configuration element
+     * @return the resulting Configuration
+     * @throws ConfigurationException on invalid configuration
+     */
     Configuration getConfiguration(Element e)
         throws ConfigurationException;
 }
