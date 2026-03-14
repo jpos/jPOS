@@ -621,7 +621,9 @@ public class ChannelAdaptor
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());
     }
-    /** @param e XML element whose text content is the space URI
+    /**
+     * Returns a Space for the URI in the given XML element's text content.
+     * @param e XML element whose text content is the space URI
      * @return the Space instance
      */
     protected Space grabSpace (Element e) {

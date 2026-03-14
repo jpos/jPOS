@@ -24,94 +24,177 @@ import java.util.Map;
 /** Common Message Format result codes used by jPOS Transaction Manager participants. */
 public enum CMF implements IRC {
     // Approved
+    /** Approved. */
     APPROVED         (0, true),
+    /** Honor With Id. */
     HONOR_WITH_ID    (1, true),
+    /** Approved Partial. */
     APPROVED_PARTIAL (2, true),
+    /** Approved Vip. */
     APPROVED_VIP     (3, true),
+    /** Approved Update Track3. */
     APPROVED_UPDATE_TRACK3 (4, true),
+    /** Approved Issuer Specified Account. */
     APPROVED_ISSUER_SPECIFIED_ACCOUNT (5, true),
+    /** Approved Partial Issuer Specified Account. */
     APPROVED_PARTIAL_ISSUER_SPECIFIED_ACCOUNT (6, true),
+    /** Approved Fees Disputed. */
     APPROVED_FEES_DISPUTED(8, true),
+    /** Approved With Overdraft. */
     APPROVED_WITH_OVERDRAFT(9, true),
+    /** Approved Customer Reactivated. */
     APPROVED_CUSTOMER_REACTIVATED(10, true),
+    /** Approved Terminal Unable To Process Online. */
     APPROVED_TERMINAL_UNABLE_TO_PROCESS_ONLINE(11),
+    /** Approved Offline. */
     APPROVED_OFFLINE (12),
+    /** Approved Offline Referral. */
     APPROVED_OFFLINE_REFERRAL (13),
     NO_REASON_TO_DECLINE(85, true),
     NAME_FORMAT_ERROR(7),
 
     // Denied Authorization
+    /** Do Not Honour. */
     DO_NOT_HONOUR(1000),
+    /** Expired. */
     EXPIRED (1001),
+    /** Suspected Fraud. */
     SUSPECTED_FRAUD(1002),
+    /** Contact Acquirer. */
     CONTACT_ACQUIRER(1003),
+    /** Restricted Card. */
     RESTRICTED_CARD(1004),
+    /** Contact Acquirer Security. */
     CONTACT_ACQUIRER_SECURITY(1005),
+    /** Max Pin Tries Exceeded. */
     MAX_PIN_TRIES_EXCEEDED(1006),
+    /** Refer To Issuer. */
     REFER_TO_ISSUER(1007),
+    /** Refer To Issuer Special. */
     REFER_TO_ISSUER_SPECIAL(1008),
+    /** Invalid Card Acceptor. */
     INVALID_CARD_ACCEPTOR(1009),
+    /** Invalid Amount. */
     INVALID_AMOUNT(1010),
+    /** Invalid Card Number. */
     INVALID_CARD_NUMBER(1011),
+    /** Pin Data Required. */
     PIN_DATA_REQUIRED(1012),
+    /** Unacceptable Fee. */
     UNACCEPTABLE_FEE(1013),
+    /** No Account Type. */
     NO_ACCOUNT_TYPE(1014),
+    /** Unsupported Function. */
     UNSUPPORTED_FUNCTION(1015),
+    /** Not Sufficient Funds. */
     NOT_SUFFICIENT_FUNDS(1016),
+    /** Incorrect Pin. */
     INCORRECT_PIN(1017),
+    /** No Card Record. */
     NO_CARD_RECORD(1018),
+    /** Not Permitted To Cardholder. */
     NOT_PERMITTED_TO_CARDHOLDER(1019),
+    /** Not Permitted To Terminal. */
     NOT_PERMITTED_TO_TERMINAL(1020),
+    /** Exceeds Withdrawal Amount Limit. */
     EXCEEDS_WITHDRAWAL_AMOUNT_LIMIT(1021),
+    /** Security Violation. */
     SECURITY_VIOLATION(1022),
+    /** Exceeds Withdrawal Frequency Limit. */
     EXCEEDS_WITHDRAWAL_FREQUENCY_LIMIT(1023),
+    /** Law Violation. */
     LAW_VIOLATION(1024),
+    /** Card Not Effective. */
     CARD_NOT_EFFECTIVE(1025),
+    /** Invalid Pinblock. */
     INVALID_PINBLOCK(1026),
+    /** Pin Length Error. */
     PIN_LENGTH_ERROR(1027),
+    /** Pin Key Sync Error. */
     PIN_KEY_SYNC_ERROR(1028),
+    /** Suspected Counterfeit Card Dont Pickup. */
     SUSPECTED_COUNTERFEIT_CARD_DONT_PICKUP(1029),
+    /** Unaccepted Currency. */
     UNACCEPTED_CURRENCY(1030),
+    /** Declined Fees Disputed. */
     DECLINED_FEES_DISPUTED(1031),
+    /** Lost Or Stolen Card. */
     LOST_OR_STOLEN_CARD(1032),
+    /** Authorization Lifecycle Unacceptable. */
     AUTHORIZATION_LIFECYCLE_UNACCEPTABLE(1033),
+    /** Authorization Lifecycle Expired. */
     AUTHORIZATION_LIFECYCLE_EXPIRED(1034),
+    /** Closed Account. */
     CLOSED_ACCOUNT(1035),
+    /** Closed Savings Account. */
     CLOSED_SAVINGS_ACCOUNT(1036),
+    /** Closed Credit Account. */
     CLOSED_CREDIT_ACCOUNT(1037),
+    /** Closed Account Type. */
     CLOSED_ACCOUNT_TYPE(1038),
+    /** Closed Cheque Account. */
     CLOSED_CHEQUE_ACCOUNT(1039),
+    /** Bad Debt. */
     BAD_DEBT(1040),
+    /** From Account Bad Status. */
     FROM_ACCOUNT_BAD_STATUS(1041),
+    /** To Account Bad Status. */
     TO_ACCOUNT_BAD_STATUS(1042),
+    /** Cheque Already Posted. */
     CHEQUE_ALREADY_POSTED(1043),
+    /** Information Not On File. */
     INFORMATION_NOT_ON_FILE(1044),
+    /** Card Verification Data Failed. */
     CARD_VERIFICATION_DATA_FAILED(1045),
+    /** Amount Not Found. */
     AMOUNT_NOT_FOUND(1046),
+    /** Pin Change Required. */
     PIN_CHANGE_REQUIRED(1047),
+    /** New Pin Invalid. */
     NEW_PIN_INVALID(1048),
+    /** Bank Not Found. */
     BANK_NOT_FOUND(1049),
+    /** Bank Not Effective. */
     BANK_NOT_EFFECTIVE(1050),
+    /** Customer Vendor Not Found. */
     CUSTOMER_VENDOR_NOT_FOUND(1051),
+    /** Customer Vendor Not Effective. */
     CUSTOMER_VENDOR_NOT_EFFECTIVE(1052),
+    /** Customer Vendor Account Invalid. */
     CUSTOMER_VENDOR_ACCOUNT_INVALID(1053),
+    /** Vendor Not Found. */
     VENDOR_NOT_FOUND(1054),
+    /** Vendor Not Effective. */
     VENDOR_NOT_EFFECTIVE(1055),
+    /** Vendor Data Invalid. */
     VENDOR_DATA_INVALID(1056),
+    /** Payment Date Invalid. */
     PAYMENT_DATE_INVALID(1057),
+    /** Personal Id Not Found. */
     PERSONAL_ID_NOT_FOUND(1058),
+    /** Scheduled Transaction Exists. */
     SCHEDULED_TRANSACTION_EXISTS(1059),
     /** Indicates the transaction was aborted at the terminal. */
     ABORTED_AT_TERMINAL(1060),
+    /** Unsupported Transaction. */
     UNSUPPORTED_TRANSACTION(1061),
+    /** Cashback Not Allowed. */
     CASHBACK_NOT_ALLOWED(1062),
+    /** Cashback Amount Exceeded. */
     CASHBACK_AMOUNT_EXCEEDED(1063),
+    /** Declined Processed Offline. */
     DECLINED_PROCESSED_OFFLINE(1064),
+    /** Declined Unable To Process. */
     DECLINED_UNABLE_TO_PROCESS(1065),
+    /** Declined Processed Offline Referral. */
     DECLINED_PROCESSED_OFFLINE_REFERRAL(1066),
+    /** Id Number Invalid. */
     ID_NUMBER_INVALID(1068),
+    /** Driver Number Invalid. */
     DRIVER_NUMBER_INVALID(1069),
+    /** Vid Invalid. */
     VID_INVALID(1070),
+    /** Certificate Expired. */
     CERTIFICATE_EXPIRED(1071),
     ADDITIONAL_AUTH_REQUIRED(1067),
     SURCHARGE_NOT_PERMITTED_FOR_CARD(1072),
@@ -140,48 +223,90 @@ public enum CMF implements IRC {
     CARD_ACCEPTOR_SUSPICIOUS(1511),
 
     // CMF private-use codes (ISO 8583 1800-1999 reserved for private use)
+    /** Missing Field. */
     MISSING_FIELD(1802),
+    /** Extra Field. */
     EXTRA_FIELD(1803),
+    /** Invalid Card. */
     INVALID_CARD(1804),
+    /** Card Not Active. */
     CARD_NOT_ACTIVE(1806),
+    /** Card Not Configured. */
     CARD_NOT_CONFIGURED(1808),
+    /** System Error Db. */
     SYSTEM_ERROR_DB(1811, false, true),
+    /** System Error Txn. */
     SYSTEM_ERROR_TXN(1812, false, true),
+    /** Cardholder Not Active. */
     CARDHOLDER_NOT_ACTIVE(1813),
+    /** Cardholder Not Configured. */
     CARDHOLDER_NOT_CONFIGURED(1814),
+    /** Cardholder Expired. */
     CARDHOLDER_EXPIRED(1815),
+    /** Original Transaction Not Found. */
     ORIGINAL_TRANSACTION_NOT_FOUND(1816),
+    /** Usage Limit Reached. */
     USAGE_LIMIT_REACHED(1817),
+    /** Configuration Error. */
     CONFIGURATION_ERROR(1818),
+
+    /** Invalid Terminal. */
     INVALID_TERMINAL(1819),
+    /** Inactive Terminal. */
     INACTIVE_TERMINAL(1820),
+    /** Invalid Merchant. */
     INVALID_MERCHANT(1821),
+    /** Duplicate Entity. */
     DUPLICATE_ENTITY(1822),
+    /** Invalid Acquirer. */
     INVALID_ACQUIRER(1823),
+    /** Previously Reversed. */
     PREVIOUSLY_REVERSED(1824),
+    /** Further Activity Prevents Reversal. */
     FURTHER_ACTIVITY_PREVENTS_REVERSAL(1825),
+    /** Further Activity Prevents Void. */
     FURTHER_ACTIVITY_PREVENTS_VOID(1826),
+    /** Original Voided. */
     ORIGINAL_VOIDED(1827),
+    /** Card Tokenization Not Supported. */
     CARD_TOKENIZATION_NOT_SUPPORTED(1828),
+
+    /** Invalid Field. */
     INVALID_FIELD(1830),
+    /** Misconfigured Endpoint. */
     MISCONFIGURED_ENDPOINT(1831),
+    /** Invalid Request. */
     INVALID_REQUEST(1832),
+    /** Host Unreachable. */
     HOST_UNREACHABLE(1833),
 
 
     // Denied Financial
+    /** Financial Do Not Honour. */
     FINANCIAL_DO_NOT_HONOUR (2000),
+    /** Financial Expired. */
     FINANCIAL_EXPIRED (2001),
+    /** Financial Suspected Fraud. */
     FINANCIAL_SUSPECTED_FRAUD(2002),
+    /** Financial Contact Acquirer. */
     FINANCIAL_CONTACT_ACQUIRER(2003),
+    /** Financial Restricted Card. */
     FINANCIAL_RESTRICTED_CARD(2004),
+    /** Financial Contact Acquirer Security. */
     FINANCIAL_CONTACT_ACQUIRER_SECURITY(2005),
+    /** Financial Max Pin Tries Exceeded. */
     FINANCIAL_MAX_PIN_TRIES_EXCEEDED(2006),
+    /** Special Conditions. */
     SPECIAL_CONDITIONS(2007),
+    /** Lost Card. */
     LOST_CARD(2008),
+    /** Stolen Card. */
     STOLEN_CARD(2009),
+    /** Suspected Counterfeit Card Pickup. */
     SUSPECTED_COUNTERFEIT_CARD_PICKUP(2010),
+    /** Max Daily Withdrawal. */
     MAX_DAILY_WITHDRAWAL(2011),
+    /** Max Daily Amount. */
     MAX_DAILY_AMOUNT(2012),
     // Chargeback pick-up resolution codes (ISO 8583:2023)
     CHARGEBACK_REMEDIED(2013),
@@ -197,19 +322,31 @@ public enum CMF implements IRC {
     CHARGEBACK_DOCS_INVALID_2023(2023),
 
     // File action
+    /** Successful. */
     SUCCESSFUL(3000, true),
+    /** Not Supported By Receiver. */
     NOT_SUPPORTED_BY_RECEIVER(3001),
+    /** Unable To Locate Record. */
     UNABLE_TO_LOCATE_RECORD(3002),
+    /** Updated Record. */
     UPDATED_RECORD(3003),
+    /** Field Edit Error. */
     FIELD_EDIT_ERROR(3004),
+    /** File Locked Out. */
     FILE_LOCKED_OUT(3005),
+    /** Not Successful. */
     NOT_SUCCESSFUL(3006),
+    /** Format Error. */
     FORMAT_ERROR(3007),
+    /** Duplicate. */
     DUPLICATE(3008),
+    /** Unknown File. */
     UNKNOWN_FILE(3009),
+    /** Invalid Card Or Cardholder Number. */
     INVALID_CARD_OR_CARDHOLDER_NUMBER(3010),
 
     // Reversals
+    /** Reversal Accepted. */
     REVERSAL_ACCEPTED(4000, true),
     REVERSAL_UNSPECIFIED(4001),
     REVERSAL_SUSPECTED_MALFUNCTION(4002),
@@ -279,10 +416,15 @@ public enum CMF implements IRC {
     CHARGEBACK_EXCEEDS_LIMITED_AMOUNT(4596),
 
     // Reconciliation
+    /** Reconciled In Balance. */
     RECONCILED_IN_BALANCE(5000, true),
+    /** Reconciled Out Of Balance. */
     RECONCILED_OUT_OF_BALANCE(5001),
+    /** Amount Not Reconciled Totals Provided. */
     AMOUNT_NOT_RECONCILED_TOTALS_PROVIDED(5002),
+    /** Totals Not Available. */
     TOTALS_NOT_AVAILABLE(5003),
+    /** Not Reconciled Totals Provided. */
     NOT_RECONCILED_TOTALS_PROVIDED(5004),
 
     // Administrative messages
@@ -311,10 +453,13 @@ public enum CMF implements IRC {
     RETRIEVAL_CANNOT_FULFILL_ICC_CERT_UNAVAILABLE(6049),
 
     // Fee collection
+    /** Fee Collection Accepted. */
     FEE_COLLECTION_ACCEPTED (7000, true),
 
     // Network Management
+    /** Net Accepted. */
     NET_ACCEPTED (8000, true),
+    /** Net Retry. */
     NET_RETRY(8001),
     KEY_VERIFICATION_FAILED(8002),
     // Key exchange / lifecycle management codes (ISO 8583:2023)
@@ -330,41 +475,72 @@ public enum CMF implements IRC {
     ADVICE_ACK_NO_FINANCIAL(9000, true),
     /** Advice accepted. */
     ADVICE_ACCEPTED(9001, true),
+    /** Message Error. */
     MESSAGE_ERROR(9100),
+    /** Invalid Transaction. */
     INVALID_TRANSACTION(9102),
+    /** Retry Transaction. */
     RETRY_TRANSACTION(9103),
     /** Acquirer is not supported. */
     ACQUIRER_NOT_SUPPORTED(9105),
+    /** Cutover In Process. */
     CUTOVER_IN_PROCESS(9106),
+    /** Issuer Not Available. */
     ISSUER_NOT_AVAILABLE(9107),
+    /** Routing Error. */
     ROUTING_ERROR(9108),
+    /** System Error. */
     SYSTEM_ERROR(9109),
+    /** Issuer Signed Off. */
     ISSUER_SIGNED_OFF(9110),
+    /** Issuer Timeout. */
     ISSUER_TIMEOUT(9111),
+    /** Issuer Unavailable. */
     ISSUER_UNAVAILABLE(9112),
+    /** Duplicate Transmission. */
     DUPLICATE_TRANSMISSION(9113),
+    /** Original Not Found. */
     ORIGINAL_NOT_FOUND(9114),
+    /** Reconciliation Error. */
     RECONCILIATION_ERROR(9115),
+    /** Mac Incorrect. */
     MAC_INCORRECT(9116),
+    /** Mac Key Sync Error. */
     MAC_KEY_SYNC_ERROR(9117),
+    /** Zmk Not Available. */
     ZMK_NOT_AVAILABLE(9118),
+    /** Crypto Error. */
     CRYPTO_ERROR(9119),
+    /** Hsm Error Retry. */
     HSM_ERROR_RETRY(9120),
+    /** Hsm Error. */
     HSM_ERROR (9121),
+    /** Out Of Sequence. */
     OUT_OF_SEQUENCE(9122),
+    /** Request In Progress. */
     REQUEST_IN_PROGRESS(9123),
+    /** Invalid Security Code. */
     INVALID_SECURITY_CODE(9124),
+    /** Database Error. */
     DATABASE_ERROR(9125),
+    /** Invalid IIN. */
     INVALID_IIN(9126),
+    /** Customer Vendor Format Error. */
     CUSTOMER_VENDOR_FORMAT_ERROR(9128),
+    /** Recurring Data Error. */
     RECURRING_DATA_ERROR(9132),
+    /** Update Not Allowed. */
     UPDATE_NOT_ALLOWED(9133),
+    /** Agreement Violation. */
     AGREEMENT_VIOLATION(9350),
 
+    /** General Decline. */
     GENERAL_DECLINE(9999),
 
     // jPOS specific result codes
+    /** Jpos. */
     JPOS(10000),
+    /** Internal Error. */
     INTERNAL_ERROR(19999,false,true),
 
     // User specific result codes

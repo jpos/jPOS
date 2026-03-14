@@ -32,22 +32,33 @@ public class CLICommandInterface {
     CLIContext ctx;
     List<String> prefixes = new ArrayList<String>();
 
-    /** @return the list of registered command prefixes */
+    /**
+     * Returns the list of registered command prefixes.
+     * @return command prefix list
+     */
     public List<String> getPrefixes() {
         return prefixes;
     }
 
-    /** @param ctx the CLI context for this interface */
+    /**
+     * Creates a CLICommandInterface for the given context.
+     * @param ctx the CLI context
+     */
     public CLICommandInterface(CLIContext ctx) {
         this.ctx = ctx;
     }
 
-    /** @param prefix a command prefix to register */
+    /**
+     * Registers a command prefix.
+     * @param prefix the prefix to add
+     */
     public void addPrefix(String prefix) {
         prefixes.add(prefix);
     }
 
-    /** @param line the full command line to execute
+    /**
+     * Executes the given command line.
+     * @param line the full command line
      * @throws IOException on I/O failure
      */
     public void execCommand(String line) throws IOException {
@@ -98,7 +109,9 @@ public class CLICommandInterface {
         return cl.loadClass(className).newInstance();
     }
 
-    /** @param line the full command line to parse
+    /**
+     * Parses a command line into tokens.
+     * @param line the full command line
      * @return tokens: [prefix, command, args...]
      * @throws IOException on I/O failure
      */

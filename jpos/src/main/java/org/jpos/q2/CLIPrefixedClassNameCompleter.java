@@ -38,7 +38,9 @@ public class CLIPrefixedClassNameCompleter implements Completer {
     /** Pre-computed candidate list for tab completion. */
     protected final Collection<Candidate> candidates = new ArrayList<>();
 
-    /** @param prefixes the class name prefixes to include as candidates
+    /**
+     * Creates a completer that includes class names with the given prefixes.
+     * @param prefixes the class name prefixes to include as candidates
      * @throws IOException if class scanning fails
      */
     public CLIPrefixedClassNameCompleter(Collection<String> prefixes) throws IOException {

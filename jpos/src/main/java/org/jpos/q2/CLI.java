@@ -78,7 +78,10 @@ public class CLI implements Runnable {
         initCmdInterface(getCompletionPrefixes(), mainHistory);
     }
 
-    /** @return true if this CLI is still running */
+    /**
+     * Returns true if this CLI is still running.
+     * @return true if running
+     */
     protected boolean running() {
         return getQ2() == null || getQ2().running();
     }
@@ -89,7 +92,10 @@ public class CLI implements Runnable {
     /** Called when the CLI is starting; subclasses may override. */
     protected void markStarted() { }
 
-    /** @return array of command prefixes for tab-completion */
+    /**
+     * Returns command prefixes registered for tab-completion.
+     * @return array of command prefixes
+     */
     protected String[] getCompletionPrefixes() {
         return new String[] {"org.jpos.q2.cli." };
     }
@@ -197,22 +203,33 @@ public class CLI implements Runnable {
         handleExit();
     }
 
-    /** @return the Q2 instance this CLI is attached to */
+    /**
+     * Returns the Q2 instance this CLI is attached to.
+     * @return the Q2 instance
+     */
     public Q2 getQ2() {
         return q2;
     }
 
-    /** @return true if this is an interactive session */
+    /**
+     * Returns true if this CLI session is interactive.
+     * @return true if interactive
+     */
     public boolean isInteractive() {
         return interactive;
     }
 
-    /** @return the JLine3 LineReader for this session */
+    /**
+     * Returns the JLine3 LineReader for this session.
+     * @return the LineReader
+     */
     public LineReader getReader() {
         return reader;
     }
 
-    /** @param in input stream
+    /**
+     * Executes a CLI command with the given I/O streams.
+     * @param in input stream
      * @param out output stream
      * @param command command to execute
      * @throws Exception on execution failure
@@ -223,7 +240,9 @@ public class CLI implements Runnable {
         cli.stop();
     }
 
-    /** @param command command string to execute
+    /**
+     * Executes a CLI command and captures its output as a string.
+     * @param command command string to execute
      * @return captured output
      * @throws Exception on execution failure
      */
@@ -233,9 +252,11 @@ public class CLI implements Runnable {
         return out.toString();
     }
 
-    /** @param in input stream
+    /**
+     * Builds a JLine3 Terminal for this session.
+     * @param in input stream
      * @param out output stream
-     * @return a JLine3 Terminal for this session
+     * @return the Terminal
      * @throws IOException on I/O failure
      */
     protected Terminal buildTerminal (InputStream in, OutputStream out) throws IOException {
