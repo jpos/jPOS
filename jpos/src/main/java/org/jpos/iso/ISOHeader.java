@@ -30,6 +30,7 @@ public interface ISOHeader extends Cloneable,Serializable
     /**
      * Return this header as byte array.
      */
+    /** @return this header serialised as a byte array */
     byte[] pack();
 
     /**
@@ -37,10 +38,14 @@ public interface ISOHeader extends Cloneable,Serializable
      *
      * @return The Number of bytes consumed.
      */
+    /** @param b raw bytes to parse
+     * @return The Number of bytes consumed. */
     int unpack(byte[] b);
 
     /**
      * Set the Destination address in this ISOHeader.
+     */
+    /** @param dst the destination address
      */
     void setDestination(String dst);
 
@@ -48,10 +53,13 @@ public interface ISOHeader extends Cloneable,Serializable
      * Return the destination address in this ISOHeader.
      * returns null if there is no destination address
      */
+    /** @return the destination address */
     String getDestination();
 
     /**
      * Set the Source address in this ISOHeader.
+     */
+    /** @param src the source address
      */
     void setSource(String src);
 
@@ -59,11 +67,13 @@ public interface ISOHeader extends Cloneable,Serializable
      * Return the source address in this ISOHeader.
      * returns null if there is no source address
      */
+    /** @return the source address */
     String getSource();
 
     /**
      * return the number of bytes in this ISOHeader
      */
+    /** @return the number of bytes in this ISOHeader when packed */
     int getLength();
     
     /**

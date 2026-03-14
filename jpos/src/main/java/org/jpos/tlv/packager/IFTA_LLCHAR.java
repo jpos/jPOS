@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.ObjectOutput;
 
 /**
+ * ISOFieldPackager for a 2-digit ASCII-length-prefixed character tagged field.
  * @author Vishnu Pillai
  */
 public class IFTA_LLCHAR extends IFA_LLCHAR implements TaggedFieldPackager {

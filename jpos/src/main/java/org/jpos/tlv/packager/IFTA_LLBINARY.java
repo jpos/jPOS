@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.ObjectOutput;
 
 /**
+ * ISOFieldPackager for a 2-digit ASCII-length-prefixed binary tagged field.
  * @author Vishnu Pillai
  */
 public class IFTA_LLBINARY extends IFA_LLBINARY implements TaggedFieldPackager {

@@ -25,6 +25,8 @@ import java.io.Serializable;
 
 
 /**
+ * An EMV tag whose value is a constructed (composite) TLV structure.
+ * @param <T> the type of the contained value
  * @author Vishnu Pillai
  */
 public class EMVConstructedTag<T> implements Serializable {

@@ -46,9 +46,14 @@ public class BASE1Header extends BaseHeader {
     private static final long serialVersionUID = 6466427524726021374L;
     public static final int LENGTH = 22;
 
+    /** Creates a BASE1Header with source and destination both set to {@code "000000"}. */
     public BASE1Header() {
         this("000000", "000000");
     }
+    /** Creates a BASE1Header with the given source and destination and default format (2).
+     * @param source 6-digit source ID
+     * @param destination 6-digit destination ID
+     */
     public BASE1Header(String source, String destination) {
         super();
         header = new byte[LENGTH];
@@ -58,6 +63,11 @@ public class BASE1Header extends BaseHeader {
         setSource(source);
         setDestination(destination);
     }
+    /** Creates a BASE1Header with explicit format.
+     * @param source 6-digit source ID
+     * @param destination 6-digit destination ID
+     * @param format header format code
+     */
     public BASE1Header(String source, String destination, int format) {
         super();
         header = new byte[LENGTH];
@@ -67,34 +77,45 @@ public class BASE1Header extends BaseHeader {
         setSource(source);
         setDestination(destination);
     }
+    /** Creates a BASE1Header from a raw byte array.
+     * @param header raw header bytes
+     */
     public BASE1Header(byte[] header) {
         super(header);
     }
 
+    /** @return the header length field value */
     public int getHLen() {
         return header[0] & 0xFF;
     }
+    /** @param hformat header format value */
     public void setHFormat(int hformat) {
         header[1] = (byte) hformat;
     }
+    /** @return the message format code */
     public int getFormat() {
         return header[2] & 0xFF;
     }
+    /** @param i routing control value */
     public void setRtCtl(int i) {
         header[11] = (byte) i;
     }
+    /** @param i flags value */
     public void setFlags(int i) {
         header[12] = (byte) (i >> 8 & 0xFF);
         header[13] = (byte) (i & 0xFF);
     }
+    /** @param i status value */
     public void setStatus(int i) {
         header[14] = (byte) (i >> 16 & 0xFF);
         header[15] = (byte) (i >> 8 & 0xFF);
         header[16] = (byte) (i & 0xFF);
     }
+    /** @param i batch number */
     public void setBatchNumber(int i) {
         header[17] = (byte) (i & 0xFF);
     }
+    /** @param format the message format code */
     public void setFormat(int format) {
         header[2] = (byte) format;
     }

@@ -21,6 +21,7 @@ package org.jpos.core;
 import org.jpos.iso.ISOException;
 
 /**
+ * Thrown when a configurable component cannot be initialised due to invalid or missing configuration.
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @see Configurable

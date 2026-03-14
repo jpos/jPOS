@@ -23,6 +23,7 @@ import org.jpos.iso.ISOBinaryFieldPackager;
 import org.jpos.iso.LiteralBinaryInterpreter;
 
 /**
+ * ISOFieldPackager for a binary field with a binary-hex length prefix.
  * @author Vishnu Pillai
  */
 public class IFB_LHBINARY extends ISOBinaryFieldPackager {

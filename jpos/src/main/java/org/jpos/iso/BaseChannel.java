@@ -82,12 +82,19 @@ public abstract class BaseChannel extends Observable
     private int maxPacketLength = 100000;
     private boolean keepAlive;
     private boolean expectKeepAlive;
+    /** Whether SO_LINGER is enabled when closing the socket. */
     private boolean soLingerOn = true;
+    /** SO_LINGER timeout in seconds. */
     private int soLingerSeconds = 5;
+    /** Configuration for this channel. */
     private Configuration cfg;
+    /** Whether this channel is in a usable state. */
     protected boolean usable;
+    /** When true, this channel's own header overrides the message's header. */
     protected boolean overrideHeader;
+    /** Registered name of this channel in the NameRegistrar. */
     private String name;
+    /** Send timeout in milliseconds. */
     private long sendTimeout = 15000L;
     // private int serverPort = -1;
     protected DataInputStream serverIn;
@@ -255,6 +262,7 @@ public abstract class BaseChannel extends Observable
             cnt[i] = 0;
     }
    /**
+    * Returns the internal message counters (indexed by counter type).
     * @return counters
     */
     public int[] getCounters() {
@@ -284,6 +292,11 @@ public abstract class BaseChannel extends Observable
     protected void connect (Socket socket) throws IOException {
         this.socket = socket;
         applyTimeout();
+        InetAddress inetAddress = socket.getInetAddress();
+        String remoteAddress = (inetAddress != null) ? "/" + inetAddress.getHostAddress() + ":" + socket.getPort() : "";
+        setLogger(getLogger(), getOriginalRealm() +
+            remoteAddress
+        );
         serverInLock.lock();
         try {
             serverIn = new DataInputStream (
@@ -306,16 +319,19 @@ public abstract class BaseChannel extends Observable
         setChanged();
         notifyObservers();
     }
+    /** Hook called after a successful connect; subclasses may override. @throws IOException on I/O error */
     protected void postConnectHook() throws IOException {
         // do nothing
     }
     /**
      * factory method pattern (as suggested by Vincent.Greene@amo.com)
+ *
+     * Use Socket factory if exists. If it is missing create a normal socket
+ *
      * @param host remote host
      * @param port remote port
      * @throws IOException on error
      *
-     * Use Socket factory if exists. If it is missing create a normal socket
      * @see ISOClientSocketFactory
      * @return newly created socket
      */
@@ -341,6 +357,13 @@ public abstract class BaseChannel extends Observable
             throw new IOException (e.getMessage());
         }
     }
+    /** Creates a connected socket to one of the given hosts/ports.
+     * @param hosts candidate host addresses
+     * @param ports corresponding port numbers
+     * @param evt log event for diagnostic output
+     * @return a connected Socket
+     * @throws IOException on connection failure
+     */
     protected Socket newSocket (String[] hosts, int[] ports, LogEvent evt)
         throws IOException
     {
@@ -378,12 +401,14 @@ public abstract class BaseChannel extends Observable
         return s;
     }
     /**
+     * Returns the underlying socket for this channel, or {@code null} if not connected.
      * @return current socket
      */
     public Socket getSocket() {
         return socket;
     }
     /**
+     * Returns the server socket used to accept inbound connections, or {@code null} if not in server mode.
      * @return current serverSocket
      */
     public ServerSocket getServerSocket() {
@@ -400,13 +425,14 @@ public abstract class BaseChannel extends Observable
         this.timeout = timeout;
         applyTimeout();
     }
+    /** @return the current socket timeout in milliseconds */
     public int getTimeout () {
         return timeout;
     }
 
     /**
-     * sets timeout, and also keep alive
-     * @throws SocketException
+     * Applies the configured socket timeout and keep-alive settings to the current socket.
+     * @throws SocketException if socket options cannot be set
      */
     protected void applyTimeout () throws SocketException {
         if (socket != null && socket.isConnected()) {
@@ -418,6 +444,8 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * Socket SO_LINGER option to use when closing the socket.
+     * @param on  whether to enable SO_LINGER
+     * @param linger linger timeout in seconds
      * @see java.net.Socket#setSoLinger(boolean, int)
      */
     public void setSoLinger(boolean on, int linger) {
@@ -432,7 +460,7 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * Connects client ISOChannel to server
-     * @exception IOException
+     * @exception IOException if the connection cannot be established
      */
     public void connect () throws IOException {
         ChannelEvent jfr = new ChannelEvent.Connect();
@@ -445,7 +473,6 @@ public abstract class BaseChannel extends Observable
             connect(socket);
             jfr.append("%d".formatted(socket.getLocalPort()));
             evt.withTraceId(getSocketUUID());
-            evt.withTag("endpoint", toEndpoint(socket));
             applyTimeout();
         } catch (IOException e) {
             jfr = new ChannelEvent.ConnectionException(jfr.getDetail());
@@ -460,7 +487,7 @@ public abstract class BaseChannel extends Observable
 
     /**
      * Accepts connection
-     * @exception IOException
+     * @exception IOException if the accept fails
      */
     public void accept(ServerSocket s) throws IOException {
         ChannelEvent jfr = new ChannelEvent.Accept();
@@ -488,8 +515,10 @@ public abstract class BaseChannel extends Observable
     }
 
     /**
-     * @param b - new Usable state (used by ISOMUX internals to
+ *
      * flag as unusable in order to force a reconnection)
+ *
+     * @param b - new Usable state (used by ISOMUX internals to
      */
     public void setUsable(boolean b) {
         Logger.log (new LogEvent (this, "usable", b));
@@ -536,7 +565,16 @@ public abstract class BaseChannel extends Observable
         return image != null ?
             new BaseHeader (image) : null;
     }
+    /** Sends the message length preamble.
+     * @param len message length to send
+     * @throws IOException on I/O failure
+     */
     protected void sendMessageLength(int len) throws IOException { }
+    /** Sends the message header, if any.
+     * @param m the ISO message
+     * @param len packed message length
+     * @throws IOException on I/O failure
+     */
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException {
         if (!isOverrideHeader() && m.getHeader() != null)
             serverOut.write(m.getHeader());
@@ -555,10 +593,13 @@ public abstract class BaseChannel extends Observable
     }
 
     /**
-     * @deprecated use sendMessageTrailer(ISOMsg m, byte[] b instead.
+     * @deprecated use {@link #sendMessageTrailer(ISOMsg, byte[])} instead.
+     * @param m the ISOMsg
+     * @param b the packed bytes
+     * @throws IOException on I/O failure
      */
-    @SuppressWarnings ("deprecation")
     @Deprecated
+    @SuppressWarnings ("deprecation")
     protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException  {
         sendMessageTrailler (m, b.length);
     }
@@ -568,6 +609,7 @@ public abstract class BaseChannel extends Observable
      *
      * @param m The unpacked ISOMsg.
      * @param b The packed ISOMsg image.
+     * @throws IOException on I/O failure
      */
     @SuppressWarnings("deprecation")
     protected void sendMessageTrailer(ISOMsg m, byte[] b) throws IOException {
@@ -577,6 +619,7 @@ public abstract class BaseChannel extends Observable
 
     /**
      * @deprecated use getMessageTrailer(ISOMsg m) instead.
+     * @throws IOException on I/O failure
      */
     @Deprecated
     protected void getMessageTrailler() throws IOException {
@@ -587,15 +630,27 @@ public abstract class BaseChannel extends Observable
      *
      * @param m The ISOMessage to store the trailer data.
      * @see ISOMsg#setTrailer(byte[])
+     * @throws IOException on I/O failure
      */
     @SuppressWarnings("deprecation")
     protected void getMessageTrailer(ISOMsg m) throws IOException {
         getMessageTrailler();
     }
 
+    /** @param b buffer to read into
+     * @param offset buffer offset
+     * @param len number of bytes to read
+     * @throws IOException on I/O failure
+     * @throws ISOException on protocol error
+     */
     protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException {
         serverIn.readFully(b, offset, len);
     }
+    /** Returns the message length; {@code -1} indicates variable or unavailable.
+     * @return message length in bytes, or -1
+     * @throws IOException on I/O failure
+     * @throws ISOException on protocol error
+     */
     protected int getMessageLength() throws IOException, ISOException {
         return -1;
     }
@@ -609,9 +664,19 @@ public abstract class BaseChannel extends Observable
             m.getHeader().length : getHeaderLength();
     }
 
+    /** Receives raw bytes from the stream for stream-mode channels.
+     * @return received bytes
+     * @throws IOException on I/O failure
+     */
     protected byte[] streamReceive() throws IOException {
         return new byte[0];
     }
+    /** Writes {@code len} bytes from {@code b} starting at {@code offset} to the output stream.
+     * @param b source byte array
+     * @param offset start offset
+     * @param len number of bytes to write
+     * @throws IOException on I/O failure
+     */
     protected void sendMessage (byte[] b, int offset, int len)
         throws IOException
     {
@@ -634,12 +699,13 @@ public abstract class BaseChannel extends Observable
      * </ul>
      *
      * If a {@link VetoException} is thrown by a filter, the message is not sent, and the exception is logged.
-     *
-     * @param m the ISO message to be sent. The message will be modified in-place: its direction and packager
+ *
      *          will be updated, and filters may alter its content.
+     *                     or if an unexpected I/O error occurs.
+ *
+     * @param m the ISO message to be sent. The message will be modified in-place: its direction and packager
      *
      * @throws IOException if the channel is not connected, if the output stream fails, if locking times out,
-     *                     or if an unexpected I/O error occurs.
      * @throws ISOException if packing the message fails or other ISO-specific issues occur.
      * @throws VetoException if an outgoing filter vetoes the message.
      *
@@ -663,7 +729,6 @@ public abstract class BaseChannel extends Observable
             m.setPackager (p);
             m = applyOutgoingFilters (m, evt);
             evt.addMessage (m);
-            applyTags (evt, m);
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
             m.setPackager (p); // and could have dropped packager as well
             byte[] b = pack(m);
@@ -708,8 +773,8 @@ public abstract class BaseChannel extends Observable
     /**
      * sends a byte[] over the TCP/IP session
      * @param b the byte array to be sent
-     * @exception IOException
-     * @exception ISOException
+     * @exception IOException on I/O failure
+     * @exception ISOException on ISO packing failure
      * @exception org.jpos.iso.ISOFilter.VetoException if a filter vetoes the message
      */
     public void send (byte[] b) throws IOException, ISOException {
@@ -788,8 +853,8 @@ public abstract class BaseChannel extends Observable
     /**
      * Waits and receive an ISOMsg over the TCP/IP session
      * @return the Message received
-     * @throws IOException
-     * @throws ISOException
+     * @throws IOException on I/O failure
+     * @throws ISOException on ISO unpacking failure
      */
     public ISOMsg receive() throws IOException, ISOException {
         var jfr = new ChannelEvent.Receive();
@@ -845,7 +910,6 @@ public abstract class BaseChannel extends Observable
                 unpack (m, b);
             m.setDirection(ISOMsg.INCOMING);
             evt.addMessage (m);
-            applyTags (evt, m);
             m = applyIncomingFilters (m, header, b, evt);
             m.setDirection(ISOMsg.INCOMING);
             cnt[RX]++;
@@ -884,10 +948,12 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * Low level receive
+ *
+     * or -1 if there is no more data because the end of the stream has been reached.
+ *
      * @param b byte array
      * @throws IOException on error
      * @return the total number of bytes read into the buffer,
-     * or -1 if there is no more data because the end of the stream has been reached.
      */
     public int getBytes (byte[] b) throws IOException {
         return serverIn.read (b);
@@ -895,7 +961,7 @@ public abstract class BaseChannel extends Observable
     /**
      * disconnects the TCP/IP session. The instance is ready for
      * a reconnection. There is no need to create a new ISOChannel<br>
-     * @exception IOException
+     * @exception IOException if an I/O error occurs during disconnect
      */
     public void disconnect () throws IOException {
         var jfr = new ChannelEvent.Disconnect();
@@ -904,7 +970,6 @@ public abstract class BaseChannel extends Observable
         if (socket != null) {
             String detail = socket.getRemoteSocketAddress().toString();
             jfr.setDetail(detail);
-            evt.withTag("endpoint", toEndpoint(socket));
             evt.addMessage(detail);
         }
 
@@ -937,7 +1002,7 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * Issues a disconnect followed by a connect
-     * @exception IOException
+     * @exception IOException if the reconnect fails
      */
     public void reconnect() throws IOException {
         disconnect();
@@ -952,14 +1017,11 @@ public abstract class BaseChannel extends Observable
     public String getRealm () {
         return realm;
     }
+    /** @return the Logger associated with this channel */
     public Logger getLogger() {
         return logger;
     }
-    protected String toEndpoint(Socket socket) {
-        if (socket == null || socket.getInetAddress() == null)
-            return null;
-        return "%s:%d".formatted(socket.getInetAddress().getHostAddress(), socket.getPort());
-    }
+    /** @return the original realm name, or the class name if none was set */
     public String getOriginalRealm() {
         return originalRealm == null ?
             this.getClass().getName() : originalRealm;
@@ -980,6 +1042,7 @@ public abstract class BaseChannel extends Observable
         return this.name;
     }
     /**
+     * Adds a filter to this channel's filter chain.
      * @param filter filter to add
      * @param direction ISOMsg.INCOMING, ISOMsg.OUTGOING, 0 for both
      */
@@ -1018,6 +1081,7 @@ public abstract class BaseChannel extends Observable
         addFilter (filter, 0);
     }
     /**
+     * Removes a filter from this channel's filter chain.
      * @param filter filter to remove
      * @param direction ISOMsg.INCOMING, ISOMsg.OUTGOING, 0 for both
      */
@@ -1053,6 +1117,11 @@ public abstract class BaseChannel extends Observable
     public void removeOutgoingFilter (ISOFilter filter) {
         removeFilter (filter, ISOMsg.OUTGOING);
     }
+    /** @param m message to filter
+     * @param evt log event
+     * @return filtered message
+     * @throws VetoException if a filter vetoes the message
+     */
     protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt)
         throws VetoException
     {
@@ -1060,11 +1129,23 @@ public abstract class BaseChannel extends Observable
             m = f.filter (this, m, evt);
         return m;
     }
+    /** @param m message to filter
+     * @param evt log event
+     * @return filtered message
+     * @throws VetoException if a filter vetoes the message
+     */
     protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt)
         throws VetoException
     {
         return applyIncomingFilters (m, null, null, evt);
     }
+    /** @param m message to filter
+     * @param header raw header bytes (may be null)
+     * @param image raw message image (may be null)
+     * @param evt log event
+     * @return filtered message
+     * @throws VetoException if a filter vetoes the message
+     */
     protected ISOMsg applyIncomingFilters (ISOMsg m, byte[] header, byte[] image, LogEvent evt)
         throws VetoException
     {
@@ -1076,9 +1157,17 @@ public abstract class BaseChannel extends Observable
         }
         return m;
     }
+    /** @param m message to unpack into
+     * @param b packed bytes
+     * @throws ISOException on unpacking error
+     */
     protected void unpack (ISOMsg m, byte[] b) throws ISOException {
         m.unpack (b);
     }
+    /** @param m message to pack
+     * @return packed bytes
+     * @throws ISOException on packing error
+     */
     protected byte[] pack (ISOMsg m) throws ISOException {
         return m.pack();
     }
@@ -1094,7 +1183,7 @@ public abstract class BaseChannel extends Observable
     * (host not present indicates a ServerChannel)
     *
     * @param cfg Configuration
-    * @throws ConfigurationException
+    * @throws ConfigurationException if the configuration is invalid or incomplete
     */
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException
@@ -1138,37 +1227,48 @@ public abstract class BaseChannel extends Observable
             throw new ConfigurationException (e);
         }
     }
+    /** @return this channel's current configuration */
     public Configuration getConfiguration() {
         return cfg;
     }
+    /** @return the incoming filter chain */
     public Collection<ISOFilter> getIncomingFilters() {
         return incomingFilters;
     }
+    /** @return the outgoing filter chain */
     public Collection<ISOFilter> getOutgoingFilters() {
         return outgoingFilters;
     }
+    /** @param filters replacement incoming filter set */
     public void setIncomingFilters (Collection filters) {
         incomingFilters = new ArrayList (filters);
     }
+    /** @param filters replacement outgoing filter set */
     public void setOutgoingFilters (Collection filters) {
         outgoingFilters = new ArrayList (filters);
     }
+    /** @param header channel-level header bytes to prepend to outgoing messages */
     public void setHeader (byte[] header) {
         this.header = header;
     }
+    /** @param header channel-level header string (encoded as platform bytes) */
     public void setHeader (String header) {
         setHeader (header.getBytes());
     }
+    /** @return the channel-level header bytes, or null if none */
     public byte[] getHeader () {
         return header;
     }
+    /** @param overrideHeader if true, the channel header takes precedence over the message header */
     public void setOverrideHeader (boolean overrideHeader) {
         this.overrideHeader = overrideHeader;
     }
+    /** @return true if this channel's header overrides the message's own header */
     public boolean isOverrideHeader () {
         return overrideHeader;
     }
     /**
+     * Looks up a registered {@link ISOChannel} by name from the {@link org.jpos.util.NameRegistrar}.
      * @param name the Channel's name (without the "channel." prefix)
      * @return ISOChannel instance with given name.
      * @throws org.jpos.util.NameRegistrar.NotFoundException if not registered
@@ -1194,15 +1294,21 @@ public abstract class BaseChannel extends Observable
     * @see           ISOClientSocketFactory
     * @since 1.3.3
     */
+    /** @param socketFactory the socket factory to use for outbound connections */
     public void setSocketFactory(ISOClientSocketFactory socketFactory) {
         this.socketFactory = socketFactory;
     }
+    /** @return maximum packet length this channel will accept */
     public int getMaxPacketLength() {
         return maxPacketLength;
     }
+    /** @param maxPacketLength the maximum packet length to accept */
     public void setMaxPacketLength(int maxPacketLength) {
         this.maxPacketLength = maxPacketLength;
     }
+    /** Closes the underlying socket; idempotent.
+     * @throws IOException on close failure
+     */
     protected void closeSocket() throws IOException {
         Socket s = null;
         synchronized (this) {
@@ -1256,30 +1362,22 @@ public abstract class BaseChannel extends Observable
           uuid;
     }
 
+    /** Records an incoming message in metrics if configured.
+     * @param m the received message
+     * @throws ISOException on metrics error
+     */
     protected void incrementMsgInCounter(ISOMsg m) throws ISOException {
         if (isoMsgMetrics != null) {
             isoMsgMetrics.recordMessage(m, MeterInfo.ISOMSG_IN);
         }
     }
+    /** Records an outgoing message in metrics if configured.
+     * @param m the sent message
+     * @throws ISOException on metrics error
+     */
     protected void incrementMsgOutCounter(ISOMsg m) throws ISOException {
         if (isoMsgMetrics != null) {
             isoMsgMetrics.recordMessage(m, MeterInfo.ISOMSG_OUT);
         }
-    }
-    private void applyTags (LogEvent evt, ISOMsg m) {
-        if (m.hasField(3)) {
-            String f3 = m.getString(3);
-            if (f3 != null && f3.length() >= 2)
-                evt.withTag("pcode", f3.substring(0, 2));
-        }
-        if (m.hasField(41))
-            evt.withTag("tid", m.getString(41));
-        if (m.hasField(42))
-            evt.withTag("mid", m.getString(42));
-        try {
-            String mti = m.getMTI();
-            if (mti != null)
-                evt.withTag("mti", mti);
-        } catch (ISOException ignored) { }
     }
 }

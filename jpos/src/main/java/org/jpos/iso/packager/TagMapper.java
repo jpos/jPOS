@@ -19,7 +19,7 @@
 package org.jpos.iso.packager;
 
 /**
- *
+ * Maps between field IDs and tag names for tagged (TLV-style) ISO fields.
  */
 public interface TagMapper {
 

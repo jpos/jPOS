@@ -63,7 +63,7 @@ public class AmexChannel extends BaseChannel {
      *
      * @param p
      *            an ISOPackager (should be ISO87BPackager)
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see org.jpos.iso.packager.ISO87BPackager
      */
     public AmexChannel(ISOPackager p) throws IOException {
@@ -77,7 +77,7 @@ public class AmexChannel extends BaseChannel {
      *            an ISOPackager
      * @param serverSocket
      *            where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see ISOPackager
      */
     public AmexChannel(ISOPackager p, ServerSocket serverSocket)

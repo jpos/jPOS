@@ -27,6 +27,8 @@ package org.jpos.iso;
 public class AsciiHexInterpreter implements BinaryInterpreter
 {
     /** An instance of this Interpreter. Only one needed for the whole system */
+    /** Private constructor — use the {@code INSTANCE} singleton. */
+    private AsciiHexInterpreter() { }
     public static final AsciiHexInterpreter INSTANCE = new AsciiHexInterpreter();
 
     /** 0-15 to ASCII hex digit lookup table. */

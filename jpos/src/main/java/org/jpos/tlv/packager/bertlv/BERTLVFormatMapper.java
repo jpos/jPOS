@@ -24,6 +24,7 @@ import org.jpos.iso.ISOException;
 
 
 /**
+ * Maps EMV/BER-TLV tag numbers to their corresponding {@link org.jpos.tlv.TLVDataFormat} descriptors.
  * @author Vishnu Pillai
  */
 public interface BERTLVFormatMapper {

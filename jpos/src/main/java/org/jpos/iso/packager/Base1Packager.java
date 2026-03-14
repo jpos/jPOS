@@ -169,6 +169,7 @@ public class Base1Packager extends ISOBasePackager
 /*128*/ new IFB_BINARY  (  8, "MAC 2")
     };
 
+    /** ISO-8583 sub-field packager for field 126. */
     protected static class F126Packager extends Base1SubFieldPackager
     {
         protected ISOFieldPackager fld126[] =
@@ -186,6 +187,7 @@ public class Base1Packager extends ISOBasePackager
             new IFE_CHAR     (6,  "CVV2 Request Data"),
         };
 
+        /** Creates F126Packager with the default field configuration. */
         protected F126Packager ()
         {
             super();
@@ -193,6 +195,7 @@ public class Base1Packager extends ISOBasePackager
         }
     }
 
+    /** ISO-8583 sub-field packager for field 127. */
     protected static class F127Packager extends ISOBasePackager 
     {
         protected ISOFieldPackager fld127[] = 
@@ -204,6 +207,7 @@ public class Base1Packager extends ISOBasePackager
             new IFE_CHAR    (9,   "REGION CODING"),
             new IFB_NUMERIC (4,   "FILLER", true),
         };
+        /** Creates F127Packager with the default field configuration. */
         protected F127Packager () 
         {
             super();
@@ -211,6 +215,7 @@ public class Base1Packager extends ISOBasePackager
         }
     }
 
+    /** Creates Base1Packager with the default BASE-1 field configuration. */
     public Base1Packager() 
     {
         super();

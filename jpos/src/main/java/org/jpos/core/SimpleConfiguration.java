@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 /**
+ * A {@link Configuration} implementation backed by a {@link java.util.Properties} object.
  * @author apr@cs.com.uy
  * @version $Id$
  * @since jPOS 1.1

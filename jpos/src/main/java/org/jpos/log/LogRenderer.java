@@ -22,8 +22,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 public interface LogRenderer<T> {
+    /**
+     * Renders the given object to the print stream with the specified indentation.
+     * @param obj the object to render
+     * @param ps the output stream
+     * @param indent indentation prefix
+     */
     void render (T obj, PrintStream ps, String indent);
+    /** @return the class this renderer handles */
     Class<?> clazz();
+    /** @return the log event type this renderer handles */
     Type type();
 
     default void render (T obj, PrintStream ps) {

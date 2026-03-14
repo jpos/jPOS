@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Packager for a sequence of tagged (TLV-style) ISO fields, supporting both fixed and variable-length tags.
  * @author Vishnu Pillai
  */
 public class TaggedSequencePackager extends GenericPackager {

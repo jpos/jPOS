@@ -30,14 +30,15 @@ public interface ISOSource {
     /**
      * sends (or hands back) an ISOMsg
      * @param m the Message to be sent
-     * @exception IOException
-     * @exception ISOException
+     * @exception IOException on I/O failure
+     * @exception ISOException on ISO packing failure
      * @exception org.jpos.iso.ISOFilter.VetoException if a filter vetoes the message
      */
     void send(ISOMsg m)
         throws IOException, ISOException;
 
     /**
+     * Indicates whether this source is currently connected and able to send messages.
      * @return true if source is connected and usable
      */
     boolean isConnected();

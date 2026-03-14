@@ -27,8 +27,9 @@ package org.jpos.core;
  */
 public interface Configurable {
    /**
+    * Configures this object with the supplied {@link Configuration}.
     * @param cfg Configuration object
-    * @throws ConfigurationException
+    * @throws ConfigurationException if the configuration is invalid
     */
    void setConfiguration(Configuration cfg)
         throws ConfigurationException;

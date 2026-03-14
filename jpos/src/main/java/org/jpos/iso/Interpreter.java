@@ -44,6 +44,7 @@ public interface Interpreter
 	 *            The index in rawData to start interpreting at.
 	 * @param length
 	 *            The number of data units to interpret.
+     * @return The uninterpreted data.
      * @throws ISOException on error
 	 * @return The uninterpreted data.
 	 */
@@ -53,5 +54,10 @@ public interface Interpreter
 	 * Returns the number of bytes required to interpret a String of length
 	 * nDataUnits.
 	 */
+    /**
+     * Returns the number of bytes needed to store {@code nDataUnits} data units in this interpretation.
+     * @param nDataUnits the number of logical data units
+     * @return the packed byte length
+     */
     int getPackedLength(int nDataUnits);
 }

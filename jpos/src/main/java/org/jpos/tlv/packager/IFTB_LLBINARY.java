@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.ObjectOutput;
 
 /**
+ * ISOFieldPackager for a 2-byte binary-length-prefixed binary tagged field.
  * @author Vishnu Pillai
  */
 public class IFTB_LLBINARY extends IFB_LLBINARY implements TaggedFieldPackager {

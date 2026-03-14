@@ -19,6 +19,7 @@
 package org.jpos.core;
 
 /**
+ * Thrown when card data (PAN, expiry, etc.) is invalid or cannot be parsed.
  * @author apr@cs.com.uy
  * @version $Id$
  * @since jPOS 1.1

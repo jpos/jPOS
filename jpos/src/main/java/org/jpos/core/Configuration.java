@@ -22,12 +22,14 @@ package org.jpos.core;
 import java.util.Set;
 
 /**
+ *
+ * CardAgents relies on a Configuration object to provide
+ * runtime configuration parameters such as merchant number, etc.
+ *
  * @author apr@cs.com.uy
  * @version $Id$
  * @since jPOS 1.1
  *
- * CardAgents relies on a Configuration object to provide
- * runtime configuration parameters such as merchant number, etc.
  */
 public interface Configuration {
     String get(String propertyName);

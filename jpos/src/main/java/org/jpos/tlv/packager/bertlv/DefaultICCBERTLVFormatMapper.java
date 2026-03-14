@@ -27,6 +27,7 @@ import org.jpos.emv.UnknownTagNumberException;
 import org.jpos.iso.ISOException;
 
 /**
+ * Default BER-TLV format mapper for ICC (Integrated Circuit Card) data elements, based on the EMV specification.
  * @author Vishnu Pillai
  */
 public class DefaultICCBERTLVFormatMapper implements BERTLVFormatMapper {

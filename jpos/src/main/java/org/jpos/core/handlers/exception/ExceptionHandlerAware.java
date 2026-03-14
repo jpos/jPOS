@@ -44,7 +44,7 @@ import java.util.Map;
 public interface ExceptionHandlerAware {
 
     /**
-     *
+     * Returns the map of targeted exception handlers, keyed by exception class.
      * @return A map of exception classes to exception handlers.  These handlers only execute if the exception matches.
      */
     Map<Class<? extends Exception>, List<ExceptionHandler>> getExceptionHandlers();

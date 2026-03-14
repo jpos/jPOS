@@ -42,6 +42,8 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class Base1SubFieldPackager extends ISOBasePackager
 {
+    /** Default constructor. */
+    public Base1SubFieldPackager() { super(); }
     // These methods are identical to ISOBasePackager
     // except that fld[1] has been replaced with fld[0]
     // and a secondard bitmap is not allowed

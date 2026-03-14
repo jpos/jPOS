@@ -25,6 +25,7 @@ import org.jpos.util.Loggeable;
 import java.io.PrintStream;
 
 /**
+ * Base implementation of {@link org.jpos.iso.ISOHeader} providing common header handling for ISO-8583 channels.
  * @author <a href="mailto:Eoin.Flood@orbiscom.com">Eoin Flood</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */

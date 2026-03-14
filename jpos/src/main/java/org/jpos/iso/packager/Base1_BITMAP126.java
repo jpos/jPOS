@@ -35,13 +35,15 @@ import java.util.BitSet;
  */
 public class Base1_BITMAP126 extends ISOBitMapPackager 
 {
+    /** Default constructor. */
     public Base1_BITMAP126()
     {
         super();
     }
     /**
+    * Creates a Base1_BITMAP126 with the given length and description.
     * @param len - field len
-    * @param description symbolic descrption
+    * @param description symbolic description
     */
     public Base1_BITMAP126(int len, String description) 
     {

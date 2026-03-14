@@ -35,7 +35,7 @@ public enum ARPCMethod {
     * <li>the 2-byte Authorisation Response Code (ARC)
    * </ul>
     */
-   METHOD_1
+   METHOD_1,
 
    /**
     * Method For the generation of a 4-byte ARPC consists of applying
@@ -46,6 +46,6 @@ public enum ARPCMethod {
     * <li>the 0-8 byte binary Proprietary Authentication Data
    * </ul>
     */
-  ,METHOD_2
+   METHOD_2
 
 }

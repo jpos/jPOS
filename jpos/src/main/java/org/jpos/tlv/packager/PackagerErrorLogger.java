@@ -33,6 +33,7 @@ import java.io.PrintStream;
 
 
 /**
+ * A {@link PackagerErrorHandler} that logs errors via the jPOS logging framework.
  * @author Vishnu Pillai
  */
 public class PackagerErrorLogger implements PackagerErrorHandler, Configurable, LogSource {

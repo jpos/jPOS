@@ -31,48 +31,60 @@ import java.util.Collection;
 
 public interface FilteredChannel extends ISOChannel {
     /**
+     * Adds a filter to the incoming filter chain.
      * @param filter incoming filter to add
      */
     void addIncomingFilter(ISOFilter filter);
 
     /**
+     * Adds a filter to the outgoing filter chain.
      * @param filter outgoing filter to add
      */
     void addOutgoingFilter(ISOFilter filter);
 
+    /** Adds a filter to both incoming and outgoing chains.
+     * @param filter filter to add
+     */
     void addFilter(ISOFilter filter);
 
     /**
+     * Removes a filter from both incoming and outgoing chains.
      * @param filter filter to remove (both directions)
      */
     void removeFilter(ISOFilter filter);
 
     /**
+     * Removes a filter from the incoming filter chain.
      * @param filter incoming filter to remove
      */
     void removeIncomingFilter(ISOFilter filter);
 
     /**
+     * Removes a filter from the outgoing filter chain.
      * @param filter outgoing filter to remove
      */
     void removeOutgoingFilter(ISOFilter filter);
 
    /**
+    * Returns all filters in the incoming filter chain.
     * @return Collection containing all incoming filters
     */
    Collection getIncomingFilters();
 
    /**
+    * Returns all filters in the outgoing filter chain.
     * @return Collection containing all outgoing filters
     */
    Collection getOutgoingFilters();
 
    /**
+    * Replaces the entire incoming filter chain with the given collection.
     * @param filters incoming filter set
     */
    void setIncomingFilters(Collection filters);
 
    /**
+    * Replaces the entire outgoing filter chain with the given collection.
     * @param filters outgoing filter set
     */
    void setOutgoingFilters(Collection filters);

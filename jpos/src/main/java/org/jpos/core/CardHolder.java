@@ -29,11 +29,13 @@ import java.util.Date;
 import java.util.StringTokenizer;
 
 /**
- * @author apr@cs.com.uy
- * @since jPOS 1.1
  *
  * This class is called 'CardHolder', but a better name could have been 'Card'
  * At some point we'll deprecate this one and create a new 'Card' class.
+ *
+ * @author apr@cs.com.uy
+ * @since jPOS 1.1
+ *
  */
 public class CardHolder implements Cloneable, Serializable, Loggeable {
     private static final long serialVersionUID = 7449770625551878435L;

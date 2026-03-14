@@ -27,11 +27,13 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * @author apr@jpos.org
- * @since jPOS 2.0.5
  *
  * This class is based on the old 'CardHolder' class and adds support for multiple
  * PAN and Expiration dates taken from manual entry, track1, track2. It also corrects the name.
+ *
+ * @author apr@jpos.org
+ * @since jPOS 2.0.5
+ *
  */
 public class Card {
     private String pan;

@@ -174,6 +174,7 @@ public class BASE24Packager extends ISOBasePackager {
             new IFA_LLCHAR (99, "BASE24-POS User Data"),
             new IFA_NUMERIC (16, "MAC 2")
         };
+    /** Creates BASE24Packager with the default BASE-24 field configuration. */
     public BASE24Packager() {
         super();
         setFieldPackager(fld);

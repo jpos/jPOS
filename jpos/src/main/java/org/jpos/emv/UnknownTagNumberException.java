@@ -19,6 +19,7 @@
 package org.jpos.emv;
 
 /**
+ * Thrown when an EMV tag number is not recognised in the current tag dictionary.
  * @author Vishnu Pillai
  */
 public class UnknownTagNumberException extends Exception {

@@ -35,6 +35,11 @@ public interface Prefixer
 	 * @param b
 	 *            The byte array to fill with the encoded length.
 	 */
+    /**
+     * @param length the field length to encode
+     * @param b the byte array to write the length prefix into
+     * @throws ISOException if the length exceeds the prefix capacity
+     */
     void encodeLength(int length, byte[] b) throws ISOException;
 
     /**
@@ -47,10 +52,19 @@ public interface Prefixer
 	 * @return The length in chars of the field data to follow this
 	 *         LengthPrefix.
 	 */
+    /**
+     * @param b the byte array containing the length prefix
+     * @param offset the offset in {@code b} where the prefix starts
+     * @return The length in chars of the field data to follow this prefix
+     * @throws ISOException if the prefix cannot be decoded
+     */
     int decodeLength(byte[] b, int offset) throws ISOException;
 
     /**
 	 * Returns the number of bytes taken up by the length encoding.
 	 */
+    /**
+     * @return the number of bytes used by the length encoding
+     */
     int getPackedLength();
 }

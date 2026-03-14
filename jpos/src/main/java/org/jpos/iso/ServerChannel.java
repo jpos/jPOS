@@ -36,8 +36,9 @@ import java.net.ServerSocket;
 
 public interface ServerChannel extends ISOChannel {
    /**
-    * Accepts connection 
-    * @exception IOException
+    * Accepts an inbound connection from the given server socket.
+    * @param s the server socket to accept on
+    * @exception IOException on I/O failure
     */
    void accept(ServerSocket s) throws IOException;
 }

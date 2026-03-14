@@ -24,6 +24,7 @@ import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOUtil;
 
 /**
+ * Packager for tagged TLV sequences where the tag and length are encoded as binary hex.
  * @author Vishnu Pillai
  */
 public class BinaryHexTaggedSequencePackager extends TaggedSequencePackager {

@@ -22,12 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ *
+ * A simple sequencer intended for Debugging applications.<br>
+ * Production grade Sequencers are required to be persistent capables
+ *
  * @author apr@cs.com.uy
  * @version $Id$
  * @since jPOS 1.1
  *
- * A simple sequencer intended for Debugging applications.<br>
- * Production grade Sequencers are required to be persistent capables
  */
 @SuppressWarnings("unchecked")
 public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {

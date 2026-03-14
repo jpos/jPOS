@@ -41,19 +41,19 @@ public interface ISOChannel extends ISOSource {
 
     /**
      * Connects ISOChannel 
-     * @exception IOException
+     * @exception IOException on I/O failure
      */
     void connect() throws IOException;
 
     /**
      * disconnects ISOChannel
-     * @exception IOException
+     * @exception IOException on I/O failure
      */
     void disconnect() throws IOException;
 
     /**
      * Reconnect channel
-     * @exception IOException
+     * @exception IOException on I/O failure
      */
     void reconnect() throws IOException;
 
@@ -65,28 +65,29 @@ public interface ISOChannel extends ISOSource {
     /**
      * Receives an ISOMsg
      * @return the Message received
-     * @exception IOException
-     * @exception ISOException
+     * @exception IOException on I/O failure
+     * @exception ISOException on ISO packing/unpacking failure
      */
     ISOMsg receive() throws IOException, ISOException;
 
     /**
      * sends an ISOMsg over the TCP/IP session
      * @param m the Message to be sent
-     * @exception IOException
-     * @exception ISOException
+     * @exception IOException on I/O failure
+     * @exception ISOException on ISO packing/unpacking failure
      */
     void send(ISOMsg m) throws IOException, ISOException;
     
     /**
      * sends a byte[] over the TCP/IP session
      * @param b the byte array to be sent
-     * @exception IOException
-     * @exception ISOException
+     * @exception IOException on I/O failure
+     * @exception ISOException on ISO packing/unpacking failure
      */
     void send(byte[] b) throws IOException, ISOException;
 
     /**
+     * Marks this channel as usable or not; a non-usable channel will not accept messages.
      * @param b - usable state
      */
     void setUsable(boolean b);
@@ -99,17 +100,20 @@ public interface ISOChannel extends ISOSource {
     void setName(String name);
 
    /**
+    * Returns this channel's registered name.
     * @return this ISOChannel's name ("" if no name was set)
     */
    String getName();
 
    /**
+    * Returns the packager used to pack/unpack ISO messages on this channel.
     * @return current packager
     */
    ISOPackager getPackager();
 
    /**
-    * Expose channel clonning interface
+    * Returns a clone of this channel.
+    * @return a deep copy of this ISOChannel
     */
    Object clone();
     

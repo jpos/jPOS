@@ -73,6 +73,7 @@ public abstract class ISOFieldPackager {
     }
 
     /**
+     * Creates an ISOFieldPackager with the given length and description.
      * @param len - field Len
      * @param description - details
      */
@@ -80,53 +81,72 @@ public abstract class ISOFieldPackager {
         this.len = len;
         this.description = description;
     }
+    /** Returns the field description. @return field description */
     public String getDescription() {
         return description;
     }
+    /** Sets the field description. @param description the description */
     public void setDescription(String description) {
         this.description = description;
     }
+    /** Returns the maximum field length. @return max field length */
     public int getLength() {
         return len;
     }
+    /** Sets the maximum field length. @param len the maximum length */
     public void setLength(int len) {
         this.len = len;
     }
 
+    /** Enables or disables padding for this field. @param pad true to enable padding */
     public void setPad(boolean pad) {
         this.pad = pad;
     }
 
+    /** Enables or disables trimming for this field. @param trim true to enable trimming */
     public void setTrim(boolean trim) {
         this.trim = trim;
     }
 
+    /**
+     * Returns the maximum number of bytes this packager can produce.
+     * @return maximum packed length in bytes
+     */
     public abstract int getMaxPackedLength();
 
+    /**
+     * Creates an {@link ISOComponent} instance appropriate for this packager.
+     * @param fieldNumber the field number to assign to the new component
+     * @return a new ISOComponent
+     */
     public ISOComponent createComponent(int fieldNumber) {
         return new ISOField (fieldNumber);
     }
     /**
+     * Packs the given component into a byte array.
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on packing error
      */
     public abstract byte[] pack (ISOComponent c) throws ISOException;
 
     /**
+     * Unpacks a field from the binary image into the given component.
      * @param c - the Component to unpack
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on unpacking error
      */
     public abstract int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException;
 
     /**
+     * Unpacks a field from an input stream into the given component.
      * @param c  - the Component to unpack
      * @param in - input stream
-     * @exception ISOException
+     * @throws IOException on I/O failure
+     * @exception ISOException on unpacking error
      */
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
@@ -136,7 +156,7 @@ public abstract class ISOFieldPackager {
     /**
      * @param c   - the Component to unpack
      * @param out - output stream
-     * @exception ISOException
+     * @exception ISOException on packing/unpacking error
      * @exception IOException
      */
     public void pack (ISOComponent c, ObjectOutput out) 

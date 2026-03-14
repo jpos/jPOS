@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.ObjectOutput;
 
 /**
+ * ISOFieldPackager for a 3-digit ASCII-length-prefixed numeric tagged field.
  * @author Vishnu Pillai
  */
 public class IFTA_LLLNUM extends IFA_LLLNUM implements TaggedFieldPackager {

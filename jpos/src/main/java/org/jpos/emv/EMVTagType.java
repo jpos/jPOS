@@ -22,6 +22,7 @@ package org.jpos.emv;
 import org.jpos.tlv.TLVDataFormat;
 
 /**
+ * Describes the type metadata (tag number, name, format) of an EMV data element.
  * @author Vishnu Pillai
  */
 public interface EMVTagType {
