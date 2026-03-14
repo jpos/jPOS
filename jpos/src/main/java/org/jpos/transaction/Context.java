@@ -45,12 +45,15 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
     private CompletableFuture<Integer> pausedFuture;
     private long timeout;
     private final Lock lock = new ReentrantLock();
+    /** Default constructor. */
     public Context () {
         super ();
     }
 
     /**
-     * puts an Object in the transient Map
+     * Puts an Object in the transient Map.
+     * @param key the map key
+     * @param value the value to store
      */
     public void put (Object key, Object value) {
         if (trace) {
@@ -64,7 +67,10 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         }
     }
     /**
-     * puts an Object in the transient Map
+     * Puts an Object in the transient or persistent Map.
+     * @param key the map key
+     * @param value the value to store
+     * @param persist true to also store in the persistent map
      */
     public void put (Object key, Object value, boolean persist) {
         if (trace) {
@@ -205,9 +211,11 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
 
     /**
      * Move entry to new key name
-     * @param from key
-     * @param to key
-     * @return the entry's value (could be null if 'from' key not present)
+     * Moves the value from one key to another.
+     * @param <T> the expected type
+     * @param from source key
+     * @param to destination key
+     * @return the moved value (or null if source key not present)
      */
     public synchronized <T> T move(Object from, Object to) {
         T obj = get(from);
@@ -233,7 +241,10 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
     }
 
     /**
-     * Transient remove
+     * Removes the value associated with the given key from both transient and persistent maps.
+     * @param <T> the expected type
+     * @param key the key to remove
+     * @return the removed value, or null
      */
     public synchronized <T> T remove(Object key) {
         getPMap().remove(key);
@@ -242,6 +253,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return obj;
     }
 
+    /** @param key the map key @return the value as a String, or null */
     public String getString (Object key) {
         Object obj = getMap().get (key);
         if (obj instanceof String)
@@ -250,6 +262,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
             return obj.toString();
         return null;
     }
+    /** @param key the map key @param defValue default if not found @return the value as String or defValue */
     public String getString (Object key, String defValue) {
         Object obj = getMap().get (key);
         if (obj instanceof String)
@@ -419,6 +432,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
     }
 
     /**
+     * Returns the persistent map, creating it lazily.
      * @return persistent map
      */
     private synchronized Map<Object,Object> getPMap() {
@@ -427,6 +441,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return pmap;
     }
     /**
+     * Returns the transient map, creating it lazily.
      * @return transient map
      */
     public synchronized Map<Object,Object> getMap() {
@@ -435,6 +450,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return map;
     }
 
+    /** @return a snapshot copy of the transient map */
     @JsonIgnore
     public Map<Object,Object> getMapClone() {
         Map<Object,Object> cloned = Collections.synchronizedMap (new LinkedHashMap<>());
@@ -444,6 +460,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return cloned;
     }
 
+    /** @param p output stream @param indent indentation prefix */
     protected void dumpMap (PrintStream p, String indent) {
         if (map != null) {
             getMapClone().entrySet().forEach(e -> dumpEntry(p, indent, e));
@@ -544,7 +561,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
     }
 
     /**
-     * adds a trace message
+     * Adds a trace message to the context log event.
      * @param msg trace information
      */
     public void log (Object msg) {
@@ -552,7 +569,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
             getLogEvent().addMessage (msg);
     }
     /**
-     * add a checkpoint to the profiler
+     * Adds a checkpoint to the context profiler.
      */
     public void checkPoint (String detail) {
         getProfiler().checkPoint (detail);

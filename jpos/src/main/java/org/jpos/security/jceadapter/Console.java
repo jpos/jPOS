@@ -37,18 +37,21 @@ import java.util.Properties;
  * @author Hani Samuel Kirollos
  * @version $Revision$ $Date$
  */
+/** Simple command-line console for testing the JCE security module. */
 public class Console {
 
+    /** Default constructor. */
     public Console () {
     }
 
     /**
-     * @param args
+     * @param args command-line arguments passed to {@link #exec}
      */
     public static void main (String[] args) {
         new Console().exec(System.out,System.err,args);
     }
 
+    /** @param outPS output stream @param errPS error stream @param args command-line arguments */
     public void exec(PrintStream outPS,PrintStream errPS,String[] args)
     {
         JCESecurityModule sm = new JCESecurityModule();

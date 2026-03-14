@@ -30,15 +30,19 @@ import org.jpos.iso.ISOException;
 public class ConfigurationException extends ISOException {
 
     private static final long serialVersionUID = -5605240786314946532L;
+    /** Default constructor. */
     public ConfigurationException () {
         super();
     }
+    /** @param detail error message */
     public ConfigurationException (String detail) {
         super (detail);
     }
+    /** @param nested the root cause */
     public ConfigurationException (Throwable nested) {
         super (nested);
     }
+    /** @param detail error message @param nested the root cause */
     public ConfigurationException (String detail, Throwable nested) {
         super (detail, nested);
     }

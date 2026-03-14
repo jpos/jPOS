@@ -36,10 +36,10 @@ import java.util.Vector;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-@SuppressWarnings("unchecked")
 /**
  * A pool of {@link ISOChannel} instances; tries each in order until one connects.
  */
+@SuppressWarnings("unchecked")
 public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneable {
     /** Whether this pool is in a usable state. */
     boolean usable = true;

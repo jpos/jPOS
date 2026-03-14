@@ -22,7 +22,10 @@ import java.io.File;
 
 public interface ConfigDecorationProvider
 {
+    /** @param deployDir the Q2 deploy directory @throws Exception on failure */
     void initialize(File deployDir) throws Exception;
+    /** Releases resources used by this provider. */
     void uninitialize();
+    /** @param f deploy descriptor file @return decorated content @throws Exception on failure */
     String decorateFile(File f) throws Exception;
 }

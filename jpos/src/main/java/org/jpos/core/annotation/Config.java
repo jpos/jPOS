@@ -24,5 +24,9 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Config {
+    /**
+     * Returns the property name to inject (defaults to field name).
+     * @return property name
+     */
     String value();
 }

@@ -544,6 +544,7 @@ public enum CMF implements IRC {
     INTERNAL_ERROR(19999,false,true),
 
     // User specific result codes
+    /** User-defined result code. */
     USER(90000);
 
     private final int irc;

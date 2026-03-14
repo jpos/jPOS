@@ -22,6 +22,8 @@ package org.jpos.rc;
  * Convert internal result code (IRC) to result code
  */
 public interface IRCConverter {
+    /** @param irc the IRC to convert @return the corresponding RC */
     RC convert (IRC irc);
+    /** @param rc the RC to convert @return the corresponding IRC */
     IRC convert (RC rc);
 }

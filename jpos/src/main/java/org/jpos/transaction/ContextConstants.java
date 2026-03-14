@@ -18,29 +18,61 @@
 
 package org.jpos.transaction;
 
+/** Standard key constants for the jPOS {@link Context} transient/persistent maps. */
 public enum ContextConstants {
-    PROFILER, TIMESTAMP,
-    SOURCE, REQUEST, RESPONSE,
+    /** Profiler instance key. */
+    PROFILER, 
+    /** Transaction start timestamp key. */
+    TIMESTAMP,
+    /** Originating ISOSource key. */
+    SOURCE,
+    /** Incoming request ISOMsg key. */
+    REQUEST,
+    /** Outgoing response ISOMsg key. */
+    RESPONSE,
+    /** LogEvent for the current transaction. */
     LOGEVT,
-    DB, TX,
+    /** Database connection key. */
+    DB,
+    /** Database transaction key. */
+    TX,
+    /** Internal result code (IRC) key. */
     IRC,
+    /** Transaction name key. */
     TXNNAME,
+    /** Transaction result key. */
     RESULT,
+    /** Merchant ID key. */
     MID,
+    /** Terminal ID key. */
     TID,
+    /** Processing code key. */
     PCODE,
+    /** Card object key. */
     CARD,
+    /** Transmission timestamp key. */
     TRANSMISSION_TIMESTAMP,
+    /** Transaction timestamp key. */
     TRANSACTION_TIMESTAMP,
+    /** Capture date key. */
     CAPTURE_DATE,
+    /** POS data code key. */
     POS_DATA_CODE,
+    /** Transaction amount key. */
     AMOUNT,
+    /** Local amount key. */
     LOCAL_AMOUNT,
+    /** Original MTI for reversals. */
     ORIGINAL_MTI,
+    /** Original STAN for reversals. */
     ORIGINAL_STAN,
+    /** Original timestamp for reversals. */
     ORIGINAL_TIMESTAMP,
+    /** Original data elements (field 90) key. */
     ORIGINAL_DATA_ELEMENTS,
+    /** Routing destination key. */
     DESTINATION,
+    /** Panic flag key — set to abort the current transaction node. */
     PANIC;
 
     private final String name;

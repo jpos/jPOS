@@ -46,7 +46,9 @@ public class CLI implements Runnable {
     private String prompt = DEFAULT_PROMPT;
     private History mainHistory;
 
-    /** @param q2 the Q2 instance
+    /**
+     * Creates a simple CLI with a single command and no streams.
+     * @param q2 the Q2 instance
      * @param line the initial command line
      * @param keepRunning true to keep running after the first command
      * @throws IOException on I/O failure
@@ -55,12 +57,14 @@ public class CLI implements Runnable {
         this(q2, System.in, System.out, line, keepRunning, true);
     }
 
-    /** @param q2 the Q2 instance
+    /**
+     * Creates a full CLI with explicit I/O streams.
+     * @param q2 the Q2 instance
      * @param in input stream
      * @param rawout output stream
-     * @param line initial command
-     * @param keepRunning true to keep running
-     * @param interactive true for interactive mode
+     * @param line initial command (may be null for interactive mode)
+     * @param keepRunning true to keep running after commands
+     * @param interactive true for interactive (line-edit) mode
      * @throws IOException on I/O failure
      */
     public CLI(Q2 q2, InputStream in, OutputStream rawout, String line, boolean keepRunning, boolean interactive) throws IOException {

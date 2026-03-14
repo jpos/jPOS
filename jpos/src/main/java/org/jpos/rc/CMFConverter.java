@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+/** Converts between {@link CMF} result codes and ISO response codes. */
 public class CMFConverter implements IRCConverter, Configurable {
     private static final Map<Integer, RC> rcs = new HashMap<>();
     private static final Map<String, IRC> ircs = new HashMap<>();
@@ -39,10 +40,12 @@ public class CMFConverter implements IRCConverter, Configurable {
         } catch (IOException ignored) { }
     }
 
+    /** Default constructor. */
     public CMFConverter() {
         super();
     }
 
+    /** @param cfg the configuration */
     public CMFConverter(Configuration cfg) {
         this.cfg = cfg;
     }

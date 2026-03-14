@@ -22,7 +22,9 @@ import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
+/** Factory for creating {@link org.jpos.core.Configuration} from XML elements. */
 public interface ConfigurationFactory {
+    /** @param e XML configuration element @return a Configuration built from the element @throws ConfigurationException on error */
     Configuration getConfiguration(Element e)
         throws ConfigurationException;
 }

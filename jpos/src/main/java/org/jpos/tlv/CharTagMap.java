@@ -36,7 +36,12 @@ import java.util.HashMap;
  * @author Grzegorz Wieczorek (grw1@wp.pl)
  */
 /** A map of tag identifiers to {@link CharTag} instances. */
+/**
+ * A map of tag identifiers to {@link CharTag} instances.
+ */
 public class CharTagMap extends HashMap<String, CharTag> {
+    /** Default constructor. */
+    public CharTagMap() { super(); }
 
     static final String EXCEPTION_PREFIX = "BAD TLV FORMAT:";
 

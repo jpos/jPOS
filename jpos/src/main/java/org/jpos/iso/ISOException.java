@@ -76,6 +76,7 @@ public class ISOException extends Exception implements Loggeable {
     }
 
     /**
+     * Returns the nested (wrapped) exception, if any.
      * @return nested exception (may be null)
      */
     public Throwable getNested() {

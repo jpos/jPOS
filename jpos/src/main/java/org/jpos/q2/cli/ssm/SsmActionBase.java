@@ -46,6 +46,7 @@ public abstract class SsmActionBase implements CLICommand {
      * @param sm the JCE security module
      * @param keyLength the key length in bits
      * @param strings command arguments
+     * @throws org.jpos.security.SMException on security module error
      */
     protected abstract void doCommand(
             CLIContext cli,
