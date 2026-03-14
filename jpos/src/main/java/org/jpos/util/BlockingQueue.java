@@ -119,29 +119,47 @@ public class BlockingQueue {
         closed = true;
         notifyAll();
     }
-    /** @return the number of threads currently waiting to dequeue */
+    /**
+     * Returns the number of threads currently waiting to dequeue.
+     * @return consumer count
+     */
     public synchronized int consumerCount() {
         return consumers;
     }
 
-    /** @return the number of additional consumers needed to drain the current backlog */
+    /**
+     * Returns the number of additional consumers needed to drain the current backlog.
+     * @return consumer deficit
+     */
     public synchronized int consumerDeficit() {
         return queue.size() - consumers;
     }
     
-    /** @return true if there are items in the queue ready to be dequeued */
+    /**
+     * Returns true if there are items ready to be dequeued.
+     * @return true if items are pending
+     */
     public synchronized boolean ready() {
         return !closed;
     }
-    /** @return the number of items waiting in the queue */
+    /**
+     * Returns the number of items waiting in the queue.
+     * @return pending item count
+     */
     public synchronized int pending() {
         return queue.size();
     }
-    /** @return the underlying linked list */
+    /**
+     * Returns the underlying linked list.
+     * @return the backing linked list
+     */
     public LinkedList getQueue () {
         return queue;
     }
-    /** @param queue the queue to use as the underlying storage */
+    /**
+     * Sets the underlying linked list.
+     * @param queue the backing linked list
+     */
     public void setQueue (LinkedList queue) {
         this.queue = queue;
     }

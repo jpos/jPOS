@@ -66,7 +66,10 @@ public abstract class BERTLVPackager extends GenericPackager {
     private final BinaryInterpreter valueInterpreter;
 
 
-    /** Default constructor. @throws ISOException on configuration error */
+    /**
+     * Default constructor.
+     * @throws ISOException on configuration error
+     */
     public BERTLVPackager() throws ISOException {
         super();
         tagInterpreter = getTagInterpreter();
@@ -74,16 +77,28 @@ public abstract class BERTLVPackager extends GenericPackager {
         valueInterpreter = getValueInterpreter();
     }
 
-    /** @return the interpreter used for encoding/decoding tag bytes */
+    /**
+     * Returns the interpreter used for encoding/decoding tag bytes.
+     * @return tag byte interpreter
+     */
     protected abstract BinaryInterpreter getTagInterpreter();
 
-    /** @return the interpreter used for encoding/decoding length bytes */
+    /**
+     * Returns the interpreter used for encoding/decoding length bytes.
+     * @return length byte interpreter
+     */
     protected abstract BinaryInterpreter getLengthInterpreter();
 
-    /** @return the interpreter used for encoding/decoding value bytes */
+    /**
+     * Returns the interpreter used for encoding/decoding value bytes.
+     * @return value byte interpreter
+     */
     protected abstract BinaryInterpreter getValueInterpreter();
 
-    /** @return the format mapper for this packager's tag set */
+    /**
+     * Returns the format mapper for this packager's tag set.
+     * @return BER-TLV format mapper
+     */
     protected abstract BERTLVFormatMapper getTagFormatMapper();
 
     /**
@@ -191,6 +206,9 @@ public abstract class BERTLVPackager extends GenericPackager {
         return packedTagBytes;
     }
 
+    /** @param valueBytes the value bytes to prefix
+     * @return BER-TLV length-encoded prefix bytes
+     */
     private byte[] packLength(final byte[] valueBytes) {
         final byte[] lengthBytes;
         int length = valueBytes.length;
@@ -217,6 +235,14 @@ public abstract class BERTLVPackager extends GenericPackager {
         }
     }
 
+    /**
+     * Unpacks BER-TLV encoded data.
+     * @param m target component
+     * @param b packed bytes
+     * @param nested true for nested unpack
+     * @return consumed bytes
+     * @throws ISOException on unpacking error
+     */
     public int unpack(ISOComponent m, byte[] b, boolean nested) throws ISOException {
         LogEvent evt = new LogEvent(this, "unpack");
         try {
@@ -318,6 +344,10 @@ public abstract class BERTLVPackager extends GenericPackager {
         return new UnpackResult(tagBytes, tagInterpreter.getPackedLength(tagLength));
     }
 
+    /** @param tlvData data bytes
+     * @param offset start offset
+     * @return UnpackResult containing length bytes and consumed size
+     */
     private UnpackResult unpackLength(final byte[] tlvData, final int offset) {
         byte[] tlvBytesHex =
                 lengthInterpreter.uninterpret(
@@ -342,6 +372,17 @@ public abstract class BERTLVPackager extends GenericPackager {
         return new UnpackResult(lengthBytes, lengthInterpreter.getPackedLength(lengthLength));
     }
 
+    /**
+     * Packs a single TLV value field.
+     * @param tagNameHex hex string of the tag
+     * @param c the component to pack
+     * @return packed TLV bytes
+     * @param tagNameHex the tag name as a hex string
+     * @param c the component to pack
+     * @return packed value bytes
+     * @throws ISOException on packing error
+     * @throws UnknownTagNumberException if the tag is not recognised
+     */
     protected byte[] packValue(String tagNameHex, final ISOComponent c) throws ISOException,
             UnknownTagNumberException {
         final int tagNumber = Integer.parseInt(tagNameHex, 16);

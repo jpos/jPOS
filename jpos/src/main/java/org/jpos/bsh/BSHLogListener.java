@@ -85,7 +85,9 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     public void setConfiguration(org.jpos.core.Configuration cfg) {
         this.cfg = cfg;
     }
-    /** @param src source strings
+    /**
+     * Replaces pattern tokens in the source strings.
+     * @param src source strings
      * @param patterns patterns to replace
      * @param to replacement strings
      * @return result array with patterns replaced
@@ -173,7 +175,9 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
             return ret;
         }
     }
-    /** @param f script file to load
+    /**
+     * Loads a BeanShell script from a file.
+     * @param f script file to load
      * @return file contents as a string
      * @throws IOException on read failure
      */
@@ -190,7 +194,9 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         return buf.toString();
     }
 
-    /** @param filename the script filename key
+    /**
+     * Returns the cached ScriptInfo for the given filename, or null.
+     * @param filename the script filename key
      * @return cached ScriptInfo or null
      */
     protected ScriptInfo getScriptInfo(String filename){
@@ -198,7 +204,9 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         return scripts.get(filename);
     }
 
-    /** @param filename the script filename key
+    /**
+     * Stores a ScriptInfo in the cache.
+     * @param filename the script filename key
      * @param code the script source code
      * @param lastModified last-modified timestamp
      */
@@ -216,12 +224,17 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         /** Default constructor creating an empty ScriptInfo. */
         public ScriptInfo(){
         }
-        /** @param ns the BeanShell namespace to use */
+        /**
+         * Creates a ScriptInfo with the given BeanShell namespace.
+         * @param ns the BeanShell namespace to use
+         */
         public ScriptInfo(NameSpace ns){
             nameSpace = ns;
         }
         
-        /** @param code the script source code
+        /**
+         * Creates a ScriptInfo with the given code and timestamp.
+         * @param code the script source code
          * @param lastModified last-modified timestamp of the script file
          */
         public ScriptInfo(String code, long lastModified){

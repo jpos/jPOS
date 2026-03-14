@@ -26,6 +26,7 @@ import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
 
 public class BSH extends QBeanSupport implements Runnable {
+    /** The BeanShell Interpreter instance. */
     protected Interpreter bsh;
 
     public void initService() {

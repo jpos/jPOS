@@ -66,11 +66,13 @@ public interface QBean {
     void destroy () throws Exception;
 
     /**
+     * Returns the current state of this QBean.
      * @return state (STARTING, STARTED, FAILED, DESTROYED ...)
      */
     int getState ();
 
     /**
+     * Returns the current state as a human-readable string.
      * @return state (STARTING, STARTED, FAILED, DESTROYED ...)
      */
     default String getStateAsString () {

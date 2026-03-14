@@ -23,7 +23,10 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
 @SuppressWarnings("unused")
+/** CLI command that calculates a Luhn check digit. */
 public class CALCLUHN implements CLICommand {
+    /** Default constructor. */
+    public CALCLUHN() { }
     public void exec(CLIContext ctx, String[] args) throws Exception {
         if (args.length < 2) {
             ctx.println (String.format ("Usage: %span(s)", args[0]));

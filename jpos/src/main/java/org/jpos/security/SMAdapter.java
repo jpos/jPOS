@@ -410,7 +410,7 @@ public interface SMAdapter<T> {
     /**
      * Decrypts an Encrypted PIN (under LMK).
      * <p>CAUTION: The use of clear pin presents a significant security risk
-     * @param pinUnderLmk
+     * @param pinUnderLmk the encrypted PIN under LMK
      * @return clear pin as entered by card holder
      * @throws SMException on security module error
      */
@@ -1533,6 +1533,7 @@ public interface SMAdapter<T> {
      * @param bdk base derivation key
      * @param clearText clear Text
      * @return cyphertext
+     * @throws SMException on security module error
      */
     byte[] dataEncrypt(T bdk, byte[] clearText) throws SMException;
 
@@ -1541,6 +1542,7 @@ public interface SMAdapter<T> {
      * @param bdk base derivation key
      * @param cypherText clear Text
      * @return cleartext
+     * @throws SMException on security module error
      */
     byte[] dataDecrypt(T bdk, byte[] cypherText) throws SMException;
 
@@ -1557,7 +1559,7 @@ public interface SMAdapter<T> {
 
     /**
      * Generates a random clear key component.
-     * @param keyLength
+     * @param keyLength the length of the key in bits
      * @return clear key componenet
      * @throws SMException on security module error
      */

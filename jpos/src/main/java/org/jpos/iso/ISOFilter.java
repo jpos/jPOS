@@ -45,6 +45,7 @@ public interface ISOFilter {
         }
     }
     /**
+     * Filters an ISO message before sending or after receiving.
      * @param channel current ISOChannel instance
      * @param m ISOMsg to filter
      * @param evt LogEvent

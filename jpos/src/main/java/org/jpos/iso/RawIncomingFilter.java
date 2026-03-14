@@ -28,6 +28,7 @@ import org.jpos.util.LogEvent;
  */
 public interface RawIncomingFilter extends ISOFilter {
     /**
+     * Filters a raw incoming message before decoding.
      * @param channel current ISOChannel instance
      * @param m ISOMsg to filter
      * @param header optional header 

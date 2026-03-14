@@ -32,6 +32,9 @@ import org.jpos.iso.ISOException;
 
 public class BERTLVAsciiHexPackager extends DefaultICCBERTLVPackager {
 
+    /** Default constructor.
+     * @throws ISOException on configuration error
+     */
     public BERTLVAsciiHexPackager() throws ISOException {
         super();
     }

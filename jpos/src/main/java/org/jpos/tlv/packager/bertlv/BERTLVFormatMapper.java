@@ -28,8 +28,15 @@ import org.jpos.iso.ISOException;
  * @author Vishnu Pillai
  */
 /** Maps BER-TLV tag numbers to their data format (binary, ASCII, etc.). */
+/** Maps BER-TLV tag values to their wire format (ASCII hex, binary, EBCDIC hex, etc.). */
 public interface BERTLVFormatMapper {
 
+    /**
+     * Returns the data format for the given BER-TLV tag.
+     * @param tagNumber the numeric tag identifier
+     * @return the data format for the tag
+     * @throws ISOException if the tag is unknown or invalid
+     */
     TLVDataFormat getFormat(Integer tagNumber) throws ISOException;
 
 }

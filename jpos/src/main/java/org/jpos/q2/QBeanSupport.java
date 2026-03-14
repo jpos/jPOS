@@ -273,9 +273,21 @@ public class QBeanSupport
         }
         return toString();
     }
+    /** Called during QBean initialization. Override to add startup logic.
+     * @throws Exception on error
+     */
     protected void initService()    throws Exception {}
+    /** Called when the QBean is started. Override to begin processing.
+     * @throws Exception on error
+     */
     protected void startService()   throws Exception {}
+    /** Called when the QBean is stopped. Override to cease processing.
+     * @throws Exception on error
+     */
     protected void stopService()    throws Exception {}
+    /** Called during QBean destruction. Override to release resources.
+     * @throws Exception on error
+     */
     protected void destroyService() throws Exception {}
 
     protected synchronized ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor() {

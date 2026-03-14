@@ -30,6 +30,7 @@ import java.io.Serializable;
  */
 public interface GroupSelector extends TransactionParticipant {
     /**
+     * Selects the transaction group to execute.
      * @param id transaction id
      * @param context transaction context 
      * @return group name or null for no-action

@@ -98,11 +98,17 @@ public class BaseHeader implements ISOHeader, Loggeable {
             );
         }
     }
-    /** @param asciiEncoding true to use ASCII encoding for source/destination fields */
+    /**
+     * Sets the encoding for source/destination fields.
+     * @param asciiEncoding true for ASCII, false for BCD
+     */
     public void setAsciiEncoding(boolean asciiEncoding) {
         this.asciiEncoding = asciiEncoding;
     }
-    /** @return true if ASCII encoding is used for source/destination fields */
+    /**
+     * Returns true if ASCII encoding is used for source/destination fields.
+     * @return true if ASCII encoding is active
+     */
     public boolean isAsciiEncoding() {
         return asciiEncoding;
     }

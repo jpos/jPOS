@@ -247,7 +247,10 @@ public class TaggedSequencePackager extends GenericPackager {
         this.tagPackager = getTagPackager();
     }
 
-    /** @return the ISOFieldPackager used for packing/unpacking tag fields */
+    /**
+     * Returns the {@link ISOFieldPackager} used for packing/unpacking tag fields.
+     * @return tag field packager
+     */
     protected ISOFieldPackager getTagPackager() {
         IF_CHAR tagPackager = new IF_CHAR(this.tag.length(), "Tag");
         tagPackager.setPadder(LeftPadder.ZERO_PADDER);

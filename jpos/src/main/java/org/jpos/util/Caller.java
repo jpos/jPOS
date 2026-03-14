@@ -24,17 +24,27 @@ import java.util.regex.Pattern;
 /**
  * Return Caller's short class name, method and line number
  */
+/** Utility class for obtaining caller information from the current stack trace. */
 public class Caller {
+    /** Private constructor — utility class. */
+    private Caller() { }
     private static String JAVA_ID_PATTERN = "(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)\\.*";
     private static Pattern FQCN = Pattern.compile(JAVA_ID_PATTERN + "(\\." + JAVA_ID_PATTERN + ")*");
+    /** @return a string describing the immediate caller (class, method, line) */
     public static String info() {
         return info(1);
     }
 
+    /** @param pos the stack depth to look up
+     * @return a string describing the caller at the given stack depth
+     */
     public static String info(int pos) {
         return info (Thread.currentThread().getStackTrace()[2+pos]);
     }
 
+    /** @param st the stack trace element to format
+     * @return a formatted string for the given stack trace element
+     */
     public static String info (StackTraceElement st) {
         String clazz = st.getClassName();
         Matcher matcher = FQCN.matcher(clazz);
@@ -50,6 +60,9 @@ public class Caller {
     }
 
 
+    /** @param clazz the fully-qualified class name
+     * @return the simple (short) class name
+     */
     public static String shortClassName(String clazz) {
         Matcher matcher = FQCN.matcher(clazz);
         StringBuilder sb = new StringBuilder();

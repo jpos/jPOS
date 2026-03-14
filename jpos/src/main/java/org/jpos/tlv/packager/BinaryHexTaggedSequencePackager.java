@@ -28,9 +28,15 @@ import org.jpos.iso.ISOUtil;
  * @author Vishnu Pillai
  */
 /** {@link TaggedSequencePackager} variant that uses binary hex encoding for tag-length-value fields. */
+/**
+ * {@link TaggedSequencePackager} variant that encodes tag-value data as binary hex.
+ */
 public class BinaryHexTaggedSequencePackager extends TaggedSequencePackager {
 
-    /** Default constructor. @throws ISOException on configuration error */
+    /**
+     * Default constructor.
+     * @throws ISOException on configuration error
+     */
     public BinaryHexTaggedSequencePackager() throws ISOException {
         super();
     }
@@ -40,8 +46,12 @@ public class BinaryHexTaggedSequencePackager extends TaggedSequencePackager {
         return new TagPackager(this.tag.length(), "Tag");
     }
 
+    /** Field packager for TLV tag fields. */
     public static class TagPackager extends ISOFieldPackager {
 
+        /** @param len tag field length
+         * @param description field description
+         */
         public TagPackager(int len, String description) {
             super(len, description);
         }

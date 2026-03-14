@@ -22,9 +22,14 @@ package org.jpos.tlv;
  * TLV tag value implementation backed by a binary (byte[]) payload.
  * @author Vishnu Pillai
  */
-/** A TLV tag-value pair whose value is a raw byte array. */
+/**
+ * A TLV tag-value pair whose value is a raw byte array.
+ */
 public class BinaryTagValue extends TagValueBase<byte[]> {
 
+    /** @param tag the hex string tag identifier
+     * @param value the raw byte value
+     */
     public BinaryTagValue(String tag, byte[] value) {
         super(tag, value);
     }

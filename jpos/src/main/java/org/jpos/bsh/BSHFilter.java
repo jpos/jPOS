@@ -34,7 +34,9 @@ import org.jpos.util.LogEvent;
  * @version $Revision$ $Date$
  */
 public class BSHFilter implements RawIncomingFilter, Configurable {
+    /** Configuration for this filter. */
     Configuration cfg;
+    /** Default constructor. */
     public BSHFilter () {
         super();
     }

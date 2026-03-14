@@ -30,7 +30,7 @@ public class BcdPrefixer implements Prefixer
     /**
      * A length prefixer for up to 9 chars. The length is encoded with 1 BCD digit.
      */
-    /** Pre-built BcdPrefixer instances for common lengths. */
+    /** Pre-built {@link BcdPrefixer} instances for common BCD length prefix sizes. */
     public static final BcdPrefixer L = new BcdPrefixer(1);
     /**
 	 * A length prefixer for up to 99 chars. The length is encoded with 2 BCD digits.
@@ -56,6 +56,7 @@ public class BcdPrefixer implements Prefixer
     /** The number of digits allowed to express the length */
     private int nDigits;
 
+    /** @param nDigits the number of BCD digits used for the length prefix */
     public BcdPrefixer(int nDigits)
     {
         this.nDigits = nDigits;

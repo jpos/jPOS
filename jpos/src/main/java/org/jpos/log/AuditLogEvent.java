@@ -53,5 +53,4 @@ import org.jpos.log.evt.*;
 public sealed interface AuditLogEvent
         permits Connect, Deploy, DeployActivity, Disconnect, License, Listen, LogMessage,
                 SessionEnd, SessionStart, Shutdown, Start, Stop, SysInfo,
-                ThrowableAuditLogEvent, Txn, UnDeploy, Warning {
-}
+                ThrowableAuditLogEvent, Txn, UnDeploy, Warning { }

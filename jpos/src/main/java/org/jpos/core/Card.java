@@ -42,6 +42,7 @@ public class Card {
     private String serviceCode;
     private Track1 track1;
     private Track2 track2;
+    /** Length of the BIN (Bank Identification Number) in digits. */
     public static final int BINLEN = 6;
 
     private Card() { }
@@ -157,6 +158,7 @@ public class Card {
         return new Builder();
     }
 
+    /** Builder for constructing {@link Card} instances. */
     public static class Builder {
         public static CardValidator DEFAULT_CARD_VALIDATOR  = new DefaultCardValidator();
         private String pan;

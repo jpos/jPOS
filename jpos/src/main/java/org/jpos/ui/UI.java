@@ -80,18 +80,24 @@ public class UI implements UIFactory, UIObjectFactory {
         this.objFactory = objFactory;
     }
     /**
+     * Sets the XML configuration element for this UI.
      * @param config the Configuration element
      */
     public void setConfig (Element config) {
         this.config = config;
     }
     /**
+     * Sets the optional Log instance used for diagnostic output.
      * @param log an optional Log instance
      * @see org.jpos.util.Log
      */
     public void setLog (Log log) {
         this.log = log;
     }
+    /**
+     * Returns the Log instance, or null if none was set.
+     * @return the Log, or null
+     */
     public Log getLog () {
         return log;
     }
@@ -105,6 +111,7 @@ public class UI implements UIFactory, UIObjectFactory {
         return registrar;
     }
     /**
+     * Returns the component registered under the given id.
      * @param id Component id ("id" configuration attribute)
      * @return the Object or null
      */
@@ -131,13 +138,20 @@ public class UI implements UIFactory, UIObjectFactory {
      * @throws Exception if unable to instantiate
      * @see #setLog
      */
+    /**
+     * Instantiates an object by class name using the current thread's context class loader.
+     * @param clazz fully qualified class name
+     * @return new instance
+     * @throws Exception if the class cannot be found or instantiated
+     */
     public Object newInstance (String clazz) throws Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader ();
         Class type = cl.loadClass (clazz);
         return type.newInstance();
     }
     /**
-     * configure this UI object
+     * Configures this UI from the stored XML element.
+     * @throws JDOMException on XML processing error
      */
     public void configure () throws JDOMException {
         configure (config);
@@ -188,6 +202,7 @@ public class UI implements UIFactory, UIObjectFactory {
         }
     }
     /**
+     * Returns true if this UI object has been disposed.
      * @return true if this UI object has been disposed and is no longer valid
      */
     public boolean isDestroyed () {
@@ -421,6 +436,10 @@ public class UI implements UIFactory, UIObjectFactory {
         }
         return component;
     }
+    /** @param component the target component
+     * @param e the script XML element
+     * @return the component after script application
+     */
     protected JComponent doScript (JComponent component, Element e) {
         return component;
     }

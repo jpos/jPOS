@@ -122,7 +122,8 @@ public class BaseSMAdapter<T>
     }
 
     /**
-     * @param name see method description
+     * Looks up a registered SMAdapter by name from the NameRegistrar.
+     * @param name the registered adapter name
      * @return SMAdapter instance with given name.
      * @throws NotFoundException if name is not found in the registry
      * @see NameRegistrar
