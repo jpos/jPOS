@@ -26,26 +26,40 @@ import java.util.LinkedList;
  * @since 1.1
  */
 @SuppressWarnings("unchecked")
+/**
+ * A simple thread-safe blocking queue supporting enqueue, dequeue with optional timeout, and cooperative close.
+ * @deprecated Use standard {@link java.util.concurrent} classes instead.
+ */
 public class BlockingQueue {
     private LinkedList queue = new LinkedList();
     private boolean closed = false;
     private int consumers = 0;
 
+    /** Exception thrown when an operation is attempted on a closed BlockingQueue. */
     public static class Closed extends RuntimeException {
 
         private static final long serialVersionUID = 3404885702116373450L;
 
+        /** Constructs a Closed exception with a default message. */
         public Closed() {
             super ("queue-closed");
         }
     }
 
+    /** Adds an object to the tail of the queue.
+     * @param o the object to enqueue
+     * @throws Closed if the queue has been closed
+     */
     public synchronized void enqueue (Object o) throws Closed {
         if (closed)
             throw new Closed();
         queue.addLast (o);
         notify();
     }
+    /** Adds an object to the head of the queue (priority re-queue).
+     * @param o the object to re-queue
+     * @throws Closed if the queue has been closed
+     */
     public synchronized void requeue (Object o) throws Closed {
         if (closed)
             throw new Closed();
@@ -53,6 +67,11 @@ public class BlockingQueue {
         notify();
     }
 
+    /** Removes and returns the head of the queue, blocking until one is available.
+     * @return the dequeued object
+     * @throws Closed if the queue is closed
+     * @throws InterruptedException if the thread is interrupted
+     */
     public synchronized Object dequeue()
         throws InterruptedException, Closed
     {
@@ -69,6 +88,12 @@ public class BlockingQueue {
         return queue.removeFirst();
     }
 
+    /** Removes and returns the head of the queue, waiting at most {@code timeout} ms.
+     * @param timeout maximum wait time in milliseconds
+     * @return the dequeued object, or null on timeout
+     * @throws Closed if the queue is closed
+     * @throws InterruptedException if the thread is interrupted
+     */
     public synchronized Object dequeue (long timeout)
         throws InterruptedException, Closed
     {
@@ -89,27 +114,34 @@ public class BlockingQueue {
         }
         return queue.size() > 0 ? queue.removeFirst() : null;
     }
+    /** Closes the queue; pending consumers are released with a {@link Closed} exception. */
     public synchronized void close() {
         closed = true;
         notifyAll();
     }
+    /** @return the number of threads currently waiting to dequeue */
     public synchronized int consumerCount() {
         return consumers;
     }
 
+    /** @return the number of additional consumers needed to drain the current backlog */
     public synchronized int consumerDeficit() {
         return queue.size() - consumers;
     }
     
+    /** @return true if there are items in the queue ready to be dequeued */
     public synchronized boolean ready() {
         return !closed;
     }
+    /** @return the number of items waiting in the queue */
     public synchronized int pending() {
         return queue.size();
     }
+    /** @return the underlying linked list */
     public LinkedList getQueue () {
         return queue;
     }
+    /** @param queue the queue to use as the underlying storage */
     public void setQueue (LinkedList queue) {
         this.queue = queue;
     }

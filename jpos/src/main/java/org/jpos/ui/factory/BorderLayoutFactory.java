@@ -42,6 +42,7 @@ import java.awt.*;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
+/** {@link UIFactory} that creates a JPanel with a {@link java.awt.BorderLayout}. */
 public class BorderLayoutFactory implements UIFactory {
     UI ui;
 

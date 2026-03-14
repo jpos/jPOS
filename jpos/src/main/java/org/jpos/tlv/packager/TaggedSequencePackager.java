@@ -67,7 +67,7 @@ public class TaggedSequencePackager extends GenericPackager {
      * If the tags are all numeric and tags do not repeat, a numeric token may be a used like '00'.
      * Else, use a non numeric token e.g.: XX, ##, etc.
      *
-     * @param token
+     * @param token the token string identifying the tag format
      */
     public void setToken(String token) {
         this.tag = token;
@@ -247,6 +247,7 @@ public class TaggedSequencePackager extends GenericPackager {
         this.tagPackager = getTagPackager();
     }
 
+    /** @return the ISOFieldPackager used for packing/unpacking tag fields */
     protected ISOFieldPackager getTagPackager() {
         IF_CHAR tagPackager = new IF_CHAR(this.tag.length(), "Tag");
         tagPackager.setPadder(LeftPadder.ZERO_PADDER);

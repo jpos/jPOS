@@ -88,11 +88,17 @@ public abstract class ISOFieldPackager {
     public String getDescription() {
         return description;
     }
-    /** Sets the field description. @param description the description */
+    /**
+     * Sets the field description.
+     * @param description the description text
+     */
     public void setDescription(String description) {
         this.description = description;
     }
-    /** Returns the maximum field length. @return max field length */
+    /**
+     * Returns the maximum field length.
+     * @return max field length
+     */
     public int getLength() {
         return len;
     }

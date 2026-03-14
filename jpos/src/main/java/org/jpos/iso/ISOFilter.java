@@ -49,7 +49,7 @@ public interface ISOFilter {
      * @param m ISOMsg to filter
      * @param evt LogEvent
      * @return an ISOMsg (possibly parameter m)
-     * @throws VetoException
+     * @throws VetoException if the message should be suppressed
      */
     ISOMsg filter(ISOChannel channel, ISOMsg m, LogEvent evt)
         throws VetoException;

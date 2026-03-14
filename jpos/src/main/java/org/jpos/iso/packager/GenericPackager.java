@@ -111,6 +111,7 @@ public class GenericPackager
      * Create a GenericPackager with the field descriptions
      * from an XML File
      * @param filename The XML field description file
+     * @throws ISOException on packing/unpacking error
      */
     public GenericPackager(String filename) throws ISOException
     {
@@ -122,6 +123,7 @@ public class GenericPackager
      * Create a GenericPackager with the field descriptions
      * from an XML InputStream
      * @param input The XML field description InputStream
+     * @throws ISOException on packing/unpacking error
      */
     public GenericPackager(InputStream input) throws ISOException
     {
@@ -190,6 +192,7 @@ public class GenericPackager
      * The default parser is org.apache.crimson.parser.XMLReaderImpl
      * </pre>
      * @param filename The XML field description file
+     * @throws ISOException on packing/unpacking error
      */
     public void readFile(String filename) throws ISOException
     {
@@ -216,6 +219,7 @@ public class GenericPackager
      * The default parser is org.apache.crimson.parser.XMLReaderImpl
      * </pre>
      * @param input The XML field description InputStream
+     * @throws ISOException on packing/unpacking error
      */
     public void readFile(InputStream input) throws ISOException
     {

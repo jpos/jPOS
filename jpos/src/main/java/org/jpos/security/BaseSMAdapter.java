@@ -53,16 +53,27 @@ import java.util.Map;
  */
 public class BaseSMAdapter<T>
         implements SMAdapter<T>, Configurable, LogSource {
+    /** Logger for this security module adapter. */
     protected Logger logger = null;
+    /** Log realm for this security module adapter. */
     protected String realm = null;
+    /** Configuration for this adapter. */
     protected Configuration cfg;
     private String name;
     private boolean debug;
 
+    /** Default constructor. */
     public BaseSMAdapter () {
         super();
     }
 
+    /**
+     * Creates a BaseSMAdapter with the given configuration, logger and realm.
+     * @param cfg configuration
+     * @param logger the logger
+     * @param realm log realm
+     * @throws ConfigurationException on invalid configuration
+     */
     public BaseSMAdapter (Configuration cfg, Logger logger, String realm) throws ConfigurationException
     {
         super();
@@ -103,6 +114,7 @@ public class BaseSMAdapter<T>
     }
 
     /**
+     * Returns the registered name of this SMAdapter.
      * @return this SMAdapter's name ("" if no name was set)
      */
     public String getName () {
@@ -112,7 +124,7 @@ public class BaseSMAdapter<T>
     /**
      * @param name see method description
      * @return SMAdapter instance with given name.
-     * @throws NotFoundException
+     * @throws NotFoundException if name is not found in the registry
      * @see NameRegistrar
      */
     public static SMAdapter getSMAdapter (String name) throws NameRegistrar.NotFoundException {

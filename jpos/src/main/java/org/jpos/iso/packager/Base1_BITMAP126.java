@@ -52,7 +52,7 @@ public class Base1_BITMAP126 extends ISOBitMapPackager
     /**
     * @param c - a component
     * @return packed component
-    * @exception ISOException
+    * @throws ISOException on packing/unpacking error
     */
     public byte[] pack (ISOComponent c) throws ISOException 
     {

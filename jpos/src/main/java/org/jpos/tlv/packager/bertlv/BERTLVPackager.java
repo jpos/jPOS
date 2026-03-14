@@ -66,6 +66,7 @@ public abstract class BERTLVPackager extends GenericPackager {
     private final BinaryInterpreter valueInterpreter;
 
 
+    /** Default constructor. @throws ISOException on configuration error */
     public BERTLVPackager() throws ISOException {
         super();
         tagInterpreter = getTagInterpreter();
@@ -73,12 +74,16 @@ public abstract class BERTLVPackager extends GenericPackager {
         valueInterpreter = getValueInterpreter();
     }
 
+    /** @return the interpreter used for encoding/decoding tag bytes */
     protected abstract BinaryInterpreter getTagInterpreter();
 
+    /** @return the interpreter used for encoding/decoding length bytes */
     protected abstract BinaryInterpreter getLengthInterpreter();
 
+    /** @return the interpreter used for encoding/decoding value bytes */
     protected abstract BinaryInterpreter getValueInterpreter();
 
+    /** @return the format mapper for this packager's tag set */
     protected abstract BERTLVFormatMapper getTagFormatMapper();
 
     /**
@@ -89,6 +94,15 @@ public abstract class BERTLVPackager extends GenericPackager {
         return pack(m, false, getFirstField(), m.getMaxField());
     }
 
+    /**
+     * Packs a subset of sub-fields.
+     * @param m the ISO component to pack
+     * @param nested true if this is a nested (inner) pack
+     * @param startIdx first field index to include
+     * @param endIdx last field index to include
+     * @return packed bytes
+     * @throws ISOException on packing error
+     */
     public byte[] pack(ISOComponent m, boolean nested, int startIdx, int endIdx)
             throws ISOException {
         LogEvent evt = new LogEvent(this, "pack");

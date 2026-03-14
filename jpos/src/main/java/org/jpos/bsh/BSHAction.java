@@ -26,9 +26,12 @@ import org.jpos.ui.UIAware;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/** Swing {@link ActionListener} implemented via a BeanShell script. */
 public class BSHAction implements ActionListener, UIAware {
+    /** The UI context. */
     public UI ui;
 
+    /** Default constructor. */
     public BSHAction () {
         super();
     }

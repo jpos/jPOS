@@ -27,6 +27,11 @@ import java.util.EventListener;
  * @version $Id$
  */
 public interface LogListener extends EventListener {
+    /**
+     * Processes a log event.
+     * @param ev the log event
+     * @return the (potentially modified) log event, or null to suppress it
+     */
     LogEvent log(LogEvent ev);
     default void setLogEventWriter (LogEventWriter w) {
         // do nothing, for backward compatibility

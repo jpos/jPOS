@@ -27,8 +27,10 @@ import org.jpos.iso.ISOUtil;
  * Packager for tagged TLV sequences where the tag and length are encoded as binary hex.
  * @author Vishnu Pillai
  */
+/** {@link TaggedSequencePackager} variant that uses binary hex encoding for tag-length-value fields. */
 public class BinaryHexTaggedSequencePackager extends TaggedSequencePackager {
 
+    /** Default constructor. @throws ISOException on configuration error */
     public BinaryHexTaggedSequencePackager() throws ISOException {
         super();
     }

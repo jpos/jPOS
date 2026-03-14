@@ -30,6 +30,7 @@ public class BcdPrefixer implements Prefixer
     /**
      * A length prefixer for up to 9 chars. The length is encoded with 1 BCD digit.
      */
+    /** Pre-built BcdPrefixer instances for common lengths. */
     public static final BcdPrefixer L = new BcdPrefixer(1);
     /**
 	 * A length prefixer for up to 99 chars. The length is encoded with 2 BCD digits.

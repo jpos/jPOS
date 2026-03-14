@@ -1365,6 +1365,7 @@ public class ISOMsg extends ISOComponent
         this.sourceRef = new WeakReference (source);
     }
     /**
+     * Returns the associated ISOSource (e.g. the channel that received this message).
      * @return an ISOSource or null
      */
     public ISOSource getSource () {

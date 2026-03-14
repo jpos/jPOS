@@ -73,7 +73,9 @@ import java.util.Objects;
 public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.Configurable {
     /**Holds the configuration for this object*/
     protected Configuration cfg;
+    /** Pattern names used for script filename matching. */
     protected static final String[] patterns = {"tag", "realm"};
+    /** Cache of loaded BeanShell scripts keyed by filename. */
     protected Map<String, ScriptInfo> scripts = new HashMap<>();
     /** Creates a new instance of BSHLogListener */
     public BSHLogListener() {
@@ -83,6 +85,11 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     public void setConfiguration(org.jpos.core.Configuration cfg) {
         this.cfg = cfg;
     }
+    /** @param src source strings
+     * @param patterns patterns to replace
+     * @param to replacement strings
+     * @return result array with patterns replaced
+     */
     protected static String[] replace(String[] src, String[] patterns, String[] to){
         String[] ret = new String[src.length];
         for(int i=0; i<src.length; i++){
@@ -166,6 +173,10 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
             return ret;
         }
     }
+    /** @param f script file to load
+     * @return file contents as a string
+     * @throws IOException on read failure
+     */
     protected String loadCode(File f) throws IOException{
         StringBuilder buf = new StringBuilder((int)f.length());
         char[] content = new char[(int)f.length()];
@@ -179,27 +190,40 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         return buf.toString();
     }
 
+    /** @param filename the script filename key
+     * @return cached ScriptInfo or null
+     */
     protected ScriptInfo getScriptInfo(String filename){
         Objects.requireNonNull(filename, "The script file name cannot be null");
         return scripts.get(filename);
     }
 
+    /** @param filename the script filename key
+     * @param code the script source code
+     * @param lastModified last-modified timestamp
+     */
     protected void addScriptInfo(String filename, String code, long lastModified){
         Objects.requireNonNull(filename, "The script file name cannot be null");
         scripts.put(filename, new ScriptInfo(code, lastModified));
     }
+    /** Holds a cached BeanShell script and its namespace. */
     protected static class ScriptInfo{
         String code;
         long lastModified;
         long lastCheck;
         NameSpace nameSpace;
         
+        /** Default constructor creating an empty ScriptInfo. */
         public ScriptInfo(){
         }
+        /** @param ns the BeanShell namespace to use */
         public ScriptInfo(NameSpace ns){
             nameSpace = ns;
         }
         
+        /** @param code the script source code
+         * @param lastModified last-modified timestamp of the script file
+         */
         public ScriptInfo(String code, long lastModified){
             setCode(code);
             setLastModified(lastModified);
