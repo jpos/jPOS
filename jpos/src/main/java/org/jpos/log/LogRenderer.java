@@ -29,11 +29,22 @@ public interface LogRenderer<T> {
      * @param indent indentation prefix
      */
     void render (T obj, PrintStream ps, String indent);
-    /** @return the class this renderer handles */
+    /**
+     * Returns the class this renderer handles.
+     * @return the handled class
+     */
     Class<?> clazz();
-    /** @return the log event type this renderer handles */
+    /**
+     * Returns the log event type this renderer handles.
+     * @return the handled event type
+     */
     Type type();
 
+    /**
+     * Renders the given object to the print stream with no indentation.
+     * @param obj the object to render
+     * @param ps the output stream
+     */
     default void render (T obj, PrintStream ps) {
         render (obj, ps, "");
     }

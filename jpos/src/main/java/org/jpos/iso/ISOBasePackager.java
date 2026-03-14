@@ -54,7 +54,10 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             throw new ISOException("thirdBitmapField should be >= 0 and <= 128");
         thirdBitmapField= f;
     }
-    /** @return the field number used as the third bitmap, or -1 if not configured */
+    /**
+     * Returns the field number used as the third bitmap, or -1 if not configured.
+     * @return third bitmap field number
+     */
     public int getThirdBitmapField() { return thirdBitmapField; }
 
     /**

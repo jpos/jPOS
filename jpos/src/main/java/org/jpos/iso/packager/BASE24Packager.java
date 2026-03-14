@@ -36,6 +36,7 @@ import org.jpos.iso.*;
  *  There are notes where the comments are........ Mike.
  */
 public class BASE24Packager extends ISOBasePackager {
+    /** BASE-24 field packager definitions for fields 0-128. */
     protected ISOFieldPackager fld[] = {
             new IFA_NUMERIC (  4, "MESSAGE TYPE INDICATOR"),
             new IFA_BITMAP  ( 16, "BIT MAP"),

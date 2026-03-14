@@ -27,11 +27,13 @@ package org.jpos.iso;
 public interface Interpreter
 {
     /**
-	 * Converts the string data into a different interpretation. Standard
-	 * interpretations are ASCII, EBCDIC, BCD and LITERAL.
-	 * 
+     * Converts the string data into a different interpretation. Standard
+     * interpretations are ASCII, EBCDIC, BCD and LITERAL.
+     * @param data the string data to interpret
+     * @param b    the target byte array
+     * @param offset the offset in {@code b} to start writing at
      * @throws ISOException on error
-	 */
+     */
     void interpret(String data, byte[] b, int offset) throws ISOException;
 
     /**
@@ -46,8 +48,7 @@ public interface Interpreter
 	 *            The number of data units to interpret.
      * @return The uninterpreted data.
      * @throws ISOException on error
-	 * @return The uninterpreted data.
-	 */
+     */
     String uninterpret(byte[] rawData, int offset, int length) throws ISOException;
 
     /**

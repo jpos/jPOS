@@ -18,8 +18,11 @@ public interface ISOMsgMetrics {
     String ENV_CHANNEL_FIELDS =     "metrics.channel.fields";
     String DEFAULT_CHANNEL_FIELDS = "mti";
 
+    /** Implemented by components that expose an {@link ISOMsgMetrics} instance. */
     interface Source{
+        /** @param metrics the ISOMsgMetrics to attach */
         void setISOMsgMetrics(ISOMsgMetrics metrics);
+        /** @return the attached ISOMsgMetrics, or null */
         ISOMsgMetrics getISOMsgMetrics();
     }
 

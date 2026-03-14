@@ -32,6 +32,7 @@ import org.jpos.iso.*;
 public class Base1Packager extends ISOBasePackager 
 {
     private static final boolean pad = true;
+    /** BASE-1 field packager definitions for fields 0-128. */
     protected ISOFieldPackager base1Fld[] = 
     {
 /*000*/ new IFB_NUMERIC (  4, "MESSAGE TYPE INDICATOR", true),
@@ -172,6 +173,7 @@ public class Base1Packager extends ISOBasePackager
     /** ISO-8583 sub-field packager for field 126. */
     protected static class F126Packager extends Base1SubFieldPackager
     {
+        /** Field packager definitions for sub-fields of field 126. */
         protected ISOFieldPackager fld126[] =
         {
             new Base1_BITMAP126(16, "Bit Map"),
@@ -198,6 +200,7 @@ public class Base1Packager extends ISOBasePackager
     /** ISO-8583 sub-field packager for field 127. */
     protected static class F127Packager extends ISOBasePackager 
     {
+        /** Field packager definitions for sub-fields of field 127. */
         protected ISOFieldPackager fld127[] = 
         {
             new IFE_CHAR    (1,   "FILE UPDATE COD"),

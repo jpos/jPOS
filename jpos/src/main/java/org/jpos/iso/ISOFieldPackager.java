@@ -81,7 +81,10 @@ public abstract class ISOFieldPackager {
         this.len = len;
         this.description = description;
     }
-    /** Returns the field description. @return field description */
+    /**
+     * Returns the field description.
+     * @return field description
+     */
     public String getDescription() {
         return description;
     }
@@ -146,7 +149,7 @@ public abstract class ISOFieldPackager {
      * @param c  - the Component to unpack
      * @param in - input stream
      * @throws IOException on I/O failure
-     * @exception ISOException on unpacking error
+     * @throws ISOException on unpacking error
      */
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException

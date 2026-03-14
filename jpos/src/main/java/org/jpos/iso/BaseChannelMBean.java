@@ -19,14 +19,25 @@
 package org.jpos.iso;
 import java.io.IOException;
 
+/**
+ * JMX management interface for {@link BaseChannel}.
+ */
 public interface BaseChannelMBean {
+    /** @return the remote host name or address */
     String getHost();
+    /** @param host the remote host name or address */
     void setHost(String host);
+    /** @return the remote port number */
     int    getPort();
+    /** @param port the remote port number */
     void setPort(int port);
+    /** @return true if the channel is currently connected */
     boolean isConnected();
+    /** Establishes a connection. @throws IOException on connection failure */
     void connect() throws IOException;
+    /** Closes the connection. @throws IOException on close failure */
     void disconnect() throws IOException;
+    /** Reconnects the channel. @throws IOException on connection failure */
     void reconnect() throws IOException;
 }
 

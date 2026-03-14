@@ -25,8 +25,15 @@ package org.jpos.util;
  * @version $Id$
  */
 public interface LogSource {
+    /**
+     * Attaches a {@link Logger} and realm to this log source.
+     * @param logger the logger to use
+     * @param realm  the log realm (diagnostic label)
+     */
     void setLogger(Logger logger, String realm);
+    /** @return the log realm associated with this source */
     String getRealm();
+    /** @return the Logger associated with this source */
     Logger getLogger();
 }
 

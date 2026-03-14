@@ -69,7 +69,8 @@ public interface ISOPackager {
     String getFieldDescription(ISOComponent m, int fldNumber);
 
     /**
-     * @return an ISOMsg
+     * Creates and returns a new ISOMsg instance appropriate for this packager.
+     * @return a new ISOMsg
      */
     ISOMsg createISOMsg();
 }

@@ -34,8 +34,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  *   <li>optional parameter
  *  </ul>
  * <p>
- * <p>
- *
  * Examples:
  *
  * <pre>
