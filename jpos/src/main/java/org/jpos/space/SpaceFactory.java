@@ -34,6 +34,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  *   <li>optional parameter
  *  </ul>
  * <p>
+ * <p>
  *
  * Examples:
  *
@@ -66,7 +67,6 @@ public class SpaceFactory {
     public static final String SPACELET   = "spacelet";
     public static final String JDBM       = "jdbm";
     public static final String JE         = "je";
-    public static final String MDB        = "mdb";
     public static final String DEFAULT    = "default";
     private static ScheduledThreadPoolExecutor gcExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
 
@@ -147,11 +147,6 @@ public class SpaceFactory {
                 sp = JESpace.getSpace (name, param);
             else
                 sp = JESpace.getSpace (name);
-        } else if (MDB.equals(scheme)) {
-            if (param != null)
-                sp = MDBSpace.getSpace(name, param);
-            else
-                sp = MDBSpace.getSpace(name);
         }
         return sp;
     }
