@@ -374,6 +374,7 @@ public abstract class BERTLVPackager extends GenericPackager {
 
     /**
      * Packs a single TLV value field.
+     * Packs the value of the given component for the specified tag.
      * @param tagNameHex the tag name as a hex string
      * @param c the component to pack
      * @return packed value bytes

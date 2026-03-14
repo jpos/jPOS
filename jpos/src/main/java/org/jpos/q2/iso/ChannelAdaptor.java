@@ -64,6 +64,7 @@ public class ChannelAdaptor
     extends QBeanSupport
     implements ChannelAdaptorMBean, Channel, Loggeable, ExceptionHandlerConfigAware
 {
+    /** The Space used for message passing between sender and receiver. */
     protected Space sp;
     private ISOChannel channel;
     String in, out, ready, reconnect;
@@ -86,6 +87,7 @@ public class ChannelAdaptor
 
     @Config("soft-stop") private long softStop;
 
+    /** Default constructor. */
     public ChannelAdaptor () {
         super ();
         resetCounters();
@@ -210,6 +212,13 @@ public class ChannelAdaptor
     }
 
     /** Parses a {@code <channel>}  element, returning an {@link ISOChannel} */
+    /**
+     * Creates and configures a new {@link ISOChannel} from the given XML element.
+     * @param e the channel XML configuration element
+     * @param f the QFactory for creating objects
+     * @return configured ISOChannel
+     * @throws ConfigurationException on configuration error
+     */
     public ISOChannel newChannel (Element e, QFactory f) throws ConfigurationException {
         return newChannel(e, f, getRealm());
     }
@@ -292,6 +301,12 @@ public class ChannelAdaptor
         return channel;
     }
 
+    /**
+     * Adds ISO filters from the XML configuration to the channel.
+     * @param channel the channel to configure
+     * @param e the XML configuration element
+     * @param fact the QFactory for creating filter instances
+     */
     protected void addFilters (FilteredChannel channel, Element e, QFactory fact)
         throws ConfigurationException
     {
@@ -355,6 +370,7 @@ public class ChannelAdaptor
     }
 
     @SuppressWarnings("unchecked")
+    /** Runnable that continuously reads from the outgoing space and sends messages via the channel. */
     public class Sender implements Runnable {
         public Sender () {
             super ();
@@ -405,6 +421,7 @@ public class ChannelAdaptor
         }
     }
     @SuppressWarnings("unchecked")
+    /** Runnable that continuously receives messages from the channel and posts them to the incoming space. */
     public class Receiver implements Runnable {
         public Receiver () {
             super ();
@@ -475,6 +492,9 @@ public class ChannelAdaptor
             disconnect();
         }
     }
+    /**
+     * Checks the channel connection state and reconnects if necessary.
+     */
     protected void checkConnection () {
         while (running() && sp.rdp (reconnect) != null) {
             ISOUtil.sleep(1000);
@@ -580,6 +600,12 @@ public class ChannelAdaptor
     protected Space grabSpace (Element e) {
         return SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
+    /**
+     * Appends a name=value stat entry to a StringBuilder.
+     * @param sb the builder to append to
+     * @param name the stat name
+     * @param value the stat value
+     */
     protected void append (StringBuilder sb, String name, int value) {
         sb.append (name);
         sb.append (value);

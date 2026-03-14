@@ -89,7 +89,7 @@ public class BSHTransactionParticipant extends SimpleLogSource
     }
     
     /**
-     * Default abort implementation (no-op).
+     * Default abort handling when no BeanShell abort method is configured (no-op).
      * @param id transaction id
      * @param context transaction context
      * @param ev log event
@@ -175,12 +175,16 @@ public class BSHTransactionParticipant extends SimpleLogSource
         }
     }
     
-    /** @param m the BSHMethod to execute
+    /**
+     * Executes the given BSHMethod with the standard transaction parameters.
+     * @param m the BSHMethod to execute
      * @param id transaction id
      * @param context transaction context
      * @param evt log event
      * @param resultName the result variable name
      * @return the value of resultName after execution
+     * @throws bsh.EvalError on BeanShell evaluation error
+     * @throws java.io.IOException if the script cannot be read
      */
     protected Object executeMethod(BSHMethod m, long id, Serializable context, LogEvent evt, String resultName) 
     throws EvalError, IOException {

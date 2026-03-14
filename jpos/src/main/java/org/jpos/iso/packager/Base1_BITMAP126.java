@@ -63,7 +63,7 @@ public class Base1_BITMAP126 extends ISOBitMapPackager
     * @param b - binary image
     * @param offset - starting offset within the binary image
     * @return consumed bytes
-    * @exception ISOException
+    * @throws ISOException on error
     */
     public int unpack (ISOComponent c, byte[] b, int offset) throws ISOException
     {

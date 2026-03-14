@@ -27,7 +27,9 @@ package org.jpos.tlv;
  */
 public class BinaryTagValue extends TagValueBase<byte[]> {
 
-    /** @param tag the hex string tag identifier
+    /**
+     * Creates a BinaryTagValue with the given tag and byte-array value.
+     * @param tag the hex string tag identifier
      * @param value the raw byte value
      */
     public BinaryTagValue(String tag, byte[] value) {

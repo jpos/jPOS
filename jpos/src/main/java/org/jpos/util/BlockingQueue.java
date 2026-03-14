@@ -35,6 +35,8 @@ public class BlockingQueue {
     private boolean closed = false;
     private int consumers = 0;
 
+    /** Default constructor. */
+    public BlockingQueue() { }
     /** Exception thrown when an operation is attempted on a closed BlockingQueue. */
     public static class Closed extends RuntimeException {
 

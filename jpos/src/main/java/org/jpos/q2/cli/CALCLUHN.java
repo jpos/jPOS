@@ -23,7 +23,9 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
 @SuppressWarnings("unused")
-/** CLI command that calculates a Luhn check digit. */
+/**
+ * CLI command that calculates a Luhn check digit.
+ */
 public class CALCLUHN implements CLICommand {
     /** Default constructor. */
     public CALCLUHN() { }

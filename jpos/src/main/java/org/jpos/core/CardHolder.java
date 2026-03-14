@@ -79,7 +79,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     /**
      * creates a new CardHolder based on track2
      * @param track2 cards track2
-     * @exception InvalidCardException if card data is invalid
+     * @exception InvalidCardException if card data fails validation
      */
     public CardHolder (String track2)
         throws InvalidCardException
@@ -89,7 +89,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
-     * creates a new CardHolder based on pan and exp
+     * Creates a new CardHolder with the given PAN and expiry date.
+     * @param pan the primary account number
+     * @param exp the expiry date (YYMM)
      * @exception InvalidCardException if card data is invalid
      */
     public CardHolder (String pan, String exp)
@@ -155,7 +157,8 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
-     * @return the track1
+     * Returns the track 1 raw data.
+     * @return the track1 string, or null
      */
     public String getTrack1() {
         return track1;
@@ -257,7 +260,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     /**
      * Sets Primary Account Number
      * @param pan Primary Account NUmber
-     * @exception InvalidCardException if card data is invalid
+     * @exception InvalidCardException if the PAN is too short or fails validation
      */
     public void setPAN (String pan)
         throws InvalidCardException

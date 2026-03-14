@@ -86,7 +86,10 @@ public class BufferedLogListener implements LogListener, Configurable, LogProduc
         }
     }
 
-    /** @return the maximum number of events to buffer */
+    /**
+     * Returns the maximum number of log events to buffer.
+     * @return max buffer size
+     */
     public int getMaxSize() {
         return maxSize;
     }

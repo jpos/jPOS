@@ -27,27 +27,36 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
+ * Immutable card data carrier.
  *
- * This class is based on the old 'CardHolder' class and adds support for multiple
- * PAN and Expiration dates taken from manual entry, track1, track2. It also corrects the name.
+ * This class is based on the old {@code CardHolder} class and adds support for multiple
+ * PAN and expiration date sources (manual entry, track 1, track 2). It also fixes naming.
  *
  * @author apr@jpos.org
  * @since jPOS 2.0.5
- *
  */
 public class Card {
+    /** Primary account number. */
     private String pan;
+    /** Expiration date (YYMM). */
     private String exp;
+    /** CVV2 / CVC2 value. */
     private String cvv2;
+    /** 3-digit ISO service code. */
     private String serviceCode;
+    /** Track 1 data. */
     private Track1 track1;
+    /** Track 2 data. */
     private Track2 track2;
     /** Length of the BIN (Bank Identification Number) in digits. */
     public static final int BINLEN = 6;
 
     private Card() { }
 
-    /** Creates a Card from the given Builder. @param builder the builder */
+    /**
+     * Creates a Card from the given Builder.
+     * @param builder the builder
+     */
     public Card(Builder builder) {
         pan         = builder.pan;
         exp         = builder.exp;
@@ -57,68 +66,95 @@ public class Card {
         track2      = builder.track2;
     }
 
-    /** @return the primary account number */
+    /**
+     * Returns the primary account number.
+     * @return the PAN
+     */
     public String getPan() {
         return pan;
     }
 
-    /** @return the PAN as a BigInteger */
+    /**
+     * Returns the primary account number as a {@link BigInteger}.
+     * @return the PAN as a BigInteger
+     */
     public BigInteger getPanAsNumber() {
         return new BigInteger(pan);
     }
 
-    /** @return the card expiry date (YYMM format) */
+    /**
+     * Returns the card expiry date.
+     * @return the expiry date in YYMM format
+     */
     public String getExp() {
         return exp;
     }
 
-    /** @return the CVV2/CVC2 value */
+    /**
+     * Returns the CVV2 / CVC2 value.
+     * @return the CVV2 value
+     */
     public String getCvv2() {
         return cvv2;
     }
 
-    /** @return the 3-digit service code */
+    /**
+     * Returns the ISO service code.
+     * @return the 3-digit service code
+     */
     public String getServiceCode() {
         return serviceCode;
     }
 
-    /** @return true if track 1 data is present */
+    /**
+     * Returns true if track 1 data is present.
+     * @return true if track 1 is available
+     */
     public boolean hasTrack1() {
         return track1 != null;
     }
 
-    /** @return true if track 2 data is present */
+    /**
+     * Returns true if track 2 data is present.
+     * @return true if track 2 is available
+     */
     public boolean hasTrack2() {
         return track2 != null;
     }
 
-    /** @return true if both track 1 and track 2 data are present */
+    /**
+     * Returns true if both track 1 and track 2 data are present.
+     * @return true if both tracks are available
+     */
     public boolean hasBothTracks() {
         return hasTrack1() && hasTrack2();
     }
 
     /**
-     * Returns the traditional 6-digit BIN from the PAN
-     * @return the first 6 digits of the PAN
+     * Returns the traditional 6-digit BIN from the PAN.
+     * @return the first {@value #BINLEN} digits of the PAN
      */
     public String getBin () {
         return getBin(BINLEN);
     }
 
     /**
-     * Returns the first <code>len</code> digits from the PAN.
+     * Returns the first {@code len} digits from the PAN.
      * Can be used for the newer 8-digit BINs, or some arbitrary length.
-     * @return the first <code>len</code> digits of the PAN
+     * @param len number of leading digits to return
+     * @return the first {@code len} digits of the PAN
      */
     public String getBin (int len) {
         return pan.substring(0, len);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return pan != null ? ISOUtil.protect(pan) : "nil";
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -132,23 +168,32 @@ public class Card {
           Objects.equals(track2, card.track2);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(pan, exp, cvv2, serviceCode, track1, track2);
     }
 
-    /** @return the Track1 object, or null */
+    /**
+     * Returns the Track 1 data.
+     * @return the {@link Track1} object, or null if not present
+     */
     public Track1 getTrack1() {
         return track1;
     }
 
-    /** @return the Track2 object, or null */
+    /**
+     * Returns the Track 2 data.
+     * @return the {@link Track2} object, or null if not present
+     */
     public Track2 getTrack2() {
         return track2;
     }
 
-    /** @param currentDate the date to compare against
-     * @return true if the card is expired as of currentDate
+    /**
+     * Returns true if the card is expired relative to the given date.
+     * @param currentDate the date to compare against
+     * @return true if the card is expired as of {@code currentDate}
      */
     public boolean isExpired (Date currentDate) {
         if (exp == null || exp.length() != 4)
@@ -168,7 +213,10 @@ public class Card {
         return true;
     }
 
-    /** @return a new Builder for constructing a Card */
+    /**
+     * Returns a new {@link Builder} for constructing a {@link Card}.
+     * @return a new Builder
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -189,42 +237,99 @@ public class Card {
         private CardValidator validator = DEFAULT_CARD_VALIDATOR;
 
         private Builder () { }
-        /** @param pan the PAN @return this */
+
+        /**
+         * Sets the primary account number.
+         * @param pan the PAN
+         * @return this builder
+         */
         public Builder pan (String pan) { this.pan = pan; return this; }
-        /** @param exp the expiry (YYMM) @return this */
+
+        /**
+         * Sets the expiry date.
+         * @param exp the expiry in YYMM format
+         * @return this builder
+         */
         public Builder exp (String exp) { this.exp = exp; return this; }
-        /** @param cvv the CVV1 value @return this */
+
+        /**
+         * Sets the CVV1 value.
+         * @param cvv the CVV1 value
+         * @return this builder
+         */
         public Builder cvv (String cvv) { this.cvv = cvv; return this; }
-        /** @param cvv2 the CVV2 value @return this */
+
+        /**
+         * Sets the CVV2 value.
+         * @param cvv2 the CVV2 value
+         * @return this builder
+         */
         public Builder cvv2 (String cvv2) { this.cvv2 = cvv2; return this; }
-        /** @param serviceCode the 3-digit service code @return this */
+
+        /**
+         * Sets the service code.
+         * @param serviceCode the 3-digit service code
+         * @return this builder
+         */
         public Builder serviceCode (String serviceCode) { this.serviceCode = serviceCode; return this; }
-        /** @param validator the card validator to use @return this */
+
+        /**
+         * Sets the card validator.
+         * @param validator the card validator to use
+         * @return this builder
+         */
         public Builder validator (CardValidator validator) {
             this.validator = validator;
             return this;
         }
-        /** @param track1Builder a Track1 builder @return this */
+
+        /**
+         * Provides a Track 1 builder.
+         * @param track1Builder a {@link Track1.Builder} instance
+         * @return this builder
+         */
         public Builder withTrack1Builder (Track1.Builder track1Builder) {
             this.track1Builder = track1Builder;
             return this;
         }
-        /** @param track2Builder a Track2 builder @return this */
+
+        /**
+         * Provides a Track 2 builder.
+         * @param track2Builder a {@link Track2.Builder} instance
+         * @return this builder
+         */
         public Builder withTrack2Builder (Track2.Builder track2Builder) {
             this.track2Builder = track2Builder;
             return this;
         }
-        /** @param track1 the Track1 object @return this */
+
+        /**
+         * Sets the Track 1 data.
+         * @param track1 the {@link Track1} object
+         * @return this builder
+         */
         public Builder track1 (Track1 track1) {
             this.track1 = track1;
             return this;
         }
-        /** @param track2 the Track2 object @return this */
+
+        /**
+         * Sets the Track 2 data.
+         * @param track2 the {@link Track2} object
+         * @return this builder
+         */
         public Builder track2 (Track2 track2) {
             this.track2 = track2;
             return this;
         }
-        /** @param m an ISOMsg to extract card data from @return this @throws InvalidCardException if card data is invalid */
+
+        /**
+         * Populates card data from an {@link ISOMsg}.
+         * Extracts PAN, expiry, track 1, and track 2 from the appropriate fields.
+         * @param m an ISOMsg to extract card data from
+         * @return this builder
+         * @throws InvalidCardException if card data is invalid
+         */
         public Builder isomsg (ISOMsg m) throws InvalidCardException {
             if (m.hasField(2))
                 pan(m.getString(2));
@@ -261,7 +366,11 @@ public class Card {
             return this;
         }
 
-        /** @return a new Card instance @throws InvalidCardException if the card data is invalid */
+        /**
+         * Builds and validates the {@link Card}.
+         * @return a new Card instance
+         * @throws InvalidCardException if the card data is invalid
+         */
         public Card build() throws InvalidCardException {
             Card c = new Card(this);
             if (validator != null)

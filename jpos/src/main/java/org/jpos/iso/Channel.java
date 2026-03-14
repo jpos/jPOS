@@ -28,10 +28,12 @@ package org.jpos.iso;
  */
 public interface Channel {
     /**
+     * Sends an ISO message over this channel.
      * @param m message to send
      */
     void send(ISOMsg m);
     /**
+     * Receives an ISO message from this channel.
      * @return received message
      */
     ISOMsg receive();

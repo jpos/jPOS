@@ -71,7 +71,7 @@ public class BCDChannel extends BaseChannel {
      * @param p     an ISOPackager
      * @param TPDU  an optional raw header (i.e. TPDU)
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see ISOPackager
      */
     public BCDChannel (ISOPackager p, byte[] TPDU, ServerSocket serverSocket) 
