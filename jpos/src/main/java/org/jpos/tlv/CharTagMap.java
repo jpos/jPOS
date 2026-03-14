@@ -175,6 +175,9 @@ public class CharTagMap extends HashMap<String, CharTag> {
         return tag;
     }
 
+    /** @param tagId the tag identifier to validate
+     * @throws IllegalArgumentException if tagId is not a known tag
+     */
     protected void validateTag(String tagId) throws IllegalArgumentException {
         if (tagId == null)
             throw new IllegalArgumentException("Tag identifier have to be specified");

@@ -29,6 +29,12 @@ import javax.swing.*;
  * UI delegates the creation of UI components to an UIFactory.
  */
 public interface UIFactory {
-    JComponent create(UI ui, Element config);
+    /**
+     * Creates a Swing component from the given UI context and XML element.
+     * @param ui the UI container
+     * @param e the XML configuration element
+     * @return a new JComponent
+     */
+    JComponent create(UI ui, Element e);
 }
 

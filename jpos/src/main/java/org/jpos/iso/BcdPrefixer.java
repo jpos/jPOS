@@ -58,7 +58,10 @@ public class BcdPrefixer implements Prefixer
     /** The number of digits allowed to express the length */
     private int nDigits;
 
-    /** @param nDigits the number of BCD digits used for the length prefix */
+    /**
+     * Creates a BcdPrefixer with the given number of digits.
+     * @param nDigits the number of BCD digits used for the length prefix
+     */
     public BcdPrefixer(int nDigits)
     {
         this.nDigits = nDigits;

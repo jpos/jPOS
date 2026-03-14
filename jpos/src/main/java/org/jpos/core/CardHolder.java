@@ -247,12 +247,18 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         this.trailer = trailer;
     }
 
-    /** @return the card trailer string */
+    /**
+     * Returns the card trailer string.
+     * @return card trailer
+     */
     public String getTrailer() {
         return trailer;
     }
 
-    /** @param trailer the card trailer string */
+    /**
+     * Sets the card trailer string.
+     * @param trailer card trailer
+     */
     public void setTrailer(String trailer) {
         this.trailer = trailer;
     }
@@ -284,8 +290,10 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * Can be used for the newer 8-digit BINs, or some arbitrary length.
      * @return <code>len</code>-digit bank issuer number
      */
-    /** @param len number of BIN digits to return
-     * @return the BIN (first {@code len} digits of the PAN)
+    /**
+     * Returns the first {@code len} digits of the PAN (the BIN).
+     * @param len number of BIN digits to return
+     * @return the BIN prefix
      */
     public String getBIN (int len) {
         return pan.substring(0, len);
@@ -350,12 +358,17 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         }
         return true;
     }
-    /** @return true if the PAN passes the Luhn check */
+    /**
+     * Returns true if the PAN passes the Luhn (mod-10) check.
+     * @return true if the Luhn check passes
+     */
     public boolean isValidCRC () {
         return isValidCRC(this.pan);
     }
-    /** @param p the PAN to validate
-     * @return true if {@code p} passes the Luhn check
+    /**
+     * Returns true if the given PAN passes the Luhn (mod-10) check.
+     * @param p the PAN to validate
+     * @return true if the Luhn check passes
      */
     public static boolean isValidCRC (String p) {
         int i, crc;
@@ -412,7 +425,10 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
             trailer.substring (0, 3) :
             "   ";
     }
-    /** @return true if this card entry appears to be manual (not swiped/dipped) */
+    /**
+     * Returns true if this card appears to have been entered manually.
+     * @return true if manual entry is suspected
+     */
     public boolean seemsManualEntry() {
         return trailer == null || trailer.trim().length() == 0;
     }

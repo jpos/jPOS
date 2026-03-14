@@ -32,6 +32,10 @@ import javax.swing.*;
  *
  */
 public class BSHUI extends UI {
+    /** Default constructor. */
+    public BSHUI() { super(); }
+    /** {@inheritDoc} */
+    @Override
     protected JComponent doScript (JComponent component, Element e) {
         try {
             Interpreter bsh = new Interpreter ();

@@ -32,8 +32,9 @@ import org.jdom2.Element;
  */
 public interface UIAware {
     /**
-     * @param ui reference
-     * @param config action config block
+     * Configures this UI-aware component.
+     * @param ui the UI context
+     * @param config the XML configuration element
      */
     void setUI(UI ui, Element config);
 }

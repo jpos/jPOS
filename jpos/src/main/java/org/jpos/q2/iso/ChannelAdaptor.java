@@ -304,8 +304,11 @@ public class ChannelAdaptor
     /**
      * Adds ISO filters from the XML configuration to the channel.
      * @param channel the channel to configure
+     * Adds ISOFilters from the XML configuration to the channel.
+     * @param channel the channel to add filters to
      * @param e the XML configuration element
      * @param fact the QFactory for creating filter instances
+     * @throws ConfigurationException if a filter cannot be configured
      */
     protected void addFilters (FilteredChannel channel, Element e, QFactory fact)
         throws ConfigurationException
@@ -328,6 +331,11 @@ public class ChannelAdaptor
     }
 
 
+    /**
+     * Initialises the ISOChannel from the persisted configuration.
+     * @return configured ISOChannel
+     * @throws ConfigurationException on configuration error
+     */
     protected ISOChannel initChannel () throws ConfigurationException {
         Element persist = getPersist ();
         Element e = persist.getChild ("channel");
@@ -349,6 +357,10 @@ public class ChannelAdaptor
         return c;
     }
 
+    /**
+     * Initialises the Space and queue names from the persisted configuration.
+     * @throws ConfigurationException on configuration error
+     */
     protected void initSpaceAndQueues () throws ConfigurationException {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space"));
@@ -369,9 +381,10 @@ public class ChannelAdaptor
         waitForWorkersOnStop = "yes".equalsIgnoreCase(Environment.get(persist.getChildTextTrim ("wait-for-workers-on-stop")));
     }
 
-    @SuppressWarnings("unchecked")
     /** Runnable that continuously reads from the outgoing space and sends messages via the channel. */
+    @SuppressWarnings("unchecked")
     public class Sender implements Runnable {
+        /** Default constructor. */
         public Sender () {
             super ();
         }
@@ -420,9 +433,10 @@ public class ChannelAdaptor
             }
         }
     }
-    @SuppressWarnings("unchecked")
     /** Runnable that continuously receives messages from the channel and posts them to the incoming space. */
+    @SuppressWarnings("unchecked")
     public class Receiver implements Runnable {
+        /** Default constructor. */
         public Receiver () {
             super ();
         }
@@ -493,7 +507,7 @@ public class ChannelAdaptor
         }
     }
     /**
-     * Checks the channel connection state and reconnects if necessary.
+     * Checks the channel connection and reconnects if it is down.
      */
     protected void checkConnection () {
         while (running() && sp.rdp (reconnect) != null) {
@@ -514,6 +528,9 @@ public class ChannelAdaptor
         if (running() && sp.rdp (ready) == null)
             sp.out (ready, new Date());
     }
+    /** Closes the channel connection, flushing pending output.
+     * Synchronized on a dedicated lock to avoid deadlock between Sender/Receiver.
+     */
     protected void disconnect () {
         // do not synchronize on this as both Sender and Receiver can deadlock against a thread calling stop()
         synchronized (disconnectLock) {
@@ -588,9 +605,17 @@ public class ChannelAdaptor
     public long getLastTxnTimestampInMillis() {
         return lastTxn;
     }
+    /**
+     * Returns the time elapsed since the last transaction, or -1 if no transaction has occurred.
+     * @return idle time in milliseconds
+     */
     public long getIdleTimeInMillis() {
         return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
     }
+    /**
+     * Returns the socket factory class name from configuration.
+     * @return socket factory class name
+     */
     public String getSocketFactory() {
         return getProperty(getProperties ("channel"), "socketFactory");
     }

@@ -35,7 +35,7 @@ public abstract class DefaultICCBERTLVPackager extends BERTLVPackager {
     /**
      * Use this method to globally set the BERTLVFormatMapper
      *
-     * @param tagFormatMapper
+     * @param tagFormatMapper — the TLV tag number
      */
     public static void setTagFormatMapper(BERTLVFormatMapper tagFormatMapper) {
         DefaultICCBERTLVPackager.DEFAULT_TAG_FORMAT_MAPPER = tagFormatMapper;

@@ -25,11 +25,11 @@ import java.util.LinkedList;
  * @see ThreadPool
  * @since 1.1
  */
-@SuppressWarnings("unchecked")
 /**
  * A simple thread-safe blocking queue supporting enqueue, dequeue with optional timeout, and cooperative close.
  * @deprecated Use standard {@link java.util.concurrent} classes instead.
  */
+@SuppressWarnings("unchecked")
 public class BlockingQueue {
     private LinkedList queue = new LinkedList();
     private boolean closed = false;

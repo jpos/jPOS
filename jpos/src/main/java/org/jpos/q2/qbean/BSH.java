@@ -25,10 +25,21 @@ import org.jdom2.Element;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
 
+/**
+ * QBean that executes a BeanShell script on start/stop.
+ */
 public class BSH extends QBeanSupport implements Runnable {
-    /** The BeanShell Interpreter instance. */
+    /**
+     * The BeanShell Interpreter instance.
+     */
     protected Interpreter bsh;
 
+    /**
+     * Default constructor.
+     */
+    public BSH() { super(); }
+
+    /** {@inheritDoc} */
     public void initService() {
         bsh = new Interpreter ();
         BshClassManager bcm = bsh.getClassManager();

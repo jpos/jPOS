@@ -42,7 +42,10 @@ public class BinaryPrefixer implements Prefixer
     /** The number of digits allowed to express the length */
     private int nBytes;
 
-    /** @param nBytes the number of bytes used for the length prefix */
+    /**
+     * Creates a BinaryPrefixer with the given number of bytes.
+     * @param nBytes the number of bytes used for the length prefix
+     */
     public BinaryPrefixer(int nBytes)
     {
         this.nBytes = nBytes;

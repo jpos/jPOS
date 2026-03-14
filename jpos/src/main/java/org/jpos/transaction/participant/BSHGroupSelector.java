@@ -30,8 +30,15 @@ import java.io.Serializable;
  * A TransactionManager participant that uses BeanShell scripting to determine the next participant group.
  * @author  AMarques
  */
+/**
+ * {@link GroupSelector} implemented via a BeanShell script.
+ * @author AMarques
+ */
 public class BSHGroupSelector extends BSHTransactionParticipant implements GroupSelector {
     
+    /** Default constructor. */
+    public BSHGroupSelector() { super(); }
+
     /** BeanShell method invoked during group selection. */
     protected BSHMethod selectMethod;
     

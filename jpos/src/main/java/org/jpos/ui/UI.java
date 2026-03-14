@@ -436,7 +436,9 @@ public class UI implements UIFactory, UIObjectFactory {
         }
         return component;
     }
-    /** @param component the target component
+    /**
+     * Applies any script element to the component; default implementation is a no-op.
+     * @param component the target component
      * @param e the script XML element
      * @return the component after script application
      */

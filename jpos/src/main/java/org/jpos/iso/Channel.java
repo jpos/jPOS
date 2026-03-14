@@ -38,8 +38,9 @@ public interface Channel {
      */
     ISOMsg receive();
     /**
+     * Receives an ISO message, waiting at most {@code timeout} milliseconds.
      * @param timeout time to wait for a message
-     * @return received message or null
+     * @return received message or null on timeout
      */
     ISOMsg receive(long timeout);
 }

@@ -37,16 +37,22 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @SuppressWarnings("unchecked")
+/**
+ * A pool of {@link ISOChannel} instances; tries each in order until one connects.
+ */
 public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneable {
     boolean usable = true;
     String name = "";
+    /** Logger for this pool. */
     protected Logger logger;
+    /** Log realm for this pool. */
     protected String realm;
     Configuration cfg = null;
     List pool;
     ISOChannel current;
     Lock lock = new ReentrantLock();
 
+    /** Default constructor. */
     public ChannelPool () {
         super ();
         pool = new Vector ();
@@ -167,23 +173,36 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
             }
         }
     }
+    /** @param channel the channel to add to the pool */
     public void addChannel (ISOChannel channel) {
         pool.add (channel);
     }
+    /** @param name the NameRegistrar name of the channel to add
+     * @throws NameRegistrar.NotFoundException if name not found
+     */
     public void addChannel (String name) 
         throws NameRegistrar.NotFoundException
     {
         pool.add (NameRegistrar.get ("channel."+name));
     }
+    /** @param channel the channel to remove */
     public void removeChannel (ISOChannel channel) {
         pool.remove (channel);
     }
+    /** @param name the channel name to remove
+     * @throws NameRegistrar.NotFoundException if name not found
+     */
     public void removeChannel (String name) throws NameRegistrar.NotFoundException {
         pool.remove (NameRegistrar.get ("channel."+name));
     }
+    /** @return the number of channels in the pool */
     public int size() {
         return pool.size();
     }
+    /** Returns the currently active channel, trying to connect if necessary.
+     * @return the active ISOChannel
+     * @throws IOException if no channel can be connected
+     */
     public ISOChannel getCurrent () throws IOException {
         lock.lock();
         try {
