@@ -20,8 +20,8 @@ package org.jpos.iso.header;
 
 import org.jpos.iso.ISOUtil;
 
-/*
- * BASE1 Header
+/**
+ * BASE1 header implementation.
  * <pre>
  *   0 hlen;         Fld  1: Header Length        1B      (Byte     0)
  *   1 hformat;      Fld  2: Header Format        8N,bit  (Byte     1)

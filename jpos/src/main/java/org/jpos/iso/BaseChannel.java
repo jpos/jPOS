@@ -471,11 +471,17 @@ public abstract class BaseChannel extends Observable
         this.soLingerOn = on;
         this.soLingerSeconds = linger;
     }
-    /** @return true if SO_LINGER is enabled */
+    /**
+     * Returns true if SO_LINGER is enabled.
+     * @return true if SO_LINGER is on
+     */
     public boolean isSoLingerOn() {
         return soLingerOn;
     }
-    /** @return the SO_LINGER timeout in seconds */
+    /**
+     * Returns the SO_LINGER timeout.
+     * @return SO_LINGER timeout in seconds
+     */
     public int getSoLingerSeconds() {
         return soLingerSeconds;
     }
@@ -852,7 +858,10 @@ public abstract class BaseChannel extends Observable
         }
     }
 
-    /** @return true if this channel expects keep-alive messages from the remote end */
+    /**
+     * Returns true if this channel expects keep-alive messages from the remote end.
+     * @return true if keep-alive is expected
+     */
     public boolean isExpectKeepAlive() {
         return expectKeepAlive;
     }

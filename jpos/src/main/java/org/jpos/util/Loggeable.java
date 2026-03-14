@@ -29,6 +29,11 @@ import java.io.PrintStream;
  * @version $Id$
  */
 public interface Loggeable {
+    /**
+     * Dumps a human-readable representation of this object to the print stream.
+     * @param p the output stream
+     * @param indent indentation prefix
+     */
     void dump(PrintStream p, String indent);
     default void dump(PrintStream p, String indent, LogRenderer.Type type) {
         var renderer = LogRendererRegistry.getRenderer(this.getClass(), type);

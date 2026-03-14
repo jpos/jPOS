@@ -50,4 +50,8 @@ import org.jpos.log.evt.*;
 /**
  * Sealed marker interface for all jPOS structured audit log events.
  */
-public sealed interface AuditLogEvent permits Connect, Deploy, DeployActivity, Disconnect, License, Listen, LogMessage, SessionEnd, SessionStart, Shutdown, Start, Stop, SysInfo, ThrowableAuditLogEvent, Txn, UnDeploy, Warning { }
+public sealed interface AuditLogEvent
+        permits Connect, Deploy, DeployActivity, Disconnect, License, Listen, LogMessage,
+                SessionEnd, SessionStart, Shutdown, Start, Stop, SysInfo,
+                ThrowableAuditLogEvent, Txn, UnDeploy, Warning {
+}

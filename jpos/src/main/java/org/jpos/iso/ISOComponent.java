@@ -42,7 +42,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * Set a field within this message
      * @param c - a component
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public void set (ISOComponent c) throws ISOException {
         throw new ISOException ("Can't add to Leaf");
@@ -50,7 +50,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * Unset a field
      * @param fldno - the field number
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public void unset (int fldno) throws ISOException {
         throw new ISOException ("Can't remove from Leaf");
@@ -72,7 +72,7 @@ public abstract class ISOComponent implements Cloneable {
      * to this field.
      *
      * @return object representing the field number
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public Object getKey() throws ISOException {
         throw new ISOException ("N/A in Composite");
@@ -80,7 +80,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * valid on Leafs only.
      * @return object representing the field value
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public Object getValue() throws ISOException {
         throw new ISOException ("N/A in Composite");
@@ -88,7 +88,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * get Value as bytes (when possible)
      * @return byte[] representing this field
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public byte[] getBytes() throws ISOException {
         throw new ISOException ("N/A in Composite");

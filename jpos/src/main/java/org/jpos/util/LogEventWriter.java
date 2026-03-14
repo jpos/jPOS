@@ -30,7 +30,16 @@ import java.io.PrintStream;
  * @since 2.1.4
  */
 public interface LogEventWriter {
+    /**
+     * Writes a log event to the underlying output.
+     * @param ev the log event to write
+     */
     void write(LogEvent ev);
+    /**
+     * Sets the print stream used for output.
+     * @param printStream the destination stream
+     */
     void setPrintStream(PrintStream printStream);
+    /** Closes the writer and releases any underlying resources. */
     void close();
 }

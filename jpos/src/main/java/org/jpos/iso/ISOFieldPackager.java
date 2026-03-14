@@ -96,17 +96,26 @@ public abstract class ISOFieldPackager {
     public int getLength() {
         return len;
     }
-    /** Sets the maximum field length. @param len the maximum length */
+    /**
+     * Sets the maximum field length.
+     * @param len the maximum length
+     */
     public void setLength(int len) {
         this.len = len;
     }
 
-    /** Enables or disables padding for this field. @param pad true to enable padding */
+    /**
+     * Enables or disables padding for this field.
+     * @param pad true to enable padding
+     */
     public void setPad(boolean pad) {
         this.pad = pad;
     }
 
-    /** Enables or disables trimming for this field. @param trim true to enable trimming */
+    /**
+     * Enables or disables trimming for this field.
+     * @param trim true to enable trimming
+     */
     public void setTrim(boolean trim) {
         this.trim = trim;
     }
@@ -157,10 +166,11 @@ public abstract class ISOFieldPackager {
         unpack (c, readBytes (in, getMaxPackedLength ()), 0);
     }
     /**
-     * @param c   - the Component to unpack
+     * Packs the component to an ObjectOutput stream.
+     * @param c   - the Component to pack
      * @param out - output stream
-     * @exception ISOException on packing/unpacking error
-     * @exception IOException
+     * @throws ISOException on packing error
+     * @throws IOException on I/O failure
      */
     public void pack (ISOComponent c, ObjectOutput out) 
         throws IOException, ISOException

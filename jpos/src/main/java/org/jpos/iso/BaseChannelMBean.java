@@ -23,21 +23,45 @@ import java.io.IOException;
  * JMX management interface for {@link BaseChannel}.
  */
 public interface BaseChannelMBean {
-    /** @return the remote host name or address */
+    /**
+     * Returns the remote host name or address.
+     * @return remote host
+     */
     String getHost();
-    /** @param host the remote host name or address */
+    /**
+     * Sets the remote host name or address.
+     * @param host remote host
+     */
     void setHost(String host);
-    /** @return the remote port number */
+    /**
+     * Returns the remote port number.
+     * @return remote port
+     */
     int    getPort();
-    /** @param port the remote port number */
+    /**
+     * Sets the remote port number.
+     * @param port remote port
+     */
     void setPort(int port);
-    /** @return true if the channel is currently connected */
+    /**
+     * Returns true if the channel has an active connection.
+     * @return true if connected
+     */
     boolean isConnected();
-    /** Establishes a connection. @throws IOException on connection failure */
+    /**
+     * Establishes a connection.
+     * @throws IOException on connection failure
+     */
     void connect() throws IOException;
-    /** Closes the connection. @throws IOException on close failure */
+    /**
+     * Closes the connection.
+     * @throws IOException on close failure
+     */
     void disconnect() throws IOException;
-    /** Reconnects the channel. @throws IOException on connection failure */
+    /**
+     * Reconnects the channel.
+     * @throws IOException on connection failure
+     */
     void reconnect() throws IOException;
 }
 

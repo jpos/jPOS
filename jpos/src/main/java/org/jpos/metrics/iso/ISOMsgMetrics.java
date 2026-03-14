@@ -20,9 +20,15 @@ public interface ISOMsgMetrics {
 
     /** Implemented by components that expose an {@link ISOMsgMetrics} instance. */
     interface Source{
-        /** @param metrics the ISOMsgMetrics to attach */
+            /**
+         * Sets the ISOMsgMetrics instance.
+         * @param metrics the ISOMsgMetrics to attach
+         */
         void setISOMsgMetrics(ISOMsgMetrics metrics);
-        /** @return the attached ISOMsgMetrics, or null */
+        /**
+         * Returns the attached ISOMsgMetrics.
+         * @return the ISOMsgMetrics, or null
+         */
         ISOMsgMetrics getISOMsgMetrics();
     }
 

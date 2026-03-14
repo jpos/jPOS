@@ -33,6 +33,8 @@ import java.io.PrintStream;
  * @since 2.1.4
  */
 public abstract class BaseLogEventWriter implements LogEventWriter {
+    /** Default constructor. */
+    public BaseLogEventWriter() { }
     PrintStream p;
 
     @Override

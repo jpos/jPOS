@@ -34,6 +34,7 @@ public class BaseHeader implements ISOHeader, Loggeable {
      * 
      */
     private static final long serialVersionUID = 8674535007934468935L;
+    /** Raw header bytes. */
     protected byte[] header;
     transient boolean asciiEncoding = false;
 
@@ -46,6 +47,9 @@ public class BaseHeader implements ISOHeader, Loggeable {
         header = null;
     }
 
+    /** Creates a BaseHeader wrapping the given raw bytes.
+     * @param header raw header bytes
+     */
     public BaseHeader (byte[] header) {
         unpack(header);
     }
@@ -94,9 +98,11 @@ public class BaseHeader implements ISOHeader, Loggeable {
             );
         }
     }
+    /** @param asciiEncoding true to use ASCII encoding for source/destination fields */
     public void setAsciiEncoding(boolean asciiEncoding) {
         this.asciiEncoding = asciiEncoding;
     }
+    /** @return true if ASCII encoding is used for source/destination fields */
     public boolean isAsciiEncoding() {
         return asciiEncoding;
     }

@@ -31,9 +31,15 @@ public interface LogSource {
      * @param realm  the log realm (diagnostic label)
      */
     void setLogger(Logger logger, String realm);
-    /** @return the log realm associated with this source */
+    /**
+     * Returns the log realm associated with this source.
+     * @return log realm
+     */
     String getRealm();
-    /** @return the Logger associated with this source */
+    /**
+     * Returns the Logger associated with this source.
+     * @return the Logger
+     */
     Logger getLogger();
 }
 

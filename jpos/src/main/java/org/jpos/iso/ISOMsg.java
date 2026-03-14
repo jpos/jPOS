@@ -151,28 +151,32 @@ public class ISOMsg extends ISOComponent
         return header;
     }
     /**
-     * @return the direction (ISOMsg.INCOMING or ISOMsg.OUTGOING)
+     * Returns the message direction.
+     * @return the direction ({@code ISOMsg.INCOMING} or {@code ISOMsg.OUTGOING})
      * @see ISOChannel
      */
     public int getDirection() {
         return direction;
     }
     /**
-     * @return true if this message is an incoming message
+     * Returns true if this message was received from a channel.
+     * @return true if this is an incoming message
      * @see ISOChannel
      */
     public boolean isIncoming() {
         return direction == INCOMING;
     }
     /**
-     * @return true if this message is an outgoing message
+     * Returns true if this message is to be sent via a channel.
+     * @return true if this is an outgoing message
      * @see ISOChannel
      */
     public boolean isOutgoing() {
         return direction == OUTGOING;
     }
     /**
-     * @return the max field number associated with this message
+     * Returns the highest field number present in this message.
+     * @return the max field number
      */
     @Override
     public int getMaxField() {
@@ -189,6 +193,7 @@ public class ISOMsg extends ISOComponent
         maxFieldDirty = false;
     }
     /**
+     * Sets the packager used to pack/unpack this message.
      * @param p - a peer packager
      */
     public void setPackager (ISOPackager p) {
@@ -201,6 +206,7 @@ public class ISOMsg extends ISOComponent
         }
     }
     /**
+     * Returns the packager associated with this message.
      * @return the peer packager
      */
     public ISOPackager getPackager () {
@@ -567,9 +573,9 @@ public class ISOMsg extends ISOComponent
         return (Map) ((TreeMap)fields).clone();
     }
     /**
-     * pack the message with the current packager
+     * Packs this message using the configured packager.
      * @return the packed message
-     * @exception ISOException
+     * @exception ISOException on packing error
      */
     @Override
     public byte[] pack() throws ISOException {
@@ -579,10 +585,10 @@ public class ISOMsg extends ISOComponent
         }
     }
     /**
-     * unpack a message
+     * Unpacks the raw byte array into this message.
      * @param b - raw message
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on unpacking error
      */
     @Override
     public int unpack(byte[] b) throws ISOException {
@@ -590,6 +596,10 @@ public class ISOMsg extends ISOComponent
             return packager.unpack(this, b);
         }
     }
+    /** {@inheritDoc}
+     * @throws IOException on I/O failure
+     * @throws ISOException on unpacking error
+     */
     @Override
     public void unpack (InputStream in) throws IOException, ISOException {
         synchronized (this) {
@@ -850,7 +860,8 @@ public class ISOMsg extends ISOComponent
          }
      }
     /**
-     * @return true if ISOMsg has at least one field
+     * Returns true if this message has at least one field set.
+     * @return true if at least one field is present
      */
     public boolean hasFields () {
         return !fields.isEmpty();
@@ -858,8 +869,8 @@ public class ISOMsg extends ISOComponent
     /**
      * Don't call setValue on an ISOMsg. You'll sure get
      * an ISOException. It's intended to be used on Leafs
-     * @param obj
-     * @throws org.jpos.iso.ISOException
+     * @param obj value to set (not supported on ISOMsg)
+     * @throws org.jpos.iso.ISOException always
      * @see ISOField
      * @see ISOException
      */
@@ -1016,17 +1027,22 @@ public class ISOMsg extends ISOComponent
             return fieldNumber;
         throw new ISOException ("This is not a subField");
     }
+    /** Returns this message itself as its value.
+     * @return this ISOMsg
+     */
     @Override
     public Object getValue() {
         return this;
     }
     /**
+     * Returns true if this is an inner (sub-) message.
      * @return true on inner messages
      */
     public boolean isInner() {
         return fieldNumber > -1;
     }
     /**
+     * Sets the message type indicator.
      * @param mti new MTI
      * @exception ISOException if message is inner message
      */
@@ -1059,7 +1075,8 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
-     * @return true is message has MTI field
+     * Returns true if this message has an MTI field (field 0) set.
+     * @return true if MTI is present
      * @exception ISOException if this is an inner message
      */
     public boolean hasMTI() throws ISOException {
@@ -1069,6 +1086,7 @@ public class ISOMsg extends ISOComponent
             return hasField(0);
     }
     /**
+     * Returns the message type indicator.
      * @return current MTI
      * @exception ISOException on inner message or MTI not set
      */
@@ -1081,6 +1099,7 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
+     * Returns true if the MTI suggests this is a request message.
      * @return true if message "seems to be" a request
      * @exception ISOException on MTI not set
      */
@@ -1088,6 +1107,7 @@ public class ISOMsg extends ISOComponent
         return Character.getNumericValue(getMTI().charAt (2))%2 == 0;
     }
     /**
+     * Returns true if the MTI suggests this is a response message.
      * @return true if message "seems not to be" a request
      * @exception ISOException on MTI not set
      */
@@ -1095,6 +1115,7 @@ public class ISOMsg extends ISOComponent
         return !isRequest();
     }
     /**
+     * Returns true if this is an authorization message (MTI second digit = 1).
      * @return true if message class is "authorization"
      * @exception ISOException on MTI not set
      */
@@ -1102,6 +1123,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '1';
     }
     /**
+     * Returns true if this is a financial message (MTI second digit = 2).
      * @return true if message class is "financial"
      * @exception ISOException on MTI not set
      */
@@ -1109,6 +1131,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '2';
     }
     /**
+     * Returns true if this is a file action message (MTI second digit = 3).
      * @return true if message class is "file action"
      * @exception ISOException on MTI not set
      */
@@ -1116,6 +1139,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '3';
     }
     /**
+     * Returns true if this is a reversal message (MTI second digit = 4, last digit 0 or 1).
      * @return true if message class is "reversal"
      * @exception ISOException on MTI not set
      */
@@ -1123,6 +1147,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '4' && (getMTI().charAt(3) == '0' || getMTI().charAt(3) == '1');
     }
     /**
+     * Returns true if this is a chargeback message (MTI second digit = 4, last digit 2 or 3).
      * @return true if message class is "chargeback"
      * @exception ISOException on MTI not set
      */
@@ -1130,6 +1155,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '4' && (getMTI().charAt(3) == '2' || getMTI().charAt(3) == '3');
     }
     /**
+     * Returns true if this is a reconciliation message (MTI second digit = 5).
      * @return true if message class is "reconciliation"
      * @exception ISOException on MTI not set
      */
@@ -1137,6 +1163,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '5';
     }
     /**
+     * Returns true if this is an administrative message (MTI second digit = 6).
      * @return true if message class is "administrative"
      * @exception ISOException on MTI not set
      */
@@ -1144,6 +1171,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '6';
     }
     /**
+     * Returns true if this is a fee collection message (MTI second digit = 7).
      * @return true if message class is "fee collection"
      * @exception ISOException on MTI not set
      */
@@ -1151,14 +1179,16 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '7';
     }
     /**
-     * @return true if message class is "fee collection"
+     * Returns true if this is a network management message (MTI second digit = 8).
+     * @return true if message class is "network management"
      * @exception ISOException on MTI not set
      */
     public boolean isNetworkManagement() throws ISOException {
         return hasMTI() && getMTI().charAt(1) == '8';
     }
     /**
-     * @return true if message is Retransmission
+     * Returns true if this is a retransmission (MTI last digit = 1).
+     * @return true if message is a retransmission
      * @exception ISOException on MTI not set
      */
     public boolean isRetransmission() throws ISOException {
