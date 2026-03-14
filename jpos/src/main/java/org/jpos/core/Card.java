@@ -47,6 +47,7 @@ public class Card {
 
     private Card() { }
 
+    /** Creates a Card from the given Builder. @param builder the builder */
     public Card(Builder builder) {
         pan         = builder.pan;
         exp         = builder.exp;
@@ -56,34 +57,42 @@ public class Card {
         track2      = builder.track2;
     }
 
+    /** @return the primary account number */
     public String getPan() {
         return pan;
     }
 
+    /** @return the PAN as a BigInteger */
     public BigInteger getPanAsNumber() {
         return new BigInteger(pan);
     }
 
+    /** @return the card expiry date (YYMM format) */
     public String getExp() {
         return exp;
     }
 
+    /** @return the CVV2/CVC2 value */
     public String getCvv2() {
         return cvv2;
     }
 
+    /** @return the 3-digit service code */
     public String getServiceCode() {
         return serviceCode;
     }
 
+    /** @return true if track 1 data is present */
     public boolean hasTrack1() {
         return track1 != null;
     }
 
+    /** @return true if track 2 data is present */
     public boolean hasTrack2() {
         return track2 != null;
     }
 
+    /** @return true if both track 1 and track 2 data are present */
     public boolean hasBothTracks() {
         return hasTrack1() && hasTrack2();
     }
@@ -128,14 +137,19 @@ public class Card {
         return Objects.hash(pan, exp, cvv2, serviceCode, track1, track2);
     }
 
+    /** @return the Track1 object, or null */
     public Track1 getTrack1() {
         return track1;
     }
 
+    /** @return the Track2 object, or null */
     public Track2 getTrack2() {
         return track2;
     }
 
+    /** @param currentDate the date to compare against
+     * @return true if the card is expired as of currentDate
+     */
     public boolean isExpired (Date currentDate) {
         if (exp == null || exp.length() != 4)
             return true;
@@ -154,12 +168,14 @@ public class Card {
         return true;
     }
 
+    /** @return a new Builder for constructing a Card */
     public static Builder builder() {
         return new Builder();
     }
 
     /** Builder for constructing {@link Card} instances. */
     public static class Builder {
+        /** Default card validator instance. */
         public static CardValidator DEFAULT_CARD_VALIDATOR  = new DefaultCardValidator();
         private String pan;
         private String exp;
@@ -173,31 +189,42 @@ public class Card {
         private CardValidator validator = DEFAULT_CARD_VALIDATOR;
 
         private Builder () { }
+        /** @param pan the PAN @return this */
         public Builder pan (String pan) { this.pan = pan; return this; }
+        /** @param exp the expiry (YYMM) @return this */
         public Builder exp (String exp) { this.exp = exp; return this; }
+        /** @param cvv the CVV1 value @return this */
         public Builder cvv (String cvv) { this.cvv = cvv; return this; }
+        /** @param cvv2 the CVV2 value @return this */
         public Builder cvv2 (String cvv2) { this.cvv2 = cvv2; return this; }
+        /** @param serviceCode the 3-digit service code @return this */
         public Builder serviceCode (String serviceCode) { this.serviceCode = serviceCode; return this; }
+        /** @param validator the card validator to use @return this */
         public Builder validator (CardValidator validator) {
             this.validator = validator;
             return this;
         }
+        /** @param track1Builder a Track1 builder @return this */
         public Builder withTrack1Builder (Track1.Builder track1Builder) {
             this.track1Builder = track1Builder;
             return this;
         }
+        /** @param track2Builder a Track2 builder @return this */
         public Builder withTrack2Builder (Track2.Builder track2Builder) {
             this.track2Builder = track2Builder;
             return this;
         }
+        /** @param track1 the Track1 object @return this */
         public Builder track1 (Track1 track1) {
             this.track1 = track1;
             return this;
         }
+        /** @param track2 the Track2 object @return this */
         public Builder track2 (Track2 track2) {
             this.track2 = track2;
             return this;
         }
+        /** @param m an ISOMsg to extract card data from @return this @throws InvalidCardException if card data is invalid */
         public Builder isomsg (ISOMsg m) throws InvalidCardException {
             if (m.hasField(2))
                 pan(m.getString(2));
@@ -234,6 +261,7 @@ public class Card {
             return this;
         }
 
+        /** @return a new Card instance @throws InvalidCardException if the card data is invalid */
         public Card build() throws InvalidCardException {
             Card c = new Card(this);
             if (validator != null)

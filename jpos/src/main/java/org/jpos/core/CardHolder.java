@@ -79,7 +79,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     /**
      * creates a new CardHolder based on track2
      * @param track2 cards track2
-     * @exception InvalidCardException
+     * @exception InvalidCardException if card data is invalid
      */
     public CardHolder (String track2)
         throws InvalidCardException
@@ -90,7 +90,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
 
     /**
      * creates a new CardHolder based on pan and exp
-     * @exception InvalidCardException
+     * @exception InvalidCardException if card data is invalid
      */
     public CardHolder (String pan, String exp)
         throws InvalidCardException
@@ -104,7 +104,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * Construct a CardHolder based on content received on
      * field 35 (track2) or field 2 (PAN) + field 14 (EXP)
      * @param m an ISOMsg
-     * @throws InvalidCardException
+     * @throws InvalidCardException if card data is invalid
      */
     public CardHolder (ISOMsg m)
         throws InvalidCardException
@@ -130,7 +130,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     /**
      * extract pan/exp/trailler from track2
      * @param s a valid track2
-     * @exception InvalidCardException
+     * @exception InvalidCardException if card data is invalid
      */
     public void parseTrack2 (String s)
         throws InvalidCardException
@@ -147,6 +147,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
+     * Sets the track1 data.
      * @param track1 card's track1
      */
     public void setTrack1(String track1) {
@@ -161,6 +162,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
+     * Returns true if track1 data is present.
      * @return true if we have a track1
      */
     public boolean hasTrack1() {
@@ -168,6 +170,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
+     * Returns the cardholder name from track1.
      * @return the Name written on the card (from track1)
      */
     public String getNameOnCard() {
@@ -193,6 +196,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
             return null;
     }
     /**
+     * Returns true if track2 data is (potentially) present.
      * @return true if we have a (may be valid) track2
      */
     public boolean hasTrack2() {
@@ -207,12 +211,14 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         this.securityCode = securityCode;
     }
     /**
+     * Returns the card security code (CVV/CVC), or null.
      * @return securityCode (or null)
      */
     public String getSecurityCode() {
         return securityCode;
     }
     /**
+     * Returns true if a security code is present.
      * @return true if we have a security code
      */
     public boolean hasSecurityCode() {
@@ -238,10 +244,12 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         this.trailer = trailer;
     }
 
+    /** @return the card trailer string */
     public String getTrailer() {
         return trailer;
     }
 
+    /** @param trailer the card trailer string */
     public void setTrailer(String trailer) {
         this.trailer = trailer;
     }
@@ -249,7 +257,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     /**
      * Sets Primary Account Number
      * @param pan Primary Account NUmber
-     * @exception InvalidCardException
+     * @exception InvalidCardException if card data is invalid
      */
     public void setPAN (String pan)
         throws InvalidCardException
@@ -260,6 +268,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
+     * Returns the Primary Account Number.
      * @return Primary Account Number
      */
     public String getPAN () {
@@ -271,6 +280,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * Get the first <code>len</code> digits from the PAN.
      * Can be used for the newer 8-digit BINs, or some arbitrary length.
      * @return <code>len</code>-digit bank issuer number
+     */
+    /** @param len number of BIN digits to return
+     * @return the BIN (first {@code len} digits of the PAN)
      */
     public String getBIN (int len) {
         return pan.substring(0, len);
@@ -287,7 +299,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     /**
      * Set Expiration Date
      * @param exp card expiration date
-     * @exception InvalidCardException
+     * @exception InvalidCardException if card data is invalid
      */
     public void setEXP (String exp)
         throws InvalidCardException
@@ -335,9 +347,13 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         }
         return true;
     }
+    /** @return true if the PAN passes the Luhn check */
     public boolean isValidCRC () {
         return isValidCRC(this.pan);
     }
+    /** @param p the PAN to validate
+     * @return true if {@code p} passes the Luhn check
+     */
     public static boolean isValidCRC (String p) {
         int i, crc;
 
@@ -385,6 +401,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
+     * Returns the service code from track2, or three blanks if not available.
      * @return ServiceCode (if available) or a String with three blanks
      */
     public String getServiceCode () {
@@ -392,6 +409,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
             trailer.substring (0, 3) :
             "   ";
     }
+    /** @return true if this card entry appears to be manual (not swiped/dipped) */
     public boolean seemsManualEntry() {
         return trailer == null || trailer.trim().length() == 0;
     }
