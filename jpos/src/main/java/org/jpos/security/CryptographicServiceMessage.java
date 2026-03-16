@@ -40,19 +40,31 @@ public class CryptographicServiceMessage implements Loggeable {
     Map<String, String> fields = new LinkedHashMap<>();
     String mcl;
 
+    /** Message Class Label for RSI. */
     public static final String MCL_RSI = "RSI";
+    /** Message Class Label for KSM (Key Service Message). */
     public static final String MCL_KSM = "KSM";
+    /** Message Class Label for RSM. */
     public static final String MCL_RSM = "RSM";
+    /** Message Class Label for ESM. */
     public static final String MCL_ESM = "ESM";
 
+    /** Tag name for Receiver. */
     public static final String TAG_RCV = "RCV";
+    /** Tag name for Originator. */
     public static final String TAG_ORG = "ORG";
+    /** Tag name for Server. */
     public static final String TAG_SVR = "SVR";
+    /** Tag name for Key Data. */
     public static final String TAG_KD  = "KD" ;
+    /** Tag name for Clear Text PIN. */
     public static final String TAG_CTP = "CTP";
+    /** Tag name for Counter. */
     public static final String TAG_CTR = "CTR";
+    /** Tag name for Error Flag. */
     public static final String TAG_ERF = "ERF";
 
+    /** Exception thrown when CSM parsing fails. */
     public static class ParsingException extends Exception {
 
         private static final long serialVersionUID = 6984718759445061L;
@@ -142,6 +154,7 @@ public class CryptographicServiceMessage implements Loggeable {
      * This is the inverse of parse
      * @return the CSM in string format
      */
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         StringBuilder csm = new StringBuilder();
@@ -167,6 +180,7 @@ public class CryptographicServiceMessage implements Loggeable {
      * @see org.jpos.util.Loggeable
      */
     @Override
+    /** {@inheritDoc} */
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
         p.print(indent + "<csm");

@@ -32,8 +32,8 @@ public class CVRMastercard implements Loggeable {
     private final byte[] cvr;
 
     /**
-     * 
-     * @param cvr Byte array containing the CVR value.
+     * Creates a CVRMastercard from raw bytes.
+     * @param cvr byte array containing the CVR value (must be 6 bytes)
      */
     public CVRMastercard(byte[] cvr) {
         Objects.requireNonNull("cvr", "CVR cannot be null.");
@@ -44,8 +44,8 @@ public class CVRMastercard implements Loggeable {
     }
 
     /**
-     * 
-     * @param cvr Hexadecimal string representation of the CVR value.
+     * Creates a CVRMastercard from a hex string.
+     * @param cvr hexadecimal string representation (must be 12 chars)
      */
     public CVRMastercard(String cvr) {
         Objects.requireNonNull("cvr", "CVR cannot be null.");
@@ -56,70 +56,138 @@ public class CVRMastercard implements Loggeable {
         this.cvr = ISOUtil.hex2byte(cvr);
     }
 
+    /**
+     * Returns true if aac returned in second generate a c.
+     * @return true if condition applies
+     */
     public boolean aacReturnedInSecondGenerateAC() {
         return !isBitOn(cvr[0], 8) && !isBitOn(cvr[0], 7);
     }
 
+    /**
+     * Returns true if aac returned in first generate a c.
+     * @return true if condition applies
+     */
     public boolean aacReturnedInFirstGenerateAC() {
         return !isBitOn(cvr[0], 6) && !isBitOn(cvr[0], 5);
     }
 
+    /**
+     * Returns true if tc returned in second generate a c.
+     * @return true if condition applies
+     */
     public boolean tcReturnedInSecondGenerateAC() {
         return !isBitOn(cvr[0], 8) && isBitOn(cvr[0], 7);
     }
 
+    /**
+     * Returns true if arqc returned in first generate a c.
+     * @return true if condition applies
+     */
     public boolean arqcReturnedInFirstGenerateAC() {
         return isBitOn(cvr[0], 6) && !isBitOn(cvr[0], 5);
     }
 
+    /**
+     * Returns true if tc returned in first generate a c.
+     * @return true if condition applies
+     */
     public boolean tcReturnedInFirstGenerateAC() {
         return !isBitOn(cvr[0], 6) && isBitOn(cvr[0], 5);
     }
         
+    /**
+     * Returns true if offline p i n verification performed.
+     * @return true if condition applies
+     */
     public boolean offlinePINVerificationPerformed() {
         return isBitOn(cvr[0], 3);
     }
 
+    /**
+     * Returns true if offline p i n verification not performed.
+     * @return true if condition applies
+     */
     public boolean offlinePINVerificationNotPerformed() {
         return isBitOn(cvr[3], 6);
     }    
     
+    /**
+     * Returns true if dda returned.
+     * @return true if condition applies
+     */
     public boolean ddaReturned() {
         return isBitOn(cvr[1], 8);
     }
 
+    /**
+     * Returns true if combined d d a a c generation returned in first generate a c.
+     * @return true if condition applies
+     */
     public boolean combinedDDAACGenerationReturnedInFirstGenerateAC() {
         return isBitOn(cvr[1], 7);
     }
 
+    /**
+     * Returns true if combined d d a a c generation returned in second generate a c.
+     * @return true if condition applies
+     */
     public boolean combinedDDAACGenerationReturnedInSecondGenerateAC() {
         return isBitOn(cvr[1], 6);
     }
 
+    /**
+     * Returns true if issuer authentication failed.
+     * @return true if condition applies
+     */
     public boolean issuerAuthenticationFailed() {
         return isBitOn(cvr[4], 3);
     }
 
+    /**
+     * Returns true if script received.
+     * @return true if condition applies
+     */
     public boolean scriptReceived() {
         return isBitOn(cvr[4], 2);
     }
 
+    /**
+     * Returns true if script failed.
+     * @return true if condition applies
+     */
     public boolean scriptFailed() {
         return isBitOn(cvr[4], 1);
     }    
 
+    /**
+     * Returns true if ciac default skipped on c a t3.
+     * @return true if condition applies
+     */
     public boolean ciacDefaultSkippedOnCAT3() {
         return isBitOn(cvr[1], 4);
     }
 
+    /**
+     * Returns true if match found in additional check table.
+     * @return true if condition applies
+     */
     public boolean matchFoundInAdditionalCheckTable() {
         return isBitOn(cvr[5], 2);
     }
 
+    /**
+     * Returns true if no match found in additional check table.
+     * @return true if condition applies
+     */
     public boolean noMatchFoundInAdditionalCheckTable() {
         return isBitOn(cvr[5], 1);
     }    
 
+    /**
+     * Returns the right nibble of script counter.
+     * @return the value
+     */
     public int rightNibbleOfScriptCounter() {
         StringBuilder sb = new StringBuilder();
         sb.append(isBitOn(cvr[2], 8) ? "1" : "0");
@@ -129,6 +197,10 @@ public class CVRMastercard implements Loggeable {
         return Integer.parseInt(sb.toString(), 2);
     }
 
+    /**
+     * Returns the right nibble of p i n try counter.
+     * @return the value
+     */
     public int rightNibbleOfPINTryCounter() {
         StringBuilder sb = new StringBuilder();
         sb.append(isBitOn(cvr[2], 4) ? "1" : "0");
@@ -138,58 +210,114 @@ public class CVRMastercard implements Loggeable {
         return Integer.parseInt(sb.toString(), 2);
     }
     
+    /**
+     * Returns true if offline p i n verification failed.
+     * @return true if condition applies
+     */
     public boolean offlinePINVerificationFailed() {
         return isBitOn(cvr[0], 2);
     }
 
+    /**
+     * Returns true if ptl exceeded.
+     * @return true if condition applies
+     */
     public boolean ptlExceeded() {
         return isBitOn(cvr[0], 2);
     }
     
+    /**
+     * Returns true if international transaction.
+     * @return true if condition applies
+     */
     public boolean internationalTransaction() {
         return isBitOn(cvr[3], 3);
     }
 
+    /**
+     * Returns true if domestic transaction.
+     * @return true if condition applies
+     */
     public boolean domesticTransaction() {
         return isBitOn(cvr[3], 2);
     }
     
+    /**
+     * Returns true if terminal erroneously considers offline p i n o k.
+     * @return true if condition applies
+     */
     public boolean terminalErroneouslyConsidersOfflinePINOK() {
         return isBitOn(cvr[3], 1);
     }
 
+    /**
+     * Returns true if lower consecutive offline limit exceeded.
+     * @return true if condition applies
+     */
     public boolean lowerConsecutiveOfflineLimitExceeded() {
         return isBitOn(cvr[4], 8);
     }
 
+    /**
+     * Returns true if upper consecutive offline limit exceeded.
+     * @return true if condition applies
+     */
     public boolean upperConsecutiveOfflineLimitExceeded() {
         return isBitOn(cvr[4], 7);
     }
 
+    /**
+     * Returns true if lower cumulative offline limit exceeded.
+     * @return true if condition applies
+     */
     public boolean lowerCumulativeOfflineLimitExceeded() {
         return isBitOn(cvr[4], 6);
     }
 
+    /**
+     * Returns true if upper cumulative offline limit exceeded.
+     * @return true if condition applies
+     */
     public boolean upperCumulativeOfflineLimitExceeded() {
         return isBitOn(cvr[4], 5);
     }    
 
+    /**
+     * Returns true if go online on next transaction set.
+     * @return true if condition applies
+     */
     public boolean goOnlineOnNextTransactionSet() {
         return isBitOn(cvr[4], 4);
     }
          
+    /**
+     * Returns true if unable to go online.
+     * @return true if condition applies
+     */
     public boolean unableToGoOnline() {
         return isBitOn(cvr[3], 7);
     }    
     
+    /**
+     * Returns true if second generate a c not requested.
+     * @return true if condition applies
+     */
     public boolean secondGenerateACNotRequested() {
         return isBitOn(cvr[0], 8) && !isBitOn(cvr[0], 7);
     }
 
+    /**
+     * Returns true if issuer authentication performed.
+     * @return true if condition applies
+     */
     public boolean issuerAuthenticationPerformed() {
         return isBitOn(cvr[1], 5);
     }
 
+    /**
+     * Returns true if offline encrypted p i n verification performed.
+     * @return true if condition applies
+     */
     public boolean offlineEncryptedPINVerificationPerformed() {
         return isBitOn(cvr[0], 2);
     }

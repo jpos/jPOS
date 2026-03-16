@@ -29,10 +29,19 @@ import java.io.Serializable;
  */
 public class Currency implements Serializable
 {
+    /** ISO alpha currency code (e.g. "USD"). */
     String alphacode;
+    /** ISO numeric currency code. */
     int isocode;
+    /** Number of decimal places for this currency. */
     int numdecimals;
 
+    /**
+     * Creates a Currency with the given code and decimal count.
+     * @param alphacode ISO alpha code (e.g. "USD")
+     * @param isocode ISO numeric code
+     * @param numdecimals number of decimal places
+     */
     public Currency(String alphacode, int isocode, int numdecimals)
     {
         this.alphacode = alphacode;
@@ -40,21 +49,38 @@ public class Currency implements Serializable
         this.numdecimals = numdecimals;
     }
 
+    /**
+     * Returns the number of decimal places for this currency.
+     * @return decimal count
+     */
     public int getDecimals()
     {
         return numdecimals;
     }
 
+    /**
+     * Returns the ISO numeric currency code.
+     * @return ISO numeric code
+     */
     public int getIsoCode()
     {
         return isocode;
     }
 
+    /**
+     * Returns the ISO alpha currency code.
+     * @return alpha code (e.g. "USD")
+     */
     public String getAlphaCode()
     {
         return alphacode;
     }
 
+    /**
+     * Formats an amount for inclusion in an ISO message (zero-padded, 12 digits).
+     * @param amount the amount to format
+     * @return 12-character zero-padded string
+     */
     public String formatAmountForISOMsg(double amount)
     {
         try
