@@ -4,16 +4,15 @@ set -euo pipefail
 cd "$(dirname "$0")/.." || exit 1
 rm -f deploy/shutdown.xml
 
-# Initialize arrays
 JAVA_OPTS=()
-OTHER_OPTS=()
+APP_OPTS=()
 
 PID_FILE="jpos.pid"
 USE_PID=true
 
 for arg in "$@"; do
   case "$arg" in
-    -D*)
+    -D*|-X*|-agentlib:*|-javaagent:*|--add-opens=*|--add-exports=*|--enable-native-access=*|--sun-misc-unsafe-memory-access=*)
       JAVA_OPTS+=("$arg")
       ;;
     --pid=*)
@@ -26,7 +25,7 @@ for arg in "$@"; do
       JAVA_OPTS+=("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005")
       ;;
     *)
-      OTHER_OPTS+=("$arg")
+      APP_OPTS+=("$arg")
       ;;
   esac
 done
@@ -41,24 +40,29 @@ fi
 
 mkdir -p log
 
-# Base JVM invocation
 CMD=(
-  java -server
+  java
+  -server
   -Xmx4G
   --enable-native-access=ALL-UNNAMED
   --sun-misc-unsafe-memory-access=allow
   -Xlog:gc:log/gc.log
-  -jar @jarname@
 )
 
-# Only pass --pid if enabled
+CMD+=( ${JAVA_OPTS[@]+"${JAVA_OPTS[@]}"} )
+
+CMD+=(
+  -jar
+  @jarname@
+)
+
 if $USE_PID; then
-  CMD+=( --pid="$PID_FILE" )
+  CMD+=( "--pid=$PID_FILE" )
 fi
 
-# Append opts (nounset-safe)
-CMD+=( ${JAVA_OPTS[@]+"${JAVA_OPTS[@]}"} )
-CMD+=( ${OTHER_OPTS[@]+"${OTHER_OPTS[@]}"} )
+CMD+=( ${APP_OPTS[@]+"${APP_OPTS[@]}"} )
 
+# printf '%q ' "${CMD[@]}"
+# echo
 exec "${CMD[@]}"
 
