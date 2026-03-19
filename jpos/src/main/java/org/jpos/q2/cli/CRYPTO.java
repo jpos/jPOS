@@ -72,7 +72,7 @@ public class CRYPTO implements CLICommand {
     public void usage(CLIContext cli) {
         cli.println("Usage: crypto \"secret\" [keyName]");
         cli.println("Encrypts a secret using AES-256-GCM authenticated encryption.");
-        cli.println("Output format: enc::keyname::base64-encoded-ciphertext");
+        cli.println("Output format: enc::keyname:base64-encoded-ciphertext");
         cli.println("If keyName is not provided, uses the default key.");
         cli.println("The encrypted value can be used in db.properties with the enc: prefix.");
     }

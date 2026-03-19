@@ -76,7 +76,7 @@ public class CRYPTOTest {
         String encrypted = CryptoEnvironmentProvider.encrypt(input, "db");
 
         assertNotNull(encrypted);
-        assertTrue(encrypted.startsWith("enc::db::"), "Output should start with 'enc::db::'");
+        assertTrue(encrypted.startsWith("enc::db:"), "Output should start with 'enc::db:'");
     }
 
     @Test
@@ -94,9 +94,9 @@ public class CRYPTOTest {
         assertNotNull(encryptedApi);
         assertNotNull(encryptedCache);
 
-        assertTrue(encryptedDb.startsWith("enc::db::"));
-        assertTrue(encryptedApi.startsWith("enc::api::"));
-        assertTrue(encryptedCache.startsWith("enc::cache::"));
+        assertTrue(encryptedDb.startsWith("enc::db:"));
+        assertTrue(encryptedApi.startsWith("enc::api:"));
+        assertTrue(encryptedCache.startsWith("enc::cache:"));
 
         String base64Db = encryptedDb.substring(7);
         String base64Api = encryptedApi.substring(8);

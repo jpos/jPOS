@@ -228,7 +228,7 @@ public class CryptoEnvironmentProviderTest {
         String encrypted = CryptoEnvironmentProvider.encrypt(original, "db");
 
         assertNotNull(encrypted);
-        assertTrue(encrypted.startsWith("enc::db::"));
+        assertTrue(encrypted.startsWith("enc::db:"));
 
         String decrypted = provider.get(encrypted);
         assertEquals(original, decrypted);
@@ -249,8 +249,8 @@ public class CryptoEnvironmentProviderTest {
         assertNotNull(encryptedDb);
         assertNotNull(encryptedApi);
 
-        assertTrue(encryptedDb.startsWith("enc::db::"));
-        assertTrue(encryptedApi.startsWith("enc::api::"));
+        assertTrue(encryptedDb.startsWith("enc::db:"));
+        assertTrue(encryptedApi.startsWith("enc::api:"));
 
         String decryptedDb = provider.get(encryptedDb);
         String decryptedApi = provider.get(encryptedApi);

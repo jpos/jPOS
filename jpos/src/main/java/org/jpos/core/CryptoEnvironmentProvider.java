@@ -57,9 +57,9 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             String keyName = null;
             String encoded = config;
             
-            // Check for key name prefix: enc::keyname::encoded_data
+            // Check for key name prefix: enc::keyname:encoded_data
             if (config.startsWith("enc::")) {
-                String[] parts = config.substring(5).split("::", 2);
+                String[] parts = config.substring(5).split(":", 2);
                 if (parts.length == 2) {
                     keyName = parts[0];
                     encoded = parts[1];
@@ -116,7 +116,7 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
      * 
      * @param value the plaintext value to encrypt
      * @param keyName the name of the key to use (null for default)
-     * @return base64-encoded ciphertext with enc::keyname:: prefix
+     * @return base64-encoded ciphertext with enc::keyname: prefix
      */
     public static String encrypt(String value, String keyName) {
         try {
@@ -147,9 +147,9 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             
             // If keyName is provided, include it in the prefix
             if (keyName != null && !keyName.isEmpty()) {
-                return "enc::" + keyName + "::" + base64;
-            } else {
-                return "enc::" + base64;
+                 return "enc::" + keyName + ":" + base64;
+             } else {
+                 return "enc::" + base64;
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to encrypt value", e);
