@@ -667,6 +667,7 @@ public abstract class BaseChannel extends Observable
             m.setPackager (p);
             m = applyOutgoingFilters (m, evt);
             evt.addMessage (m);
+            applyTags (evt, m);
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
             m.setPackager (p); // and could have dropped packager as well
             byte[] b = pack(m);
@@ -848,6 +849,7 @@ public abstract class BaseChannel extends Observable
                 unpack (m, b);
             m.setDirection(ISOMsg.INCOMING);
             evt.addMessage (m);
+            applyTags (evt, m);
             m = applyIncomingFilters (m, header, b, evt);
             m.setDirection(ISOMsg.INCOMING);
             cnt[RX]++;
@@ -1261,5 +1263,21 @@ public abstract class BaseChannel extends Observable
         if (isoMsgMetrics != null) {
             isoMsgMetrics.recordMessage(m, MeterInfo.ISOMSG_OUT);
         }
+    }
+    private void applyTags (LogEvent evt, ISOMsg m) {
+        if (m.hasField(3)) {
+            String f3 = m.getString(3);
+            if (f3 != null && f3.length() >= 2)
+                evt.withTag("pcode", f3.substring(0, 2));
+        }
+        if (m.hasField(41))
+            evt.withTag("tid", m.getString(41));
+        if (m.hasField(42))
+            evt.withTag("mid", m.getString(42));
+        try {
+            String mti = m.getMTI();
+            if (mti != null)
+                evt.withTag("mti", mti);
+        } catch (ISOException ignored) { }
     }
 }

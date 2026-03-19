@@ -49,7 +49,7 @@ public class LogEvent {
     private boolean honorSourceLogger;
     private boolean noArmor;
     private boolean hasException;
-    private String traceId;
+    private Map<String,String> tags;
 
     public LogEvent (String tag) {
         super();
@@ -116,6 +116,7 @@ public class LogEvent {
                 sb.append (elapsed);
                 sb.append ("ms\"");
             }
+            String traceId = tags != null ? tags.get("trace-id") : null;
             if (traceId != null) {
                 sb.append (String.format (" trace-id=\"%s\"", traceId));
             }
@@ -210,12 +211,27 @@ public class LogEvent {
         return source != null ? source.getRealm() : "";
     }
     public LogEvent withTraceId (String traceId) {
-        this.traceId = traceId;
-        return this;
+        return withTag("trace-id", traceId);
     }
     public LogEvent withTraceId (UUID uuid) {
-        this.traceId = uuid.toString().replace("-", "");
+        return withTag("trace-id", uuid.toString().replace("-", ""));
+    }
+    public LogEvent withTag(String key, String value) {
+        if (tags == null)
+            tags = new LinkedHashMap<>();
+        tags.put(key, value);
         return this;
+    }
+    public LogEvent withTags(Map<String,String> map) {
+        if (map != null && !map.isEmpty()) {
+            if (tags == null)
+                tags = new LinkedHashMap<>();
+            tags.putAll(map);
+        }
+        return this;
+    }
+    public Map<String,String> getTags() {
+        return tags != null ? Collections.unmodifiableMap(tags) : Collections.emptyMap();
     }
     public LogEvent withSource (LogSource source) {
         setSource(source);
@@ -231,8 +247,11 @@ public class LogEvent {
     }
     public String getTraceId() {
         synchronized(getPayLoad()) {
-            if (traceId == null)
+            String traceId = tags != null ? tags.get("trace-id") : null;
+            if (traceId == null) {
                 traceId = UUID.randomUUID().toString().replace("-","");
+                withTag("trace-id", traceId);
+            }
             return traceId;
         }
     }

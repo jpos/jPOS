@@ -36,7 +36,9 @@ import org.jpos.util.Loggeable;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class LogEventJsonLogRenderer implements LogRenderer<LogEvent> {
     private final ObjectMapper mapper = new ObjectMapper();
@@ -64,10 +66,9 @@ public final class LogEventJsonLogRenderer implements LogRenderer<LogEvent> {
         long elapsed = Duration.between(evt.getCreatedAt(), evt.getDumpedAt()).toMillis();
         LogEvt ev = new LogEvt (
           evt.getDumpedAt(),
-          evt.getTraceId(),
-          evt.getRealm(),
           evt.getTag(),
           elapsed == 0L ? null : elapsed,
+          buildTags(evt),
           events
         );
         try {
@@ -81,6 +82,16 @@ public final class LogEventJsonLogRenderer implements LogRenderer<LogEvent> {
     }
     public Type type() {
         return Type.JSON;
+    }
+
+    private Map<String,String> buildTags(LogEvent evt) {
+        evt.getTraceId(); // ensure trace-id is generated
+        Map<String,String> tags = new LinkedHashMap<>();
+        String realm = evt.getRealm();
+        if (realm != null && !realm.isEmpty())
+            tags.put("realm", realm);
+        tags.putAll(evt.getTags());
+        return tags;
     }
 
     private String dump (Object obj) {
