@@ -32,16 +32,16 @@ public class SimpleConfigurationWithCryptoTest {
     public void testSimpleConfigurationWithCryptoPrefix() {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
-        // Test that the provider directly decrypts crypto:: values
+        // Test that the provider directly decrypts enc:: values
         String password = "secretpassword";
-        String encryptedPassword = provider.encrypt(password);
-        
+        String encryptedPassword = CryptoEnvironmentProvider.encrypt(password);
+
         String decryptedPassword = provider.get(encryptedPassword);
         assertEquals(password, decryptedPassword);
 
         String username = "client";
-        String encryptedUsername = provider.encrypt(username);
-        
+        String encryptedUsername = CryptoEnvironmentProvider.encrypt(username);
+
         String decryptedUsername = provider.get(encryptedUsername);
         assertEquals(username, decryptedUsername);
     }
@@ -51,10 +51,10 @@ public class SimpleConfigurationWithCryptoTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         // Test that the provider can decrypt multiple values
-        String[] passwords = {"secret123", "secret456"};
-        
+        String[] passwords = { "secret123", "secret456" };
+
         for (String password : passwords) {
-            String encrypted = provider.encrypt(password);
+            String encrypted = CryptoEnvironmentProvider.encrypt(password);
             String decrypted = provider.get(encrypted);
             assertEquals(password, decrypted);
         }
@@ -63,15 +63,11 @@ public class SimpleConfigurationWithCryptoTest {
     @Test
     public void testEnvironmentProcessesCryptoInExpressions() {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
-        
-        // When Environment processes ${crypto::...} expressions, it should decrypt
+
+        // When Environment processes ${enc::...} expressions, it should decrypt
         String value = "test-password";
-        String encrypted = provider.encrypt(value);
-        
-        // Environment.get() processes expressions, so we need to wrap in ${...}
-        // But the current implementation doesn't support crypto:: directly in ${...}
-        // The provider's get() method handles the crypto:: prefix directly
-        
+        String encrypted = CryptoEnvironmentProvider.encrypt(value);
+
         // Test direct provider usage
         String decrypted = provider.get(encrypted);
         assertEquals(value, decrypted);
@@ -80,14 +76,14 @@ public class SimpleConfigurationWithCryptoTest {
     @Test
     public void testCryptoPrefixDetection() {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
-        
+
         // Verify prefix is correct
-        assertEquals("crypto::", provider.prefix());
-        
+        assertEquals("enc::", provider.prefix());
+
         // Verify encryption produces correct format
-        String encrypted = provider.encrypt("test");
-        assertTrue(encrypted.startsWith("crypto::"));
-        
+        String encrypted = CryptoEnvironmentProvider.encrypt("test");
+        assertTrue(encrypted.startsWith("enc::"));
+
         // Verify decryption works
         String decrypted = provider.get(encrypted);
         assertEquals("test", decrypted);

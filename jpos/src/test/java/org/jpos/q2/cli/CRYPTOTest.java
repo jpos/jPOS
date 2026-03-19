@@ -18,6 +18,9 @@
 
 package org.jpos.q2.cli;
 
+import org.jpos.core.SystemKeyManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -28,6 +31,19 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit test for CRYPTO command
  */
 public class CRYPTOTest {
+
+    @BeforeEach
+    void setup() {
+        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("default"), SystemKeyManager.getInstance().generateKey("default"));
+    }
+
+    @AfterEach
+    void cleanup() {
+        System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("default"));
+        System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("db"));
+        System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("api"));
+        System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("cache"));
+    }
 
     @Test
     public void testCryptoDirectly() throws Exception {
@@ -41,9 +57,10 @@ public class CRYPTOTest {
 
         // Verify it's valid output
         assertNotNull(encrypted);
-        assertTrue(encrypted.startsWith("crypto:"), "Output should start with 'crypto:'");
+        assertTrue(encrypted.startsWith("enc::"), "Output should start with 'enc::'");
 
-        String encryptedPart = encrypted.substring(8);
+        // Extract the base64 part (skip "enc::" prefix = 5 characters)
+        String encryptedPart = encrypted.substring(5);
 
         // Verify it's valid base64
         byte[] decoded = java.util.Base64.getDecoder().decode(encryptedPart);
@@ -62,4 +79,48 @@ public class CRYPTOTest {
 
         assertNotEquals(encrypted1, encrypted2);
     }
+
+    @Test
+    public void testEncryptWithKeyName() throws Exception {
+        CRYPTO crypto = new CRYPTO();
+
+        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("db"), SystemKeyManager.getInstance().generateKey("db"));
+
+        String input = "my-password";
+        String encrypted = crypto.encrypt(input, "db");
+
+        assertNotNull(encrypted);
+        assertTrue(encrypted.startsWith("enc::db::"), "Output should start with 'enc::db::'");
+    }
+
+    @Test
+    public void testEncryptWithMultipleKeyNames() throws Exception {
+        CRYPTO crypto = new CRYPTO();
+
+        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("db"), SystemKeyManager.getInstance().generateKey("db"));
+        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("api"), SystemKeyManager.getInstance().generateKey("api"));
+        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("cache"), SystemKeyManager.getInstance().generateKey("cache"));
+
+        String input = "test-password";
+        String encryptedDb = crypto.encrypt(input, "db");
+        String encryptedApi = crypto.encrypt(input, "api");
+        String encryptedCache = crypto.encrypt(input, "cache");
+
+        assertNotNull(encryptedDb);
+        assertNotNull(encryptedApi);
+        assertNotNull(encryptedCache);
+
+        assertTrue(encryptedDb.startsWith("enc::db::"));
+        assertTrue(encryptedApi.startsWith("enc::api::"));
+        assertTrue(encryptedCache.startsWith("enc::cache::"));
+
+        String base64Db = encryptedDb.substring(7);
+        String base64Api = encryptedApi.substring(8);
+        String base64Cache = encryptedCache.substring(9);
+
+        assertNotEquals(base64Db, base64Api, "Base64 parts should be different for different keys");
+        assertNotEquals(base64Api, base64Cache, "Base64 parts should be different for different keys");
+        assertNotEquals(base64Db, base64Cache, "Base64 parts should be different for different keys");
+    }
+
 }
