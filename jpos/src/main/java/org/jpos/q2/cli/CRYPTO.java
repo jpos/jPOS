@@ -25,6 +25,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -70,7 +71,7 @@ public class CRYPTO implements CLICommand {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
-            byte[] ciphertext = cipher.doFinal(value.getBytes());
+            byte[] ciphertext = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
 
             // Combine IV and ciphertext
             ByteBuffer buf = ByteBuffer.allocate(iv.length + ciphertext.length);

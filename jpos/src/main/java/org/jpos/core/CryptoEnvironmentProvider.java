@@ -25,6 +25,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -82,7 +83,7 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
             byte[] plaintext = cipher.doFinal(ciphertext);
 
-            return new String(plaintext);
+            return new String(plaintext, StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException("Failed to decrypt value", e);
         }
@@ -108,7 +109,7 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
-            byte[] ciphertext = cipher.doFinal(value.getBytes());
+            byte[] ciphertext = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
 
             // Combine IV and ciphertext
             ByteBuffer buf = ByteBuffer.allocate(iv.length + ciphertext.length);
