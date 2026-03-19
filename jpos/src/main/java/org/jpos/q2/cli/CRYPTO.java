@@ -18,16 +18,7 @@
 
 package org.jpos.q2.cli;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.util.Base64;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
+import org.jpos.core.CryptoEnvironmentProvider;
 import org.jpos.core.SystemKeyManager;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
@@ -36,14 +27,9 @@ import org.jpos.q2.CLIContext;
  * Encrypt a secret using AES-256-GCM
  * <p>
  * Usage: crypto "secret"
- * Output: enc::<base64-encoded-ciphertext>
+ * Output: enc::base64-encoded-ciphertext
  */
 public class CRYPTO implements CLICommand {
-    private static final String ALGORITHM = "AES";
-    private static final String TRANSFORMATION = "AES/GCM/NoPadding";
-    private static final int IV_SIZE_BYTES = 12;
-    private static final int TAG_LENGTH_BITS = 128;
-    private static final SecureRandom secureRandom = new SecureRandom();
 
     @Override
     public void exec(CLIContext cli, String[] args) throws Exception {
@@ -79,57 +65,15 @@ public class CRYPTO implements CLICommand {
         String value = command.startsWith("crypto::") ? command.substring(8) : args[1];
         String keyName = args.length > 2 ? args[2] : null;
 
-        String encrypted = encrypt(value, keyName);
+        String encrypted = CryptoEnvironmentProvider.encrypt(value, keyName);
         cli.println(encrypted);
     }
 
     public void usage(CLIContext cli) {
         cli.println("Usage: crypto \"secret\" [keyName]");
         cli.println("Encrypts a secret using AES-256-GCM authenticated encryption.");
-        cli.println("Output format: enc::keyname::<base64-encoded-ciphertext>");
+        cli.println("Output format: enc::keyname::base64-encoded-ciphertext");
         cli.println("If keyName is not provided, uses the default key.");
         cli.println("The encrypted value can be used in db.properties with the enc: prefix.");
-    }
-
-    public String encrypt(String value) {
-        return encrypt(value, null);
-    }
-
-    public String encrypt(String value, String keyName) {
-        try {
-            SecretKey key = SystemKeyManager.getInstance().getKey(keyName);
-            if (key == null) {
-                throw new IllegalArgumentException("No key found in environment for name: " + 
-                        (keyName != null && !keyName.isEmpty() ? keyName : "default") + 
-                        ". Please set " + SystemKeyManager.getInstance().getEnvVarName(keyName));
-            }
-            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), ALGORITHM);
-
-            // Generate secure random 12-byte IV
-            byte[] iv = new byte[IV_SIZE_BYTES];
-            secureRandom.nextBytes(iv);
-
-            // Encrypt with GCM authentication
-            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
-            byte[] ciphertext = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
-
-            // Combine IV and ciphertext
-            ByteBuffer buf = ByteBuffer.allocate(iv.length + ciphertext.length);
-            buf.put(iv);
-            buf.put(ciphertext);
-
-            String base64 = Base64.getEncoder().encodeToString(buf.array());
-
-            // If keyName is provided, include it in the prefix
-            if (keyName != null && !keyName.isEmpty()) {
-                return "enc::" + keyName + "::" + base64;
-            } else {
-                return "enc::" + base64;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to encrypt value", e);
-        }
     }
 }

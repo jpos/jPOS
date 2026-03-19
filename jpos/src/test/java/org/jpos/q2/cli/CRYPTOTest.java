@@ -18,12 +18,11 @@
 
 package org.jpos.q2.cli;
 
+import org.jpos.core.CryptoEnvironmentProvider;
 import org.jpos.core.SystemKeyManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayOutputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,47 +46,34 @@ public class CRYPTOTest {
 
     @Test
     public void testCryptoDirectly() throws Exception {
-        CRYPTO crypto = new CRYPTO();
-
-        // Test encryption directly
         String input = "my-password";
-        String encrypted = crypto.encrypt(input);
+        String encrypted = CryptoEnvironmentProvider.encrypt(input);
 
-        System.out.println("Encrypted: " + encrypted);
-
-        // Verify it's valid output
         assertNotNull(encrypted);
         assertTrue(encrypted.startsWith("enc::"), "Output should start with 'enc::'");
 
-        // Extract the base64 part (skip "enc::" prefix = 5 characters)
         String encryptedPart = encrypted.substring(5);
 
-        // Verify it's valid base64
         byte[] decoded = java.util.Base64.getDecoder().decode(encryptedPart);
         assertNotNull(decoded);
-        assertTrue(decoded.length > 12); // Should have IV + ciphertext
+        assertTrue(decoded.length > 12);
     }
 
     @Test
     public void testDifferentEncryptions() throws Exception {
-        CRYPTO crypto = new CRYPTO();
-
-        // Each encryption should produce different output (due to random IV)
         String input = "same-password";
-        String encrypted1 = crypto.encrypt(input);
-        String encrypted2 = crypto.encrypt(input);
+        String encrypted1 = CryptoEnvironmentProvider.encrypt(input);
+        String encrypted2 = CryptoEnvironmentProvider.encrypt(input);
 
         assertNotEquals(encrypted1, encrypted2);
     }
 
     @Test
     public void testEncryptWithKeyName() throws Exception {
-        CRYPTO crypto = new CRYPTO();
-
         System.setProperty(SystemKeyManager.getInstance().getEnvVarName("db"), SystemKeyManager.getInstance().generateKey("db"));
 
         String input = "my-password";
-        String encrypted = crypto.encrypt(input, "db");
+        String encrypted = CryptoEnvironmentProvider.encrypt(input, "db");
 
         assertNotNull(encrypted);
         assertTrue(encrypted.startsWith("enc::db::"), "Output should start with 'enc::db::'");
@@ -95,16 +81,14 @@ public class CRYPTOTest {
 
     @Test
     public void testEncryptWithMultipleKeyNames() throws Exception {
-        CRYPTO crypto = new CRYPTO();
-
         System.setProperty(SystemKeyManager.getInstance().getEnvVarName("db"), SystemKeyManager.getInstance().generateKey("db"));
         System.setProperty(SystemKeyManager.getInstance().getEnvVarName("api"), SystemKeyManager.getInstance().generateKey("api"));
         System.setProperty(SystemKeyManager.getInstance().getEnvVarName("cache"), SystemKeyManager.getInstance().generateKey("cache"));
 
         String input = "test-password";
-        String encryptedDb = crypto.encrypt(input, "db");
-        String encryptedApi = crypto.encrypt(input, "api");
-        String encryptedCache = crypto.encrypt(input, "cache");
+        String encryptedDb = CryptoEnvironmentProvider.encrypt(input, "db");
+        String encryptedApi = CryptoEnvironmentProvider.encrypt(input, "api");
+        String encryptedCache = CryptoEnvironmentProvider.encrypt(input, "cache");
 
         assertNotNull(encryptedDb);
         assertNotNull(encryptedApi);
