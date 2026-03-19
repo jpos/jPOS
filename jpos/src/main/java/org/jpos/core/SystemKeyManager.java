@@ -246,10 +246,5 @@ public class SystemKeyManager {
         return DEFAULT_ENV_VAR + (DEFAULT_KEY_NAME.equals(keyName) ? "" : "_" + keyName.toUpperCase());
     }
 
-    /**
-     * Clears all keys (for testing purposes).
-     */
-    public void clearKeys() {
-        // No-op as internal cache is removed
-    }
+    
 }
