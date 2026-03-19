@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+@Deprecated(forRemoval = false)
 public class TxtLogWriter implements LogEventWriter {
     private PrintStream ps;
     private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.TXT);

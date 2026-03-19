@@ -18,6 +18,7 @@
 
 package org.jpos.log.evt;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -25,12 +26,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.jpos.log.AuditLogEvent;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @JacksonXmlRootElement(localName = "log")
 public record LogEvt(
   @JacksonXmlProperty(isAttribute = true) Instant ts,
-  @JacksonXmlProperty(isAttribute = true) @JsonProperty("trace-id") String traceId,
-  @JacksonXmlProperty(isAttribute = true) String realm,
-  @JacksonXmlProperty(isAttribute = true) String tag,
+  @JacksonXmlProperty(isAttribute = true) String kind,
   @JacksonXmlProperty(isAttribute = true) Long lifespan,
-  @JsonProperty("evt") @JacksonXmlElementWrapper(useWrapping = false) List<AuditLogEvent> events) { }
+  @JsonInclude(JsonInclude.Include.NON_EMPTY) Map<String,String> tags,
+  @JsonProperty("payload") @JacksonXmlElementWrapper(useWrapping = false) List<AuditLogEvent> events) { }

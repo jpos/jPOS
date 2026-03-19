@@ -28,6 +28,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+@Deprecated(forRemoval = false)
 public class MarkdownLogWriter implements LogEventWriter {
     private PrintStream ps;
     private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.MARKDOWN);
