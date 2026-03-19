@@ -56,17 +56,18 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
         try {
             String keyName = null;
             String encoded = config;
-            
-            // Check for key name prefix: enc::keyname:encoded_data
+
+            String remainder = config;
             if (config.startsWith("enc::")) {
-                String[] parts = config.substring(5).split(":", 2);
-                if (parts.length == 2) {
-                    keyName = parts[0];
-                    encoded = parts[1];
-                } else {
-                    // Default key
-                    encoded = config.substring(5);
-                }
+                remainder = config.substring(5);
+            }
+
+            int colonIdx = remainder.indexOf(':');
+            if (colonIdx >= 0) {
+                keyName = remainder.substring(0, colonIdx);
+                encoded = remainder.substring(colonIdx + 1);
+            } else {
+                encoded = remainder;
             }
 
             byte[] decoded = Base64.getDecoder().decode(encoded);
