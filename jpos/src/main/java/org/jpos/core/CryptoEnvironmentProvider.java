@@ -42,23 +42,24 @@ import java.util.Base64;
 public class CryptoEnvironmentProvider implements EnvironmentProvider {
     private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
-    private static final int KEY_SIZE_BITS = 256;
+    private static final String ENC_PREFIX = "enc::";
     private static final int IV_SIZE_BYTES = 12;
     private static final int TAG_LENGTH_BITS = 128;
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     @Override
     public String prefix() {
-        return "enc::";
+        return ENC_PREFIX;
     }
 
     @Override
     public String get(String config) {
         try {
             String keyName = null;
-            String encoded = config;
+            String encoded;
 
             String remainder = config;
-            if (config.startsWith("enc::")) {
+            if (config.startsWith(ENC_PREFIX)) {
                 remainder = config.substring(5);
             }
 
@@ -131,7 +132,7 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
 
             // Generate secure random 12-byte IV
             byte[] iv = new byte[IV_SIZE_BYTES];
-            new SecureRandom().nextBytes(iv);
+            SECURE_RANDOM.nextBytes(iv);
 
             // Encrypt with GCM authentication
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -148,9 +149,9 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             
             // If keyName is provided, include it in the prefix
             if (keyName != null && !keyName.isEmpty()) {
-                 return "enc::" + keyName + ":" + base64;
+                 return ENC_PREFIX + keyName + ":" + base64;
              } else {
-                 return "enc::" + base64;
+                 return ENC_PREFIX + base64;
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to encrypt value", e);
