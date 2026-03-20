@@ -18,6 +18,8 @@
 
 package org.jpos.core;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +29,16 @@ import static org.junit.jupiter.api.Assertions.*;
  * transformations
  */
 public class SimpleConfigurationWithCryptoTest {
+
+    @BeforeEach
+    void setup() {
+        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("default"), SystemKeyManager.getInstance().generateKey("default"));
+    }
+
+    @AfterEach
+    void cleanup() {
+        System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("default"));
+    }
 
     @Test
     public void testSimpleConfigurationWithCryptoPrefix() {
