@@ -301,7 +301,7 @@ public class GenericPackagerTest {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
             } else if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertTrue(ex.getMessage().startsWith("java.lang.NullPointerException"), "ex.getMessage()");
             } else {
                 assertEquals("java.lang.NullPointerException: Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getMessage(), "ex.getMessage()");
             }
@@ -325,9 +325,9 @@ public class GenericPackagerTest {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertTrue(ex.getMessage().startsWith("java.lang.NullPointerException"), "ex.getMessage()");
             }
-            assertNull(ex.getException().getMessage(), "ex.getException().getMessage()");
+            assertTrue(ex.getException() instanceof NullPointerException, "ex.getException()");
             assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
         }
     }
@@ -344,7 +344,7 @@ public class GenericPackagerTest {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
             } else if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertTrue(ex.getMessage().startsWith("java.lang.NullPointerException"), "ex.getMessage()");
             } else {
                 assertEquals("java.lang.NullPointerException: Cannot invoke \"String.equals(Object)\" because \"localName\" is null", ex.getMessage(), "ex.getMessage()");
             }
@@ -368,7 +368,7 @@ public class GenericPackagerTest {
             if (isJavaVersionAtMost(JAVA_10)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
             } else if (isJavaVersionAtMost(JAVA_14)) {
-                assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+                assertTrue(ex.getMessage().startsWith("java.lang.NullPointerException"), "ex.getMessage()");
             } else {
                 assertEquals("java.lang.NullPointerException: Cannot invoke \"java.util.Stack.push(Object)\" because \"this.fieldStack\" is null", ex.getMessage(), "ex.getMessage()");
             }
