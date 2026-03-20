@@ -709,6 +709,7 @@ public class LSpaceTest implements SpaceListener {
         final int waiters = 10;
         final CountDownLatch started = new CountDownLatch(waiters);
         final CountDownLatch waiterReadyToIn = new CountDownLatch(waiters);
+        final CountDownLatch inpDone = new CountDownLatch(1);
         final CountDownLatch done = new CountDownLatch(waiters);
 
         for (int i = 0; i < waiters; i++) {
@@ -716,7 +717,7 @@ public class LSpaceTest implements SpaceListener {
                 started.countDown();
                 assertEquals("warmup", lsp.rd(key));
                 waiterReadyToIn.countDown();
-                LockSupport.parkNanos(1_000_000L);
+                try { inpDone.await(2, TimeUnit.SECONDS); } catch (InterruptedException ignored) {}
                 String v = lsp.in(key);
                 assertNotNull(v, "Waiter should eventually get a value");
                 assertTrue(v.startsWith("v"), "Waiter should get 'vN' where N=[0.."+(waiters-1)+"] but got '"+v+"'");
@@ -729,6 +730,7 @@ public class LSpaceTest implements SpaceListener {
         lsp.out(key, "warmup");
         assertTrue(waiterReadyToIn.await(2, TimeUnit.SECONDS));
         assertEquals("warmup", lsp.inp(key));
+        inpDone.countDown();
 
         // Feed values.
         for (int i = 0; i < waiters; i++) {
