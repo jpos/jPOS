@@ -20,9 +20,15 @@ package org.jpos.q2.cli;
 
 import org.jpos.core.CryptoEnvironmentProvider;
 import org.jpos.core.SystemKeyManager;
+import org.jpos.q2.CLI;
+import org.jpos.q2.CLIContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,6 +48,62 @@ public class CRYPTOTest {
         System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("db"));
         System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("api"));
         System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("cache"));
+    }
+
+    @Test
+    public void testCryptoCommandEncryptsDirectly() throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayInputStream in = new ByteArrayInputStream(new byte[0]);
+        
+        CLI cliObj = new CLI(null, in, out, null, false, false);
+
+        CLIContext cli = CLIContext.builder()
+                .cli(cliObj)
+                .out(out)
+                .build();
+
+        CRYPTO cmd = new CRYPTO();
+        
+        // args[0] = "crypto", args[1] = "my-secret-password"
+        cmd.exec(cli, new String[]{"crypto", "my-secret-password"});
+        
+        String output = out.toString().trim();
+        assertNotNull(output);
+        assertTrue(output.startsWith("enc::"), "Output should start with 'enc::'");
+        
+        // Let's decrypt it to make sure it encrypted correctly
+        CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
+        String decrypted = provider.get(output.substring(5));
+        assertEquals("my-secret-password", decrypted, "Decrypted text should match the CLI input");
+    }
+
+    @Test
+    public void testCryptoCommandWithKeyName() throws Exception {
+        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("db"), SystemKeyManager.getInstance().generateKey("db"));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayInputStream in = new ByteArrayInputStream(new byte[0]);
+        
+        CLI cliObj = new CLI(null, in, out, null, false, false);
+
+        CLIContext cli = CLIContext.builder()
+                .cli(cliObj)
+                .out(out)
+                .build();
+
+        CRYPTO cmd = new CRYPTO();
+        
+        // args[0] = "crypto", args[1] = "my-secret-password", args[2] = "db"
+        cmd.exec(cli, new String[]{"crypto", "my-secret-password", "db"});
+        
+        String output = out.toString().trim();
+        assertNotNull(output);
+        assertTrue(output.startsWith("enc::db:"), "Output should start with 'enc::db:'");
+        
+        // Decrypt to verify
+        CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
+        String decrypted = provider.get(output.substring(5));
+        assertEquals("my-secret-password", decrypted, "Decrypted text should match the CLI input");
     }
 
     @Test

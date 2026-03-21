@@ -62,10 +62,9 @@ public class CRYPTO implements CLICommand {
     }
 
     private void handleEncrypt(CLIContext cli, String command, String[] args) {
-        String value = command.startsWith("crypto::") ? command.substring(8) : args[1];
         String keyName = args.length > 2 ? args[2] : null;
 
-        String encrypted = CryptoEnvironmentProvider.encrypt(value, keyName);
+        String encrypted = CryptoEnvironmentProvider.encrypt(command, keyName);
         cli.println(encrypted);
     }
 
