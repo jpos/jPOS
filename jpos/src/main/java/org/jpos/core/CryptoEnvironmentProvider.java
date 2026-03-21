@@ -45,7 +45,6 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
     private static final String ENC_PREFIX = "enc::";
     private static final int IV_SIZE_BYTES = 12;
     private static final int TAG_LENGTH_BITS = 128;
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     @Override
     public String prefix() {
@@ -127,7 +126,7 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
 
             // Generate secure random 12-byte IV
             byte[] iv = new byte[IV_SIZE_BYTES];
-            SECURE_RANDOM.nextBytes(iv);
+            new SecureRandom().nextBytes(iv);
 
             // Encrypt with GCM authentication
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);

@@ -41,7 +41,6 @@ public class SystemKeyManager {
     private static final String DEFAULT_KEY_NAME = "default";
     private static final String DEFAULT_ENV_VAR = "JPOS_ENCRYPTION_KEY";
     private static final int KEY_SIZE_BITS = 256;
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private static final SystemKeyManager instance;
 
@@ -177,7 +176,7 @@ public class SystemKeyManager {
             }
 
             byte[] iv = new byte[IV_SIZE_BYTES];
-            SECURE_RANDOM.nextBytes(iv);
+            new SecureRandom().nextBytes(iv);
 
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
             cipher.init(Cipher.ENCRYPT_MODE, key, gcmParameterSpec);
