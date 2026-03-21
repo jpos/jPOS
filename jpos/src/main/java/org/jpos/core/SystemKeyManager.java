@@ -86,9 +86,13 @@ public class SystemKeyManager {
                 byte[] keyBytes = Base64.getDecoder().decode(envValue.trim());
                 if (keyBytes.length == KEY_SIZE_BITS / 8) {
                     return new SecretKeySpec(keyBytes, "AES");
+                } else {
+                    java.util.logging.Logger.getLogger(SystemKeyManager.class.getName())
+                            .warning("Invalid key length in environment variable " + envVarName + ". Expected " + (KEY_SIZE_BITS / 8) + " bytes, got " + keyBytes.length);
                 }
-            } catch (IllegalArgumentException _) {
-                // Invalid Base64 or length
+            } catch (IllegalArgumentException e) {
+                java.util.logging.Logger.getLogger(SystemKeyManager.class.getName())
+                        .warning("Invalid Base64 in environment variable " + envVarName + ": " + e.getMessage());
             }
         }
 

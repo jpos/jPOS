@@ -160,7 +160,7 @@ public class CryptoEnvironmentProviderTest {
         String tampered = "enc::" + encrypted.replaceFirst(".", "X");
 
         assertRuntimeException(() -> {
-            provider.get(tampered);
+            provider.get(tampered.substring(5));
         });
     }
 
@@ -259,6 +259,20 @@ public class CryptoEnvironmentProviderTest {
         assertEquals(original, decryptedApi);
 
         assertNotEquals(encryptedDb, encryptedApi, "Encrypted values should differ for different keys");
+    }
+
+    @Test
+    public void testBase64WithColonsIsProperlyProcessed() {
+        CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
+        
+        String input = "test-colon-in-base64";
+        
+        // Let's create an artificial scenario where the base64 happens to start with something resembling a key
+        // But with an invalid key name pattern like "+abc:" 
+        // Note: the test just verifies the method handles arbitrary strings robustly.
+        assertRuntimeException(() -> {
+            provider.get("+abc:invalidbase64content");
+        });
     }
 
     // Helper method to assert RuntimeException

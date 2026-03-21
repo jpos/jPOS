@@ -59,8 +59,15 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
 
             int colonIdx = config.indexOf(':');
             if (colonIdx >= 0) {
-                keyName = config.substring(0, colonIdx);
-                encoded = config.substring(colonIdx + 1);
+                String possibleKeyName = config.substring(0, colonIdx);
+                // Valid key names are alphanumeric with optional hyphens/underscores.
+                // If it doesn't match this pattern, it's probably just part of the Base64 payload.
+                if (possibleKeyName.matches("^[a-zA-Z0-9_\\-]+$")) {
+                    keyName = possibleKeyName;
+                    encoded = config.substring(colonIdx + 1);
+                } else {
+                    encoded = config;
+                }
             } else {
                 encoded = config;
             }
