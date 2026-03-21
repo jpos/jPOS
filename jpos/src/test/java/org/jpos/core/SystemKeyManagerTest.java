@@ -87,49 +87,6 @@ public class SystemKeyManagerTest {
     }
 
     @Test
-    public void testEncryptDecryptRoundTrip() {
-        SystemKeyManager manager = SystemKeyManager.getInstance();
-        System.setProperty(manager.getEnvVarName(DEFAULT), manager.generateDefaultKey());
-
-        String original = "test-password-123";
-        byte[] encrypted = manager.encrypt(original.getBytes());
-
-        assertNotNull(encrypted, "encrypt() should return encrypted data");
-        assertNotEquals(original.getBytes().length, encrypted.length, "Encrypted data should be different length");
-
-        byte[] decrypted = manager.decrypt(encrypted);
-        assertNotNull(decrypted, "decrypt() should return decrypted data");
-
-        assertArrayEquals(original.getBytes(), decrypted, "Decrypted data should match original");
-    }
-
-    @Test
-    public void testEncryptDecryptEmptyString() {
-        SystemKeyManager manager = SystemKeyManager.getInstance();
-        System.setProperty(manager.getEnvVarName(DEFAULT), manager.generateDefaultKey());
-
-        byte[] encrypted = manager.encrypt(new byte[0]);
-        assertNotNull(encrypted, "encrypt() should handle empty data");
-
-        byte[] decrypted = manager.decrypt(encrypted);
-        assertNotNull(decrypted, "decrypt() should handle empty data");
-
-        assertArrayEquals(new byte[0], decrypted, "Decrypted empty data should be empty");
-    }
-
-    @Test
-    public void testEncryptDecryptSpecialCharacters() {
-        SystemKeyManager manager = SystemKeyManager.getInstance();
-        System.setProperty(manager.getEnvVarName(DEFAULT), manager.generateDefaultKey());
-
-        String original = "p@ssw0rd!#$%^&*()";
-        byte[] encrypted = manager.encrypt(original.getBytes());
-        byte[] decrypted = manager.decrypt(encrypted);
-
-        assertArrayEquals(original.getBytes(), decrypted, "Decrypted data should match original with special chars");
-    }
-
-    @Test
     public void testEnvironmentVariableIsSet() {
         SystemKeyManager manager = SystemKeyManager.getInstance();
         String base64Key = manager.generateDefaultKey();
@@ -171,21 +128,6 @@ public class SystemKeyManagerTest {
     }
 
     @Test
-    public void testDecryptTamperedDataThrowsException() {
-        SystemKeyManager manager = SystemKeyManager.getInstance();
-        System.setProperty(manager.getEnvVarName(DEFAULT), manager.generateDefaultKey());
-
-        byte[] originalData = "test data".getBytes();
-        byte[] encrypted = manager.encrypt(originalData);
-
-        encrypted[0] = (byte) (encrypted[0] ^ 0xFF);
-
-        assertThrows(RuntimeException.class, () -> {
-            manager.decrypt(encrypted);
-        }, "Decryption of tampered data should fail");
-    }
-
-    @Test
     public void testGetEnvVarName() {
         SystemKeyManager manager = SystemKeyManager.getInstance();
 
@@ -204,57 +146,4 @@ public class SystemKeyManagerTest {
         assertEquals("JPOS_ENCRYPTION_KEY_XYZ_", manager.getEnvVarName("XYZ#")); // Testing user's exact example
     }
 
-    @Test
-    public void testEncryptDecryptWithSanitizedKeyName() {
-        SystemKeyManager manager = SystemKeyManager.getInstance();
-        String originalKeyName = "my-special-key!";
-        String envVarName = manager.getEnvVarName(originalKeyName);
-        
-        // Ensure it sanitized it correctly
-        assertEquals("JPOS_ENCRYPTION_KEY_MY_SPECIAL_KEY_", envVarName);
-        
-        // Generate and set the key
-        System.setProperty(envVarName, manager.generateKey(originalKeyName));
-
-        try {
-            String original = "test-password-with-special-key";
-            byte[] encrypted = manager.encrypt(original.getBytes(), originalKeyName);
-
-            assertNotNull(encrypted, "encrypt() should return encrypted data with special key name");
-
-            byte[] decrypted = manager.decrypt(encrypted, originalKeyName);
-            assertNotNull(decrypted, "decrypt() should return decrypted data with special key name");
-
-            assertArrayEquals(original.getBytes(), decrypted, "Decrypted data should match original");
-        } finally {
-            System.clearProperty(envVarName);
-        }
-    }
-
-    @Test
-    public void testEncryptDecryptWithKeyName() {
-        SystemKeyManager manager = SystemKeyManager.getInstance();
-        System.setProperty(manager.getEnvVarName("key1"), manager.generateKey("key1"));
-        System.setProperty(manager.getEnvVarName("key2"), manager.generateKey("key2"));
-
-        String original = "test-password-with-key";
-        byte[] encrypted1 = manager.encrypt(original.getBytes(), "key1");
-        byte[] encrypted2 = manager.encrypt(original.getBytes(), "key2");
-
-        assertNotNull(encrypted1, "encrypt() should return encrypted data with key1");
-        assertNotNull(encrypted2, "encrypt() should return encrypted data with key2");
-
-        byte[] decrypted1 = manager.decrypt(encrypted1, "key1");
-        byte[] decrypted2 = manager.decrypt(encrypted2, "key2");
-
-        assertNotNull(decrypted1, "decrypt() should return decrypted data with key1");
-        assertNotNull(decrypted2, "decrypt() should return decrypted data with key2");
-
-        assertArrayEquals(original.getBytes(), decrypted1, "Decrypted data should match original with key1");
-        assertArrayEquals(original.getBytes(), decrypted2, "Decrypted data should match original with key2");
-
-        assertNotEquals(Base64.getEncoder().encodeToString(encrypted1),
-                Base64.getEncoder().encodeToString(encrypted2),
-                "Encrypted data should be different with different keys");
-    }
 }

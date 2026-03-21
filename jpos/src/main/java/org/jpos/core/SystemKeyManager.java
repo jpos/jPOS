@@ -18,10 +18,8 @@
 
 package org.jpos.core;
 
-import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -34,7 +32,6 @@ import java.util.Base64;
  * <ul>
  * <li>Loads keys strictly from environment variables (no internal caching)</li>
  * <li>Generates new keys using OS-provided SecureRandom (truly random)</li>
- * <li>Provides encrypt/decrypt methods using AES-256-GCM</li>
  * </ul>
  */
 public class SystemKeyManager {
@@ -143,94 +140,6 @@ public class SystemKeyManager {
      */
     public String generateDefaultKey() {
         return generateKey(DEFAULT_KEY_NAME);
-    }
-
-    private static final int IV_SIZE_BYTES = 12;
-    private static final int TAG_LENGTH_BITS = 128;
-
-    /**
-     * Encrypts data using the default key.
-     *
-     * @param data the data to encrypt
-     * @return encrypted data (with IV prepended)
-     */
-    public byte[] encrypt(byte[] data) {
-        return encrypt(data, DEFAULT_KEY_NAME);
-    }
-
-    /**
-     * Encrypts data using a named key.
-     *
-     * @param data    the data to encrypt
-     * @param keyName the name of the key to use
-     * @return encrypted data (with IV prepended)
-     */
-    public byte[] encrypt(byte[] data, String keyName) {
-        try {
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            SecretKey key = getKey(keyName);
-
-            if (key == null) {
-                throw new IllegalArgumentException("No key found in environment for name: " + 
-                        (keyName != null && !keyName.isEmpty() ? keyName : DEFAULT_KEY_NAME) + ". Please set " + getEnvVarName(keyName));
-            }
-
-            byte[] iv = new byte[IV_SIZE_BYTES];
-            new SecureRandom().nextBytes(iv);
-
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
-            cipher.init(Cipher.ENCRYPT_MODE, key, gcmParameterSpec);
-            byte[] ciphertext = cipher.doFinal(data);
-
-            byte[] result = new byte[iv.length + ciphertext.length];
-            System.arraycopy(iv, 0, result, 0, iv.length);
-            System.arraycopy(ciphertext, 0, result, iv.length, ciphertext.length);
-
-            return result;
-        } catch (Exception e) {
-            throw new RuntimeException("Encryption failed", e);
-        }
-    }
-
-    /**
-     * Decrypts data using the default key.
-     *
-     * @param encryptedData the encrypted data (with IV prepended)
-     * @return decrypted data
-     */
-    public byte[] decrypt(byte[] encryptedData) {
-        return decrypt(encryptedData, DEFAULT_KEY_NAME);
-    }
-
-    /**
-     * Decrypts data using a named key.
-     *
-     * @param encryptedData the encrypted data (with IV prepended)
-     * @param keyName       the name of the key to use
-     * @return decrypted data
-     */
-    public byte[] decrypt(byte[] encryptedData, String keyName) {
-        try {
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            SecretKey key = getKey(keyName);
-
-            if (key == null) {
-                throw new IllegalArgumentException("No key found in environment for name: " + 
-                        (keyName != null && !keyName.isEmpty() ? keyName : DEFAULT_KEY_NAME) + ". Please set " + getEnvVarName(keyName));
-            }
-
-            byte[] iv = new byte[IV_SIZE_BYTES];
-            System.arraycopy(encryptedData, 0, iv, 0, iv.length);
-
-            byte[] ciphertext = new byte[encryptedData.length - iv.length];
-            System.arraycopy(encryptedData, iv.length, ciphertext, 0, ciphertext.length);
-
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
-            cipher.init(Cipher.DECRYPT_MODE, key, gcmParameterSpec);
-            return cipher.doFinal(ciphertext);
-        } catch (Exception e) {
-            throw new RuntimeException("Decryption failed", e);
-        }
     }
 
     /**
