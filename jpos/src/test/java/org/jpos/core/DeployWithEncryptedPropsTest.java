@@ -18,6 +18,8 @@ public class DeployWithEncryptedPropsTest {
     
     private String envVarName;
     private String keyBase64;
+    private String originalEnvDir;
+    private String originalEnv;
     
     @BeforeEach
     void setup() throws Exception {
@@ -25,11 +27,28 @@ public class DeployWithEncryptedPropsTest {
         keyBase64 = manager.generateKey("test");
         envVarName = manager.getEnvVarName("test");
         System.setProperty(envVarName, keyBase64);
+        
+        originalEnvDir = System.getProperty("jpos.envdir");
+        originalEnv = System.getProperty("jpos.env");
     }
     
     @AfterEach
-    void cleanup() {
+    void cleanup() throws Exception {
         System.clearProperty(envVarName);
+        
+        if (originalEnvDir != null) {
+            System.setProperty("jpos.envdir", originalEnvDir);
+        } else {
+            System.clearProperty("jpos.envdir");
+        }
+        
+        if (originalEnv != null) {
+            System.setProperty("jpos.env", originalEnv);
+        } else {
+            System.clearProperty("jpos.env");
+        }
+        
+        Environment.reload();
     }
     
     @Test
@@ -42,27 +61,19 @@ public class DeployWithEncryptedPropsTest {
         File cfgDir = tempDir.resolve("cfg").toFile();
         cfgDir.mkdirs();
         
-        File dbProps = new File(cfgDir, "db.properties");
+        // Write .cfg instead of .properties so Environment will load it directly
+        File dbProps = new File(cfgDir, "db.cfg");
         try (FileWriter writer = new FileWriter(dbProps)) {
-            writer.write("# Database with encrypted password\n");
             writer.write("hibernate.connection.password=" + encryptedPassword + "\n");
         }
         
-        File deployDir = tempDir.resolve("deploy").toFile();
-        deployDir.mkdirs();
+        // Instruct Environment to load from our temporary cfg dir and "db" profile
+        System.setProperty("jpos.envdir", cfgDir.getAbsolutePath());
+        System.setProperty("jpos.env", "db");
+        Environment.reload();
         
-        File deployFile = new File(deployDir, "01_encrypted_test.xml");
-        try (FileWriter writer = new FileWriter(deployFile)) {
-            writer.write("<qbean name=\"encrypted-test\" class=\"org.jpos.q2.qbean.QBeanSupport\">\n");
-            writer.write("    <property name=\"cfg\" file=\"" + cfgDir.getAbsolutePath() + "/db.properties\" />\n");
-            writer.write("    <property name=\"db.password\" value=\"${hibernate.connection.password}\" />\n");
-            writer.write("</qbean>\n");
-        }
-        
-        assertTrue(dbProps.exists(), "db.properties should exist");
-        assertTrue(deployFile.exists(), "deploy file should exist");
-        
-        String decryptedPassword = provider.get(encryptedPassword);
-        assertEquals(clearPassword, decryptedPassword, "Decrypted password should match");
+        // Evaluate the property through the Environment resolution exactly as Q2 would
+        String decryptedPassword = Environment.get("${hibernate.connection.password}");
+        assertEquals(clearPassword, decryptedPassword, "Environment should automatically decrypt the password");
     }
 }

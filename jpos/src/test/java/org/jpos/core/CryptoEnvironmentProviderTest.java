@@ -48,7 +48,7 @@ public class CryptoEnvironmentProviderTest {
         assertNotNull(encrypted);
         assertTrue(encrypted.startsWith("enc::"));
 
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
         assertEquals(original, decrypted);
     }
 
@@ -59,7 +59,7 @@ public class CryptoEnvironmentProviderTest {
         String password = "secretpassword";
         String encrypted = CryptoEnvironmentProvider.encrypt(password);
 
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
         assertEquals(password, decrypted);
     }
 
@@ -70,7 +70,7 @@ public class CryptoEnvironmentProviderTest {
         String username = "client";
         String encrypted = CryptoEnvironmentProvider.encrypt(username);
 
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
         assertEquals(username, decrypted);
     }
 
@@ -90,7 +90,7 @@ public class CryptoEnvironmentProviderTest {
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
 
         String encrypted = CryptoEnvironmentProvider.encrypt("");
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
 
         assertEquals("", decrypted);
     }
@@ -101,7 +101,7 @@ public class CryptoEnvironmentProviderTest {
 
         String special = "p@ssw0rd!#$%^&*()";
         String encrypted = CryptoEnvironmentProvider.encrypt(special);
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
 
         assertEquals(special, decrypted);
     }
@@ -112,7 +112,7 @@ public class CryptoEnvironmentProviderTest {
 
         String unicode = "密码123密码";
         String encrypted = CryptoEnvironmentProvider.encrypt(unicode);
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
 
         assertEquals(unicode, decrypted);
     }
@@ -128,7 +128,7 @@ public class CryptoEnvironmentProviderTest {
         String longValue = sb.toString();
 
         String encrypted = CryptoEnvironmentProvider.encrypt(longValue);
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
 
         assertEquals(longValue, decrypted);
     }
@@ -179,7 +179,7 @@ public class CryptoEnvironmentProviderTest {
 
         String url = "jdbc:mysql://localhost:3306/client?useSSL=false";
         String encrypted = CryptoEnvironmentProvider.encrypt(url);
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
 
         assertEquals(url, decrypted);
     }
@@ -190,7 +190,7 @@ public class CryptoEnvironmentProviderTest {
 
         String url = "jdbc:postgresql://db.example.com:5432/mydb";
         String encrypted = CryptoEnvironmentProvider.encrypt(url);
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
 
         assertEquals(url, decrypted);
     }
@@ -201,7 +201,7 @@ public class CryptoEnvironmentProviderTest {
 
         String value = "user=admin&password=secret&database=mydb";
         String encrypted = CryptoEnvironmentProvider.encrypt(value);
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
 
         assertEquals(value, decrypted);
     }
@@ -212,7 +212,7 @@ public class CryptoEnvironmentProviderTest {
 
         String value = "user:pass@host:3306/db?param=value&another=123";
         String encrypted = CryptoEnvironmentProvider.encrypt(value);
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
 
         assertEquals(value, decrypted);
     }
@@ -230,7 +230,7 @@ public class CryptoEnvironmentProviderTest {
         assertNotNull(encrypted);
         assertTrue(encrypted.startsWith("enc::db:"));
 
-        String decrypted = provider.get(encrypted);
+        String decrypted = provider.get(encrypted.substring(5));
         assertEquals(original, decrypted);
     }
 
@@ -252,8 +252,8 @@ public class CryptoEnvironmentProviderTest {
         assertTrue(encryptedDb.startsWith("enc::db:"));
         assertTrue(encryptedApi.startsWith("enc::api:"));
 
-        String decryptedDb = provider.get(encryptedDb);
-        String decryptedApi = provider.get(encryptedApi);
+        String decryptedDb = provider.get(encryptedDb.substring(5));
+        String decryptedApi = provider.get(encryptedApi.substring(5));
 
         assertEquals(original, decryptedDb);
         assertEquals(original, decryptedApi);

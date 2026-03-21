@@ -58,17 +58,12 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             String keyName = null;
             String encoded;
 
-            String remainder = config;
-            if (config.startsWith(ENC_PREFIX)) {
-                remainder = config.substring(5);
-            }
-
-            int colonIdx = remainder.indexOf(':');
+            int colonIdx = config.indexOf(':');
             if (colonIdx >= 0) {
-                keyName = remainder.substring(0, colonIdx);
-                encoded = remainder.substring(colonIdx + 1);
+                keyName = config.substring(0, colonIdx);
+                encoded = config.substring(colonIdx + 1);
             } else {
-                encoded = remainder;
+                encoded = config;
             }
 
             byte[] decoded = Base64.getDecoder().decode(encoded);
