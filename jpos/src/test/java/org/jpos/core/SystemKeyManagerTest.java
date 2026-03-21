@@ -194,6 +194,44 @@ public class SystemKeyManagerTest {
     }
 
     @Test
+    public void testGetEnvVarNameSanitization() {
+        SystemKeyManager manager = SystemKeyManager.getInstance();
+
+        assertEquals("JPOS_ENCRYPTION_KEY", manager.getEnvVarName(DEFAULT));
+        assertEquals("JPOS_ENCRYPTION_KEY_DB", manager.getEnvVarName("db"));
+        assertEquals("JPOS_ENCRYPTION_KEY_MY_KEY", manager.getEnvVarName("my-key"));
+        assertEquals("JPOS_ENCRYPTION_KEY_API_KEY_123_", manager.getEnvVarName("api_key 123!"));
+        assertEquals("JPOS_ENCRYPTION_KEY_XYZ_", manager.getEnvVarName("XYZ#")); // Testing user's exact example
+    }
+
+    @Test
+    public void testEncryptDecryptWithSanitizedKeyName() {
+        SystemKeyManager manager = SystemKeyManager.getInstance();
+        String originalKeyName = "my-special-key!";
+        String envVarName = manager.getEnvVarName(originalKeyName);
+        
+        // Ensure it sanitized it correctly
+        assertEquals("JPOS_ENCRYPTION_KEY_MY_SPECIAL_KEY_", envVarName);
+        
+        // Generate and set the key
+        System.setProperty(envVarName, manager.generateKey(originalKeyName));
+
+        try {
+            String original = "test-password-with-special-key";
+            byte[] encrypted = manager.encrypt(original.getBytes(), originalKeyName);
+
+            assertNotNull(encrypted, "encrypt() should return encrypted data with special key name");
+
+            byte[] decrypted = manager.decrypt(encrypted, originalKeyName);
+            assertNotNull(decrypted, "decrypt() should return decrypted data with special key name");
+
+            assertArrayEquals(original.getBytes(), decrypted, "Decrypted data should match original");
+        } finally {
+            System.clearProperty(envVarName);
+        }
+    }
+
+    @Test
     public void testEncryptDecryptWithKeyName() {
         SystemKeyManager manager = SystemKeyManager.getInstance();
         System.setProperty(manager.getEnvVarName("key1"), manager.generateKey("key1"));

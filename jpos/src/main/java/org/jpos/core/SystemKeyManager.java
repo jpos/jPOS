@@ -236,6 +236,7 @@ public class SystemKeyManager {
 
     /**
      * Gets the environment variable name for a key.
+     * Non-alphanumeric characters in the key name are normalized to underscores.
      *
      * @param keyName the name of the key
      * @return the environment variable name
@@ -244,7 +245,7 @@ public class SystemKeyManager {
         if (keyName == null || keyName.isEmpty()) {
             keyName = DEFAULT_KEY_NAME;
         }
-        return DEFAULT_ENV_VAR + (DEFAULT_KEY_NAME.equals(keyName) ? "" : "_" + keyName.toUpperCase());
+        return DEFAULT_ENV_VAR + (DEFAULT_KEY_NAME.equals(keyName) ? "" : "_" + keyName.toUpperCase().replaceAll("[^A-Z0-9]", "_"));
     }
 
     
