@@ -33,7 +33,7 @@ public class CRYPTO implements CLICommand {
 
     @Override
     public void exec(CLIContext cli, String[] args) throws Exception {
-        if (args.length < 2 || args.length > 4) {
+        if (args.length < 2 || args.length > 3) {
             usage(cli);
             return;
         }

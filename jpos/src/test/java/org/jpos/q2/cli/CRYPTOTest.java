@@ -107,6 +107,27 @@ public class CRYPTOTest {
     }
 
     @Test
+    public void testCryptoCommandTooManyArguments() throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayInputStream in = new ByteArrayInputStream(new byte[0]);
+        
+        CLI cliObj = new CLI(null, in, out, null, false, false);
+
+        CLIContext cli = CLIContext.builder()
+                .cli(cliObj)
+                .out(out)
+                .build();
+
+        CRYPTO cmd = new CRYPTO();
+        
+        // passing 4 arguments: args[0]="crypto", args[1]="secret", args[2]="db", args[3]="extra"
+        cmd.exec(cli, new String[]{"crypto", "my-secret-password", "db", "extra"});
+        
+        String output = out.toString().trim();
+        assertTrue(output.contains("Usage: crypto"), "Output should contain usage instructions when given too many arguments");
+    }
+
+    @Test
     public void testCryptoDirectly() throws Exception {
         String input = "my-password";
         String encrypted = CryptoEnvironmentProvider.encrypt(input);
