@@ -104,7 +104,7 @@ public class SystemKeyManager {
      *
      * @return the default SecretKey, or null if not found
      */
-    public SecretKey getDefaultKey() {
+    SecretKey getDefaultKey() {
         return getKey(DEFAULT_KEY_NAME);
     }
 
@@ -114,7 +114,7 @@ public class SystemKeyManager {
      * @param keyName the name of the key
      * @return Base64-encoded key, or null if not found
      */
-    public String getKeyBase64(String keyName) {
+    String getKeyBase64(String keyName) {
         SecretKey key = getKey(keyName);
         return key != null ? Base64.getEncoder().encodeToString(key.getEncoded()) : null;
     }
@@ -159,6 +159,4 @@ public class SystemKeyManager {
         }
         return DEFAULT_ENV_VAR + (DEFAULT_KEY_NAME.equals(keyName) ? "" : "_" + keyName.toUpperCase().replaceAll("[^A-Z0-9]", "_"));
     }
-
-    
 }
