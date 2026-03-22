@@ -284,11 +284,6 @@ public abstract class BaseChannel extends Observable
     protected void connect (Socket socket) throws IOException {
         this.socket = socket;
         applyTimeout();
-        InetAddress inetAddress = socket.getInetAddress();
-        String remoteAddress = (inetAddress != null) ? "/" + inetAddress.getHostAddress() + ":" + socket.getPort() : "";
-        setLogger(getLogger(), getOriginalRealm() +
-            remoteAddress
-        );
         serverInLock.lock();
         try {
             serverIn = new DataInputStream (
@@ -450,6 +445,7 @@ public abstract class BaseChannel extends Observable
             connect(socket);
             jfr.append("%d".formatted(socket.getLocalPort()));
             evt.withTraceId(getSocketUUID());
+            evt.withTag("endpoint", toEndpoint(socket));
             applyTimeout();
         } catch (IOException e) {
             jfr = new ChannelEvent.ConnectionException(jfr.getDetail());
@@ -908,6 +904,7 @@ public abstract class BaseChannel extends Observable
         if (socket != null) {
             String detail = socket.getRemoteSocketAddress().toString();
             jfr.setDetail(detail);
+            evt.withTag("endpoint", toEndpoint(socket));
             evt.addMessage(detail);
         }
 
@@ -957,6 +954,11 @@ public abstract class BaseChannel extends Observable
     }
     public Logger getLogger() {
         return logger;
+    }
+    protected String toEndpoint(Socket socket) {
+        if (socket == null || socket.getInetAddress() == null)
+            return null;
+        return "%s:%d".formatted(socket.getInetAddress().getHostAddress(), socket.getPort());
     }
     public String getOriginalRealm() {
         return originalRealm == null ?

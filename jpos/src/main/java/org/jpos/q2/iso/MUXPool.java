@@ -26,6 +26,7 @@ import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.Realm;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +52,11 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     boolean checkEnabled;
     Space sp;
     StrategyHandler strategyHandler;
+
+    @Override
+    protected String defaultRealm() {
+        return Realm.COMM_MUX;
+    }
 
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
@@ -337,4 +343,3 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         MUX getMUX(MUXPool pool, ISOMsg m, long maxWait);
     }
 }
-

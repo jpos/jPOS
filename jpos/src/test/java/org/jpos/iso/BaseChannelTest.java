@@ -35,7 +35,11 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.jpos.bsh.BSHFilter;
 import org.jpos.core.Configuration;
@@ -282,6 +286,39 @@ public class BaseChannelTest {
             gZIPChannel.connect(socket);
             fail("Expected SocketException to be thrown");
         } catch (SocketException ignored) {}
+    }
+
+    @Test
+    public void testConnectKeepsStableRealmAndAddsEndpointTag() throws Throwable {
+        List<LogEvent> events = new ArrayList<>();
+        Logger logger = new Logger();
+        logger.setName("test-connect-logger");
+        logger.addListener(ev -> {
+            events.add(ev);
+            return ev;
+        });
+
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Future<Socket> accepted = executor.submit(serverSocket::accept);
+            BaseChannel rawChannel = new RawChannel();
+            rawChannel.setLogger(logger, "comm/channel");
+            rawChannel.setHost("127.0.0.1", serverSocket.getLocalPort());
+            rawChannel.connect();
+            try (Socket peer = accepted.get()) {
+                assertEquals("comm/channel", rawChannel.getRealm(), "rawChannel.getRealm()");
+                LogEvent connect = events.stream()
+                  .filter(ev -> "connect".equals(ev.getTag()))
+                  .findFirst()
+                  .orElseThrow();
+                assertEquals("comm/channel", connect.getRealm(), "connect.getRealm()");
+                assertTrue(connect.getTags().containsKey("endpoint"), "connect.getTags().containsKey(endpoint)");
+                rawChannel.disconnect();
+                assertEquals("comm/channel", rawChannel.getRealm(), "rawChannel.getRealm()");
+            } finally {
+                executor.shutdownNow();
+            }
+        }
     }
 
     @Test

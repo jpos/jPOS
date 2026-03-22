@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jdom2.Element;
+import org.jpos.util.Realm;
 import org.junit.jupiter.api.Test;
 
 public class QServerTest {
@@ -34,7 +35,7 @@ public class QServerTest {
     @Test
     public void testConstructor() throws Throwable {
         QServer qServer = new QServer();
-        assertEquals("org.jpos.q2.iso.QServer", qServer.getLog().getRealm(), "qServer.getLog().getRealm()");
+        assertEquals(Realm.COMM_SERVER, qServer.getLog().getRealm(), "qServer.getLog().getRealm()");
         assertEquals(-1, qServer.getState(), "qServer.getState()");
         assertEquals(100, qServer.getMaxSessions(), "qServer.getMaxSessions()");
         assertTrue(qServer.isModified(), "qServer.isModified()");

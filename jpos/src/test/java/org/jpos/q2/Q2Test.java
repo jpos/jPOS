@@ -40,6 +40,7 @@ import org.jdom2.Element;
 import org.jpos.core.Environment;
 import org.jpos.q2.qbean.SystemMonitor;
 import org.jpos.util.Log;
+import org.jpos.util.Realm;
 import org.junit.jupiter.api.*;
 
 
@@ -208,7 +209,7 @@ public class Q2Test {
     @Test
     public void testGetLog() throws Throwable {
         Log result = m_q2.getLog();
-        assertEquals("Q2.system", result.getRealm(), "result.getRealm()");
+        assertEquals(Realm.Q2_LIFECYCLE, result.getRealm(), "result.getRealm()");
     }
 
     @Test

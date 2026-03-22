@@ -34,6 +34,7 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.q2.Q2;
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.Realm;
 import org.junit.jupiter.api.Test;
 
 public class QMUXTest {
@@ -41,7 +42,7 @@ public class QMUXTest {
     @Test
     public void testConstructor() throws Throwable {
         QMUX qMUX = new QMUX();
-        assertEquals("org.jpos.q2.iso.QMUX", qMUX.getLog().getRealm(), "qMUX.getLog().getRealm()");
+        assertEquals(Realm.COMM_MUX, qMUX.getLog().getRealm(), "qMUX.getLog().getRealm()");
         assertEquals(-1, qMUX.getState(), "qMUX.getState()");
         assertTrue(qMUX.isModified(), "qMUX.isModified()");
         assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");

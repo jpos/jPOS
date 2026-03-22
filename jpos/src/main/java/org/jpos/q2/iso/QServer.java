@@ -36,6 +36,7 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.space.SpaceListener;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.Realm;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -68,6 +69,11 @@ public class QServer
 
     public QServer () {
         super ();
+    }
+
+    @Override
+    protected String defaultRealm() {
+        return Realm.COMM_SERVER;
     }
 
     @Override

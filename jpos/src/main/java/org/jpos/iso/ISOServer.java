@@ -306,7 +306,7 @@ public class ISOServer extends Observable
         String realm;
         protected Session(ServerChannel channel) {
             this.channel = channel;
-            realm = ISOServer.this.getRealm() + ".session";
+            realm = ISOServer.this.getRealm();
         }
         @Override
         public void run() {
@@ -314,18 +314,17 @@ public class ISOServer extends Observable
             notifyObservers ();
             UUID sessionUUID = uuid;
             String sessionInfo = "";
+            String endpoint = null;
             if (channel instanceof BaseChannel baseChannel) {
                 Socket socket = baseChannel.getSocket ();
                 sessionInfo = socket.toString();
                 sessionUUID = getSocketUUID(socket);
-                LogEvent ev = new LogEvent()
-                  .withSource(this)
-                  .withTraceId(sessionUUID)
+                endpoint = baseChannel.toEndpoint(socket);
+                LogEvent ev = createSessionEvent(sessionUUID, endpoint)
                   .add(new SessionStart(getActiveConnections(), permitsCount, sessionInfo)
                 );
                 if (!checkPermission (socket, ev))
                     return;
-                realm = realm + "/" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
             }
             try {
                 WeakReference<ISOChannel> wr = new WeakReference<> (channel);
@@ -340,10 +339,10 @@ public class ISOServer extends Observable
                         }
                     }
                 } catch (ISOFilter.VetoException e) {
-                    Logger.log(new LogEvent(this, "VetoException", e.getMessage()));
+                    Logger.log(createSessionEvent("VetoException", sessionUUID, endpoint).add(e.getMessage()));
                 } catch (ISOException e) {
                     if (ignoreISOExceptions) {
-                        Logger.log(new LogEvent(this, "ISOException", e.getMessage()));
+                        Logger.log(createSessionEvent("ISOException", sessionUUID, endpoint).add(e.getMessage()));
                     } else {
                         throw e;
                     }
@@ -352,23 +351,21 @@ public class ISOServer extends Observable
                  // Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
             } catch (SocketException e) {
                  if (!shutdown)
-                     Logger.log (new LogEvent (this, "session-warning", e));
+                     Logger.log (createSessionEvent("session-warning", sessionUUID, endpoint).add(e));
             } catch (InterruptedIOException e) {
                 // nothing to log
             } catch (Throwable e) {
-                Logger.log (new LogEvent (this, "session-error", e));
+                Logger.log (createSessionEvent("session-error", sessionUUID, endpoint).add(e));
             }
 
             try {
                 channel.disconnect();
                 fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
             } catch (IOException ex) {
-                Logger.log (new LogEvent (this, "session-error", ex));
+                Logger.log (createSessionEvent("session-error", sessionUUID, endpoint).add(ex));
                 fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
             }
-            Logger.log(new LogEvent()
-              .withSource(this)
-              .withTraceId(sessionUUID)
+            Logger.log(createSessionEvent(sessionUUID, endpoint)
               .add(new SessionEnd(getActiveConnections(), permitsCount, sessionInfo)
               )
             );
@@ -383,6 +380,20 @@ public class ISOServer extends Observable
         @Override
         public Logger getLogger() {
             return ISOServer.this.getLogger();
+        }
+
+        private LogEvent createSessionEvent(UUID sessionUUID, String endpoint) {
+            LogEvent evt = new LogEvent().withSource(this).withTraceId(sessionUUID);
+            evt.withTag("session", sessionUUID.toString());
+            if (endpoint != null)
+                evt.withTag("endpoint", endpoint);
+            return evt;
+        }
+
+        private LogEvent createSessionEvent(String tag, UUID sessionUUID, String endpoint) {
+            LogEvent evt = createSessionEvent(sessionUUID, endpoint);
+            evt.setTag(tag);
+            return evt;
         }
 
         private boolean checkPermission (Socket socket, LogEvent ev) {

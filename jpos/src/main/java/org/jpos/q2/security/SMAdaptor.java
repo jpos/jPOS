@@ -23,6 +23,7 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.security.SMAdapter;
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.Realm;
 
 /**
  * SMAdaptor Adaptor
@@ -50,6 +51,12 @@ public class SMAdaptor extends QBeanSupport implements SMAdaptorMBean
         super ();
         clazz = DEFAULT_IMPL;
     }
+
+    @Override
+    protected String defaultRealm() {
+        return Realm.SECURITY;
+    }
+
     protected void initService () throws Exception {
         Element e = getPersist ();
         QFactory factory = getServer().getFactory();

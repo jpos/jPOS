@@ -40,6 +40,7 @@ import org.jpos.space.SpaceUtil;
 import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.Realm;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -88,6 +89,12 @@ public class ChannelAdaptor
         super ();
         resetCounters();
     }
+
+    @Override
+    protected String defaultRealm() {
+        return Realm.COMM_CHANNEL;
+    }
+
     public void initService() throws ConfigurationException {
         if (softStop < 0)
             throw new ConfigurationException ("Invalid soft-stop %d".formatted(Long.valueOf(softStop)));

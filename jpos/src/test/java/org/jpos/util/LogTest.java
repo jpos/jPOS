@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Map;
+
 import org.jpos.bsh.BSHRequestListener;
 import org.jpos.transaction.participant.Debug;
 import org.junit.jupiter.api.Test;
@@ -89,6 +91,23 @@ public class LogTest {
     public void testCreateInfo1() throws Throwable {
         LogEvent result = new Log().createInfo();
         assertNull(result.getRealm(), "result.getRealm()");
+    }
+
+    @Test
+    public void testCreateInfoAppliesDefaultTags() {
+        Log log = Log.getLog("testLogLogName", "testLogRealm");
+        log.setDefaultTag("component", "mux-1");
+        log.setDefaultTag("role", "primary");
+        LogEvent result = log.createInfo("testString");
+        assertEquals(Map.of("component", "mux-1", "role", "primary"), result.getTags(), "result.getTags()");
+    }
+
+    @Test
+    public void testSetDefaultTagsReplacesExistingTags() {
+        Log log = new Log();
+        log.setDefaultTag("component", "mux-1");
+        log.setDefaultTags(Map.of("service", "q2"));
+        assertEquals(Map.of("service", "q2"), log.getDefaultTags(), "log.getDefaultTags()");
     }
 
     @Test

@@ -22,6 +22,7 @@ import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import jdk.jfr.Configuration;
@@ -37,6 +38,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -131,6 +134,65 @@ public class ISOServerTest {
         recording.dump(outputPath);
         recording.stop();
         recording.close();
+    }
+
+    @Test
+    public void testSessionEventsUseStableRealmAndDynamicTags() throws Exception {
+        List<org.jpos.util.LogEvent> events = new ArrayList<>();
+        Logger logger = new Logger();
+        logger.setName("test-server-logger");
+        logger.addListener(ev -> {
+            synchronized (events) {
+                events.add(ev);
+            }
+            return ev;
+        });
+
+        int port;
+        try (java.net.ServerSocket probe = new java.net.ServerSocket(0)) {
+            port = probe.getLocalPort();
+        }
+
+        CSChannel channel = new CSChannel();
+        channel.setPackager(new ISO87BPackager());
+        ISOServer server = new ISOServer(port, channel, 5);
+        server.setLogger(logger, "comm/server");
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("backlog", "10");
+        server.setConfiguration(cfg);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(server);
+        try {
+            ISOUtil.sleep(250L);
+            try (java.net.Socket client = new java.net.Socket("127.0.0.1", port)) {
+                ISOUtil.sleep(250L);
+            }
+
+            long deadline = System.currentTimeMillis() + 5000L;
+            while (System.currentTimeMillis() < deadline) {
+                synchronized (events) {
+                    boolean hasStart = events.stream().anyMatch(ev -> ev.getPayLoad().stream().anyMatch(p -> p instanceof org.jpos.log.evt.SessionStart));
+                    boolean hasEnd = events.stream().anyMatch(ev -> ev.getPayLoad().stream().anyMatch(p -> p instanceof org.jpos.log.evt.SessionEnd));
+                    if (hasStart && hasEnd)
+                        break;
+                }
+                ISOUtil.sleep(100L);
+            }
+
+            synchronized (events) {
+                org.jpos.util.LogEvent sessionEvent = events.stream()
+                  .filter(ev -> ev.getPayLoad().stream().anyMatch(p -> p instanceof org.jpos.log.evt.SessionStart))
+                  .findFirst()
+                  .orElseThrow();
+                assertEquals("comm/server", sessionEvent.getRealm(), "sessionEvent.getRealm()");
+                assertTrue(sessionEvent.getTags().containsKey("session"), "sessionEvent.getTags().containsKey(session)");
+                assertTrue(sessionEvent.getTags().containsKey("endpoint"), "sessionEvent.getTags().containsKey(endpoint)");
+            }
+        } finally {
+            server.shutdown();
+            executor.shutdownNow();
+        }
     }
 
     private class AutoResponder implements ISORequestListener {

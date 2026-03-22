@@ -118,6 +118,11 @@ public class TransactionManager
     private UUID uuid = UUID.randomUUID();
 
     @Override
+    protected String defaultRealm() {
+        return Realm.TXN;
+    }
+
+    @Override
     public void initService () throws ConfigurationException {
         queue = cfg.get ("queue", null);
         if (queue == null)
@@ -496,7 +501,7 @@ public class TransactionManager
                 return ((AbortParticipant)p).prepareForAbort (id, context);
             }
         } catch (Throwable t) {
-            getLog().warn ("PREPARE-FOR-ABORT: " + id, t);
+            logParticipantWarning("PREPARE-FOR-ABORT: " + id, p, t);
         } finally {
             getParams(p).timers.prepareForAbortTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null)
@@ -512,7 +517,7 @@ public class TransactionManager
             setThreadName(id, "prepare", p);
             return p.prepare (id, context);
         } catch (Throwable t) {
-            getLog().warn ("PREPARE: " + id, t);
+            logParticipantWarning("PREPARE: " + id, p, t);
         } finally {
             getParams(p).timers.prepareTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null) {
@@ -529,7 +534,7 @@ public class TransactionManager
             setThreadName(id, "commit", p);
             p.commit(id, context);
         } catch (Throwable t) {
-            getLog().warn ("COMMIT: " + id, t);
+            logParticipantWarning("COMMIT: " + id, p, t);
         } finally {
             getParams(p).timers.commitTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null)
@@ -544,7 +549,7 @@ public class TransactionManager
             setThreadName(id, "abort", p);
             p.abort(id, context);
         } catch (Throwable t) {
-            getLog().warn ("ABORT: " + id, t);
+            logParticipantWarning("ABORT: " + id, p, t);
         } finally {
             getParams(p).timers.abortTimer.record (c.elapsed(), TimeUnit.MILLISECONDS);
             if (metrics != null)
@@ -745,9 +750,9 @@ public class TransactionManager
         String realm = QFactory.getAttributeValue(e, "realm");
 
         try {
-            String participantShortName = Caller.shortClassName(participant.getClass().getName());
+            String participantShortName = participantName(participant, realm);
             params.put(participant, new ParticipantParams(
-                participantShortName + (realm != null && !realm.isEmpty() ? ":" + realm : ""),
+                participantShortName,
                 getLong (e, "timeout", 0L),
                 getLong (e, "max-time", globalMaxTime),
                 getSet(e.getChild("requires")),
@@ -1029,14 +1034,28 @@ public class TransactionManager
     }
 
     private String getName(TransactionParticipant p) {
-        return p.getClass().getName();
+        return Optional.ofNullable(params.get(p)).map(ParticipantParams::name).orElseGet(() -> defaultParticipantName(p));
     }
 
     private ParticipantParams getParams (TransactionParticipant p) {
         return Optional.ofNullable(params.get(p)).orElseGet(() ->
-          new ParticipantParams(p.getClass().getName(), 0L, 0L, Collections.emptySet(), Collections.emptySet(), Collections.emptySet(),
+          new ParticipantParams(defaultParticipantName(p), 0L, 0L, Collections.emptySet(), Collections.emptySet(), Collections.emptySet(),
             getOrCreateTimers(p))
         );
+    }
+
+    private String participantName(TransactionParticipant p, String alias) {
+        String resolvedAlias = alias != null ? alias.trim() : "";
+        return !resolvedAlias.isEmpty() ? resolvedAlias : defaultParticipantName(p);
+    }
+
+    private String defaultParticipantName(TransactionParticipant p) {
+        String simpleName = p.getClass().getSimpleName();
+        return simpleName != null && !simpleName.isEmpty() ? simpleName : Caller.shortClassName(p.getClass().getName());
+    }
+
+    private void logParticipantWarning(String detail, TransactionParticipant participant, Throwable t) {
+        Logger.log(getLog().createWarn(detail).withTag("participant", getName(participant)).add(t));
     }
 
     private String tmInfo() {
@@ -1195,7 +1214,9 @@ public class TransactionManager
 
     private Timers getOrCreateTimers(TransactionParticipant p) {
         return Optional.ofNullable(params.get(p)).map(ParticipantParams::timers).orElseGet(() -> {
-            String participantShortName = Caller.shortClassName(p.getClass().getName());
+            String participantShortName = Optional.ofNullable(params.get(p))
+              .map(ParticipantParams::name)
+              .orElseGet(() -> defaultParticipantName(p));
             var mr = getServer().getMeterRegistry();
             var tags = Tags.of("name", getName(), "participant", participantShortName);
             String realm = (p instanceof LogSource ls) ? ls.getRealm() : null;

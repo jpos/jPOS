@@ -79,6 +79,12 @@ public class QMUX
         super ();
         listeners = new ArrayList<>();
     }
+
+    @Override
+    protected String defaultRealm() {
+        return Realm.COMM_MUX;
+    }
+
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
         sp        = grabSpace (e.getChild ("space"));

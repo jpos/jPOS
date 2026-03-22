@@ -18,6 +18,10 @@
 
 package org.jpos.util;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Represents a LogSource and adds several helpers
  *
@@ -28,6 +32,7 @@ package org.jpos.util;
 public class Log implements LogSource {
     protected Logger logger;
     protected String realm;
+    protected final Map<String,String> defaultTags = Collections.synchronizedMap(new LinkedHashMap<>());
 
     public static final String TRACE   = "trace";
     public static final String DEBUG   = "debug";
@@ -60,6 +65,35 @@ public class Log implements LogSource {
     }
     public void setRealm (String realm) {
         this.realm = realm;
+    }
+    public void setDefaultTag(String key, String value) {
+        if (key == null)
+            return;
+        if (value == null)
+            defaultTags.remove(key);
+        else
+            defaultTags.put(key, value);
+    }
+    public void removeDefaultTag(String key) {
+        if (key != null)
+            defaultTags.remove(key);
+    }
+    public void setDefaultTags(Map<String,String> tags) {
+        defaultTags.clear();
+        if (tags != null && !tags.isEmpty())
+            defaultTags.putAll(tags);
+    }
+    public Map<String,String> getDefaultTags() {
+        synchronized (defaultTags) {
+            return Collections.unmodifiableMap(new LinkedHashMap<>(defaultTags));
+        }
+    }
+    protected LogEvent applyDefaultTags(LogEvent evt) {
+        synchronized (defaultTags) {
+            if (!defaultTags.isEmpty())
+                evt.withTags(defaultTags);
+        }
+        return evt;
     }
     public void trace (Object detail) {
         Logger.log (createTrace (detail));
@@ -110,10 +144,10 @@ public class Log implements LogSource {
         Logger.log (evt);
     }
     public LogEvent createLogEvent (String level) {
-        return new LogEvent (this, level);
+        return applyDefaultTags(new LogEvent (this, level));
     }
     public LogEvent createLogEvent (String level, Object detail) {
-        return new LogEvent (this, level, detail);
+        return applyDefaultTags(new LogEvent (this, level, detail));
     }
     public LogEvent createTrace () {
         return createLogEvent (TRACE);
@@ -152,4 +186,3 @@ public class Log implements LogSource {
         return createLogEvent (FATAL, detail);
     }
 }
-

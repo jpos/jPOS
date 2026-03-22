@@ -19,6 +19,7 @@
 package org.jpos.q2.security;
 
 import org.jpos.q2.Q2;
+import org.jpos.util.Realm;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -36,7 +37,7 @@ public class SMAdaptorTest {
     @Test
     public void testConstructor() throws Throwable {
         SMAdaptor sMAdaptor = new SMAdaptor();
-        assertEquals("org.jpos.q2.security.SMAdaptor", sMAdaptor.getLog().getRealm(), "sMAdaptor.getLog().getRealm()");
+        assertEquals(Realm.SECURITY, sMAdaptor.getLog().getRealm(), "sMAdaptor.getLog().getRealm()");
         assertEquals(-1, sMAdaptor.getState(), "sMAdaptor.getState()");
         assertTrue(sMAdaptor.isModified(), "sMAdaptor.isModified()");
     }

@@ -48,6 +48,7 @@ public class QBeanSupport
     final Object modifyLock = new Object();
     boolean modified;
     String name;
+    String configuredRealm;
     protected Log log;
     protected Configuration cfg;
     protected ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
@@ -75,21 +76,21 @@ public class QBeanSupport
     public void setName (String name) {
         if (this.name == null)
             this.name = name;
-        if (log != null)
-            log.setRealm (name);
+        syncLogConfiguration();
         setModified (true);
     }
 
     @Override
     public void setLogger (String loggerName) {
-        log = Log.getLog (loggerName, getClass().getName());
+        log = Log.getLog (loggerName, resolveRealm());
+        syncLogConfiguration();
         setModified (true);
     }
 
     @Override
     public void setRealm (String realm) {
-        if (log != null)
-            log.setRealm (realm);
+        configuredRealm = realm;
+        syncLogConfiguration();
     }
 
     @Override
@@ -104,6 +105,10 @@ public class QBeanSupport
 
     public Log getLog () {
         return log;
+    }
+
+    protected String defaultRealm() {
+        return null;
     }
 
     @Override
@@ -238,6 +243,24 @@ public class QBeanSupport
     }
     public Configuration getConfiguration () {
         return cfg;
+    }
+
+    private String resolveRealm() {
+        if (configuredRealm != null)
+            return configuredRealm;
+        String defaultRealm = defaultRealm();
+        if (defaultRealm != null)
+            return defaultRealm;
+        return name != null ? name : getClass().getName();
+    }
+
+    private void syncLogConfiguration() {
+        if (log == null)
+            return;
+        log.setRealm(resolveRealm());
+        log.removeDefaultTag("component");
+        if (configuredRealm == null && defaultRealm() != null && name != null)
+            log.setDefaultTag("component", name);
     }
 
     public String getDump () {

@@ -59,6 +59,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.PGPHelper;
+import org.jpos.util.Realm;
 import org.jpos.util.SimpleLogListener;
 import org.xml.sax.SAXException;
 
@@ -108,7 +109,7 @@ public class Q2 implements FileFilter, Runnable {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
     public static final String LOGGER_NAME         = "Q2";
-    public static final String REALM               = "Q2.system";
+    public static final String REALM               = Realm.Q2_LIFECYCLE;
     public static final String LOGGER_CONFIG       = "00_logger.xml";
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
@@ -129,6 +130,7 @@ public class Q2 implements FileFilter, Runnable {
     private QClassLoader loader;
     private ClassLoader mainClassLoader;
     private Log log;
+    private Log deployLog;
     private volatile boolean started;
     private CountDownLatch ready = new CountDownLatch(1);
     private CountDownLatch shutdown = new CountDownLatch(1);
@@ -602,7 +604,7 @@ public class Q2 implements FileFilter, Runnable {
 
     private void undeploy (File f) {
         QEntry qentry = dirMap.get (f);
-        LogEvent evt = log != null ? log.createInfo().withTraceId(getInstanceId()) : null;
+        LogEvent evt = getDeployLog().createInfo().withTraceId(getInstanceId());
         try {
             if (evt != null)
                 evt.addMessage (new UnDeploy(f.getCanonicalPath()));
@@ -637,7 +639,7 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     private boolean deploy (File f) {
-        LogEvent evt = log != null ? log.createInfo().withTraceId(getInstanceId()) : null;
+        LogEvent evt = getDeployLog().createInfo().withTraceId(getInstanceId());
         boolean enabled;
         try {
             QEntry qentry = dirMap.get (f);
@@ -743,8 +745,17 @@ public class Q2 implements FileFilter, Runnable {
             if (!hasSystemLogger && !logger.hasListeners() && cli == null)
                 logger.addListener (new SimpleLogListener (System.out));
             log = new Log (logger, REALM);
+            log.setDefaultTag("service", name);
         }
         return log;
+    }
+
+    private Log getDeployLog() {
+        if (deployLog == null) {
+            deployLog = new Log(getLog().getLogger(), Realm.Q2_DEPLOY);
+            deployLog.setDefaultTag("service", name);
+        }
+        return deployLog;
     }
     public MBeanServer getMBeanServer () {
         return server;
@@ -1212,7 +1223,7 @@ public class Q2 implements FileFilter, Runnable {
     private boolean waitForChanges (WatchService service) throws InterruptedException {
         WatchKey key = service.poll (SCAN_INTERVAL, TimeUnit.MILLISECONDS);
         if (key != null) {
-            LogEvent evt = getLog().createInfo().withTraceId(getInstanceId());
+            LogEvent evt = getDeployLog().createInfo().withTraceId(getInstanceId());
             for (WatchEvent<?> ev : key.pollEvents()) {
                 if (ev.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                     evt.addMessage(new DeployActivity(DeployActivity.Action.CREATE, String.format ("%s/%s", deployDir.getName(), ev.context())));
