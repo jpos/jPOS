@@ -28,6 +28,7 @@ import org.jpos.q2.qbean.QConfig;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.Realm;
 
 import javax.management.*;
 import java.lang.reflect.Field;
@@ -377,16 +378,30 @@ public class QFactory {
     }
 
     public void setLogger (Object obj, Element e) {
+        setLogger(obj, e, null);
+    }
+
+    public void setLogger (Object obj, Element e, String fallbackRealm) {
         if (obj instanceof LogSource) {
             String loggerName = getAttributeValue (e, "logger");
             if (loggerName != null) {
                 String realm = getAttributeValue (e, "realm");
                 if (realm == null)
-                    realm = e.getName();
+                    realm = fallbackRealm != null ? fallbackRealm : defaultRealm(e.getName());
                 Logger logger = Logger.getLogger (loggerName);
                 ((LogSource)obj).setLogger (logger, realm);
             }
         }
+    }
+
+    protected String defaultRealm(String elementName) {
+        return switch (elementName) {
+            case "channel" -> Realm.COMM_CHANNEL;
+            case "server" -> Realm.COMM_SERVER;
+            case "mux" -> Realm.COMM_MUX;
+            case "client" -> Realm.COMM_CLIENT;
+            default -> elementName;
+        };
     }
 
     public static String getAttributeValue (Element e, String name) {

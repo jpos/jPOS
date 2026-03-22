@@ -23,7 +23,6 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.Environment;
 import org.jpos.iso.*;
 import org.jpos.space.SpaceUtil;
-import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
 
@@ -56,11 +55,6 @@ public class MultiSessionChannelAdaptor
             channels = new ISOChannel[sessions];
             for (int i=0; i<sessions; i++) {
                 ISOChannel c = initChannel();
-                if (c instanceof LogSource) {
-                    LogSource ls = (LogSource) c;
-                    ls.setLogger(ls.getLogger(), ls.getRealm()+"-"+i);
-
-                }
                 channels[i] = c;
                 if (!writeOnly)
                     new Thread (new Receiver (i), "channel-receiver-" + in + "-" + i).start ();

@@ -28,6 +28,7 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.Realm;
 
 /**
  * OneShotChannelAdaptor connects and disconnects a channel for every message
@@ -61,6 +62,11 @@ public class OneShotChannelAdaptor
     int maxConnectAttempts;
     public OneShotChannelAdaptor () {
         super ();
+    }
+
+    @Override
+    protected String defaultRealm() {
+        return Realm.COMM_CLIENT;
     }
 
     @SuppressWarnings("unchecked")
@@ -198,7 +204,7 @@ public class OneShotChannelAdaptor
             if (socketFactoryString != null && channel instanceof FactoryChannel) {
                 ISOClientSocketFactory sFac = getFactory().newInstance(socketFactoryString);
                 if (sFac instanceof LogSource) {
-                    ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
+                    ((LogSource) sFac).setLogger(log.getLogger(), getRealm());
                 }
                 getFactory().setConfiguration (sFac, e);
                 ((FactoryChannel)channel).setSocketFactory(sFac);
@@ -221,7 +227,7 @@ public class OneShotChannelAdaptor
                 f.setConfiguration (packager, e);
             }
             QFactory.invoke (channel, "setHeader", QFactory.getAttributeValue (e, "header"));
-            f.setLogger        (channel, e);
+            f.setLogger       (channel, e, getRealm());
             f.setConfiguration (channel, e);
 
             if (channel instanceof FilteredChannel) {
@@ -315,4 +321,3 @@ public class OneShotChannelAdaptor
         return getProperty(getProperties ("channel"), "socketFactory");
     }
 }
-

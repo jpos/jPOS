@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.jpos.q2.Q2;
+import org.jpos.util.Realm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +49,11 @@ public class SystemMonitorTest {
     public void onSetup() throws Exception {
         baos = new ByteArrayOutputStream();
         printStream = new PrintStream(baos, true, "US-ASCII");
+    }
+
+    @Test
+    public void testConstructor() {
+        assertEquals(Realm.Q2_SYSMON, systemMonitor.getLog().getRealm(), "systemMonitor.getLog().getRealm()");
     }
 
     @Test

@@ -39,6 +39,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.Realm;
 
 import java.io.IOException;
 import java.util.Date;
@@ -80,6 +81,11 @@ public class OneShotChannelAdaptorMK2
         super();
     }
 
+    @Override
+    protected String defaultRealm() {
+        return Realm.COMM_CLIENT;
+    }
+
     @SuppressWarnings("unchecked")
     private Space<String, Object> grabSpace(Element e)
     {
@@ -115,7 +121,6 @@ public class OneShotChannelAdaptorMK2
 
     public void startService()
     {
-        setRealm(getName());
         cnt = new AtomicInteger(0);
         threadPool = new ThreadPoolExecutor(1,
                                             maxConnections,
@@ -340,7 +345,7 @@ public class OneShotChannelAdaptorMK2
             f.setConfiguration(packager, e);
         }
         QFactory.invoke(channel, "setHeader", QFactory.getAttributeValue(e, "header"));
-        f.setLogger(channel, e);
+        f.setLogger(channel, e, getRealm());
         f.setConfiguration(channel, e);
 
         if (channel instanceof FilteredChannel)
@@ -354,7 +359,7 @@ public class OneShotChannelAdaptorMK2
             ISOClientSocketFactory sFac = (ISOClientSocketFactory) getFactory().newInstance(socketFactoryString);
             if (sFac != null && sFac instanceof LogSource)
             {
-                ((LogSource) sFac).setLogger(log.getLogger(), getName() + ".socket-factory");
+                ((LogSource) sFac).setLogger(log.getLogger(), getRealm());
             }
             getFactory().setConfiguration(sFac, e);
             ((FactoryChannel) channel).setSocketFactory(sFac);

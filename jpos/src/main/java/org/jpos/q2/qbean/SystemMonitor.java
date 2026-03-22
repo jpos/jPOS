@@ -73,6 +73,11 @@ public class SystemMonitor extends QBeanSupport
     @Config("dump-stacktrace")
     boolean dumpStackTrace;
 
+    @Override
+    protected String defaultRealm() {
+        return Realm.Q2_SYSMON;
+    }
+
     int stackTraceDepth;
     @Override
     public void initService() { }

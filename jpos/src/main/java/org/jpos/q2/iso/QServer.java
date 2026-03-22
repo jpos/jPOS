@@ -90,7 +90,7 @@ public class QServer
         }
 
         ChannelAdaptor adaptor = new ChannelAdaptor ();     // leverage adaptor's newChannel logic
-        channel = adaptor.newChannel (e, getFactory ());
+        channel = adaptor.newChannel (e, getFactory (), getRealm());
     }
 
     private void initServer ()
@@ -110,12 +110,12 @@ public class QServer
         }
 
         server = new ISOServer (port, (ServerChannel) channel, maxSessions);
-        server.setLogger (log.getLogger(), getName() + ".server");
+        server.setLogger (log.getLogger(), getRealm());
         server.setName (getName ());
         if (socketFactoryString != null) {
             ISOServerSocketFactory sFac = getFactory().newInstance(socketFactoryString);
             if (sFac instanceof LogSource ls) {
-                ls.setLogger(log.getLogger(),getName() + ".socket-factory");
+                ls.setLogger(log.getLogger(), getRealm());
             }
             server.setSocketFactory(sFac);
         }

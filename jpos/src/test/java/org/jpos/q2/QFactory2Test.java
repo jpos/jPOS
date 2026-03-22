@@ -45,6 +45,8 @@ import org.jpos.iso.IVA_ALPHANUM;
 import org.jpos.q2.iso.ChannelAdaptor;
 import org.jpos.transaction.participant.BSHTransactionParticipant;
 import org.jpos.transaction.participant.Join;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
 import org.junit.jupiter.api.Test;
 
 public class QFactory2Test {
@@ -298,6 +300,44 @@ public class QFactory2Test {
     }
 
     @Test
+    public void testSetLoggerUsesFallbackRealmWhenProvided() throws Throwable {
+        String[] args = new String[0];
+        Element e = new Element("channel");
+        e.setAttribute("logger", "Q2");
+        TestLogSource source = new TestLogSource();
+        Q2 q2 = new Q2(args);
+        new QFactory(new ObjectName(""), q2).setLogger(source, e, "comm/channel");
+        assertEquals("comm/channel", source.getRealm(), "source.getRealm()");
+        assertEquals("Q2", source.getLogger().getName(), "source.getLogger().getName()");
+        q2.stop();
+    }
+
+    @Test
+    public void testSetLoggerPrefersExplicitRealmOverFallback() throws Throwable {
+        String[] args = new String[0];
+        Element e = new Element("channel");
+        e.setAttribute("logger", "Q2");
+        e.setAttribute("realm", "custom/channel");
+        TestLogSource source = new TestLogSource();
+        Q2 q2 = new Q2(args);
+        new QFactory(new ObjectName(""), q2).setLogger(source, e, "comm/channel");
+        assertEquals("custom/channel", source.getRealm(), "source.getRealm()");
+        q2.stop();
+    }
+
+    @Test
+    public void testSetLoggerUsesKnownElementRealmWhenNoFallbackProvided() throws Throwable {
+        String[] args = new String[0];
+        Element e = new Element("channel");
+        e.setAttribute("logger", "Q2");
+        TestLogSource source = new TestLogSource();
+        Q2 q2 = new Q2(args);
+        new QFactory(new ObjectName(""), q2).setLogger(source, e);
+        assertEquals("comm/channel", source.getRealm(), "source.getRealm()");
+        q2.stop();
+    }
+
+    @Test
     public void testStartQBeanThrowsNullPointerException() throws Throwable {
         String[] args = new String[0];
         Q2 q2 = new Q2(args);
@@ -518,5 +558,26 @@ public class QFactory2Test {
     
     @Test
     public void testAutoconfigureEnum() throws Throwable {
+    }
+
+    static class TestLogSource implements LogSource {
+        private Logger logger;
+        private String realm;
+
+        @Override
+        public void setLogger(Logger logger, String realm) {
+            this.logger = logger;
+            this.realm = realm;
+        }
+
+        @Override
+        public String getRealm() {
+            return realm;
+        }
+
+        @Override
+        public Logger getLogger() {
+            return logger;
+        }
     }
 }

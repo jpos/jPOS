@@ -210,6 +210,11 @@ public class ChannelAdaptor
 
     /** Parses a {@code <channel>}  element, returning an {@link ISOChannel} */
     public ISOChannel newChannel (Element e, QFactory f) throws ConfigurationException {
+        return newChannel(e, f, getRealm());
+    }
+
+    /** Parses a {@code <channel>} element, using the provided fallback realm when needed. */
+    public ISOChannel newChannel (Element e, QFactory f, String fallbackRealm) throws ConfigurationException {
         String channelName  = QFactory.getAttributeValue (e, "class");
         String packagerName = QFactory.getAttributeValue (e, "packager");
 
@@ -220,7 +225,7 @@ public class ChannelAdaptor
             f.setConfiguration (packager, e);
         }
         QFactory.invoke (channel, "setHeader", QFactory.getAttributeValue (e, "header"));
-        f.setLogger        (channel, e);
+        f.setLogger       (channel, e, fallbackRealm);
         f.setConfiguration (channel, e);
 
         if (channel instanceof FilteredChannel) {
@@ -256,7 +261,7 @@ public class ChannelAdaptor
                     if (met != null)
                         f.setLogger(mc, met);
                     else
-                        mc.setLogger(this.getLog().getLogger(), this.getRealm()+"/metrics");
+                        mc.setLogger(this.getLog().getLogger(), this.getRealm());
                     yield mc;
                 }
 
@@ -319,7 +324,7 @@ public class ChannelAdaptor
         if (socketFactoryString != null && c instanceof FactoryChannel) {
             ISOClientSocketFactory sFac = getFactory().newInstance(socketFactoryString);
             if (sFac instanceof LogSource) {
-                ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
+                ((LogSource) sFac).setLogger(log.getLogger(), getRealm());
             }
             getFactory().setConfiguration (sFac, e);
             ((FactoryChannel)c).setSocketFactory(sFac);

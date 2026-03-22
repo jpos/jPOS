@@ -28,10 +28,8 @@ public final class Realm {
     public static final String Q2 = "q2";
     public static final String Q2_DEPLOY = "q2/deploy";
     public static final String Q2_LIFECYCLE = "q2/lifecycle";
+    public static final String Q2_SYSMON = "q2/sysinfo";
     public static final String SECURITY = "security";
-    public static final String SECURITY_AUTHN = "security/authn";
-    public static final String SECURITY_AUTHZ = "security/authz";
-    public static final String SECURITY_AUDIT = "security/audit";
     public static final String SYSTEM = "system";
 
     private Realm() {

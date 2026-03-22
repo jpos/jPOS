@@ -25,10 +25,27 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.jdom2.Element;
+import org.jpos.core.SimpleConfiguration;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.channel.CSChannel;
+import org.jpos.iso.packager.ISO87BPackager;
+import org.jpos.iso.ISOServer;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
+import org.jpos.q2.Q2;
+import org.jpos.q2.QFactory;
 import org.jpos.util.Realm;
 import org.junit.jupiter.api.Test;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Field;
+import java.net.ServerSocket;
 
 public class QServerTest {
 
@@ -40,6 +57,56 @@ public class QServerTest {
         assertEquals(100, qServer.getMaxSessions(), "qServer.getMaxSessions()");
         assertTrue(qServer.isModified(), "qServer.isModified()");
         assertEquals(0, qServer.getPort(), "qServer.getPort()");
+    }
+
+    @Test
+    public void testWrappedServerUsesStableRealm() throws Throwable {
+        QServer qServer = new QServer();
+        qServer.setName("iso-server");
+        qServer.setPersist(new Element("server")
+          .addContent(new Element("channel").setAttribute("class", CSChannel.class.getName()))
+        );
+
+        Q2 q2 = mock(Q2.class);
+        QFactory factory = mock(QFactory.class);
+        when(q2.getFactory()).thenReturn(factory);
+        when(q2.getMeterRegistry()).thenReturn(new SimpleMeterRegistry());
+        when(factory.newInstance(CSChannel.class.getName())).thenReturn(new CSChannel(new ISO87BPackager()));
+        org.mockito.Mockito.doAnswer(inv -> {
+            Object obj = inv.getArgument(0);
+            Element element = inv.getArgument(1);
+            String fallbackRealm = inv.getArgument(2);
+            if (obj instanceof LogSource logSource) {
+                logSource.setLogger(Logger.getLogger(element.getAttributeValue("logger")), fallbackRealm);
+            }
+            return null;
+        }).when(factory).setLogger(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any());
+        doNothing().when(factory).setConfiguration(org.mockito.ArgumentMatchers.argThat(o -> !(o instanceof ISOServer)), org.mockito.ArgumentMatchers.any());
+        org.mockito.Mockito.doAnswer(inv -> {
+            ISOServer server = inv.getArgument(0);
+            SimpleConfiguration cfg = new SimpleConfiguration();
+            cfg.put("backlog", "5");
+            server.setConfiguration(cfg);
+            return null;
+        }).when(factory).setConfiguration(org.mockito.ArgumentMatchers.argThat(ISOServer.class::isInstance), org.mockito.ArgumentMatchers.any());
+        qServer.setServer(q2);
+
+        int port;
+        try (ServerSocket probe = new ServerSocket(0)) {
+            port = probe.getLocalPort();
+        }
+        qServer.setPort(port);
+
+        Method initServer = QServer.class.getDeclaredMethod("initServer");
+        initServer.setAccessible(true);
+        initServer.invoke(qServer);
+
+        assertEquals(Realm.COMM_SERVER, qServer.getISOServer().getRealm(), "qServer.getISOServer().getRealm()");
+        Field channelField = QServer.class.getDeclaredField("channel");
+        channelField.setAccessible(true);
+        ISOChannel channel = (ISOChannel) channelField.get(qServer);
+        assertEquals(Realm.COMM_SERVER, ((LogSource) channel).getRealm(), "channel.getRealm()");
+        qServer.getISOServer().shutdown();
     }
 
     @Test
