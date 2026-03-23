@@ -26,10 +26,15 @@ public class SimpleConfigurationWithCryptoTest {
         String encryptedPassword = CryptoEnvironmentProvider.encrypt(password);
 
         Properties props = new Properties();
-        props.setProperty("db.password", encryptedPassword);
+        // Environment evaluates ${...} properties by resolving their references
+        // (from env/sys/cfg) and applying EnvironmentProviders if there's a matching prefix (like enc::)
+        System.setProperty("db.password.encrypted", encryptedPassword);
+        props.setProperty("db.password", "${db.password.encrypted}");
 
         SimpleConfiguration cfg = new SimpleConfiguration(props);
 
         assertEquals(password, cfg.get("db.password"));
+        
+        System.clearProperty("db.password.encrypted");
     }
 }

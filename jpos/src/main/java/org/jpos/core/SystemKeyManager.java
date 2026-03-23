@@ -18,6 +18,9 @@
 
 package org.jpos.core;
 
+import org.jpos.util.Log;
+import org.jpos.q2.Q2;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -35,6 +38,7 @@ import java.util.Base64;
  * </ul>
  */
 public class SystemKeyManager {
+    private static final Log log = Log.getLog(Q2.LOGGER_NAME, "crypto-env-provider");
     private static final String DEFAULT_KEY_NAME = "default";
     private static final String DEFAULT_ENV_VAR = "JPOS_ENCRYPTION_KEY";
     private static final int KEY_SIZE_BITS = 256;
@@ -87,12 +91,10 @@ public class SystemKeyManager {
                 if (keyBytes.length == KEY_SIZE_BITS / 8) {
                     return new SecretKeySpec(keyBytes, "AES");
                 } else {
-                    java.util.logging.Logger.getLogger(SystemKeyManager.class.getName())
-                            .warning("Invalid key length in environment variable " + envVarName + ". Expected " + (KEY_SIZE_BITS / 8) + " bytes, got " + keyBytes.length);
+                    log.warn("Invalid key length in " + envVarName + ": expected " + (KEY_SIZE_BITS / 8) + " bytes, got " + keyBytes.length);
                 }
             } catch (IllegalArgumentException e) {
-                java.util.logging.Logger.getLogger(SystemKeyManager.class.getName())
-                        .warning("Invalid Base64 in environment variable " + envVarName + ": " + e.getMessage());
+                log.warn("Invalid Base64 in " + envVarName + ": " + e.getMessage());
             }
         }
 
@@ -148,7 +150,8 @@ public class SystemKeyManager {
 
     /**
      * Gets the environment variable name for a key.
-     * Non-alphanumeric characters in the key name are normalized to underscores.
+     * Non-alphanumeric characters in the key name (including hyphens) are normalized to underscores.
+     * For example, "my-key" becomes "JPOS_ENCRYPTION_KEY_MY_KEY".
      *
      * @param keyName the name of the key
      * @return the environment variable name

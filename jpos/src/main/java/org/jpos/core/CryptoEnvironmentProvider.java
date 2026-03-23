@@ -18,6 +18,9 @@
 
 package org.jpos.core;
 
+import org.jpos.util.Log;
+import org.jpos.q2.Q2;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
@@ -40,6 +43,8 @@ import java.util.Base64;
  * </ul>
  */
 public class CryptoEnvironmentProvider implements EnvironmentProvider {
+    private static final Log log = Log.getLog(Q2.LOGGER_NAME, "crypto-env-provider");
+
     private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
     private static final String ENC_PREFIX = "enc::";
@@ -86,9 +91,13 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             // Use SystemKeyManager to get the derived key
             SecretKey key = SystemKeyManager.getInstance().getKey(keyName);
             if (key == null) {
+                String envVarName = SystemKeyManager.getInstance().getEnvVarName(keyName);
+                log.warn("Key not found in environment for name: " + 
+                        (keyName != null && !keyName.isEmpty() ? keyName : "default") + 
+                        ". Please set " + envVarName);
                 throw new RuntimeException("Key not found in environment for name: " + 
                         (keyName != null && !keyName.isEmpty() ? keyName : "default") + 
-                        ". Please set " + SystemKeyManager.getInstance().getEnvVarName(keyName));
+                        ". Please set " + envVarName);
             }
             SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), ALGORITHM);
 
@@ -125,9 +134,13 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
         try {
             SecretKey key = SystemKeyManager.getInstance().getKey(keyName);
             if (key == null) {
+                String envVarName = SystemKeyManager.getInstance().getEnvVarName(keyName);
+                log.warn("Key not found in environment for name: " + 
+                        (keyName != null && !keyName.isEmpty() ? keyName : "default") + 
+                        ". Please set " + envVarName);
                 throw new IllegalArgumentException("Key not found in environment for name: " + 
                         (keyName != null && !keyName.isEmpty() ? keyName : "default") + 
-                        ". Please set " + SystemKeyManager.getInstance().getEnvVarName(keyName));
+                        ". Please set " + envVarName);
             }
             SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), ALGORITHM);
 

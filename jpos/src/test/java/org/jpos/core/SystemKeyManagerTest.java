@@ -20,8 +20,14 @@ package org.jpos.core;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.jpos.util.Log;
+import org.jpos.util.Logger;
+import org.jpos.util.SimpleLogListener;
+import org.jpos.q2.Q2;
 
 import javax.crypto.SecretKey;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -144,6 +150,61 @@ public class SystemKeyManagerTest {
         assertEquals("JPOS_ENCRYPTION_KEY_MY_KEY", manager.getEnvVarName("my-key"));
         assertEquals("JPOS_ENCRYPTION_KEY_API_KEY_123_", manager.getEnvVarName("api_key 123!"));
         assertEquals("JPOS_ENCRYPTION_KEY_XYZ_", manager.getEnvVarName("XYZ#")); // Testing user's exact example
+    }
+
+    @Test
+    public void testLoggingInvalidBase64() throws Exception {
+        SystemKeyManager manager = SystemKeyManager.getInstance();
+        String envVarName = manager.getEnvVarName(DEFAULT);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        SimpleLogListener listener = new SimpleLogListener(ps);
+        
+        Logger logger = Logger.getLogger(Q2.LOGGER_NAME);
+        logger.addListener(listener);
+        
+        try {
+            System.setProperty(envVarName, "invalid-base64!!!");
+
+            manager.getKey(DEFAULT);
+            
+            String output = baos.toString();
+            assertTrue(output.contains("Invalid Base64"), 
+                "Log should contain 'Invalid Base64' message, got: " + output);
+        } finally {
+            logger.removeListener(listener);
+            System.clearProperty(envVarName);
+        }
+    }
+
+    @Test
+    public void testLoggingInvalidKeyLength() throws Exception {
+        SystemKeyManager manager = SystemKeyManager.getInstance();
+        String envVarName = manager.getEnvVarName(DEFAULT);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        SimpleLogListener listener = new SimpleLogListener(ps);
+        
+        Logger logger = Logger.getLogger(Q2.LOGGER_NAME);
+        logger.addListener(listener);
+        
+        try {
+            String shortKey = Base64.getEncoder().encodeToString(new byte[16]);
+            System.setProperty(envVarName, shortKey);
+
+            manager.getKey(DEFAULT);
+            
+            String output = baos.toString();
+            assertTrue(output.contains("Invalid key length"), 
+                "Log should contain 'Invalid key length' message, got: " + output);
+            assertTrue(output.contains("expected 32"), 
+                "Log should mention expected key length, got: " + output);
+        } finally {
+            logger.removeListener(listener);
+            System.clearProperty(envVarName);
+        }
     }
 
 }
