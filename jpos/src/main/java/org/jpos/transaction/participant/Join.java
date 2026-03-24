@@ -28,157 +28,164 @@ import org.jpos.transaction.TransactionParticipant;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.StructuredTaskScope;
 
-@SuppressWarnings("unchecked")
-public class Join
-       implements TransactionConstants, AbortParticipant, 
-                  XmlConfigurable
-{
+/**
+ * Runs a set of {@link TransactionParticipant}s in parallel using
+ * Java 26 Structured Concurrency ({@link StructuredTaskScope}).
+ *
+ * <p>Requires Java 26+. {@code StructuredTaskScope} is a preview API in Java 21–25
+ * and graduates as a standard API in Java 26. This branch is parked until jPOS
+ * moves its baseline to Java 26.</p>
+ *
+ * <p>Compared to the previous {@code Runner}-based implementation:</p>
+ * <ul>
+ *   <li>The {@code Runner} inner class is eliminated entirely.</li>
+ *   <li>Subtask lifetimes are strictly bounded by the enclosing scope —
+ *       no subtask can outlive {@code prepare()}, {@code commit()}, or {@code abort()}.</li>
+ *   <li>Exceptions thrown by participants are propagated to the caller via
+ *       {@code throwIfFailed()} rather than being silently swallowed.</li>
+ *   <li>The {@code NO_JOIN} flag from {@code prepare} is preserved per-transaction
+ *       and honoured correctly in {@code commit}/{@code abort}.</li>
+ * </ul>
+ */
+public class Join implements TransactionConstants, AbortParticipant, XmlConfigurable {
+
     private TransactionManager tm;
-    private final List<TransactionParticipant> participants = new ArrayList<> ();
+    private final List<TransactionParticipant> participants = new ArrayList<>();
 
-    public int prepare (long id, Serializable o) {
-        return mergeActions(
-            joinRunners(prepare (createRunners(id, o)))
-        );
+    /**
+     * Stores the prepare result per participant per transaction id,
+     * so that the NO_JOIN flag is correctly honoured in commit/abort.
+     */
+    private final Map<Long, Map<TransactionParticipant, Integer>> prepareResults =
+        new ConcurrentHashMap<>();
+
+    @Override
+    public int prepare(long id, Serializable o) {
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+            List<StructuredTaskScope.Subtask<int[]>> subtasks = participants.stream()
+                .map(p -> scope.fork(() -> new int[]{ participants.indexOf(p), p.prepare(id, o) }))
+                .toList();
+
+            scope.join().throwIfFailed();
+
+            Map<TransactionParticipant, Integer> results = new ConcurrentHashMap<>();
+            int[] actions = new int[participants.size()];
+            for (var subtask : subtasks) {
+                int[] result = subtask.get();
+                int idx    = result[0];
+                int action = result[1];
+                results.put(participants.get(idx), action);
+                actions[idx] = action;
+            }
+            prepareResults.put(id, results);
+            return mergeActions(actions);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return ABORTED;
+        } catch (ExecutionException e) {
+            return ABORTED;
+        }
     }
-    public int prepareForAbort  (long id, Serializable o) { 
-        return mergeActions(
-            joinRunners(prepareForAbort (createRunners(id, o)))
-        );
+
+    @Override
+    public int prepareForAbort(long id, Serializable o) {
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+            List<TransactionParticipant> abortParticipants = participants.stream()
+                .filter(p -> p instanceof AbortParticipant)
+                .toList();
+
+            List<StructuredTaskScope.Subtask<int[]>> subtasks = abortParticipants.stream()
+                .map(p -> scope.fork(() ->
+                    new int[]{ abortParticipants.indexOf(p),
+                               ((AbortParticipant) p).prepareForAbort(id, o) }))
+                .toList();
+
+            scope.join().throwIfFailed();
+
+            int[] actions = new int[abortParticipants.size()];
+            for (var subtask : subtasks) {
+                int[] result = subtask.get();
+                actions[result[0]] = result[1];
+            }
+            return mergeActions(actions);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return ABORTED;
+        } catch (ExecutionException e) {
+            return ABORTED;
+        }
     }
-    public void commit (long id, Serializable o) { 
-        joinRunners(commit (createRunners(id, o)));
+
+    @Override
+    public void commit(long id, Serializable o) {
+        Map<TransactionParticipant, Integer> results = prepareResults.remove(id);
+        List<TransactionParticipant> targets = participants.stream()
+            .filter(p -> results == null || (results.getOrDefault(p, 0) & NO_JOIN) == 0)
+            .toList();
+        runAll(targets, p -> p.commit(id, o));
     }
-    public void abort  (long id, Serializable o) { 
-        joinRunners(abort (createRunners(id, o)));
+
+    @Override
+    public void abort(long id, Serializable o) {
+        Map<TransactionParticipant, Integer> results = prepareResults.remove(id);
+        List<TransactionParticipant> targets = participants.stream()
+            .filter(p -> results == null || (results.getOrDefault(p, 0) & NO_JOIN) == 0)
+            .toList();
+        runAll(targets, p -> p.abort(id, o));
     }
-    public void setConfiguration (Element e) throws ConfigurationException {
+
+    @Override
+    public void setConfiguration(Element e) throws ConfigurationException {
         for (Element element : e.getChildren("participant")) {
             participants.add(tm.createParticipant(element));
         }
     }
-    public void setTransactionManager (TransactionManager mgr) {
+
+    @Override
+    public void setTransactionManager(TransactionManager mgr) {
         this.tm = mgr;
     }
-    private Runner[] prepare (Runner[] runners) {
-        for (Runner runner : runners) runner.prepare();
-        return runners;
-    }
-    private Runner[] prepareForAbort (Runner[] runners) {
-        for (Runner runner : runners) runner.prepareForAbort();
-        return runners;
-    }
-    private Runner[] commit (Runner[] runners) {
-        for (Runner runner : runners) runner.commit();
-        return runners;
-    }
-    private Runner[] abort (Runner[] runners) {
-        for (Runner runner : runners) runner.abort();
-        return runners;
-    }
-    private Runner[] createRunners(long id, Serializable o) {
-        Runner[] runners = new Runner[participants.size()];
-        Iterator<TransactionParticipant> iter = participants.iterator();
-        for (int i=0; iter.hasNext(); i++) {
-            runners[i] = new Runner (
-              iter.next(), id, o
-            );
+
+    // ── helpers ──────────────────────────────────────────────────────────────
+
+    private void runAll(List<TransactionParticipant> targets, ParticipantAction action) {
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+            targets.forEach(p -> scope.fork(() -> { action.run(p); return null; }));
+            scope.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
-        return runners;
     }
-    private Runner[] joinRunners (Runner[] runners) {
-        for (Runner runner : runners) runner.join();
-        return runners;
-    }
-    private int mergeActions (Runner[] runners) {
+
+    private int mergeActions(int[] actions) {
         boolean prepared = true;
         boolean readonly = true;
-        boolean no_join = true;
-        boolean retry = false;
-        for (Runner runner : runners) {
-            int action = runner.rc;
-            retry = (action & RETRY) == RETRY;
-            if (retry)
+        boolean no_join  = true;
+        for (int action : actions) {
+            if ((action & RETRY) == RETRY)
                 return RETRY;
             if ((action & PREPARED) == ABORTED)
                 prepared = false;
             if ((action & READONLY) != READONLY)
                 readonly = false;
             if ((action & NO_JOIN) != NO_JOIN)
-                no_join = false;
+                no_join  = false;
         }
-        return (prepared ? PREPARED : ABORTED) |
-               (no_join  ? NO_JOIN  : 0) |
-               (readonly ? READONLY : 0);
+        return (prepared ? PREPARED : ABORTED)
+             | (no_join  ? NO_JOIN  : 0)
+             | (readonly ? READONLY : 0);
     }
-    public static class Runner implements Runnable {
-        private TransactionParticipant p;
-        public int rc;
-        long id;
-        int mode;
-        private Serializable ctx;
-        Thread t;
-        public static final int PREPARE = 0;
-        public static final int PREPARE_FOR_ABORT = 1;
-        public static final int COMMIT = 2;
-        public static final int ABORT = 3;
-        public static final String[] MODES = {
-            "prepare", "prepareForAbort", "commit", "abort"
-        };
 
-        private String threadName;
-
-        public Runner (TransactionParticipant p, long id, Serializable ctx) {
-            this.p = p;
-            this.id = id;
-            this.ctx = ctx;
-        }
-        public void prepare() {
-            createThread (PREPARE);
-        }
-        public void prepareForAbort() {
-            createThread (PREPARE_FOR_ABORT);
-        }
-        public void commit () {
-            createThread (COMMIT);
-        }
-        public void abort () {
-            createThread (ABORT);
-        }
-        public void run() {
-            switch (mode) {
-                case PREPARE -> rc = p.prepare(id, ctx);
-                case PREPARE_FOR_ABORT -> {
-                    if (p instanceof AbortParticipant)
-                        rc = ((AbortParticipant) p).prepareForAbort(id, ctx);
-                }
-                case COMMIT -> {
-                    if ((rc & NO_JOIN) == 0)
-                        p.commit(id, ctx);
-                }
-                case ABORT -> {
-                    if ((rc & NO_JOIN) == 0)
-                        p.abort(id, ctx);
-                }
-            }
-        }
-        public void join () {
-            try {
-                t.join ();
-            } catch (InterruptedException ignored) { }
-        }
-        private void createThread (int m) {
-            this.mode = m;
-            this.t = Thread.ofVirtual().name(
-              "%s%s:%s".formatted(
-                MODES[mode],
-                this.getClass().getName(),
-                p.getClass().getName()
-              )
-            ).start(this);
-        }
+    @FunctionalInterface
+    private interface ParticipantAction {
+        void run(TransactionParticipant p) throws Exception;
     }
 }
