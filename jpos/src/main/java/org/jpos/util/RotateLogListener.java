@@ -57,11 +57,15 @@ public class RotateLogListener extends SimpleLogListener
     boolean rotateOnStartup = false;
     String fileNamePattern = null;
     Rotate rotate;
+    /** Number of log events between size checks. */
     public static final int CHECK_INTERVAL = 100;
+    /** Default maximum log file size in bytes (10 MB). */
     public static final long DEFAULT_MAXSIZE = 10000000;
     private boolean hasWriter;
 
+    /** Timer strategy used to schedule rotation. */
     ScheduleTimer timer = null;
+    /** Algorithm used to perform the actual log rotation. */
     RotationAlgo rotationAlgo = null;
 
     public RotateLogListener () {
@@ -92,8 +96,8 @@ public class RotateLogListener extends SimpleLogListener
     * <p>
     * file is expected to contain %s tokens for replacement when enabled, as expected by String.format.
     * </p>
-    * @param cfg Configuration 
-    * @throws ConfigurationException
+    * @param cfg Configuration
+    * @throws ConfigurationException if mandatory configuration is missing or invalid
     */
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException
@@ -161,6 +165,10 @@ public class RotateLogListener extends SimpleLogListener
 
         return super.log (ev);
     }
+    /**
+     * Opens (or reopens) the log file for appending.
+     * @throws IOException on I/O failure
+     */
     protected synchronized void openLogFile() throws IOException {
         if (f != null)
             f.close();
@@ -171,6 +179,10 @@ public class RotateLogListener extends SimpleLogListener
             p.println("<logger class=\"" + getClass().getName() + "\">");
         }
     }
+    /**
+     * Flushes and closes the current log file.
+     * @throws IOException on I/O failure
+     */
     protected synchronized void closeLogFile() throws IOException {
         if (writer != null)
             writer.close();
@@ -180,12 +192,21 @@ public class RotateLogListener extends SimpleLogListener
             f.close();
         f = null;
     }
+    /**
+     * Rotates the log file (non-startup variant).
+     * @throws IOException on I/O failure
+     */
     public void logRotate ()
         throws IOException
     {
         logRotate(false);
     }
 
+    /**
+     * Rotates the log file, optionally skipping the close/reopen cycle on startup.
+     * @param isStartup {@code true} if this is a startup rotation
+     * @throws IOException on I/O failure
+     */
     public synchronized void logRotate(boolean isStartup)
     throws IOException {
         if (!isStartup) {
@@ -197,6 +218,10 @@ public class RotateLogListener extends SimpleLogListener
         openLogFile();
     }
 
+    /**
+     * Writes a debug message directly to the log file.
+     * @param msg the debug message
+     */
     protected synchronized void logDebug (String msg) {
         if (p != null) {
             p.println ("<log realm=\"rotate-log-listener\" at=\""+LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())+"\">");
@@ -204,6 +229,7 @@ public class RotateLogListener extends SimpleLogListener
             p.println ("</log>");
         }
     }
+    /** Checks whether the log file has exceeded {@code maxSize} and rotates if necessary. */
     protected void checkSize() {
         if (maxSize > 0) {
             File logFile = new File(logName);
@@ -218,6 +244,12 @@ public class RotateLogListener extends SimpleLogListener
         }
     }
 
+    /**
+     * Applies a filename pattern to the given filename using the specified codes.
+     * @param inFileName the base log filename (containing {@code %s} tokens)
+     * @param patternCodes comma-delimited pattern codes (e.g. {@code "h"} for hostname)
+     * @return the filename with tokens replaced
+     */
     protected String fileNameFromPattern(String inFileName, String patternCodes) {
         String[] computedValues;
 
@@ -243,7 +275,9 @@ public class RotateLogListener extends SimpleLogListener
         return String.format(inFileName, (Object[]) computedValues);
     }
 
+    /** TimerTask that triggers log rotation on schedule. */
     public class Rotate extends TimerTask {
+        /** Performs log rotation and logs any failure. */
         public void run() {
             try {
                 logDebug ("time exceeded - log rotated");

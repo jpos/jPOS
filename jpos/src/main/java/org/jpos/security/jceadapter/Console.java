@@ -45,6 +45,7 @@ public class Console {
     }
 
     /**
+     * Entry point for the JCE security console.
      * @param args command-line arguments passed to {@link #exec}
      */
     public static void main (String[] args) {

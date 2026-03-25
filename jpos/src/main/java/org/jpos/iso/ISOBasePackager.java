@@ -36,18 +36,33 @@ import java.util.Map;
  */
 @SuppressWarnings ("unused")
 public abstract class ISOBasePackager implements ISOPackager, LogSource {
+    /** Array of field packagers indexed by field number. */
     protected ISOFieldPackager[] fld;
+    /** Field number used as the tertiary bitmap; {@code -999} if not configured. */
     protected int thirdBitmapField= -999;       // for implementations where the tertiary bitmap is inside a Data Element
 
+    /** Logger associated with this packager. */
     protected Logger logger = null;
+    /** When {@code true}, field names are included in log output. */
     protected boolean logFieldName= true;
+    /** Logging realm for this packager. */
     protected String realm = null;
+    /** Number of bytes reserved for a message header. */
     protected int headerLength = 0;
 
+    /**
+     * Sets the array of field packagers used by this packager.
+     * @param fld array of {@link ISOFieldPackager} instances indexed by field number
+     */
     public void setFieldPackager (ISOFieldPackager[] fld) {
         this.fld = fld;
     }
 
+    /**
+     * Sets the field number that contains the third bitmap.
+     * @param f field number (must be &gt;= 0 and &lt;= 128)
+     * @throws ISOException if {@code f} is out of range
+     */
     public void setThirdBitmapField(int f) throws ISOException
     {
         if (f < 0 || f > 128)
@@ -517,10 +532,18 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     public Logger getLogger() {
         return logger;
     }
+    /**
+     * Returns the number of header bytes prepended to each message.
+     * @return header length in bytes
+     */
     public int getHeaderLength ()
     {
     	return headerLength;
     }
+    /**
+     * Sets the number of header bytes prepended to each message.
+     * @param len header length in bytes
+     */
     public void setHeaderLength(int len)
     {
     	headerLength = len;

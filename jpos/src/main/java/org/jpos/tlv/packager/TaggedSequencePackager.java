@@ -48,15 +48,27 @@ import java.util.TreeMap;
  */
 public class TaggedSequencePackager extends GenericPackager {
 
+    /** The packager used to read/write the tag identifier field. */
     protected ISOFieldPackager tagPackager;
+    /** Map from tag string to its corresponding field packager. */
     protected Map<String, TaggedFieldPackager> packagerMap = new TreeMap<>();
+    /** Placeholder token that determines the tag length. */
     protected String tag;
+    /** Maximum field length for this packager. */
     protected int length;
 
+    /**
+     * Default constructor.
+     * @throws ISOException if the packager cannot be initialised
+     */
     public TaggedSequencePackager() throws ISOException {
         super();
     }
 
+    /**
+     * Returns the current tag token.
+     * @return tag token string
+     */
     public String getToken() {
         return tag;
     }
@@ -257,25 +269,46 @@ public class TaggedSequencePackager extends GenericPackager {
         return tagPackager;
     }
 
+    /** Holds the result of unpacking any fixed prefix fields before the TLV sequence. */
     protected class PrefixUnpackResult {
         private int consumed;
         private int subFieldId;
 
+        /**
+         * Creates a PrefixUnpackResult.
+         * @param consumed number of bytes consumed
+         * @param subFieldId next sub-field id to assign
+         */
         public PrefixUnpackResult(int consumed, int subFieldId) {
             this.consumed = consumed;
             this.subFieldId = subFieldId;
         }
 
+        /**
+         * Returns the number of bytes consumed by the prefix fields.
+         * @return bytes consumed
+         */
         public int getConsumed() {
             return consumed;
         }
 
+        /**
+         * Returns the next sub-field id to use after the prefix fields.
+         * @return next sub-field id
+         */
         public int getSubFieldId() {
             return subFieldId;
         }
 
     }
 
+    /**
+     * Unpacks any non-TLV prefix fields at the beginning of the byte array.
+     * @param m the ISO component to populate
+     * @param b the raw byte array
+     * @return a {@link PrefixUnpackResult} with consumed bytes and next field id
+     * @throws ISOException on unpacking error
+     */
     protected PrefixUnpackResult unpackPrefixes(ISOComponent m, byte[] b) throws ISOException {
         int consumed = 0;
         int subFieldId = 0;

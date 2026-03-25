@@ -43,12 +43,17 @@ public class SimpleLogListener implements LogListener, XmlConfigurable, Destroya
         this ();
         setPrintStream (p);
     }
+    /**
+     * Sets the print stream used for log output.
+     * @param p the print stream
+     */
     public synchronized void setPrintStream (PrintStream p) {
         this.p = p;
         if (writer != null) {
             writer.setPrintStream(p);
         }
     }
+    /** Closes this listener, flushing any pending output. */
     public synchronized void close() {
         // writer either wraps or use same PrintStream
         if (writer != null) {

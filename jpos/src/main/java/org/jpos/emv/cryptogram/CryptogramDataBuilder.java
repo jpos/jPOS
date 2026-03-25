@@ -120,8 +120,7 @@ public interface CryptogramDataBuilder {
     String getDefaultARPCRequest(boolean approved);
 
     /**
-     * Select necessary data elements and create the string used to generate the ARQC with no padding
-     * <p>
+     * Select necessary data elements and create the string used to generate the ARQC with no padding.
      *
      * @param data ICC data received
      * @param iad  Issuer application Data
@@ -130,8 +129,7 @@ public interface CryptogramDataBuilder {
     String buildARQCRequest(TLVList data, IssuerApplicationData iad);
 
     /**
-     * Select necessary data elements and create the string used to generate the ARQC with padding
-     * <p>
+     * Select necessary data elements and create the string used to generate the ARQC with padding.
      *
      * @param data          ICC data received
      * @param iad           Issuer application Data

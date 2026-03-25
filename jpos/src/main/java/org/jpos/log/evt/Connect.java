@@ -21,7 +21,13 @@ package org.jpos.log.evt;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.jpos.log.AuditLogEvent;
 
-/** Audit log event recording a channel connection attempt. */
+/**
+ * Audit log event recording a channel connection attempt.
+ * @param host remote host name or address
+ * @param remotePort remote port number
+ * @param localPort local port number
+ * @param error error message, or {@code null} on success
+ */
 public record Connect(String host, int remotePort, int localPort, @JsonInclude(JsonInclude.Include.NON_NULL) String error) implements AuditLogEvent {
     /**
      * Creates a Connect event.

@@ -33,6 +33,10 @@ public interface LogListener extends EventListener {
      * @return the (potentially modified) log event, or null to suppress it
      */
     LogEvent log(LogEvent ev);
+    /**
+     * Sets the log event writer for this listener. Default implementation is a no-op for backward compatibility.
+     * @param w the log event writer
+     */
     default void setLogEventWriter (LogEventWriter w) {
         // do nothing, for backward compatibility
     }

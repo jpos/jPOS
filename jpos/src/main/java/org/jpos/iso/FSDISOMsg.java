@@ -28,11 +28,17 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class FSDISOMsg extends ISOMsg implements Cloneable  {
+    /** The underlying FSDMsg containing the field data. */
     FSDMsg fsd;
     Lock isLock = new ReentrantLock();
+    /** Default constructor. */
     public  FSDISOMsg () {
         super();
     }
+    /**
+     * Creates an FSDISOMsg wrapping the given FSDMsg.
+     * @param fsd the FSDMsg to wrap
+     */
     public FSDISOMsg (FSDMsg fsd) {
         super();
         this.fsd = fsd;
@@ -66,6 +72,7 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
         }
     }
 
+    /** @return the underlying FSDMsg */
     public FSDMsg getFSDMsg() {
         return fsd;
     }

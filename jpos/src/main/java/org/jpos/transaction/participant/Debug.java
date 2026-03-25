@@ -27,7 +27,13 @@ import org.jpos.util.Logger;
 
 import java.io.Serializable;
 
+/** Transaction participant that logs debug information for each prepare/commit/abort. */
 public class Debug extends Log implements AbortParticipant {
+
+    /** Default constructor. */
+    public Debug() {
+        super();
+    }
     public int prepare (long id, Serializable o) {
         if (o instanceof Context ctx) {
             ctx.log("Debug::prepare");

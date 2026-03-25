@@ -28,10 +28,23 @@ import org.jpos.iso.ISOException;
  */
 public interface TagValue<T> {
 
+    /**
+     * Returns the tag identifier.
+     * @return tag string
+     */
     String getTag();
 
+    /**
+     * Returns the tag value.
+     * @return the value
+     * @throws ISOException on error
+     */
     T getValue() throws ISOException;
 
+    /**
+     * Returns {@code true} if this tag-value is composite (contains nested TLV data).
+     * @return true if composite
+     */
     boolean isComposite();
 
 }

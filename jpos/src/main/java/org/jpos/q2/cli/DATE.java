@@ -23,9 +23,21 @@ import org.jpos.q2.CLIContext;
 
 import java.util.Date;
 
+/** CLI command that prints the current date and time. */
 public class DATE implements CLICommand
 {
-    public void exec(CLIContext ctx, String[] args) {
+    /** Default constructor. */
+    public DATE() {
+        super();
+    }
+
+    /**
+     * Prints the current date/time to the CLI context.
+     * @param ctx the CLI context
+     * @param args command-line arguments (unused)
+     * @throws Exception on error
+     */
+    public void exec(CLIContext ctx, String[] args) throws Exception {
         ctx.println(new Date().toString());
     }
 }

@@ -31,6 +31,11 @@ import static org.jpos.emv.cryptogram.CryptogramDataBuilder.minimumSetOfDataElem
  */
 public class CVN10DataBuilder implements CryptogramDataBuilder {
 
+    /** Default constructor. */
+    public CVN10DataBuilder() {
+        super();
+    }
+
     @Override
     public String getDefaultARPCRequest(boolean approved) {
         return approved ? "0000" : "9900";

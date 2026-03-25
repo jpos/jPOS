@@ -21,6 +21,14 @@ package org.jpos.log.evt;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.jpos.log.AuditLogEvent;
 
+/**
+ * Audit log event recording a channel disconnection.
+ * @param host remote host name or address
+ * @param remotePort remote port number
+ * @param localPort local port number
+ * @param exception exception class name, or {@code null} if the disconnect was clean
+ * @param message exception message, or {@code null} if the disconnect was clean
+ */
 public record Disconnect(
   String host,
   int remotePort,

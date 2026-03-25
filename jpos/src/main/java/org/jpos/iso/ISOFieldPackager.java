@@ -60,7 +60,9 @@ import java.io.ObjectOutput;
 public abstract class ISOFieldPackager {
     private int len;
     private String description;
+    /** When {@code true}, values are padded to the field length. */
     protected boolean pad;
+    /** When {@code true}, values are trimmed before packing. */
     protected boolean trim;
 
     /**
@@ -184,6 +186,13 @@ public abstract class ISOFieldPackager {
         out.write (pack (c));
     }
 
+    /**
+     * Reads exactly {@code l} bytes from the input stream.
+     * @param in the input stream
+     * @param l the number of bytes to read
+     * @return byte array of length {@code l}
+     * @throws IOException on I/O failure or premature end of stream
+     */
     protected byte[] readBytes (InputStream in, int l) throws IOException {
         byte[] b = new byte [l];
         int n = 0;

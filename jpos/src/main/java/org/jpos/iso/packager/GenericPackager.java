@@ -310,6 +310,7 @@ public class GenericPackager
             setHeaderLength(Integer.parseInt(headerLenStr));
     }
 
+    /** SAX entity resolver that redirects jPOS DTD references to bundled classpath resources. */
     public static class GenericEntityResolver implements EntityResolver
     {
         /**
@@ -379,6 +380,7 @@ public class GenericPackager
         }
     }
 
+    /** SAX content handler that populates this packager from an XML packager descriptor. */
     public class GenericContentHandler extends DefaultHandler
     {
         private Stack<Object> fieldStack;

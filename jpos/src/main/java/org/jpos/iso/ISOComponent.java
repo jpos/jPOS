@@ -114,13 +114,50 @@ public abstract class ISOComponent implements Cloneable {
      * @param fieldNumber new field number
      */
     public abstract void setFieldNumber (int fieldNumber);
+    /**
+     * Returns the field number of this component within its parent.
+     * @return the field number
+     */
     public abstract int getFieldNumber ();
+    /**
+     * Sets the value of this component.
+     * @param obj the value to set
+     * @throws ISOException if the value is invalid
+     */
     public abstract void setValue(Object obj) throws ISOException;
+    /**
+     * Returns the packed byte representation of this component.
+     * @return packed byte array
+     * @throws ISOException on packing error
+     */
     public abstract byte[] pack() throws ISOException;
+    /**
+     * Unpacks this component from the given byte array.
+     * @param b the byte array to unpack from
+     * @return number of bytes consumed
+     * @throws ISOException on unpacking error
+     */
     public abstract int unpack(byte[] b) throws ISOException;
+    /**
+     * Dumps this component to the given PrintStream.
+     * @param p the PrintStream to write to
+     * @param indent indentation prefix
+     */
     public abstract void dump (PrintStream p, String indent);
+    /**
+     * Packs this component and writes the result to the given OutputStream.
+     * @param out the OutputStream to write packed bytes to
+     * @throws IOException on write error
+     * @throws ISOException on packing error
+     */
     public void pack (OutputStream out) throws IOException, ISOException {
         out.write (pack ());
     }
+    /**
+     * Unpacks this component from the given InputStream.
+     * @param in the InputStream to read from
+     * @throws IOException on read error
+     * @throws ISOException on unpacking error
+     */
     public abstract void unpack (InputStream in) throws IOException, ISOException;
 }

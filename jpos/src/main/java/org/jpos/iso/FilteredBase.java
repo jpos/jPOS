@@ -38,8 +38,12 @@ import java.util.Vector;
 public abstract class FilteredBase extends Observable
     implements FilteredChannel, Cloneable
 {
-    protected Vector incomingFilters, outgoingFilters;
+    /** Filters applied to incoming messages before delivery. */
+    protected Vector incomingFilters;
+    /** Filters applied to outgoing messages before transmission. */
+    protected Vector outgoingFilters;
 
+    /** Creates a FilteredBase with empty incoming and outgoing filter chains. */
     public FilteredBase () {
         super();
         incomingFilters = new Vector();
@@ -119,6 +123,13 @@ public abstract class FilteredBase extends Observable
     public void removeOutgoingFilter (ISOFilter filter) {
         removeFilter (filter, ISOMsg.OUTGOING);
     }
+    /**
+     * Applies all outgoing filters to the given message in sequence.
+     * @param m the outgoing ISOMsg to filter
+     * @param evt the current LogEvent for appending filter diagnostics
+     * @return the filtered ISOMsg (may be a replacement instance)
+     * @throws VetoException if any filter vetoes the message
+     */
     protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt) 
         throws VetoException
     {
@@ -132,6 +143,13 @@ public abstract class FilteredBase extends Observable
         notifyObservers (m);
         return m;
     }
+    /**
+     * Applies all incoming filters to the given message in sequence.
+     * @param m the incoming ISOMsg to filter
+     * @param evt the current LogEvent for appending filter diagnostics
+     * @return the filtered ISOMsg (may be a replacement instance)
+     * @throws VetoException if any filter vetoes the message
+     */
     protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
         throws VetoException
     {

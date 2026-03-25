@@ -29,6 +29,8 @@ import java.io.Serializable;
 
 @SuppressWarnings("unchecked")
 public class Forward implements TransactionParticipant, Configurable  {
+    /** Default constructor. */
+    public Forward() { super(); }
     Space sp;
     String queue;
     long timeout;

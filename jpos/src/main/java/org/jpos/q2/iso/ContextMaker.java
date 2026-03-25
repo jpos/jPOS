@@ -43,6 +43,11 @@ import java.util.List;
 public class ContextMaker extends QBeanSupport implements Runnable,
 		Loggeable {
 
+    /** Default constructor. */
+    public ContextMaker() {
+        super();
+    }
+
 	Space sp;
 
     String contextName = null;

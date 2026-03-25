@@ -25,6 +25,7 @@ package org.jpos.util;
  * @version $Id$
  */
 public interface Destroyable {
+    /** Releases resources held by this object. */
     void destroy();
 }
 

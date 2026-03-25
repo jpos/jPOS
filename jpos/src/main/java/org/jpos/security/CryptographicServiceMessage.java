@@ -68,9 +68,14 @@ public class CryptographicServiceMessage implements Loggeable {
     public static class ParsingException extends Exception {
 
         private static final long serialVersionUID = 6984718759445061L;
+        /** Default constructor. */
         public ParsingException() {
             super();
         }
+        /**
+         * Constructs a ParsingException with the given message.
+         * @param detail the error message
+         */
         public ParsingException(String detail) {
             super(detail);
         }
@@ -140,9 +145,9 @@ public class CryptographicServiceMessage implements Loggeable {
     }
 
     /**
-     * Returns the field content of a field with the given tag
-     * @param tag
-     * @return field Field Content, or null if tag not found
+     * Returns the field content of a field with the given tag.
+     * @param tag the field tag (case-insensitive)
+     * @return field content, or {@code null} if tag not found
      */
     public String getFieldContent(String tag) {
         return fields.get(tag.toUpperCase());
@@ -193,10 +198,10 @@ public class CryptographicServiceMessage implements Loggeable {
     }
 
     /**
-     * Parses a csm string
-     * @param csmString
-     * @return CSM object
-     * @throws ParsingException
+     * Parses a CSM string into a {@link CryptographicServiceMessage} object.
+     * @param csmString the CSM string to parse
+     * @return the parsed CSM object
+     * @throws ParsingException if the string cannot be parsed
      */
     public static CryptographicServiceMessage parse(String csmString) throws ParsingException {
         CryptographicServiceMessage csm = new CryptographicServiceMessage();

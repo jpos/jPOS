@@ -19,6 +19,16 @@
 package org.jpos.core;
 
 public interface EnvironmentProvider {
+    /**
+     * Returns the prefix identifying this provider.
+     * @return the prefix string (e.g. {@code "vault"}, {@code "env"})
+     */
     String prefix();
+
+    /**
+     * Resolves the given configuration key using this provider.
+     * @param config the configuration key to resolve
+     * @return the resolved value, or null if not found
+     */
     String get (String config);
 }

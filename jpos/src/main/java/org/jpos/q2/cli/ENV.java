@@ -23,8 +23,11 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import org.jline.terminal.Terminal;
 
+/** CLI command that prints terminal type and current environment variable bindings. */
 @SuppressWarnings("unused")
 public class ENV implements CLICommand {
+    /** Default constructor. */
+    public ENV() { super(); }
     public void exec(CLIContext cli, String[] args) throws Exception {
         Terminal term = cli.getReader().getTerminal();
         cli.println ("TERM=" + term.getClass().getSimpleName() + "/" + term.getType());

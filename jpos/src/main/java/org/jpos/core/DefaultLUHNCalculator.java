@@ -18,7 +18,13 @@
 
 package org.jpos.core;
 
+/** Default implementation of {@link LUHNCalculator} using the standard LUHN algorithm. */
 public class DefaultLUHNCalculator implements LUHNCalculator {
+
+    /** Default constructor. */
+    public DefaultLUHNCalculator() {
+        super();
+    }
     /**
      * Compute card's check digit (LUHN)
      * @param p PAN (without checkdigit)

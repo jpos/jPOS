@@ -28,6 +28,7 @@ import org.jpos.util.LogEvent;
  * @version $Revision$ $Date$
  */
 public interface ISOFilter {
+    /** Thrown by a filter to veto (suppress) an ISO message. */
     class VetoException extends ISOException {
 
         private static final long serialVersionUID = -4640160572663583113L;

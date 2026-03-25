@@ -30,7 +30,9 @@ import org.jpos.util.Logger;
  * @see ISOComponent
  */
 public class EuroPackager extends ISOBasePackager {
+    /** Packager for the private data sub-elements in field 48. */
     protected ISOPackager f48Packager = new Euro48Packager();
+    /** Field packager definitions for all EuroPay ISO-8583 fields. */
     protected ISOFieldPackager fld[] = {
     /*000*/ new IFA_NUMERIC (  4, "MESSAGE TYPE INDICATOR"),
     /*001*/ new IFB_BITMAP  ( 16, "BIT MAP"),
@@ -166,6 +168,7 @@ public class EuroPackager extends ISOBasePackager {
     /*128*/ new IFA_LLLCHAR (999, "MAC 2")
     };
 
+    /** Creates an EuroPackager with the standard EuroPay field definitions. */
     public EuroPackager () {
         super();
         setFieldPackager(this.fld);
@@ -177,6 +180,7 @@ public class EuroPackager extends ISOBasePackager {
         // f48Packager.setLogger (logger, realm + ".field-48");
     }
 
+    /** Packager for EuroPay ISO-8583 field 48 Private Data Sub-elements (PDS). */
     protected static class Euro48Packager extends EuroSubFieldPackager
     { 
         // EuroPay refers to the message subfields as 
@@ -278,6 +282,7 @@ public class EuroPackager extends ISOBasePackager {
             new IFEP_LLCHAR  (5,  "Field 48 - PDS92"),
         };  
 
+        /** Creates an Euro48Packager with the EuroPay PDS sub-element definitions. */
         protected Euro48Packager ()
         {
             super();

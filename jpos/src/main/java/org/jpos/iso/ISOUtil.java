@@ -677,7 +677,8 @@ public class ISOUtil {
     }
 
     /**
-     * @param   b       source byte array
+     * Converts a hex-encoded byte array to a binary byte array.
+     * @param   b       source byte array containing hex digits
      * @param   offset  starting offset
      * @param   len     number of bytes in destination (processes len*2)
      * @return  byte[len]
@@ -724,9 +725,9 @@ public class ISOUtil {
     }
 
     /**
-     * Converts an integer into a byte array of hex
+     * Converts an integer into a minimal big-endian byte array.
      *
-     * @param value
+     * @param value the integer to convert
      * @return bytes representation of integer
      */
     public static byte[] int2byte(int value) {
@@ -747,9 +748,9 @@ public class ISOUtil {
     }
 
     /**
-     * Converts a byte array of hex into an integer
+     * Converts a big-endian byte array to an integer.
      *
-     * @param bytes
+     * @param bytes the byte array to convert
      * @return integer representation of bytes
      */
     public static int byte2int(byte[] bytes) {
@@ -818,7 +819,7 @@ public class ISOUtil {
      * @param l value
      * @param len display len
      * @return formated field
-     * @exception ISOException
+     * @exception ISOException if the formatted value exceeds the requested length
      */
     public static String formatAmount(long l, int len) throws ISOException {
         String buf = Long.toString(l);
@@ -1100,6 +1101,8 @@ public class ISOUtil {
     }
 
     /**
+     * Returns true if the string is zero-filled (all '0' characters).
+     * @param s the string to test
      * @return true if the string is zero-filled ( 0 char filled )
      **/
     public static boolean isZero( String s ) {
@@ -1111,6 +1114,8 @@ public class ISOUtil {
     }
 
     /**
+     * Returns true if the string is blank-filled (all space characters).
+     * @param s the string to test
      * @return true if the string is blank filled (space char filled)
      */
     public static boolean isBlank( String s ){
@@ -1118,7 +1123,9 @@ public class ISOUtil {
     }
 
     /**
-     * Return true if the string is alphanum.
+     * Returns true if the string contains only alphanumeric characters.
+     * @param s the string to test
+     * @return true if the string is alphanumeric
      **/
     public static boolean isAlphaNumeric ( String s ) {
         int len = s.length();
@@ -1131,9 +1138,10 @@ public class ISOUtil {
     }
 
     /**
-     * Return true if the string represent a number
-     * in the specified radix.
-     * <br><br>
+     * Returns true if the string represents a number in the specified radix.
+     * @param s the string to test
+     * @param radix the radix to use for digit validation
+     * @return true if the string represents a valid number in the given radix
      **/
     public static boolean isNumeric ( String s, int radix ) {
         int i = 0, len = s.length();
@@ -1172,7 +1180,7 @@ public class ISOUtil {
      * @param s String representation of number
      * @param radix Number base to use
      * @return integer value of number
-     * @throws NumberFormatException
+     * @throws NumberFormatException if the string contains non-digit characters or exceeds 9 digits
      */
     public static int parseInt (String s, int radix) throws NumberFormatException {
         int length = s.length();
@@ -1204,7 +1212,7 @@ public class ISOUtil {
      * </ul>
      * @param s String representation of number
      * @return integer value of number
-     * @throws NumberFormatException
+     * @throws NumberFormatException if the string contains non-digit characters or exceeds 9 digits
      */
     public static int parseInt (String s) throws NumberFormatException {
         return parseInt (s, 10);
@@ -1221,7 +1229,7 @@ public class ISOUtil {
      * @param cArray Character Array representation of number
      * @param radix Number base to use
      * @return integer value of number
-     * @throws NumberFormatException
+     * @throws NumberFormatException if the array contains non-digit characters or exceeds 9 digits
      */
     public static int parseInt (char[] cArray, int radix) throws NumberFormatException {
         int length = cArray.length;
@@ -1253,7 +1261,7 @@ public class ISOUtil {
      * </ul>
      * @param cArray Character Array representation of number
      * @return integer value of number
-     * @throws NumberFormatException
+     * @throws NumberFormatException if the array contains non-digit characters or exceeds 9 digits
      */
     public static int parseInt (char[] cArray) throws NumberFormatException {
         return parseInt (cArray,10);
@@ -1270,7 +1278,7 @@ public class ISOUtil {
      * @param bArray Byte Array representation of number
      * @param radix Number base to use
      * @return integer value of number
-     * @throws NumberFormatException
+     * @throws NumberFormatException if the array contains non-digit characters or exceeds 9 digits
      */
     public static int parseInt (byte[] bArray, int radix) throws NumberFormatException {
         int length = bArray.length;
@@ -1302,7 +1310,7 @@ public class ISOUtil {
      * </ul>
      * @param bArray Byte Array representation of number
      * @return integer value of number
-     * @throws NumberFormatException
+     * @throws NumberFormatException if the array contains non-digit characters or exceeds 9 digits
      */
     public static int parseInt (byte[] bArray) throws NumberFormatException {
         return parseInt (bArray,10);
@@ -1319,26 +1327,30 @@ public class ISOUtil {
     }
 
     /**
+     * Returns a formatted hexdump of a byte buffer.
      * @param b a byte[] buffer
-     * @return hexdump
+     * @return hexdump string
      */
     public static String hexdump (byte[] b) {
         return hexdump (b, 0, b.length);
     }
 
     /**
+     * Returns a formatted hexdump of a byte buffer starting at the given offset.
      * @param b a byte[] buffer
      * @param offset starting offset
+     * @return hexdump string from offset to end of buffer
      */
     public static String hexdump (byte[] b, int offset) {
         return hexdump (b, offset, b.length-offset);
     }
 
     /**
+     * Returns a formatted hexdump of a byte buffer region.
      * @param b a byte[] buffer
      * @param offset starting offset
-     * @param len the Length
-     * @return hexdump
+     * @param len the number of bytes to dump
+     * @return hexdump string for the specified region
      */
     public static String hexdump (byte[] b, int offset, int len) {
         StringBuilder sb    = new StringBuilder ();
@@ -1416,13 +1428,12 @@ public class ISOUtil {
     }
     
     /**
-     * return the last n characters of the passed String, left padding where required with 0
+     * Returns the last n characters of the passed String, left-padding with '0' where required.
      * 
-     * @param s
-     *            String to take from
-     * @param n nuber of characters to take
-     * 
+     * @param s String to take from
+     * @param n number of characters to take
      * @return String (may be null)
+     * @throws ISOException if zero-padding fails
      */
     public static String takeLastN(String s,int n) throws ISOException {
         if (s.length()>n) {
@@ -1439,13 +1450,12 @@ public class ISOUtil {
     }
     
     /**
-     * return the first n characters of the passed String, left padding where required with 0
+     * Returns the first n characters of the passed String, left-padding with '0' where required.
      * 
-     * @param s
-     *            String to take from
-     * @param n nuber of characters to take
-     * 
+     * @param s String to take from
+     * @param n number of characters to take
      * @return String (may be null)
+     * @throws ISOException if zero-padding fails
      */
     public static String takeFirstN(String s,int n) throws ISOException {
         if (s.length()>n) {
@@ -1498,10 +1508,10 @@ public class ISOUtil {
      * this data element specify the rate. For example, a conversion rate value of
      * 91234567 in this data element would equate to 0.001234567.
      *
-     * @param convRate - amount conversion rate
+     * @param convRate amount conversion rate
      * @return a string containing a amount conversion rate in the proper format,
-     *         witch is suitable for create fields 10 and 11
-     * @throws ISOException
+     *         which is suitable for creating fields 10 and 11
+     * @throws ISOException if zero-padding fails during formatting
      */
     public static String formatAmountConversionRate(double convRate) throws ISOException {
         if (convRate == 0)
@@ -1520,9 +1530,9 @@ public class ISOUtil {
      * <p>
      * Suitble for parse fields 10 and 11
      *
-     * @param convRate amount conversation rate
-     * @return parsed currency amount conversation rate
-     * @throws IllegalArgumentException
+     * @param convRate amount conversion rate string (8 characters)
+     * @return parsed currency amount conversion rate as a double
+     * @throws IllegalArgumentException if the string is null or not exactly 8 characters
      */
     public static double parseAmountConversionRate(String convRate) {
         if (convRate == null || convRate.length() != 8)

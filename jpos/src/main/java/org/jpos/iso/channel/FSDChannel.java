@@ -32,6 +32,9 @@ import java.nio.charset.Charset;
 import org.jpos.iso.ISOUtil;
 
 public class FSDChannel extends NACChannel {
+    /** Default constructor. */
+    public FSDChannel() { super(); }
+
     String schema;
     Charset charset;
 

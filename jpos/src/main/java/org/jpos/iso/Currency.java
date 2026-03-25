@@ -94,6 +94,11 @@ public class Currency implements Serializable
         }
     }
 
+    /**
+     * Parses an ISO amount string into a double by applying the currency's decimal shift.
+     * @param isoamount the ISO-formatted amount string (no decimal point)
+     * @return the decimal amount value
+     */
     public double parseAmountFromISOMsg(String isoamount)
     {
         return Double.parseDouble(isoamount)/Math.pow(10, getDecimals());

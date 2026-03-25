@@ -38,6 +38,8 @@ import java.io.PrintStream;
  * @since 2.1.4
  */
 public class FlatLogListener implements LogListener, Configurable, Destroyable {
+    /** Default constructor. */
+    public FlatLogListener() { super(); }
     RemoveNewLinesMapper mapper = new RemoveNewLinesMapper();
     ByteArrayOutputStream captureStream = new ByteArrayOutputStream();
     PrintStream p = new PrintStream(captureStream);

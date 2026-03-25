@@ -27,6 +27,11 @@ import org.jpos.security.SKDMethod;
  */
 public class CPACryptogram implements CryptogramSpec {
 
+    /** Default constructor. */
+    public CPACryptogram() {
+        super();
+    }
+
     @Override
     public MKDMethod getMKDMethod() {
         return MKDMethod.OPTION_A;

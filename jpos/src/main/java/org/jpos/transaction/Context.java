@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 
 import static org.jpos.transaction.ContextConstants.*;
 
+/** Transaction context carrying typed key-value pairs that flow through participant pipelines. */
 public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
     @Serial
     private static final long serialVersionUID = 2604524947983441462L;
@@ -287,10 +288,11 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         p.println (indent + "</context>");
     }
     /**
-     * persistent get with timeout
+     * Retrieves a persistent value by key, waiting up to {@code timeout} milliseconds.
+     * @param <T> the expected return type
      * @param key the key
-     * @param timeout timeout
-     * @return object (null on timeout)
+     * @param timeout maximum wait time in milliseconds
+     * @return the value, or {@code null} on timeout
      */
     @SuppressWarnings("unchecked")
     public synchronized <T> T get (Object key, long timeout) {
@@ -459,7 +461,10 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         return map;
     }
 
-    /** @return a snapshot copy of the transient map */
+    /**
+     * Returns a snapshot copy of the transient map.
+     * @return a new map containing all current transient entries
+     */
     @JsonIgnore
     public Map<Object,Object> getMapClone() {
         Map<Object,Object> cloned = Collections.synchronizedMap (new LinkedHashMap<>());
@@ -480,6 +485,12 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         }
     }
 
+    /**
+     * Dumps a single map entry to the output stream.
+     * @param p output stream
+     * @param indent indentation prefix
+     * @param entry the map entry to dump
+     */
     protected void dumpEntry (PrintStream p, String indent, Map.Entry<Object,Object> entry) {
         String key = getKeyName(entry.getKey());
         if (key.startsWith(".") || key.startsWith("*"))
@@ -583,14 +594,23 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
     }
     /**
      * Adds a checkpoint to the context profiler.
+     * @param detail descriptive label for this checkpoint
      */
     public void checkPoint (String detail) {
         getProfiler().checkPoint (detail);
     }
 
+    /**
+     * Returns whether tracing is enabled for this context.
+     * @return true if tracing is active
+     */
     public boolean isTrace() {
         return trace;
     }
+    /**
+     * Enables or disables tracing for this context.
+     * @param trace true to enable tracing
+     */
     public void setTrace(boolean trace) {
         if (trace)
             getProfiler();

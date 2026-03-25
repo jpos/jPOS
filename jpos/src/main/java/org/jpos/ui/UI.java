@@ -209,6 +209,11 @@ public class UI implements UIFactory, UIObjectFactory {
         return destroyed;
     }
 
+    /**
+     * Configures the UI from the given XML element.
+     * @param ui the root UI configuration element
+     * @throws JDOMException on XML processing error
+     */
     protected void configure (Element ui) throws JDOMException {
         setLookAndFeel (ui);
         createMappings (ui);
@@ -379,6 +384,10 @@ public class UI implements UIFactory, UIObjectFactory {
             b.addActionListener ((ActionListener) get (actionId));
         }
     }
+    /**
+     * Applies the look-and-feel specified in the UI configuration element.
+     * @param ui the UI configuration element
+     */
     protected void setLookAndFeel (Element ui) {
         String laf = ui.getAttributeValue ("look-and-feel");
         if (laf != null) {
@@ -460,6 +469,11 @@ public class UI implements UIFactory, UIObjectFactory {
             c.setPreferredSize (d);
         }
     }
+    /**
+     * Creates a Swing component from the given XML element descriptor.
+     * @param e the XML element describing the component
+     * @return the created JComponent, or {@code null} if none was produced
+     */
     public JComponent create (Element e) {
         JComponent component = null;
 
@@ -480,6 +494,10 @@ public class UI implements UIFactory, UIObjectFactory {
         }
         return component;
     }
+    /**
+     * Returns the application's main frame.
+     * @return the main JFrame
+     */
     public JFrame getMainFrame() {
         return mainFrame;
     }
@@ -513,10 +531,19 @@ public class UI implements UIFactory, UIObjectFactory {
             }
         }
     }
+    /**
+     * Logs a warning.
+     * @param obj the warning object
+     */
     protected void warn (Object obj) {
         if (log != null)
             log.warn (obj);
     }
+    /**
+     * Logs a warning with an associated exception.
+     * @param obj the warning object
+     * @param ex the associated exception
+     */
     protected void warn (Object obj, Exception ex) {
         if (log != null)
             log.warn (obj, ex);

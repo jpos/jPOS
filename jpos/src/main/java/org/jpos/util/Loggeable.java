@@ -35,6 +35,13 @@ public interface Loggeable {
      * @param indent indentation prefix
      */
     void dump(PrintStream p, String indent);
+    /**
+     * Dumps a representation of this object using the specified renderer type.
+     * Falls back to {@link #dump(PrintStream, String)} if no renderer is registered.
+     * @param p the output stream
+     * @param indent indentation prefix
+     * @param type the desired log renderer type
+     */
     default void dump(PrintStream p, String indent, LogRenderer.Type type) {
         var renderer = LogRendererRegistry.getRenderer(this.getClass(), type);
         if (renderer != null)

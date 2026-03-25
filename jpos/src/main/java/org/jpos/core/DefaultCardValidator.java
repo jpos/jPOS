@@ -18,10 +18,21 @@
 
 package org.jpos.core;
 
+/** Default {@link CardValidator} that checks PAN consistency across tracks and validates the LUHN check digit. */
 public class DefaultCardValidator implements CardValidator {
     private static LUHNCalculator DEFAULT_LUHN_CALCULATOR = new DefaultLUHNCalculator();
     private LUHNCalculator luhnCalculator = DEFAULT_LUHN_CALCULATOR;
 
+    /** Default constructor. */
+    public DefaultCardValidator() {
+        super();
+    }
+
+    /**
+     * Validates the given card, checking PAN/track consistency and LUHN checksum.
+     * @param card the card to validate
+     * @throws InvalidCardException if the card data is invalid
+     */
     public void validate (Card card) throws InvalidCardException {
         if (card != null) {
             String pan = card.getPan();
@@ -67,6 +78,10 @@ public class DefaultCardValidator implements CardValidator {
         }
     }
 
+    /**
+     * Sets the LUHN calculator to use for checksum validation.
+     * @param luhnCalculator the LUHN calculator implementation
+     */
     public void setLuhnCalculator(LUHNCalculator luhnCalculator) {
         this.luhnCalculator = luhnCalculator;
     }

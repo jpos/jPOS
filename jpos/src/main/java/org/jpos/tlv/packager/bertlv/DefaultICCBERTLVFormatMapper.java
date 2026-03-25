@@ -32,7 +32,13 @@ import org.jpos.iso.ISOException;
  */
 public class DefaultICCBERTLVFormatMapper implements BERTLVFormatMapper {
 
+    /** Singleton instance of this format mapper. */
     public static DefaultICCBERTLVFormatMapper INSTANCE = new DefaultICCBERTLVFormatMapper();
+
+    /** Default constructor. */
+    public DefaultICCBERTLVFormatMapper() {
+        super();
+    }
 
     private EMVTagType getTagType(final Integer tagNumber) throws UnknownTagNumberException {
         if (EMVStandardTagType.isProprietaryTag(tagNumber)) {
@@ -54,10 +60,10 @@ public class DefaultICCBERTLVFormatMapper implements BERTLVFormatMapper {
     }
 
     /**
-     * Subclasses should override this method to provide an implementation of org.jpos.emv.EMVProprietaryTagType
-     * @param tagNumber
-     * @return EMVProprietaryTagType
-     * @throws UnknownTagNumberException
+     * Subclasses should override this method to provide an implementation of org.jpos.emv.EMVProprietaryTagType.
+     * @param tagNumber the proprietary tag number
+     * @return the corresponding {@link EMVProprietaryTagType}
+     * @throws UnknownTagNumberException if the tag number is not recognised
      */
     protected EMVProprietaryTagType getProprietaryTagType(Integer tagNumber) throws UnknownTagNumberException {
         throw new UnknownTagNumberException(Integer.toHexString(tagNumber));

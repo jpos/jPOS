@@ -172,11 +172,19 @@ public class DailyLogListener extends RotateLogListener{
         super.setConfiguration(cfg);
     }
 
+    /**
+     * Returns the default regex pattern for matching old log files to delete.
+     * @return default deletion regex
+     */
     private String defaultDeleteRegex() {
 		Path prefixPath = Paths.get(prefix);
 		return "^" + prefixPath.getFileName().toString() + ".+\\" + suffix + "\\" + compressedSuffix + "$";
 	}
 
+	/**
+	 * Deletes log files that are older than the configured {@code maxage} threshold.
+	 * @throws IOException on I/O failure
+	 */
 	public void deleteOldLogs() throws IOException {
 		if (maxAge <= 0) {
 			logDebug("maxage feature is disabled.");
@@ -401,12 +409,22 @@ public class DailyLogListener extends RotateLogListener{
             return new GZIPOutputStream(os);
         }
     }
+    /**
+     * Closes a compressed output stream, flushing deflater state if necessary.
+     * @param os the compressed output stream to close
+     * @throws IOException on I/O failure
+     */
     protected void closeCompressedOutputStream(OutputStream os) throws IOException{
         if (os instanceof DeflaterOutputStream)
             ((DeflaterOutputStream)os).finish();
         os.close();
     }
     
+    /**
+     * Logs a debug message with an associated exception stack trace.
+     * @param msg the message text
+     * @param e the throwable to include
+     */
     protected void logDebugEx(String msg, Throwable e){
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(os);
@@ -417,9 +435,14 @@ public class DailyLogListener extends RotateLogListener{
         
     }
     
+    /** Runnable that compresses a rotated log file in a background thread. */
     protected class Compressor implements Runnable{
 
         File f;
+        /**
+         * Creates a Compressor for the given file.
+         * @param f the file to compress
+         */
         public Compressor(File f) {
             this.f = f;
         }

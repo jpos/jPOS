@@ -40,12 +40,18 @@ public class DirPollAdaptor
     extends QBeanSupport
     implements DirPollAdaptorMBean
 {
+    /** Base directory path and configuration strings. */
     String path, priorities, processorClass;
+    /** Thread pool size for the DirPoll executor. */
     int poolSize;
+    /** Polling interval in milliseconds. */
     long pollInterval;
+    /** The managed DirPoll instance. */
     protected DirPoll dirPoll;
+    /** The executor service driving the DirPoll. */
     protected ExecutorService dirPollExecutor;
 
+    /** Default constructor. */
     public DirPollAdaptor () {
         super ();
         poolSize = 1;
@@ -77,6 +83,11 @@ public class DirPollAdaptor
         dirPoll.setProcessor (dpp);
     }
 
+    /**
+     * Creates and returns the {@link DirPoll} instance managed by this adaptor.
+     * Subclasses may override to supply a custom DirPoll.
+     * @return a new DirPoll instance
+     */
     protected DirPoll createDirPoll() {
         return new DirPoll();
     }

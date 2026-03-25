@@ -46,6 +46,10 @@ public abstract class DefaultICCBERTLVPackager extends BERTLVPackager {
         return DefaultICCBERTLVPackager.DEFAULT_TAG_FORMAT_MAPPER;
     }
 
+    /**
+     * Default constructor.
+     * @throws ISOException if the packager cannot be initialised
+     */
     public DefaultICCBERTLVPackager() throws ISOException {
         super();
     }

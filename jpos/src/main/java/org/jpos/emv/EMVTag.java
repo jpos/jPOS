@@ -40,6 +40,12 @@ public abstract class EMVTag<T> implements TagValue<T>, Serializable {
     private final T value;
 
 
+    /**
+     * Creates an EMVTag with a standard tag type and value.
+     * @param tagType the EMV standard tag type; must not be null
+     * @param value the tag value; must not be null
+     * @throws IllegalArgumentException if tagType or value is null, or if a standard tag type is used for a proprietary tag
+     */
     public EMVTag(final EMVStandardTagType tagType, final T value) throws IllegalArgumentException {
         if (tagType == null) {
             throw new IllegalArgumentException("tagType cannot be null");
@@ -71,6 +77,13 @@ public abstract class EMVTag<T> implements TagValue<T>, Serializable {
     }
 
 
+    /**
+     * Creates an EMVTag with a proprietary tag type, tag number, and value.
+     * @param tagType the EMV proprietary tag type; must not be null
+     * @param tagNumber the proprietary tag number
+     * @param value the tag value; must not be null
+     * @throws IllegalArgumentException if tagType or value is null
+     */
     public EMVTag(final EMVProprietaryTagType tagType, Integer tagNumber, final T value)
             throws IllegalArgumentException {
         if (tagType == null) {
@@ -104,6 +117,14 @@ public abstract class EMVTag<T> implements TagValue<T>, Serializable {
     }
 
 
+    /**
+     * Creates an EMVTag with a proprietary tag type, tag number, explicit data format, and value.
+     * @param tagType the EMV proprietary tag type; must not be null
+     * @param tagNumber the proprietary tag number
+     * @param dataFormat the TLV data format for this tag
+     * @param value the tag value; must not be null
+     * @throws IllegalArgumentException if tagType or value is null
+     */
     public EMVTag(final EMVProprietaryTagType tagType, Integer tagNumber,
                   TLVDataFormat dataFormat, final T value) throws IllegalArgumentException {
         if (tagType == null) {
@@ -150,22 +171,42 @@ public abstract class EMVTag<T> implements TagValue<T>, Serializable {
         return false;
     }
 
+    /**
+     * Returns the TLV data format for this tag.
+     * @return the data format
+     */
     public TLVDataFormat getDataFormat() {
         return dataFormat;
     }
 
+    /**
+     * Returns the numeric tag number.
+     * @return tag number
+     */
     public Integer getTagNumber() {
         return tagNumber;
     }
 
+    /**
+     * Returns the EMV tag type descriptor.
+     * @return tag type
+     */
     public EMVTagType getTagType() {
         return tagType;
     }
 
+    /**
+     * Returns the tag value.
+     * @return the value
+     */
     public T getValue() {
         return value;
     }
 
+    /**
+     * Returns the tag number as an uppercase hexadecimal string.
+     * @return hex tag number string
+     */
     public String getTagNumberHex() {
         return Integer.toHexString(tagNumber).toUpperCase();
     }

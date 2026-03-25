@@ -26,7 +26,13 @@ import org.jpos.util.Log;
 
 import java.io.InputStream;
 
+/** A stub {@link ISOPackager} that throws {@link ISOException} on every operation, used for testing. */
 public class DummyPackager extends Log implements ISOPackager {
+
+    /** Default constructor. */
+    public DummyPackager() {
+        super();
+    }
     public byte[] pack (ISOComponent m) throws ISOException {
         throw new ISOException ("DummyPackager.pack N/A");
     }

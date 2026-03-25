@@ -28,9 +28,13 @@ import java.io.IOException;
  * @version $Revision$ $Date$
  */
 public interface ISOChannel extends ISOSource {
+    /** Counter index for connection events. */
     int CONNECT      = 0;
+    /** Counter index for transmitted messages. */
     int TX           = 1;
+    /** Counter index for received messages. */
     int RX           = 2;
+    /** Number of counters maintained by this channel. */
     int SIZEOF_CNT   = 3;
 
     /**

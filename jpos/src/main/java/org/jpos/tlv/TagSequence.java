@@ -33,21 +33,62 @@ import java.util.Map;
  */
 public interface TagSequence<T> extends TagValue<T> {
 
+    /**
+     * Returns all child tag values grouped by tag identifier.
+     * @return map of tag identifier to list of TagValues
+     */
     Map<String, List<TagValue<T>>> getChildren();
 
+    /**
+     * Adds a tag value to this sequence.
+     * @param tagValue the tag value to add
+     */
     void add(TagValue<T> tagValue);
 
+    /**
+     * Returns true if this sequence contains the given tag.
+     * @param tag the tag identifier to look up
+     * @return true if this sequence contains at least one value for the given tag
+     */
     boolean hasTag(String tag);
 
+    /**
+     * Returns the first TagValue for the given tag.
+     * @param tag the tag identifier
+     * @return the first TagValue for the given tag, or null if absent
+     */
     TagValue<T> getFirst(String tag);
 
+    /**
+     * Returns all TagValues for the given tag.
+     * @param tag the tag identifier
+     * @return list of TagValues for the given tag, or null if absent
+     */
     List<TagValue<T>> get(String tag);
 
+    /**
+     * Returns all tag values grouped by tag identifier.
+     * @return map of all tag identifier to list of TagValues
+     */
     Map<String, List<TagValue<T>>> getAll();
 
+    /**
+     * Returns all tag values in insertion order.
+     * @return ordered list of all TagValues in this sequence
+     */
     List<TagValue<T>> getOrderedList();
 
+    /**
+     * Writes this sequence's tag values into the given ISOMsg.
+     * @param isoMsg the ISOMsg to write tag values into
+     * @throws ISOException on encoding error
+     */
     void writeTo(ISOMsg isoMsg) throws ISOException;
 
+    /**
+     * Reads tag values from the given ISOMsg into this sequence.
+     * @param isoMsg the ISOMsg to read tag values from
+     * @throws ISOException on decoding error
+     */
     void readFrom(ISOMsg isoMsg) throws ISOException;
 }

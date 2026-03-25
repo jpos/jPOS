@@ -31,7 +31,17 @@ import org.jpos.log.AuditLogEvent;
  */
 
 public record DeployActivity(@JacksonXmlProperty(isAttribute = true) Action action, String info) implements AuditLogEvent {
+    /** Supported deployment activities. */
     public enum Action {
-        CREATE, DELETE, MODIFY, RENAME, RENAME_ERROR
+        /** Deployment descriptor was created. */
+        CREATE,
+        /** Deployment descriptor was deleted. */
+        DELETE,
+        /** Deployment descriptor was modified. */
+        MODIFY,
+        /** Deployment descriptor was renamed. */
+        RENAME,
+        /** A rename operation failed. */
+        RENAME_ERROR
     }
 }

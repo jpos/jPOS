@@ -30,7 +30,14 @@ import org.jdom2.Element;
  *
  */
 public interface QPersist {
+    /**
+     * Returns the persistent configuration element for this QBean.
+     * @return the configuration element
+     */
     Element getPersist();
+    /**
+     * Returns {@code true} if this QBean's configuration has been modified since last save.
+     * @return true if modified
+     */
     boolean isModified();
 }
-

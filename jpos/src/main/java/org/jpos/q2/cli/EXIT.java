@@ -21,7 +21,10 @@ package org.jpos.q2.cli;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
+/** CLI command that stops the current CLI session. */
 public class EXIT implements CLICommand {
+    /** Default constructor. */
+    public EXIT() { super(); }
     public void exec(CLIContext ctx, String[] strings) throws Exception {
         ctx.setStopped(true);
     }

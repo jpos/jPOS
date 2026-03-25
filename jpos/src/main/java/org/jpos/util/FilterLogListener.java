@@ -54,11 +54,16 @@ public class FilterLogListener implements LogListener,Configurable
     private String priority = Log.INFO;
     PrintStream p;
 
+    /** Creates a FilterLogListener that writes to {@code System.out}. */
     public FilterLogListener() {
         super();
         p = System.out;
     }
 
+    /**
+     * Creates a FilterLogListener that writes to the given PrintStream.
+     * @param p the PrintStream to write log events to
+     */
     public FilterLogListener(PrintStream p) {
         super();
         setPrintStream(p);
@@ -80,10 +85,15 @@ public class FilterLogListener implements LogListener,Configurable
 
 
 
+    /**
+     * Sets the PrintStream to write log events to.
+     * @param p the PrintStream to write log events to
+     */
     public synchronized void setPrintStream(PrintStream p) {
         this.p = p;
     }
 
+    /** Closes the underlying PrintStream and releases it. */
     public synchronized void close() {
         if (p != null) {
             p.close();
@@ -91,14 +101,27 @@ public class FilterLogListener implements LogListener,Configurable
         }
     }
 
+    /**
+     * Returns the current minimum log priority level.
+     * @return the current priority level string
+     */
     public String getPriority() {
         return priority;
     }
 
+    /**
+     * Sets the minimum priority level for log events to be written.
+     * @param priority the minimum priority level (e.g. {@code "debug"}, {@code "info"}, {@code "warn"}, {@code "error"})
+     */
     public void setPriority(String priority) {
         this.priority = priority;
     }
 
+    /**
+     * Returns true if the given log level meets or exceeds the configured priority threshold.
+     * @param tagLevel the level of the event being evaluated
+     * @return true if the event should be logged
+     */
     public boolean permitLogging(String tagLevel) {
         Integer i = LEVELS.get(tagLevel);
 

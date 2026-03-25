@@ -45,7 +45,10 @@ public class CMFConverter implements IRCConverter, Configurable {
         super();
     }
 
-    /** @param cfg the configuration */
+    /**
+     * Creates a CMFConverter using the given configuration.
+     * @param cfg the configuration mapping IRC codes to RC values
+     */
     public CMFConverter(Configuration cfg) {
         this.cfg = cfg;
     }

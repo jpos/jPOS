@@ -23,8 +23,20 @@ package org.jpos.iso.packager;
  */
 public interface TagMapper {
 
+    /**
+     * Returns the tag string for the given field and sub-field number.
+     * @param fieldNumber the parent field number
+     * @param subFieldNumber the sub-field number
+     * @return the tag string
+     */
     String getTagForField(int fieldNumber, int subFieldNumber);
 
+    /**
+     * Returns the sub-field number for the given field number and tag string.
+     * @param fieldNumber the parent field number
+     * @param tag the tag string
+     * @return the sub-field number, or {@code null} if not found
+     */
     Integer getFieldNumberForTag(int fieldNumber, String tag);
 
 }

@@ -20,6 +20,9 @@ package org.jpos.q2;
 
 import java.io.File;
 
+/**
+ * Provides optional decoration (variable substitution, templating, etc.) for Q2 deploy descriptor files.
+ */
 public interface ConfigDecorationProvider
 {
     /**

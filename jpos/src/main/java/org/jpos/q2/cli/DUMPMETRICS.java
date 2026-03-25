@@ -27,7 +27,13 @@ import org.jpos.util.NameRegistrar;
 import java.io.File;
 import java.io.IOException;
 
+/** CLI command that dumps JVM metrics to a directory. */
 public class DUMPMETRICS implements CLICommand {
+
+    /** Default constructor. */
+    public DUMPMETRICS() {
+        super();
+    }
     public void exec(CLIContext ctx, String[] args) throws IOException {
         if (args.length != 2) {
             ctx.println (String.format ("Usage: %s<path-to-dump-directory>", args[0]));

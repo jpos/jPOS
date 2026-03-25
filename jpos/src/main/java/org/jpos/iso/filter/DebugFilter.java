@@ -24,7 +24,13 @@ import org.jpos.iso.ISOChannel;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Dumpable;
 
+/** An {@link RawIncomingFilter} that logs the raw incoming message for debugging. */
 public class DebugFilter implements RawIncomingFilter {
+
+    /** Default constructor. */
+    public DebugFilter() {
+        super();
+    }
     public ISOMsg filter(ISOChannel channel, ISOMsg m, byte[] header, byte[] image, LogEvent evt)
             throws VetoException
     {

@@ -39,15 +39,25 @@ import java.util.*;
 public class ISOMsg extends ISOComponent
     implements Cloneable, Loggeable, Externalizable
 {
+    /** Map of field number to field value. */
     protected Map<Integer,Object> fields;
+    /** Highest field number currently set in this message. */
     protected int maxField;
+    /** The packager used to pack/unpack this message. */
     protected ISOPackager packager;
+    /** Dirty flags for tracking state changes. */
     protected boolean dirty, maxFieldDirty;
+    /** Message direction: INCOMING or OUTGOING. */
     protected int direction;
+    /** Optional ISO header for this message. */
     protected ISOHeader header;
+    /** Optional trailer bytes appended to the packed message. */
     protected byte[] trailer;
+    /** Field number of this message when nested inside another ISOMsg. */
     protected int fieldNumber = -1;
+    /** Constant indicating an incoming message direction. */
     public static final int INCOMING = 1;
+    /** Constant indicating an outgoing message direction. */
     public static final int OUTGOING = 2;
     private static final long serialVersionUID = 4306251831901413975L;
     private WeakReference sourceRef;
@@ -110,6 +120,7 @@ public class ISOMsg extends ISOComponent
         header = new BaseHeader (b);
     }
 
+    /** @param header the ISOHeader to set on this message */
     public void setHeader (ISOHeader header) {
         this.header = header;
     }
@@ -987,11 +998,12 @@ public class ISOMsg extends ISOComponent
             header = (ISOHeader) m.header.clone();
     }
 
-    /*
+    /**
      * Merges the content of the specified ISOMsg into this ISOMsg instance, excluding the header.
      * This method is a convenience wrapper around {@link #merge(ISOMsg, boolean)} with the {@code mergeHeader}
      * parameter set to {@code false} for backward compatibility, indicating that the header of the input message
      * will not be merged.
+     * @param m the ISOMsg to merge into this message
      */
     public void merge (ISOMsg m) {
         merge (m, false);
@@ -1235,6 +1247,11 @@ public class ISOMsg extends ISOComponent
 
         set (new ISOField (0, getMTI().substring(0,3) + "1"));
     }
+    /**
+     * Serializes the message header to the given ObjectOutput.
+     * @param out the ObjectOutput to write to
+     * @throws IOException on write error
+     */
     protected void writeHeader (ObjectOutput out) throws IOException {
         int len = header.getLength();
         if (len > 0) {
@@ -1244,6 +1261,12 @@ public class ISOMsg extends ISOComponent
         }
     }
 
+    /**
+     * Deserializes the message header from the given ObjectInput.
+     * @param in the ObjectInput to read from
+     * @throws IOException on read error
+     * @throws ClassNotFoundException if a referenced class cannot be found
+     */
     protected void readHeader (ObjectInput in)
         throws IOException, ClassNotFoundException
     {
@@ -1251,6 +1274,11 @@ public class ISOMsg extends ISOComponent
         in.readFully (b);
         setHeader (b);
     }
+    /**
+     * Serializes the packager class name to the given ObjectOutput.
+     * @param out the ObjectOutput to write to
+     * @throws IOException on write error
+     */
     protected void writePackager(ObjectOutput out) throws IOException {
         out.writeByte('P');
         String pclass = packager.getClass().getName();
@@ -1258,6 +1286,12 @@ public class ISOMsg extends ISOComponent
         out.writeShort(b.length);
         out.write(b);
     }
+    /**
+     * Deserializes the packager from the given ObjectInput.
+     * @param in the ObjectInput to read from
+     * @throws IOException on read error
+     * @throws ClassNotFoundException if the packager class cannot be found
+     */
     protected void readPackager(ObjectInput in) throws IOException,
     ClassNotFoundException {
         byte[] b = new byte[in.readShort()];
@@ -1271,10 +1305,21 @@ public class ISOMsg extends ISOComponent
         }
 
 }
+    /**
+     * Serializes the message direction to the given ObjectOutput.
+     * @param out the ObjectOutput to write to
+     * @throws IOException on write error
+     */
     protected void writeDirection (ObjectOutput out) throws IOException {
         out.writeByte ('D');
         out.writeByte (direction);
     }
+    /**
+     * Deserializes the message direction from the given ObjectInput.
+     * @param in the ObjectInput to read from
+     * @throws IOException on read error
+     * @throws ClassNotFoundException if a class cannot be found
+     */
     protected void readDirection (ObjectInput in)
         throws IOException, ClassNotFoundException
     {

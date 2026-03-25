@@ -25,11 +25,19 @@ import org.jpos.ui.UIAware;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/** A Swing {@link ActionListener} that disposes the UI when triggered. */
 public class Dispose implements ActionListener, UIAware {
+    /** The UI instance to dispose. */
     public UI ui;
+    /** Default constructor. */
     public Dispose () {
         super();
     }
+    /**
+     * Sets the UI instance and configuration element.
+     * @param ui the UI instance
+     * @param e the configuration element (unused)
+     */
     public void setUI (UI ui, Element e) {
         this.ui = ui;
     }

@@ -23,7 +23,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/** EnvironmentProvider that reads configuration values from files on the filesystem. */
 public class FileEnvironmentProvider implements EnvironmentProvider {
+    /** Default constructor. */
+    public FileEnvironmentProvider() { super(); }
+
     @Override
     public String prefix() {
         return "file::";

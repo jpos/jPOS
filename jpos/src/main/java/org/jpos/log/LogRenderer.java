@@ -49,6 +49,12 @@ public interface LogRenderer<T> {
         render (obj, ps, "");
     }
 
+    /**
+     * Renders the given object to a string with the specified indentation.
+     * @param obj the object to render
+     * @param indent indentation prefix
+     * @return rendered string
+     */
     default String render (T obj, String indent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
@@ -56,10 +62,21 @@ public interface LogRenderer<T> {
         return baos.toString();
     }
 
+    /**
+     * Renders the given object to a string with no indentation.
+     * @param obj the object to render
+     * @return rendered string
+     */
     default String render (T obj) {
         return render (obj, "");
     }
 
+    /**
+     * Prepends {@code indent} to each line of {@code s}.
+     * @param indent the indentation string
+     * @param s the multi-line string to indent
+     * @return the indented string
+     */
     default String indent (String indent, String s) {
         if (s == null || s.isEmpty() || indent==null || indent.isEmpty()) {
             return s;
@@ -76,6 +93,7 @@ public interface LogRenderer<T> {
     }
 
 
+    /** Supported log output format types. */
     enum Type {
         XML,
         JSON,

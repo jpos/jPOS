@@ -30,6 +30,11 @@ public class EbcdicInterpreter implements Interpreter
     /** An instance of this Interpreter. Only one needed for the whole system */
     public static final EbcdicInterpreter INSTANCE = new EbcdicInterpreter();
 
+    /** Default constructor. */
+    public EbcdicInterpreter() {
+        super();
+    }
+
     /**
 	 * (non-Javadoc)
 	 *
