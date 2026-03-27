@@ -65,8 +65,7 @@ public class DirPollAdaptor
         if (priorities != null)
             dirPoll.setPriorities (priorities);
         dirPoll.setLogger (getLog().getLogger(), getLog().getRealm ());
-        Configuration cfg = factory.getConfiguration (getPersist());
-        dirPoll.setConfiguration (cfg);
+        factory.setConfiguration(dirPoll, getPersist());
         dirPoll.createDirs ();
         Object dpp = factory.newInstance (getProcessor());
         if (dpp instanceof LogSource) {
@@ -74,9 +73,7 @@ public class DirPollAdaptor
                 getLog().getLogger(), getLog().getRealm ()
             );
         }
-        if (dpp instanceof Configurable) {
-            ((Configurable) dpp).setConfiguration (cfg);
-        }
+        factory.setConfiguration(dpp, getPersist());
         dirPoll.setProcessor (dpp);
     }
 
