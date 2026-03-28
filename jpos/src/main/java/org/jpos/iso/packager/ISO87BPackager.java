@@ -162,6 +162,7 @@ public class ISO87BPackager extends ISOBasePackager {
             new IFB_LLLCHAR (999, "RESERVED PRIVATE USE"),
             new IFB_BINARY  (  8, "MAC 2")
         };
+    /** Default constructor. */
     public ISO87BPackager() {
         super();
         setFieldPackager(fld);

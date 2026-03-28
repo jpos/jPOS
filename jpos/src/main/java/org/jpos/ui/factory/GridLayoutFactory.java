@@ -45,6 +45,8 @@ import java.util.Iterator;
  */
 /** UIFactory that creates GridLayout panels. */
 public class GridLayoutFactory implements UIFactory {
+    /** Default constructor. */
+    public GridLayoutFactory() {}
     public JComponent create (UI ui, Element e) {
         JComponent p;
         try {

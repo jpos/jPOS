@@ -161,7 +161,7 @@ public abstract class BaseChannel extends Observable
     /**
      * constructs a server ISOChannel
      * @param p     an ISOPackager
-     * @exception IOException on error
+     * @exception IOException on error on I/O error on I/O error
      * @see ISOPackager
      */
     public BaseChannel (ISOPackager p) throws IOException {
@@ -173,7 +173,7 @@ public abstract class BaseChannel extends Observable
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException on error
+     * @exception IOException on error on I/O error on I/O error
      * @see ISOPackager
      */
     public BaseChannel (ISOPackager p, ServerSocket serverSocket) throws IOException {
@@ -295,7 +295,7 @@ public abstract class BaseChannel extends Observable
     /**
      * setup I/O Streams from socket
      * @param socket a Socket (client or server)
-     * @exception IOException on error
+     * @exception IOException on error on I/O error on I/O error
      */
     protected void connect (Socket socket) throws IOException {
         this.socket = socket;
@@ -471,7 +471,7 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * Connects client ISOChannel to server
-     * @exception IOException on I/O error
+     * @exception IOException on I/O error on I/O error on I/O error
      */
     public void connect () throws IOException {
         ChannelEvent jfr = new ChannelEvent.Connect();
@@ -499,7 +499,7 @@ public abstract class BaseChannel extends Observable
 
     /**
      * Accepts connection
-     * @exception IOException on I/O error
+     * @exception IOException on I/O error on I/O error on I/O error
      */
     public void accept(ServerSocket s) throws IOException {
         ChannelEvent jfr = new ChannelEvent.Accept();
@@ -828,8 +828,8 @@ public abstract class BaseChannel extends Observable
     /**
      * sends a byte[] over the TCP/IP session
      * @param b the byte array to be sent
-     * @exception IOException on I/O error
-     * @exception ISOException on ISO processing error
+     * @exception IOException on I/O error on I/O error on I/O error
+     * @exception ISOException on ISO processing error on ISO processing error on ISO processing error
      * @exception ISOFilter.VetoException if a filter vetoes the message
      */
     public void send (byte[] b) throws IOException, ISOException {
@@ -1029,7 +1029,7 @@ public abstract class BaseChannel extends Observable
     /**
      * disconnects the TCP/IP session. The instance is ready for
      * a reconnection. There is no need to create a new ISOChannel<br>
-     * @exception IOException on I/O error
+     * @exception IOException on I/O error on I/O error on I/O error
      */
     public void disconnect () throws IOException {
         var jfr = new ChannelEvent.Disconnect();
@@ -1071,7 +1071,7 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * Issues a disconnect followed by a connect
-     * @exception IOException on I/O error
+     * @exception IOException on I/O error on I/O error on I/O error
      */
     public void reconnect() throws IOException {
         disconnect();
@@ -1270,7 +1270,7 @@ public abstract class BaseChannel extends Observable
     * (host not present indicates a ServerChannel)
     *
     * @param cfg Configuration
-    * @throws ConfigurationException
+    * @throws ConfigurationException if configuration is invalid
     */
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException
@@ -1366,7 +1366,7 @@ public abstract class BaseChannel extends Observable
      * Retrieves a channel instance by name from the NameRegistrar.
      * @param name the Channel's name (without the "channel." prefix)
      * @return ISOChannel instance with given name.
-     * @throws NameRegistrar.NotFoundException
+     * @throws NameRegistrar.NotFoundException if no channel with that name is registered
      * @see NameRegistrar
      */
     public static ISOChannel getChannel (String name)

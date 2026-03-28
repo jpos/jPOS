@@ -22,6 +22,8 @@ package org.jpos.iso;
  *  EBCDIC version of IFMC_TCC
  */
 public class IFEMC_TCC extends IFE_CHAR{
+    /** Default constructor. */
+    public IFEMC_TCC() {}
 
     @Override
     public byte[] pack(ISOComponent c) throws ISOException {

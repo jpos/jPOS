@@ -26,6 +26,7 @@ package org.jpos.iso;
  */
 public class IFMC_LLLBINARY extends ISOTagBinaryFieldPackager {
 
+    /** Default constructor. */
     public IFMC_LLLBINARY() {
         super(0,null, AsciiPrefixer.LL, NullPadder.INSTANCE,
                 LiteralBinaryInterpreter.INSTANCE, AsciiPrefixer.LLL);

@@ -163,6 +163,7 @@ public class ISO87APackagerBBitmap extends ISOBasePackager {
     /*127*/ new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
     /*128*/ new IFA_BINARY  (  8, "MAC 2"),
         };
+    /** Default constructor. */
     public ISO87APackagerBBitmap() {
         super();
         setFieldPackager(fld);

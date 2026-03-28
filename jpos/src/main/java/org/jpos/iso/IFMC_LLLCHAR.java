@@ -34,11 +34,13 @@ package org.jpos.iso;
  * @see IFEP_LLCHAR
  */
 public class IFMC_LLLCHAR extends ISOTagStringFieldPackager {
+    /** Default constructor. */
     public IFMC_LLLCHAR() {
         super(0, null, AsciiPrefixer.LL, NullPadder.INSTANCE,
                 AsciiInterpreter.INSTANCE, AsciiPrefixer.LLL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

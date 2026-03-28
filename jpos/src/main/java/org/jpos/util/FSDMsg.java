@@ -209,8 +209,8 @@ public class FSDMsg implements Loggeable, Cloneable {
      *
      * @param is input stream
      *
-     * @throws IOException
-     * @throws JDOMException
+     * @throws IOException on I/O error
+     * @throws JDOMException on XML parsing error
      */
     public void unpack (InputStream is)
         throws IOException, JDOMException {

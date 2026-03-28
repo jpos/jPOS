@@ -38,6 +38,7 @@ import java.util.Map;
  */
 public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOValidator {
 
+    /** Default constructor. */
     public ISOBaseValidatingPackager() {
         super();
     }

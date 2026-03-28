@@ -55,6 +55,8 @@ public class GenericSSLSocketFactory
         extends SimpleLogSource 
         implements ISOServerSocketFactory,ISOClientSocketFactory, Configurable
 { 
+    /** Default constructor. */
+    public GenericSSLSocketFactory() {}
 
     private SSLContext sslc=null;
     private SSLServerSocketFactory  serverFactory=null;

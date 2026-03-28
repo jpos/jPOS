@@ -28,12 +28,15 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFB_LLLHNUM extends ISOStringFieldPackager {
+    /** Default constructor. */
     public IFB_LLLHNUM() {
         super(NullPadder.INSTANCE, BCDInterpreter.RIGHT_PADDED, BinaryPrefixer.BB);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
+     * @param pad if true, apply padding
      */
     public IFB_LLLHNUM(int len, String description, boolean pad) {
         super(len, description, NullPadder.INSTANCE,

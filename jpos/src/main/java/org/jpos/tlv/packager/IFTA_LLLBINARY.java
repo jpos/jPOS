@@ -41,6 +41,7 @@ public class IFTA_LLLBINARY extends IFA_LLLBINARY implements TaggedFieldPackager
 
     private IF_CHAR tagPackager;
 
+    /** Default constructor. */
     public IFTA_LLLBINARY() {
         super();
     }

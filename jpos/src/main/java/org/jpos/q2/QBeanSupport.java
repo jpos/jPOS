@@ -54,6 +54,7 @@ public class QBeanSupport
     protected Configuration cfg;
     protected ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 
+    /** Default constructor. */
     public QBeanSupport () {
         super();
         setLogger (Q2.LOGGER_NAME);

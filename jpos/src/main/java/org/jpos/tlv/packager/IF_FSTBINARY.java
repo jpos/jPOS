@@ -69,7 +69,7 @@ public class IF_FSTBINARY extends ISOFieldPackager implements TaggedFieldPackage
     /**
      * @param c - a component
      * @return packed component
-     * @throws org.jpos.iso.ISOException
+     * @throws org.jpos.iso.ISOException on pack/unpack error
      */
     public byte[] pack(ISOComponent c) throws ISOException {
         int len;
@@ -92,7 +92,7 @@ public class IF_FSTBINARY extends ISOFieldPackager implements TaggedFieldPackage
      * @param b      - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @throws org.jpos.iso.ISOException
+     * @throws org.jpos.iso.ISOException on pack/unpack error
      */
     public int unpack(ISOComponent c, byte[] b, int offset)
             throws ISOException {

@@ -29,10 +29,12 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFB_LLHCHAR extends ISOStringFieldPackager {
+    /** Default constructor. */
     public IFB_LLHCHAR() {
         super(NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, BinaryPrefixer.B);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

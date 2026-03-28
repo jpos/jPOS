@@ -24,11 +24,13 @@ package org.jpos.iso;
  *
  */
 public class IFA_LBINARY extends ISOBinaryFieldPackager {
+    /** Default constructor. */
     public IFA_LBINARY() {
         super(LiteralBinaryInterpreter.INSTANCE, AsciiPrefixer.L);
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len         - field len
      * @param description symbolic descrption
      */

@@ -18,7 +18,10 @@
 
 package org.jpos.iso;
 
+/** IFB_AMOUNT2003 ISOFieldPackager implementation. */
 public class IFB_AMOUNT2003 extends IFB_NUMERIC {
+    /** Default constructor. */
+    public IFB_AMOUNT2003() {}
     public ISOComponent createComponent(int fieldNumber) {
         return new ISOAmount (fieldNumber);    
     }

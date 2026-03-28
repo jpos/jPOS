@@ -40,6 +40,8 @@ import javax.swing.*;
  */
 /** UIFactory that creates horizontal split panes. */
 public class HSplitFactory implements UIFactory {
+    /** Default constructor. */
+    public HSplitFactory() {}
     public JComponent create (UI ui, Element e) {
         JSplitPane splitPane = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT,

@@ -25,12 +25,15 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFB_HEX extends ISOStringFieldPackager {
+    /** Default constructor. */
     public IFB_HEX() {
         super(LeftPadder.ZERO_PADDER, HEXInterpreter.RIGHT_PADDED, NullPrefixer.INSTANCE);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
+     * @param isLeftPadded if true, apply padding
      */
     public IFB_HEX (int len, String description, boolean isLeftPadded) {
         super(len, description, LeftPadder.ZERO_PADDER,

@@ -38,12 +38,14 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFEPE_LLLCHAR extends ISOTagStringFieldPackager {
+    /** Default constructor. */
     public IFEPE_LLLCHAR() {
         super(0, null, EbcdicPrefixer.LLL, NullPadder.INSTANCE,
                 EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LLL);
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len
      *            - field len
      * @param description

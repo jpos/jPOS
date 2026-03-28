@@ -41,6 +41,7 @@ public class IFTA_LLLNUM extends IFA_LLLNUM implements TaggedFieldPackager {
 
     private IF_CHAR tagPackager;
 
+    /** Default constructor. */
     public IFTA_LLLNUM() {
         super();
     }

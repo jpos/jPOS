@@ -216,6 +216,8 @@ These can be changes using attributes on the isopackager node */
     @SuppressWarnings("unchecked")
     /** SAX content handler that populates validators from the XML descriptor. */
     public class GenericValidatorContentHandler extends DefaultHandler {
+        /** Default constructor. */
+        public GenericValidatorContentHandler() {}
         @Override
         public void startDocument(){
             fieldStack = new Stack<Object>();

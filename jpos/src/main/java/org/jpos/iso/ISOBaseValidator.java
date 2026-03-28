@@ -35,6 +35,7 @@ import org.jpos.util.Logger;
  */
 public class ISOBaseValidator implements ISOValidator, LogSource, Configurable {
 
+    /** Default constructor. */
     public ISOBaseValidator() {
         super();
     }

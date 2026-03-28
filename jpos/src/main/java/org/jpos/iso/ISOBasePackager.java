@@ -100,7 +100,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      *
      * @param   m   the Component to pack
      * @return      Message image
-     * @exception ISOException on packing error
+     * @exception ISOException on packing error on ISO processing error
      */
     @Override
     public byte[] pack (ISOComponent m) throws ISOException
@@ -238,7 +238,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @param   m   the Container of this message
      * @param   b   ISO message image
      * @return      consumed bytes
-     * @exception ISOException on unpacking error
+     * @exception ISOException on unpacking error on ISO processing error
      */
     @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException {

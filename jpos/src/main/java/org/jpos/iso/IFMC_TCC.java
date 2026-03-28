@@ -20,6 +20,8 @@ package org.jpos.iso;
 
 
 public class IFMC_TCC extends IF_CHAR{
+    /** Default constructor. */
+    public IFMC_TCC() {}
     @Override
     public byte[] pack(ISOComponent c) throws ISOException {
         if (c != null) return super.pack(c);

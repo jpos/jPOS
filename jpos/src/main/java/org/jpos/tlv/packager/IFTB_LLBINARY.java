@@ -41,6 +41,7 @@ public class IFTB_LLBINARY extends IFB_LLBINARY implements TaggedFieldPackager {
 
     private IF_CHAR tagPackager;
 
+    /** Default constructor. */
     public IFTB_LLBINARY() {
         super();
     }

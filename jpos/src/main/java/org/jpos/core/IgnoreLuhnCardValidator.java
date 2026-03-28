@@ -19,6 +19,7 @@
 package org.jpos.core;
 
 public class IgnoreLuhnCardValidator extends DefaultCardValidator {
+    /** Default constructor. */
     public IgnoreLuhnCardValidator() {
         super();
         setLuhnCalculator(null);

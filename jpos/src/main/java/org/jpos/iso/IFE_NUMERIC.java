@@ -30,10 +30,12 @@ package org.jpos.iso;
  */
 public class IFE_NUMERIC extends ISOStringFieldPackager 
 {
+    /** Default constructor. */
     public IFE_NUMERIC() {
         super(LeftPadder.ZERO_PADDER, EbcdicInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

@@ -31,10 +31,12 @@ import java.text.DecimalFormat;
  * @see ISOComponent
  */
 public class IFA_LLLABINARY extends ISOFieldPackager {
+    /** Default constructor. */
     public IFA_LLLABINARY() {
 	super();
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */
@@ -44,7 +46,7 @@ public class IFA_LLLABINARY extends ISOFieldPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack (ISOComponent c) throws ISOException {
        //CJH incorrect IFA_LLLBINARY pack 08/07/04
@@ -72,7 +74,7 @@ public class IFA_LLLABINARY extends ISOFieldPackager {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException

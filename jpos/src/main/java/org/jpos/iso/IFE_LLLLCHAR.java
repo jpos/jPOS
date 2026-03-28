@@ -26,10 +26,12 @@ package org.jpos.iso;
 
 public class IFE_LLLLCHAR extends ISOStringFieldPackager 
 {
+    /** Default constructor. */
     public IFE_LLLLCHAR() {
         super(NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LLLL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

@@ -43,6 +43,8 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  */
 /** UIFactory that creates HTML-rendered panels. */
 public class HtmlFactory implements UIFactory {
+    /** Default constructor. */
+    public HtmlFactory() {}
     public JComponent create (UI ui, Element e) {
         try {
             JEditorPane editorPane = new JEditorPane (e.getText());

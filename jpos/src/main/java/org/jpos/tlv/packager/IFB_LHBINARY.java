@@ -27,11 +27,13 @@ import org.jpos.iso.LiteralBinaryInterpreter;
  * @author Vishnu Pillai
  */
 public class IFB_LHBINARY extends ISOBinaryFieldPackager {
+    /** Default constructor. */
 	public IFB_LHBINARY() {
 		super(LiteralBinaryInterpreter.INSTANCE, BinaryPrefixer.B);
 	}
 
 	/**
+	 * Constructs a packager with the given length and description.
 	 * @param len
 	 *            - field len
 	 * @param description

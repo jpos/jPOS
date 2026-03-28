@@ -27,10 +27,12 @@ package org.jpos.iso;
  * @see IFA_LLNUM
  */
 public class IFA_FLLNUM extends ISOFilledStringFieldPackager {
+    /** Default constructor. */
     public IFA_FLLNUM() {
         super(RightPadder.SPACE_PADDER, AsciiInterpreter.INSTANCE, AsciiPrefixer.LL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

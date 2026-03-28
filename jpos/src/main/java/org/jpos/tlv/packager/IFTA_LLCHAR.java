@@ -41,6 +41,7 @@ public class IFTA_LLCHAR extends IFA_LLCHAR implements TaggedFieldPackager {
 
     private IF_CHAR tagPackager;
 
+    /** Default constructor. */
     public IFTA_LLCHAR() {
         super();
     }

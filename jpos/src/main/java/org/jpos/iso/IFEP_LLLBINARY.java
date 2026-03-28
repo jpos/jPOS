@@ -23,12 +23,14 @@ import org.xml.sax.Attributes;
 import java.io.IOException;
 import java.io.InputStream;
 
+/** IFEP_LLLBINARY ISOFieldPackager implementation. */
 public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPackagerParams {
     Integer fieldId = null;
 
     private static final int TAG_HEADER_LENGTH = 2;
     private final int prefixerPackedLength;
 
+    /** Default constructor. */
     public IFEP_LLLBINARY() {
         super();
         prefixerPackedLength = 3;
@@ -54,7 +56,7 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error on ISO processing error on ISO processing error
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         int len = ((byte[]) c.getValue()).length;
@@ -81,7 +83,7 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on ISO processing error on ISO processing error on ISO processing error
      */
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException

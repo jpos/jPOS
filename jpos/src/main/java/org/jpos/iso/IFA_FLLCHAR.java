@@ -30,10 +30,12 @@ package org.jpos.iso;
  * @see IFA_LLCHAR
  */
 public class IFA_FLLCHAR extends ISOFilledStringFieldPackager {
+    /** Default constructor. */
     public IFA_FLLCHAR() {
         super(RightPadder.SPACE_PADDER, AsciiInterpreter.INSTANCE, AsciiPrefixer.LL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

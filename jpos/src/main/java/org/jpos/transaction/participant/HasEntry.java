@@ -33,6 +33,8 @@ import java.io.Serializable;
  * If "yes" or "no" is not specified, it returns the constant UNKNOWN
  */
 public class HasEntry implements GroupSelector, Configurable {
+    /** Default constructor. */
+    public HasEntry() {}
     private Configuration cfg;
     /** Result constant for a positive match. */
     public static final String YES = "yes";

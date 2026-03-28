@@ -27,10 +27,12 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFE_BINARY extends ISOBinaryFieldPackager {
+    /** Default constructor. */
     public IFE_BINARY() {
         super(EbcdicHexInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

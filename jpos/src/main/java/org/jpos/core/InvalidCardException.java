@@ -27,6 +27,7 @@ package org.jpos.core;
 public class InvalidCardException extends Exception {
 
     private static final long serialVersionUID = -7842869068559382395L;
+    /** Default constructor. */
     public InvalidCardException () {
         super();
     }

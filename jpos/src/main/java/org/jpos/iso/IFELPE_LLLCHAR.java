@@ -35,10 +35,12 @@ public class IFELPE_LLLCHAR extends ISOFieldPackager {
     private static final int LENGTH_BYTE_LENGTH = 3;
     private static final int TAG_HEADER_LENGTH = TAG_BYTE_LENGTH + LENGTH_BYTE_LENGTH;
 
+    /** Default constructor. */
     public IFELPE_LLLCHAR() {
         super();
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */
@@ -48,7 +50,7 @@ public class IFELPE_LLLCHAR extends ISOFieldPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     @Override
     public byte[] pack(final ISOComponent c) throws ISOException {

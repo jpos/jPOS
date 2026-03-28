@@ -92,21 +92,21 @@ public class ISOBinaryField
 
     /**
      * not available on Leaf - always throw ISOException
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack() throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public int unpack(byte[] b) throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public void unpack(InputStream in) throws ISOException {
         throw new ISOException ("Not available on Leaf");
@@ -125,7 +125,7 @@ public class ISOBinaryField
     }
     /**
      * @param obj - Object representing this field value
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public void setValue (Object obj) throws ISOException {
         if (obj instanceof String)

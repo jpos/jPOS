@@ -315,8 +315,11 @@ public class GenericPackager
     }
 
     /** SAX entity resolver that redirects jPOS DTD references to bundled classpath resources. */
+    /** SAX EntityResolver that maps jPOS DTD public IDs to bundled classpath resources. */
     public static class GenericEntityResolver implements EntityResolver
     {
+        /** Default constructor. */
+        public GenericEntityResolver() {}
         /**
          * Allow the application to resolve external entities.
          * <p>
@@ -386,8 +389,11 @@ public class GenericPackager
 
     /** SAX content handler that populates this packager from an XML packager descriptor. */
     /** SAX content handler that populates this packager from an XML packager descriptor. */
+    /** SAX ContentHandler that builds the packager structure from the XML descriptor. */
     public class GenericContentHandler extends DefaultHandler
     {
+        /** Default constructor. */
+        public GenericContentHandler() {}
         private Stack<Object> fieldStack;
 
         @Override

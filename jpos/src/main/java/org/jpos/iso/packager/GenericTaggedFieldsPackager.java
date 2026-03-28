@@ -130,7 +130,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager
      * Pack the subfield into a byte array
      *
      * @return packed array of bytes
-     * @throws org.jpos.iso.ISOException
+     * @throws org.jpos.iso.ISOException on pack/unpack error
      */
     @Override
     public byte[] pack(ISOComponent m) throws ISOException {

@@ -44,6 +44,7 @@ public class IgnoreLogListener implements LogListener, Configurable {
     int ignore;
     int ignored = 0;
 
+    /** Default constructor. */
     public IgnoreLogListener() {
         super();
     }

@@ -33,6 +33,7 @@ public class IFE_CHAR extends ISOStringFieldPackager {
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

@@ -164,6 +164,7 @@ public class ISO93BPackager extends ISOBasePackager {
     /*127*/ new IFB_LLLCHAR (999, "Reserved for private use"),
     /*128*/ new IFB_BINARY  (  8, "Message authentication code field")
     };
+    /** Default constructor. */
     public ISO93BPackager() {
         super();
         setFieldPackager(fld);

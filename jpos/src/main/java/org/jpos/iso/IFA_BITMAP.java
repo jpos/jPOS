@@ -46,7 +46,7 @@ public class IFA_BITMAP extends ISOBitMapPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         BitSet b = (BitSet) c.getValue();
@@ -64,7 +64,7 @@ public class IFA_BITMAP extends ISOBitMapPackager {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException

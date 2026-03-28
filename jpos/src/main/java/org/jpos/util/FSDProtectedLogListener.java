@@ -88,7 +88,7 @@ public class FSDProtectedLogListener implements LogListener, Configurable
     *  <li>[truncate]  blank separated list of fields:length to be truncated
     * </ul>
     * @param cfg Configuration 
-    * @throws ConfigurationException
+    * @throws ConfigurationException if configuration is invalid
     */
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException

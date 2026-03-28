@@ -24,6 +24,8 @@ import org.jpos.q2.CLIContext;
 /** CLI command that prints help information. */
 public class HELP implements CLICommand
 {
+    /** Default constructor. */
+    public HELP() {}
     public void exec(CLIContext cli, String[] args)
     {
         cli.println("Type tab to see list of available commands");

@@ -34,6 +34,7 @@ public class ISOAmount
     private String value;
     private BigDecimal amount;
 
+    /** Default constructor. */
     public ISOAmount () {
         super();
         setFieldNumber (-1);
