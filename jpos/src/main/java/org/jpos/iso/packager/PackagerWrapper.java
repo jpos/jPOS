@@ -41,6 +41,7 @@ public abstract class PackagerWrapper
     protected ISOPackager standardPackager = null;
     protected Configuration cfg;
 
+    /** Default constructor. */
     public PackagerWrapper() {
         super();
     }
@@ -77,7 +78,7 @@ public abstract class PackagerWrapper
     /**
      * requires <code>inner-packager</code> property
      * @param cfg Configuration object
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     public void setConfiguration (Configuration cfg) 
         throws ConfigurationException

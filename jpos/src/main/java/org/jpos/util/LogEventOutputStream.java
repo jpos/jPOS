@@ -35,6 +35,7 @@ public class LogEventOutputStream extends OutputStream implements LogSource, Run
     private volatile LogEvent evt;
     private long delay;
 
+    /** Default constructor. */
     public LogEventOutputStream() {
         super();
         baos = new ByteArrayOutputStream();

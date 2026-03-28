@@ -36,6 +36,8 @@ import org.jpos.iso.ISOUtil;
 import org.yaml.snakeyaml.Yaml;
 
 public class SimpleConfigurationFactory implements ConfigurationFactory {
+    /** Default constructor. */
+    public SimpleConfigurationFactory() {}
     @Override
     public Configuration getConfiguration(Element e) throws ConfigurationException {
         Properties props = new Properties();

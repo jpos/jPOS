@@ -43,6 +43,7 @@ public class MultiSessionChannelAdaptor
     ISOChannel[] channels;
     int roundRobinCounter = 0;
 
+    /** Default constructor. */
     public MultiSessionChannelAdaptor () {
         super ();
         resetCounters();

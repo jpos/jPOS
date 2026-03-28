@@ -47,6 +47,8 @@ import java.util.*;
  */
 @SuppressWarnings("unchecked")
 public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentSpace {
+    /** Default constructor. */
+    public JDBMSpace() {}
     protected HTree htree;
     protected RecordManager recman;
     protected static final Serializer refSerializer = new Ref ();

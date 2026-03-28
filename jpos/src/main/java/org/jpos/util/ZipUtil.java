@@ -29,6 +29,8 @@ import java.util.zip.ZipOutputStream;
  * Uses java.util.zip to compress an input file and store it to the given output. Only valid for single files, not directories.
  */
 public class ZipUtil {
+    /** Default constructor. */
+    public ZipUtil() {}
 
     public static void zipFile(File input, File output) throws IOException {
         FileInputStream in = null;

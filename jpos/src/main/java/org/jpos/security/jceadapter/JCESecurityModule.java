@@ -174,7 +174,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      *             Default is DESEDEMAC from BouncyCastle provider<br>
      *             that is suitable for BASE24 with double length MAC key<br>
      *             ANSI X9.19<br>
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
@@ -1371,7 +1371,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * Calculates a key check value over a clear key
      * @param key
      * @return the key check value
-     * @exception SMException
+     * @exception SMException on error
      */
     protected byte[] calculateKeyCheckValue (Key key) throws SMException {
         byte[] encryptedZeroBlock = jceHandler.encryptData(zeroBlock, key);
@@ -1926,7 +1926,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
 
     /**
      * Generates new LMK keys
-     * @exception SMException
+     * @exception SMException on error
      */
     private void generateLMK () throws SMException {
         lmks.clear();
@@ -1943,7 +1943,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     /**
      * reads (loads) LMK's from lmkFile
      * @param lmkFile
-     * @exception SMException
+     * @exception SMException on error
      */
     private void readLMK (File lmkFile) throws SMException {
         lmks.clear();
@@ -1975,7 +1975,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     /**
      * Writes a newly generated LMK's to lmkFile
      * @param lmkFile
-     * @exception SMException
+     * @exception SMException on error
      */
     private void writeLMK (File lmkFile) throws SMException {
         Properties lmkProps = new Properties();

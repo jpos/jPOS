@@ -38,6 +38,8 @@ import java.awt.*;
  * @see org.jpos.ui.UIFactory
  */
 public class JButtonFactory implements UIFactory {
+    /** Default constructor. */
+    public JButtonFactory() {}
     public JComponent create (UI ui, Element e) {
         JButton button = new JButton (e.getText());
         button.setHorizontalAlignment(JLabel.CENTER);

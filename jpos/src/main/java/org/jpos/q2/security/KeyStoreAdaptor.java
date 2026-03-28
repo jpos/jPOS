@@ -45,6 +45,7 @@ public class KeyStoreAdaptor extends QBeanSupport implements KeyStoreAdaptorMBea
     public static final String DEFAULT_IMPL="org.jpos.security.SimpleKeyFile";
     String clazz;
     SecureKeyStore ks;
+    /** Default constructor. */
     public KeyStoreAdaptor () {
         super ();
         clazz = DEFAULT_IMPL;

@@ -24,6 +24,8 @@ import org.jpos.util.Loggeable;
 import java.io.PrintStream;
 
 public final class LoggeableJsonLogRenderer implements LogRenderer<Loggeable> {
+    /** Default constructor. */
+    public LoggeableJsonLogRenderer() {}
     @Override
     public void render(Loggeable obj, PrintStream ps, String indent) {
         ps.println("{\"" + obj.getClass().getSimpleName()+"\": \"");

@@ -51,6 +51,8 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public class JTabbedPaneFactory implements UIFactory, ChangeListener {
+    /** Default constructor. */
+    public JTabbedPaneFactory() {}
     UI ui;
     List actions = new ArrayList();
     JTabbedPane p;

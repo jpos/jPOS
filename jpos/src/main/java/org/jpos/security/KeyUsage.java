@@ -31,7 +31,6 @@ import org.jpos.iso.ISOUtil;
  * Each value repesents bytes 5-6 of the keyblock header.
  */
 public class KeyUsage implements Serializable {
-
     private static final long serialVersionUID = -5504819939017756749L;
 
     /** TR-31 key usage code registry mapping code strings to KeyUsage enum constants. */

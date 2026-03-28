@@ -43,6 +43,7 @@ import java.util.Map;
 public final class LogEventXmlLogRenderer implements LogRenderer<LogEvent> {
     private final XmlMapper mapper = new XmlMapper();
 
+    /** Default constructor. */
     public LogEventXmlLogRenderer() {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

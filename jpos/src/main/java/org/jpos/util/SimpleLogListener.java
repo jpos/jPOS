@@ -35,6 +35,7 @@ public class SimpleLogListener implements LogListener, XmlConfigurable, Destroya
     LogEventWriter writer = null;
     PrintStream p;
 
+    /** Default constructor. */
     public SimpleLogListener () {
         super();
         setPrintStream(System.out);

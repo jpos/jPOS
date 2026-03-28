@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class LoggerAdaptor extends QBeanSupport {
+    /** Default constructor. */
+    public LoggerAdaptor() {}
     private Logger logger;
     private PrintStream originalOut = null;
     private PrintStream originalErr = null;

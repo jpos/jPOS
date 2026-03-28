@@ -26,6 +26,8 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.q2.QBeanSupport;
 
 public class QSingleInstancePortBasedManager extends QBeanSupport {
+    /** Default constructor. */
+    public QSingleInstancePortBasedManager() {}
 
     ServerSocket ss;
 

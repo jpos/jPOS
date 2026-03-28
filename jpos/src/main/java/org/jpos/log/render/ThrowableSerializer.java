@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class ThrowableSerializer extends JsonSerializer<Throwable> {
+    /** Default constructor. */
+    public ThrowableSerializer() {}
     @Override
     public void serialize(Throwable t, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         gen.writeStartObject();

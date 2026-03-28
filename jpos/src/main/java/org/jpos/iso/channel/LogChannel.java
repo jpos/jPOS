@@ -63,7 +63,7 @@ public class LogChannel extends BaseChannel {
      * Construct server ISOChannel
      * @param p     an ISOPackager
      * @see ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O error
      */
     public LogChannel (ISOPackager p) throws IOException {
         super(p);
@@ -72,7 +72,7 @@ public class LogChannel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public LogChannel (ISOPackager p, ServerSocket serverSocket) 
@@ -82,7 +82,7 @@ public class LogChannel extends BaseChannel {
     }
     /**
      * @return a byte array with the received message
-     * @exception IOException
+     * @exception IOException on I/O error
      */
     protected byte[] streamReceive() throws IOException {
         StringBuilder sb = new StringBuilder();

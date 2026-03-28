@@ -31,6 +31,8 @@ import java.util.Base64;
  * Obfuscate a secret
  */
 public class OBF implements CLICommand {
+    /** Default constructor. */
+    public OBF() {}
     @Override
     public void exec(CLIContext cli, String[] args) throws Exception {
         if (args.length != 2) {

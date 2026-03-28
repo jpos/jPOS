@@ -50,7 +50,7 @@ public class XSLTFilter implements ISOFilter, Configurable {
 
     /**
      * Default noargs constructor
-     * @throws ISOException
+     * @throws ISOException on pack/unpack error
      */
     public XSLTFilter () throws ISOException {
         super();
@@ -63,7 +63,7 @@ public class XSLTFilter implements ISOFilter, Configurable {
     /**
      * @param xsltfile XSL Transformation file
      * @param reread true if you want XSLT file re-read from disk
-     * @throws ISOException
+     * @throws ISOException on pack/unpack error
      */
     public XSLTFilter (String xsltfile, boolean reread) 
         throws ISOException

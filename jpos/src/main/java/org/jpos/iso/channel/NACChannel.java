@@ -43,6 +43,7 @@ public class NACChannel extends BaseChannel {
     boolean tpduSwap = true;
     int lenlen = 0;
 
+    /** Default constructor. */
     public NACChannel () {
         super();
     }

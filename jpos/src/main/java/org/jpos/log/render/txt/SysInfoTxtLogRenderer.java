@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 public final class SysInfoTxtLogRenderer implements LogRenderer<SysInfo> {
+    /** Default constructor. */
+    public SysInfoTxtLogRenderer() {}
     public Class<?> clazz() {
         return SysInfo.class;
     }

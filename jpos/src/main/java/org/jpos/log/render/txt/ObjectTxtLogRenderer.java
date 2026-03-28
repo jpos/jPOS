@@ -22,6 +22,8 @@ import org.jpos.log.LogRenderer;
 import java.io.PrintStream;
 
 public final class ObjectTxtLogRenderer implements LogRenderer<Object> {
+    /** Default constructor. */
+    public ObjectTxtLogRenderer() {}
     @Override
     public void render(Object obj, PrintStream ps, String indent) {
         String[] lines = String.valueOf(obj).split("\\R", -1);

@@ -43,6 +43,8 @@ import javax.swing.*;
  * @see org.jpos.ui.action.Redirect
  */
 public class PanelFactory implements UIFactory {
+    /** Default constructor. */
+    public PanelFactory() {}
     public JComponent create (UI ui, Element e) {
         JPanel p = new JPanel ();
         if (e.getChildren().size() > 0)

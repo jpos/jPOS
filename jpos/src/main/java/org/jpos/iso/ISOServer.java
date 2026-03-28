@@ -589,7 +589,7 @@ public class ISOServer extends Observable
     }
     /**
      * @return ISOServer instance with given name.
-     * @throws NameRegistrar.NotFoundException
+     * @throws NameRegistrar.NotFoundException if not found in registry
      * @see NameRegistrar
      */
     public static ISOServer getServer (String name)

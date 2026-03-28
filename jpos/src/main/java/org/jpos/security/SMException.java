@@ -30,6 +30,7 @@ public class SMException extends ISOException {
     private static final long serialVersionUID = 6419380899728561889L;
     Exception nested = null;
 
+    /** Default constructor. */
     public SMException () {
         super();
     }

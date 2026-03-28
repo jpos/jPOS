@@ -27,6 +27,8 @@ import java.util.*;
  * using a thread-safe approach to ensure proper operation in multi-threaded environments.
  */
 public class LogRendererRegistry {
+    /** Default constructor. */
+    public LogRendererRegistry() {}
     private static final Map<LogRendererRegistry.Key, LogRenderer<?>> renderers = Collections.synchronizedMap(
       new LinkedHashMap<>()
     );

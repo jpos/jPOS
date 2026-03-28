@@ -42,6 +42,7 @@ public class SpaceAdaptor
     private String spaceName = null;
     private ObjectName objectName = null;
 
+    /** Default constructor. */
     public SpaceAdaptor () {
         super ();
     }

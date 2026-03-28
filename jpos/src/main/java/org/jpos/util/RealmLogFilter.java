@@ -78,6 +78,8 @@ import java.util.Set;
 
 
 public class RealmLogFilter implements LogListener, XmlConfigurable, Configurable {
+    /** Default constructor. */
+    public RealmLogFilter() {}
     private Set<String> enabledRealms;
     private Set<String> disabledRealms;
     private Set<String> realmsMissed = new HashSet<>();

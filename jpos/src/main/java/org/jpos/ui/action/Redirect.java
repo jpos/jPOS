@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 
 public class Redirect implements ActionListener, UIAware {
     public UI ui;
+    /** Default constructor. */
     public Redirect () {
         super();
     }

@@ -240,6 +240,7 @@ public class PostPackager extends ISOBasePackager {
             setFieldPackager(fld127);
         }
     }
+    /** Default constructor. */
     public PostPackager() {
         super();
         setFieldPackager(fld);

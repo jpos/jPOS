@@ -27,6 +27,8 @@ import java.nio.channels.FileLock;
 import org.jpos.q2.QBeanSupport;
 
 public class QSingleInstanceFileBasedManager extends QBeanSupport {
+    /** Default constructor. */
+    public QSingleInstanceFileBasedManager() {}
 
     File             lockFile;
     FileChannel      lockChannel;

@@ -31,6 +31,7 @@ import org.jpos.util.NameRegistrar;
  */
 public class UI extends QBeanSupport implements UIObjectFactory {
     org.jpos.ui.UI ui;
+    /** Default constructor. */
     public UI () {
         super();
     }

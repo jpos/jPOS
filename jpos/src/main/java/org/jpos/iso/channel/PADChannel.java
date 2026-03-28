@@ -63,7 +63,7 @@ public class PADChannel extends BaseChannel {
      * Construct server ISOChannel
      * @param p     an ISOPackager
      * @see ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O error
      */
     public PADChannel (ISOPackager p) throws IOException {
         super(p);
@@ -72,7 +72,7 @@ public class PADChannel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public PADChannel (ISOPackager p, ServerSocket serverSocket)

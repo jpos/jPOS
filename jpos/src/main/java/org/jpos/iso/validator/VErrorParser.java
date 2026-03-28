@@ -39,6 +39,8 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class VErrorParser implements LogSource, Loggeable  {
+    /** Default constructor. */
+    public VErrorParser() {}
 
     /**
      * Parse an ISOComponent and get an error vector.

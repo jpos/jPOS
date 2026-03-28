@@ -27,6 +27,8 @@ import java.io.Serializable;
  * @author Robert Demski
  */
 public abstract class SecureVariantKey extends SecureKey implements Serializable {
+    /** Default constructor. */
+    public SecureVariantKey() {}
 
     private static final long serialVersionUID = -3165785988271048707L;
 

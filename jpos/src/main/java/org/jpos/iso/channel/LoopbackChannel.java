@@ -40,6 +40,7 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
     Logger logger;
     String realm;
 
+    /** Default constructor. */
     public LoopbackChannel () {
         super();
         cnt = new int[SIZEOF_CNT];

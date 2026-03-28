@@ -27,6 +27,7 @@ public class WeakPINException extends SMException {
 
     private static final long serialVersionUID = 5731194571388461393L;
 
+    /** Default constructor. */
     public WeakPINException () {
         super();
     }

@@ -24,6 +24,8 @@ import static  org.jpos.transaction.TransactionManager.Trace;
 import java.io.PrintStream;
 
 public final class TransactionManagerTraceArrayMarkdownLogRenderer implements LogRenderer<Trace[]> {
+    /** Default constructor. */
+    public TransactionManagerTraceArrayMarkdownLogRenderer() {}
     @Override
     public void render(Trace[] traces, PrintStream ps, String indent) {
         ps.println ("```mermaid");

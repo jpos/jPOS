@@ -101,6 +101,7 @@ public class TPS implements Loggeable, AutoCloseable {
     // Pluggable time source (monotonic nanos).
     private final LongSupplier nanoTimeSource;
 
+    /** Default constructor. */
     public TPS() {
         this(1000L, false);
     }

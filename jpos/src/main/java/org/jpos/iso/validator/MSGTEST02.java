@@ -35,6 +35,7 @@ import org.jpos.util.Logger;
  */
 public class MSGTEST02 extends ISOBaseValidator {
 
+    /** Default constructor. */
     public MSGTEST02() {
         super();
     }

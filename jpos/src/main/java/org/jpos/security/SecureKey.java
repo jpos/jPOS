@@ -56,6 +56,8 @@ import java.io.Serializable;
  */
 public abstract class SecureKey
         implements Serializable, Loggeable {
+    /** Default constructor. */
+    public SecureKey() {}
     /**
      * Secure Key Bytes
      */

@@ -34,6 +34,7 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {
     private Map map;
+    /** Default constructor. */
     public VolatileSequencer () {
         map = new HashMap();
     }

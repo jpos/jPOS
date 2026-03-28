@@ -254,7 +254,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     
    /** 
     * @param cfg Configuration object
-    * @throws ConfigurationException
+    * @throws ConfigurationException if configuration is invalid
     */
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         maxPoolSize = cfg.getInt("max-size", DEFAULT_MAX_THREADS);

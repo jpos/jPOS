@@ -28,7 +28,7 @@ import org.w3c.dom.Node;
  */
 public interface NodeConfigurable {
    /**
-    * @throws ConfigurationException
+    * @throws ConfigurationException if configuration is invalid
     */
    void setConfiguration(Node node)
         throws ConfigurationException;

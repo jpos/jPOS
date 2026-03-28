@@ -28,6 +28,8 @@ import java.util.concurrent.CountDownLatch;
 
 @SuppressWarnings("unused")
 public class LOGGER_BENCHMARK implements CLICommand {
+    /** Default constructor. */
+    public LOGGER_BENCHMARK() {}
     public void exec(CLIContext ctx, String[] args) throws Exception {
         if (args.length != 3) {
             ctx.println (String.format ("Usage: %s threads messages", args[0]));

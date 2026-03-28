@@ -35,6 +35,7 @@ public class SpaceLogListener implements LogListener, Configurable {
     Configuration cfg;
 
     @SuppressWarnings("unused")
+    /** Default constructor. */
     public SpaceLogListener() {
         super();
     }
@@ -53,7 +54,7 @@ public class SpaceLogListener implements LogListener, Configurable {
 
     /**
      * @param cfg Configuration object
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     @Override
     public void setConfiguration(Configuration cfg) throws ConfigurationException {

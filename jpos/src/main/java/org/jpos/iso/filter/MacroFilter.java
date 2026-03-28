@@ -37,6 +37,7 @@ public class MacroFilter implements ISOFilter, Configurable {
     Configuration cfg;
     String[] unsetFields  = new String[0];
     String[] validFields  = new String[0];
+    /** Default constructor. */
     public MacroFilter () {
         super();
     }

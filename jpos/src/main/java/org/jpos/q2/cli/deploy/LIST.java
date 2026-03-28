@@ -29,6 +29,8 @@ import org.jpos.q2.Q2;
 * @author Felipph Calado - luizfelipph@gmail.com
 */
 public class LIST implements CLICommand {
+    /** Default constructor. */
+    public LIST() {}
 
     @Override
     public void exec(CLIContext ctx, String[] args) throws Exception {

@@ -55,6 +55,8 @@ import org.jpos.q2.Q2;
  * @see Q2#getMeterRegistry()
  */
 public class Metrics {
+    /** Default constructor. */
+    public Metrics() {}
 
     /**
      * Get the MeterRegistry from the default Q2 instance.

@@ -24,6 +24,7 @@ package org.jpos.emv;
  */
 public class UnknownTagNumberException extends Exception {
 
+    /** Default constructor. */
     public UnknownTagNumberException() {
         super();
     }

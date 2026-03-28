@@ -32,6 +32,7 @@ import org.jpos.iso.validator.ISOVException;
  */
 public class IVA_ALPHANUMNOBLANK extends IVA_ALPHANUM {
 
+    /** Default constructor. */
     public IVA_ALPHANUMNOBLANK() {
         super();
     }

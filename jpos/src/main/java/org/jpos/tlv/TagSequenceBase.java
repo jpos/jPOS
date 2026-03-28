@@ -39,6 +39,7 @@ public abstract class TagSequenceBase implements TagSequence {
     private final TreeMap<String, List<TagValue>> tagMap = new TreeMap();
     private final LinkedList<TagValue> orderedList = new LinkedList();
 
+    /** Default constructor. */
     public TagSequenceBase() {
         this.tag = "Root";
     }

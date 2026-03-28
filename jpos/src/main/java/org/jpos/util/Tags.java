@@ -28,6 +28,7 @@ public class Tags implements Serializable {
     private static final long serialVersionUID = -7749305134294641955L;
     private transient Set<String> ts;
 
+    /** Default constructor. */
     public Tags() {
         ts = Collections.synchronizedSet(new TreeSet<String>());
     }

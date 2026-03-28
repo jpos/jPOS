@@ -25,6 +25,8 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
 public class LICENSE implements CLICommand {
+    /** Default constructor. */
+    public LICENSE() {}
     public void exec(CLIContext cli, String[] args) throws IOException {
         InputStream input = new BufferedInputStream(getClass().getResourceAsStream("/JPOS_LICENSE"));
         try {

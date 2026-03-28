@@ -167,6 +167,7 @@ public class PosDataCode extends PosFlags implements Loggeable {
 
     private byte[] b = new byte[16];
 
+    /** Default constructor. */
     public PosDataCode() {
     }
 

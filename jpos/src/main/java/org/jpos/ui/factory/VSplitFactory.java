@@ -39,6 +39,8 @@ import javax.swing.*;
  * @see org.jpos.ui.UIFactory
  */
 public class VSplitFactory implements UIFactory {
+    /** Default constructor. */
+    public VSplitFactory() {}
     public JComponent create (UI ui, Element e) {
         JSplitPane splitPane = new JSplitPane(
             JSplitPane.VERTICAL_SPLIT,

@@ -36,6 +36,7 @@ public class Profiler implements Loggeable {
     LinkedHashMap<String, Entry> events;
     public static final int TO_MILLIS = 1000000;
 
+    /** Default constructor. */
     public Profiler () {
         super();
         reset();

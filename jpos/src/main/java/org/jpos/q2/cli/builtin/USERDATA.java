@@ -27,6 +27,8 @@ import org.jpos.q2.CLIContext;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public class USERDATA implements CLICommand {
+    /** Default constructor. */
+    public USERDATA() {}
     @Override
     public void exec(CLIContext cli, String[] strings) throws Exception {
         cli.printUserData();

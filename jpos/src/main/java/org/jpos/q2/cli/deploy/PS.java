@@ -34,6 +34,8 @@ import javax.management.ObjectInstance;
 * @author Felipph Calado - luizfelipph@gmail.com
 */
 public class PS implements CLICommand {
+    /** Default constructor. */
+    public PS() {}
 
     @Override
     public void exec(CLIContext ctx, String[] args) throws Exception {

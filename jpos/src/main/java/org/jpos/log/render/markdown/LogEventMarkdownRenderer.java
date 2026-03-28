@@ -27,6 +27,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public final class LogEventMarkdownRenderer implements LogRenderer<LogEvent> {
+    /** Default constructor. */
+    public LogEventMarkdownRenderer() {}
     @Override
     public void render(LogEvent evt, PrintStream ps, String indent) {
         ps.printf ("## %s %s %s [%s]%s%n",

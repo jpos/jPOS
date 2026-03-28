@@ -40,6 +40,8 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
 public class SelectDestination implements TransactionParticipant, Configurable, XmlConfigurable {
+    /** Default constructor. */
+    public SelectDestination() {}
     private String requestName;
     private String destinationName;
     private String defaultDestination;
@@ -87,7 +89,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
 
     /**
      * @param xml Configuration element
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      *
      *
      * SelectDestination expects an XML configuration in the following format:

@@ -22,6 +22,8 @@ import org.jpos.log.LogRenderer;
 import java.io.PrintStream;
 
 public final class ObjectMarkdownLogRenderer implements LogRenderer<Object> {
+    /** Default constructor. */
+    public ObjectMarkdownLogRenderer() {}
     @Override
     public void render(Object obj, PrintStream ps, String indent) {
         // ps.printf ("> %s%n%n%s%n", obj.getClass().getCanonicalName(), obj);

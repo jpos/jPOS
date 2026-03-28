@@ -270,7 +270,7 @@ public class QFactory {
      * }</pre>
      * @param type class type
      * @param e the Element
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      * @return the object collection
      */
     @SuppressWarnings("unchecked")

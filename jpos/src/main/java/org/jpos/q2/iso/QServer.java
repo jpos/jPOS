@@ -67,6 +67,7 @@ public class QServer
     private Gauge connectionsGauge;
     private static final String CHANNEL_NAME_REGEXP = " (?=\\d+ \\S+:\\S+)";
 
+    /** Default constructor. */
     public QServer () {
         super ();
     }

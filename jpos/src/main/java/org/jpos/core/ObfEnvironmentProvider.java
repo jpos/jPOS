@@ -25,6 +25,8 @@ import java.nio.ByteBuffer;
 import java.util.Base64;
 
 public class ObfEnvironmentProvider implements EnvironmentProvider {
+    /** Default constructor. */
+    public ObfEnvironmentProvider() {}
     @Override
     public String prefix() {
         return "obf::";

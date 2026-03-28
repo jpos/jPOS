@@ -28,6 +28,7 @@ import org.jpos.security.SMException;
 
 public class JCEHandlerException extends SMException {
 
+    /** Default constructor. */
     public JCEHandlerException () {
         super();
     }

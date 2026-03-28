@@ -115,7 +115,7 @@ public class IVA_NUM extends ISOFieldValidator {
      * Configure the validator. @see ISOFieldValidator class.
      * Take config param "radix" wich specify the numeric radix.
      * @param cfg configuration instance
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         super.setConfiguration( cfg );

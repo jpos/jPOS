@@ -32,6 +32,8 @@ import java.util.Locale;
 @SuppressWarnings("unused")
 public class TZCHECK implements CLICommand
 {
+    /** Default constructor. */
+    public TZCHECK() {}
     public void exec(CLIContext cli, String[] args) throws Exception
     {
         ZoneId zi = ZoneId.systemDefault();

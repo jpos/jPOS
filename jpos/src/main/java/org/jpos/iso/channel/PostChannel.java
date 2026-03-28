@@ -54,7 +54,7 @@ public class PostChannel extends BaseChannel {
     /**
      * Construct server ISOChannel
      * @param p     an ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public PostChannel (ISOPackager p) throws IOException {
@@ -64,7 +64,7 @@ public class PostChannel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public PostChannel (ISOPackager p, ServerSocket serverSocket) 

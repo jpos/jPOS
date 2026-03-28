@@ -37,6 +37,8 @@ import java.util.stream.Collectors;
  */
 public class ModuleUtils
 {
+    /** Default constructor. */
+    public ModuleUtils() {}
     private static final String MODULES_UUID_DIR = "META-INF/modules/uuids/";
     private static final String MODULES_RKEYS_DIR = "META-INF/modules/rkeys/";
 

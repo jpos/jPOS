@@ -55,6 +55,8 @@ import java.util.List;
  * @since 2.1.4
  */
 public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConfigurable {
+    /** Default constructor. */
+    public MappingLogEventWriter() {}
     List<LogEventMapper> eventMappers;
     List<ByteArrayMapper> outputMappers;
     ByteArrayOutputStream captureOutputStream;

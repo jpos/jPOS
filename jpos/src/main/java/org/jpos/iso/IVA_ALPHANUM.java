@@ -32,6 +32,7 @@ import org.jpos.iso.validator.ISOVException;
  */
 public class IVA_ALPHANUM extends ISOFieldValidator {
 
+    /** Default constructor. */
     public IVA_ALPHANUM() {
         super();
     }

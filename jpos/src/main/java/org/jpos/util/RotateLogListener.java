@@ -68,6 +68,7 @@ public class RotateLogListener extends SimpleLogListener
     /** Algorithm used to perform the actual log rotation. */
     RotationAlgo rotationAlgo = null;
 
+    /** Default constructor. */
     public RotateLogListener () {
         super();
     }

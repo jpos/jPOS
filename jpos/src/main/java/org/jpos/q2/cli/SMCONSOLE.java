@@ -24,6 +24,8 @@ import java.io.PrintStream;
 
 public class SMCONSOLE implements CLICommand
 {
+    /** Default constructor. */
+    public SMCONSOLE() {}
     public void exec(CLIContext cli, String[] args)
     {
         try

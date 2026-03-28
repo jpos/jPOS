@@ -21,6 +21,8 @@ package org.jpos.q2.qbean;
 import org.jpos.q2.QBeanSupport;
 
 public class Shutdown extends QBeanSupport {
+    /** Default constructor. */
+    public Shutdown() {}
     public void startService() {
         getServer().shutdown ();
     }

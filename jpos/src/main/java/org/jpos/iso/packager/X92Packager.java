@@ -101,6 +101,7 @@ public class X92Packager extends ISOBasePackager {
             new IFA_BINARY(      0, "UNUSED"                                )
         };
             
+    /** Default constructor. */
     public X92Packager() {
         super();
         setFieldPackager(fld);

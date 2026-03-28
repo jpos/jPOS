@@ -45,6 +45,8 @@ import javax.crypto.spec.SecretKeySpec;
 import static org.bouncycastle.bcpg.ArmoredOutputStream.VERSION_HDR;
 
 public class PGPHelper {
+    /** Default constructor. */
+    public PGPHelper() {}
     private static KeyFingerPrintCalculator fingerPrintCalculator = new BcKeyFingerprintCalculator();
     private static final String PUBRING = "META-INF/.pgp/pubring.asc";
     private static final String SIGNER = "license@jpos.org";
@@ -289,7 +291,7 @@ public class PGPHelper {
      * @param armor true for ascii armor
      * @param ids destination ids
      * @return encrypted data.
-     * @throws IOException
+     * @throws IOException on I/O error
      * @throws PGPException
      * @throws NoSuchProviderException
      * @throws NoSuchAlgorithmException
@@ -359,7 +361,7 @@ public class PGPHelper {
      * @param armor true for ascii armor
      * @param ids destination ids
      * @return encrypted data.
-     * @throws IOException
+     * @throws IOException on I/O error
      * @throws PGPException
      * @throws NoSuchProviderException
      * @throws NoSuchAlgorithmException
@@ -378,7 +380,7 @@ public class PGPHelper {
      * @param password  Pass phrase (key)
      * @return Clear text as a byte array. I18N considerations are not handled
      *         by this routine
-     * @throws IOException
+     * @throws IOException on I/O error
      * @throws PGPException
      * @throws NoSuchProviderException
      */
@@ -441,7 +443,7 @@ public class PGPHelper {
      * @param password  Pass phrase (key)
      * @return Clear text as a byte array. I18N considerations are not handled
      *         by this routine
-     * @throws IOException
+     * @throws IOException on I/O error
      * @throws PGPException
      * @throws NoSuchProviderException
      */

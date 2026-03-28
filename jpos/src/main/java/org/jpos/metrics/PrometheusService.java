@@ -29,6 +29,8 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
 public class PrometheusService extends QBeanSupport {
+    /** Default constructor. */
+    public PrometheusService() {}
     @Config("port")
     private int port;
     @Config("path")

@@ -66,6 +66,7 @@ public class ProtectedLogListener implements LogListener, Configurable
     public static final String WIPED = "[WIPED]";
     public static final byte[] BINARY_WIPED = ISOUtil.hex2byte ("AA55AA55");
 
+    /** Default constructor. */
     public ProtectedLogListener () {
         super();
     }
@@ -78,7 +79,7 @@ public class ProtectedLogListener implements LogListener, Configurable
     *  <li>[wipe]      blank separated list of fields to be wiped
     * </ul>
     * @param cfg Configuration 
-    * @throws ConfigurationException
+    * @throws ConfigurationException if configuration is invalid
     */
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException

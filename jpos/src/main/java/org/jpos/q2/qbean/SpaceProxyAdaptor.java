@@ -40,6 +40,7 @@ public class SpaceProxyAdaptor
     private SpaceProxy sp = null;
     private String spaceName = null;
 
+    /** Default constructor. */
     public SpaceProxyAdaptor () {
         super ();
     }

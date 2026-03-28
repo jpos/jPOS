@@ -50,6 +50,7 @@ public class SimpleKeyFile
     protected Logger logger = null;
     protected String realm = null;
 
+    /** Default constructor. */
     public SimpleKeyFile () {
     }
 
@@ -88,7 +89,7 @@ public class SimpleKeyFile
     /**
      *
      * @param cfg configuration object
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {

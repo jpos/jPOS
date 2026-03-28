@@ -24,6 +24,8 @@ import org.jpos.transaction.TransactionManager;
 import java.io.PrintStream;
 
 public final class TransactionManagerTraceMarkdownLogRenderer implements LogRenderer<TransactionManager.Trace> {
+    /** Default constructor. */
+    public TransactionManagerTraceMarkdownLogRenderer() {}
     @Override
     public void render(TransactionManager.Trace t, PrintStream ps, String indent) {
         ps.println (indent(indent, t.toString()));

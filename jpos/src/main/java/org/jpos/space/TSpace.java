@@ -48,6 +48,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private final Set[] expirables;
     private long lastLongGC = System.nanoTime();
 
+    /** Default constructor. */
     public TSpace () {
         super();
         entries = new HashMap ();

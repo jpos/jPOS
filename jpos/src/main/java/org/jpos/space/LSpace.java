@@ -96,6 +96,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
 
 
+    /** Default constructor. */
     public LSpace() {
         super();
         this.entries = new ConcurrentHashMap<>(256);

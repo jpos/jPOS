@@ -59,6 +59,7 @@ public class LogEvent {
         this.payLoad = Collections.synchronizedList (new ArrayList<>());
     }
 
+    /** Default constructor. */
     public LogEvent () {
         this("info");
     }

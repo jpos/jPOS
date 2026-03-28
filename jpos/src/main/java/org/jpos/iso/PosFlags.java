@@ -20,6 +20,8 @@ package org.jpos.iso;
 
 @SuppressWarnings("unused")
 public abstract class PosFlags {
+    /** Default constructor. */
+    public PosFlags() {}
 
     public interface Flag {
         int getOffset();

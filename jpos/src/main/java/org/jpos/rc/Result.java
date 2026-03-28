@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class Result implements Loggeable {
     private final List<Entry> entries = Collections.synchronizedList(new ArrayList<>());
 
+    /** Default constructor. */
     public Result() {
         super();
     }

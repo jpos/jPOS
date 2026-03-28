@@ -30,6 +30,8 @@ package org.jpos.iso;
  */
 public class SignedEbcdicNumberInterpreter implements Interpreter
 {
+    /** Default constructor. */
+    public SignedEbcdicNumberInterpreter() {}
     /** An instance of this Interpreter. Only one needed for the whole system */
     public static final SignedEbcdicNumberInterpreter INSTANCE = new SignedEbcdicNumberInterpreter();
 

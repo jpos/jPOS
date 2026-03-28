@@ -63,6 +63,8 @@ import static org.jpos.transaction.ContextConstants.TIMESTAMP;
 public class TransactionManager 
     extends QBeanSupport 
     implements Runnable, TransactionConstants, TransactionManagerMBean, Loggeable, MetricsProvider {
+    /** Default constructor. */
+    public TransactionManager() {}
 
     public static final String  CONTEXT    = "$CONTEXT.";
     public static final String  STATE      = "$STATE.";

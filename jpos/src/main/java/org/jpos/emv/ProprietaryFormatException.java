@@ -23,6 +23,7 @@ package org.jpos.emv;
  * @author Vishnu Pillai
  */
 public class ProprietaryFormatException extends Exception {
+    /** Default constructor. */
     public ProprietaryFormatException() {
         super();
     }

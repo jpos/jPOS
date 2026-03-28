@@ -27,6 +27,8 @@ import static org.jpos.transaction.ContextConstants.TXNNAME;
 
 @SuppressWarnings("unused")
 public class Switch implements Configurable, GroupSelector {
+    /** Default constructor. */
+    public Switch() {}
     private Configuration cfg;
     private String txnNameEntry;
     public String select (long id, Serializable ser) {

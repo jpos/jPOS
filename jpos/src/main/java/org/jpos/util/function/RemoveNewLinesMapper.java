@@ -44,6 +44,8 @@ import java.nio.ByteBuffer;
  * @since 2.1.4
  */
 public class RemoveNewLinesMapper implements ByteArrayMapper, Configurable {
+    /** Default constructor. */
+    public RemoveNewLinesMapper() {}
     boolean combineSpaces = false;
     boolean newLineAtEnd = true;
     final byte SPACE = ' ';

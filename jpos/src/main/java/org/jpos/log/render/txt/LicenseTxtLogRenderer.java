@@ -24,6 +24,8 @@ import org.jpos.log.evt.License;
 import java.io.PrintStream;
 
 public final class LicenseTxtLogRenderer implements LogRenderer<License> {
+    /** Default constructor. */
+    public LicenseTxtLogRenderer() {}
     public Class<?> clazz() {
         return License.class;
     }

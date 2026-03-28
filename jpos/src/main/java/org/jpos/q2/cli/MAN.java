@@ -25,6 +25,8 @@ import java.io.InputStream;
 
 @SuppressWarnings("unused")
 public class MAN implements CLICommand {
+    /** Default constructor. */
+    public MAN() {}
     public void exec(CLIContext cli, String[] args) throws Exception {
         if (args.length < 2) {
             cli.println("What manual page do you want?");

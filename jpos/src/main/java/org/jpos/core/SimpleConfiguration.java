@@ -34,6 +34,7 @@ import java.util.stream.IntStream;
 public class SimpleConfiguration implements Configuration, Serializable {
     private Properties props;
 
+    /** Default constructor. */
     public SimpleConfiguration () {
         props = new Properties();
     }

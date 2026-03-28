@@ -43,6 +43,7 @@ public class MD5Filter implements ISOFilter, Configurable {
     String key;
     int[] fields;
 
+    /** Default constructor. */
     public MD5Filter() {
         super();
     }

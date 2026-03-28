@@ -36,6 +36,8 @@ public class Join
        implements TransactionConstants, AbortParticipant, 
                   XmlConfigurable
 {
+    /** Default constructor. */
+    public Join() {}
     private TransactionManager tm;
     private final List<TransactionParticipant> participants = new ArrayList<> ();
 

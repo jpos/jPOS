@@ -58,6 +58,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  *
  */
 public class SpaceFactory {
+    /** Default constructor. */
+    public SpaceFactory() {}
     public static final String TSPACE     = "tspace";
     public static final String LSPACE     = "lspace";
     public static final String TRANSIENT  = "transient";

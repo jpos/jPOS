@@ -28,7 +28,7 @@ public interface MUX extends ISOSource {
      * @param m message to send
      * @param timeout time to wait for a message
      * @return received message or null
-     * @throws ISOException
+     * @throws ISOException on pack/unpack error
      */
     ISOMsg request(ISOMsg m, long timeout) throws ISOException;
 
@@ -38,7 +38,7 @@ public interface MUX extends ISOSource {
      * @param timeout time to wait for the response
      * @param r reference to response listener
      * @param handBack optional handback to be given to reponse listener
-     * @throws ISOException
+     * @throws ISOException on pack/unpack error
      */
     void request(ISOMsg m, long timeout, ISOResponseListener r, Object handBack)
         throws ISOException;

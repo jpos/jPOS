@@ -25,6 +25,8 @@ import org.jpos.util.NameRegistrar;
 
 @SuppressWarnings("unused")
 public class QXmlConfig extends QBeanSupport implements XmlConfigurable {
+    /** Default constructor. */
+    public QXmlConfig() {}
     public static final String XML_PREFIX = "config.xml.";
 
     @Override

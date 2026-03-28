@@ -54,6 +54,7 @@ public class Logger implements LogProducer,Configurable
     List<LogListener> listeners;
     public static final String NRPREFIX = "logger.";
 
+    /** Default constructor. */
     public Logger () {
         super();
         listeners = Collections.synchronizedList(new ArrayList<>());
