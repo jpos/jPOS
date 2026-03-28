@@ -63,6 +63,9 @@ public class ISOTaggedField extends ISOComponent {
         return this.tag;
     }
 
+    /** Sets the tag identifier.
+     * @param tag the tag string
+     */
     public void setTag(String tag) {
         this.tag = tag;
     }

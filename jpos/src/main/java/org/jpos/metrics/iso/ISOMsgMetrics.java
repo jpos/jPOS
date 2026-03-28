@@ -95,8 +95,7 @@ public interface ISOMsgMetrics {
      * what has been configured. If this object hasn't been successfully registered, it throws an
      * {@link IllegalStateException}.
      *
-     * @param m the {@link ISOMsg} to record.
-     * @throws IllegalStateException when this object hasn't been registered
+      * @throws IllegalStateException when this object hasn't been registered
      * @param m          the ISO message
      * @param meterInfo  the meter info to record
      * @throws IllegalStateException if recording fails
@@ -141,6 +140,7 @@ public interface ISOMsgMetrics {
      */
         MeterRegistry getRegistry();
 
+    /** Removes all registered meters. */
     void removeMeters();
 
 

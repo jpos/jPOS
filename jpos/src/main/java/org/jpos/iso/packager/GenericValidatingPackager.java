@@ -216,6 +216,7 @@ These can be changes using attributes on the isopackager node */
     @SuppressWarnings("unchecked")
     /** SAX content handler that populates validators from the XML descriptor. */
 /** SAX ContentHandler that populates validators from the XML descriptor. */
+    /** SAX ContentHandler that populates validators from the descriptor. */
     public class GenericValidatorContentHandler extends DefaultHandler {
         /** Default constructor. */
         public GenericValidatorContentHandler() {}

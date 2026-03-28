@@ -32,6 +32,7 @@ public class ISOMsgFieldValidator extends ISOFieldValidator {
 
     /** Constructs a validator with description and inner validator.
      * @param Description the field description
+     * @param msgValidator the nested ISO message validator
      */
     public ISOMsgFieldValidator ( String Description,
                                   ISOValidator msgValidator ){

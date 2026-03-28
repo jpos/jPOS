@@ -34,9 +34,25 @@ public interface ISOServerMBean {
      * @return channel names string
      */
     String getISOChannelNames();
+    /** Returns counters as a string for the named channel.
+     * @param isoChannelName the channel name
+     * @return counters string
+     */
     String getCountersAsString(String isoChannelName);
+    /** Returns the transmit counter.
+     * @return TX count
+     */
     int getTXCounter();
+    /** Returns the receive counter.
+     * @return RX count
+     */
     int getRXCounter();
+    /** Returns the timestamp of the last transaction in milliseconds.
+     * @return last transaction timestamp
+     */
     long getLastTxnTimestampInMillis();
+    /** Returns the idle time in milliseconds.
+     * @return idle time
+     */
     long getIdleTimeInMillis();
 }

@@ -225,6 +225,7 @@ public class ISODate {
     /**
      * Formats the given date.
      * @return date in MMddHHmmss format suitable for FIeld 7
+     * @param d the date to format
      */
     public static String getDateTime (Date d) {
         return formatDate (d, "MMddHHmmss");
@@ -242,6 +243,7 @@ public class ISODate {
     /**
      * Formats the given date.
      * @return date in HHmmss format - suitable for field 12
+     * @param d the date to format
      */
     public static String getTime (Date d) {
         return formatDate (d, "HHmmss");
@@ -259,6 +261,7 @@ public class ISODate {
     /**
      * Formats the given date.
      * @return date in MMdd format - suitable for field 13
+     * @param d the date to format
      */
     public static String getDate(Date d) {
         return formatDate (d, "MMdd");
@@ -276,6 +279,7 @@ public class ISODate {
     /**
      * Formats the given date.
      * @return date in yyMMdd format - suitable for ANSI field 8
+     * @param d the date to format
      */
     public static String getANSIDate(Date d) {
         return formatDate (d, "yyMMdd");
@@ -290,15 +294,25 @@ public class ISODate {
     public static String getANSIDate(Date d, TimeZone timeZone) {
         return formatDate (d, "yyMMdd", timeZone);
     }
+    /** Formats date as DD/MM/YY.
+     * @param d the date
+     * @return formatted date string
+     */
     public static String getEuropeanDate(Date d) {
         return formatDate (d, "ddMMyy");
     }
+    /** Formats date as DD/MM/YY in the given timezone.
+     * @param d        the date
+     * @param timeZone the timezone
+     * @return formatted date string
+     */
     public static String getEuropeanDate(Date d, TimeZone timeZone) {
         return formatDate (d, "ddMMyy", timeZone);
     }
     /**
      * Formats the given date.
      * @return date in yyMM format - suitable for field 14
+     * @param d the date to format
      */
     public static String getExpirationDate(Date d) {
         return formatDate (d, "yyMM");

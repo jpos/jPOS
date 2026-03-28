@@ -55,6 +55,7 @@ public class ISOUtil {
     public ISOUtil() {
         super();
     }
+    /** Pre-computed hex strings for each byte value (00-FF). */
     public static final String[] hexStrings;
 
     static {
@@ -76,18 +77,25 @@ public class ISOUtil {
      */
     @Deprecated
     public static final String ENCODING  = "ISO8859_1";
+    /** Pattern for matching Unicode escape sequences. */
     public static final Pattern unicodePattern = Pattern.compile("u00([0-9a-fA-F]{2})+");
 
     /**
      * Default charset for bytes transmissions over network
      */
     public static final Charset CHARSET  = StandardCharsets.ISO_8859_1;
+    /** EBCDIC charset (IBM1047). */
     public static final Charset EBCDIC   = Charset.forName("IBM1047");
 
+    /** ASCII Start of Text (STX) control character. */
     public static final byte STX = 0x02;
+    /** ASCII File Separator (FS) control character. */
     public static final byte FS  = 0x1C;
+    /** ASCII Unit Separator (US) control character. */
     public static final byte US  = 0x1F;
+    /** ASCII Record Separator (RS) control character. */
     public static final byte RS  = 0x1D;
+    /** ASCII Group Separator (GS) control character. */
     public static final byte GS  = 0x1E;
     public static final byte ETX = 0x03;
 

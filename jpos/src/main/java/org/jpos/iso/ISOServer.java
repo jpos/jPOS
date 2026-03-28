@@ -84,9 +84,13 @@ public class ISOServer extends Observable
     String name;
     /** Timestamp of the last transaction processed. */
     protected long lastTxn = 0l;
+    /** The logger for this server. */
     protected Logger logger;
+    /** The realm string for this server. */
     protected String realm;
+    /** The realm string for channel sessions. */
     protected String realmChannel;
+    /** Optional factory for creating server sockets. */
     protected ISOServerSocketFactory socketFactory = null;
 
     private AtomicInteger connectionCount = new AtomicInteger();
@@ -97,7 +101,9 @@ public class ISOServer extends Observable
     private volatile boolean shutdown = false;
     private ServerSocket serverSocket;
     private Map<String,WeakReference<ISOChannel>> channels;
+    /** If true, ISOExceptions are silently ignored. */
     protected boolean ignoreISOExceptions;
+    /** Registered server event listeners. */
     protected List<ISOServerEventListener> serverListeners = null;
     private ExecutorService executor;
     private Semaphore permits;
@@ -305,6 +311,10 @@ public class ISOServer extends Observable
     // -- Helper Session inner class. It's a Runnable, running in its own
     // -- thread and handling a connection to this ISOServer
     // --
+    /** Creates a new server session for the given channel.
+     * @param channel the accepted server channel
+     * @return a new Session
+     */
     protected Session createSession (ServerChannel channel) {
         return new Session (channel);
     }
