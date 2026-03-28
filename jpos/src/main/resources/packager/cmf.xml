@@ -605,9 +605,9 @@
       class="org.jpos.iso.IFB_LLLLBINARY"/>
   <isofield
       id="72"
-      length="999"
+      length="9999"
       name="Data record"
-      class="org.jpos.iso.IFB_LLLBINARY"/>
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
   <isofield
       id="73"
       length="8"
