@@ -284,6 +284,7 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
     protected ISODataset unpackDBM(int identifier, byte[] content) throws ISOException {
         DBMBitmap dbm = unpackDBMBitmap(content);
         if (dbm.tlvContinuation) {
+            // TODO Support DBM trailing TLV continuation as defined by ISO 8583:2023 §4.4.4.4.
             throw new ISOException(String.format("Dataset %02X uses DBM TLV continuation, which is not supported yet", identifier));
         }
         ISODataset dataset = new ISODataset(identifier, DatasetFormat.DBM);

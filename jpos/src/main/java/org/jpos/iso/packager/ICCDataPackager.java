@@ -43,6 +43,17 @@ public class ICCDataPackager extends DatasetPackager {
     }
 
     /**
+     * ICC data is encoded as raw BER-TLV, without the standard dataset
+     * identifier and length envelope.
+     *
+     * @return always {@code false}
+     */
+    @Override
+    public boolean hasDatasetEnvelope() {
+        return false;
+    }
+
+    /**
      * Packs raw ICC BER-TLV bytes without the standard dataset envelope.
      *
      * @param m ICC dataset field

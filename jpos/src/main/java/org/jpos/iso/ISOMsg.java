@@ -1366,7 +1366,7 @@ public class ISOMsg extends ISOComponent
         int datasetId;
         int elementId;
 
-        if (datasetPackager.getClass().getName().endsWith(".ICCDataPackager")) {
+        if (!datasetPackager.hasDatasetEnvelope()) {
             if (st.countTokens() != 1)
                 return false;
             datasetId = fieldNo;
@@ -1416,7 +1416,7 @@ public class ISOMsg extends ISOComponent
         int datasetId;
         int elementId;
 
-        if (datasetPackager.getClass().getName().endsWith(".ICCDataPackager")) {
+        if (!datasetPackager.hasDatasetEnvelope()) {
             if (st.countTokens() != 1)
                 return false;
             datasetId = fieldNo;
@@ -1474,12 +1474,12 @@ public class ISOMsg extends ISOComponent
     private ISODatasetField cloneDatasetField(ISODatasetField field) throws ISOException {
         ISODatasetField clone = new ISODatasetField(field.getFieldNumber());
         for (Dataset dataset : field.getDatasets()) {
-            clone.addDataset(cloneDataset((ISODataset) dataset));
+            clone.addDataset(cloneDataset(dataset));
         }
         return clone;
     }
 
-    private ISODataset cloneDataset(ISODataset dataset) throws ISOException {
+    private ISODataset cloneDataset(Dataset dataset) throws ISOException {
         ISODataset clone = new ISODataset(dataset.getIdentifier(), dataset.getFormat());
         for (DatasetElement element : dataset.getElements()) {
             clone.addElement(element.getId(), cloneDatasetComponent(element.getComponent()), element.isConstructed());

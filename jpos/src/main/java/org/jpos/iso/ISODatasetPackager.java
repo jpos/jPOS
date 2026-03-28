@@ -22,4 +22,13 @@ package org.jpos.iso;
  * Marker interface for packagers that encode and decode dataset payloads.
  */
 public interface ISODatasetPackager extends ISOPackager, ISOSubFieldPackager {
+    /**
+     * Indicates whether datasets handled by this packager use the standard
+     * dataset identifier and length envelope.
+     *
+     * @return {@code true} when the standard dataset envelope is present
+     */
+    default boolean hasDatasetEnvelope() {
+        return true;
+    }
 }
