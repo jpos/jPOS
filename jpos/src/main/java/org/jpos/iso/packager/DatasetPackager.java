@@ -283,10 +283,6 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
      */
     protected ISODataset unpackDBM(int identifier, byte[] content) throws ISOException {
         DBMBitmap dbm = unpackDBMBitmap(content);
-        if (dbm.tlvContinuation) {
-            // TODO Support DBM trailing TLV continuation as defined by ISO 8583:2023 §4.4.4.4.
-            throw new ISOException(String.format("Dataset %02X uses DBM TLV continuation, which is not supported yet", identifier));
-        }
         ISODataset dataset = new ISODataset(identifier, DatasetFormat.DBM);
         int consumed = dbm.consumed;
         for (int elementId : dbm.elements) {
@@ -296,6 +292,13 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
             ISOComponent component = fld[elementId].createComponent(elementId);
             consumed += fld[elementId].unpack(component, content, consumed);
             dataset.addElement(elementId, component);
+        }
+        if (dbm.tlvContinuation) {
+            if (consumed >= content.length) {
+                throw new ISOException(String.format("Dataset %02X sets DBM TLV continuation but has no trailing TLV content", identifier));
+            }
+            unpackTLVContinuation(identifier, dataset, Arrays.copyOfRange(content, consumed, content.length));
+            consumed = content.length;
         }
         if (consumed != content.length) {
             throw new ISOException(String.format("Dataset %02X content mismatch: consumed=%d len=%d", identifier, consumed, content.length));
@@ -315,16 +318,21 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
         if (elements.isEmpty()) {
             return new byte[0];
         }
-        validateDBMElements(dataset);
-        byte[] bitmap = packDBMBitmap(elements);
+        List<DatasetElement> dbmElements = dbmAddressableElements(dataset);
+        List<DatasetElement> tlvElements = trailingTLVElements(dataset);
+        validateDBMElements(dataset, dbmElements);
+        byte[] bitmap = packDBMBitmap(dbmElements, !tlvElements.isEmpty());
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(128)) {
             out.write(bitmap);
-            for (int elementId : sortedElementIds(elements)) {
+            for (int elementId : sortedElementIds(dbmElements)) {
                 DatasetElement element = dataset.getElement(elementId);
                 if (elementId >= fld.length || fld[elementId] == null) {
                     throw new ISOException(String.format("No packager defined for dataset %02X element %d", dataset.getIdentifier(), elementId));
                 }
                 out.write(fld[elementId].pack(element.getComponent()));
+            }
+            if (!tlvElements.isEmpty()) {
+                out.write(packTLVElements(tlvElements));
             }
             return out.toByteArray();
         } catch (IOException e) {
@@ -332,9 +340,9 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
         }
     }
 
-    private void validateDBMElements(Dataset dataset) throws ISOException {
+    private void validateDBMElements(Dataset dataset, List<DatasetElement> dbmElements) throws ISOException {
         Set<Integer> seen = new TreeSet<>();
-        for (DatasetElement element : dataset.getElements()) {
+        for (DatasetElement element : dbmElements) {
             if (!seen.add(element.getId())) {
                 throw new ISOException(String.format("DBM dataset %02X contains duplicate element %d", dataset.getIdentifier(), element.getId()));
             }
@@ -388,7 +396,7 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
         return new DBMBitmap(elements, tlvContinuation, offset);
     }
 
-    private byte[] packDBMBitmap(List<DatasetElement> elements) {
+    private byte[] packDBMBitmap(List<DatasetElement> elements, boolean tlvContinuation) {
         int highestElement = elements.stream().mapToInt(DatasetElement::getId).max().orElse(0);
         int extraWords = 0;
         while (capacity(extraWords) < highestElement) {
@@ -404,7 +412,60 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
         for (DatasetElement element : elements) {
             setElementBit(bitmap, element.getId(), extraWords);
         }
+        if (tlvContinuation) {
+            bitmap[bitmap.length - 1] |= 0x01;
+        }
         return bitmap;
+    }
+
+    private List<DatasetElement> dbmAddressableElements(Dataset dataset) {
+        List<DatasetElement> elements = new ArrayList<>();
+        for (DatasetElement element : dataset.getElements()) {
+            if (isDBMAddressable(element.getId())) {
+                elements.add(element);
+            }
+        }
+        return elements;
+    }
+
+    private List<DatasetElement> trailingTLVElements(Dataset dataset) {
+        List<DatasetElement> elements = new ArrayList<>();
+        for (DatasetElement element : dataset.getElements()) {
+            if (!isDBMAddressable(element.getId())) {
+                elements.add(element);
+            }
+        }
+        return elements;
+    }
+
+    private boolean isDBMAddressable(int elementId) {
+        return elementId > 0 && elementId < fld.length && fld[elementId] != null;
+    }
+
+    private void unpackTLVContinuation(int identifier, ISODataset dataset, byte[] content) throws ISOException {
+        TLVList tlv = new TLVList();
+        try {
+            tlv.unpack(content);
+        } catch (RuntimeException e) {
+            throw new ISOException(String.format("Invalid DBM TLV continuation in dataset %02X", identifier), e);
+        }
+        for (TLVMsg tag : tlv.getTags()) {
+            dataset.addElement(tag.getTag(), new ISOBinaryField(tag.getTag(), tag.getValue()), isConstructedTag(tag.getTag()));
+        }
+    }
+
+    private byte[] packTLVElements(List<DatasetElement> elements) throws ISOException {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream(64)) {
+            for (DatasetElement element : elements) {
+                TLVMsg tlv = new TLVMsg(element.getId(), element.getBytes());
+                out.write(tlv.getTLV());
+            }
+            return out.toByteArray();
+        } catch (IllegalArgumentException e) {
+            throw new ISOException("Unable to pack DBM TLV continuation", e);
+        } catch (IOException e) {
+            throw new ISOException(e);
+        }
     }
 
     private int capacity(int extraWords) {

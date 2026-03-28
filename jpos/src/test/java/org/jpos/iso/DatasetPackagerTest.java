@@ -68,6 +68,43 @@ public class DatasetPackagerTest {
     }
 
     @Test
+    public void testDBMUnpacksTrailingTLVContinuation() throws Exception {
+        DatasetPackager packager = createBinaryDatasetPackager(2);
+        ISODatasetField field = new ISODatasetField(49);
+        byte[] packed = ISOUtil.hex2byte("7100084001119F02020102");
+
+        int consumed = packager.unpack(field, packed);
+
+        assertEquals(packed.length, consumed);
+        ISODataset dataset = (ISODataset) field.getDataset(0x71);
+        assertNotNull(dataset);
+        assertEquals(DatasetFormat.DBM, dataset.getFormat());
+        assertArrayEquals(new byte[] { 0x11 }, dataset.getBytes(1));
+        assertArrayEquals(ISOUtil.hex2byte("0102"), dataset.getBytes(0x9F02));
+        assertArrayEquals(packed, packager.pack(field));
+    }
+
+    @Test
+    public void testDBMPacksTrailingTLVContinuationRoundTrip() throws Exception {
+        DatasetPackager packager = createBinaryDatasetPackager(2);
+        ISODatasetField field = new ISODatasetField(49);
+        ISODataset dataset = new ISODataset(0x71, DatasetFormat.DBM);
+        dataset.addElement(1, new ISOBinaryField(1, new byte[] { 0x11 }));
+        dataset.addElement(0x9F02, new ISOBinaryField(0x9F02, ISOUtil.hex2byte("0102")));
+        field.addDataset(dataset);
+
+        byte[] packed = packager.pack(field);
+
+        assertEquals("7100084001119F02020102", ISOUtil.hexString(packed));
+
+        ISODatasetField unpackedField = new ISODatasetField(49);
+        packager.unpack(unpackedField, packed);
+        ISODataset unpacked = (ISODataset) unpackedField.getDataset(0x71);
+        assertArrayEquals(new byte[] { 0x11 }, unpacked.getBytes(1));
+        assertArrayEquals(ISOUtil.hex2byte("0102"), unpacked.getBytes(0x9F02));
+    }
+
+    @Test
     public void testTLVParsingSupportsOneTwoAndThreeByteTags() throws Exception {
         DatasetPackager packager = new DatasetPackager();
         packager.setFieldPackager(new ISOFieldPackager[1]);
