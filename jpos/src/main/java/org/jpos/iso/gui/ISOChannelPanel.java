@@ -53,8 +53,14 @@ public class ISOChannelPanel extends JPanel implements Observer {
     private int[] protectFields = null;
     private int[] wipeFields    = null;
 
+    /** Maximum number of log entries to retain. */
     public static final int LOG_CAPACITY = 250;
 
+    /**
+     * Constructs a panel for the given channel.
+     * @param channel      the ISO channel
+     * @param symbolicName the display name
+     */
     public ISOChannelPanel (ISOChannel channel, String symbolicName)
     {
         super();
@@ -82,9 +88,15 @@ public class ISOChannelPanel extends JPanel implements Observer {
         meter.setConnected(false);
     }
 
+    /** Returns the symbolic name.
+     * @return symbolic name
+     */
     public final String getSymbolicName() {
         return symbolicName;
     }
+    /** Returns the log model.
+     * @return the log model
+     */
     public final ListModel getLog() {
         return log;
     }
@@ -141,12 +153,21 @@ public class ISOChannelPanel extends JPanel implements Observer {
         } else 
             meter.setConnected(true);
     }
+    /** Returns the ISO meter component.
+     * @return the ISOMeter
+     */
     public ISOMeter getISOMeter() {
         return meter;
     }
+    /** Sets the fields to protect in output.
+     * @param fields field numbers to protect
+     */
     public void setProtectFields (int[] fields) {
         protectFields = fields;
     }
+    /** Sets the fields to wipe in output.
+     * @param fields field numbers to wipe
+     */
     public void setWipeFields (int[] fields) {
         wipeFields    = fields;
     }

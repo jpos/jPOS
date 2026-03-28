@@ -34,6 +34,11 @@ public abstract class ISOBitMapPackager extends ISOFieldPackager {
     public ISOBitMapPackager() {
         super();
     }
+    /**
+     * Constructs a bitmap packager with the given length and description.
+     * @param len field length
+     * @param description field description
+     */
     public ISOBitMapPackager(int len, String description) {
         super(len, description);
     }

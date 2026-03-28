@@ -31,6 +31,7 @@ import org.jpos.iso.*;
  */
 public class ISO87BPackager extends ISOBasePackager {
     private static final boolean pad = false;
+    /** Array of field packagers indexed by field number. */
     protected ISOFieldPackager fld[] = {
             new IFB_NUMERIC (  4, "MESSAGE TYPE INDICATOR", true),
             new IFB_BITMAP  ( 16, "BIT MAP"),

@@ -40,10 +40,21 @@ public class ISOAmount
         super();
         setFieldNumber (-1);
     }
+    /** Constructs an ISOAmount for the given field number.
+     * @param fieldNumber the ISO field number
+     */
+    
     public ISOAmount (int fieldNumber) {
         super ();
         setFieldNumber (fieldNumber);
     }
+    /**
+     * Constructs an ISOAmount with all fields.
+     * @param fieldNumber  the ISO field number
+     * @param currencyCode the ISO 4217 currency code
+     * @param amount       the monetary amount
+     * @throws ISOException if the value cannot be encoded
+     */
     public ISOAmount (int fieldNumber, int currencyCode, BigDecimal amount) throws ISOException {
         super ();
         setFieldNumber(fieldNumber);
@@ -100,21 +111,47 @@ public class ISOAmount
     public int getFieldNumber () {
         return fieldNumber;
     }
+    /** Returns the monetary amount.
+     * @return the amount
+     */
+    
     public BigDecimal getAmount () {
         return amount;
     }
+    /** Returns the decimal scale.
+     * @return the scale
+     */
+    
     public int getScale() {
         return amount.scale() % 10;
     }
+    /** Returns the scale as a two-character string.
+     * @return scale string
+     */
+    
     public String getScaleAsString() {
         return Integer.toString(getScale());
     }
+    /** Returns the ISO 4217 currency code.
+     * @return currency code
+     */
+    
     public int getCurrencyCode() {
         return currencyCode;
     }
+    /** Returns the currency code as a 3-digit string.
+     * @return currency code string
+     * @throws ISOException on error
+     */
+    
     public String getCurrencyCodeAsString() throws ISOException {
         return ISOUtil.zeropad(Integer.toString(currencyCode),3);
     }
+    /** Returns the amount formatted as a legacy ISO string.
+     * @return formatted amount string
+     * @throws ISOException on error
+     */
+    
     public String getAmountAsLegacyString() throws ISOException {
         return ISOUtil.zeropad (amount.unscaledValue().toString(), 12);
     }

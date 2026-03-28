@@ -36,6 +36,8 @@ import java.util.Map;
  */
 @SuppressWarnings ("unused")
 public abstract class ISOBasePackager implements ISOPackager, LogSource {
+    /** Default constructor. */
+    public ISOBasePackager() {}
     /** Array of field packagers indexed by field number. */
     protected ISOFieldPackager[] fld;
     /** Field number used as the tertiary bitmap; {@code -999} if not configured. */

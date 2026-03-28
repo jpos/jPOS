@@ -39,7 +39,9 @@ public class ISOBinaryField
 {
 
     private static final long serialVersionUID = 7702505828876640372L;
+    /** The ISO field number. */
     protected int fieldNumber;
+    /** The raw binary value. */
     protected byte[] value;
 
     /**
@@ -50,12 +52,14 @@ public class ISOBinaryField
         fieldNumber = -1;
     }
     /**
+     * Constructs a binary field with the given field number.
      * @param n - the FieldNumber
      */
     public ISOBinaryField(int n) {
         fieldNumber = n;
     }
     /**
+     * Constructs a binary field.
      * @param n - fieldNumber
      * @param v - fieldValue
      */
@@ -64,6 +68,7 @@ public class ISOBinaryField
         value = v;
     }
     /**
+     * Constructs a binary field.
      * @param n - fieldNumber
      * @param v - fieldValue
      * @param offset - starting offset

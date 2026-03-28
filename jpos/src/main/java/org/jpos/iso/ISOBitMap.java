@@ -32,16 +32,20 @@ import java.util.BitSet;
  * @see ISOComponent
  */
 public class ISOBitMap extends ISOComponent implements Cloneable {
+    /** The ISO field number. */
     protected int fieldNumber;
+    /** The BitSet representing the bitmap. */
     protected BitSet value;
 
     /**
+     * Constructs a bitmap with the given field number.
      * @param n - the FieldNumber
      */
     public ISOBitMap (int n) {
         fieldNumber = n;
     }
     /**
+     * Constructs a bitmap.
      * @param n - fieldNumber
      * @param v - field value (Bitset)
      * @see BitSet

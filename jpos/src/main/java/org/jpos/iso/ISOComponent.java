@@ -39,6 +39,8 @@ import java.util.Map;
  * @see ISOException
  */
 public abstract class ISOComponent implements Cloneable {
+    /** Default constructor. */
+    public ISOComponent() {}
     /**
      * Set a field within this message
      * @param c - a component

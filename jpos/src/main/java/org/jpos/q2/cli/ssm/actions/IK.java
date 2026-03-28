@@ -31,6 +31,8 @@ import org.jpos.security.jceadapter.JCESecurityModule;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public class IK extends SsmActionBase {
+    /** Default constructor. */
+    public IK() {}
 
     @Override
     protected boolean checkUsage(CLIContext cli, String[] strings) {

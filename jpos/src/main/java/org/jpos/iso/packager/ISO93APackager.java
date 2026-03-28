@@ -32,6 +32,7 @@ import org.jpos.iso.*;
  * @see ISOComponent
  */
 public class ISO93APackager extends ISOBasePackager {
+    /** Array of field packagers indexed by field number. */
     protected ISOFieldPackager fld[] = {
     /*000*/ new IFA_NUMERIC (  4, "Message Type Indicator"),
     /*001*/ new IFA_BITMAP  ( 16, "Bitmap"),
