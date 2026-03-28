@@ -29,8 +29,8 @@ package org.jpos.iso;
  * @see ISOFieldPackager
  */
 public class IFE_AMOUNT extends ISOAmountFieldPackager {
-    @SuppressWarnings("unused")
     /** Default constructor. */
+    @SuppressWarnings("unused")
     public IFE_AMOUNT() {
         super(0, null, LeftPadder.ZERO_PADDER, EbcdicInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }

@@ -34,6 +34,7 @@ import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
+/** ISOChannelPanel ISOFieldPackager implementation. */
 public class ISOChannelPanel extends JPanel implements Observer {
     private static final long serialVersionUID = -8069489863639386589L;
     /**

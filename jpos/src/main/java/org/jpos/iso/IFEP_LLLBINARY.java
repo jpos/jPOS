@@ -36,12 +36,24 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
         prefixerPackedLength = 3;
     }
 
+    /**
+     * Constructs a packager with the given length and description.
+     * @param length field length
+     * @param description field description
+     */
     public IFEP_LLLBINARY(int length, String description) {
         super(length, description, LiteralBinaryInterpreter.INSTANCE, EbcdicPrefixer.LLL);
         checkLength(length, 999);
         prefixerPackedLength = EbcdicPrefixer.LLL.getPackedLength();
     }
 
+    /**
+     * Constructs a packager with custom interpreter and prefixer.
+     * @param length           field length
+     * @param description      field description
+     * @param binaryInterpreter binary interpreter
+     * @param prefixer         length prefixer
+     */
     public IFEP_LLLBINARY(int length, String description, BinaryInterpreter binaryInterpreter, Prefixer prefixer) {
         super(length, description, binaryInterpreter, prefixer);
         checkLength(length, 999);

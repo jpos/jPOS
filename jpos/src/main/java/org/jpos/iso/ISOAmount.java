@@ -24,6 +24,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/** ISOAmount ISOFieldPackager implementation. */
 public class ISOAmount 
     extends ISOComponent 
     implements Cloneable, Externalizable

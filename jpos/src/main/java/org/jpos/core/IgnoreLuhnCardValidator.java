@@ -18,6 +18,7 @@
 
 package org.jpos.core;
 
+/** IgnoreLuhnCardValidator ISOFieldPackager implementation. */
 public class IgnoreLuhnCardValidator extends DefaultCardValidator {
     /** Default constructor. */
     public IgnoreLuhnCardValidator() {

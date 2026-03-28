@@ -30,6 +30,7 @@ package org.jpos.iso;
  * @see ISOFieldPackager
  */
 public abstract class ISOBitMapPackager extends ISOFieldPackager {
+    /** Default constructor. */
     public ISOBitMapPackager() {
         super();
     }

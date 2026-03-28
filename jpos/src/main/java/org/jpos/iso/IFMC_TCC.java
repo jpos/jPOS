@@ -19,6 +19,7 @@
 package org.jpos.iso;
 
 
+/** IFMC_TCC ISOFieldPackager implementation. */
 public class IFMC_TCC extends IF_CHAR{
     /** Default constructor. */
     public IFMC_TCC() {}

@@ -32,6 +32,11 @@ public class IFMC_LLLBINARY extends ISOTagBinaryFieldPackager {
                 LiteralBinaryInterpreter.INSTANCE, AsciiPrefixer.LLL);
     }
 
+    /**
+     * Constructs a packager with the given length and description.
+     * @param len field length
+     * @param description field description
+     */
     public IFMC_LLLBINARY (int len, String description) {
          super(len, description, AsciiPrefixer.LL, NullPadder.INSTANCE,
                  LiteralBinaryInterpreter.INSTANCE, AsciiPrefixer.LLL);
