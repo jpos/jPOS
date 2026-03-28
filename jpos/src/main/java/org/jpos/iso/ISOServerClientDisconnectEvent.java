@@ -21,13 +21,21 @@ package org.jpos.iso;
 import java.lang.ref.WeakReference;
 import java.util.EventObject;
 
+/** Event fired when a client disconnects from ISOServer. */
 public final class ISOServerClientDisconnectEvent extends EventObject implements ISOServerEvent {
     private WeakReference<ISOChannel> channelRef;
+    /** Constructs the event.
+     * @param source  the event source
+     * @param channel the disconnected channel
+     */
     public ISOServerClientDisconnectEvent(Object source,  ISOChannel channel) {
         super(source);
         this.channelRef = new WeakReference(channel);
     }
 
+    /** Returns the disconnected ISO channel.
+     * @return the channel
+     */
     public ISOChannel getISOChannel() {
         return channelRef.get();
     }

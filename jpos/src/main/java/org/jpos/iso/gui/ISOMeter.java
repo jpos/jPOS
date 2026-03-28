@@ -277,6 +277,7 @@ public class ISOMeter extends JComponent implements Runnable {
         if (continueScroll > 0)
             continueScroll--;
     }
+    /** Renders the meter display. */
     public void plot() {
        if (im == null) {
             im = createImage(width, height);

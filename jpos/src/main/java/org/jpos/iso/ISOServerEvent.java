@@ -18,4 +18,5 @@
 
 package org.jpos.iso;
 
+/** Sealed interface for ISOServer events. */
 public sealed interface ISOServerEvent permits ISOServerAcceptEvent, ISOServerClientDisconnectEvent, ISOServerShutdownEvent { }

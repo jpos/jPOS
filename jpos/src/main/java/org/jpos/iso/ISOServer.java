@@ -70,14 +70,19 @@ public class ISOServer extends Observable
     private List<String> wildcardDeny;
     private PermLogPolicy ipPermLogPolicy= PermLogPolicy.ALLOW_NOLOG;
 
+    /** The channel template used for client-side connections. */
     protected ISOChannel clientSideChannel;
     ISOPackager clientPackager;
     /** Outgoing and incoming filter chains for client channels. */
     protected Collection clientOutgoingFilters, clientIncomingFilters;
+    /** Registered ISO request listeners. */
     protected List<ISORequestListener> listeners;
+    /** Default maximum number of concurrent sessions. */
     public static final int DEFAULT_MAX_SESSIONS = 100;
+    /** Realm suffix used for the last connected channel. */
     public static final String LAST = ":last";
     String name;
+    /** Timestamp of the last transaction processed. */
     protected long lastTxn = 0l;
     protected Logger logger;
     protected String realm;

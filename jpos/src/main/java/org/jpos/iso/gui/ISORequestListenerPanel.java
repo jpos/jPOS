@@ -46,6 +46,8 @@ public class ISORequestListenerPanel extends JPanel implements Observer {
     public static final int LOG_CAPACITY = 250;
 
     /** Constructs the panel.
+     * @param requestListener the request listener to monitor
+     * @param symbolicName the display name
      */
     public ISORequestListenerPanel (
         ISORequestListener requestListener,

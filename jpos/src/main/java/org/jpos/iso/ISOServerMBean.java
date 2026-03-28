@@ -18,10 +18,21 @@
 
 package org.jpos.iso;
 
+/** MBean interface for ISOServer management. */
 public interface ISOServerMBean {
+    /** Returns the port this server is listening on.
+     * @return the port number
+     */
     int getPort();
+    /** Resets all server counters. */
     void resetCounters();
+    /** Returns the current connection count.
+     * @return number of active connections
+     */
     int getConnectionCount();
+    /** Returns the names of connected ISO channels.
+     * @return channel names string
+     */
     String getISOChannelNames();
     String getCountersAsString(String isoChannelName);
     int getTXCounter();

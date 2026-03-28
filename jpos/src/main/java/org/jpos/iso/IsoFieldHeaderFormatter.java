@@ -115,10 +115,17 @@ public class IsoFieldHeaderFormatter {
         return tagFirst ? tagPrefixer.getPackedLength() : 0;
     }
 
-    public static IsoFieldHeaderFormatter TAG_FIRST = new IsoFieldHeaderFormatter(true);
-    public static IsoFieldHeaderFormatter LENGTH_FIRST = new IsoFieldHeaderFormatter(false);
+    /** Formatter with tag before length. */
+        public static IsoFieldHeaderFormatter TAG_FIRST = new IsoFieldHeaderFormatter(true);
+    /** Formatter with length before tag. */
+        public static IsoFieldHeaderFormatter LENGTH_FIRST = new IsoFieldHeaderFormatter(false);
 
-    public int getTotalLength(final Prefixer tagPrefixer, final Prefixer prefixer) {
+/** Returns the total length of tag and length fields.
+     * @param tagPrefixer    the tag prefixer
+     * @param prefixer       the length prefixer
+     * @return total length in bytes
+     */
+        public int getTotalLength(final Prefixer tagPrefixer, final Prefixer prefixer) {
         if (tagPrefixer == null || prefixer == null) {
             throw new IllegalArgumentException("Neither tag or length prefixer was provided.");
         }

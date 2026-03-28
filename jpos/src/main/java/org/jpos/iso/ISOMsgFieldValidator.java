@@ -30,6 +30,9 @@ package org.jpos.iso;
  */
 public class ISOMsgFieldValidator extends ISOFieldValidator {
 
+    /** Constructs a validator with description and inner validator.
+     * @param Description the field description
+     */
     public ISOMsgFieldValidator ( String Description,
                                   ISOValidator msgValidator ){
         super( Description);
@@ -40,5 +43,6 @@ public class ISOMsgFieldValidator extends ISOFieldValidator {
         return m instanceof ISOMsg ? msgValidator.validate( m ):m;
     }
 
+    /** The nested message validator. */
     protected ISOValidator msgValidator;
 }

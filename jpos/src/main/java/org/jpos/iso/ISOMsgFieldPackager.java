@@ -110,7 +110,7 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
      * @param c  - the Component to unpack
      * @param in - input stream
      * @throws org.jpos.iso.ISOException on pack/unpack error
-     * @throws java.io.IOException
+     * @throws java.io.IOException on I/O error
      */
     @Override
     public void unpack (ISOComponent c, InputStream in)

@@ -147,18 +147,30 @@ public class ISOFieldValidator implements Configurable, ISOValidator {
         return breakOnError;
     }
 
+    /** Returns the field description.
+     * @return the description string
+     */
     public String getDescription() {
         return description;
     }
 
+    /** Sets the field description.
+     * @param description the description
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /** Sets the field ID.
+     * @param f the field ID
+     */
     public void setFieldId ( int f ){
         fieldId = f;
     }
 
+    /** Returns the field ID.
+     * @return the field ID
+     */
     public int getFieldId(){
         return fieldId;
     }
@@ -218,5 +230,6 @@ public class ISOFieldValidator implements Configurable, ISOValidator {
     protected int minLen = 0, maxLen = 999999;
     /** Flag used to indicate if validat process break on first error or keep an error vector **/
     protected boolean breakOnError = false;
+    /** The validator configuration. */
     protected Configuration cfg;
 }

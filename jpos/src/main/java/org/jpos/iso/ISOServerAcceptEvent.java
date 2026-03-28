@@ -21,13 +21,21 @@ package org.jpos.iso;
 import java.lang.ref.WeakReference;
 import java.util.EventObject;
 
+/** Event fired when a new client connection is accepted by ISOServer. */
 public final class ISOServerAcceptEvent extends EventObject implements ISOServerEvent {
     private WeakReference<ISOChannel> channelRef;
+    /** Constructs the event.
+     * @param source  the ISOServer
+     * @param channel the accepted channel
+     */
     public ISOServerAcceptEvent(ISOServer source, ISOChannel channel) {
         super(source);
         this.channelRef = new WeakReference(channel);
     }
 
+    /** Returns the accepted ISO channel.
+     * @return the channel
+     */
     public ISOChannel getISOChannel() {
         return channelRef.get();
     }
