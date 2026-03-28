@@ -62,10 +62,14 @@ public class XMLPackager extends DefaultHandler
     public static final String TYPE_BINARY   = "binary";
     public static final String TYPE_BITMAP   = "bitmap";
     public static final String TYPE_AMOUNT   = "amount";
+    public static final String TYPE_DATASET  = "dataset";
     public static final String CURRENCY_ATTR = "currency";
     public static final String HEADER_TAG    = "header";
     public static final String ENCODING_ATTR = "encoding";
     public static final String ASCII_ENCODING= "ascii";
+    public static final String DATASET_TAG   = "dataset";
+    public static final String ELEMENT_TAG   = "element";
+    public static final String FORMAT_ATTR   = "format";
 
     // fields that will be forced to be interpreted as binary data
     private int[] binaryFields= null;
@@ -167,17 +171,9 @@ public class XMLPackager extends DefaultHandler
         (String ns, String name, String qName, Attributes atts)
         throws SAXException
     {
-        int fieldNumber = -1;
         try {
-            String id       = atts.getValue(ID_ATTR);
-            if (id != null) {
-                try {
-                    fieldNumber = Integer.parseInt (id);
-                } catch (NumberFormatException ex) {
-                    throw new SAXException ("Invalid id " + id);
-                }
-            }
             if (name.equals (ISOMSG_TAG)) {
+                int fieldNumber = parseDecimalId(atts.getValue(ID_ATTR));
                 if (fieldNumber >= 0) {
                     if (stk.empty())
                         throw new SAXException ("inner without outer");
@@ -189,7 +185,9 @@ public class XMLPackager extends DefaultHandler
                     stk.push (new ISOMsg(0));
                 }
             } else if (name.equals (ISOFIELD_TAG)) {
+                int fieldNumber = parseDecimalId(atts.getValue(ID_ATTR));
                 ISOMsg m     = (ISOMsg) stk.peek();
+                String id    = atts.getValue(ID_ATTR);
                 String value = atts.getValue(VALUE_ATTR);
                 String type  = atts.getValue(TYPE_ATTR);
                 if (id == null)
@@ -197,7 +195,10 @@ public class XMLPackager extends DefaultHandler
                 value = value == null ? "" : value;
 
                 ISOComponent ic;
-                if (TYPE_BINARY.equals (type)) {
+                if (TYPE_DATASET.equals(type)) {
+                    ic = new ISODatasetField(fieldNumber);
+                }
+                else if (TYPE_BINARY.equals (type)) {
                     ic = new ISOBinaryField (
                         fieldNumber,
                             ISOUtil.hex2byte (
@@ -217,14 +218,34 @@ public class XMLPackager extends DefaultHandler
                 }
                 m.set (ic);
                 stk.push (ic);
+            } else if (DATASET_TAG.equals(name)) {
+                if (!(stk.peek() instanceof ISODatasetField))
+                    throw new SAXException("dataset without dataset field");
+                String id = atts.getValue(ID_ATTR);
+                String format = atts.getValue(FORMAT_ATTR);
+                if (id == null || format == null)
+                    throw new SAXException("invalid dataset");
+                ISODataset dataset = new ISODataset(parseHexId(id), DatasetFormat.valueOf(format));
+                ((ISODatasetField) stk.peek()).addDataset(dataset);
+                stk.push(dataset);
+            } else if (ELEMENT_TAG.equals(name)) {
+                if (!(stk.peek() instanceof ISODataset))
+                    throw new SAXException("element without dataset");
+                ISODataset dataset = (ISODataset) stk.peek();
+                String id = atts.getValue(ID_ATTR);
+                String value = atts.getValue(VALUE_ATTR);
+                if (id == null)
+                    throw new SAXException("invalid dataset element");
+                int elementId = dataset.getFormat() == DatasetFormat.TLV ? parseHexId(id) : parseDecimalOrHexId(id);
+                byte[] bytes = value == null ? new byte[0] : ISOUtil.hex2byte(value.getBytes(), 0, value.length() / 2);
+                dataset.addElement(elementId, new ISOBinaryField(elementId, bytes), dataset.getFormat() == DatasetFormat.TLV && isConstructedTag(elementId));
             } else if (HEADER_TAG.equals (name)) {
                 BaseHeader bh = new BaseHeader();
                 bh.setAsciiEncoding (ASCII_ENCODING.equalsIgnoreCase(atts.getValue(ENCODING_ATTR)));
                 stk.push (bh);
             }
         } catch (ISOException e) {
-            throw new SAXException
-                ("ISOException unpacking "+fieldNumber);
+            throw new SAXException ("ISOException unpacking XML dataset", e);
         }
     }
 
@@ -261,6 +282,8 @@ public class XMLPackager extends DefaultHandler
             ISOMsg m = (ISOMsg) stk.pop();
             if (stk.empty())
                 stk.push (m); // push outer message
+        } else if (DATASET_TAG.equals(name)) {
+            stk.pop();
         } else if (ISOFIELD_TAG.equals (name)) {
             stk.pop();
         } else if (HEADER_TAG.equals (name)) {
@@ -324,5 +347,39 @@ public class XMLPackager extends DefaultHandler
     public void setXMLParserFeature(String fname, boolean val) throws SAXException  {
         reader.setFeature(fname, val);
     }
-}
 
+    private int parseDecimalId(String id) throws SAXException {
+        if (id == null)
+            return -1;
+        try {
+            return Integer.parseInt(id);
+        } catch (NumberFormatException ex) {
+            throw new SAXException("Invalid id " + id, ex);
+        }
+    }
+
+    private int parseDecimalOrHexId(String id) throws SAXException {
+        try {
+            return id.startsWith("0x") || id.startsWith("0X") ? Integer.parseInt(id.substring(2), 16) : Integer.parseInt(id);
+        } catch (NumberFormatException ex) {
+            throw new SAXException("Invalid id " + id, ex);
+        }
+    }
+
+    private int parseHexId(String id) throws SAXException {
+        try {
+            String normalized = id.startsWith("0x") || id.startsWith("0X") ? id.substring(2) : id;
+            return Integer.parseInt(normalized, 16);
+        } catch (NumberFormatException ex) {
+            throw new SAXException("Invalid hex id " + id, ex);
+        }
+    }
+
+    private boolean isConstructedTag(int tag) {
+        String hexTag = Integer.toHexString(tag);
+        if ((hexTag.length() & 0x01) == 1)
+            hexTag = "0" + hexTag;
+        byte[] tagBytes = ISOUtil.hex2byte(hexTag);
+        return (tagBytes[0] & 0x20) == 0x20;
+    }
+}

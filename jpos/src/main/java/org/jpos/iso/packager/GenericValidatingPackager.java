@@ -20,9 +20,11 @@ package org.jpos.iso.packager;
 
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
+import org.jpos.iso.DatasetFieldPackager;
 import org.jpos.iso.ISOBasePackager;
 import org.jpos.iso.ISOBaseValidator;
 import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISODatasetPackager;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOFieldValidator;
@@ -378,9 +380,12 @@ onto the stack.
                 msgPackager.setLogger (getLogger(), "Generic Packager");
                 ISOFieldPackager fieldPackager = (ISOFieldPackager) fieldStack.pop();
                 Integer fno = (Integer) fieldStack.pop();
-                // Create the ISOMsgField packager with the retrieved msg and field Packagers
-                ISOMsgFieldPackager mfp =
-                        new ISOMsgFieldPackager(fieldPackager, msgPackager);
+                ISOFieldPackager mfp;
+                if (msgPackager instanceof ISODatasetPackager) {
+                    mfp = new DatasetFieldPackager(fieldPackager, (ISODatasetPackager) msgPackager);
+                } else {
+                    mfp = new ISOMsgFieldPackager(fieldPackager, msgPackager);
+                }
 
                 // Add the newly created ISOMsgField packager to the
                 // lower level field stack
