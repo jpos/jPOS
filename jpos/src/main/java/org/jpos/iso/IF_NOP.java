@@ -27,11 +27,13 @@ package org.jpos.iso;
  * @see IFA_LLNUM
  */
 public class IF_NOP extends ISOFieldPackager {
+    /** Default constructor. */
     public IF_NOP () {
         super(0, "<dummy>");
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

@@ -44,6 +44,10 @@ public class GenericSubFieldPackager extends GenericPackager implements ISOSubFi
 
     private Integer fieldId = 0;
 
+    /**
+     * Default constructor.
+     * @throws ISOException if configuration fails
+     */
     public GenericSubFieldPackager() throws ISOException
     {
         super();

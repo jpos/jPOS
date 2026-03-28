@@ -18,6 +18,7 @@
 
 package org.jpos.core;
 
+/** Provides environment variable values to the {@link org.jpos.core.Environment} resolver. */
 public interface EnvironmentProvider {
     /**
      * Returns the prefix identifying this provider.

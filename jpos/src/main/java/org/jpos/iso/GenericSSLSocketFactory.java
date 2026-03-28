@@ -71,26 +71,50 @@ public class GenericSSLSocketFactory
 
     private Configuration cfg;
 
+    /**
+     * Sets the keystore file path.
+     * @param keyStore the keystore file path
+     */
     public void setKeyStore(String keyStore){
         this.keyStore=keyStore;  
     }
 
+    /**
+     * Sets the keystore password.
+     * @param password the keystore password
+     */
     public void setPassword(String password){
         this.password=password;  
     }
 
+    /**
+     * Sets the key entry password.
+     * @param keyPassword the key entry password
+     */
     public void setKeyPassword(String keyPassword){
         this.keyPassword=keyPassword;  
     }
 
+    /**
+     * Sets the expected server name for SNI/hostname verification.
+     * @param serverName the expected server name
+     */
     public void setServerName(String serverName){
         this.serverName=serverName;  
     }
 
+    /**
+     * Sets whether client authentication is required.
+     * @param clientAuthNeeded true if client authentication is required
+     */
     public void setClientAuthNeeded(boolean clientAuthNeeded){
         this.clientAuthNeeded=clientAuthNeeded;  
     }
 
+    /**
+     * Sets whether server authentication is required.
+     * @param serverAuthNeeded true if server authentication is required
+     */
     public void setServerAuthNeeded(boolean serverAuthNeeded){
         this.serverAuthNeeded=serverAuthNeeded;  
     }
@@ -295,36 +319,68 @@ public class GenericSSLSocketFactory
         }
     }
 
+    /**
+     * Returns the configured keystore file path.
+     * @return the keystore file path
+     */
     public String getKeyStore() {
         return keyStore;
     }
 
     // Have custom hooks get passwords
     // You really need to modify these two implementations
+    /**
+     * Returns the keystore password.
+     * @return the keystore password
+     */
     protected String getPassword() {
         return System.getProperty("jpos.ssl.storepass", "password");
     }
 
+    /**
+     * Returns the key entry password.
+     * @return the key entry password
+     */
     protected String getKeyPassword() {
         return System.getProperty("jpos.ssl.keypass", "password");
     }
 
+    /**
+     * Returns the expected server name.
+     * @return the expected server name
+     */
     public String getServerName() {
         return serverName;
     }
 
+    /**
+     * Returns whether client authentication is required.
+     * @return true if client authentication is required
+     */
     public boolean getClientAuthNeeded() {
         return clientAuthNeeded;
     }
 
+    /**
+     * Returns whether server authentication is required.
+     * @return true if server authentication is required
+     */
     public boolean getServerAuthNeeded() {
         return serverAuthNeeded;
     }
     
+    /**
+     * Sets the list of enabled cipher suites.
+     * @param enabledCipherSuites the cipher suite names to enable
+     */
     public void setEnabledCipherSuites(String[] enabledCipherSuites) {
         this.enabledCipherSuites = enabledCipherSuites;
     }
 
+    /**
+     * Returns the enabled cipher suites, or null if using defaults.
+     * @return array of enabled cipher suite names, or null
+     */
     public String[] getEnabledCipherSuites() {
         return enabledCipherSuites;
     }
@@ -341,6 +397,10 @@ public class GenericSSLSocketFactory
         enabledCipherSuites = cfg.getAll("addEnabledCipherSuite");
         enabledProtocols = cfg.getAll("addEnabledProtocol");
     }
+    /**
+     * Returns the current configuration.
+     * @return the current {@link org.jpos.core.Configuration}
+     */
     public Configuration getConfiguration() {
         return cfg;
     }

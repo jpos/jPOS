@@ -43,6 +43,7 @@ import java.util.Iterator;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
+/** UIFactory that creates GridLayout panels. */
 public class GridLayoutFactory implements UIFactory {
     public JComponent create (UI ui, Element e) {
         JComponent p;

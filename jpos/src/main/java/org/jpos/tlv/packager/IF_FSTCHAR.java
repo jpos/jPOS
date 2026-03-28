@@ -36,6 +36,7 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
 
     private char terminator = '\\';
 
+    /** Default constructor. */
     public IF_FSTCHAR() {
         super();
     }
@@ -54,6 +55,7 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len         - field len
      * @param description symbolic descrption
      */

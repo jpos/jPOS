@@ -38,6 +38,7 @@ public class IF_FSTBINARY extends ISOFieldPackager implements TaggedFieldPackage
     private byte terminator = (byte) 0xFF;
     private String token;
 
+    /** Default constructor. */
     public IF_FSTBINARY() {
         super();
     }
@@ -57,6 +58,7 @@ public class IF_FSTBINARY extends ISOFieldPackager implements TaggedFieldPackage
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len         - field len
      * @param description symbolic descrption
      */

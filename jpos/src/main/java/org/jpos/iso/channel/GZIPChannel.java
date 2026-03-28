@@ -35,6 +35,7 @@ import java.util.zip.GZIPOutputStream;
  * @see ISOChannel
  */
 public class GZIPChannel extends BaseChannel {
+    /** Default constructor. */
     public GZIPChannel () {
         super();
     }
@@ -51,7 +52,7 @@ public class GZIPChannel extends BaseChannel {
     /**
      * Construct server ISOChannel
      * @param p     an ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public GZIPChannel (ISOPackager p) throws IOException {
@@ -61,7 +62,7 @@ public class GZIPChannel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public GZIPChannel (ISOPackager p, ServerSocket serverSocket) 
@@ -79,7 +80,7 @@ public class GZIPChannel extends BaseChannel {
     }
     /**
      * @return the Message len
-     * @exception IOException
+     * @exception IOException on I/O error
      * @exception ISOException
      */
     protected int getMessageLength() throws IOException, ISOException {

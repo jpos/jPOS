@@ -21,6 +21,7 @@ package org.jpos.q2.cli;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
+/** CLI command that prints help information. */
 public class HELP implements CLICommand
 {
     public void exec(CLIContext cli, String[] args)

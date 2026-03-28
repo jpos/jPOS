@@ -102,6 +102,10 @@ public class GenericPackager
     private String firstField = null;
     private String filename;
 
+    /**
+     * Default constructor.
+     * @throws ISOException if configuration fails
+     */
     public GenericPackager() throws ISOException
     {
         super();
@@ -318,11 +322,11 @@ public class GenericPackager
          * <p>
          * The strategy we follow is:<p>
          * We first check whether the DTD points to a well defined URI,
-         * and resolve to our internal DTDs.<p>
+         * and resolve to our internal DTDs.
          *
          * If the systemId points to a file, then we attempt to read the
          * DTD from the filesystem, in case they've been modified by the user.
-         * Otherwise, we fallback to the built-in DTDs inside jPOS.<p>
+         * Otherwise, we fallback to the built-in DTDs inside jPOS.
          *
          * @param publicId The public identifier of the external entity
          *                 being referenced, or null if none was supplied.
@@ -380,6 +384,7 @@ public class GenericPackager
         }
     }
 
+    /** SAX content handler that populates this packager from an XML packager descriptor. */
     /** SAX content handler that populates this packager from an XML packager descriptor. */
     public class GenericContentHandler extends DefaultHandler
     {

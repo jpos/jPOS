@@ -34,6 +34,7 @@ public class GICCSubFieldPackager extends GenericPackager implements ISOSubField
     /**
      * Default constructor
      */
+    /** Default constructor. @throws ISOException if configuration fails */
     public GICCSubFieldPackager() throws ISOException {
         super();
     }

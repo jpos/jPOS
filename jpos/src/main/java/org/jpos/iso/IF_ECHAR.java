@@ -29,10 +29,12 @@ package org.jpos.iso;
  */
 @Deprecated
 public class IF_ECHAR extends ISOFieldPackager {
+    /** Default constructor. */
     public IF_ECHAR() {
         super();
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

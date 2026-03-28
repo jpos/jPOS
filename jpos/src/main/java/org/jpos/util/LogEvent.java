@@ -158,6 +158,11 @@ public class LogEvent {
         if (!noArmor)
             p.println (indent + "</log>");
     }
+    /**
+     * Dumps the full log event to the given PrintStream.
+     * @param p     the PrintStream to dump to
+     * @param outer the outer indentation string
+     */
     public void dump (PrintStream p, String outer) {
         var jfr = new LogEventDump();
         jfr.begin();

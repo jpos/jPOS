@@ -69,9 +69,12 @@ public class FSDProtectedLogListener implements LogListener, Configurable
     String[] truncateFields    = null;
     boolean truncateAddEllipsis = false;
     Configuration cfg   = null;
+    /** Replacement string used when a field value is wiped. */
     public static final String WIPED = "[WIPED]";
+    /** Replacement bytes used when a binary field value is wiped. */
     public static final byte[] BINARY_WIPED = ISOUtil.hex2byte ("AA55AA55");
 
+    /** Default constructor. */
     public FSDProtectedLogListener () {
         super();
     }

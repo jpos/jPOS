@@ -32,6 +32,7 @@ package org.jpos.iso;
 public class IF_UNUSED extends ISOFieldPackager {
     /**
      */
+    /** Default constructor. */
     public IF_UNUSED () {
         super(0, "<dummy>");
     }

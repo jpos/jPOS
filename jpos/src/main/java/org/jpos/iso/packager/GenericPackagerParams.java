@@ -20,6 +20,7 @@ package org.jpos.iso.packager;
 
 import org.xml.sax.Attributes;
 
+/** Interface defining configuration parameters for generic packagers. */
 public interface GenericPackagerParams {
     /**
      * Applies packager configuration from the SAX attributes of the packager XML element.

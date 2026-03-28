@@ -29,16 +29,23 @@ public abstract class IF_TBASE extends ISOFieldPackager implements TaggedFieldPa
 
     private String token;
 
+    /** Default constructor. */
     public IF_TBASE() {
           super();
           this.token = null;
     }
 
+    /**
+     * Constructs an IF_TBASE with the given length and description.
+     * @param len         field length
+     * @param description field description
+     */
     public IF_TBASE(int len, String description) {
       super(len, description);
     }
 
     /**
+      * Constructs a packager with the given length and description.
       * @param len - field Len
       * @param description - details
       * @param token - the ending of the field

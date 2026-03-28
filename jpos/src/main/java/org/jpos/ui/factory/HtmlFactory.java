@@ -41,6 +41,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
+/** UIFactory that creates HTML-rendered panels. */
 public class HtmlFactory implements UIFactory {
     public JComponent create (UI ui, Element e) {
         try {

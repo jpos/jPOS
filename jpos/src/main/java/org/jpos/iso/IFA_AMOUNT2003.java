@@ -1,3 +1,4 @@
+/** ISO Amount packager using the 2003 format (extends IFA_NUMERIC). */
 /*
  * jPOS Project [http://jpos.org]
  * Copyright (C) 2000-2026 jPOS Software SRL

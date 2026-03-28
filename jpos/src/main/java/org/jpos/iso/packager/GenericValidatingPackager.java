@@ -63,12 +63,26 @@ import java.util.TreeMap;
 @SuppressWarnings("unchecked")
 public class GenericValidatingPackager extends GenericPackager implements ISOValidator {
 
+    /**
+     * Default constructor.
+     * @throws ISOException if configuration fails
+     */
     public GenericValidatingPackager(  ) throws ISOException{
         super();
     }
+    /**
+     * Constructs a packager from the given file path.
+     * @param fileName the packager XML descriptor file path
+     * @throws ISOException if configuration fails
+     */
     public GenericValidatingPackager( String fileName ) throws ISOException {
         super( fileName );
     }
+    /**
+     * Constructs a packager from the given input stream.
+     * @param stream the packager XML descriptor stream
+     * @throws ISOException if configuration fails
+     */
     public GenericValidatingPackager (InputStream stream) throws ISOException {
         super (stream);
     }
@@ -129,10 +143,18 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
             bitmapField = Integer.parseInt( bmapfield );
     }
 
+    /**
+     * Sets the message-level validators.
+     * @param msgVlds the array of message validators
+     */
     public void setMsgValidator( ISOBaseValidator[] msgVlds ){
         this.mvlds = msgVlds;
     }
 
+    /**
+     * Sets the field-level validators.
+     * @param fvlds the array of field validators
+     */
     public void setFieldValidator( ISOFieldValidator[] fvlds ){
         this.fvlds = fvlds;
     }
@@ -175,8 +197,11 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
 
 /*  Values copied from ISOBasePackager
 These can be changes using attributes on the isopackager node */
+    /** Maximum field number subject to validation (default 128). */
     protected  int maxValidField=128;
+    /** Whether to emit the bitmap when packing (default true). */
     protected boolean emitBitmap=true;
+    /** Field number used for the bitmap (default 1). */
     protected int bitmapField=1;
     /** FieldValidator array. **/
     protected ISOValidator[] fvlds = {};
@@ -189,6 +214,7 @@ These can be changes using attributes on the isopackager node */
 
 
     @SuppressWarnings("unchecked")
+    /** SAX content handler that populates validators from the XML descriptor. */
     public class GenericValidatorContentHandler extends DefaultHandler {
         @Override
         public void startDocument(){

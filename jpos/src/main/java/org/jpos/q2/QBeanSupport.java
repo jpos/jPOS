@@ -292,7 +292,10 @@ public class QBeanSupport
      * @throws Exception on error
      */
     protected void stopService()    throws Exception {}
-    /** Called during the destroy lifecycle phase; subclasses may override. @throws Exception on error */
+    /**
+     * Called during the destroy lifecycle phase; subclasses may override.
+     * @throws Exception on error
+     */
     protected void destroyService() throws Exception {}
 
     protected synchronized ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor() {

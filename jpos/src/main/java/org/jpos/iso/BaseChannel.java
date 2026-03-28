@@ -450,6 +450,8 @@ public abstract class BaseChannel extends Observable
     /**
      * Socket SO_LINGER option to use when closing the socket.
      * @see java.net.Socket#setSoLinger(boolean, int)
+     * @param on     if true, enable SO_LINGER
+     * @param linger SO_LINGER timeout in seconds
      */
     public void setSoLinger(boolean on, int linger) {
         this.soLingerOn = on;
@@ -827,7 +829,7 @@ public abstract class BaseChannel extends Observable
      * sends a byte[] over the TCP/IP session
      * @param b the byte array to be sent
      * @exception IOException on I/O error
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      * @exception ISOFilter.VetoException if a filter vetoes the message
      */
     public void send (byte[] b) throws IOException, ISOException {

@@ -38,6 +38,7 @@ import javax.swing.*;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
+/** UIFactory that creates horizontal split panes. */
 public class HSplitFactory implements UIFactory {
     public JComponent create (UI ui, Element e) {
         JSplitPane splitPane = new JSplitPane(

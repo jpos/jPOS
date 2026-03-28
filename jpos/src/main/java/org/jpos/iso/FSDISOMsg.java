@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/** An ISOMsg backed by a {@link org.jpos.util.FSDMsg} for fixed-schema message processing. */
 public class FSDISOMsg extends ISOMsg implements Cloneable  {
     /** The underlying FSDMsg containing the field data. */
     FSDMsg fsd;
@@ -72,7 +73,10 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
         }
     }
 
-    /** @return the underlying FSDMsg */
+    /**
+     * Returns the underlying FSDMsg instance.
+     * @return the underlying FSDMsg
+     */
     public FSDMsg getFSDMsg() {
         return fsd;
     }
