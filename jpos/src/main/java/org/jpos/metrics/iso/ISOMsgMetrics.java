@@ -9,12 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/** Interface for ISO message metrics tracking. */
 public interface ISOMsgMetrics {
+    /** Default channel metric name. */
     String DEFAULT_CHANNEL_METRIC_NAME = MeterInfo.ISOMSG_IN.id();
 
+    /** Environment variable name for channel tags configuration. */
     String ENV_CHANNEL_TAGS =   "metrics.channel.tags";
+    /** Default tags for channel metrics. */
     String DEFAULT_TAGS =       "name, type, direction";
 
+    /** Environment variable name for channel fields configuration. */
     String ENV_CHANNEL_FIELDS =     "metrics.channel.fields";
     String DEFAULT_CHANNEL_FIELDS = "mti";
 

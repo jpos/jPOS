@@ -18,8 +18,18 @@
 
 package org.jpos.iso;
 @FunctionalInterface
+/** Listener interface for ISO message responses. */
 public interface ISOResponseListener {
+    /**
+     * Called when a response message is received.
+     * @param resp     the response ISO message
+     * @param handBack the original handback object
+     */
     void responseReceived (ISOMsg resp, Object handBack);
+    /**
+     * Called when waiting for a response has timed out.
+     * @param handBack the original handback object
+     */
     default void expired (Object handBack){
         responseReceived(null, handBack);
     }

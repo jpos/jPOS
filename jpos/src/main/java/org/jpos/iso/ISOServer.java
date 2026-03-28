@@ -72,6 +72,7 @@ public class ISOServer extends Observable
 
     protected ISOChannel clientSideChannel;
     ISOPackager clientPackager;
+    /** Outgoing and incoming filter chains for client channels. */
     protected Collection clientOutgoingFilters, clientIncomingFilters;
     protected List<ISORequestListener> listeners;
     public static final int DEFAULT_MAX_SESSIONS = 100;
@@ -86,6 +87,7 @@ public class ISOServer extends Observable
     private AtomicInteger connectionCount = new AtomicInteger();
 
     private int backlog;
+    /** The server configuration. */
     protected Configuration cfg;
     private volatile boolean shutdown = false;
     private ServerSocket serverSocket;
@@ -101,6 +103,7 @@ public class ISOServer extends Observable
     private final UUID uuid = UUID.randomUUID();
 
    /**
+    * Constructs an ISOServer on the given port.
     * @param port port to listen
     * @param clientSide client side ISOChannel, used as a "clonable template" to accept new connections
     */

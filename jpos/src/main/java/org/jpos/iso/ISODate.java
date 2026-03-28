@@ -74,6 +74,7 @@ public class ISODate {
      * Warning: return null on invalid dates (prints Exception to console)
      * Uses default time zone for this host
      * @return parsed Date (or null)
+     * @param s the date string to parse
      */
     public static Date parse(String s) {
         return parse(s, TimeZone.getDefault());
@@ -103,6 +104,7 @@ public class ISODate {
      * Warning: return null on invalid dates (prints Exception to console)
      * Uses default time zone for this host
      * @return parsed Date (or null)
+     * @param s the date string to parse
      */
     public static Date parseDateTime(String s) {
         return parseDateTime(s, TimeZone.getDefault());

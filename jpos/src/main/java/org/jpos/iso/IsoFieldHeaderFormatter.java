@@ -86,6 +86,11 @@ public class IsoFieldHeaderFormatter {
     }
 
     /** Formats the tag and length prefixers into the output.
+     * @param tagPrefixer    the tag length prefixer
+     * @param lengthPrefixer the data length prefixer
+     * @param tagData        the tag byte array
+     * @param lengthData     the length byte array
+     * @param destinationData the output byte array
      */
     public void format(final Prefixer tagPrefixer, final Prefixer lengthPrefixer, final byte[] tagData, final byte[] lengthData, final byte[] destinationData) {
         if (tagPrefixer != null && lengthPrefixer != null && tagData != null && lengthData != null && destinationData != null) {

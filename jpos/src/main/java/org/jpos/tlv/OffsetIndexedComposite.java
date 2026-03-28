@@ -25,11 +25,19 @@ package org.jpos.tlv;
  */
 public interface OffsetIndexedComposite {
 
+    /** Increments the current offset by one. */
     void incOffset();
 
+    /** Sets the current offset.
+     * @param offset the new offset value
+     */
     void setOffset(int offset);
 
+    /** Resets the offset to its initial value. */
     void resetOffset();
 
+    /** Returns the current offset.
+     * @return the current offset
+     */
     int getOffset();
 }

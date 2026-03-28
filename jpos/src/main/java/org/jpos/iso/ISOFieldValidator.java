@@ -87,6 +87,10 @@ public class ISOFieldValidator implements Configurable, ISOValidator {
         this.breakOnError = breakOnError;
     }
 
+    /** Constructs a validator with break-on-error flag and description.
+     * @param breakOnError if true, stop on first error
+     * @param Description field description
+     */
     public ISOFieldValidator( boolean breakOnError, String Description ) {
         this( Description );
         this.breakOnError = breakOnError;
@@ -115,18 +119,30 @@ public class ISOFieldValidator implements Configurable, ISOValidator {
         this.breakOnError = cfg.getBoolean( "break-on-error", false );
     }
 
+    /** Sets the maximum field length.
+     * @param maxLen maximum length
+     */
     public void setMaxLength( int maxLen ){
         this.maxLen = maxLen;
     }
 
+    /** Sets the minimum field length.
+     * @param minLen minimum length
+     */
     public void setMinLength( int minLen ){
         this.minLen = minLen;
     }
 
+    /** Sets whether to break on first error.
+     * @param breakOnErr if true, stop on first error
+     */
     public void setBreakOnError( boolean breakOnErr ){
         this.breakOnError = breakOnErr;
     }
 
+    /** Returns whether break-on-error is set.
+     * @return true if break-on-error is enabled
+     */
     public boolean breakOnError(){
         return breakOnError;
     }

@@ -215,10 +215,16 @@ public class ISOMeter extends JComponent implements Runnable {
     public void setScroll (boolean scroll) {
         this.scroll = scroll;
     }
+    /** Sets the refresh interval in milliseconds.
+     * @param refreshPanel the refresh interval
+     */
     public void setRefresh (int refreshPanel) {
         if (refreshPanel > 0)
             this.refreshPanel = refreshPanel;
     }
+    /** Sets whether the channel is connected.
+     * @param connected true if connected
+     */
     public void setConnected(boolean connected) {
         if (this.connected != connected) {
             if (!scroll)
@@ -230,12 +236,22 @@ public class ISOMeter extends JComponent implements Runnable {
         }
         this.connected = connected;
     }
+    /** Sets the positive counter display string.
+     * @param s the counter string
+     */
     public void setPositiveCounter(String s) {
         positiveCounter = s;
     }
+    /** Sets the negative counter display string.
+     * @param s the counter string
+     */
     public void setNegativeCounter(String s){
         negativeCounter = s;
     }
+    /** Sets the meter value with a text label.
+     * @param val        the numeric value
+     * @param textString the display text
+     */
     public void setValue(int val, String textString) {
         setValue(val);
         if (val < 0) {

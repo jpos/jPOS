@@ -30,6 +30,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 @SuppressWarnings("deprecation")
+/** Panel that displays ISORequestListener activity. */
 public class ISORequestListenerPanel extends JPanel implements Observer {
 
     private static final long serialVersionUID = -1786048717180010741L;
@@ -41,8 +42,11 @@ public class ISORequestListenerPanel extends JPanel implements Observer {
      * @serial
      */
     String symbolicName;
+    /** Maximum number of log entries to retain. */
     public static final int LOG_CAPACITY = 250;
 
+    /** Constructs the panel.
+     */
     public ISORequestListenerPanel (
         ISORequestListener requestListener,
         String symbolicName)
@@ -56,9 +60,15 @@ public class ISORequestListenerPanel extends JPanel implements Observer {
         if (requestListener instanceof Observable)
             ((Observable)requestListener).addObserver(this);
     }
+    /** Returns the symbolic name.
+     * @return symbolic name
+     */
     public final String getSymbolicName() {
         return symbolicName;
     }
+    /** Returns the log model.
+     * @return the log model
+     */
     public final ListModel getLog() {
         return log;
     }

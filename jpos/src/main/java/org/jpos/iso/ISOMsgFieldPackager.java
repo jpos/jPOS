@@ -30,7 +30,9 @@ import java.io.InputStream;
  * @see org.jpos.iso.packager.PostPackager
  */
 public class ISOMsgFieldPackager extends ISOFieldPackager {
+    /** The message-level packager. */
     protected ISOPackager msgPackager;
+    /** The field-level packager. */
     protected ISOFieldPackager fieldPackager;
 
     /**
@@ -135,9 +137,15 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
     public int getMaxPackedLength() {
         return fieldPackager.getLength();
     }
+    /** Returns the ISO message packager.
+     * @return the message packager
+     */
     public ISOPackager getISOMsgPackager() {
         return msgPackager;
     }
+    /** Returns the ISO field packager.
+     * @return the field packager
+     */
     public ISOFieldPackager getISOFieldPackager() {
         return fieldPackager;
     }

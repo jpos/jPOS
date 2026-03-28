@@ -51,6 +51,10 @@ public class ISOMsgPanel extends JPanel {
      * @serial
      */
     Vector validFields;
+    /** Constructs a panel for the given message.
+     * @param m        the ISO message to display
+     * @param withDump if true, include a hex dump
+     */
     public ISOMsgPanel(ISOMsg m, boolean withDump) {
         super();
         this.m = m;
@@ -61,6 +65,9 @@ public class ISOMsgPanel extends JPanel {
         if (withDump)
             add(createISOMsgDumpPanel(), BorderLayout.SOUTH);
     }
+    /** Constructs a panel for the given message.
+     * @param m the ISO message to display
+     */
     public ISOMsgPanel(ISOMsg m) {
         this(m, false);
     }
