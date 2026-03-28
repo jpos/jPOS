@@ -22,6 +22,8 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
+import org.jpos.iso.DatasetFieldPackager;
+import org.jpos.iso.ISODatasetPackager;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.xml.sax.Attributes;
@@ -523,9 +525,12 @@ public class GenericPackager
 
                 msgPackager.setLogger (getLogger(), getRealm() + "-fld-" + fno);
 
-                // Create the ISOMsgField packager with the retrieved msg and field Packagers
-                ISOMsgFieldPackager mfp =
-                    new ISOMsgFieldPackager(fieldPackager, msgPackager);
+                ISOFieldPackager mfp;
+                if (msgPackager instanceof ISODatasetPackager) {
+                    mfp = new DatasetFieldPackager(fieldPackager, (ISODatasetPackager) msgPackager);
+                } else {
+                    mfp = new ISOMsgFieldPackager(fieldPackager, msgPackager);
+                }
 
                 // Add the newly created ISOMsgField packager to the
                 // lower level field stack

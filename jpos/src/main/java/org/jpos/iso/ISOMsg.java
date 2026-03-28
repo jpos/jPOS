@@ -251,12 +251,30 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
+     * Sets a top-level character field and returns this message for fluent chaining.
+     *
+     * @param fldno field number
+     * @param value field value
+     * @return this message
+     */
+    public ISOMsg with(int fldno, String value) {
+        set(fldno, value);
+        return this;
+    }
+
+    /**
      * Creates an ISOField associated with fldno within this ISOMsg.
      *
      * @param fpath dot-separated field path (i.e. 63.2)
      * @param value field value
      */
     public void set(String fpath, String value) {
+        try {
+            if (setDatasetPath(fpath, value))
+                return;
+        } catch (ISOException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
         for (;;) {
@@ -286,12 +304,26 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
+     * Sets a character field by path and returns this message for fluent chaining.
+     *
+     * @param fpath dot-separated field path
+     * @param value field value
+     * @return this message
+     */
+    public ISOMsg with(String fpath, String value) {
+        set(fpath, value);
+        return this;
+    }
+
+    /**
      * Creates an ISOField associated with fldno within this ISOMsg
      * @param fpath dot-separated field path (i.e. 63.2)
      * @param c component
      * @throws ISOException on error
      */
     public void set(String fpath, ISOComponent c) throws ISOException {
+        if (setDatasetPath(fpath, c))
+            return;
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
         for (;;) {
@@ -319,6 +351,19 @@ public class ISOMsg extends ISOComponent
             }
         }
     }
+
+    /**
+     * Sets a component by path and returns this message for fluent chaining.
+     *
+     * @param fpath dot-separated field path
+     * @param c component to store
+     * @return this message
+     * @throws ISOException on path or component errors
+     */
+    public ISOMsg with(String fpath, ISOComponent c) throws ISOException {
+        set(fpath, c);
+        return this;
+    }
     /**
      * Creates an ISOField associated with fldno within this ISOMsg.
      *
@@ -326,6 +371,12 @@ public class ISOMsg extends ISOComponent
      * @param value binary field value
      */
     public void set(String fpath, byte[] value) {
+        try {
+            if (setDatasetPath(fpath, value))
+                return;
+        } catch (ISOException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
         for (;;) {
@@ -343,6 +394,30 @@ public class ISOMsg extends ISOComponent
                 break;
             }
         }
+    }
+
+    /**
+     * Sets a top-level binary field and returns this message for fluent chaining.
+     *
+     * @param fldno field number
+     * @param value field value
+     * @return this message
+     */
+    public ISOMsg with(int fldno, byte[] value) {
+        set(fldno, value);
+        return this;
+    }
+
+    /**
+     * Sets a binary field by path and returns this message for fluent chaining.
+     *
+     * @param fpath dot-separated field path
+     * @param value field value
+     * @return this message
+     */
+    public ISOMsg with(String fpath, byte[] value) {
+        set(fpath, value);
+        return this;
     }
 
     /**
@@ -388,6 +463,12 @@ public class ISOMsg extends ISOComponent
      * @param fpath dot-separated field path (i.e. 63.2)
      */
     public void unset(String fpath) {
+        try {
+            if (unsetDatasetPath(fpath))
+                return;
+        } catch (ISOException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
         ISOMsg lastm = m;
@@ -425,6 +506,29 @@ public class ISOMsg extends ISOComponent
         for (String fpath : fpaths) {
             unset(fpath);
         }
+    }
+
+    /**
+     * Unsets one or more top-level fields and returns this message for fluent chaining.
+     *
+     * @param flds field numbers to remove
+     * @return this message
+     */
+    public ISOMsg without(int ... flds) {
+        unset(flds);
+        return this;
+    }
+
+    /**
+     * Unsets one or more field paths, including nested composites and dataset elements,
+     * and returns this message for fluent chaining.
+     *
+     * @param fpaths field paths to remove
+     * @return this message
+     */
+    public ISOMsg without(String ... fpaths) {
+        unset(fpaths);
+        return this;
     }
     /**
      * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
@@ -775,12 +879,14 @@ public class ISOMsg extends ISOComponent
                 m.trailer = trailer.clone();
             for (Integer k : fields.keySet()) {
                 ISOComponent c = (ISOComponent) m.fields.get(k);
-                if (c instanceof ISOMsg)
-                    m.fields.put(k, ((ISOMsg) c).clone());
+                if (c instanceof ISOMsg || c instanceof ISODatasetField)
+                    m.fields.put(k, cloneComponent(c));
             }
             return m;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
+        } catch (ISOException e) {
+            throw new IllegalStateException(e);
         }
     }
 
@@ -798,8 +904,8 @@ public class ISOMsg extends ISOComponent
                 if (hasField(field)) {
                     try {
                         ISOComponent c = getComponent(field);
-                        if (c instanceof ISOMsg) {
-                            m.set((ISOMsg)((ISOMsg)c).clone());
+                        if (c instanceof ISOMsg || c instanceof ISODatasetField) {
+                            m.set(cloneComponent(c));
                         } else {
                             m.set(c);
                         }
@@ -826,8 +932,8 @@ public class ISOMsg extends ISOComponent
             for (String fpath : fpaths) {
                 try {
                     ISOComponent component = getComponent(fpath);
-                    if (component instanceof ISOMsg) {
-                        m.set(fpath, (ISOMsg)((ISOMsg)component).clone());
+                    if (component instanceof ISOMsg || component instanceof ISODatasetField) {
+                        m.set(fpath, cloneComponent(component));
                     } else if (component != null) {
                         m.set(fpath, component);
                     }
@@ -1241,5 +1347,153 @@ public class ISOMsg extends ISOComponent
     private int parseInt (String s) {
         return s.startsWith("0x") ? Integer.parseInt(s.substring(2), 16) : Integer.parseInt(s);
     }
-}
 
+    private boolean setDatasetPath(String fpath, Object value) throws ISOException {
+        StringTokenizer st = new StringTokenizer(fpath, ".");
+        if (st.countTokens() < 2)
+            return false;
+
+        int fieldNo = parseInt(st.nextToken());
+        ISOFieldPackager fp = null;
+        if (packager instanceof ISOBasePackager) {
+            fp = ((ISOBasePackager) packager).getFieldPackager(fieldNo);
+        }
+        if (!(fp instanceof DatasetFieldPackager))
+            return false;
+
+        DatasetFieldPackager dfp = (DatasetFieldPackager) fp;
+        ISODatasetPackager datasetPackager = dfp.getISODatasetPackager();
+        int datasetId;
+        int elementId;
+
+        if (datasetPackager.getClass().getName().endsWith(".ICCDataPackager")) {
+            if (st.countTokens() != 1)
+                return false;
+            datasetId = fieldNo;
+            elementId = parseInt(st.nextToken());
+        } else {
+            if (st.countTokens() != 2)
+                return false;
+            datasetId = parseInt(st.nextToken());
+            elementId = parseInt(st.nextToken());
+        }
+
+        ISODatasetField field;
+        ISOComponent component = getComponent(fieldNo);
+        if (component == null) {
+            field = new ISODatasetField(fieldNo);
+            set(field);
+        } else if (component instanceof ISODatasetField) {
+            field = (ISODatasetField) component;
+        } else {
+            throw new ISOException("Field " + fieldNo + " is not a dataset field");
+        }
+
+        ISODataset dataset = (ISODataset) field.getDataset(datasetId);
+        if (dataset == null) {
+            dataset = new ISODataset(datasetId, datasetId <= 0x70 ? DatasetFormat.TLV : DatasetFormat.DBM);
+            field.addDataset(dataset);
+        }
+        dataset.putElement(elementId, toDatasetComponent(elementId, value));
+        return true;
+    }
+
+    private boolean unsetDatasetPath(String fpath) throws ISOException {
+        StringTokenizer st = new StringTokenizer(fpath, ".");
+        if (st.countTokens() < 2)
+            return false;
+
+        int fieldNo = parseInt(st.nextToken());
+        ISOFieldPackager fp = null;
+        if (packager instanceof ISOBasePackager) {
+            fp = ((ISOBasePackager) packager).getFieldPackager(fieldNo);
+        }
+        if (!(fp instanceof DatasetFieldPackager))
+            return false;
+
+        DatasetFieldPackager dfp = (DatasetFieldPackager) fp;
+        ISODatasetPackager datasetPackager = dfp.getISODatasetPackager();
+        int datasetId;
+        int elementId;
+
+        if (datasetPackager.getClass().getName().endsWith(".ICCDataPackager")) {
+            if (st.countTokens() != 1)
+                return false;
+            datasetId = fieldNo;
+            elementId = parseInt(st.nextToken());
+        } else {
+            if (st.countTokens() != 2)
+                return false;
+            datasetId = parseInt(st.nextToken());
+            elementId = parseInt(st.nextToken());
+        }
+
+        ISOComponent component = getComponent(fieldNo);
+        if (component == null)
+            return true;
+        if (!(component instanceof ISODatasetField))
+            throw new ISOException("Field " + fieldNo + " is not a dataset field");
+
+        ISODatasetField field = (ISODatasetField) component;
+        ISODataset dataset = (ISODataset) field.getDataset(datasetId);
+        if (dataset == null)
+            return true;
+
+        dataset.removeElement(elementId);
+        if (dataset.isEmpty()) {
+            field.removeDataset(dataset);
+            if (!field.hasDatasets())
+                unset(fieldNo);
+        }
+        return true;
+    }
+
+    private ISOComponent toDatasetComponent(int elementId, Object value) throws ISOException {
+        if (value instanceof ISOComponent) {
+            ISOComponent component = (ISOComponent) value;
+            component.setFieldNumber(elementId);
+            return component;
+        }
+        if (value instanceof byte[]) {
+            return new ISOBinaryField(elementId, (byte[]) value);
+        }
+        if (value instanceof String) {
+            return new ISOField(elementId, (String) value);
+        }
+        throw new ISOException("Unsupported dataset value type " + (value != null ? value.getClass().getName() : "null"));
+    }
+
+    private ISOComponent cloneComponent(ISOComponent c) throws ISOException {
+        if (c instanceof ISOMsg)
+            return (ISOComponent) ((ISOMsg) c).clone();
+        if (c instanceof ISODatasetField)
+            return cloneDatasetField((ISODatasetField) c);
+        return c;
+    }
+
+    private ISODatasetField cloneDatasetField(ISODatasetField field) throws ISOException {
+        ISODatasetField clone = new ISODatasetField(field.getFieldNumber());
+        for (Dataset dataset : field.getDatasets()) {
+            clone.addDataset(cloneDataset((ISODataset) dataset));
+        }
+        return clone;
+    }
+
+    private ISODataset cloneDataset(ISODataset dataset) throws ISOException {
+        ISODataset clone = new ISODataset(dataset.getIdentifier(), dataset.getFormat());
+        for (DatasetElement element : dataset.getElements()) {
+            clone.addElement(element.getId(), cloneDatasetComponent(element.getComponent()), element.isConstructed());
+        }
+        return clone;
+    }
+
+    private ISOComponent cloneDatasetComponent(ISOComponent component) throws ISOException {
+        if (component instanceof ISOMsg)
+            return (ISOComponent) ((ISOMsg) component).clone();
+        if (component instanceof ISOBinaryField)
+            return new ISOBinaryField(component.getFieldNumber(), component.getBytes() != null ? component.getBytes().clone() : null);
+        if (component instanceof ISOField)
+            return new ISOField(component.getFieldNumber(), (String) component.getValue());
+        return component;
+    }
+}

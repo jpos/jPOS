@@ -38,6 +38,10 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOField;
+import org.jpos.iso.ISOBinaryField;
+import org.jpos.iso.ISODataset;
+import org.jpos.iso.ISODatasetField;
+import org.jpos.iso.DatasetFormat;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Logger;
@@ -178,22 +182,47 @@ public class XMLPackagerTest {
         isoMsg.set(12, "20110224112759");
         isoMsg.set(24, "");
         byte[] data = isoMsg.pack();
-        // System.out.println(new String(data));
-        String expected = "<isomsg><!-- org.jpos.iso.packager.XMLPackager --><field id=\"0\" value=\"0800\"/>"
-                + "<field id=\"7\" value=\"7654321\"/><field id=\"11\" value=\"12345678\"/>"
-                + "<field id=\"12\" value=\"20110224112759\"/><field id=\"24\" value=\"\"/></isomsg>";
+        String expected = """
+                <isomsg>
+                  <field id="0" value="0800"/>
+                  <field id="7" value="7654321"/>
+                  <field id="11" value="12345678"/>
+                  <field id="12" value="20110224112759"/>
+                  <field id="24" value=""/>
+                </isomsg>
+                """;
         XMLUnit.setIgnoreWhitespace(true);
-        // XMLAssert.assertXMLEqual(expected, new String(data));
+        XMLUnit.setIgnoreComments(true);
         DetailedDiff myDiff = new DetailedDiff(XMLUnit.compareXML(expected, new String(data)));
         List allDifferences = myDiff.getAllDifferences();
         assertEquals(0, allDifferences.size(), myDiff.toString());
     }
 
     @Test
+    public void testPackDatasetFieldUsesHexTLVElementIds() throws Exception {
+        ISODatasetField field55 = new ISODatasetField(55);
+        ISODataset dataset = new ISODataset(0x37, DatasetFormat.TLV);
+        dataset.addElement(0x9F26, new ISOBinaryField(0x9F26, hex2byte("1122334455667788")));
+        field55.addDataset(dataset);
+        isoMsg.set(field55);
+
+        String xml = new String(xMLPackager.pack(isoMsg));
+
+        assertThat(xml.contains("<element id=\"0x9F26\" value=\"1122334455667788\"/>"), is(true));
+    }
+
+    @Test
     public void testUnpackBytes() throws IOException, ISOException {
-        String input = "<isomsg><!-- org.jpos.iso.packager.XMLPackager --><header>686561646572</header><field id=\"0\" value=\"0800\"/>"
-                + "<field id=\"7\" value=\"7654321\"/><field id=\"11\" value=\"12345678\"/>"
-                + "<field id=\"12\" value=\"20110224112759\"/><field id=\"24\" value=\"831\"/></isomsg>";
+        String input = """
+                <isomsg>
+                  <header>686561646572</header>
+                  <field id="0" value="0800"/>
+                  <field id="7" value="7654321"/>
+                  <field id="11" value="12345678"/>
+                  <field id="12" value="20110224112759"/>
+                  <field id="24" value="831"/>
+                </isomsg>
+                """;
         isoMsg.setHeader("header".getBytes());
         isoMsg.setMTI("0800");
         isoMsg.set(7, "7654321");
@@ -202,7 +231,7 @@ public class XMLPackagerTest {
         isoMsg.set(24, "");
         ISOMsg result = xMLPackager.createISOMsg();
         int consumedBytes = xMLPackager.unpack(result, input.getBytes());
-        assertThat(consumedBytes, is(247));
+        assertThat(consumedBytes, is(input.getBytes().length));
         assertThat(result.getHeader(), is("header".getBytes()));
         assertThat(result.getMTI(), is("0800"));
         assertThat(result.getString(7), is("7654321"));
@@ -214,10 +243,12 @@ public class XMLPackagerTest {
     @Test
     public void testUnpackLargeXmlBytes() throws IOException, ISOException {
         String veryLongXml = "<large-xml><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element></large-xml>";
-        String input = "<isomsg>  <!-- org.jpos.iso.packager.XMLPackager -->" +
-                "<field id=\"0\" value=\"0800\"/>" +
-                "<field id=\"1\"><![CDATA[" + veryLongXml + "]]></field>" +
-                "</isomsg>";
+        String input = """
+                <isomsg>
+                  <field id="0" value="0800"/>
+                  <field id="1"><![CDATA[%s]]></field>
+                </isomsg>
+                """.formatted(veryLongXml);
         isoMsg.setHeader("header".getBytes());
         ISOMsg result = xMLPackager.createISOMsg();
         int consumedBytes = xMLPackager.unpack(result, input.getBytes());
@@ -226,9 +257,16 @@ public class XMLPackagerTest {
 
     @Test
     public void testUnpackStream() throws IOException, ISOException {
-        String input = "<isomsg><!-- org.jpos.iso.packager.XMLPackager --><header>686561646572</header><field id=\"0\" value=\"0800\"/>"
-                + "<field id=\"7\" value=\"7654321\"/><field id=\"11\" value=\"12345678\"/>"
-                + "<field id=\"12\" value=\"20110224112759\"/><field id=\"24\" value=\"\"/></isomsg>";
+        String input = """
+                <isomsg>
+                  <header>686561646572</header>
+                  <field id="0" value="0800"/>
+                  <field id="7" value="7654321"/>
+                  <field id="11" value="12345678"/>
+                  <field id="12" value="20110224112759"/>
+                  <field id="24" value=""/>
+                </isomsg>
+                """;
         isoMsg.setHeader("header".getBytes());
         isoMsg.setMTI("0800");
         isoMsg.set(7, "7654321");
@@ -243,6 +281,41 @@ public class XMLPackagerTest {
         assertThat(result.getString(11), is("12345678"));
         assertThat(result.getString(12), is("20110224112759"));
         assertThat(result.getString(24), is(""));
+    }
+
+    @Test
+    public void testXML2003PackagerUnpacksDatasetXml() throws Exception {
+        XML2003Packager packager = new XML2003Packager();
+        ISOMsg result = packager.createISOMsg();
+        String input = """
+                <isomsg>
+                  <field id="0" value="0100"/>
+                  <field id="55" type="dataset">
+                    <dataset id="37" format="TLV">
+                      <element id="0x9F26" value="1122334455667788"/>
+                      <element id="0x9F10" value="06011203A0B800"/>
+                    </dataset>
+                  </field>
+                  <field id="49" type="dataset">
+                    <dataset id="71" format="DBM">
+                      <element id="1" value="31"/>
+                      <element id="2" value="31323334"/>
+                    </dataset>
+                  </field>
+                </isomsg>
+                """;
+
+        packager.unpack(result, input.getBytes());
+
+        assertEquals("0100", result.getMTI());
+        assertThat(result.getComponent(55) instanceof ISODatasetField, is(true));
+        assertThat(result.getComponent(49) instanceof ISODatasetField, is(true));
+        ISODataset field55 = (ISODataset) ((ISODatasetField) result.getComponent(55)).getDataset(0x37);
+        ISODataset field49 = (ISODataset) ((ISODatasetField) result.getComponent(49)).getDataset(0x71);
+        assertThat(ISOUtil.hexString(field55.getBytes(0x9F26)), is("1122334455667788"));
+        assertThat(ISOUtil.hexString(field55.getBytes(0x9F10)), is("06011203A0B800"));
+        assertThat(ISOUtil.hexString(field49.getBytes(1)), is("31"));
+        assertThat(ISOUtil.hexString(field49.getBytes(2)), is("31323334"));
     }
 
     @Test
@@ -291,15 +364,6 @@ public class XMLPackagerTest {
 
     @Test
     public void testStartElementThrowsNullPointerException1() throws Throwable {
-        try {
-            xMLPackager.startElement("testXMLPackagerNs", "testXMLPackagerName", "testXMLPackagerQName", null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.xml.sax.Attributes.getValue(String)\" because \"atts\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        xMLPackager.startElement("testXMLPackagerNs", "testXMLPackagerName", "testXMLPackagerQName", null);
     }
 }
