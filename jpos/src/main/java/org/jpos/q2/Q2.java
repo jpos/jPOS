@@ -99,7 +99,7 @@ import static java.util.ResourceBundle.getBundle;
 
 
 /**
- * The jPOS Q2 container — bootstraps the deploy directory, manages QBean lifecycle, and provides the runtime environment.
+ * The Q2 application container — bootstraps and manages the lifecycle of QBean components.
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @author <a href="mailto:alwynschoeman@yahoo.com">Alwyn Schoeman</a>

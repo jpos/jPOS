@@ -50,7 +50,9 @@ public enum CMF implements IRC {
     APPROVED_OFFLINE (12),
     /** Approved Offline Referral. */
     APPROVED_OFFLINE_REFERRAL (13),
+    /** No Reason To Decline. */
     NO_REASON_TO_DECLINE(85, true),
+    /** Name Format Error. */
     NAME_FORMAT_ERROR(7),
 
     // Denied Authorization
@@ -196,30 +198,53 @@ public enum CMF implements IRC {
     VID_INVALID(1070),
     /** Certificate Expired. */
     CERTIFICATE_EXPIRED(1071),
+    /** Additional Authentication Required. */
     ADDITIONAL_AUTH_REQUIRED(1067),
+    /** Surcharge Not Permitted For Card. */
     SURCHARGE_NOT_PERMITTED_FOR_CARD(1072),
+    /** Surcharge Not Permitted By Network. */
     SURCHARGE_NOT_PERMITTED_BY_NETWORK(1073),
+    /** Exceeds Pre Authorizationorized Amount. */
     EXCEEDS_PRE_AUTHORIZED_AMOUNT(1074),
+    /** Stop Payment Specific. */
     STOP_PAYMENT_SPECIFIC(1075),
+    /** Stop Payment All Merchant. */
     STOP_PAYMENT_ALL_MERCHANT(1076),
+    /** Stop Payment Account. */
     STOP_PAYMENT_ACCOUNT(1077),
+    /** AML Requirements Not Met. */
     AML_REQUIREMENTS_NOT_MET(1078),
+    /** Exceeds Withdrawal Limit. */
     EXCEEDS_WITHDRAWAL_LIMIT(1079),
+    /** Pin Not Allowed. */
     PIN_NOT_ALLOWED(1080),
+    /** Message Number Out Of Sequence. */
     MESSAGE_NUMBER_OUT_OF_SEQUENCE(1081),
+    /** Original Transaction Declined. */
     ORIGINAL_TRANSACTION_DECLINED(1082),
 
     // ICC / chip offline decision codes (ISO 8583:2023, 1500-1511)
+    /** ICC Application Unable To Process. */
     ICC_APPLICATION_UNABLE_TO_PROCESS(1500),
+    /** ICC Random Selection. */
     ICC_RANDOM_SELECTION(1502),
+    /** Terminal Random Selection. */
     TERMINAL_RANDOM_SELECTION(1503),
+    /** Terminal Not Able To Process ICC. */
     TERMINAL_NOT_ABLE_TO_PROCESS_ICC(1504),
+    /** Online Forced By ICC. */
     ONLINE_FORCED_BY_ICC(1505),
+    /** Online Forced By Card Acceptor. */
     ONLINE_FORCED_BY_CARD_ACCEPTOR(1506),
+    /** Online Forced By CAD. */
     ONLINE_FORCED_BY_CAD(1507),
+    /** Online Forced By Terminal. */
     ONLINE_FORCED_BY_TERMINAL(1508),
+    /** Online Forced By Card Issuer. */
     ONLINE_FORCED_BY_CARD_ISSUER(1509),
+    /** Over Floor Limit. */
     OVER_FLOOR_LIMIT(1510),
+    /** Card Acceptor Suspicious. */
     CARD_ACCEPTOR_SUSPICIOUS(1511),
 
     // CMF private-use codes (ISO 8583 1800-1999 reserved for private use)
@@ -309,16 +334,27 @@ public enum CMF implements IRC {
     /** Max Daily Amount. */
     MAX_DAILY_AMOUNT(2012),
     // Chargeback pick-up resolution codes (ISO 8583:2023)
+    /** Chargeback Remedied. */
     CHARGEBACK_REMEDIED(2013),
+    /** Duplicate Chargeback. */
     DUPLICATE_CHARGEBACK(2014),
+    /** Past Chargeback Time Limit. */
     PAST_CHARGEBACK_TIME_LIMIT(2015),
+    /** Chargeback Documents Provided Hardship. */
     CHARGEBACK_DOCS_PROVIDED_HARDSHIP(2016),
+    /** Invalid Member Message Text. */
     INVALID_MEMBER_MESSAGE_TEXT(2017),
+    /** Correct Card Acceptor Category Provided. */
     CORRECT_CARD_ACCEPTOR_CATEGORY_PROVIDED(2018),
+    /** Authorizationorization Advised Suspicious. */
     AUTHORIZATION_ADVISED_SUSPICIOUS(2019),
+    /** No Authorization Required. */
     NO_AUTHORIZATION_REQUIRED(2020),
+    /** Account Not on Warning Bulletin. */
     ACCOUNT_NOT_ON_WARNING_BULLETIN(2021),
+    /** Chargeback Documents Illegible 2022. */
     CHARGEBACK_DOCS_ILLEGIBLE_2022(2022),
+    /** Chargeback Documents Invalid 2023. */
     CHARGEBACK_DOCS_INVALID_2023(2023),
 
     // File action
@@ -348,71 +384,136 @@ public enum CMF implements IRC {
     // Reversals
     /** Reversal Accepted. */
     REVERSAL_ACCEPTED(4000, true),
+    /** Reversal Unspecified. */
     REVERSAL_UNSPECIFIED(4001),
+    /** Reversal Suspected Malfunction. */
     REVERSAL_SUSPECTED_MALFUNCTION(4002),
+    /** Reversal Format Error. */
     REVERSAL_FORMAT_ERROR(4003),
+    /** Reversal Completed Partially. */
     REVERSAL_COMPLETED_PARTIALLY(4004),
+    /** Reversal Original Amount Incorrect. */
     REVERSAL_ORIGINAL_AMOUNT_INCORRECT(4005),
+    /** Reversal Response Too Late. */
     REVERSAL_RESPONSE_TOO_LATE(4006),
+    /** Reversal Device Unable To Complete. */
     REVERSAL_DEVICE_UNABLE_TO_COMPLETE(4007),
+    /** Reversal Deposit Out Of Balance. */
     REVERSAL_DEPOSIT_OUT_OF_BALANCE(4008),
+    /** Reversal No Check In Envelope. */
     REVERSAL_NO_CHECK_IN_ENVELOPE(4009),
+    /** Reversal Payment Out Of Balance. */
     REVERSAL_PAYMENT_OUT_OF_BALANCE(4010),
+    /** Reversal Deposit Out-of-Balance Applied. */
     REVERSAL_DEPOSIT_OOB_APPLIED(4011),
+    /** Reversal Payment Out-of-Balance Applied. */
     REVERSAL_PAYMENT_OOB_APPLIED(4012),
+    /** Reversal Unable To Deliver. */
     REVERSAL_UNABLE_TO_DELIVER(4013),
+    /** Reversal Suspected Malfunction Card Retained. */
     REVERSAL_SUSPECTED_MALFUNCTION_CARD_RETAINED(4014),
+    /** Reversal Suspected Malfunction Card Returned. */
     REVERSAL_SUSPECTED_MALFUNCTION_CARD_RETURNED(4015),
+    /** Reversal Suspected Malfunction Track3 Not Updated. */
     REVERSAL_SUSPECTED_MALFUNCTION_TRACK3_NOT_UPDATED(4016),
+    /** Reversal Suspected Malfunction No Cash. */
     REVERSAL_SUSPECTED_MALFUNCTION_NO_CASH(4017),
+    /** Reversal Timeout No Cash. */
     REVERSAL_TIMEOUT_NO_CASH(4018),
+    /** Reversal Timeout Card Retained No Cash. */
     REVERSAL_TIMEOUT_CARD_RETAINED_NO_CASH(4019),
+    /** Reversal Invalid Response. */
     REVERSAL_INVALID_RESPONSE(4020),
+    /** Reversal Timeout Waiting Response. */
     REVERSAL_TIMEOUT_WAITING_RESPONSE(4021),
     // Chargeback / retrieval result codes (ISO 8583:2023 4xxx range)
+    /** Chargeback Information Not Received. */
     CHARGEBACK_INFO_NOT_RECEIVED(4501),
+    /** Chargeback Information Illegible Or Missing. */
     CHARGEBACK_INFO_ILLEGIBLE_OR_MISSING(4502),
+    /** Chargeback Warning Bulletin. */
     CHARGEBACK_WARNING_BULLETIN(4507),
+    /** Chargeback Authorization Not Obtained. */
     CHARGEBACK_AUTH_NOT_OBTAINED(4508),
+    /** Chargeback Account Not On File. */
     CHARGEBACK_ACCOUNT_NOT_ON_FILE(4512),
+    /** Chargeback Earlier Warning Protection. */
     CHARGEBACK_EARLIER_WARNING_PROTECTION(4524),
+    /** Chargeback Amount Differs. */
     CHARGEBACK_AMOUNT_DIFFERS(4531),
+    /** Chargeback Duplicate Processing. */
     CHARGEBACK_DUPLICATE_PROCESSING(4534),
+    /** Chargeback Card Invalid Or Expired. */
     CHARGEBACK_CARD_INVALID_OR_EXPIRED(4535),
+    /** Chargeback No Cardholder Authorizationorization. */
     CHARGEBACK_NO_CARDHOLDER_AUTHORIZATION(4537),
+    /** Chargeback Fraudulent Processing. */
     CHARGEBACK_FRAUDULENT_PROCESSING(4540),
+    /** Chargeback Cancelled Recurring. */
     CHARGEBACK_CANCELLED_RECURRING(4541),
+    /** Chargeback Late Presentment. */
     CHARGEBACK_LATE_PRESENTMENT(4542),
+    /** Chargeback Wrong Currency. */
     CHARGEBACK_WRONG_CURRENCY(4546),
+    /** Chargeback Exceeds Floor Limit Fraud. */
     CHARGEBACK_EXCEEDS_FLOOR_LIMIT_FRAUD(4547),
+    /** Chargeback Questionable Acceptor. */
     CHARGEBACK_QUESTIONABLE_ACCEPTOR(4549),
+    /** Chargeback Credit As Purchase. */
     CHARGEBACK_CREDIT_AS_PURCHASE(4550),
+    /** Chargeback Not As Described. */
     CHARGEBACK_NOT_AS_DESCRIBED(4553),
+    /** Chargeback Cardholder Dispute. */
     CHARGEBACK_CARDHOLDER_DISPUTE(4554),
+    /** Chargeback Non-Receipt Merchandise. */
     CHARGEBACK_NON_RECEIPT_MERCHANDISE(4555),
+    /** Chargeback Defective Merchandise. */
     CHARGEBACK_DEFECTIVE_MERCHANDISE(4556),
+    /** Chargeback Card Activated Telephone. */
     CHARGEBACK_CARD_ACTIVATED_TELEPHONE(4557),
+    /** Chargeback Services Not Rendered. */
     CHARGEBACK_SERVICES_NOT_RENDERED(4559),
+    /** Chargeback Credit Not Processed. */
     CHARGEBACK_CREDIT_NOT_PROCESSED(4560),
+    /** Chargeback Counterfeit Magnetic Stripe. */
     CHARGEBACK_COUNTERFEIT_MAGNETIC_STRIPE(4562),
+    /** Chargeback Documents Not Received. */
     CHARGEBACK_DOCS_NOT_RECEIVED(4563),
+    /** Chargeback Documents Illegible. */
     CHARGEBACK_DOCS_ILLEGIBLE(4564),
+    /** Chargeback Documents Invalid. */
     CHARGEBACK_DOCS_INVALID(4565),
+    /** Chargeback Valid ARN. */
     CHARGEBACK_VALID_ARN(4566),
+    /** Chargeback Invalid ARN Documents Different. */
     CHARGEBACK_INVALID_ARN_DOCS_DIFFERENT(4567),
+    /** Chargeback Invalid ARN No Documents. */
     CHARGEBACK_INVALID_ARN_NO_DOCS(4568),
+    /** Chargeback Expired Card. */
     CHARGEBACK_EXPIRED_CARD(4573),
+    /** Chargeback Ineligible Transaction. */
     CHARGEBACK_INELIGIBLE_TRANSACTION(4578),
+    /** Chargeback Receipt Not Received. */
     CHARGEBACK_RECEIPT_NOT_RECEIVED(4579),
+    /** Chargeback Processing Error. */
     CHARGEBACK_PROCESSING_ERROR(4580),
+    /** Chargeback Missing Imprint. */
     CHARGEBACK_MISSING_IMPRINT(4581),
+    /** Chargeback Non-Possession Of Card. */
     CHARGEBACK_NON_POSSESSION_OF_CARD(4583),
+    /** Chargeback Missing Signature. */
     CHARGEBACK_MISSING_SIGNATURE(4584),
+    /** Chargeback Amount Altered. */
     CHARGEBACK_AMOUNT_ALTERED(4586),
+    /** Chargeback Domestic Processing Violation. */
     CHARGEBACK_DOMESTIC_PROCESSING_VIOLATION(4587),
+    /** Chargeback Non-Receipt ATM. */
     CHARGEBACK_NON_RECEIPT_ATM(4590),
+    /** Chargeback Cancelled Reservation. */
     CHARGEBACK_CANCELLED_RESERVATION(4594),
+    /** Chargeback Advance Lodging Deposit. */
     CHARGEBACK_ADVANCE_LODGING_DEPOSIT(4595),
+    /** Chargeback Exceeds Limited Amount. */
     CHARGEBACK_EXCEEDS_LIMITED_AMOUNT(4596),
 
     // Reconciliation
@@ -431,25 +532,45 @@ public enum CMF implements IRC {
     /** Administrative message accepted. */
     ADMIN_MESSAGE_ACCEPTED(6000, true),
     // Retrieval / copy request reason codes (ISO 8583:2023)
+    /** Cardholder Disputes Amount. */
     CARDHOLDER_DISPUTES_AMOUNT(6005),
+    /** Cardholder Does Not Recognize. */
     CARDHOLDER_DOES_NOT_RECOGNIZE(6021),
+    /** ICC Certificate Requested. */
     ICC_CERTIFICATE_REQUESTED(6022),
+    /** Cardholder Needs Records. */
     CARDHOLDER_NEEDS_RECORDS(6023),
+    /** Copy With Signature Requested. */
     COPY_WITH_SIGNATURE_REQUESTED(6028),
+    /** Travel And Entertainment Docs Requested. */
     TRAVEL_AND_ENTERTAINMENT_DOCS_REQUESTED(6029),
+    /** Copy Original Lost In Transit. */
     COPY_ORIGINAL_LOST_IN_TRANSIT(6032),
+    /** Written Request Inadequate Copy. */
     WRITTEN_REQUEST_INADEQUATE_COPY(6035),
+    /** Legal Process Request. */
     LEGAL_PROCESS_REQUEST(6036),
+    /** Received Copy Illegible. */
     RECEIVED_COPY_ILLEGIBLE(6037),
+    /** Paper Handwriting Analysis Request. */
     PAPER_HANDWRITING_ANALYSIS_REQUEST(6038),
+    /** Fraud Investigation. */
     FRAUD_INVESTIGATION(6041),
+    /** Arbitration or Compliance Documentation Required. */
     ARBITRATION_OR_COMPLIANCE_DOCS_REQUIRED(6042),
+    /** Retrieval Not Fulfilled Cannot Trace. */
     RETRIEVAL_NOT_FULFILLED_CANNOT_TRACE(6043),
+    /** Retrieval Not Fulfilled Invalid Ref. */
     RETRIEVAL_NOT_FULFILLED_INVALID_REF(6044),
+    /** Retrieval Not Fulfilled Ref PAN Incompatible. */
     RETRIEVAL_NOT_FULFILLED_REF_PAN_INCOMPATIBLE(6045),
+    /** Retrieval Docs Supplied. */
     RETRIEVAL_DOCS_SUPPLIED(6046),
+    /** Retrieval Cannot Fulfill Docs Unavailable. */
     RETRIEVAL_CANNOT_FULFILL_DOCS_UNAVAILABLE(6047),
+    /** Retrieval Will Not Fulfill Not Required. */
     RETRIEVAL_WILL_NOT_FULFILL_NOT_REQUIRED(6048),
+    /** Retrieval Cannot Fulfill ICC Cert Unavailable. */
     RETRIEVAL_CANNOT_FULFILL_ICC_CERT_UNAVAILABLE(6049),
 
     // Fee collection
@@ -461,13 +582,20 @@ public enum CMF implements IRC {
     NET_ACCEPTED (8000, true),
     /** Net Retry. */
     NET_RETRY(8001),
+    /** Key Verification Failed. */
     KEY_VERIFICATION_FAILED(8002),
     // Key exchange / lifecycle management codes (ISO 8583:2023)
+    /** Key Exchange Activation Lifecycle. */
     KEY_EXCHANGE_ACTIVATION_LIFECYCLE(8100),
+    /** Key Exchange Activation Out Of Sync. */
     KEY_EXCHANGE_ACTIVATION_OUT_OF_SYNC(8101),
+    /** Key Exchange Activation Security. */
     KEY_EXCHANGE_ACTIVATION_SECURITY(8102),
+    /** Key Exchange Deactivation. */
     KEY_EXCHANGE_DEACTIVATION(8103),
+    /** Key Exchange Verification Lifecycle. */
     KEY_EXCHANGE_VERIFICATION_LIFECYCLE(8104),
+    /** Key Exchange Verification Out Of Sync. */
     KEY_EXCHANGE_VERIFICATION_OUT_OF_SYNC(8105),
 
     // Misc

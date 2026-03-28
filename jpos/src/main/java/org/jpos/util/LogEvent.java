@@ -50,7 +50,7 @@ public class LogEvent {
     private boolean honorSourceLogger;
     private boolean noArmor;
     private boolean hasException;
-    private String traceId;
+    private Map<String,String> tags;
 
     public LogEvent (String tag) {
         super();
@@ -77,10 +77,6 @@ public class LogEvent {
         honorSourceLogger = true;
         addMessage(msg);
     }
-    /**
-     * Returns the log tag (severity/category) for this event.
-     * @return the log tag
-     */
     public String getTag() {
         return tag;
     }
@@ -108,17 +104,9 @@ public class LogEvent {
     public void addMessage (String tagname, String message) {
         payLoad.add ("<"+tagname+">"+message+"</"+tagname+">");
     }
-    /**
-     * Returns the LogSource that produced this event.
-     * @return the associated LogSource
-     */
     public LogSource getSource() {
         return source;
     }
-    /**
-     * Sets the LogSource associated with this event.
-     * @param source the LogSource to associate
-     */
     public void setSource(LogSource source) {
         this.source = source;
     }
@@ -152,6 +140,7 @@ public class LogEvent {
                 sb.append (elapsed);
                 sb.append ("ms\"");
             }
+            String traceId = tags != null ? tags.get("trace-id") : null;
             if (traceId != null) {
                 sb.append (String.format (" trace-id=\"%s\"", traceId));
             }
@@ -169,11 +158,6 @@ public class LogEvent {
         if (!noArmor)
             p.println (indent + "</log>");
     }
-    /**
-     * Dumps the full log event to the given PrintStream.
-     * @param p the PrintStream to dump to
-     * @param outer the outer indentation string
-     */
     public void dump (PrintStream p, String outer) {
         var jfr = new LogEventDump();
         jfr.begin();
@@ -252,65 +236,51 @@ public class LogEvent {
             jfr.commit();
         }
     }
-    /**
-     * Returns the realm string from the associated LogSource.
-     * @return the realm string, or empty string if no source is set
-     */
     public String getRealm() {
         return source != null ? source.getRealm() : "";
     }
-    /**
-     * Associates a trace identifier with this event.
-     * @param traceId the trace identifier string
-     * @return this LogEvent for chaining
-     */
     public LogEvent withTraceId (String traceId) {
-        this.traceId = traceId;
-        return this;
+        return withTag("trace-id", traceId);
     }
-    /**
-     * Associates a UUID-derived trace identifier with this event.
-     * @param uuid the UUID to use as trace identifier
-     * @return this LogEvent for chaining
-     */
     public LogEvent withTraceId (UUID uuid) {
-        this.traceId = uuid.toString().replace("-", "");
+        return withTag("trace-id", uuid.toString().replace("-", ""));
+    }
+    public LogEvent withTag(String key, String value) {
+        if (tags == null)
+            tags = new LinkedHashMap<>();
+        tags.put(key, value);
         return this;
     }
-    /**
-     * Associates a LogSource with this event.
-     * @param source the LogSource to associate
-     * @return this LogEvent for chaining
-     */
+    public LogEvent withTags(Map<String,String> map) {
+        if (map != null && !map.isEmpty()) {
+            if (tags == null)
+                tags = new LinkedHashMap<>();
+            tags.putAll(map);
+        }
+        return this;
+    }
+    public Map<String,String> getTags() {
+        return tags != null ? Collections.unmodifiableMap(tags) : Collections.emptyMap();
+    }
     public LogEvent withSource (LogSource source) {
         setSource(source);
         return this;
     }
-    /**
-     * Adds an object to this event's payload.
-     * @param o the object to add
-     * @return this LogEvent for chaining
-     */
     public LogEvent add (Object o) {
         addMessage(o);
         return this;
     }
-    /**
-     * Ensures a trace ID is assigned to this event.
-     * @return this LogEvent for chaining
-     */
     public LogEvent withTraceId () {
         getTraceId();
         return this;
     }
-    /**
-     * Returns the trace ID for this event, generating one if not already set.
-     * @return the trace ID string
-     */
     public String getTraceId() {
         synchronized(getPayLoad()) {
-            if (traceId == null)
+            String traceId = tags != null ? tags.get("trace-id") : null;
+            if (traceId == null) {
                 traceId = UUID.randomUUID().toString().replace("-","");
+                withTag("trace-id", traceId);
+            }
             return traceId;
         }
     }
@@ -335,11 +305,6 @@ public class LogEvent {
     public List<Object> getPayLoad() {
         return payLoad;
     }
-    /**
-     * Returns the full log event as a string with the given indentation.
-     * @param indent the indentation prefix
-     * @return the full log event as a string
-     */
     public String toString(String indent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream (baos);
@@ -352,10 +317,6 @@ public class LogEvent {
         return toString("");
     }
 
-    /**
-     * Returns true if any payload item is a Throwable.
-     * @return true if this event contains an exception
-     */
     public boolean hasException() {
         return hasException;
     }
@@ -368,19 +329,11 @@ public class LogEvent {
         return honorSourceLogger;
     }
 
-    /**
-     * Returns the instant when this event was first dumped, initialising it to now if not yet set.
-     * @return the dump timestamp
-     */
     public synchronized Instant getDumpedAt() {
         if (dumpedAt == null)
             dumpedAt = Instant.now();
         return dumpedAt;
     }
-    /**
-     * Returns the instant when this event was created.
-     * @return the creation timestamp
-     */
     public Instant getCreatedAt() {
         return createdAt;
     }

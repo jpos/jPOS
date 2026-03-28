@@ -120,7 +120,10 @@ public class ISOMsg extends ISOComponent
         header = new BaseHeader (b);
     }
 
-    /** @param header the ISOHeader to set on this message */
+    /**
+     * Sets the ISO header for this message.
+     * @param header the ISOHeader to set on this message
+     */
     public void setHeader (ISOHeader header) {
         this.header = header;
     }

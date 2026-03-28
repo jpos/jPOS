@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Q2 QBean that aggregates multiple MUX instances into a pool, distributing requests across available multiplexers.
+ * A pool of MUX instances providing load-balanced or fail-over multiplexing across multiple connections.
  * @author apr
  */
 public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {

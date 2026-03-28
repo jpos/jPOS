@@ -571,7 +571,7 @@ public class ISOServer extends Observable
     }
     /**
      * @return ISOServer instance with given name.
-     * @throws org.jpos.util.NameRegistrar.NotFoundException if not registered
+     * @throws NameRegistrar.NotFoundException
      * @see NameRegistrar
      */
     public static ISOServer getServer (String name)
