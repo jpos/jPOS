@@ -155,6 +155,10 @@ public class ISOAmount
     public String getAmountAsLegacyString() throws ISOException {
         return ISOUtil.zeropad (amount.unscaledValue().toString(), 12);
     }
+    /** Returns the amount as a formatted string.
+     * @return the formatted amount string
+     * @throws ISOException on error
+     */
     public String getAmountAsString() throws ISOException {
         StringBuilder sb = new StringBuilder(16);
         sb.append (ISOUtil.zeropad (Integer.toString (currencyCode),3));

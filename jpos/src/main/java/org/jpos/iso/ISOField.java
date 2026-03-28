@@ -37,6 +37,7 @@ public class ISOField
     private static final long serialVersionUID = -4053616930139887829L;
     /** The ISO field number. */
     protected int fieldNumber;
+    /** The string value of this field. */
     protected String value;
 
     /**

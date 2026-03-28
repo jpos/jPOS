@@ -32,14 +32,33 @@ public interface ISOMsgMetrics {
         ISOMsgMetrics getISOMsgMetrics();
     }
 
+    /** Sets the metric name.
+     * @param metricName the metric name
+     */
     void setMetricName(String metricName);
+    /** Returns the metric name.
+     * @return the metric name
+     */
     String getMetricName();
 
+    /** Returns the metric description.
+     * @return the metric description
+     */
     String getMetricDescription();
+    /** Sets the metric description.
+     * @param metricDescription the metric description
+     */
     void setMetricDescription(String metricDescription);
 
+    /** Adds metric tags to the given Tags object.
+     * @param tags the Tags to add to
+     * @return the updated Tags
+     */
     Tags addTags(Tags tags);
     default Tags addTags(String ...tags) { return addTags(Tags.of(tags)); }
+    /** Returns all metric tags.
+     * @return the metric tags
+     */
     default Tags getTags() { return addTags(Tags.empty()); }
 
     /**

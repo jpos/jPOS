@@ -228,6 +228,7 @@ public class ISODate {
         return formatDate (d, "MMddHHmmss");
     }
         /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -244,6 +245,7 @@ public class ISODate {
         return formatDate (d, "HHmmss");
     }
     /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -260,6 +262,7 @@ public class ISODate {
         return formatDate (d, "MMdd");
     }
     /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -276,6 +279,7 @@ public class ISODate {
         return formatDate (d, "yyMMdd");
     }
     /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -298,6 +302,7 @@ public class ISODate {
         return formatDate (d, "yyMM");
     }
     /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -308,6 +313,7 @@ public class ISODate {
     }
 
     /**
+     * Formats the given date.
      * @param d date object to be formatted
      * @return date in YDDD format suitable for bit 31 or 37
      * depending on interchange
@@ -320,6 +326,7 @@ public class ISODate {
     }
 
     /**
+     * Formats the given date.
      * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      * and for Uruguay use TimeZone.getTimeZone("GMT-03:00")

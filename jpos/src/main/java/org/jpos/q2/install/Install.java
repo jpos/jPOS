@@ -33,6 +33,8 @@ import java.util.List;
 /** Q2 package installation utility. */
 public class Install
 {
+    /** Default constructor. */
+    public Install() {}
     private static final String DEFAULT_PREFIX = "META-INF/q2/installs/";
 
     /** Main entry point for the install utility.
@@ -71,6 +73,7 @@ public class Install
      * @param outputBasePath  the output base directory
      * @param verbose         if true, print progress
      * @throws IOException on I/O error
+     * @param prefix the installation prefix
      */
     public void install(boolean allowOverride,File outputBasePath, boolean verbose, String prefix) throws IOException
     {

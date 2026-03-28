@@ -18,21 +18,58 @@
 
 package org.jpos.iso;
 
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
+/** IsoFieldHeaderFormatter implementation. */
+
 public class IsoFieldHeaderFormatter {
 
     private boolean tagFirst;
 
+    /** Constructs a formatter.
+     * @param tagFirst if true, the tag field comes before the length
+     */
     public IsoFieldHeaderFormatter(boolean tagFirst) {
         this.tagFirst = tagFirst;
     }
 
 
+    /** Returns whether tag comes before length.
+     * @return true if tag-first ordering
+     */
     public boolean isTagFirst() {
         return tagFirst;
     }
 
     /**
      *
+     * Formats tag/length fields according to the configured ordering.
      * @param tagPrefixer the tag part prefixer
      * @param lengthPrefixer the length part prefixer
      * @param tagData byte array containing the tag value bytes
@@ -48,6 +85,8 @@ public class IsoFieldHeaderFormatter {
         return null;
     }
 
+    /** Formats the tag and length prefixers into the output.
+     */
     public void format(final Prefixer tagPrefixer, final Prefixer lengthPrefixer, final byte[] tagData, final byte[] lengthData, final byte[] destinationData) {
         if (tagPrefixer != null && lengthPrefixer != null && tagData != null && lengthData != null && destinationData != null) {
             System.arraycopy(tagData, 0, destinationData, tagFirst ? 0 : lengthPrefixer.getPackedLength(), tagPrefixer.getPackedLength());
@@ -55,10 +94,18 @@ public class IsoFieldHeaderFormatter {
         }
     }
 
+    /** Returns the index of the tag prefixer relative to length.
+     * @param lengthPrefixer the length prefixer
+     * @return the tag index
+     */
     public int getTagIndex(Prefixer lengthPrefixer) {
         return tagFirst ? 0 : lengthPrefixer.getPackedLength();
     }
 
+    /** Returns the index of the length prefixer relative to tag.
+     * @param tagPrefixer the tag prefixer
+     * @return the length index
+     */
     public int getLengthIndex(Prefixer tagPrefixer) {
         return tagFirst ? tagPrefixer.getPackedLength() : 0;
     }

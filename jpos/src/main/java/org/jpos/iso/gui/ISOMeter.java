@@ -121,6 +121,9 @@ public class ISOMeter extends JComponent implements Runnable {
     private Image imb;
     private Thread repaintThread;
 
+    /** Constructs an ISOMeter for the given channel panel.
+     * @param parent the parent ISOChannelPanel
+     */
     public ISOMeter(ISOChannelPanel parent) {
         super();
         this.parent = parent;
@@ -146,6 +149,7 @@ public class ISOMeter extends JComponent implements Runnable {
         addMouseListener(mouseListener);
     }
 
+    /** Starts the meter update thread. */
     public synchronized void start() {
         if (repaintThread == null) {
             repaintThread = new Thread (this,"ISOMeter");
@@ -154,6 +158,7 @@ public class ISOMeter extends JComponent implements Runnable {
         }
     }
 
+    /** Shows the log list panel. */
     public void showLogList() {
         JFrame f = new JFrame(parent.getSymbolicName());
         f.getContentPane().add(createLogList());
@@ -164,6 +169,9 @@ public class ISOMeter extends JComponent implements Runnable {
         f.show();
     }
 
+    /** Creates and returns the log list component.
+     * @return the log list JComponent
+     */
     public JComponent createLogList() {
         final JList logList = new JList(parent.getLog());
         JPanel A = new JPanel();
@@ -191,6 +199,9 @@ public class ISOMeter extends JComponent implements Runnable {
         return A;
     }
 
+    /** Sets the current meter value.
+     * @param val the value to display
+     */
     public void setValue(int val) {
         int y = mass - val%1000 * height / 2000;
         yPoints[width-1] = y;
@@ -198,6 +209,9 @@ public class ISOMeter extends JComponent implements Runnable {
         scroll();
     }
 
+    /** Sets whether the log list auto-scrolls.
+     * @param scroll if true, auto-scroll the log
+     */
     public void setScroll (boolean scroll) {
         this.scroll = scroll;
     }

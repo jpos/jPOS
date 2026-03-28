@@ -77,6 +77,7 @@ public class ISOChannelPanel extends JPanel implements Observer {
      * Unconnected constructor allows for instantiation of
      * ISOChannelPanel without associated ISOChannel
      * (that can be attached later)
+     * @param symbolicName the display name
      */
     public ISOChannelPanel (String symbolicName) {
         super();

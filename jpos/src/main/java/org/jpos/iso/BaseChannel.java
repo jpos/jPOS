@@ -603,79 +603,44 @@ public abstract class BaseChannel extends Observable
     }
 
     /**
-     * @deprecated use sendMessageTrailer(ISOMsg m, byte[] b instead.
-     */
-    @SuppressWarnings ("deprecation")
-    @Deprecated
-    /**
-     * Sends the message trailer bytes.
+     * @deprecated use {@link #sendMessageTrailer(ISOMsg, byte[])} instead.
      * @param m the ISO message being sent
      * @param b the trailer bytes to send
      * @throws IOException on I/O error
      */
-    /**
-     * Sends the deprecated message trailer bytes.
-     * @param m the ISO message
-     * @param b the trailer bytes
-     * @throws IOException on I/O error
-     */
+    @SuppressWarnings ("deprecation")
+    @Deprecated
     protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException  {
         sendMessageTrailler (m, b.length);
     }
 
     /**
-     * Send a Message trailer.
-     *
-     * @param m The unpacked ISOMsg.
-     * @param b The packed ISOMsg image.
+     * Sends the message trailer bytes.
+     * @param m the unpacked ISO message
+     * @param b the packed message image
+     * @throws IOException on I/O error
      */
     @SuppressWarnings("deprecation")
-    /**
-     * sendMessageTrailer implementation.
-     * @throws IOException on I/O error
-     */
-    /**
-     * Sends the message trailer bytes.
-     * @param m the ISO message
-     * @param b the trailer bytes
-     * @throws IOException on I/O error
-     */
     protected void sendMessageTrailer(ISOMsg m, byte[] b) throws IOException {
         sendMessageTrailler(m, b);
     }
 
 
     /**
-     * @deprecated use getMessageTrailer(ISOMsg m) instead.
+     * @deprecated use {@link #getMessageTrailer(ISOMsg)} instead.
+     * @throws IOException on I/O error
      */
     @Deprecated
-    /**
-     * getMessageTrailler implementation.
-     * @throws IOException on I/O error
-     */
-    /**
-     * Reads the deprecated message trailer from the stream.
-     * @throws IOException on I/O error
-     */
     protected void getMessageTrailler() throws IOException {
     }
 
     /**
-     * Read some trailer data from this channel and optionally store it in the incoming ISOMsg.
-     *
-     * @param m The ISOMessage to store the trailer data.
+     * Reads the message trailer from the stream and optionally stores it in the given message.
+     * @param m the ISOMessage to store the trailer data in
+     * @throws IOException on I/O error
      * @see ISOMsg#setTrailer(byte[])
      */
     @SuppressWarnings("deprecation")
-    /**
-     * getMessageTrailer implementation.
-     * @throws IOException on I/O error
-     */
-    /**
-     * Reads the message trailer from the stream and stores it in the given message.
-     * @param m the ISO message to store the trailer in
-     * @throws IOException on I/O error
-     */
     protected void getMessageTrailer(ISOMsg m) throws IOException {
         getMessageTrailler();
     }

@@ -42,7 +42,39 @@ import java.util.Observable;
  * @see org.jpos.ui.UIFactory
  */
 
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
+/** ISOMeterFactory implementation. */
+
 public class ISOMeterFactory implements UIFactory {
+    /** Default constructor. */
+    public ISOMeterFactory() {}
     public JComponent create (UI ui, Element e) {
         ISOChannelPanel icp = null;
         try {
