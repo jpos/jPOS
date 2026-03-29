@@ -490,11 +490,13 @@
       length="9999"
       name="Reserved for ISO"
       class="org.jpos.iso.IFB_LLLLBINARY"/>
-  <isofield
+  <isofieldpackager
       id="51"
       length="9999"
-      name="Reserved for ISO"
-      class="org.jpos.iso.IFB_LLLLBINARY"/>
+      name="Customer related data"
+      class="org.jpos.iso.IFB_LLLLBINARY"
+      packager="org.jpos.iso.packager.DatasetPackager">
+  </isofieldpackager>
   <isofield
       id="52"
       length="8"
