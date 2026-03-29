@@ -356,13 +356,7 @@
       length="9999"
       name="Card acceptor name/location"
       class="org.jpos.iso.IFB_LLLLBINARY"
-      emitBitmap="true" bitmapField="0"
       packager="org.jpos.iso.packager.DatasetPackager">
-      <isofield
-          id="0"
-          length="16"
-          name="Bit Map"
-          class="org.jpos.iso.IFB_BITMAP"/>
       <isofield
           id="2"
           length="50"
@@ -459,13 +453,7 @@
       length="9999"
       name="Verification data"
       class="org.jpos.iso.IFB_LLLLBINARY"
-      emitBitmap="true" bitmapField="0"
       packager="org.jpos.iso.packager.DatasetPackager">
-      <isofield
-          id="0"
-          length="16"
-          name="Bit Map"
-          class="org.jpos.iso.IFB_BITMAP"/>
       <isofield
         id="1"
         length="1"
