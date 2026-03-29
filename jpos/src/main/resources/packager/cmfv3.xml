@@ -1094,6 +1094,87 @@
           length="32"
           name="Card Scheme"
           class="org.jpos.iso.IFB_LLCHAR" />
+      <isofieldpackager
+          id="67"
+          length="999"
+          name="Tokenization Data"
+          class="org.jpos.iso.IFB_LLLBINARY"
+          emitBitmap="false" firstField="0"
+          packager="org.jpos.iso.packager.GenericSubFieldPackager">
+          <isofield
+              id="0"
+              length="8"
+              name="Subfield Bitmap"
+              class="org.jpos.iso.IFB_BITMAP"/>
+          <isofield
+              id="1"
+              length="1"
+              name="PAN Source"
+              class="org.jpos.iso.IF_CHAR"/>
+          <isofield
+              id="2"
+              length="255"
+              name="Payment Application Instance ID"
+              class="org.jpos.iso.IFB_LLCHAR"/>
+          <isofield
+              id="3"
+              length="2"
+              name="Active Tokens Count"
+              class="org.jpos.iso.IFB_NUMERIC"/>
+          <isofield
+              id="4"
+              length="64"
+              name="Wallet Provider Account Hash"
+              class="org.jpos.iso.IFB_LLCHAR"/>
+          <isofield
+              id="5"
+              length="64"
+              name="Tokenization Cardholder Name"
+              class="org.jpos.iso.IFB_LLCHAR"/>
+          <isofield
+              id="6"
+              length="16"
+              name="Token Type"
+              class="org.jpos.iso.IFB_LLCHAR"/>
+          <isofield
+              id="7"
+              length="2"
+              name="Consumer Language"
+              class="org.jpos.iso.IF_CHAR"/>
+          <isofield
+              id="8"
+              length="255"
+              name="Device Location"
+              class="org.jpos.iso.IFB_LLCHAR"/>
+          <isofield
+              id="9"
+              length="999"
+              name="Device Fingerprint"
+              class="org.jpos.iso.IFB_LLLCHAR"/>
+      </isofieldpackager>
+      <isofieldpackager
+          id="68"
+          length="999"
+          name="PayFac Marketplace Data"
+          class="org.jpos.iso.IFB_LLLBINARY"
+          emitBitmap="false" firstField="0"
+          packager="org.jpos.iso.packager.GenericSubFieldPackager">
+          <isofield
+              id="0"
+              length="8"
+              name="Subfield Bitmap"
+              class="org.jpos.iso.IFB_BITMAP"/>
+          <isofield
+              id="1"
+              length="15"
+              name="PayFac ID"
+              class="org.jpos.iso.IFB_LLCHAR"/>
+          <isofield
+              id="2"
+              length="15"
+              name="PayFac MID"
+              class="org.jpos.iso.IF_CHAR"/>
+      </isofieldpackager>
       <isofield
           id="69"
           length="40"
