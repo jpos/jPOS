@@ -966,8 +966,8 @@
           class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
           id="14"
-          length="2"
-          name="State"
+          length="3"
+          name="State, province, or region code"
           class="org.jpos.iso.IF_CHAR" />
       <isofield
           id="15"
