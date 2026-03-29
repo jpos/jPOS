@@ -1080,6 +1080,21 @@
           name="Additional Data - reserved for private use"
           class="org.jpos.iso.IFB_LLLLCHAR" />
       <isofield
+          id="64"
+          length="50"
+          name="Source Station"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="65"
+          length="50"
+          name="Destination Station"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="66"
+          length="32"
+          name="Card Scheme"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
           id="69"
           length="40"
           name="Card Token"
