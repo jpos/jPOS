@@ -1181,17 +1181,17 @@
           id="69"
           length="40"
           name="Card Token"
-          class="org.jpos.iso.IF_CHAR" />
+          class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
           id="70"
           length="19"
           name="Transaction ID"
-          class="org.jpos.iso.IFB_NUMERIC" />
+          class="org.jpos.iso.IFB_LLNUM" />
       <isofield
           id="71"
           length="19"
-          name="Transaction GroupID"
-          class="org.jpos.iso.IFB_NUMERIC" />
+          name="Transaction Group ID"
+          class="org.jpos.iso.IFB_LLNUM" />
   </isofieldpackager>
   <isofield
       id="114"
