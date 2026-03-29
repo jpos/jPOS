@@ -770,10 +770,10 @@
       pad="false"
       class="org.jpos.iso.IFB_LLLLBINARY"/>
   <isofield id="96"
-      length="9999"
-      name="Reserved for ISO use"
+      length="999"
+      name="Key management data"
       pad="false"
-      class="org.jpos.iso.IFB_LLLLBINARY"/>
+      class="org.jpos.iso.IFB_LLLBINARY"/>
   <isofield id="92"
       length="9999"
       name="Reserved for ISO use"
