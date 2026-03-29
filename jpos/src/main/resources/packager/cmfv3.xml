@@ -1125,14 +1125,14 @@
               class="org.jpos.iso.IFB_NUMERIC"/>
           <isofield
               id="4"
-              length="64"
-              name="Wallet Provider Account Hash"
-              class="org.jpos.iso.IFB_LLCHAR"/>
+              length="0"
+              name="Wallet Provider Account Hash (removed - use DE-051 dataset 0x74)"
+              class="org.jpos.iso.IF_NOP"/>
           <isofield
               id="5"
-              length="64"
-              name="Tokenization Cardholder Name"
-              class="org.jpos.iso.IFB_LLCHAR"/>
+              length="0"
+              name="Tokenization Cardholder Name (removed - use DE-051 dataset 0x75)"
+              class="org.jpos.iso.IF_NOP"/>
           <isofield
               id="6"
               length="16"
