@@ -418,6 +418,16 @@
           length="99"
           name="Card acceptor e-mail address"
           class="org.jpos.iso.IFB_LLCHAR"/>
+      <isofield
+          id="13"
+          length="19"
+          name="Card acceptor geographic location"
+          class="org.jpos.iso.IFB_LLCHAR"/>
+      <isofield
+          id="14"
+          length="255"
+          name="Card acceptor additional address information"
+          class="org.jpos.iso.IFB_LLLCHAR"/>
   </isofieldpackager>
   <isofield
       id="44"
