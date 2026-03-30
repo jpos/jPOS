@@ -22,6 +22,7 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.jdom2.Element;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QFactory;
+import org.jpos.util.Caller;
 import org.jpos.util.Log;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -83,13 +84,13 @@ public class TransactionManagerLoggingTest {
     }
 
     @Test
-    void participantWarningFallsBackToSimpleClassName() {
+    void participantWarningFallsBackToShortClassName() {
         FailingParticipant participant = new FailingParticipant();
         int result = tm.invokePrepare(participant, 9L, new Context());
 
         assertEquals(TransactionConstants.ABORTED, result);
         LogEvent event = events.stream().filter(ev -> Log.WARN.equals(ev.getTag())).findFirst().orElseThrow();
-        assertEquals(FailingParticipant.class.getSimpleName(), event.getTags().get("participant"));
+        assertEquals(Caller.shortClassName(FailingParticipant.class.getName()), event.getTags().get("participant"));
     }
 
     static class TestTransactionManager extends TransactionManager {

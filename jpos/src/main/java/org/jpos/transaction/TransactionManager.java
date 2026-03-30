@@ -1050,8 +1050,7 @@ public class TransactionManager
     }
 
     private String defaultParticipantName(TransactionParticipant p) {
-        String simpleName = p.getClass().getSimpleName();
-        return simpleName != null && !simpleName.isEmpty() ? simpleName : Caller.shortClassName(p.getClass().getName());
+        return Caller.shortClassName(p.getClass().getName());
     }
 
     private void logParticipantWarning(String detail, TransactionParticipant participant, Throwable t) {
