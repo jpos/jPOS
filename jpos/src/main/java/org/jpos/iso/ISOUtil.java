@@ -97,29 +97,90 @@ public class ISOUtil {
     public static final byte RS  = 0x1D;
     /** ASCII Group Separator (GS) control character. */
     public static final byte GS  = 0x1E;
+    /** ASCII End of Text (ETX) control character. */
     public static final byte ETX = 0x03;
 
+    /**
+     * Converts an EBCDIC byte array to an ASCII string.
+     *
+     * @param e EBCDIC-encoded byte array
+     * @return decoded ASCII string
+     */
     public static String ebcdicToAscii(byte[] e) {
         return EBCDIC.decode(ByteBuffer.wrap(e)).toString();
     }
+    /**
+     * Converts a portion of an EBCDIC byte array to an ASCII string.
+     *
+     * @param e      EBCDIC-encoded byte array
+     * @param offset start offset within the array
+     * @param len    number of bytes to convert
+     * @return decoded ASCII string
+     */
     public static String ebcdicToAscii(byte[] e, int offset, int len) {
         return EBCDIC.decode(ByteBuffer.wrap(e, offset, len)).toString();
     }
+
+    /**
+     * Converts an EBCDIC byte array to ASCII bytes.
+     *
+     * @param e EBCDIC-encoded byte array
+     * @return ASCII-encoded byte array
+     */
     public static byte[] ebcdicToAsciiBytes (byte[] e) {
         return ebcdicToAsciiBytes (e, 0, e.length);
     }
+
+    /**
+     * Converts a portion of an EBCDIC byte array to ASCII bytes.
+     *
+     * @param e      EBCDIC-encoded byte array
+     * @param offset start offset within the array
+     * @param len    number of bytes to convert
+     * @return ASCII-encoded byte array
+     */
     public static byte[] ebcdicToAsciiBytes (byte[] e, int offset, int len) {
         return ebcdicToAscii(e, offset, len).getBytes(CHARSET);
     }
+
+    /**
+     * Converts an ASCII string to an EBCDIC byte array.
+     *
+     * @param s ASCII string to encode
+     * @return EBCDIC-encoded byte array
+     */
     public static byte[] asciiToEbcdic(String s) {
         return EBCDIC.encode(s).array();
     }
+
+    /**
+     * Converts an ASCII byte array to an EBCDIC byte array.
+     *
+     * @param a ASCII-encoded byte array
+     * @return EBCDIC-encoded byte array
+     */
     public static byte[] asciiToEbcdic(byte[] a) {
         return EBCDIC.encode(new String(a, CHARSET)).array();
     }
+
+    /**
+     * Converts an ASCII string to EBCDIC and copies the result into the destination array.
+     *
+     * @param s      ASCII string to encode
+     * @param e      destination byte array
+     * @param offset start offset in the destination array
+     */
     public static void asciiToEbcdic(String s, byte[] e, int offset) {
         System.arraycopy (asciiToEbcdic(s), 0, e, offset, s.length());
     }
+
+    /**
+     * Converts an ASCII byte array to EBCDIC and copies the result into the destination array.
+     *
+     * @param s      ASCII-encoded source byte array
+     * @param e      destination byte array
+     * @param offset start offset in the destination array
+     */
     public static void asciiToEbcdic(byte[] s, byte[] e, int offset) {
         asciiToEbcdic(new String(s, CHARSET), e, offset);
     }
@@ -216,6 +277,13 @@ public class ISOUtil {
             d.append(' ');
         return d.toString();
     }
+    /**
+     * Pads a string to the right with zeros.
+     *
+     * @param s   original string
+     * @param len desired length
+     * @return zero-padded string (zeros appended on right)
+     */
     public static String zeropadRight (String s, int len) {
         StringBuilder d = new StringBuilder(s);
         while (d.length() < len)
@@ -510,8 +578,11 @@ public class ISOUtil {
         return d;
     }
     
-    /*
-     * Convert BitSet to int value.
+    /**
+     * Converts a BitSet to an int value.
+     *
+     * @param bs the BitSet to convert
+     * @return integer representation of the BitSet
      */
     public static int bitSet2Int(BitSet bs) {
         int total = 0;
@@ -529,16 +600,23 @@ public class ISOUtil {
         return total;
     }
     
-    /*
-     * Convert int value to BitSet.
+    /**
+     * Converts an int value to a BitSet.
+     *
+     * @param value the integer to convert
+     * @return BitSet representation of the value
      */
     public static BitSet int2BitSet(int value) {
         
         return int2BitSet(value,0);
     }
-    
-    /*
-     * Convert int value to BitSet.
+
+    /**
+     * Converts an int value to a BitSet with a given bit offset.
+     *
+     * @param value  the integer to convert
+     * @param offset bit offset to apply when setting bits
+     * @return BitSet representation of the value at the given offset
      */
     public static BitSet int2BitSet(int value, int offset) {
         
@@ -957,9 +1035,22 @@ public class ISOUtil {
         }
         return ps.toString();
     }
+    /**
+     * Protects PAN, Track2, CVC using the default underscore mask character.
+     *
+     * @param s string to be protected
+     * @return 'protected' String
+     */
     public static String protect(String s) {
         return protect(s, '_');
     }
+
+    /**
+     * Converts a whitespace-delimited string of numbers to an int array.
+     *
+     * @param s whitespace-delimited string of integer values
+     * @return array of parsed integers
+     */
     public static int[] toIntArray(String s) {
         StringTokenizer st = new StringTokenizer (s);
         int[] array = new int [st.countTokens()];
@@ -967,6 +1058,13 @@ public class ISOUtil {
             array[i] = Integer.parseInt (st.nextToken());
         return array;
     }
+
+    /**
+     * Converts a whitespace-delimited string of tokens to a String array.
+     *
+     * @param s whitespace-delimited string of tokens
+     * @return array of string tokens
+     */
     public static String[] toStringArray(String s) {
         StringTokenizer st = new StringTokenizer (s);
         String[] array = new String [st.countTokens()];
@@ -1478,6 +1576,12 @@ public class ISOUtil {
             }
         }
     }
+    /**
+     * Converts a duration in milliseconds to a human-readable string (e.g. "1d 2h 3m 4s 500ms").
+     *
+     * @param millis duration in milliseconds
+     * @return human-readable duration string
+     */
     public static String millisToString (long millis) {
         StringBuilder sb = new StringBuilder();
         if (millis < 0) {
@@ -1611,6 +1715,14 @@ public class ISOUtil {
         return (char) ((crc % 10 == 0 ? 0 : 10 - crc % 10) + '0');
     }
 
+    /**
+     * Generates a string of {@code l} random digits using the given radix.
+     *
+     * @param r     random number generator to use
+     * @param l     number of digits to generate
+     * @param radix the radix (base) for digit generation
+     * @return string of {@code l} random digits
+     */
     public static String getRandomDigits(Random r, int l, int radix) {
         StringBuilder sb = new StringBuilder();
         for (int i=0; i<l; i++) {
@@ -1621,6 +1733,12 @@ public class ISOUtil {
 
     // See http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
     // and http://physics.nist.gov/cuu/Units/binary.html
+    /**
+     * Formats a file size in bytes as a human-readable string (e.g. "1.5 MiB").
+     *
+     * @param size file size in bytes
+     * @return human-readable file size string
+     */
     public static String readableFileSize(long size) {
         if(size <= 0) return "0";
         final String[] units = new String[] { "Bi", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
@@ -1680,6 +1798,12 @@ public class ISOUtil {
         return builder.toString();
     }
 
+    /**
+     * Decodes a hex dump string (as produced by hexdump) back into a byte array.
+     *
+     * @param s hex dump string to decode
+     * @return decoded byte array
+     */
     public static byte[] decodeHexDump(String s) {
         return hex2byte(
             Arrays.stream(s.split("\\r\\n|[\\r\\n]"))
@@ -1778,6 +1902,12 @@ public class ISOUtil {
         }
     }
 
+    /**
+     * Converts each character in the string to its Unicode escape sequence (&#92;uXXXX format).
+     *
+     * @param input the string to convert
+     * @return string with all characters encoded as Unicode escapes
+     */
     public static String toUnicodeString(String input) {
         StringBuilder sb = new StringBuilder();
         for (char c : input.toCharArray()) {
@@ -1786,9 +1916,22 @@ public class ISOUtil {
         return sb.toString();
     }
 
+    /**
+     * Converts a string to ASCII by replacing characters above 0x7F with a space.
+     *
+     * @param s the string to convert
+     * @return ASCII-safe string
+     */
     public static String toASCII(String s) {
         return toSingleByte (s, 0x7F);
     }
+
+    /**
+     * Converts a string to Latin-1 by replacing characters above 0xFF with a space.
+     *
+     * @param s the string to convert
+     * @return Latin-1-safe string
+     */
     public static String toLatin(String s) {
         return toSingleByte (s, 0xFF);
     }
