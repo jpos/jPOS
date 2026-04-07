@@ -1117,7 +1117,7 @@
               id="2"
               length="255"
               name="Payment Application Instance ID"
-              class="org.jpos.iso.IFB_LLCHAR"/>
+              class="org.jpos.iso.IFB_LLLCHAR"/>
           <isofield
               id="3"
               length="2"
@@ -1147,7 +1147,7 @@
               id="8"
               length="255"
               name="Device Location"
-              class="org.jpos.iso.IFB_LLCHAR"/>
+              class="org.jpos.iso.IFB_LLLCHAR"/>
           <isofield
               id="9"
               length="999"
