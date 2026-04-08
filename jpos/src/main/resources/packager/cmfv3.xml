@@ -423,11 +423,13 @@
           name="Card acceptor additional address information"
           class="org.jpos.iso.IFB_LLLCHAR"/>
   </isofieldpackager>
-  <isofield
+  <isofieldpackager
       id="44"
       length="9999"
       name="Additional response data"
-      class="org.jpos.iso.IFB_LLLLBINARY"/>
+      class="org.jpos.iso.IFB_LLLLBINARY"
+      packager="org.jpos.iso.packager.DatasetPackager">
+  </isofieldpackager>
   <isofield
       id="45"
       length="76"
