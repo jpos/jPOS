@@ -142,14 +142,16 @@ public class JESpaceTestCase {
     @Test
     @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testOutExpire() {
-        sp.out ("OUT", "ONE", 1000L);
-        sp.out ("OUT", "TWO", 2000L);
-        sp.out ("OUT", "THREE", 3000L);
-        sp.out  ("OUT", "FOUR", 4000L);
+        // JESpace uses transactional Berkeley DB operations, so use wider expiration gaps
+        // than the in-memory spaces to avoid timing-sensitive boundary failures on slower hosts.
+        sp.out ("OUT", "ONE", 1500L);
+        sp.out ("OUT", "TWO", 3000L);
+        sp.out ("OUT", "THREE", 4500L);
+        sp.out  ("OUT", "FOUR", 6000L);
         assertEquals ("ONE", sp.rdp ("OUT"));
-        ISOUtil.sleep (1500L);
+        ISOUtil.sleep (2000L);
         assertEquals ("TWO", sp.rdp ("OUT"));
-        ISOUtil.sleep (1000L);
+        ISOUtil.sleep (1500L);
         assertEquals ("THREE", sp.rdp ("OUT"));
         assertEquals ("THREE", sp.inp ("OUT"));
         assertEquals ("FOUR", sp.inp ("OUT"));
@@ -158,14 +160,14 @@ public class JESpaceTestCase {
     @Test
     @DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
     public void testPushExpire() {
-        sp.push ("PUSH", "FOUR", 4000L);
-        sp.push ("PUSH", "THREE", 3000L);
-        sp.push ("PUSH", "TWO", 2000L);
-        sp.push  ("PUSH", "ONE", 1000L);
+        sp.push ("PUSH", "FOUR", 6000L);
+        sp.push ("PUSH", "THREE", 4500L);
+        sp.push ("PUSH", "TWO", 3000L);
+        sp.push  ("PUSH", "ONE", 1500L);
         assertEquals ("ONE", sp.rdp ("PUSH"));
-        ISOUtil.sleep (1500L);
+        ISOUtil.sleep (2000L);
         assertEquals ("TWO", sp.rdp ("PUSH"));
-        ISOUtil.sleep (1000L);
+        ISOUtil.sleep (1500L);
         assertEquals ("THREE", sp.rdp ("PUSH"));
         assertEquals ("THREE", sp.inp ("PUSH"));
         assertEquals ("FOUR", sp.inp ("PUSH"));
