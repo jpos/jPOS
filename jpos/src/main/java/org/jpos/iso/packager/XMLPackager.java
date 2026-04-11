@@ -48,32 +48,55 @@ import java.util.concurrent.locks.ReentrantLock;
 public class XMLPackager extends DefaultHandler
                          implements ISOPackager, LogSource
 {
+    /** Logger used to emit pack/unpack events. */
     protected Logger logger = null;
+    /** Logging realm associated with this packager. */
     protected String realm = null;
     private XMLReader reader;
     private Stack stk;
     private Lock parserLock = new ReentrantLock();
 
+    /** XML element name used for ISO messages. */
     public static final String ISOMSG_TAG    = "isomsg";
+    /** XML element name used for ISO fields. */
     public static final String ISOFIELD_TAG  = "field";
+    /** XML attribute name holding field identifiers. */
     public static final String ID_ATTR       = "id";
+    /** XML attribute name holding scalar values. */
     public static final String VALUE_ATTR    = "value";
+    /** XML attribute name holding type metadata. */
     public static final String TYPE_ATTR     = "type";
+    /** XML type marker for binary field content. */
     public static final String TYPE_BINARY   = "binary";
+    /** XML type marker for bitmap field content. */
     public static final String TYPE_BITMAP   = "bitmap";
+    /** XML type marker for amount field content. */
     public static final String TYPE_AMOUNT   = "amount";
+    /** XML type marker for dataset field content. */
     public static final String TYPE_DATASET  = "dataset";
+    /** XML attribute name holding currency metadata. */
     public static final String CURRENCY_ATTR = "currency";
+    /** XML element name used for message headers. */
     public static final String HEADER_TAG    = "header";
+    /** XML attribute name used for charset declarations. */
     public static final String ENCODING_ATTR = "encoding";
+    /** Literal name for ASCII encoding declarations. */
     public static final String ASCII_ENCODING= "ascii";
+    /** XML element name used for datasets. */
     public static final String DATASET_TAG   = "dataset";
+    /** XML element name used for dataset elements. */
     public static final String ELEMENT_TAG   = "element";
+    /** XML attribute name holding dataset format metadata. */
     public static final String FORMAT_ATTR   = "format";
 
     // fields that will be forced to be interpreted as binary data
     private int[] binaryFields= null;
 
+    /**
+     * Creates an XML packager with a hardened SAX parser configuration.
+     *
+     * @throws ISOException if the XML reader cannot be created or configured
+     */
     public XMLPackager() throws ISOException {
         super();
         stk = new Stack();
@@ -90,6 +113,11 @@ public class XMLPackager extends DefaultHandler
         }
     }
 
+    /**
+     * Marks the supplied fields so their XML values are always decoded as binary.
+     *
+     * @param bfields field numbers to force as binary
+     */
     public void forceBinary(int ... bfields) {
         binaryFields= bfields;
     }
@@ -294,6 +322,13 @@ public class XMLPackager extends DefaultHandler
     }
 
     // we may want to force fome fields to be interpreted as binary data
+    /**
+     * Converts selected message fields from hexadecimal strings into binary values.
+     *
+     * @param m message being adjusted
+     * @param bfields field numbers to convert
+     * @throws ISOException if any field cannot be converted
+     */
     protected void fixupBinary(ISOMsg m, int[] bfields) throws ISOException {
         if (bfields != null) {
             for (int f : bfields) {
@@ -326,6 +361,12 @@ public class XMLPackager extends DefaultHandler
         return getClass().getName();
     }
 
+    /**
+     * Creates the SAX reader used to parse XML ISO messages.
+     *
+     * @return configured XML reader instance
+     * @throws SAXException if the reader cannot be created
+     */
     protected XMLReader createXMLReader () throws SAXException {
         XMLReader reader;
         try {
@@ -344,6 +385,13 @@ public class XMLPackager extends DefaultHandler
         return reader;
     }
 
+    /**
+     * Sets a SAX feature on the underlying XML parser.
+     *
+     * @param fname feature name URI
+     * @param val feature value to apply
+     * @throws SAXException if the parser rejects the feature
+     */
     public void setXMLParserFeature(String fname, boolean val) throws SAXException  {
         reader.setFeature(fname, val);
     }

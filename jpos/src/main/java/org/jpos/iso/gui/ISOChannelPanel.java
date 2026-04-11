@@ -38,19 +38,27 @@ import java.util.Observer;
 public class ISOChannelPanel extends JPanel implements Observer {
     private static final long serialVersionUID = -8069489863639386589L;
     /**
-     * @serial
+     * Meter widget used to visualize channel activity.
+     *
+     * @serial embedded child component state
      */
     ISOMeter meter;
     /**
-     * @serial
+     * Rolling log model displayed when the meter is opened.
+     *
+     * @serial serialized log contents
      */
     DefaultListModel log;
     /**
-     * @serial
+     * Human-readable channel name shown in the UI.
+     *
+     * @serial display name persisted with the panel
      */
     String symbolicName;
 
+    /** Fields that must be protected before logging. */
     private int[] protectFields = null;
+    /** Fields that must be wiped before logging. */
     private int[] wipeFields    = null;
 
     /** Maximum number of log entries to retain. */

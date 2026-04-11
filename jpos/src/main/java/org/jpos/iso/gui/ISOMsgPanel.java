@@ -44,11 +44,15 @@ public class ISOMsgPanel extends JPanel {
 
     private static final long serialVersionUID = 7779880613544725704L;
     /**
-     * @serial
+     * Message currently displayed by the panel.
+     *
+     * @serial serialized message snapshot
      */
     ISOMsg m;
     /**
-     * @serial
+     * Ordered collection of populated field numbers.
+     *
+     * @serial field-number list used by the table model
      */
     Vector validFields;
     /** Constructs a panel for the given message.

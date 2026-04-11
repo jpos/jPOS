@@ -23,6 +23,7 @@ import java.util.EventObject;
 
 /** Event fired when a client disconnects from ISOServer. */
 public final class ISOServerClientDisconnectEvent extends EventObject implements ISOServerEvent {
+    /** Weak reference to the disconnected channel. */
     private WeakReference<ISOChannel> channelRef;
     /** Constructs the event.
      * @param source  the event source

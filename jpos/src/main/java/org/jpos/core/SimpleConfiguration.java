@@ -32,6 +32,7 @@ import java.util.stream.IntStream;
  * @since jPOS 1.1
  */
 public class SimpleConfiguration implements Configuration, Serializable {
+    /** Backing property store used by this configuration instance. */
     private Properties props;
 
     /** Default constructor. */

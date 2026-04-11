@@ -116,11 +116,24 @@ public class Tags implements Serializable {
         return 19*ts.hashCode();
     }
 
+    /**
+     * Serializes the tag set as its comma-encoded string representation.
+     *
+     * @param os object output stream receiving the serialized form
+     * @throws IOException if the stream cannot be written
+     */
     private void writeObject(ObjectOutputStream os)
             throws java.io.IOException {
         os.defaultWriteObject();
         os.writeObject(toString());
     }
+    /**
+     * Recreates the transient tag set from its serialized string form.
+     *
+     * @param is object input stream providing the serialized form
+     * @throws IOException if the stream cannot be read
+     * @throws ClassNotFoundException if the serialized payload is invalid
+     */
     private void readObject(ObjectInputStream is)
             throws java.io.IOException, ClassNotFoundException {
         ts = new TreeSet<>();

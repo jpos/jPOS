@@ -35,19 +35,18 @@ import java.util.HashMap;
  *
  * @author Grzegorz Wieczorek (grw1@wp.pl)
  */
-/** A map of tag identifiers to {@link CharTag} instances. */
-/**
- * A map of tag identifiers to {@link CharTag} instances.
- */
 public class CharTagMap extends HashMap<String, CharTag> {
     /** Default constructor. */
     public CharTagMap() { super(); }
 
     static final String EXCEPTION_PREFIX = "BAD TLV FORMAT:";
 
+    /** Number of characters used to encode the tag identifier. */
     private int tagLen = 0x02;
+    /** Number of characters used to encode the tag value length. */
     private int lenLen = 0x03;
 
+    /** Whether packed output places the length before the tag identifier. */
     private boolean swapTagWithLength;
 
     /**

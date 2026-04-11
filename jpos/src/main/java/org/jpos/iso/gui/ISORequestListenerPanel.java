@@ -35,11 +35,15 @@ public class ISORequestListenerPanel extends JPanel implements Observer {
 
     private static final long serialVersionUID = -1786048717180010741L;
     /**
-     * @serial
+     * Rolling log model displayed by the panel.
+     *
+     * @serial serialized log contents
      */
     DefaultListModel log;
     /**
-     * @serial
+     * Human-readable request-listener name.
+     *
+     * @serial display name persisted with the panel
      */
     String symbolicName;
     /** Maximum number of log entries to retain. */

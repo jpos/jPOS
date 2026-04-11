@@ -32,6 +32,13 @@ public class ZipUtil {
     /** Default constructor. */
     public ZipUtil() {}
 
+    /**
+     * Compresses a single file into a ZIP archive containing one entry.
+     *
+     * @param input file to compress
+     * @param output destination ZIP file
+     * @throws IOException if the input cannot be read or the output cannot be written
+     */
     public static void zipFile(File input, File output) throws IOException {
         FileInputStream in = null;
         ZipOutputStream out = null;

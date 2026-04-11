@@ -116,7 +116,9 @@ public class ISOMeter extends JComponent implements Runnable {
      */
     int refreshPanel = 50;
 
+    /** Off-screen image buffer used during repaint operations. */
     private Image imb;
+    /** Background thread that advances the animated meter display. */
     private Thread repaintThread;
 
     /** Constructs an ISOMeter for the given channel panel.

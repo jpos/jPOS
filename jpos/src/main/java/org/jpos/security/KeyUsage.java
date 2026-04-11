@@ -164,7 +164,9 @@ public class KeyUsage implements Serializable {
     public final static KeyUsage EMVMPMK   = create("E7", "EMV/Master Personalization Key");
 
 
+    /** Two-character TR-31 key-usage code. */
     private final String code;
+    /** Human-readable description of the key usage. */
     private final String name;
 
     /**

@@ -55,6 +55,7 @@ public class TLVList implements Serializable, Loggeable {
     private static final int LEN_SIZE_MASK  = 0x7F;
     private static final int EXT_LEN_MASK   = 0x80;
 
+    /** Ordered collection of decoded TLV elements. */
     private final List<TLVMsg> tags = new ArrayList<>();
 
     /**
@@ -73,7 +74,9 @@ public class TLVList implements Serializable, Loggeable {
      */
     private int lengthSize = 0;
 
+    /** Cached tag identifier used by linear search helpers. */
     private int tagToFind = -1;
+    /** Cached index of the most recent occurrence found by a search helper. */
     private int indexLastOccurrence = -1;
 
     public static class TLVListBuilder {

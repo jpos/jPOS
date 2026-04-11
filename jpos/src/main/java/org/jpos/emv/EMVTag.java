@@ -34,9 +34,13 @@ import java.io.Serializable;
 public abstract class EMVTag<T> implements TagValue<T>, Serializable {
 
     private static final long serialVersionUID = 4674858246785118615L;
+    /** EMV tag classification and metadata. */
     private final EMVTagType tagType;
+    /** TLV data format used to encode the value. */
     private final TLVDataFormat dataFormat;
+    /** Numeric EMV tag identifier. */
     private final Integer tagNumber;
+    /** Parsed value carried by this tag. */
     private final T value;
 
 

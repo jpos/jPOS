@@ -31,9 +31,13 @@ import java.io.Serializable;
  */
 public class EMVConstructedTag<T> implements Serializable {
 
+    /** EMV tag classification and metadata. */
     private final EMVTagType tagType;
+    /** TLV data format used to encode the value. */
     private final TLVDataFormat dataFormat;
+    /** Numeric EMV tag identifier. */
     private final Integer tagNumber;
+    /** Parsed value carried by this tag. */
     private final T value;
 
 

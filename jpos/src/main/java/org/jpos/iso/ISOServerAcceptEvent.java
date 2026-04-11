@@ -23,6 +23,7 @@ import java.util.EventObject;
 
 /** Event fired when a new client connection is accepted by ISOServer. */
 public final class ISOServerAcceptEvent extends EventObject implements ISOServerEvent {
+    /** Weak reference to the accepted channel. */
     private WeakReference<ISOChannel> channelRef;
     /** Constructs the event.
      * @param source  the ISOServer
