@@ -107,7 +107,7 @@ public class JCEHandler {
      * @param encryptingKey
      *            can be a key of any type (RSA, DES, DESede...)
      * @return encrypted DES key
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException on encryption failure
      */
     public byte[] encryptDESKey(short keyLength, Key clearDESKey, Key encryptingKey) throws JCEHandlerException {
         byte[] clearKeyBytes = extractDESKeyMaterial(keyLength, clearDESKey);
@@ -124,7 +124,7 @@ public class JCEHandler {
      * @param clearDESKey
      *            DES/Triple-DES key whose format is "RAW"
      * @return encoded key material
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException on extraction failure
      */
     protected byte[] extractDESKeyMaterial(short keyLength, Key clearDESKey) throws JCEHandlerException {
         String keyAlg = clearDESKey.getAlgorithm();
@@ -172,7 +172,7 @@ public class JCEHandler {
      * @param clearKeyBytes
      *            the RAW DES/Triple-DES key
      * @return clear key
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException on unsupported key length
      */
     protected Key formDESKey(short keyLength, byte[] clearKeyBytes) throws JCEHandlerException {
         Key key = null;
@@ -198,8 +198,8 @@ public class JCEHandler {
     /**
      * Encrypts data
      * 
-     * @param data
-     * @param key
+     * @param data the plaintext data to encrypt
+     * @param key the encryption key
      * @return encrypted data
      * @exception JCEHandlerException on error
      */
@@ -210,8 +210,8 @@ public class JCEHandler {
     /**
      * Decrypts data
      * 
-     * @param encryptedData
-     * @param key
+     * @param encryptedData the ciphertext to decrypt
+     * @param key the decryption key
      * @return clear data
      * @exception JCEHandlerException on error
      */
@@ -220,10 +220,10 @@ public class JCEHandler {
     }
 
     /**
-     * Encrypts data
+     * Encrypts data in CBC mode.
      * 
-     * @param data
-     * @param key
+     * @param data the plaintext data to encrypt
+     * @param key the encryption key
      * @param iv 8 bytes initial vector
      * @return encrypted data
      * @exception JCEHandlerException on error
@@ -233,10 +233,10 @@ public class JCEHandler {
     }
 
     /**
-     * Decrypts data
+     * Decrypts data in CBC mode.
      * 
-     * @param encryptedData
-     * @param key
+     * @param encryptedData the ciphertext to decrypt
+     * @param key the decryption key
      * @param iv 8 bytes initial vector
      * @return clear data
      * @exception JCEHandlerException on error
@@ -354,7 +354,7 @@ public class JCEHandler {
      * @param macAlgorithm
      *            MAC algorithm name suitable for {@link Mac#getInstance}
      * @return the MAC
-     * @throws org.jpos.security.jceadapter.JCEHandlerException
+     * @throws org.jpos.security.jceadapter.JCEHandlerException on MAC computation failure
      */
     public byte[] generateMAC(byte[] data, Key kd, String macAlgorithm) throws JCEHandlerException {
         Mac mac = assignMACEngine(new MacEngineKey(macAlgorithm, kd));
@@ -365,21 +365,31 @@ public class JCEHandler {
     }
 
     /**
-     * Class used for indexing MAC algorithms in cache
+     * Class used for indexing MAC algorithms in cache.
      */
     protected static class MacEngineKey {
         private final String macAlgorithm;
         private final Key macKey;
 
+        /** Constructs a MacEngineKey for the given algorithm and key.
+         * @param macAlgorithm the MAC algorithm name
+         * @param macKey the MAC key
+         */
         protected MacEngineKey(String macAlgorithm, Key macKey) {
             this.macAlgorithm = macAlgorithm;
             this.macKey = macKey;
         }
 
+        /** Returns the MAC algorithm name.
+         * @return MAC algorithm name
+         */
         public String getMacAlgorithm() {
             return macAlgorithm;
         }
 
+        /** Returns the MAC key.
+         * @return MAC key
+         */
         public Key getMacKey() {
             return macKey;
         }

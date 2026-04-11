@@ -69,6 +69,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private final ScheduledFuture<?> gcFuture;
     private final Object[] expLocks = new Object[] { new Object(), new Object() };
 
+    /** GC sweep delay in milliseconds. */
     public static final long GCDELAY = 5 * 1000;
     private static final long GCLONG = 60_000L;
     private static final long NRD_RESOLUTION = 500L;
@@ -424,6 +425,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
     }
 
+    /** Runs a garbage-collection sweep to remove expired space entries. */
     public void gc() {
         // Avoid work after close if a scheduled tick slips through.
         if (closed.get())
@@ -543,6 +545,9 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
     }
 
+    /** Returns true if this space contains no entries.
+     * @return true if empty
+     */
     public boolean isEmpty() {
         ensureOpen();
         return entries.isEmpty();
@@ -554,6 +559,9 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         return new HashSet<>(entries.keySet());
     }
 
+    /** Returns all current keys as a space-separated string.
+     * @return space-separated key list
+     */
     public String getKeysAsString() {
         ensureOpen();
         StringBuilder sb = new StringBuilder();
@@ -599,6 +607,10 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         jfr.commit();
     }
 
+    /** Notifies all registered listeners for the given key/value pair.
+     * @param key the space key
+     * @param value the new value
+     */
     public void notifyListeners(Object key, Object value) {
         ensureOpen();
         var jfr = new SpaceEvent("notify", "" + key);
@@ -635,6 +647,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     /**
      * Non-standard method (required for space replication) - use with care.
+     * @return snapshot map of all entries
      */
     public Map getEntries() {
         ensureOpen();
@@ -653,6 +666,7 @@ public class LSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     /**
      * Non-standard method (required for space replication) - use with care.
+     * @param entries the entries map to load into this space
      */
     public void setEntries(Map entries) {
         ensureOpen();

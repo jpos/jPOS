@@ -37,57 +37,55 @@ import java.awt.event.MouseListener;
 public class ISOMeter extends JComponent implements Runnable {
 
     private static final long serialVersionUID = -1770533267122111538L;
-    /**
+    /** Background color of the meter.
      * @serial
      */
     Color color = new Color (255, 255, 255);
-    /**
+    /** Off-screen image buffer.
      * @serial
      */
     Image im;
-    /**
+    /** Graphics context for the off-screen buffer.
      * @serial
      */
     Graphics img;
-    /**
+    /** Large and small fonts used for text rendering.
      * @serial
      */
     Font fontBig, fontSmall;
-    /**
+    /** Label shown for positive (inbound) activity.
      * @serial
      */
     String positiveText;
-    /**
+    /** Label shown for negative (outbound) activity.
      * @serial
      */
     String negativeText;
-    /**
+    /** Swing timer controlling periodic refresh.
      * @serial
      */
     Timer ti;
-    /**
-     * handle ISOMeter's counters outside of this class in order
-     * to reduce 'int' to 'String' conversions.
+    /** Positive counter string (managed externally to reduce int-to-String conversions).
      * @serial
      */
     String positiveCounter;
-    /**
+    /** Negative counter string.
      * @serial
      */
     String negativeCounter;
-    /**
+    /** Age counter for the positive text label.
      * @serial
      */
     int lastPositive;
-    /**
+    /** Age counter for the negative text label.
      * @serial
      */
     int lastNegative;
-    /**
+    /** Whether the channel is currently connected.
      * @serial
      */
     boolean connected;
-    /**
+    /** Parent channel panel that owns this meter.
      * @serial
      */
     ISOChannelPanel parent;
@@ -97,11 +95,11 @@ public class ISOMeter extends JComponent implements Runnable {
     final static int mass     = height/2;
     final static int MAX_VALUE = 1000;
 
-    /**
+    /** Y-coordinate samples for the waveform plot.
      * @serial
      */
     int[] yPoints;
-    /**
+    /** X-coordinate positions for the waveform plot.
      * @serial
      */
     int[] xPoints;
@@ -263,12 +261,18 @@ public class ISOMeter extends JComponent implements Runnable {
             lastPositive = 0;
         }
     }
+    /** Paints the meter component by rendering the off-screen buffer.
+     * @param g the graphics context
+     */
     public void paint (Graphics g) {
         if (repaintThread == null)
             start();
         plot();
         g.drawImage (im, 0, 0, null);
     }
+    /** Returns the preferred size of this meter component.
+     * @return preferred dimensions
+     */
     public Dimension getPreferredSize() {
         return new Dimension(width, height);
     }
@@ -324,6 +328,7 @@ public class ISOMeter extends JComponent implements Runnable {
         img.drawString (p, width-55, 13);
         img.drawString (n, width-55, height-3);
     }
+    /** Repaint loop run by the background thread; triggers repaints at the configured interval. */
     public void run () {
         while (isShowing()) {
             if (continueScroll > 0)
@@ -336,6 +341,9 @@ public class ISOMeter extends JComponent implements Runnable {
         }
         repaintThread = null;
     }
+    /** Updates the component by delegating to {@link #paint(Graphics)}.
+     * @param g the graphics context
+     */
     public void update (Graphics g) {
         paint (g);
     }

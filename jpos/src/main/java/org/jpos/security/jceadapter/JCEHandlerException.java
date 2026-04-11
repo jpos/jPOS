@@ -18,14 +18,13 @@
 
 package  org.jpos.security.jceadapter;
 
+import org.jpos.security.SMException;
+
 /**
  * Signals that a JCE Handler exception of some sort has occurred.
  * @author Hani Samuel Kirollos
  * @version $Revision$ $Date$
  */
-import org.jpos.security.SMException;
-
-
 public class JCEHandlerException extends SMException {
 
     /** Default constructor. */
@@ -33,18 +32,25 @@ public class JCEHandlerException extends SMException {
         super();
     }
 
+    /** Constructs a JCEHandlerException with the given message.
+     * @param s the detail message
+     */
     public JCEHandlerException (String s) {
         super(s);
     }
 
+    /** Constructs a JCEHandlerException wrapping the given cause.
+     * @param e the underlying exception
+     */
     public JCEHandlerException (Exception e) {
         super(e);
     }
 
+    /** Constructs a JCEHandlerException with the given message and cause.
+     * @param s the detail message
+     * @param e the underlying exception
+     */
     public JCEHandlerException (String s, Exception e) {
         super(s, e);
     }
 }
-
-
-

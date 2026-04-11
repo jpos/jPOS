@@ -50,7 +50,7 @@ public final class IssuerApplicationData implements Loggeable {
 
     private CryptogramSpec cryptogramSpec = null;
     /**
-     * 
+     * Constructs an IssuerApplicationData instance by parsing a hexadecimal IAD string.
      * @param hexIAD Hexadecimal (String) representation of the IAD.
      */
     public IssuerApplicationData(String hexIAD) {
@@ -83,7 +83,7 @@ public final class IssuerApplicationData implements Loggeable {
     }
 
     /**
-     * 
+     * Constructs an IssuerApplicationData instance by parsing a byte-array IAD.
      * @param iad Byte array representation of the IAD.
      */
     public IssuerApplicationData(byte[] iad) {
@@ -168,7 +168,7 @@ public final class IssuerApplicationData implements Loggeable {
     }    
 
     /**
-     * 
+     * Returns a hexadecimal representation of the Derivation Key Index (DKI).
      * @return A hexadecimal representation of the Derivation Key Index (DKI).
      */
     public String getDerivationKeyIndex() {
@@ -176,7 +176,7 @@ public final class IssuerApplicationData implements Loggeable {
     }
 
     /**
-     * 
+     * Returns a hexadecimal representation of the Cryptogram Version Number (CVN).
      * @return A hexadecimal representation of the Cryptogram Version Number (CVN).
      */
     public String getCryptogramVersionNumber() {
@@ -184,7 +184,7 @@ public final class IssuerApplicationData implements Loggeable {
     }
 
     /**
-     * 
+     * Returns a hexadecimal representation of the Common Core Identifier (CCI).
      * @return A hexadecimal representation of the Common Core Identifier (CCI)
      */
     public String getCommonCoreIdentifier() {
@@ -192,7 +192,7 @@ public final class IssuerApplicationData implements Loggeable {
     }
     
     /**
-     * 
+     * Returns a hexadecimal representation of the Card Verification Results (CVR).
      * @return A hexadecimal representation of the Card Verification Results (CVR).
      */
     public String getCardVerificationResults() {
@@ -200,7 +200,7 @@ public final class IssuerApplicationData implements Loggeable {
     }
 
     /**
-     * 
+     * Returns a hexadecimal representation of the DAC/ICC dynamic number.
      * @return A hexadecimal representation of the DAC/ICC dynamic number.
      */
     public String getDAC() {
@@ -208,7 +208,7 @@ public final class IssuerApplicationData implements Loggeable {
     }
 
     /**
-     * 
+     * Returns a hexadecimal representation of multiple counters, depending on the format.
      * @return A hexadecimal representation of multiple counters, depending on the format.
      */
     public String getCounters() {
@@ -216,7 +216,7 @@ public final class IssuerApplicationData implements Loggeable {
     }
 
     /**
-     * 
+     * Returns the format of the IAD.
      * @return The format of the IAD.
      */
     public Format getFormat() {
@@ -224,17 +224,25 @@ public final class IssuerApplicationData implements Loggeable {
     }
 
     /**
-     * 
-     * @return The Isser Discretionary Data (IDD).
+     * Returns the Issuer Discretionary Data (IDD).
+     * @return The Issuer Discretionary Data (IDD).
      */
     public String getIssuerDiscretionaryData() {
         return idd;
     }
     
+    /**
+     * Returns the last online Application Transaction Counter (ATC).
+     * @return hexadecimal representation of the last online ATC, or {@code null} if not present.
+     */
     public String getLastOnlineATC() {
         return lastOnlineATC;
     }
 
+    /**
+     * Returns the {@link CryptogramSpec} for this IAD format.
+     * @return the cryptogram specification
+     */
     public CryptogramSpec getCryptogramSpec() {
         return Objects.requireNonNull(cryptogramSpec, "CryptogramSpec not implemented");
     }
@@ -275,11 +283,17 @@ public final class IssuerApplicationData implements Loggeable {
         p.printf("%n%s</iad>%n", indent);  
     }
 
+    /** IAD format discriminator. */
     public enum Format {
+        /** Format could not be determined. */
         UNKNOWN,
+        /** Proprietary or unrecognised format. */
         OTHER,
+        /** Mastercard M/Chip format. */
         M_CHIP,
+        /** EMV Book 3 Format Code A. */
         EMV_FORMAT_A,
+        /** Visa VIS format. */
         VIS
     }
 }

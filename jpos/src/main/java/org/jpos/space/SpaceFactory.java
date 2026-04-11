@@ -60,17 +60,26 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class SpaceFactory {
     /** Default constructor. */
     public SpaceFactory() {}
+    /** Scheme token for transient (in-memory) TSpace. */
     public static final String TSPACE     = "tspace";
+    /** Scheme token for LSpace. */
     public static final String LSPACE     = "lspace";
+    /** Alias scheme token for transient space. */
     public static final String TRANSIENT  = "transient";
+    /** Alias scheme token for persistent (JDBM) space. */
     public static final String PERSISTENT = "persistent";
+    /** Scheme token for remote spacelet. */
     public static final String SPACELET   = "spacelet";
+    /** Scheme token for JDBM-backed persistent space. */
     public static final String JDBM       = "jdbm";
+    /** Scheme token for Berkeley DB JE-backed persistent space. */
     public static final String JE         = "je";
+    /** Default space name when no name is specified. */
     public static final String DEFAULT    = "default";
     private static ScheduledThreadPoolExecutor gcExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
 
     /**
+     * Returns the default transient space.
      * @return the default TransientSpace
      */
     public static Space getSpace () {
@@ -78,7 +87,8 @@ public class SpaceFactory {
     }
 
     /**
-     * @param spaceUri 
+     * Returns the Space identified by the given URI (e.g. {@code tspace:myname}).
+     * @param spaceUri the space URI ({@code scheme:name} or {@code scheme:name:param})
      * @return Space for given URI or null
      */
     public static Space getSpace (String spaceUri) {
@@ -108,6 +118,12 @@ public class SpaceFactory {
         }
         return getSpace (scheme, name, param);
     }
+    /** Returns (or creates) the space for the given scheme, name, and optional parameter.
+     * @param scheme the space scheme (e.g. tspace, jdbm)
+     * @param name the space name
+     * @param param optional parameter (e.g. file path for jdbm)
+     * @return the matching Space instance
+     */
     public static Space getSpace (String scheme, String name, String param) {
         Space sp = null;
         String uri = normalize (scheme, name, param);
@@ -127,6 +143,9 @@ public class SpaceFactory {
         }
         return sp;
     }
+    /** Returns the shared scheduled executor used for space garbage collection.
+     * @return the GC executor
+     */
     public static ScheduledThreadPoolExecutor getGCExecutor() {
         return gcExecutor;
     }

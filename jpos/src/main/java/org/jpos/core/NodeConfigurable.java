@@ -28,6 +28,8 @@ import org.w3c.dom.Node;
  */
 public interface NodeConfigurable {
    /**
+    * Configures this object using the provided DOM node.
+    * @param node the DOM node containing configuration data
     * @throws ConfigurationException if configuration is invalid
     */
    void setConfiguration(Node node)

@@ -35,27 +35,37 @@ public class NameRegistrar implements Loggeable {
     private static final NameRegistrar instance = new NameRegistrar();
     private static final TSpace<String, Object> sp = new TSpace<String,Object>();
 
+    /** Thrown when a requested name is not found in the registrar. */
     public static class NotFoundException extends Exception {
         private static final long serialVersionUID = 8744022794646381475L;
 
+        /** Default constructor. */
         public NotFoundException() {
             super();
         }
 
+        /** Constructs a NotFoundException with the given detail message.
+         * @param detail the missing key or detail message
+         */
         public NotFoundException(String detail) {
             super(detail);
         }
     }
 
+    /** Private constructor — use the singleton. */
     private NameRegistrar() {
         super();
     }
 
+    /** Returns the underlying TSpace used for name registration.
+     * @return the shared TSpace instance
+     */
     public static TSpace<String, Object> getSpace() {
         return sp;
     }
 
     /**
+     * Returns a copy of the NameRegistrar's entries as a Map.
      * @return a copy of the NameRegistrar's entries as a Map
      */
     public static Map<String,Object> getAsMap() {
@@ -69,6 +79,7 @@ public class NameRegistrar implements Loggeable {
     }
 
     /**
+     * Returns the singleton NameRegistrar instance.
      * @return singleton instance
      */
     public static NameRegistrar getInstance() {
@@ -88,6 +99,7 @@ public class NameRegistrar implements Loggeable {
     }
 
     /**
+     * Removes the mapping for the given key from the registrar.
      * @param key
      *            key whose mapping is to be removed from registrar.
      */
@@ -138,10 +150,19 @@ public class NameRegistrar implements Loggeable {
         return obj;
     }
 
+    /** Dumps a summary of registered names to the given stream.
+     * @param p output stream
+     * @param indent indent prefix
+     */
     public void dump(PrintStream p, String indent) {
         dump(p, indent, false);
     }
 
+    /** Dumps registered names to the given stream, optionally including object detail.
+     * @param p output stream
+     * @param indent indent prefix
+     * @param detail if true, also dumps Loggeable objects
+     */
     public void dump(PrintStream p, String indent, boolean detail) {
         String inner = indent + "  ";
         p.println(indent + "name-registrar:");

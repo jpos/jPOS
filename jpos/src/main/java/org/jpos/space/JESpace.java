@@ -290,11 +290,18 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
             ; // NOPMD
         out (key, value, timeout);
     }
+    /** Removes all existing entries for the key then writes a single entry (head-of-queue replacement).
+     * @param key the entry key
+     * @param value the new value
+     */
     public synchronized void put (K key, V value) {
         while (inp (key) != null)
             ; // NOPMD
         out (key, value);
     }
+    /** Runs a garbage-collection pass removing expired entries from the BDB JE store.
+     * @throws DatabaseException on BDB error
+     */
     public void gc () throws DatabaseException {
         Transaction txn = null;
         EntityCursor<GCRef> cursor = null;
@@ -346,6 +353,11 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
         dbe.close();
     }
 
+    /** Returns (or creates) the named JESpace stored at the given path.
+     * @param name space name
+     * @param path filesystem path for BDB JE environment
+     * @return the JESpace instance
+     */
     public synchronized static JESpace getSpace (String name, String path)
     {
         JESpace sp = (JESpace) spaceRegistrar.get (name);
@@ -355,6 +367,10 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
         }
         return sp;
     }
+    /** Returns (or creates) the named JESpace using the name as the storage path.
+     * @param name space name and storage path
+     * @return the JESpace instance
+     */
     public static JESpace getSpace (String name) {
         return getSpace (name, name);        
     }

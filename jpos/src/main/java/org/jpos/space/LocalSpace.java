@@ -54,11 +54,14 @@ public interface LocalSpace<K,V> extends Space<K,V> {
     void removeListener(K key, SpaceListener<K, V> listener);
 
     /**
+     * Returns the set of all keys currently present in the space.
      * @return Set containing all keys in Space
      */
     Set<K> getKeySet();
 
     /**
+     * Returns the number of entries queued under the given key.
+     * @param key the key to query
      * @return number of entries in a given key
      */
     int size(K key);

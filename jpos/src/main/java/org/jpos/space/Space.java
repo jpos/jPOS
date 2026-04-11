@@ -141,12 +141,14 @@ public interface Space<K,V> extends AutoCloseable {
     void push(K key, V value, long timeout);
 
     /**
+     * Returns true if any of the given keys are present in the space.
      * @param keys array of keys to check
      * @return true if one or more keys are available in the space
      */
     boolean existAny(K[] keys);
 
     /**
+     * Returns true if any of the given keys become available within the timeout.
      * @param keys array of keys to check
      * @param timeout to wait for any of the entries to become available in millis
      * @return true if one or more keys are available in the space
