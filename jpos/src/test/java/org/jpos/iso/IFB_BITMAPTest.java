@@ -25,6 +25,7 @@ import java.util.BitSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 /**
  * @author joconnor
@@ -190,6 +191,69 @@ public class IFB_BITMAPTest
             // expected.
             assertEquals("Bitmap can only hold fields numbered up to 8 in the 1 bytes available.",e.getMessage());
         }
+    }
+
+    /**
+     * Demonstrates a pack/unpack asymmetry in IFB_BITMAP(length=16) when bit 1
+     * of the BitSet is set by a real sub-field data field (not as an explicit
+     * ISO-8583 secondary-bitmap extension indicator).
+     *
+     * <p>This occurs in practice with DE-049 (Verification Data) in cmf.xml and
+     * cmf-858.xml, where sub-field id=1 ("Additional Identification Type") is a
+     * real data field. When that sub-field is present, bit 1 of the inner bitmap
+     * is set. IFB_BITMAP(16).pack() uses the formula
+     * {@code (b.length()+62 >>6 <<3)} and writes <b>8 bytes</b>.
+     * IFB_BITMAP(16).unpack() calls {@code ISOUtil.byte2BitSet(b, offset, 128)}
+     * which checks whether the MSB of byte[0] is set (the ISO-8583 "secondary
+     * bitmap present" indicator); since bit 1 doubles as field-1-present, it is
+     * set, so unpack <b>consumes 16 bytes</b> — 8 more than pack produced.
+     *
+     * <p>The mismatch causes subsequent field offsets to be off by 8 bytes,
+     * typically resulting in a {@link StringIndexOutOfBoundsException} when a
+     * fixed-length field runs past the end of the allocated sub-message buffer.
+     *
+     * <p>The bug only affects {@code length >= 16}; {@code length=8} is immune
+     * because {@code Math.min(8, 16) = 8} clamps the consumed value to 8
+     * regardless of bit 1.
+     */
+    @Test
+    @DisplayName("IFB_BITMAP(16) pack/unpack asymmetry when bit 1 is set by a sub-field data field")
+    public void testLength16PackUnpackAsymmetryWhenBit1SetByDataField() throws Exception {
+        // Bits 1-3 set: simulates sub-fields 1, 2, 3 present (as in DE-049 with
+        // "Additional Identification Type" + "Card Verification Data" + "Cardholder
+        // Billing Address Compressed").
+        // Note: jPOS uses b.set(fieldId) directly, so sub-field 1 → BitSet index 1.
+        BitSet bs = new BitSet();
+        bs.set(1); // sub-field 1 is a real data field in DE-049, but also sets the
+                   // MSB of byte[0], which byte2BitSet interprets as "secondary bitmap present"
+        bs.set(2);
+        bs.set(3);
+
+        ISOBitMap bitmapComponent = new ISOBitMap(-1);
+        bitmapComponent.setValue(bs);
+
+        // pack: formula (b.length()+62 >>6 <<3) = (4+62 >>6 <<3) = 8 bytes
+        byte[] packed = sixteenBytes.pack(bitmapComponent);
+        assertEquals(8, packed.length, "pack should produce 8 bytes for bits 1-3");
+
+        // Build a buffer of the same length as packed would appear inside a
+        // sub-message: 8 bytes of bitmap followed by 8 bytes of placeholder field data.
+        // (In cmf.xml DE-049 the full sub-message is 78 bytes; we only need enough
+        // bytes here to avoid ArrayIndexOutOfBoundsException in byte2BitSet.)
+        byte[] buffer = new byte[16];
+        System.arraycopy(packed, 0, buffer, 0, 8);
+
+        ISOBitMap decoded = new ISOBitMap(-1);
+        int consumed = sixteenBytes.unpack(decoded, buffer, 0);
+
+        // pack wrote 8 bytes; unpack should consume the same 8 bytes.
+        // FAILS: consumed == 16 because the MSB of byte[0] is set (bit 1 / sub-field 1
+        // present), which byte2BitSet(b, 0, 128) interprets as the ISO-8583 secondary
+        // bitmap extension indicator and therefore reads a second 8-byte block.
+        assertEquals(packed.length, consumed,
+            "IFB_BITMAP(16) unpack consumed " + consumed + " bytes but pack only wrote "
+            + packed.length + "; pack/unpack are asymmetric when bit 1 is set by a "
+            + "data sub-field rather than an explicit extension indicator");
     }
 
     @Test public void testThirdBitmapPack() throws Exception {
