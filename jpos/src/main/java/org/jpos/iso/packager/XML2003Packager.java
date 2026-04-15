@@ -36,15 +36,5 @@ public class XML2003Packager extends XMLPackager
     public XML2003Packager() throws ISOException {
         super();
         forceBinary(BINARY_FIELDS);
-
-        // For backward compatibility with older implementation of XML2003Packager
-        // we revert certain restrictions that XMLPackager sets
-        try {
-            setXMLParserFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
-            setXMLParserFeature("http://xml.org/sax/features/external-general-entities", true);
-            setXMLParserFeature("http://xml.org/sax/features/external-parameter-entities", true);
-        } catch (Exception e) {
-            throw new ISOException(e.toString(), e);
-        }
     }
 }
