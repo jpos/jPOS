@@ -23,8 +23,11 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.SimpleLogSource;
 
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import javax.net.ssl.*;
-import java.io.ByteArrayInputStream;
+import javax.security.auth.x500.X500Principal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,7 +37,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -259,57 +261,38 @@ public class GenericSSLSocketFactory
         if (certs==null || certs.length==0)
             throw new SSLPeerUnverifiedException("No server certificates found");
 
-        try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            ByteArrayInputStream bais = new ByteArrayInputStream(certs[0].getEncoded());
-            X509Certificate cert = (X509Certificate) cf.generateCertificate(bais);
+        if (!(certs[0] instanceof X509Certificate cert))
+            throw new SSLPeerUnverifiedException("Server certificate is not X.509");
 
-            //get the servers DN in its string representation
-            String dn = cert.getSubjectDN().getName();
-
-            //get the common name from the first cert
-            String cn = getCN(dn);
-            if (!serverName.equalsIgnoreCase(cn)) {
-                throw new SSLPeerUnverifiedException("Invalid SSL server name. "+
-                        "Expected '" + serverName +
-                        "', got '" + cn + "'");
-            }
-        } catch (CertificateException e) {
-            throw new SSLPeerUnverifiedException(e.getMessage());
+        String cn = getCN(cert);
+        if (!serverName.equalsIgnoreCase(cn)) {
+            throw new SSLPeerUnverifiedException("Invalid SSL server name. "+
+                    "Expected '" + serverName +
+                    "', got '" + cn + "'");
         }
     }
 
     /**
-     * Parses a X.500 distinguished name for the value of the 
-     * "Common Name" field.
-     * This is done a bit sloppy right now and should probably be done a bit
-     * more according to RFC 2253.
+     * Extracts the Common Name (CN) from an X.509 certificate's subject DN
+     * using the standard {@link X500Principal} and {@link LdapName} APIs,
+     * which correctly handle quoting and escaping per RFC 2253.
      *
-     * <pre>
-     * Origin:      jakarta-commons/httpclient
-     * File:        StrictSSLProtocolSocketFactory.java
-     * Revision:    1.5
-     * License:     Apache-2.0
-     * </pre>
-     *
-     * @param dn  a X.500 distinguished name.
-     * @return the value of the "Common Name" field.
+     * @param cert  an X.509 certificate
+     * @return the value of the "Common Name" field, or null if not present.
      */
-    private String getCN(String dn) {
-        int i = dn.indexOf("CN=");
-        if (i == -1) {
-            return null;
-        }
-        //get the remaining DN without CN=
-        dn = dn.substring(i + 3);  
-        // System.out.println("dn=" + dn);
-        char[] dncs = dn.toCharArray();
-        for (i = 0; i < dncs.length; i++) {
-            if (dncs[i] == ','  && i > 0 && dncs[i - 1] != '\\') {
-                break;
+    private String getCN(X509Certificate cert) throws SSLPeerUnverifiedException {
+        try {
+            X500Principal principal = cert.getSubjectX500Principal();
+            LdapName ln = new LdapName(principal.getName(X500Principal.RFC2253));
+            for (Rdn rdn : ln.getRdns()) {
+                if ("CN".equalsIgnoreCase(rdn.getType())) {
+                    return rdn.getValue().toString();
+                }
             }
+            return null;
+        } catch (InvalidNameException e) {
+            throw new SSLPeerUnverifiedException("Invalid subject DN: " + e.getMessage());
         }
-        return dn.substring(0, i);
     }
 
     public String getKeyStore() {
