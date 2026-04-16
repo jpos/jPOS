@@ -540,7 +540,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
 
             ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) obj);
             try {
-                ObjectInputStream is = new ObjectInputStream (bais);
+                ObjectInputStream is = org.jpos.util.Serializer.createSafeObjectInputStream(bais);
                 return is.readObject();
             } catch (Exception e) {
                 throw new SpaceError (e);

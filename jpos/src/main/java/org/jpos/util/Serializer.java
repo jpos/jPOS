@@ -20,11 +20,106 @@ package org.jpos.util;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 public class Serializer {
+    private static final int MAX_DEPTH = 32;
+
+    private static final Set<String> REJECTED_CLASSES = Set.of(
+        "org.apache.commons.collections.functors.InvokerTransformer",
+        "org.apache.commons.collections.functors.InstantiateTransformer",
+        "org.apache.commons.collections4.functors.InvokerTransformer",
+        "org.apache.commons.collections4.functors.InstantiateTransformer",
+        "org.apache.xalan.xsltc.trax.TemplatesImpl",
+        "com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl",
+        "org.codehaus.groovy.runtime.ConvertedClosure",
+        "org.codehaus.groovy.runtime.MethodClosure",
+        "org.springframework.beans.factory.ObjectFactory",
+        "com.sun.org.apache.bcel.internal.util.ClassLoader",
+        "org.mozilla.javascript.NativeJavaObject",
+        "com.mchange.v2.c3p0.WrapperConnectionPoolDataSource",
+        "com.mchange.v2.c3p0.JndiRefForwardingDataSource",
+        "bsh.XThis",
+        "bsh.Interpreter",
+        "com.sun.rowset.JdbcRowSetImpl"
+    );
+
+    private static final Set<String> REJECTED_PACKAGES = Set.of(
+        "org.apache.commons.collections.functors.",
+        "org.apache.commons.collections4.functors.",
+        "javassist.",
+        "net.bytebuddy.",
+        "org.hibernate.jmx.",
+        "javax.management."
+    );
+
+    private static final ObjectInputFilter SERIAL_FILTER = filterInfo -> {
+        if (filterInfo.depth() > MAX_DEPTH)
+            return ObjectInputFilter.Status.REJECTED;
+
+        Class<?> clazz = filterInfo.serialClass();
+        if (clazz != null) {
+            String name = clazz.getName();
+            if (REJECTED_CLASSES.contains(name))
+                return ObjectInputFilter.Status.REJECTED;
+            for (String pkg : REJECTED_PACKAGES) {
+                if (name.startsWith(pkg))
+                    return ObjectInputFilter.Status.REJECTED;
+            }
+        }
+        return ObjectInputFilter.Status.UNDECIDED;
+    };
+
+    /**
+     * Creates an ObjectInputStream with a deserialization filter that rejects
+     * known gadget-chain classes and enforces resource limits.
+     *
+     * @param in the underlying input stream
+     * @return a filtered ObjectInputStream
+     * @throws IOException if an I/O error occurs
+     */
+    public static ObjectInputStream createSafeObjectInputStream(InputStream in) throws IOException {
+        ObjectInputStream ois = new ObjectInputStream(in);
+        ois.setObjectInputFilter(SERIAL_FILTER);
+        return ois;
+    }
+
+    /**
+     * Creates an ObjectInputStream with an allow-list filter that only permits
+     * classes matching the specified packages or exact class names.
+     *
+     * @param in the underlying input stream
+     * @param allowedPackages package prefixes to allow (e.g. "org.jpos.iso.")
+     * @return a filtered ObjectInputStream
+     * @throws IOException if an I/O error occurs
+     */
+    public static ObjectInputStream createAllowListObjectInputStream(InputStream in, String... allowedPackages) throws IOException {
+        ObjectInputStream ois = new ObjectInputStream(in);
+        ois.setObjectInputFilter(filterInfo -> {
+            if (filterInfo.depth() > MAX_DEPTH)
+                return ObjectInputFilter.Status.REJECTED;
+
+            Class<?> clazz = filterInfo.serialClass();
+            if (clazz == null)
+                return ObjectInputFilter.Status.UNDECIDED;
+
+            if (clazz.isPrimitive() || clazz.isArray())
+                return ObjectInputFilter.Status.ALLOWED;
+
+            String name = clazz.getName();
+            if (name.startsWith("java.lang.") || name.startsWith("java.util.") || name.startsWith("java.math."))
+                return ObjectInputFilter.Status.ALLOWED;
+
+            for (String pkg : allowedPackages) {
+                if (name.startsWith(pkg))
+                    return ObjectInputFilter.Status.ALLOWED;
+            }
+            return ObjectInputFilter.Status.REJECTED;
+        });
+        return ois;
+    }
+
     public static byte[] serialize (Object obj) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(baos);
@@ -33,7 +128,7 @@ public class Serializer {
     }
     public static Object deserialize (byte[] b) throws IOException, ClassNotFoundException {
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
-        ObjectInputStream is = new ObjectInputStream(bais);
+        ObjectInputStream is = createSafeObjectInputStream(bais);
         return is.readObject();
     }
     @SuppressWarnings("unchecked")
@@ -64,7 +159,7 @@ public class Serializer {
       throws ClassNotFoundException, IOException
     {
         ByteArrayInputStream  bais = new ByteArrayInputStream (buf);
-        ObjectInputStream     ois  = new ObjectInputStream( bais );
+        ObjectInputStream     ois  = createAllowListObjectInputStream(bais);
         Map<String,String> m = new HashMap<>();
         int size = ois.readInt();
         for (int i=0; i<size; i++) {

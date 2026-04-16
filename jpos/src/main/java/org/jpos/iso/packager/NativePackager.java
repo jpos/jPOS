@@ -62,7 +62,7 @@ public class NativePackager implements ISOPackager {
     public void unpack(ISOComponent m, InputStream in) throws IOException, ISOException {
         try {
             if (m instanceof Externalizable) {
-                ObjectInputStream is = new ObjectInputStream(in);
+                ObjectInputStream is = org.jpos.util.Serializer.createAllowListObjectInputStream(in, "org.jpos.iso.");
                 ((Externalizable) m).readExternal(is);
             }
         } catch (Exception e) {
