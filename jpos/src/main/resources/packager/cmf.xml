@@ -451,7 +451,7 @@
       packager="org.jpos.iso.packager.GenericSubFieldPackager">
       <isofield
           id="0"
-          length="16"
+          length="8"
           name="Bit Map"
           class="org.jpos.iso.IFB_BITMAP"/>
       <isofield
