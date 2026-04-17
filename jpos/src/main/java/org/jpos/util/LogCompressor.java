@@ -18,6 +18,9 @@
 
 package org.jpos.util;
 
+import org.jpos.q2.Q2;
+
+import java.io.File;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -63,12 +66,15 @@ public class LogCompressor {
         return instance;
     }
 
-    public void submit(Runnable task) {
+    public void submit(File logFile, Runnable task) {
         executor.execute(() -> {
             try {
                 task.run();
             } catch (Throwable t) {
-                t.printStackTrace(System.err);
+                Q2.getQ2().getLog().warn(
+                  String.format("error running log compression task for '%s'", logFile),
+                  t
+                );
             }
         });
     }
