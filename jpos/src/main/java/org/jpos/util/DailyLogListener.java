@@ -376,7 +376,11 @@ public class DailyLogListener extends RotateLogListener{
      * Hook method that creates a thread to compress the file f.
      * @param f the file name
      * @return a thread to compress the file and null if it is not necessary
+     * @deprecated Compression is now serialized through {@link LogCompressor}.
+     *             Override {@link #getCompressedOutputStream} or
+     *             {@link #closeCompressedOutputStream} to customize compression.
      */
+    @Deprecated
     protected Thread getCompressorThread(File f){
         return new Thread(new Compressor(f),"DailyLogListener-Compressor");
     }
@@ -502,18 +506,14 @@ public class DailyLogListener extends RotateLogListener{
     }
 
     /**
-     * Hook method to optionally compress the file
+     * Hook method to optionally compress the file.
+     * Compression is queued to the shared {@link LogCompressor} and
+     * executed sequentially in a background thread.
      * @param logFile the file name
      */
     protected void compress(File logFile) {
-        if (getCompressionFormat() != NONE){
-            Thread t = getCompressorThread(logFile);
-            try{
-                if (t != null)
-                    t.start();
-            } catch (Exception e){
-                logDebugEx("error compressing file",e);
-            }
+        if (getCompressionFormat() != NONE) {
+            LogCompressor.getInstance().submit(new Compressor(logFile));
         }
     }
 
