@@ -450,6 +450,11 @@
       length="999"
       name="Additional data private"
       class="org.jpos.iso.IFB_LLLCHAR"/>
+  <!--
+      DE-049 in cmfv3 is modeled as a DatasetPackager (DBM), not as a GenericSubFieldPackager
+      with an IFB_BITMAP field 0. DatasetPackager reserves bit 1 as continuation, so element 1
+      does not collide with bitmap extension semantics.
+  -->
   <isofieldpackager
       id="49"
       length="9999"
