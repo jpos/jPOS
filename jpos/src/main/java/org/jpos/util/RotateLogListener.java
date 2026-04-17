@@ -28,6 +28,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Timer;
@@ -134,10 +137,11 @@ public class RotateLogListener extends SimpleLogListener
         if (rotationAlgo == null) {
             rotationAlgo = () -> {
                 for (int i = maxCopies; i > 0; ) {
-                    File dest = new File(logName + "." + i);
-                    File source = new File(logName + (--i > 0 ? "." + i : ""));
-                    dest.delete();
-                    source.renameTo(dest);
+                    Path dest = Path.of(logName + "." + i);
+                    Path source = Path.of(logName + (--i > 0 ? "." + i : ""));
+                    try {
+                        Files.move(source, dest, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+                    } catch (IOException ignored) { }
                 }
             };
         }

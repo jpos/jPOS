@@ -22,9 +22,11 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
 import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -151,12 +153,20 @@ public class DailyLogListener extends RotateLogListener{
                 newName = getPrefix() + getLastDate();
             }
             int i=0;
-            File dest = new File (newName+compressedSuffix), source = new File(logName);
-            while (dest.exists())
-                dest  = new File (newName + "." + ++i + compressedSuffix);
-            source.renameTo(dest);
+            Path source = Path.of(logName);
+            Path dest = Path.of(newName + compressedSuffix);
+            for (;;) {
+                try {
+                    Files.move(source, dest, StandardCopyOption.ATOMIC_MOVE);
+                    break;
+                } catch (FileAlreadyExistsException e) {
+                    dest = Path.of(newName + "." + ++i + compressedSuffix);
+                } catch (IOException e) {
+                    break;
+                }
+            }
             setLastDate(getDateFmt().format(new Date()));
-            compress(dest);
+            compress(dest.toFile());
         };
 
         super.setConfiguration(cfg);
