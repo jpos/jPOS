@@ -286,6 +286,8 @@ public class SystemMonitor extends QBeanSupport
           usableSpace,
           Q2.getVersion(),
           Q2.getRevision(),
+          Q2.getClassPath(),
+          Q2.getClassPathHash(),
           getServer().getInstanceId(),
           getServer().getUptime(),
           loadAverage(),
