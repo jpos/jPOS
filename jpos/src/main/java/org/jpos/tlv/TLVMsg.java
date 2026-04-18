@@ -87,6 +87,15 @@ public class TLVMsg implements Loggeable {
         this(tag, value, 0, 0);
     }
 
+    /**
+     * Constructs a TLV message using explicit tag and length sizes.
+     *
+     * @param tag the TLV tag identifier
+     * @param value the TLV value bytes
+     * @param tagSize fixed tag size, or {@code 0} for auto-detection
+     * @param lengthSize fixed length size, or {@code 0} for auto-detection
+     * @throws IllegalArgumentException if the supplied tag or value is invalid
+     */
     protected TLVMsg(int tag, byte[] value, int tagSize, int lengthSize)
             throws IllegalArgumentException {
         this.tag = tag;
@@ -186,6 +195,8 @@ public class TLVMsg implements Loggeable {
     }
 
     /**
+     * Returns the TLV tag identifier.
+     *
      * @return tag
      */
     public int getTag() {
@@ -193,6 +204,8 @@ public class TLVMsg implements Loggeable {
     }
 
     /**
+     * Returns the TLV value bytes.
+     *
      * @return tag value
      */
     public byte[] getValue() {
@@ -200,7 +213,9 @@ public class TLVMsg implements Loggeable {
     }
 
     /**
-     * @return tag + length + value of the TLV Message
+     * Returns the encoded TLV message bytes.
+     *
+     * @return tag + length + value of the TLV message
      */
     public byte[] getTLV() {
         String hexTag = Integer.toHexString(tag);
@@ -283,6 +298,8 @@ public class TLVMsg implements Loggeable {
     }
 
     /**
+     * Returns the TLV value as a hexadecimal string.
+     *
      * @return value
      */
     public String getStringValue() {

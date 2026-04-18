@@ -26,64 +26,122 @@ import jdk.jfr.StackTrace;
 @Category("jPOS")
 @Name("jpos.TMEvent")
 @StackTrace()
+/** Base Java Flight Recorder event for TransactionManager lifecycle notifications. */
 public class TMEvent extends Event {
+    /** Transaction or participant name associated with the event. */
     @Name("name")
     protected final String name;
 
+    /** Transaction identifier associated with the event. */
     @Name("id")
     protected final long id;
 
+    /**
+     * Creates a transaction manager JFR event.
+     *
+     * @param name transaction or participant name
+     * @param id transaction identifier
+     */
     public TMEvent(String name, long id) {
         this.name = name;
         this.id = id;
     }
-    
+
+    /** JFR event emitted during transaction prepare. */
     @Name("jpos.TMPrepare")
     public static class Prepare extends TMEvent {
+        /**
+         * Creates a prepare event.
+         *
+         * @param name transaction or participant name
+         * @param id transaction identifier
+         */
         public Prepare(String name, long id) {
             super(name, id);
         }
     }
 
+    /** JFR event emitted during prepare-for-abort. */
     @Name("jpos.TMPrepareForAbort")
     public static class PrepareForAbort extends TMEvent {
+        /**
+         * Creates a prepare-for-abort event.
+         *
+         * @param name transaction or participant name
+         * @param id transaction identifier
+         */
         public PrepareForAbort(String name, long id) {
             super(name, id);
         }
     }
 
+    /** JFR event emitted during commit. */
     @Name("jpos.TMCommit")
     public static class Commit extends TMEvent {
+        /**
+         * Creates a commit event.
+         *
+         * @param name transaction or participant name
+         * @param id transaction identifier
+         */
         public Commit(String name, long id) {
             super(name, id);
         }
     }
 
+    /** JFR event emitted during abort. */
     @Name("jpos.TMAbort")
     public static class Abort extends TMEvent {
+        /**
+         * Creates an abort event.
+         *
+         * @param name transaction or participant name
+         * @param id transaction identifier
+         */
         public Abort(String name, long id) {
             super(name, id);
         }
     }
 
+    /** JFR event emitted when capturing a transaction snapshot. */
     @Name("jpos.TMSnapshot")
     public static class Snapshot extends TMEvent {
+        /**
+         * Creates a snapshot event.
+         *
+         * @param name transaction or participant name
+         * @param id transaction identifier
+         */
         public Snapshot(String name, long id) {
             super(name, id);
         }
     }
 
+    /** JFR event emitted when a transaction is paused. */
     @Name("jpos.TMPause")
     public static class Pause extends TMEvent {
+        /**
+         * Creates a pause event.
+         *
+         * @param name transaction or participant name
+         * @param id transaction identifier
+         */
         public Pause(String name, long id) {
             super(name, id);
         }
     }
+
+    /** JFR event emitted during recovery. */
     @Name("jpos.TMRecover")
     public static class Recover extends TMEvent {
+        /**
+         * Creates a recovery event.
+         *
+         * @param name transaction or participant name
+         * @param id transaction identifier
+         */
         public Recover(String name, long id) {
             super(name, id);
         }
     }
-
 }

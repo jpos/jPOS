@@ -79,6 +79,7 @@ public class TLVList implements Serializable, Loggeable {
     /** Cached index of the most recent occurrence found by a search helper. */
     private int indexLastOccurrence = -1;
 
+    /** Builder for configured {@link TLVList} instances. */
     public static class TLVListBuilder {
 
         private int tagSize = 0;
@@ -158,36 +159,40 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * Unpack a message.
+     * Unpacks a TLV-encoded message.
      *
      * @param buf raw message
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if the buffer contains an invalid TLV structure
      */
     public void unpack(byte[] buf) throws IllegalArgumentException {
         unpack(buf, 0);
     }
 
     /**
-     * @return a list of tags.
+     * Returns the decoded tags in insertion order.
+     *
+     * @return a list of tags
      */
     public List<TLVMsg> getTags() {
         return tags;
     }
 
     /**
-     * @return an enumeration of the List of tags.
+     * Returns the decoded tags as an enumeration.
+     *
+     * @return an enumeration of the list of tags
      */
     public Enumeration<TLVMsg> elements() {
         return Collections.enumeration(tags);
     }
 
     /**
-     * Unpack a message with a starting offset.
+     * Unpacks a TLV-encoded message starting at the provided offset.
      *
      * @param buf raw message
      * @param offset the offset
-     * @throws IndexOutOfBoundsException if {@code offset} exceeds {code buf.length}
-     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException if {@code offset} exceeds {@code buf.length}
+     * @throws IllegalArgumentException if the buffer contains an invalid TLV structure
      */
     public void unpack(byte[] buf, int offset) throws IllegalArgumentException
             , IndexOutOfBoundsException {

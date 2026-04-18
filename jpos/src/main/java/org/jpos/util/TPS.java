@@ -107,15 +107,19 @@ public class TPS implements Loggeable, AutoCloseable {
     }
 
     /**
-     * @param autoupdate true to auto update.
+     * Creates a TPS meter with the default one-second period.
+     *
+     * @param autoupdate true to auto update
      */
     public TPS(boolean autoupdate) {
         this(1000L, autoupdate);
     }
 
     /**
-     * @param period in millis.
-     * @param autoupdate true to autoupdate.
+     * Creates a TPS meter with the given sampling period.
+     *
+     * @param period sampling period in milliseconds
+     * @param autoupdate true to auto update
      */
     public TPS(final long period, boolean autoupdate) {
         this(period, autoupdate, null);
@@ -146,10 +150,16 @@ public class TPS implements Loggeable, AutoCloseable {
         }
     }
 
+    /** Increments the transaction counter for the current sampling window. */
     public void tick() {
         count.incrementAndGet();
     }
 
+    /**
+     * Returns the current transactions-per-second value.
+     *
+     * @return current TPS as a floating-point value
+     */
     public float floatValue() {
         if (autoupdate) {
             return tps;
@@ -158,18 +168,38 @@ public class TPS implements Loggeable, AutoCloseable {
         }
     }
 
+    /**
+     * Returns the current transactions-per-second value rounded to an integer.
+     *
+     * @return current TPS rounded to an integer
+     */
     public int intValue() {
         return Math.round(floatValue());
     }
 
+    /**
+     * Returns the average TPS across sampled intervals.
+     *
+     * @return average TPS
+     */
     public float getAvg() {
         return avg;
     }
 
+    /**
+     * Returns the highest recorded TPS peak.
+     *
+     * @return peak TPS
+     */
     public int getPeak() {
         return peak;
     }
 
+    /**
+     * Returns the wall-clock time when the peak TPS was recorded.
+     *
+     * @return peak timestamp in epoch milliseconds, or {@code -1} if unavailable
+     */
     public long getPeakWhen() {
         Instant pw = peakWhen;
         return pw != null ? pw.toEpochMilli() : -1L;
@@ -187,10 +217,20 @@ public class TPS implements Loggeable, AutoCloseable {
         }
     }
 
+    /**
+     * Returns the configured sampling period.
+     *
+     * @return period in milliseconds
+     */
     public long getPeriod() {
         return period.toMillis();
     }
 
+    /**
+     * Returns elapsed wall-clock time since the current sampling window started.
+     *
+     * @return elapsed time in milliseconds
+     */
     public long getElapsed() {
         // Wall-clock elapsed since last sampling start (manual) or since construction (auto).
         Instant sw = startWall;
@@ -201,6 +241,7 @@ public class TPS implements Loggeable, AutoCloseable {
         return String.format("tps=%d, peak=%d, avg=%.2f", intValue(), getPeak(), getAvg());
     }
 
+    /** Stops auto-update scheduling and leaves the meter in manual mode. */
     public void stop() {
         synchronized (this) {
             autoupdate = false; // can still use it in manual mode
@@ -308,6 +349,11 @@ public class TPS implements Loggeable, AutoCloseable {
         }
     }
 
+    /**
+     * Overrides the monotonic nano time source for deterministic tests.
+     *
+     * @param simulatedNanoTime simulated monotonic time value in nanoseconds
+     */
     public void setSimulatedNanoTime(long simulatedNanoTime) {
         // This is a monotonic nano time value intended for tests.
         // We do not attempt to convert it to epoch-based Instants.
@@ -320,6 +366,11 @@ public class TPS implements Loggeable, AutoCloseable {
         this.simulatedNanoTime = simulatedNanoTime;
     }
 
+    /**
+     * Returns the current monotonic time in nanoseconds.
+     *
+     * @return monotonic nano time, simulated when configured
+     */
     protected long getNanoTime() {
         long s = simulatedNanoTime;
         return s > 0L ? s : System.nanoTime();
