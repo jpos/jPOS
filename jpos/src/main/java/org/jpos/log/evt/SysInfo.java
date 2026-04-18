@@ -29,7 +29,7 @@ import java.util.UUID;
 
 @JsonPropertyOrder({
   "osName", "osVersion", "javaVersion", "javaVendor", "aes", "host", "userName", "cwd", "watch-service", "environment",
-  "args", "encoding", "zone-info", "processName", "freeSpace", "usableSpace", "version", "revision", "instance",
+  "args", "encoding", "zone-info", "processName", "freeSpace", "usableSpace", "version", "revision", "class-path", "class-path-hash", "instance",
   "uptime", "loadAverage", "processors", "drift", "maxMemory", "totalMemory", "freeMemory", "inUseMemory",
   "gcTotalCnt", "gcTotalTime", "threadCount", "threadPeak", "nameRegistrar"
 })
@@ -52,6 +52,8 @@ public record SysInfo (
   @JsonProperty("usable-space") String usableSpace,
   String version,
   String revision,
+  @JsonProperty("class-path") String classPath,
+  @JsonProperty("class-path-hash") String classPathHash,
   UUID instance,
   Duration uptime,
   @JsonProperty("load-average") double loadAverage,

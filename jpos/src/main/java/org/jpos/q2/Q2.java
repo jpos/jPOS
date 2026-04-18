@@ -79,11 +79,16 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
 import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -1107,6 +1112,33 @@ public class Q2 implements FileFilter, Runnable {
         } catch (MissingResourceException ignored) {
             return null;
         }
+    }
+    public static String getClassPath() {
+        try {
+            String cp = System.getProperty("java.class.path");
+            if (cp != null && !cp.contains(File.pathSeparator)) {
+                File jarFile = new File(cp);
+                if (jarFile.isFile()) {
+                    try (JarFile jar = new JarFile(jarFile)) {
+                        Manifest manifest = jar.getManifest();
+                        if (manifest != null) {
+                            String classPath = manifest.getMainAttributes().getValue(Attributes.Name.CLASS_PATH);
+                            return classPath != null ? jarFile.getName() + " " + classPath : jarFile.getName();
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) { }
+        return "";
+    }
+    public static String getClassPathHash() {
+        String cp = getClassPath();
+        if (cp.isEmpty()) return "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            return HexFormat.of().formatHex(md.digest(cp.getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception ignored) { }
+        return "";
     }
     public boolean isDisableDynamicClassloader() {
         return disableDynamicClassloader;
