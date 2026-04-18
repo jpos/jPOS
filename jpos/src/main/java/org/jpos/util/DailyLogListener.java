@@ -513,7 +513,7 @@ public class DailyLogListener extends RotateLogListener{
      */
     protected void compress(File logFile) {
         if (getCompressionFormat() != NONE) {
-            LogCompressor.getInstance().submit(new Compressor(logFile));
+            LogCompressor.getInstance().submit(logFile, new Compressor(logFile));
         }
     }
 

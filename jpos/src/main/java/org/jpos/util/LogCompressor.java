@@ -18,24 +18,43 @@
 
 package org.jpos.util;
 
-import org.jpos.space.TSpace;
+import org.jpos.q2.Q2;
+
+import java.io.File;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Serializes log file compression across all log listener instances
- * through a single on-demand background thread backed by a TSpace work queue.
+ * through a single on-demand background worker.
  *
- * <p>The consumer thread is started when work is submitted and exits
- * after {@link #IDLE_TIMEOUT} milliseconds of inactivity.</p>
+ * <p>The worker thread is created on demand, runs as a low-priority daemon,
+ * and exits after {@link #IDLE_TIMEOUT} milliseconds of inactivity.</p>
  */
-public class LogCompressor implements Runnable {
-    private static final String QUEUE_KEY = "compression";
+public class LogCompressor {
     private static final long IDLE_TIMEOUT = 30_000L;
 
     private static volatile LogCompressor instance;
-    private final TSpace<String, Runnable> space = new TSpace<>();
-    private Thread thread;
+    private final ThreadPoolExecutor executor = new ThreadPoolExecutor(
+      0,
+      1,
+      IDLE_TIMEOUT,
+      TimeUnit.MILLISECONDS,
+      new LinkedBlockingQueue<>(),
+      r -> {
+          Thread t = Thread.ofPlatform()
+            .daemon(true)
+            .name("log-compressor", 0)
+            .unstarted(r);
+          t.setPriority(Thread.NORM_PRIORITY - 1);
+          return t;
+      }
+    );
 
-    private LogCompressor() { }
+    private LogCompressor() {
+        executor.allowCoreThreadTimeOut(true);
+    }
 
     public static LogCompressor getInstance() {
         if (instance == null) {
@@ -47,33 +66,16 @@ public class LogCompressor implements Runnable {
         return instance;
     }
 
-    public synchronized void submit(Runnable task) {
-        space.out(QUEUE_KEY, task);
-        if (thread == null || !thread.isAlive()) {
-            thread = Thread.ofPlatform()
-              .daemon(true)
-              .name("log-compressor")
-              .priority(Thread.NORM_PRIORITY - 1)
-              .start(this);
-        }
-    }
-
-    @Override
-    public void run() {
-        try {
-            Runnable task;
-            while ((task = space.in(QUEUE_KEY, IDLE_TIMEOUT)) != null) {
-                try {
-                    task.run();
-                } catch (Throwable t) {
-                    t.printStackTrace(System.err);
-                }
+    public void submit(File logFile, Runnable task) {
+        executor.execute(() -> {
+            try {
+                task.run();
+            } catch (Throwable t) {
+                Q2.getQ2().getLog().warn(
+                  String.format("error running log compression task for '%s'", logFile),
+                  t
+                );
             }
-        } finally {
-            synchronized (this) {
-                if (space.rdp(QUEUE_KEY) == null)
-                    thread = null;
-            }
-        }
+        });
     }
 }
