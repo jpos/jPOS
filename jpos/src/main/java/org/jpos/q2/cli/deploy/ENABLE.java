@@ -38,19 +38,21 @@ public class ENABLE implements CLICommand {
             return;
         }
         File deployDir = ctx.getCLI().getQ2().getDeployDir();
-        File deploy = new File(deployDir.getAbsolutePath() + "/" + args[1] + ".xml.off");
+        File deploy = new File(deployDir, args[1] + ".xml.off").getCanonicalFile();
+        File dest = new File(deployDir, args[1] + ".xml").getCanonicalFile();
+        if (!deploy.toPath().startsWith(deployDir.getCanonicalFile().toPath())) {
+            ctx.println("Invalid path: " + args[1]);
+            return;
+        }
         if (deploy.exists() && deploy.isFile()) {
-            File dest = new File(deployDir.getAbsolutePath() + "/" + args[1] + ".xml");
             deploy.renameTo(dest);
             ctx.println("ENABLED: " + args[1]);
             return;
         }
-        File dest = new File(deployDir.getAbsolutePath() + "/" + args[1] + ".xml");
         if (dest.exists()) {
             ctx.println("Already enabled: " + args[1]);
             return;
         }
         ctx.println("Can't find the bean descriptor: " + args[1]);
-        return;
     }
 }
