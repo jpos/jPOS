@@ -457,12 +457,12 @@ public class DirPoll extends SimpleLogSource
     //----------------------------------------------------- private helpers
     private byte[] readRequest (File f) throws IOException {
         byte[] b = new byte[(int) f.length()];
-        FileInputStream in = new FileInputStream(f);
-        in.read(b);
-        in.close();
+        try (FileInputStream in = new FileInputStream(f)) {
+            in.read(b);
+        }
         return b;
     }
-    private void writeResponse (String requestName, byte[] b) 
+    private void writeResponse (String requestName, byte[] b)
         throws IOException
     {
         if (responseSuffix != null) {
@@ -472,9 +472,9 @@ public class DirPoll extends SimpleLogSource
         }
 
         File tmp = new File(tmpDir, requestName);
-        FileOutputStream out = new FileOutputStream(tmp);
-        out.write(b);
-        out.close();
+        try (FileOutputStream out = new FileOutputStream(tmp)) {
+            out.write(b);
+        }
         moveTo (tmp, responseDir);
     }
 
