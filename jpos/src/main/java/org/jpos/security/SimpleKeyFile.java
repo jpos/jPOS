@@ -175,14 +175,13 @@ public class SimpleKeyFile
     }
 
     void store () throws SecureKeyStoreException {
-        FileOutputStream out;
         try {
             if (!file.canWrite())
                 throw  new SecureKeyStoreException("Can't write to file: " + file.getCanonicalPath());
-            out = new FileOutputStream(file);
-            props.store(out, header);
-            out.flush();
-            out.close();
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                props.store(out, header);
+                out.flush();
+            }
         } catch (Exception e) {
             throw  new SecureKeyStoreException(e);
         }
