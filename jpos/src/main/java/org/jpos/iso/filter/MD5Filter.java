@@ -30,9 +30,14 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 /**
- * Computes an MD5 based Message Authentication Code
- * on outgoing messages and checks that MAC on incoming
- * ones.
+ * Sample {@link ISOFilter} implementation that demonstrates how to compute
+ * a MAC (Message Authentication Code) on outgoing ISO messages and verify
+ * it on incoming ones.
+ *
+ * <p>This filter uses MD5 for illustration purposes only.
+ * <b>It is not suitable for production use.</b> Production environments
+ * should use an HSM-based filter with dynamically exchanged zone master
+ * keys and a cryptographically strong MAC algorithm (e.g. HMAC-SHA256).</p>
  *
  * @author Alejandro P. Revilla
  * @version $Revision$ $Date$
