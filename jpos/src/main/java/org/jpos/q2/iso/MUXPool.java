@@ -31,6 +31,7 @@ import org.jpos.util.Realm;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -287,6 +288,31 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         for (MUX m : mux)
             if (isUsable(m))
                 return true;
+        return false;
+    }
+
+    @Override
+    public boolean isConnected(long timeout) {
+        if (isConnected())
+            return true;
+
+        CompletableFuture<Boolean> result = new CompletableFuture<>();
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (MUX m : mux) {
+                executor.execute(() -> {
+                    if (m.isConnected(timeout))
+                        result.complete(true);
+                });
+            }
+            try {
+                return result.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException | TimeoutException _) {
+            } finally {
+                executor.shutdownNow();
+            }
+        }
         return false;
     }
 

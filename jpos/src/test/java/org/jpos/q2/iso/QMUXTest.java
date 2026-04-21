@@ -363,4 +363,38 @@ public class QMUXTest {
             assertNull(qMUX.sp, "qMUX.sp");
         }
     }
+
+    @Test
+    public void testIsConnectedWithTimeout() throws Exception {
+        QMUX qmux = new QMUX();
+        qmux.setName("test-qmux");
+        qmux.setServer(new Q2());
+        qmux.setConfiguration(new SimpleConfiguration());
+        Element persist = new Element("qmux");
+        persist.addContent(new Element("space").setText("tspace:testspace"));
+        persist.addContent(new Element("in").setText("test.in"));
+        persist.addContent(new Element("out").setText("test.out"));
+        persist.addContent(new Element("ready").setText("ready1 ready2"));
+        qmux.setPersist(persist);
+        qmux.initService();
+        qmux.startService();
+        try {
+            // Put a ready indicator in the space in a separate thread to test the wait
+            Thread.ofVirtual().start(() -> {
+                try {
+                    Thread.sleep(200);
+                    qmux.getSpace().out("ready2", "true");
+                } catch (InterruptedException e) {
+                    // ignore
+                }
+            });
+
+            assertFalse(qmux.isConnected(100), "Should not be connected yet");
+
+            assertTrue(qmux.isConnected(400), "Should be connected now");
+        } finally {
+            qmux.stopService();
+            qmux.destroyService();
+        }
+    }
 }
