@@ -120,4 +120,22 @@ public class MUXPoolTest {
 
         assertFalse(pool.isConnected(500), "Pool should not be connected if all MUXes timeout or return false");
     }
+
+    @Test
+    public void testIsConnectedWithZeroTimeout() throws Exception {
+        MUXPool pool = new MUXPool();
+        MUX m1 = mock(MUX.class);
+        pool.mux = new MUX[] { m1 };
+        when(m1.isConnected(0)).thenReturn(false);
+        assertFalse(pool.isConnected(0), "Should return false for zero timeout");
+    }
+
+    @Test
+    public void testIsConnectedWithNegativeTimeout() throws Exception {
+        MUXPool pool = new MUXPool();
+        MUX m1 = mock(MUX.class);
+        pool.mux = new MUX[] { m1 };
+        when(m1.isConnected(-1)).thenReturn(false);
+        assertFalse(pool.isConnected(-1), "Should return false for negative timeout");
+    }
 }

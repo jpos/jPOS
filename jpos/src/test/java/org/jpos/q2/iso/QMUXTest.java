@@ -18,15 +18,6 @@
 
 package org.jpos.q2.iso;
 
-import static org.apache.commons.lang3.JavaVersion.JAVA_14;
-import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.jdom2.Element;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.Connector;
@@ -36,6 +27,10 @@ import org.jpos.q2.Q2;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.Realm;
 import org.junit.jupiter.api.Test;
+
+import static org.apache.commons.lang3.JavaVersion.JAVA_14;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QMUXTest {
 
@@ -88,7 +83,7 @@ public class QMUXTest {
         String result = new QMUX().getUnhandledQueue();
         assertNull(result, "result");
     }
-    
+
     @Test
     public void testInitServiceThrowsNullPointerException() throws Throwable {
         assertThrows(NullPointerException.class, () -> {
@@ -143,7 +138,7 @@ public class QMUXTest {
             assertEquals(0, qMUX.listeners.size(), "qMUX.listeners.size()");
         }
     }
-    
+
     @Test
     public void testProcessUnhandledThrowsNullPointerException() throws Throwable {
         QMUX qMUX = new QMUX();
@@ -364,18 +359,23 @@ public class QMUXTest {
         }
     }
 
+    private Element createPersist(String space, String ready) {
+        Element persist = new Element("qmux");
+        persist.addContent(new Element("space").setText(space));
+        persist.addContent(new Element("in").setText("test.in"));
+        persist.addContent(new Element("out").setText("test.out"));
+        if (ready != null)
+            persist.addContent(new Element("ready").setText(ready));
+        return persist;
+    }
+
     @Test
     public void testIsConnectedWithTimeout() throws Exception {
         QMUX qmux = new QMUX();
         qmux.setName("test-qmux");
         qmux.setServer(new Q2());
         qmux.setConfiguration(new SimpleConfiguration());
-        Element persist = new Element("qmux");
-        persist.addContent(new Element("space").setText("tspace:testspace"));
-        persist.addContent(new Element("in").setText("test.in"));
-        persist.addContent(new Element("out").setText("test.out"));
-        persist.addContent(new Element("ready").setText("ready1 ready2"));
-        qmux.setPersist(persist);
+        qmux.setPersist(createPersist("tspace:testspace", "ready1 ready2"));
         qmux.initService();
         qmux.startService();
         try {
@@ -391,10 +391,45 @@ public class QMUXTest {
 
             assertFalse(qmux.isConnected(100), "Should not be connected yet");
 
-            assertTrue(qmux.isConnected(400), "Should be connected now");
+            assertTrue(qmux.isConnected(1000), "Should be connected now");
+        } finally {
+            qmux.stopService();
+            qmux.destroyService();
+        }
+    }
+
+    @Test
+    public void testIsConnectedWithZeroTimeout() throws Exception {
+        QMUX qmux = new QMUX();
+        qmux.setName("test-zero-timeout");
+        qmux.setServer(new Q2());
+        qmux.setConfiguration(new SimpleConfiguration());
+        qmux.setPersist(createPersist("tspace:testspace-zero", "ready1"));
+        qmux.initService();
+        qmux.startService();
+        try {
+            assertFalse(qmux.isConnected(0), "Should be false for zero timeout if not connected");
+        } finally {
+            qmux.stopService();
+            qmux.destroyService();
+        }
+    }
+
+    @Test
+    public void testIsConnectedWithNegativeTimeout() throws Exception {
+        QMUX qmux = new QMUX();
+        qmux.setName("test-neg-timeout");
+        qmux.setServer(new Q2());
+        qmux.setConfiguration(new SimpleConfiguration());
+        qmux.setPersist(createPersist("tspace:testspace-neg", "ready1"));
+        qmux.initService();
+        qmux.startService();
+        try {
+            assertFalse(qmux.isConnected(-1), "Should be false for negative timeout if not connected");
         } finally {
             qmux.stopService();
             qmux.destroyService();
         }
     }
 }
+
