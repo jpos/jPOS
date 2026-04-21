@@ -166,7 +166,7 @@ public class GenericSSLSocketFactory
             km.init( ks, keyPassword.toCharArray() );
             KeyManager[] kma = km.getKeyManagers();
             TrustManager[] tma = getTrustManagers( ks );
-            SSLContext sslc = SSLContext.getInstance( "SSL" ); 
+            SSLContext sslc = SSLContext.getInstance( "TLS" );
             sslc.init( kma, tma, new SecureRandom() );
             return sslc;
         } catch(Exception e) {
