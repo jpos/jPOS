@@ -4,16 +4,17 @@ set -euo pipefail
 cd "$(dirname "$0")/.." || exit 1
 rm -f deploy/shutdown.xml
 
-JAVA_OPTS=()
-APP_OPTS=()
+INHERITED_JAVA_OPTS="${JAVA_OPTS:-}"
+EXTRA_JAVA_OPTS=()
+EXTRA_OTHER_OPTS=()
 
 PID_FILE="jpos.pid"
 USE_PID=true
 
 for arg in "$@"; do
   case "$arg" in
-    -D*|-X*|-agentlib:*|-javaagent:*|--add-opens=*|--add-exports=*|--enable-native-access=*|--sun-misc-unsafe-memory-access=*)
-      JAVA_OPTS+=("$arg")
+    -D*)
+      EXTRA_JAVA_OPTS+=("$arg")
       ;;
     --pid=*)
       PID_FILE="${arg#--pid=}"
@@ -22,10 +23,10 @@ for arg in "$@"; do
       USE_PID=false
       ;;
     --debug)
-      JAVA_OPTS+=("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005")
+      EXTRA_JAVA_OPTS+=("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005")
       ;;
     *)
-      APP_OPTS+=("$arg")
+      EXTRA_OTHER_OPTS+=("$arg")
       ;;
   esac
 done
@@ -40,29 +41,34 @@ fi
 
 mkdir -p log
 
+# Locate Java via JAVA_HOME or SDKMAN
+if [ -z "${JAVA_HOME:-}" ]; then
+  SDKMAN_JAVA="$HOME/.sdkman/candidates/java/current"
+  if [ -d "$SDKMAN_JAVA" ]; then
+    export JAVA_HOME="$SDKMAN_JAVA"
+  fi
+fi
+
+# Base JVM invocation
+JAVA_CMD="${JAVA_HOME:+$JAVA_HOME/bin/}java"
 CMD=(
-  java
-  -server
+  "$JAVA_CMD" -server
   -Xmx4G
   --enable-native-access=ALL-UNNAMED
   --sun-misc-unsafe-memory-access=allow
   -Xlog:gc:log/gc.log
+  -jar @jarname@
 )
 
-CMD+=( ${JAVA_OPTS[@]+"${JAVA_OPTS[@]}"} )
-
-CMD+=(
-  -jar
-  @jarname@
-)
-
+# Only pass --pid if enabled
 if $USE_PID; then
-  CMD+=( "--pid=$PID_FILE" )
+  CMD+=( --pid="$PID_FILE" )
 fi
 
-CMD+=( ${APP_OPTS[@]+"${APP_OPTS[@]}"} )
+ENV_JAVA_OPTS=( ${INHERITED_JAVA_OPTS} )
 
-# printf '%q ' "${CMD[@]}"
-# echo
+CMD+=( ${ENV_JAVA_OPTS[@]+"${ENV_JAVA_OPTS[@]}"} )
+CMD+=( ${EXTRA_JAVA_OPTS[@]+"${EXTRA_JAVA_OPTS[@]}"} )
+CMD+=( ${EXTRA_OTHER_OPTS[@]+"${EXTRA_OTHER_OPTS[@]}"} )
+
 exec "${CMD[@]}"
-
