@@ -49,6 +49,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     private String realm;
     private int jobs = 0;
     private final String namePrefix;
+    /** Default maximum number of threads when no explicit limit is configured. */
     public static final int DEFAULT_MAX_THREADS = 100;
 
     
@@ -59,7 +60,15 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         .factory());
 
 
+    /**
+     * Marks jobs that can be supervised and interrupted when expired.
+     */
     public interface Supervised {
+        /**
+         * Indicates whether the supervised job has expired.
+         *
+         * @return {@code true} if the job should be interrupted
+         */
         boolean expired();
     }
 
@@ -149,10 +158,20 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     public ThreadPool () {
         this(1, DEFAULT_MAX_THREADS);
     }
+
+    /**
+     * Closes the pool queue and stops accepting new jobs.
+     */
     public void close () {
         pool.close();
     }
 
+    /**
+     * Executes a runnable using the pool infrastructure.
+     *
+     * @param action runnable to execute
+     * @throws Closed if the pool is no longer accepting jobs
+     */
     public synchronized void execute(Runnable action) throws Closed {
         executor.submit(() -> {
             threadCount.incrementAndGet();
@@ -233,6 +252,9 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         return pool.pending ();
     }
 
+    /**
+     * Supervises pooled threads and interrupts expired supervised jobs.
+     */
     public void supervise () {
         Thread[] t = new Thread[maxPoolSize];
         int cnt = enumerate (t);
