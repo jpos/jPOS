@@ -64,6 +64,9 @@ public class AsciiPrefixer implements Prefixer
     /** The number of digits allowed to express the length */
     private int nDigits;
     
+    /** Creates an AsciiPrefixer that uses the specified number of ASCII decimal digits for the length prefix.
+     * @param nDigits number of ASCII decimal digits in the length prefix
+     */
     public AsciiPrefixer(int nDigits)
     {
         this.nDigits = nDigits;

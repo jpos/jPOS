@@ -26,6 +26,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
+ * UIFactory that creates a {@link java.awt.BorderLayout}-based panel from XML.
  * @author Alejandro Revilla
  *
  * creates a panel with a Border layout
@@ -41,7 +42,11 @@ import java.awt.*;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
+/** {@link UIFactory} that creates a JPanel with a {@link java.awt.BorderLayout}. */
+/** {@link UIFactory} that creates a {@link java.awt.BorderLayout}-based container. */
 public class BorderLayoutFactory implements UIFactory {
+    /** Default constructor. */
+    public BorderLayoutFactory() { }
     UI ui;
 
     public JComponent create (UI ui, Element e) {

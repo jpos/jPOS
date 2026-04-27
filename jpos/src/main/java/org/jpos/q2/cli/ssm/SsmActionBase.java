@@ -30,9 +30,24 @@ import org.jpos.security.jceadapter.JCESecurityModule;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public abstract class SsmActionBase implements CLICommand {
-
+    /** Default constructor. */
+    public SsmActionBase() { }
+    /**
+     * Returns true if the command arguments are valid.
+     * @param cli CLI context
+     * @param strings command arguments
+     * @return true if usage is correct
+     */
     protected abstract boolean checkUsage(CLIContext cli, String[] strings);
 
+    /**
+     * Executes the SSM command.
+     * @param cli CLI context
+     * @param sm the JCE security module
+     * @param keyLength the key length in bits
+     * @param strings command arguments
+     * @throws org.jpos.security.SMException on security module error
+     */
     protected abstract void doCommand(
             CLIContext cli,
             JCESecurityModule sm,

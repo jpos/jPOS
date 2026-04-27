@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
+ * Base class providing lifecycle management and configuration support for Q2 beans (QBean components).
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
@@ -53,6 +54,7 @@ public class QBeanSupport
     protected Configuration cfg;
     protected ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 
+    /** Default constructor. */
     public QBeanSupport () {
         super();
         setLogger (Q2.LOGGER_NAME);
@@ -107,6 +109,10 @@ public class QBeanSupport
         return log;
     }
 
+    /**
+     * Returns the default realm for this bean; subclasses may override.
+     * @return default realm string, or null
+     */
     protected String defaultRealm() {
         return null;
     }
@@ -272,9 +278,25 @@ public class QBeanSupport
         }
         return toString();
     }
+    /**
+     * Called during the init lifecycle phase; subclasses may override.
+     * @throws Exception on error
+     */
     protected void initService()    throws Exception {}
+    /**
+     * Called during the start lifecycle phase; subclasses may override.
+     * @throws Exception on error
+     */
     protected void startService()   throws Exception {}
+    /**
+     * Called during the stop lifecycle phase; subclasses may override.
+     * @throws Exception on error
+     */
     protected void stopService()    throws Exception {}
+    /**
+     * Called during the destroy lifecycle phase; subclasses may override.
+     * @throws Exception on error
+     */
     protected void destroyService() throws Exception {}
 
     protected synchronized ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor() {

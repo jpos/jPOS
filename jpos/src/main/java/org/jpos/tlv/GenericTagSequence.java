@@ -21,14 +21,20 @@ package org.jpos.tlv;
 import org.jpos.iso.ISOException;
 
 /**
+ * A generic ordered sequence of {@link TagValue} elements.
  * @author Vishnu Pillai
  */
 public class GenericTagSequence extends TagSequenceBase {
 
+    /** Default constructor. */
     public GenericTagSequence() {
         super();
     }
 
+    /**
+     * Constructs a GenericTagSequence with the given tag identifier.
+     * @param tag the tag identifier
+     */
     protected GenericTagSequence(String tag) {
         super(tag);
     }

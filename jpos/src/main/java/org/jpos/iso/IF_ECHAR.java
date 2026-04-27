@@ -19,7 +19,7 @@
 package org.jpos.iso;
 
 /**
- * ISOFieldPackager CHARACTERS (ASCII & BINARY)
+ * ISOFieldPackager CHARACTERS (ASCII &amp; BINARY)
  * EBCDIC version of IF_CHAR
  * @author apr@cs.com.uy
  * @version $Id$
@@ -29,10 +29,12 @@ package org.jpos.iso;
  */
 @Deprecated
 public class IF_ECHAR extends ISOFieldPackager {
+    /** Default constructor. */
     public IF_ECHAR() {
         super();
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */
@@ -42,7 +44,7 @@ public class IF_ECHAR extends ISOFieldPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         String s = ISOUtil.strpad ((String) c.getValue(), getLength());
@@ -53,7 +55,7 @@ public class IF_ECHAR extends ISOFieldPackager {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException

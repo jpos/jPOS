@@ -32,10 +32,12 @@ import org.jpos.iso.Prefixer;
  */
 public class IF_FCHAR extends ISOStringFieldPackager {
 
+    /** Default constructor. */
     public IF_FCHAR() {
         super(NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, FullyConsumingPrefixer.INSTANCE);
     }
 
+    /** A Prefixer that consumes all available characters (no explicit length). */
     public static class FullyConsumingPrefixer implements Prefixer {
 
         private static final FullyConsumingPrefixer INSTANCE = new FullyConsumingPrefixer();

@@ -26,9 +26,15 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+/**
+ * {@link LogListener} that buffers log events in memory up to a configurable maximum size.
+ */
 public class BufferedLogListener implements LogListener, Configurable, LogProducer {
+    /** Default constructor. */
+    public BufferedLogListener() { }
     int maxSize;
     String name;
+    /** Default maximum number of log events to buffer. */
     public static final int DEFAULT_SIZE = 100;
     List<LogListener> listeners = new ArrayList<LogListener>();
     final List<LogEvent> events = new ArrayList<LogEvent>();
@@ -80,6 +86,10 @@ public class BufferedLogListener implements LogListener, Configurable, LogProduc
         }
     }
 
+    /**
+     * Returns the maximum number of log events to buffer.
+     * @return max buffer size
+     */
     public int getMaxSize() {
         return maxSize;
     }

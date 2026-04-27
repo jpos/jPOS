@@ -26,7 +26,7 @@ package org.jpos.iso;
  * {@link org.jpos.iso.packager.GenericSubFieldPackager} or even
  * {@link org.jpos.iso.packager.GenericTaggedFieldsPackager})
  *
- * @author Robert Demski <drdemsey@gmail.com>
+ * @author Robert Demski (drdemsey@gmail.com)
  */
 public interface ISOSubFieldPackager {
 

@@ -77,14 +77,15 @@ public class EncryptedPIN
      */
     byte pinBlockFormat;
 
+    /** Default constructor. Creates an empty EncryptedPIN. */
     public EncryptedPIN () {
         super();
     }
 
     /**
-     *
-     * @param pinBlock
-     * @param pinBlockFormat
+     * Constructs an EncryptedPIN from raw PIN block bytes.
+     * @param pinBlock the encrypted PIN block bytes
+     * @param pinBlockFormat the PIN block format identifier
      * @param accountNumber account number, including BIN and the check digit
      */
     public EncryptedPIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) {
@@ -93,10 +94,11 @@ public class EncryptedPIN
         setAccountNumber(extractAccountNumberPart(accountNumber));
     }
     /**
-     * @param pinBlock
-     * @param pinBlockFormat
-     * @param accountNumber if <code>extract</code> is false then account number, including BIN and the check digit
-     *        or if parameter <code>extract</code> is true then 12 right-most digits of the account number, excluding the check digit
+     * Constructs an EncryptedPIN from raw PIN block bytes, optionally extracting the account number part.
+     * @param pinBlock the encrypted PIN block bytes
+     * @param pinBlockFormat the PIN block format identifier
+     * @param accountNumber if {@code extract} is false then account number, including BIN and the check digit;
+     *        if {@code extract} is true then 12 right-most digits of the account number, excluding the check digit
      * @param extract true to extract 12 right-most digits off the account number
      */
     public EncryptedPIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber, boolean extract) {
@@ -107,18 +109,20 @@ public class EncryptedPIN
 
 
     /**
-     * @param pinBlockHexString the PIN Block represented as a HexString instead of a byte[]
-     * @param pinBlockFormat
+     * Constructs an EncryptedPIN from a hex-encoded PIN block string.
+     * @param pinBlockHexString the PIN block represented as a hex string instead of a byte[]
+     * @param pinBlockFormat the PIN block format identifier
      * @param accountNumber account number, including BIN and the check digit
      */
     public EncryptedPIN (String pinBlockHexString, byte pinBlockFormat, String accountNumber) {
         this(ISOUtil.hex2byte(pinBlockHexString), pinBlockFormat, accountNumber);
     }
     /**
-     * @param pinBlockHexString the PIN Block represented as a HexString instead of a byte[]
-     * @param pinBlockFormat
-     * @param accountNumber if <code>extract</code> is false then account number, including BIN and the check digit
-     *        or if parameter <code>extract</code> is true then 12 right-most digits of the account number, excluding the check digit
+     * Constructs an EncryptedPIN from a hex-encoded PIN block string, optionally extracting the account number part.
+     * @param pinBlockHexString the PIN block represented as a hex string instead of a byte[]
+     * @param pinBlockFormat the PIN block format identifier
+     * @param accountNumber if {@code extract} is false then account number, including BIN and the check digit;
+     *        if {@code extract} is true then 12 right-most digits of the account number, excluding the check digit
      * @param extract true to extract 12 right-most digits off the account number
      */
     public EncryptedPIN (String pinBlockHexString, byte pinBlockFormat, String accountNumber, boolean extract) {
@@ -142,32 +146,32 @@ public class EncryptedPIN
     }
 
     /**
-     *
-     * @param pinBlock
+     * Sets the encrypted PIN block bytes.
+     * @param pinBlock the encrypted PIN block bytes
      */
     public void setPINBlock (byte[] pinBlock) {
         this.pinBlock = pinBlock;
     }
 
     /**
-     *
-     * @return pinBlock
+     * Returns the encrypted PIN block bytes.
+     * @return the encrypted PIN block bytes
      */
     public byte[] getPINBlock () {
         return  pinBlock;
     }
 
     /**
-     *
-     * @param pinBlockFormat
+     * Sets the PIN block format identifier.
+     * @param pinBlockFormat the PIN block format identifier
      */
     public void setPINBlockFormat (byte pinBlockFormat) {
         this.pinBlockFormat = pinBlockFormat;
     }
 
     /**
-     *
-     * @return PIN Block Format
+     * Returns the PIN block format identifier.
+     * @return the PIN block format identifier
      */
     public byte getPINBlockFormat () {
         return  this.pinBlockFormat;
@@ -187,7 +191,8 @@ public class EncryptedPIN
     }
 
     /**
-     * @return accountNumber (the 12 right-most digits of the account number excluding the check digit)
+     * Returns the extracted account number part.
+     * @return the 12 right-most digits of the account number, excluding the check digit
      */
     public String getAccountNumber () {
         return  accountNumber;

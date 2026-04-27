@@ -60,7 +60,9 @@ import java.io.ObjectOutput;
 public abstract class ISOFieldPackager {
     private int len;
     private String description;
+    /** When {@code true}, values are padded to the field length. */
     protected boolean pad;
+    /** When {@code true}, values are trimmed before packing. */
     protected boolean trim;
 
     /**
@@ -73,6 +75,7 @@ public abstract class ISOFieldPackager {
     }
 
     /**
+     * Creates an ISOFieldPackager with the given length and description.
      * @param len - field Len
      * @param description - details
      */
@@ -80,53 +83,90 @@ public abstract class ISOFieldPackager {
         this.len = len;
         this.description = description;
     }
+    /**
+     * Returns the field description.
+     * @return field description
+     */
     public String getDescription() {
         return description;
     }
+    /**
+     * Sets the field description.
+     * @param description the description text
+     */
     public void setDescription(String description) {
         this.description = description;
     }
+    /**
+     * Returns the maximum field length.
+     * @return max field length
+     */
     public int getLength() {
         return len;
     }
+    /**
+     * Sets the maximum field length.
+     * @param len the maximum length
+     */
     public void setLength(int len) {
         this.len = len;
     }
 
+    /**
+     * Enables or disables padding for this field.
+     * @param pad true to enable padding
+     */
     public void setPad(boolean pad) {
         this.pad = pad;
     }
 
+    /**
+     * Enables or disables trimming for this field.
+     * @param trim true to enable trimming
+     */
     public void setTrim(boolean trim) {
         this.trim = trim;
     }
 
+    /**
+     * Returns the maximum number of bytes this packager can produce.
+     * @return maximum packed length in bytes
+     */
     public abstract int getMaxPackedLength();
 
+    /**
+     * Creates an {@link ISOComponent} instance appropriate for this packager.
+     * @param fieldNumber the field number to assign to the new component
+     * @return a new ISOComponent
+     */
     public ISOComponent createComponent(int fieldNumber) {
         return new ISOField (fieldNumber);
     }
     /**
+     * Packs the given component into a byte array.
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on packing error
      */
     public abstract byte[] pack (ISOComponent c) throws ISOException;
 
     /**
+     * Unpacks a field from the binary image into the given component.
      * @param c - the Component to unpack
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on unpacking error
      */
     public abstract int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException;
 
     /**
+     * Unpacks a field from an input stream into the given component.
      * @param c  - the Component to unpack
      * @param in - input stream
-     * @exception ISOException
+     * @throws IOException on I/O failure
+     * @throws ISOException on unpacking error
      */
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
@@ -134,10 +174,11 @@ public abstract class ISOFieldPackager {
         unpack (c, readBytes (in, getMaxPackedLength ()), 0);
     }
     /**
-     * @param c   - the Component to unpack
+     * Packs the component to an ObjectOutput stream.
+     * @param c   - the Component to pack
      * @param out - output stream
-     * @exception ISOException
-     * @exception IOException
+     * @throws ISOException on packing error
+     * @throws IOException on I/O failure
      */
     public void pack (ISOComponent c, ObjectOutput out) 
         throws IOException, ISOException
@@ -145,6 +186,13 @@ public abstract class ISOFieldPackager {
         out.write (pack (c));
     }
 
+    /**
+     * Reads exactly {@code l} bytes from the input stream.
+     * @param in the input stream
+     * @param l the number of bytes to read
+     * @return byte array of length {@code l}
+     * @throws IOException on I/O failure or premature end of stream
+     */
     protected byte[] readBytes (InputStream in, int l) throws IOException {
         byte[] b = new byte [l];
         int n = 0;

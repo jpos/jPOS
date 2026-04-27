@@ -51,6 +51,7 @@ public class SecureDESKey extends SecureVariantKey {
      */
     protected static final Pattern KEY_TYPE_PATTERN = Pattern.compile("([^:;]*)([:;])?([^:;])?([^:;])?");
 
+    /** Default constructor. */
     public SecureDESKey() {
         super();
     }

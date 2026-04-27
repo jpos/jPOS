@@ -27,6 +27,8 @@ import java.nio.ByteBuffer;
 
 @SuppressWarnings("unused")
 public class SystemSeed {
+    /** Default constructor. */
+    public SystemSeed() {}
     public static byte[] getSeed (int l) {
         return getSeed(0, l);
     }

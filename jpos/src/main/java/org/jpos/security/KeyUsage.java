@@ -31,9 +31,9 @@ import org.jpos.iso.ISOUtil;
  * Each value repesents bytes 5-6 of the keyblock header.
  */
 public class KeyUsage implements Serializable {
-
     private static final long serialVersionUID = -5504819939017756749L;
 
+    /** TR-31 key usage code registry mapping code strings to KeyUsage enum constants. */
     protected static final Map<String, KeyUsage> TR31MAP =  new LinkedHashMap<>();
 
     /**
@@ -164,7 +164,9 @@ public class KeyUsage implements Serializable {
     public final static KeyUsage EMVMPMK   = create("E7", "EMV/Master Personalization Key");
 
 
+    /** Two-character TR-31 key-usage code. */
     private final String code;
+    /** Human-readable description of the key usage. */
     private final String name;
 
     /**
@@ -227,7 +229,7 @@ public class KeyUsage implements Serializable {
     /**
      * Returns the enum constant of this type with the specified {@code code}.
      *
-     * @param code
+     * @param code the TR-31 key usage code to look up
      * @return the enum constant with the specified processing code or
      *         {@code null} if unknown.
      */

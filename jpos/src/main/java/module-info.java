@@ -1,3 +1,4 @@
+/** Java module definition for the jPOS core library. */
 module org.jpos.jpos {
     requires java.se;
     requires jdk.jfr;

@@ -27,10 +27,19 @@ import org.jpos.util.Logger;
 import java.io.Serializable;
 
 /**
+ * A TransactionManager participant that uses BeanShell scripting to determine the next participant group.
  * @author  AMarques
+ */
+/**
+ * {@link GroupSelector} implemented via a BeanShell script.
+ * @author AMarques
  */
 public class BSHGroupSelector extends BSHTransactionParticipant implements GroupSelector {
     
+    /** Default constructor. */
+    public BSHGroupSelector() { super(); }
+
+    /** BeanShell method invoked during group selection. */
     protected BSHMethod selectMethod;
     
     public void setConfiguration(Element e) throws ConfigurationException {
@@ -42,6 +51,10 @@ public class BSHGroupSelector extends BSHTransactionParticipant implements Group
         }
     }    
     
+    /** @param id transaction id
+     * @param context transaction context
+     * @return selected group name
+     */
     public String select(long id, java.io.Serializable context) {
         LogEvent ev = new LogEvent(this, "select");
         String result = null;
@@ -60,6 +73,11 @@ public class BSHGroupSelector extends BSHTransactionParticipant implements Group
         return result;
     }
     
+    /** Default select implementation; returns empty string.
+     * @param id transaction id
+     * @param context transaction context
+     * @return empty string
+     */
     public String defaultSelect(long id, Serializable context) {
         return "";
     }

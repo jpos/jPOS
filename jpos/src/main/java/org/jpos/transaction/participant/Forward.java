@@ -28,7 +28,10 @@ import org.jpos.transaction.TransactionParticipant;
 import java.io.Serializable;
 
 @SuppressWarnings("unchecked")
+/** Transaction participant that forwards the transaction to another transaction manager. */
 public class Forward implements TransactionParticipant, Configurable  {
+    /** Default constructor. */
+    public Forward() { super(); }
     Space sp;
     String queue;
     long timeout;

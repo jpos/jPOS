@@ -29,6 +29,9 @@ package org.jpos.iso;
 public class AsciiInterpreter implements Interpreter
 {
     /** An instance of this Interpreter. Only one needed for the whole system */
+    /** Private constructor — use the {@code INSTANCE} singleton. */
+    private AsciiInterpreter() { }
+    /** Singleton instance of this interpreter. */
     public static final AsciiInterpreter INSTANCE = new AsciiInterpreter();
 
     /**

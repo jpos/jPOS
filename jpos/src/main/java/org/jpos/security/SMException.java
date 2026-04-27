@@ -28,8 +28,10 @@ import org.jpos.iso.ISOException;
 public class SMException extends ISOException {
 
     private static final long serialVersionUID = 6419380899728561889L;
+    /** Nested security-module exception retained for legacy compatibility. */
     Exception nested = null;
 
+    /** Default constructor. */
     public SMException () {
         super();
     }

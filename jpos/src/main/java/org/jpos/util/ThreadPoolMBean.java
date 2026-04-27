@@ -18,29 +18,42 @@
 
 package org.jpos.util;
 
+/**
+ * Exposes thread-pool metrics via JMX.
+ */
 public interface ThreadPoolMBean {
     /**
-     * @return number of jobs processed by this pool
+     * Returns the number of jobs processed by this pool.
+     *
+     * @return number of processed jobs
      */
     int getJobCount();
 
     /**
-     * @return number of active threads
+     * Returns the number of running threads in the pool.
+     *
+     * @return current pool size
      */
     int getPoolSize();
 
     /**
-     * @return max number of active threads allowed
+     * Returns the maximum number of threads allowed in the pool.
+     *
+     * @return maximum pool size
      */
     int getMaxPoolSize();
 
     /**
-     * @return number of idle threads
+     * Returns the number of idle threads.
+     *
+     * @return idle thread count
      */
     int getIdleCount();
 
     /**
-     * @return number of Pending jobs
+     * Returns the number of pending jobs.
+     *
+     * @return pending job count
      */
     int getPendingCount();
 }

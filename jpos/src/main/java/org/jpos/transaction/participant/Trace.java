@@ -26,6 +26,8 @@ import org.jpos.transaction.Context;
 import java.io.Serializable;
 
 public class Trace implements AbortParticipant, Configurable {
+    /** Default constructor. */
+    public Trace() {}
     String trace;
     public int prepare (long id, Serializable o) {
         Context ctx = (Context) o;

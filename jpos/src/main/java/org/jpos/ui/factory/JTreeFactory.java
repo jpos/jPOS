@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
+ * UIFactory that creates a {@link javax.swing.JTree} from XML.
  * @author Alejandro Revilla
  *
  * Creates a JTree
@@ -55,6 +56,8 @@ import java.util.StringTokenizer;
  */
 @SuppressWarnings("unchecked")
 public class JTreeFactory implements UIFactory {
+    /** Default constructor. */
+    public JTreeFactory() {}
     public JComponent create (UI ui, Element e) {
         final UI parentUI = ui;
         final Map map = new HashMap ();

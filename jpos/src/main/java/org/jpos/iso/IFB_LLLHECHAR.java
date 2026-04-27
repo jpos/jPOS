@@ -20,16 +20,19 @@ package org.jpos.iso;
 
 
 /**
+ * ISOFieldPackager for a binary-length-prefixed LLHECHAR field.
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  * @see IFB_LLHECHAR
  */
 public class IFB_LLLHECHAR extends ISOStringFieldPackager {
+    /** Default constructor. */
     public IFB_LLLHECHAR() {
         super(NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, BinaryPrefixer.BB);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

@@ -41,7 +41,7 @@ import org.jpos.security.Util;
  * Provides some higher level methods that are needed by the JCE Security Module, yet they are generic and can be used elsewhere.
  * </p>
  * <p>
- * It depends on the Java<font size=-1><sup>TM</sup></font> Cryptography Extension (JCE).
+ * It depends on the Java&trade; Cryptography Extension (JCE).
  * </p>
  * 
  * @author Hani S. Kirollos
@@ -49,6 +49,8 @@ import org.jpos.security.Util;
  */
 @SuppressWarnings("unchecked")
 public class JCEHandler {
+    /** Default constructor. */
+    public JCEHandler() {}
     static final String ALG_DES = "DES";
     static final String ALG_TRIPLE_DES = "DESede";
     static final String DES_MODE_ECB = "ECB";
@@ -65,7 +67,7 @@ public class JCEHandler {
      * @param keyLength
      *            the bit length (key size) of the generated key (LENGTH_DES, LENGTH_DES3_2KEY or LENGTH_DES3_3KEY)
      * @return generated clear DES (or DESede) key
-     * @exception JCEHandlerException
+     * @exception JCEHandlerException on error
      */
     public Key generateDESKey(short keyLength) throws JCEHandlerException {
         Key generatedClearKey = null;
@@ -105,7 +107,7 @@ public class JCEHandler {
      * @param encryptingKey
      *            can be a key of any type (RSA, DES, DESede...)
      * @return encrypted DES key
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException on encryption failure
      */
     public byte[] encryptDESKey(short keyLength, Key clearDESKey, Key encryptingKey) throws JCEHandlerException {
         byte[] clearKeyBytes = extractDESKeyMaterial(keyLength, clearDESKey);
@@ -122,7 +124,7 @@ public class JCEHandler {
      * @param clearDESKey
      *            DES/Triple-DES key whose format is "RAW"
      * @return encoded key material
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException on extraction failure
      */
     protected byte[] extractDESKeyMaterial(short keyLength, Key clearDESKey) throws JCEHandlerException {
         String keyAlg = clearDESKey.getAlgorithm();
@@ -170,7 +172,7 @@ public class JCEHandler {
      * @param clearKeyBytes
      *            the RAW DES/Triple-DES key
      * @return clear key
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException on unsupported key length
      */
     protected Key formDESKey(short keyLength, byte[] clearKeyBytes) throws JCEHandlerException {
         Key key = null;
@@ -196,10 +198,10 @@ public class JCEHandler {
     /**
      * Encrypts data
      * 
-     * @param data
-     * @param key
+     * @param data the plaintext data to encrypt
+     * @param key the encryption key
      * @return encrypted data
-     * @exception JCEHandlerException
+     * @exception JCEHandlerException on error
      */
     public byte[] encryptData(byte[] data, Key key) throws JCEHandlerException {
         return doCryptStuff(data, key, Cipher.ENCRYPT_MODE);
@@ -208,36 +210,36 @@ public class JCEHandler {
     /**
      * Decrypts data
      * 
-     * @param encryptedData
-     * @param key
+     * @param encryptedData the ciphertext to decrypt
+     * @param key the decryption key
      * @return clear data
-     * @exception JCEHandlerException
+     * @exception JCEHandlerException on error
      */
     public byte[] decryptData(byte[] encryptedData, Key key) throws JCEHandlerException {
         return doCryptStuff(encryptedData, key, Cipher.DECRYPT_MODE);
     }
 
     /**
-     * Encrypts data
+     * Encrypts data in CBC mode.
      * 
-     * @param data
-     * @param key
+     * @param data the plaintext data to encrypt
+     * @param key the encryption key
      * @param iv 8 bytes initial vector
      * @return encrypted data
-     * @exception JCEHandlerException
+     * @exception JCEHandlerException on error
      */
     public byte[] encryptDataCBC(byte[] data, Key key, byte[] iv) throws JCEHandlerException {
         return doCryptStuff(data, key, Cipher.ENCRYPT_MODE, CipherMode.CBC, iv);
     }
 
     /**
-     * Decrypts data
+     * Decrypts data in CBC mode.
      * 
-     * @param encryptedData
-     * @param key
+     * @param encryptedData the ciphertext to decrypt
+     * @param key the decryption key
      * @param iv 8 bytes initial vector
      * @return clear data
-     * @exception JCEHandlerException
+     * @exception JCEHandlerException on error
      */
     public byte[] decryptDataCBC(byte[] encryptedData, Key key, byte[] iv) throws JCEHandlerException {
         return doCryptStuff(encryptedData, key, Cipher.DECRYPT_MODE, CipherMode.CBC, iv);
@@ -352,7 +354,7 @@ public class JCEHandler {
      * @param macAlgorithm
      *            MAC algorithm name suitable for {@link Mac#getInstance}
      * @return the MAC
-     * @throws org.jpos.security.jceadapter.JCEHandlerException
+     * @throws org.jpos.security.jceadapter.JCEHandlerException on MAC computation failure
      */
     public byte[] generateMAC(byte[] data, Key kd, String macAlgorithm) throws JCEHandlerException {
         Mac mac = assignMACEngine(new MacEngineKey(macAlgorithm, kd));
@@ -363,21 +365,31 @@ public class JCEHandler {
     }
 
     /**
-     * Class used for indexing MAC algorithms in cache
+     * Class used for indexing MAC algorithms in cache.
      */
     protected static class MacEngineKey {
         private final String macAlgorithm;
         private final Key macKey;
 
+        /** Constructs a MacEngineKey for the given algorithm and key.
+         * @param macAlgorithm the MAC algorithm name
+         * @param macKey the MAC key
+         */
         protected MacEngineKey(String macAlgorithm, Key macKey) {
             this.macAlgorithm = macAlgorithm;
             this.macKey = macKey;
         }
 
+        /** Returns the MAC algorithm name.
+         * @return MAC algorithm name
+         */
         public String getMacAlgorithm() {
             return macAlgorithm;
         }
 
+        /** Returns the MAC key.
+         * @return MAC key
+         */
         public Key getMacKey() {
             return macKey;
         }

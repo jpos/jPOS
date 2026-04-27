@@ -24,6 +24,8 @@ import org.jpos.util.NameRegistrar;
 
 @SuppressWarnings("unused")
 public class QConfig extends QBeanSupport {
+    /** Default constructor. */
+    public QConfig() {}
     public static final String PREFIX = "config.";
 
     @Override

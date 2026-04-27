@@ -38,6 +38,8 @@ package org.jpos.core;
  * @since 3.0.1
  */
 public class NoCardValidator implements CardValidator {
+    /** Default constructor. */
+    public NoCardValidator() {}
 
     @Override
     public void validate(Card card) throws InvalidCardException {

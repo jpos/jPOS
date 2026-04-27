@@ -42,6 +42,10 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class EuroSubFieldPackager extends ISOBasePackager
 {
+    /** Default constructor. */
+    public EuroSubFieldPackager() { super(); }
+
+    /** Prefixer for EuroPay PDS tag identifiers (2-digit ASCII length prefix). */
     protected static Prefixer tagPrefixer = AsciiPrefixer.LL;
 
     /**

@@ -28,6 +28,7 @@ import org.jpos.util.ThroughputControl;
 
 public class ThroughputControlFilter implements ISOFilter, Configurable {
     ThroughputControl tc;
+    /** Default constructor. */
     public ThroughputControlFilter () {
         super();
         tc = null;

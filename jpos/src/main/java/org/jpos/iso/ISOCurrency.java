@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
  * @author vsalaman@gmail.com
  * @author Jonathan.O'Connor@xcom.de
  * @version $Id$
- * @see "http://www.evertype.com/standards/iso4217/iso4217-en.html"
- *      "http://www.iso.org/iso/en/prods-services/popstds/currencycodeslist.html"
+ * @see <a href="http://www.evertype.com/standards/iso4217/iso4217-en.html">ISO 4217 currency codes</a>
+ * @see <a href="http://www.iso.org/iso/en/prods-services/popstds/currencycodeslist.html">ISO currency codes list</a>
  */
 public class ISOCurrency
 {
@@ -70,6 +70,11 @@ public class ISOCurrency
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})
+    /**
+     * Loads currency properties from the classpath.
+     * @param base base path for properties resource
+     */
+    
     public static void loadPropertiesFromClasspath(String base)
     {
         InputStream in=loadResourceAsStream(base);
@@ -114,6 +119,13 @@ public class ISOCurrency
         Currency c = findCurrency(currency);
         return c.parseAmountFromISOMsg(isoamount);
     }
+    /**
+     * Converts a BigDecimal amount to an ISO 8583 amount string.
+     * @param amount   the monetary amount
+     * @param currency the ISO 4217 currency code
+     * @return the formatted ISO 87 string
+     */
+    
     public static String toISO87String (BigDecimal amount, String currency)
     {
         try {
@@ -124,11 +136,23 @@ public class ISOCurrency
             throw new IllegalArgumentException("Failed to convert amount",e);
         }
     }
+    /**
+     * Parses an ISO 8583 amount string to a BigDecimal.
+     * @param isoamount the ISO 87 amount string
+     * @param currency  the ISO 4217 currency code
+     * @return the parsed BigDecimal amount
+     */
+    
     public static BigDecimal parseFromISO87String (String isoamount, String currency) {
         int decimals = findCurrency(currency).getDecimals();
         return new BigDecimal(isoamount).movePointLeft(decimals);
     }
 
+    /**
+     * Adds a resource bundle for currency definitions.
+     * @param bundleName the bundle name to add
+     */
+    
     public static void addBundle(String bundleName)
     {
         ResourceBundle r = ResourceBundle.getBundle(bundleName);
@@ -149,6 +173,13 @@ public class ISOCurrency
         return findCurrency(currency).formatAmountForISOMsg(amount);
     }
 
+    /**
+     * Decomposes a composed currency string into its components.
+     * @param incurr the composed currency string
+     * @return an Object array with the decomposed parts
+     * @throws IllegalArgumentException if the currency is invalid
+     */
+    
     public static Object[] decomposeComposedCurrency(String incurr) throws IllegalArgumentException
     {
         final String[] strings = incurr.split(" ");
@@ -159,6 +190,13 @@ public class ISOCurrency
         return new Object[]{strings[0], Double.valueOf(strings[1])};
     }
 
+    /**
+     * Returns the ISO numeric code for the given alpha currency code.
+     * @param alphacode the 3-letter alpha currency code
+     * @return the ISO numeric code as a string
+     * @throws IllegalArgumentException if the code is unknown
+     */
+    
     public static String getIsoCodeFromAlphaCode(String alphacode) throws IllegalArgumentException
     {
         try
@@ -172,12 +210,26 @@ public class ISOCurrency
         }
     }
 
+    /**
+     * Returns the Currency for the given numeric ISO 4217 code.
+     * @param code the numeric currency code
+     * @return the corresponding Currency
+     * @throws ISOException if the code is unknown
+     */
+    
     public static Currency getCurrency(int code) throws ISOException
     {
         final String isoCode = ISOUtil.zeropad(Integer.toString(code), 3);
         return findCurrency(isoCode);
     }
 
+    /**
+     * Returns the Currency for the given string code.
+     * @param code the currency code (numeric or alpha)
+     * @return the corresponding Currency
+     * @throws ISOException if the code is unknown
+     */
+    
     public static Currency getCurrency(String code) throws ISOException
     {
         final String isoCode = ISOUtil.zeropad(code, 3);

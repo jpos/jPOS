@@ -184,6 +184,7 @@ public class VAPVIPPackager extends ISOBasePackager {
         }
     }
 
+    /** Default constructor. */
     public VAPVIPPackager() {
         super();
         setFieldPackager(fld);

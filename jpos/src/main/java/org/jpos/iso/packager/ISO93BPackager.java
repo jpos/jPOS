@@ -33,6 +33,7 @@ import org.jpos.iso.*;
  */
 public class ISO93BPackager extends ISOBasePackager {
     private static final boolean pad = false;
+    /** Array of field packagers indexed by field number. */
     protected ISOFieldPackager fld[] = {
     /*000*/ new IFB_NUMERIC (  4, "Message Type Indicator", pad),
     /*001*/ new IFB_BITMAP  ( 16, "Bitmap"),
@@ -164,6 +165,7 @@ public class ISO93BPackager extends ISOBasePackager {
     /*127*/ new IFB_LLLCHAR (999, "Reserved for private use"),
     /*128*/ new IFB_BINARY  (  8, "Message authentication code field")
     };
+    /** Default constructor. */
     public ISO93BPackager() {
         super();
         setFieldPackager(fld);

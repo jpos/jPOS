@@ -27,6 +27,8 @@ import org.jdom2.Element;
 import javax.swing.*;
 
 public class TMMonitorFactory implements UIFactory {
+    /** Default constructor. */
+    public TMMonitorFactory() {}
     public JComponent create(UI ui, Element e) {
         try {
             TransactionManager tm =

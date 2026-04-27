@@ -19,7 +19,7 @@
 package org.jpos.iso;
 
 /**
- * ISOFieldPackager CHARACTERS (ASCII & BINARY)
+ * ISOFieldPackager CHARACTERS (ASCII &amp; BINARY)
  * EBCDIC version of IF_CHAR
  * @author apr@cs.com.uy
  * @version $Id$
@@ -33,6 +33,7 @@ public class IFE_CHAR extends ISOStringFieldPackager {
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

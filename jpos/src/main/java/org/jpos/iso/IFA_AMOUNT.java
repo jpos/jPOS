@@ -29,10 +29,12 @@ package org.jpos.iso;
  * @see ISOFieldPackager
  */
 public class IFA_AMOUNT extends ISOAmountFieldPackager {
+    /** Default constructor. */
     public IFA_AMOUNT() {
         super(0, null, LeftPadder.ZERO_PADDER, AsciiInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

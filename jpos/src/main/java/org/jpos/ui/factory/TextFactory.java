@@ -25,6 +25,7 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that creates a text component from XML.
  * @author Alejandro Revilla
  *
  * Creates a text editor
@@ -37,6 +38,8 @@ import javax.swing.*;
  * @see org.jpos.ui.UIFactory
  */
 public class TextFactory implements UIFactory {
+    /** Default constructor. */
+    public TextFactory() {}
     public JComponent create (UI ui, Element e) {
         try {
             String type = e.getAttributeValue ("type", "text/plain");

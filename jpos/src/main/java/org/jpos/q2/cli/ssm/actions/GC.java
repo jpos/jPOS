@@ -29,6 +29,8 @@ import org.jpos.security.jceadapter.JCESecurityModule;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public class GC extends SsmActionBase {
+    /** Default constructor. */
+    public GC() {}
 
     @Override
     protected boolean checkUsage(CLIContext cli, String[] strings) {

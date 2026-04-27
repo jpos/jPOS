@@ -21,6 +21,7 @@ package org.jpos.ui;
 import org.jdom2.Element;
 
 /**
+ * Implemented by UI components that need access to the parent {@link UI} controller.
  * @since 1.4.7
  * @author Alejandro Revilla
  * <p>
@@ -31,8 +32,9 @@ import org.jdom2.Element;
  */
 public interface UIAware {
     /**
-     * @param ui reference
-     * @param config action config block
+     * Configures this UI-aware component.
+     * @param ui the UI context
+     * @param config the XML configuration element
      */
     void setUI(UI ui, Element config);
 }

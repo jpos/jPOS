@@ -41,16 +41,29 @@ import java.util.*;
  * @author Kris Leite
  * @version $Revision$ $Date$
  * @since 1.4.7
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 @SuppressWarnings("unchecked")
 public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentSpace {
+    /** Default constructor. */
+    public JDBMSpace() {}
+    /** Underlying JDBM HTree for persistent storage. */
     protected HTree htree;
+    /** Underlying JDBM RecordManager. */
     protected RecordManager recman;
+    /** Serializer used for Ref objects. */
     protected static final Serializer refSerializer = new Ref ();
+    /** Registry mapping space names to their instances. */
     protected static final Map<String,Space> spaceRegistrar = new HashMap<String,Space> ();
+    /** Whether to auto-commit after each operation. */
     protected boolean autoCommit = true;
+    /** The name of this space. */
     protected String name;
+    /** Delay between garbage-collection runs in milliseconds. */
     public static final long GCDELAY = 5*60*1000;
+    /** Minimum resolution for NRD (near-real-time-delivery) in milliseconds. */
     private static final long NRD_RESOLUTION = 500L;
 
     /**
@@ -79,6 +92,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
         DefaultTimer.getTimer().schedule (this, GCDELAY, GCDELAY);
     }
     /**
+     * Returns a reference to the default JDBMSpace (named "space").
      * @return reference to default JDBMSpace
      */
     public static JDBMSpace getSpace() {
@@ -391,8 +405,9 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
     }
 
     /**
+     * Returns the approximate number of entries queued under the given key.
      * @param key the Key
-     * @return aproximately queue size
+     * @return approximately queue size
      */
     public long size (Object key) {
         try {
@@ -511,6 +526,9 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
             throw new SpaceError (e);
         }
     }
+    /** Returns all current space keys as a space-separated string.
+     * @return space-separated key list
+     */
     public String getKeys () {
         StringBuilder sb = new StringBuilder();
         try {

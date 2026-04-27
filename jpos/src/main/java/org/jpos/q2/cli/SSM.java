@@ -32,6 +32,8 @@ import java.util.Map;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public class SSM implements CLISubSystem, CLICommand {
+    /** Default constructor. */
+    public SSM() {}
     private static final String SYSTEM_KEY = "SSM";
     private static final String JCE_KEY = "jce-sm";
 

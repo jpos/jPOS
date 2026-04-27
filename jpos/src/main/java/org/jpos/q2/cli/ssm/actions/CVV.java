@@ -29,6 +29,11 @@ import org.jpos.security.jceadapter.JCESecurityModule;
  * Calculate CVV
  */
 public class CVV extends SsmActionBase {
+
+    /** Default constructor. */
+    public CVV() {
+        super();
+    }
     @Override
     protected boolean checkUsage(CLIContext cli, String[] strings) {
         if (strings.length < 9) {

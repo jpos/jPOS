@@ -25,6 +25,7 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that creates a {@link javax.swing.JPanel} from XML.
  * @author Alejandro Revilla
  *
  * creates a panel (with an optional "id")
@@ -42,6 +43,8 @@ import javax.swing.*;
  * @see org.jpos.ui.action.Redirect
  */
 public class PanelFactory implements UIFactory {
+    /** Default constructor. */
+    public PanelFactory() {}
     public JComponent create (UI ui, Element e) {
         JPanel p = new JPanel ();
         if (e.getChildren().size() > 0)

@@ -28,28 +28,41 @@ import org.jpos.util.LogEvent;
  * @version $Revision$ $Date$
  */
 public interface ISOFilter {
+    /** Thrown by a filter to veto (suppress) an ISO message. */
     class VetoException extends ISOException {
 
         private static final long serialVersionUID = -4640160572663583113L;
-        public VetoException () {
+        /** Default constructor. */
+    public VetoException () {
             super();
         }
-        public VetoException (String detail) {
+        /** Constructs a VetoException with the given detail message.
+         * @param detail the detail message
+         */
+    public VetoException (String detail) {
             super(detail);
         }
-        public VetoException (Exception nested) {
+        /** Constructs a VetoException wrapping the given exception.
+         * @param nested the nested exception
+         */
+    public VetoException (Exception nested) {
             super(nested);
         }
-        public VetoException (String detail, Exception nested) {
+        /** Constructs a VetoException with detail and nested exception.
+         * @param detail the detail message
+         * @param nested the nested exception
+         */
+    public VetoException (String detail, Exception nested) {
             super(detail, nested);
         }
     }
     /**
+     * Filters an ISO message before sending or after receiving.
      * @param channel current ISOChannel instance
      * @param m ISOMsg to filter
      * @param evt LogEvent
      * @return an ISOMsg (possibly parameter m)
-     * @throws VetoException
+     * @throws VetoException if the message should be suppressed
      */
     ISOMsg filter(ISOChannel channel, ISOMsg m, LogEvent evt)
         throws VetoException;

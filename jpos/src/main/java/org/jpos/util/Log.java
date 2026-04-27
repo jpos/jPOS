@@ -41,6 +41,7 @@ public class Log implements LogSource {
     public static final String ERROR   = "error";
     public static final String FATAL   = "fatal";
 
+    /** Default constructor. */
     public Log () {
         super();
     }

@@ -36,6 +36,7 @@ import org.jpos.util.Caller;
 
 import static org.jpos.transaction.ContextConstants.*;
 
+/** TransactionManager participant that checks required context fields are present. */
 public class CheckFields implements TransactionParticipant, Configurable {
     private Configuration cfg;
     private String request;
@@ -51,6 +52,8 @@ public class CheckFields implements TransactionParticipant, Configurable {
     private Pattern track1Pattern = null;
     private Pattern track2Pattern = null;
 
+    /** Default constructor. */
+    public CheckFields() { super(); }
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
         Result rc = ctx.getResult();

@@ -63,7 +63,7 @@ public class ASCIIChannel extends BaseChannel {
     /**
      * Construct server ISOChannel
      * @param p     an ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see ISOPackager
      */
     public ASCIIChannel (ISOPackager p) throws IOException {
@@ -73,7 +73,7 @@ public class ASCIIChannel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see ISOPackager
      */
     public ASCIIChannel (ISOPackager p, ServerSocket serverSocket)
@@ -83,13 +83,19 @@ public class ASCIIChannel extends BaseChannel {
     }
 
 
+    /** Sets the number of ASCII digits used for the message length prefix.
+     * @param len number of length digits
+     */
     public void setLengthDigits(int len) { lengthDigits= len; }
+    /** Returns the number of ASCII digits used for the message length prefix.
+     * @return number of length digits
+     */
     public int getLengthDigits() { return lengthDigits; }
 
 
     /**
      * @param len the packed Message len
-     * @exception IOException
+     * @exception IOException on I/O failure
      */
     protected void sendMessageLength(int len) throws IOException {
         int maxLen= ten.pow(lengthDigits).intValue() - 1;       // 10^lengthDigits - 1
@@ -102,7 +108,8 @@ public class ASCIIChannel extends BaseChannel {
     }
     /**
      * @return the Message len
-     * @exception IOException, ISOException
+     * @exception IOException on I/O failure
+     * @exception ISOException on ISO packing/unpacking failure
      */
     protected int getMessageLength() throws IOException, ISOException {
         int l = 0;
@@ -135,7 +142,7 @@ public class ASCIIChannel extends BaseChannel {
      * defaulting to 4
      *
      * @param cfg Configuration
-     * @throws ConfigurationException
+     * @throws ConfigurationException if the configuration is invalid
      */
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException

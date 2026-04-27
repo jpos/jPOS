@@ -36,27 +36,49 @@ import java.util.Map;
  */
 @SuppressWarnings ("unused")
 public abstract class ISOBasePackager implements ISOPackager, LogSource {
+    /** Default constructor. */
+    public ISOBasePackager() {}
+    /** Array of field packagers indexed by field number. */
     protected ISOFieldPackager[] fld;
+    /** Field number used as the tertiary bitmap; {@code -999} if not configured. */
     protected int thirdBitmapField= -999;       // for implementations where the tertiary bitmap is inside a Data Element
 
+    /** Logger associated with this packager. */
     protected Logger logger = null;
+    /** When {@code true}, field names are included in log output. */
     protected boolean logFieldName= true;
+    /** Logging realm for this packager. */
     protected String realm = null;
+    /** Number of bytes reserved for a message header. */
     protected int headerLength = 0;
 
+    /**
+     * Sets the array of field packagers used by this packager.
+     * @param fld array of {@link ISOFieldPackager} instances indexed by field number
+     */
     public void setFieldPackager (ISOFieldPackager[] fld) {
         this.fld = fld;
     }
 
+    /**
+     * Sets the field number that contains the third bitmap.
+     * @param f field number (must be &gt;= 0 and &lt;= 128)
+     * @throws ISOException if {@code f} is out of range
+     */
     public void setThirdBitmapField(int f) throws ISOException
     {
         if (f < 0 || f > 128)
             throw new ISOException("thirdBitmapField should be >= 0 and <= 128");
         thirdBitmapField= f;
     }
+    /**
+     * Returns the field number used as the third bitmap, or -1 if not configured.
+     * @return third bitmap field number
+     */
     public int getThirdBitmapField() { return thirdBitmapField; }
 
     /**
+     * Indicates whether a bitmap field should be emitted when packing.
      * @return true if BitMap have to be emited
      */
     protected boolean emitBitMap () {
@@ -80,7 +102,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      *
      * @param   m   the Component to pack
      * @return      Message image
-     * @exception ISOException
+     * @exception ISOException on packing error on ISO processing error
      */
     @Override
     public byte[] pack (ISOComponent m) throws ISOException
@@ -218,7 +240,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @param   m   the Container of this message
      * @param   b   ISO message image
      * @return      consumed bytes
-     * @exception ISOException
+     * @exception ISOException on unpacking error on ISO processing error
      */
     @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException {
@@ -429,7 +451,12 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
     /**
      * Internal helper logging function.
-     * Assumes evt is not null.
+     * @param evt the log event to append to (must not be null)
+     * @param fldno the field number being unpacked
+     * @param c the unpacked component
+     * @param fld the field packager used
+     * @param logFieldName whether to include the field name in the log output
+     * @throws ISOException on logging error
      */
     protected static void fieldUnpackLogger(LogEvent evt, int fldno, ISOComponent c, ISOFieldPackager fld, boolean logFieldName) throws ISOException
     {
@@ -462,6 +489,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
         return fld[fldNumber].getDescription();
     }
     /**
+     * Returns the {@link ISOFieldPackager} assigned to the given field number.
      * @param   fldNumber the Field Number
      * @return  Field Packager for this field
      */
@@ -469,6 +497,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
         return fld != null && fldNumber < fld.length ? fld[fldNumber] : null;
     }
     /**
+     * Assigns an {@link ISOFieldPackager} to the given field number.
      * @param   fldNumber the Field Number
      * @param   fieldPackager the Field Packager
      */
@@ -477,16 +506,19 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     {
         fld[fldNumber] = fieldPackager;
     }
+    /** Creates and returns a new {@link ISOMsg} instance. @return new ISOMsg */
     public ISOMsg createISOMsg () {
         return new ISOMsg();
     }
     /**
+     * Returns the maximum valid field number for this packager.
      * @return 128 for ISO-8583, should return 64 for ANSI X9.2
      */
     protected int getMaxValidField() {
         return 128;
     }
     /**
+     * Returns the {@link ISOFieldPackager} to use for the bitmap field.
      * @return suitable ISOFieldPackager for Bitmap
      */
     protected ISOFieldPackager getBitMapfieldPackager() {
@@ -502,10 +534,18 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     public Logger getLogger() {
         return logger;
     }
+    /**
+     * Returns the number of header bytes prepended to each message.
+     * @return header length in bytes
+     */
     public int getHeaderLength ()
     {
     	return headerLength;
     }
+    /**
+     * Sets the number of header bytes prepended to each message.
+     * @param len header length in bytes
+     */
     public void setHeaderLength(int len)
     {
     	headerLength = len;

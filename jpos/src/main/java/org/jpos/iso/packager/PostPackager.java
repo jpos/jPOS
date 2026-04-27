@@ -60,8 +60,8 @@ import org.jpos.util.Logger;
 /**
  * ISO 8583 v1987 Packager for Postilion
  *
- * @author Victor A. Salaman <salaman@teknos.com>
- * @version Id: PostPackager.java,v 1.9 1999/09/17 12:08:02 salaman Exp 
+ * @author Victor A. Salaman (salaman@teknos.com)
+ * @version $Id$
  * @see ISOPackager
  * @see ISOBasePackager
  * @see ISOComponent
@@ -240,6 +240,7 @@ public class PostPackager extends ISOBasePackager {
             setFieldPackager(fld127);
         }
     }
+    /** Default constructor. */
     public PostPackager() {
         super();
         setFieldPackager(fld);

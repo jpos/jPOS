@@ -23,8 +23,11 @@ import org.jpos.q2.CLIContext;
 import org.jpos.q2.install.Install;
 
 @SuppressWarnings("unused")
+/** CLI command to install packages. */
 public class INSTALL implements CLICommand
 {
+    /** Default constructor. */
+    public INSTALL() {}
     public void exec(CLIContext cli, String[] args) throws Exception
     {
         Install.main(args);

@@ -49,7 +49,7 @@ public class GICCChannel extends BaseChannel {
     /**
      * Construct server ISOChannel
      * @param p     an ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public GICCChannel (ISOPackager p) throws IOException {
@@ -59,7 +59,7 @@ public class GICCChannel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public GICCChannel (ISOPackager p, ServerSocket serverSocket) 
@@ -68,8 +68,9 @@ public class GICCChannel extends BaseChannel {
         super(p, serverSocket);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len the packed Message len
-     * @exception IOException
+     * @exception IOException on I/O error
      */
     protected void sendMessageLength(int len) throws IOException {
         serverOut.write (0);
@@ -79,7 +80,8 @@ public class GICCChannel extends BaseChannel {
     }
     /**
      * @return the Message len
-     * @exception IOException, ISOException
+     * @exception IOException on I/O error
+     * @exception ISOException on ISO processing error
      */
     protected int getMessageLength() throws IOException, ISOException {
         int l = 0;

@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class TAIL implements CLICommand, LogListener {
+    /** Default constructor. */
+    public TAIL() {}
     PrintStream p;
     CLIContext cli;
     boolean ansi;

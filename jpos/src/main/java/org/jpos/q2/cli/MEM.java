@@ -23,6 +23,8 @@ import org.jpos.q2.CLIContext;
 
 public class MEM implements CLICommand
 {
+    /** Default constructor. */
+    public MEM() {}
     public void exec(CLIContext cli, String[] args) throws Exception
     {
         if (args.length > 1 && "--gc".equals(args[1]))

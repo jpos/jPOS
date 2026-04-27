@@ -33,8 +33,11 @@ public class SpaceSource implements ISOSource, SpaceListener<String,ISOMsg>, Ser
 
     private transient Space isp = SpaceFactory.getSpace();
     private transient LocalSpace sp;
+    /** Space key used to correlate request and reply messages. */
     private String key;
+    /** Message expiration timeout, in milliseconds. */
     private long timeout;
+    /** Last known connectivity state of the wrapped source. */
     private boolean connected;
 
     public SpaceSource(LocalSpace sp, ISOSource source, long timeout) {

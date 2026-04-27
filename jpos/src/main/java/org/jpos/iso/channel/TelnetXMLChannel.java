@@ -75,7 +75,7 @@ public class TelnetXMLChannel extends BaseChannel {
      * @param p
      *            an ISOPackager
      * @see ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O error
      */
     public TelnetXMLChannel(ISOPackager p) throws IOException {
         super(p);
@@ -88,7 +88,7 @@ public class TelnetXMLChannel extends BaseChannel {
      *            an ISOPackager
      * @param serverSocket
      *            where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public TelnetXMLChannel(ISOPackager p, ServerSocket serverSocket)
@@ -98,7 +98,7 @@ public class TelnetXMLChannel extends BaseChannel {
 
     /**
      * @return a byte array with the received message
-     * @exception IOException
+     * @exception IOException on I/O error
      */
     protected byte[] streamReceive() throws IOException {
         int sp = 0;

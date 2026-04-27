@@ -29,7 +29,9 @@ import org.jpos.iso.ISOUtil;
 
 public class MD5Template implements Template, Serializable  {
     private static final long serialVersionUID = -1204861759575740048L;
+    /** Digest of the serialized comparison value. */
     byte[] digest;
+    /** Key associated with this template. */
     Object key;
 
     public MD5Template (Object key, Object value) {

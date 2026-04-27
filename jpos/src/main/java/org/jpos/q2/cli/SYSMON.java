@@ -24,6 +24,8 @@ import org.jpos.util.SystemMonitor;
 
 @SuppressWarnings("unused")
 public class SYSMON implements CLICommand {
+    /** Default constructor. */
+    public SYSMON() {}
     public void exec(CLIContext cli, String[] args) throws Exception {
         cli.printLoggeable(new SystemMonitor(), " ");
     }

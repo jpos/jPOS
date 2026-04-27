@@ -28,6 +28,7 @@ import org.jdom2.Element;
  */
 public interface XmlConfigurable {
    /**
+    * Configures this object from an XML element.
     * @param e Configuration element
     * @throws ConfigurationException on error
     */

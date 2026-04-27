@@ -40,6 +40,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * A Q2-managed multiplexer that routes ISO messages between channels and listeners.
  * @author Alejandro Revilla
  */
 @SuppressWarnings("unchecked")
@@ -75,6 +76,7 @@ public class QMUX
     private Counter rxMatchCounter;
     private Counter rxUnhandledCounter;
 
+    /** Default constructor. */
     public QMUX () {
         super ();
         listeners = new ArrayList<>();
@@ -140,7 +142,7 @@ public class QMUX
 
     /**
      * @return MUX with name using NameRegistrar
-     * @throws NameRegistrar.NotFoundException
+     * @throws NameRegistrar.NotFoundException if not found in registry
      * @see NameRegistrar
      */
     public static MUX getMUX (String name)
@@ -493,8 +495,8 @@ public class QMUX
      *
      * @param m the Message to be sent
      * @throws java.io.IOException
-     * @throws org.jpos.iso.ISOException
-     * @throws org.jpos.iso.ISOFilter.VetoException;
+     * @throws org.jpos.iso.ISOException on pack/unpack error
+     * @throws org.jpos.iso.ISOFilter.VetoException
      */
     public void send(ISOMsg m) throws IOException, ISOException {
         if (!isConnected())

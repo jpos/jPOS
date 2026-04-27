@@ -78,14 +78,20 @@ public class DirPoll extends SimpleLogSource
     private boolean regexPriorityMatching = false;
     private List<String> poolBatchFiles = new ArrayList<>();
     private static final long SHUTDOWN_WAIT = 15000;
+    /** Configuration for this DirPoll instance. */
     protected Configuration cfg;
-    
+
+    /** Default constructor. */
     public DirPoll () {
         prio = new Vector();
         setPollInterval(1000);
         setPath (".");
         executor = null;
     }
+    /**
+     * Sets the base poll directory and derives the standard subdirectories from it.
+     * @param base the base directory path
+     */
     public synchronized void setPath(String base) {
         this.basePath = base;
         requestDir  = new File(base, "request");
@@ -95,83 +101,179 @@ public class DirPoll extends SimpleLogSource
         runDir      = new File(base, "run");
         archiveDir  = new File(base, "archive");
     }
+    /**
+     * When {@code true}, archive files are timestamped.
+     * @param shouldTimestampArchive true to timestamp archived files
+     */
     public void setShouldTimestampArchive(boolean shouldTimestampArchive) {
         this.shouldTimestampArchive = shouldTimestampArchive;
     }
+    /**
+     * Sets the date format pattern used when timestamping archived files.
+     * @param dateFormat the date format pattern (see {@link java.text.SimpleDateFormat})
+     */
     public void setArchiveDateFormat(String dateFormat) {
         this.archiveDateFormat = dateFormat;
     }
+    /**
+     * When {@code true}, processed request files are moved to the archive directory.
+     * @param shouldArchive true to archive processed files
+     */
     public void setShouldArchive(boolean shouldArchive) {
         this.shouldArchive = shouldArchive;
     }
+    /**
+     * When {@code true}, archived files are compressed.
+     * @param shouldCompressArchive true to compress archived files
+     */
     public void setShouldCompressArchive(boolean shouldCompressArchive) {
         this.shouldCompressArchive = shouldCompressArchive;
     }
+    /**
+     * When {@code true}, zero-length request files are accepted.
+     * @param acceptZeroLength true to accept zero-length files
+     */
     public void setAcceptZeroLength(boolean acceptZeroLength) {
         this.acceptZeroLength = acceptZeroLength;
     }
+    /**
+     * Returns the base poll directory path.
+     * @return the base path
+     */
     public String getPath() {
         return basePath;
     }
+    /**
+     * Sets the request sub-directory name relative to the base path.
+     * @param dir the sub-directory name
+     */
     public void setRequestDir (String dir) {
         requestDir = new File (basePath, dir);
     }
+    /**
+     * Sets the response sub-directory name relative to the base path.
+     * @param dir the sub-directory name
+     */
     public void setResponseDir (String dir) {
         responseDir = new File (basePath, dir);
     }
+    /**
+     * Sets the tmp sub-directory name relative to the base path.
+     * @param dir the sub-directory name
+     */
     public void setTmpDir (String dir) {
         tmpDir = new File (basePath, dir);
     }
+    /**
+     * Sets the bad (failed) sub-directory name relative to the base path.
+     * @param dir the sub-directory name
+     */
     public void setBadDir (String dir) {
         badDir = new File (basePath, dir);
     }
+    /**
+     * Sets the run (in-progress) sub-directory name relative to the base path.
+     * @param dir the sub-directory name
+     */
     public void setRunDir (String dir) {
         runDir = new File (basePath, dir);
     }
+    /**
+     * Sets the archive sub-directory name relative to the base path.
+     * @param dir the sub-directory name
+     */
     public void setArchiveDir (String dir) {
         archiveDir = new File (basePath, dir);
     }
+    /**
+     * Sets the polling interval in milliseconds.
+     * @param pollInterval the interval in milliseconds
+     */
     public void setPollInterval(long pollInterval) {
         this.pollInterval = pollInterval;
     }
+    /**
+     * Sets the suffix appended to response file names.
+     * @param suffix the response file suffix
+     */
     public void setResponseSuffix (String suffix) {
         this.responseSuffix = suffix;
     }
+    /**
+     * Returns the polling interval in milliseconds.
+     * @return poll interval
+     */
     public long getPollInterval() {
         return pollInterval;
     }
+    /**
+     * Sets the processor used to handle request files.
+     * @param processor a {@link Processor} or {@link FileProcessor} instance
+     */
     public void setProcessor (Object processor) {
         this.processor = processor;
     }
 
+    /**
+     * Returns the request directory.
+     * @return request directory
+     */
     protected File getRequestDir() {
         return requestDir;
     }
 
+    /**
+     * Returns the response directory.
+     * @return response directory
+     */
     protected File getResponseDir() {
         return responseDir;
     }
 
+    /**
+     * Returns the tmp directory.
+     * @return tmp directory
+     */
     protected File getTmpDir() {
         return tmpDir;
     }
 
+    /**
+     * Returns the bad (failed) directory.
+     * @return bad directory
+     */
     protected File getBadDir() {
         return badDir;
     }
 
+    /**
+     * Returns the run (in-progress) directory.
+     * @return run directory
+     */
     protected File getRunDir() {
         return runDir;
     }
 
+    /**
+     * Returns the archive directory.
+     * @return archive directory
+     */
     protected File getArchiveDir() {
         return archiveDir;
     }
 
+    /**
+     * Returns whether regex-based priority matching is enabled.
+     * @return true if regex priority matching is active
+     */
     public boolean isRegexPriorityMatching() {
         return regexPriorityMatching;
     }
 
+    /**
+     * Enables or disables regex-based file extension priority matching.
+     * @param regexPriorityMatching true to enable regex priority matching
+     */
     public void setRegexPriorityMatching(boolean regexPriorityMatching) {
         this.regexPriorityMatching = regexPriorityMatching;
     }
@@ -217,7 +319,8 @@ public class DirPoll extends SimpleLogSource
         }
     }
     /**
-     * @param priorities blank separated list of extensions
+     * Sets the file extension priority order for polling.
+     * @param priorities blank-separated list of file extensions in priority order
      */
     public void setPriorities (String priorities) {
         StringTokenizer st = new StringTokenizer (priorities);
@@ -232,11 +335,21 @@ public class DirPoll extends SimpleLogSource
             prio = v;
         }
     }
+    /**
+     * Sets the thread pool used to execute processor tasks.
+     * @param executor the executor service to use
+     */
     public synchronized void setThreadPool (ExecutorService executor) {
         this.executor = executor;
     }
     
     //--------------------------------------- FilenameFilter implementation
+    /**
+     * {@link java.io.FilenameFilter} implementation that selects files matching the current priority extension.
+     * @param dir the directory
+     * @param name the file name
+     * @return true if the file should be accepted
+     */
     public boolean accept(File dir, String name) {
         boolean result;
         String ext = currentPriority >= 0 ?
@@ -324,6 +437,7 @@ public class DirPoll extends SimpleLogSource
 
     //----------------------------------------------------- public helpers
 
+    /** Creates all required poll directories (request, response, tmp, bad, run, archive). */
     public void createDirs() {
         requestDir.mkdirs();
         responseDir.mkdirs();
@@ -332,6 +446,10 @@ public class DirPoll extends SimpleLogSource
         runDir.mkdirs();
         archiveDir.mkdirs();
     }
+    /**
+     * Adds a file extension to the priority list.
+     * @param fileExtension the extension to add (e.g. {@code "xml"})
+     */
     public void addPriority(String fileExtension) {
         prio.addElement (fileExtension);
     }
@@ -382,6 +500,10 @@ public class DirPoll extends SimpleLogSource
         f.delete();
     }
 
+    /**
+     * Scans the request directory for the next file to process, respecting priority order.
+     * @return the next request {@link File}, or {@code null} if none is available
+     */
     protected File scan() {
         if (prio.size() > 1) {
             for (currentPriority = 0; currentPriority < prio.size(); currentPriority++) {
@@ -421,25 +543,36 @@ public class DirPoll extends SimpleLogSource
     }
 
     // ------------------------------------------------ inner interfaces
+    /** Callback interface for processing binary request files. */
     public interface Processor {
         /**
-         * @param name request name
-         * @param request request image
-         * @return response (or null)
+         * Processes a request and returns a response.
+         * @param name request file name
+         * @param request request image bytes
+         * @return response bytes (or null if none)
+         * @throws DirPollException on processing errors
          */
         byte[] process(String name, byte[] request)
             throws DirPollException;
     }
+    /** Callback interface for processing request {@link File} objects directly. */
     public interface FileProcessor {
         /**
-         * @param name request File
-         * @throws org.jpos.util.DirPoll.DirPollException on errors
+         * Processes a request file.
+         * @param name the request file
+         * @throws DirPollException on errors
          */
         void process(File name) throws DirPollException;
     }
+    /** Runnable that moves a request to the run directory and dispatches it to the processor. */
     public class ProcessorRunner implements Runnable {
         File request;
         LogEvent logEvent;
+        /**
+         * Creates a ProcessorRunner for the given request file.
+         * @param request the request file
+         * @throws IOException on I/O failure while moving the file
+         */
         public ProcessorRunner (File request) throws IOException {
             this.request = moveTo (request, runDir);
             this.logEvent = null;
@@ -502,28 +635,53 @@ public class DirPoll extends SimpleLogSource
             }
         }
     }
+    /** Exception thrown by {@link Processor} or {@link FileProcessor} to signal a processing error. */
     public static class DirPollException extends ISOException {
+        /** When {@code true}, the request should be retried rather than moved to bad. */
         boolean retry;
+        /** Default constructor. */
         public DirPollException () {
             super();
         }
+        /**
+         * Constructs a DirPollException with the given message.
+         * @param detail the error message
+         */
         public DirPollException (String detail) {
             super(detail);
         }
+        /**
+         * Constructs a DirPollException wrapping the given exception.
+         * @param nested the nested exception
+         */
         public DirPollException (Exception nested) {
             super(nested);
         }
+        /**
+         * Constructs a DirPollException with a message and nested exception.
+         * @param detail the error message
+         * @param nested the nested exception
+         */
         public DirPollException (String detail, Exception nested) {
             super(detail, nested);
         }
+        /**
+         * Returns whether the failed request should be retried.
+         * @return true if retry is requested
+         */
         public boolean isRetry() {
             return retry;
         }
+        /**
+         * Sets whether the failed request should be retried.
+         * @param retry true to retry, false to move to bad directory
+         */
         public void setRetry(boolean retry) {
             this.retry = retry;
         }
     }
-    
+
+    /** Pauses the poll loop. */
     public void pause() {
         synchronized (this) {
             if (!paused) {
@@ -534,6 +692,7 @@ public class DirPoll extends SimpleLogSource
         }
     }
 
+    /** Resumes a paused poll loop. */
     public void unpause() {
         synchronized (this) {
             if (paused) {
@@ -545,6 +704,10 @@ public class DirPoll extends SimpleLogSource
         }
     }
     
+    /**
+     * Returns whether the poll loop is currently paused.
+     * @return true if paused
+     */
     public boolean isPaused() {
         synchronized (this) {
             return paused;

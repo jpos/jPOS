@@ -67,6 +67,8 @@ import java.io.Serializable;
  **/
 
  public class ProtectDebugInfo implements AbortParticipant, Configurable {
+    /** Default constructor. */
+    public ProtectDebugInfo() {}
      private String[] protectedEntries;
      private String[] wipedEntries;
      private String[] protectFSD;

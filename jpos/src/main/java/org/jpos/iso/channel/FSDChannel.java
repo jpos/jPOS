@@ -31,7 +31,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import org.jpos.iso.ISOUtil;
 
+/** An ISOChannel that uses {@link org.jpos.util.FSDMsg} for fixed-schema ISO message framing. */
 public class FSDChannel extends NACChannel {
+    /** Default constructor. */
+    public FSDChannel() { super(); }
+
     String schema;
     Charset charset;
 

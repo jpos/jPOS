@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
+ * UIFactory that creates a {@link javax.swing.JButton} from XML.
  * @author Alejandro Revilla
  *
  * Creates a JButton
@@ -37,6 +38,8 @@ import java.awt.*;
  * @see org.jpos.ui.UIFactory
  */
 public class JButtonFactory implements UIFactory {
+    /** Default constructor. */
+    public JButtonFactory() {}
     public JComponent create (UI ui, Element e) {
         JButton button = new JButton (e.getText());
         button.setHorizontalAlignment(JLabel.CENTER);

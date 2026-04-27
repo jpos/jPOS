@@ -20,8 +20,8 @@ package org.jpos.iso.header;
 
 import org.jpos.iso.ISOUtil;
 
-/*
- * BASE1 Header
+/**
+ * BASE1 header implementation.
  * <pre>
  *   0 hlen;         Fld  1: Header Length        1B      (Byte     0)
  *   1 hformat;      Fld  2: Header Format        8N,bit  (Byte     1)
@@ -44,11 +44,17 @@ import org.jpos.iso.ISOUtil;
 public class BASE1Header extends BaseHeader {
 
     private static final long serialVersionUID = 6466427524726021374L;
+    /** Fixed length of a BASE-1 header in bytes. */
     public static final int LENGTH = 22;
 
+    /** Creates a BASE1Header with source and destination both set to {@code "000000"}. */
     public BASE1Header() {
         this("000000", "000000");
     }
+    /** Creates a BASE1Header with the given source and destination and default format (2).
+     * @param source 6-digit source ID
+     * @param destination 6-digit destination ID
+     */
     public BASE1Header(String source, String destination) {
         super();
         header = new byte[LENGTH];
@@ -58,6 +64,11 @@ public class BASE1Header extends BaseHeader {
         setSource(source);
         setDestination(destination);
     }
+    /** Creates a BASE1Header with explicit format.
+     * @param source 6-digit source ID
+     * @param destination 6-digit destination ID
+     * @param format header format code
+     */
     public BASE1Header(String source, String destination, int format) {
         super();
         header = new byte[LENGTH];
@@ -67,37 +78,76 @@ public class BASE1Header extends BaseHeader {
         setSource(source);
         setDestination(destination);
     }
+    /** Creates a BASE1Header from a raw byte array.
+     * @param header raw header bytes
+     */
     public BASE1Header(byte[] header) {
         super(header);
     }
 
+    /**
+     * Returns the header length field value.
+     * @return header length
+     */
     public int getHLen() {
         return header[0] & 0xFF;
     }
+    /**
+     * Sets the header format byte.
+     * @param hformat header format value
+     */
     public void setHFormat(int hformat) {
         header[1] = (byte) hformat;
     }
+    /**
+     * Returns the message format code.
+     * @return message format code
+     */
     public int getFormat() {
         return header[2] & 0xFF;
     }
+    /**
+     * Sets the routing control byte.
+     * @param i routing control value
+     */
     public void setRtCtl(int i) {
         header[11] = (byte) i;
     }
+    /**
+     * Sets the flags field.
+     * @param i flags value
+     */
     public void setFlags(int i) {
         header[12] = (byte) (i >> 8 & 0xFF);
         header[13] = (byte) (i & 0xFF);
     }
+    /**
+     * Sets the status field.
+     * @param i status value
+     */
     public void setStatus(int i) {
         header[14] = (byte) (i >> 16 & 0xFF);
         header[15] = (byte) (i >> 8 & 0xFF);
         header[16] = (byte) (i & 0xFF);
     }
+    /**
+     * Sets the batch number.
+     * @param i batch number
+     */
     public void setBatchNumber(int i) {
         header[17] = (byte) (i & 0xFF);
     }
+    /**
+     * Sets the message format code.
+     * @param format the message format code
+     */
     public void setFormat(int format) {
         header[2] = (byte) format;
     }
+    /**
+     * Sets the message length field in the header.
+     * @param len the payload length (header length will be added automatically)
+     */
     public void setLen(int len) {
         len += header.length;
         header[3]  = (byte) (len >> 8 & 0xff);
@@ -125,6 +175,10 @@ public class BASE1Header extends BaseHeader {
             System.arraycopy(source, 0, header, 5, 3);
         }
     }
+    /**
+     * Returns true if this message is a BASE-1 reject.
+     * @return true if the message is rejected
+     */
     public boolean isRejected() {
         // Header length must be 26 or gerater
         // And header field 13 bit 1 must be 1 (field 13 starts at byte 22)
@@ -142,6 +196,10 @@ public class BASE1Header extends BaseHeader {
 
     /*
      * parse header contributed by santhoshvee@yahoo.co.uk in jpos-dev mailing list
+     */
+    /**
+     * Formats the header fields as a human-readable diagnostic string.
+     * @return formatted header dump
      */
     public String formatHeader() {
         String h = ISOUtil.hexString(this.header);

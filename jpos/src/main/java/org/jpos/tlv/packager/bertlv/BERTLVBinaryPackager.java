@@ -32,6 +32,9 @@ import org.jpos.iso.LiteralBinaryInterpreter;
 
 public class BERTLVBinaryPackager extends DefaultICCBERTLVPackager {
 
+    /** Default constructor.
+     * @throws ISOException on configuration error
+     */
     public BERTLVBinaryPackager() throws ISOException {
         super();
     }

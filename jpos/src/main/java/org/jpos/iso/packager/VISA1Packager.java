@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * ISO-8583 packager for the VISA-1 message format.
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOPackager

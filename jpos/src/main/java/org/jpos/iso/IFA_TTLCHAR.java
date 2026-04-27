@@ -23,6 +23,8 @@ package org.jpos.iso;
  *
  */
 public class IFA_TTLCHAR extends TaggedFieldPackagerBase {
+    /** Default constructor. */
+    public IFA_TTLCHAR() {}
 
     @Override
     protected int getTagNameLength() {

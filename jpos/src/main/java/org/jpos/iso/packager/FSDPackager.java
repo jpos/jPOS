@@ -27,7 +27,12 @@ import org.jpos.util.Log;
 
 import java.io.InputStream;
 
+/**
+ * An ISOPackager that uses {@link org.jpos.util.FSDMsg} for fixed-schema pack/unpack.
+ */
 public class FSDPackager extends Log implements ISOPackager {
+    /** Default constructor. */
+    public FSDPackager() {}
     public byte[] pack (ISOComponent m) throws ISOException {
         return m.pack ();
     }

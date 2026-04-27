@@ -20,13 +20,15 @@ package org.jpos.core;
 
 
 /**
- * @author apr@cs.com.uy
- * @version $Id$
- * @since jPOS 1.1
  *
  * Multipurpose sequencer.<br>
  * CardAgents requires persistent sequence number<br>
  * Sequencer interface isolate from particular DB implementations
+ *
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @since jPOS 1.1
+ *
  */
 public interface Sequencer {
     int get(String counterName);

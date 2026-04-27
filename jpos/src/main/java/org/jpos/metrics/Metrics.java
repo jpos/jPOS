@@ -55,6 +55,8 @@ import org.jpos.q2.Q2;
  * @see Q2#getMeterRegistry()
  */
 public class Metrics {
+    /** Default constructor. */
+    public Metrics() {}
 
     /**
      * Get the MeterRegistry from the default Q2 instance.
@@ -78,9 +80,8 @@ public class Metrics {
      * <p>This variant blocks until Q2 is available or the timeout expires.
      * Useful during initialization when Q2 might not be fully started yet.</p>
      *
-     * @param timeout maximum time to wait in milliseconds
+     * @param timeout maximum time to wait in milliseconds; throws {@code NameRegistrar.NotFoundException} if not found
      * @return MeterRegistry from Q2
-     * @throws org.jpos.util.NameRegistrar.NotFoundException if Q2 not found within timeout
      */
     public static MeterRegistry getMeterRegistry(long timeout) {
         return Q2.getQ2(timeout).getMeterRegistry();
@@ -104,9 +105,8 @@ public class Metrics {
      * Get the MeterRegistry from a named Q2 instance, waiting up to timeout milliseconds.
      *
      * @param q2Name Q2 instance name
-     * @param timeout maximum time to wait in milliseconds
+     * @param timeout maximum time to wait in milliseconds; throws {@code NameRegistrar.NotFoundException} if not found
      * @return MeterRegistry from named Q2 instance
-     * @throws org.jpos.util.NameRegistrar.NotFoundException if Q2 not found within timeout
      */
     public static MeterRegistry getMeterRegistry(String q2Name, long timeout) {
         return org.jpos.util.NameRegistrar.<Q2>get(q2Name, timeout).getMeterRegistry();

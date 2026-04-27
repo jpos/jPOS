@@ -33,15 +33,20 @@ import java.util.HashMap;
  *   <li>length is encoded as decimal characters
  * </ul>
  *
- * @author Grzegorz Wieczorek <grw1@wp.pl>
+ * @author Grzegorz Wieczorek (grw1@wp.pl)
  */
 public class CharTagMap extends HashMap<String, CharTag> {
+    /** Default constructor. */
+    public CharTagMap() { super(); }
 
     static final String EXCEPTION_PREFIX = "BAD TLV FORMAT:";
 
+    /** Number of characters used to encode the tag identifier. */
     private int tagLen = 0x02;
+    /** Number of characters used to encode the tag value length. */
     private int lenLen = 0x03;
 
+    /** Whether packed output places the length before the tag identifier. */
     private boolean swapTagWithLength;
 
     /**
@@ -50,11 +55,11 @@ public class CharTagMap extends HashMap<String, CharTag> {
      * This method creates default TLV tag map which works on TLV data with
      * followng parameters:
      * <ul>
-     *   <li><em>TT</em> - 2 <tt>ASCII</tt> characters of tag identifier
-     *   <li><em>LLL</em> - 3 <tt>ASCII</tt> encoded decimal digits represents
+     *   <li><em>TT</em> - 2 {@code ASCII} characters of tag identifier
+     *   <li><em>LLL</em> - 3 {@code ASCII} encoded decimal digits represents
      *      tag value length
      *   </li>
-     *   <li><em>VAL</em> - 0 or more <i>(up to 999)</i> <tt>ASCII</tt>
+     *   <li><em>VAL</em> - 0 or more <i>(up to 999)</i> {@code ASCII}
      *      encoded characters represents tag value
      *   </li>
      * </ul>
@@ -175,6 +180,11 @@ public class CharTagMap extends HashMap<String, CharTag> {
         return tag;
     }
 
+    /**
+     * Validates that the given tag identifier is registered in this map.
+     * @param tagId the tag identifier to validate
+     * @throws IllegalArgumentException if tagId is not a known tag
+     */
     protected void validateTag(String tagId) throws IllegalArgumentException {
         if (tagId == null)
             throw new IllegalArgumentException("Tag identifier have to be specified");

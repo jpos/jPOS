@@ -27,6 +27,7 @@ package org.jpos.iso;
 
 public interface FactoryChannel {
     /**
+     * Sets the {@link ISOClientSocketFactory} used to create sockets for this channel.
      * @param sfac a socket factory
      */
     void setSocketFactory(ISOClientSocketFactory sfac);

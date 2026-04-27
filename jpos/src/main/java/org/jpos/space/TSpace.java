@@ -31,6 +31,9 @@ import java.util.concurrent.TimeUnit;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since !.4.9
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 
 @SuppressWarnings("unchecked")
@@ -45,6 +48,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private final Set[] expirables;
     private long lastLongGC = System.nanoTime();
 
+    /** Default constructor. */
     public TSpace () {
         super();
         entries = new HashMap ();

@@ -29,6 +29,7 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 /**
+ * UIFactory that creates an HTML-rendering {@link javax.swing.JEditorPane} from XML.
  * @author Alejandro Revilla
  *
  * Creates an html browser/editor
@@ -40,7 +41,10 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
+/** UIFactory that creates HTML-rendered panels. */
 public class HtmlFactory implements UIFactory {
+    /** Default constructor. */
+    public HtmlFactory() {}
     public JComponent create (UI ui, Element e) {
         try {
             JEditorPane editorPane = new JEditorPane (e.getText());

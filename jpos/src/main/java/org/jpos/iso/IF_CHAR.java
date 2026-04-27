@@ -29,11 +29,13 @@ package org.jpos.iso;
  */
 public class IF_CHAR extends ISOStringFieldPackager {
     /** Used for the GenericPackager. */
+    /** Default constructor. */
     public IF_CHAR() {
         super(0, null, RightTPadder.SPACE_PADDER, LiteralInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

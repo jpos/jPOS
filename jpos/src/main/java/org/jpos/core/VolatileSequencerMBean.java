@@ -20,6 +20,7 @@ package org.jpos.core;
 
 
 /**
+ * JMX management interface for {@link VolatileSequencer}.
  * @author apr@cs.com.uy
  * @version $Id$
  * @since jPOS 1.3.9

@@ -32,16 +32,20 @@ import java.util.BitSet;
  * @see ISOComponent
  */
 public class ISOBitMap extends ISOComponent implements Cloneable {
+    /** The ISO field number. */
     protected int fieldNumber;
+    /** The BitSet representing the bitmap. */
     protected BitSet value;
 
     /**
+     * Constructs a bitmap with the given field number.
      * @param n - the FieldNumber
      */
     public ISOBitMap (int n) {
         fieldNumber = n;
     }
     /**
+     * Constructs a bitmap.
      * @param n - fieldNumber
      * @param v - field value (Bitset)
      * @see BitSet
@@ -67,21 +71,21 @@ public class ISOBitMap extends ISOComponent implements Cloneable {
 
     /**
      * not available on Leaf - always throw ISOException
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack() throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public int unpack(byte[] b) throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public void unpack(InputStream in) throws ISOException {
         throw new ISOException ("Not available on Leaf");
@@ -100,7 +104,7 @@ public class ISOBitMap extends ISOComponent implements Cloneable {
     }
     /**
      * @param obj - Object representing this field value
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public void setValue(Object obj) throws ISOException {
         value = (BitSet) obj;

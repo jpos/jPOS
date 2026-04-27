@@ -55,6 +55,10 @@ public class EbcdicPrefixer implements Prefixer
     /** The number of digits allowed to express the length */
     private int nDigits;
 
+    /**
+     * Creates an EbcdicPrefixer with the given number of length-indicator digits.
+     * @param nDigits number of digits used to represent the field length
+     */
     public EbcdicPrefixer(int nDigits)
     {
         this.nDigits = nDigits;

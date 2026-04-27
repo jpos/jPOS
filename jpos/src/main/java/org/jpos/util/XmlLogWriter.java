@@ -25,6 +25,8 @@ import java.io.PrintStream;
 
 @Deprecated(forRemoval = false)
 public class XmlLogWriter implements LogEventWriter {
+    /** Default constructor. */
+    public XmlLogWriter() {}
     private PrintStream ps;
     private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.XML);
 

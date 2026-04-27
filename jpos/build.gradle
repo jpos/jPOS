@@ -12,6 +12,7 @@ extraJavaModuleInfo {
     automaticModule ('org.apache-extras.beanshell:bsh', 'bsh')
     automaticModule ('com.sleepycat:je', 'com.sleepycat.je')
     automaticModule ('jdbm:jdbm', 'org.jdbm')
+    automaticModule ('org.mapdb:mapdb', 'org.mapdb')
 }
 
 dependencies { 
@@ -32,6 +33,7 @@ dependencies {
     
     implementation libs.yaml;
     implementation libs.jdbm
+    implementation libs.mapdb
     implementation libs.sleepycatje
     implementation libs.hdrhistogram
 

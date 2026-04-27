@@ -40,7 +40,7 @@ public interface RemoteQMUX extends Remote  {
      * @param m message to send
      * @param timeout time to wait for a message
      * @return received message or null
-     * @throws ISOException
+     * @throws ISOException on pack/unpack error
      */
     ISOMsg request(ISOMsg m, long timeout) throws ISOException, RemoteException;
 

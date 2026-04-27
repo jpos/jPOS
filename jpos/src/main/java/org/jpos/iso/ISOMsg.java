@@ -39,15 +39,25 @@ import java.util.*;
 public class ISOMsg extends ISOComponent
     implements Cloneable, Loggeable, Externalizable
 {
+    /** Map of field number to field value. */
     protected Map<Integer,Object> fields;
+    /** Highest field number currently set in this message. */
     protected int maxField;
+    /** The packager used to pack/unpack this message. */
     protected ISOPackager packager;
+    /** Dirty flags for tracking state changes. */
     protected boolean dirty, maxFieldDirty;
+    /** Message direction: INCOMING or OUTGOING. */
     protected int direction;
+    /** Optional ISO header for this message. */
     protected ISOHeader header;
+    /** Optional trailer bytes appended to the packed message. */
     protected byte[] trailer;
+    /** Field number of this message when nested inside another ISOMsg. */
     protected int fieldNumber = -1;
+    /** Constant indicating an incoming message direction. */
     public static final int INCOMING = 1;
+    /** Constant indicating an outgoing message direction. */
     public static final int OUTGOING = 2;
     private static final long serialVersionUID = 4306251831901413975L;
     private WeakReference sourceRef;
@@ -110,6 +120,10 @@ public class ISOMsg extends ISOComponent
         header = new BaseHeader (b);
     }
 
+    /**
+     * Sets the ISO header for this message.
+     * @param header the ISOHeader to set on this message
+     */
     public void setHeader (ISOHeader header) {
         this.header = header;
     }
@@ -123,12 +137,12 @@ public class ISOMsg extends ISOComponent
 
     /**
      * Sets optional trailer data.
-     * <p/>
+     * <p>
      * Note: The trailer data requires a customised channel that explicitly handles the trailer data from the ISOMsg.
      *
      * @param trailer The trailer data.
-     * @see BaseChannel#getMessageTrailer(ISOMsg).
-     * @see BaseChannel#sendMessageTrailer(ISOMsg, byte[]).
+     * @see BaseChannel#getMessageTrailer(ISOMsg)
+     * @see BaseChannel#sendMessageTrailer(ISOMsg, byte[])
      */
     public void setTrailer(byte[] trailer) {
         this.trailer = trailer;
@@ -151,28 +165,32 @@ public class ISOMsg extends ISOComponent
         return header;
     }
     /**
-     * @return the direction (ISOMsg.INCOMING or ISOMsg.OUTGOING)
+     * Returns the message direction.
+     * @return the direction ({@code ISOMsg.INCOMING} or {@code ISOMsg.OUTGOING})
      * @see ISOChannel
      */
     public int getDirection() {
         return direction;
     }
     /**
-     * @return true if this message is an incoming message
+     * Returns true if this message was received from a channel.
+     * @return true if this is an incoming message
      * @see ISOChannel
      */
     public boolean isIncoming() {
         return direction == INCOMING;
     }
     /**
-     * @return true if this message is an outgoing message
+     * Returns true if this message is to be sent via a channel.
+     * @return true if this is an outgoing message
      * @see ISOChannel
      */
     public boolean isOutgoing() {
         return direction == OUTGOING;
     }
     /**
-     * @return the max field number associated with this message
+     * Returns the highest field number present in this message.
+     * @return the max field number
      */
     @Override
     public int getMaxField() {
@@ -189,6 +207,7 @@ public class ISOMsg extends ISOComponent
         maxFieldDirty = false;
     }
     /**
+     * Sets the packager used to pack/unpack this message.
      * @param p - a peer packager
      */
     public void setPackager (ISOPackager p) {
@@ -201,6 +220,7 @@ public class ISOMsg extends ISOComponent
         }
     }
     /**
+     * Returns the packager associated with this message.
      * @return the peer packager
      */
     public ISOPackager getPackager () {
@@ -567,9 +587,9 @@ public class ISOMsg extends ISOComponent
         return (Map) ((TreeMap)fields).clone();
     }
     /**
-     * pack the message with the current packager
+     * Packs this message using the configured packager.
      * @return the packed message
-     * @exception ISOException
+     * @exception ISOException on packing error
      */
     @Override
     public byte[] pack() throws ISOException {
@@ -579,10 +599,10 @@ public class ISOMsg extends ISOComponent
         }
     }
     /**
-     * unpack a message
+     * Unpacks the raw byte array into this message.
      * @param b - raw message
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on unpacking error
      */
     @Override
     public int unpack(byte[] b) throws ISOException {
@@ -590,6 +610,10 @@ public class ISOMsg extends ISOComponent
             return packager.unpack(this, b);
         }
     }
+    /** {@inheritDoc}
+     * @throws IOException on I/O failure
+     * @throws ISOException on unpacking error
+     */
     @Override
     public void unpack (InputStream in) throws IOException, ISOException {
         synchronized (this) {
@@ -850,7 +874,8 @@ public class ISOMsg extends ISOComponent
          }
      }
     /**
-     * @return true if ISOMsg has at least one field
+     * Returns true if this message has at least one field set.
+     * @return true if at least one field is present
      */
     public boolean hasFields () {
         return !fields.isEmpty();
@@ -858,8 +883,8 @@ public class ISOMsg extends ISOComponent
     /**
      * Don't call setValue on an ISOMsg. You'll sure get
      * an ISOException. It's intended to be used on Leafs
-     * @param obj
-     * @throws org.jpos.iso.ISOException
+     * @param obj value to set (not supported on ISOMsg)
+     * @throws org.jpos.iso.ISOException always
      * @see ISOField
      * @see ISOException
      */
@@ -976,11 +1001,12 @@ public class ISOMsg extends ISOComponent
             header = (ISOHeader) m.header.clone();
     }
 
-    /*
+    /**
      * Merges the content of the specified ISOMsg into this ISOMsg instance, excluding the header.
      * This method is a convenience wrapper around {@link #merge(ISOMsg, boolean)} with the {@code mergeHeader}
      * parameter set to {@code false} for backward compatibility, indicating that the header of the input message
      * will not be merged.
+     * @param m the ISOMsg to merge into this message
      */
     public void merge (ISOMsg m) {
         merge (m, false);
@@ -1016,17 +1042,22 @@ public class ISOMsg extends ISOComponent
             return fieldNumber;
         throw new ISOException ("This is not a subField");
     }
+    /** Returns this message itself as its value.
+     * @return this ISOMsg
+     */
     @Override
     public Object getValue() {
         return this;
     }
     /**
+     * Returns true if this is an inner (sub-) message.
      * @return true on inner messages
      */
     public boolean isInner() {
         return fieldNumber > -1;
     }
     /**
+     * Sets the message type indicator.
      * @param mti new MTI
      * @exception ISOException if message is inner message
      */
@@ -1059,7 +1090,8 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
-     * @return true is message has MTI field
+     * Returns true if this message has an MTI field (field 0) set.
+     * @return true if MTI is present
      * @exception ISOException if this is an inner message
      */
     public boolean hasMTI() throws ISOException {
@@ -1069,6 +1101,7 @@ public class ISOMsg extends ISOComponent
             return hasField(0);
     }
     /**
+     * Returns the message type indicator.
      * @return current MTI
      * @exception ISOException on inner message or MTI not set
      */
@@ -1081,6 +1114,7 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
+     * Returns true if the MTI suggests this is a request message.
      * @return true if message "seems to be" a request
      * @exception ISOException on MTI not set
      */
@@ -1088,6 +1122,7 @@ public class ISOMsg extends ISOComponent
         return Character.getNumericValue(getMTI().charAt (2))%2 == 0;
     }
     /**
+     * Returns true if the MTI suggests this is a response message.
      * @return true if message "seems not to be" a request
      * @exception ISOException on MTI not set
      */
@@ -1095,6 +1130,7 @@ public class ISOMsg extends ISOComponent
         return !isRequest();
     }
     /**
+     * Returns true if this is an authorization message (MTI second digit = 1).
      * @return true if message class is "authorization"
      * @exception ISOException on MTI not set
      */
@@ -1102,6 +1138,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '1';
     }
     /**
+     * Returns true if this is a financial message (MTI second digit = 2).
      * @return true if message class is "financial"
      * @exception ISOException on MTI not set
      */
@@ -1109,6 +1146,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '2';
     }
     /**
+     * Returns true if this is a file action message (MTI second digit = 3).
      * @return true if message class is "file action"
      * @exception ISOException on MTI not set
      */
@@ -1116,6 +1154,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '3';
     }
     /**
+     * Returns true if this is a reversal message (MTI second digit = 4, last digit 0 or 1).
      * @return true if message class is "reversal"
      * @exception ISOException on MTI not set
      */
@@ -1123,6 +1162,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '4' && (getMTI().charAt(3) == '0' || getMTI().charAt(3) == '1');
     }
     /**
+     * Returns true if this is a chargeback message (MTI second digit = 4, last digit 2 or 3).
      * @return true if message class is "chargeback"
      * @exception ISOException on MTI not set
      */
@@ -1130,6 +1170,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '4' && (getMTI().charAt(3) == '2' || getMTI().charAt(3) == '3');
     }
     /**
+     * Returns true if this is a reconciliation message (MTI second digit = 5).
      * @return true if message class is "reconciliation"
      * @exception ISOException on MTI not set
      */
@@ -1137,6 +1178,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '5';
     }
     /**
+     * Returns true if this is an administrative message (MTI second digit = 6).
      * @return true if message class is "administrative"
      * @exception ISOException on MTI not set
      */
@@ -1144,6 +1186,7 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '6';
     }
     /**
+     * Returns true if this is a fee collection message (MTI second digit = 7).
      * @return true if message class is "fee collection"
      * @exception ISOException on MTI not set
      */
@@ -1151,14 +1194,16 @@ public class ISOMsg extends ISOComponent
         return hasMTI() && getMTI().charAt(1) == '7';
     }
     /**
-     * @return true if message class is "fee collection"
+     * Returns true if this is a network management message (MTI second digit = 8).
+     * @return true if message class is "network management"
      * @exception ISOException on MTI not set
      */
     public boolean isNetworkManagement() throws ISOException {
         return hasMTI() && getMTI().charAt(1) == '8';
     }
     /**
-     * @return true if message is Retransmission
+     * Returns true if this is a retransmission (MTI last digit = 1).
+     * @return true if message is a retransmission
      * @exception ISOException on MTI not set
      */
     public boolean isRetransmission() throws ISOException {
@@ -1205,6 +1250,11 @@ public class ISOMsg extends ISOComponent
 
         set (new ISOField (0, getMTI().substring(0,3) + "1"));
     }
+    /**
+     * Serializes the message header to the given ObjectOutput.
+     * @param out the ObjectOutput to write to
+     * @throws IOException on write error
+     */
     protected void writeHeader (ObjectOutput out) throws IOException {
         int len = header.getLength();
         if (len > 0) {
@@ -1214,6 +1264,12 @@ public class ISOMsg extends ISOComponent
         }
     }
 
+    /**
+     * Deserializes the message header from the given ObjectInput.
+     * @param in the ObjectInput to read from
+     * @throws IOException on read error
+     * @throws ClassNotFoundException if a referenced class cannot be found
+     */
     protected void readHeader (ObjectInput in)
         throws IOException, ClassNotFoundException
     {
@@ -1221,6 +1277,11 @@ public class ISOMsg extends ISOComponent
         in.readFully (b);
         setHeader (b);
     }
+    /**
+     * Serializes the packager class name to the given ObjectOutput.
+     * @param out the ObjectOutput to write to
+     * @throws IOException on write error
+     */
     protected void writePackager(ObjectOutput out) throws IOException {
         out.writeByte('P');
         String pclass = packager.getClass().getName();
@@ -1228,6 +1289,12 @@ public class ISOMsg extends ISOComponent
         out.writeShort(b.length);
         out.write(b);
     }
+    /**
+     * Deserializes the packager from the given ObjectInput.
+     * @param in the ObjectInput to read from
+     * @throws IOException on read error
+     * @throws ClassNotFoundException if the packager class cannot be found
+     */
     protected void readPackager(ObjectInput in) throws IOException,
     ClassNotFoundException {
         byte[] b = new byte[in.readShort()];
@@ -1241,10 +1308,21 @@ public class ISOMsg extends ISOComponent
         }
 
 }
+    /**
+     * Serializes the message direction to the given ObjectOutput.
+     * @param out the ObjectOutput to write to
+     * @throws IOException on write error
+     */
     protected void writeDirection (ObjectOutput out) throws IOException {
         out.writeByte ('D');
         out.writeByte (direction);
     }
+    /**
+     * Deserializes the message direction from the given ObjectInput.
+     * @param in the ObjectInput to read from
+     * @throws IOException on read error
+     * @throws ClassNotFoundException if a class cannot be found
+     */
     protected void readDirection (ObjectInput in)
         throws IOException, ClassNotFoundException
     {
@@ -1335,6 +1413,7 @@ public class ISOMsg extends ISOComponent
         this.sourceRef = new WeakReference (source);
     }
     /**
+     * Returns the associated ISOSource (e.g. the channel that received this message).
      * @return an ISOSource or null
      */
     public ISOSource getSource () {

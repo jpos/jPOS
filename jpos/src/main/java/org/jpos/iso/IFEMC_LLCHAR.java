@@ -18,12 +18,15 @@
 
 package org.jpos.iso;
 
+/** IFEMC_LLCHAR ISOFieldPackager implementation. */
 public class IFEMC_LLCHAR extends ISOTagStringFieldPackager {
+    /** Default constructor. */
     public IFEMC_LLCHAR() {
         super(0, null, AsciiPrefixer.LL, NullPadder.INSTANCE,
                 EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

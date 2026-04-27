@@ -31,6 +31,8 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public class TMMON implements CLICommand, TransactionStatusListener {
+    /** Default constructor. */
+    public TMMON() {}
     PrintStream p;
     CLIContext cli;
     boolean ansi;

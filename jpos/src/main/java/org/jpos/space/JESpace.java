@@ -50,26 +50,50 @@ import org.jpos.util.Loggeable;
  *
  * @author Alejandro Revilla
  * @since 1.6.5
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 @SuppressWarnings("unchecked")
 public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpace, Loggeable, Runnable {
+    /** BerkeleyDB JE environment instance. */
     Environment dbe = null;
+    /** BerkeleyDB JE entity store. */
     EntityStore store = null;
+    /** Primary index for Ref entities. */
     PrimaryIndex<Long, Ref> pIndex = null;
+    /** Primary index for GCRef entities. */
     PrimaryIndex<Long,GCRef> gcpIndex = null;
+    /** Secondary index for Ref entities by key. */
     SecondaryIndex<String,Long, Ref> sIndex = null;
+    /** Secondary index for GCRef entities by expiration time. */
     SecondaryIndex<Long,Long,GCRef> gcsIndex = null;
+    /** Semaphore used to prevent concurrent GC runs. */
     Semaphore gcSem = new Semaphore(1);
+    /** Local space used to manage space listeners. */
     LocalSpace<Object,SpaceListener> sl;
+    /** Resolution in milliseconds for non-blocking read polling. */
     private static final long NRD_RESOLUTION = 500L;
+    /** Delay in milliseconds between GC runs. */
     public static final long GC_DELAY = 15*1000L;
+    /** Default transaction timeout in milliseconds. */
     public static final long DEFAULT_TXN_TIMEOUT = 30*1000L;
+    /** Default lock timeout in milliseconds. */
     public static final long DEFAULT_LOCK_TIMEOUT = 120*1000L;
+    /** Future handle for the scheduled GC task. */
     private Future gcTask;
 
+    /** Registry mapping space names to their JESpace instances. */
     static final Map<String,Space> spaceRegistrar = 
         new HashMap<String,Space> ();
 
+    /**
+     * Constructs a JESpace with the given name and path/parameter string.
+     *
+     * @param name   the space name (also used as the entity store name)
+     * @param params comma-separated parameters; first element is the directory path
+     * @throws SpaceError if the BerkeleyDB environment or store cannot be opened
+     */
     public JESpace(String name, String params) throws SpaceError {
         super();
         try {
@@ -266,11 +290,18 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
             ; // NOPMD
         out (key, value, timeout);
     }
+    /** Removes all existing entries for the key then writes a single entry (head-of-queue replacement).
+     * @param key the entry key
+     * @param value the new value
+     */
     public synchronized void put (K key, V value) {
         while (inp (key) != null)
             ; // NOPMD
         out (key, value);
     }
+    /** Runs a garbage-collection pass removing expired entries from the BDB JE store.
+     * @throws DatabaseException on BDB error
+     */
     public void gc () throws DatabaseException {
         Transaction txn = null;
         EntityCursor<GCRef> cursor = null;
@@ -322,6 +353,11 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
         dbe.close();
     }
 
+    /** Returns (or creates) the named JESpace stored at the given path.
+     * @param name space name
+     * @param path filesystem path for BDB JE environment
+     * @return the JESpace instance
+     */
     public synchronized static JESpace getSpace (String name, String path)
     {
         JESpace sp = (JESpace) spaceRegistrar.get (name);
@@ -331,6 +367,10 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
         }
         return sp;
     }
+    /** Returns (or creates) the named JESpace using the name as the storage path.
+     * @param name space name and storage path
+     * @return the JESpace instance
+     */
     public static JESpace getSpace (String name) {
         return getSpace (name, name);        
     }
@@ -468,47 +508,109 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
       }
   }
 
+    /**
+     * Persistent entity representing a single space entry (key/value with optional expiration).
+     */
     @Entity
     public static class Ref {
         @PrimaryKey(sequence="Ref.id")
+        /** Auto-generated primary key for this Ref. */
         private long id;
 
         @SecondaryKey(relate= Relationship.MANY_TO_ONE)
+        /** The space key associated with this Ref. */
         private String key;
 
+        /** Expiration timestamp in epoch milliseconds, or 0 if no expiration. */
         private long expires;
+        /** The serialized or native value stored in the space. */
         private Object value;
 
+        /** Default constructor required by BerkeleyDB JE. */
         public Ref () {
             super();
         }
+
+        /**
+         * Constructs a Ref for the given key, value and timeout.
+         *
+         * @param key     the space key
+         * @param value   the value to store
+         * @param timeout timeout in milliseconds, or 0 for no expiration
+         */
         public Ref (String key, Object value, long timeout) {
             this.key = key;
             this.value =  serialize (value);
             if (timeout > 0L)
                 this.expires = Instant.now().toEpochMilli() + timeout;
         }
+
+        /**
+         * Returns the primary key id of this Ref.
+         *
+         * @return the primary key
+         */
         public long getId() {
             return id;
         }
+
+        /**
+         * Negates the id to push this entry to the front of an ordered scan (push semantics).
+         */
         public void reverseId() {
             this.id = -this.id;
         }
+
+        /**
+         * Returns {@code true} if this Ref has passed its expiration time.
+         *
+         * @return {@code true} if expired
+         */
         public boolean isExpired () {
             return expires > 0L && expires < Instant.now().toEpochMilli();
         }
+
+        /**
+         * Returns {@code true} if this Ref has not yet expired.
+         *
+         * @return {@code true} if still active
+         */
         public boolean isActive () {
             return !isExpired();
         }
+
+        /**
+         * Returns the space key of this Ref.
+         *
+         * @return the key string
+         */
         public Object getKey () {
             return key;
         }
+
+        /**
+         * Returns the deserialized value of this Ref.
+         *
+         * @return the stored value
+         */
         public Object getValue () {
             return deserialize(value);
         }
+
+        /**
+         * Returns the expiration timestamp in epoch milliseconds.
+         *
+         * @return expiration time, or 0 if no expiration is set
+         */
         public long getExpiration () {
             return expires;
         }
+
+        /**
+         * Returns {@code true} if this Ref has an expiration set.
+         *
+         * @return {@code true} if an expiration time is set
+         */
         public boolean hasExpiration () {
             return expires > 0L;
         }
@@ -606,26 +708,58 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
         return defaultValue;
     }
 
+    /**
+     * Persistent entity used by the garbage collector to track expiring Ref entries.
+     */
     @Entity
     public static class GCRef {
         @PrimaryKey
+        /** The id of the corresponding Ref entry to be garbage collected. */
         private long id;
 
         @SecondaryKey(relate=Relationship.MANY_TO_ONE)
+        /** Expiration timestamp in epoch milliseconds used to order GC candidates. */
         private long expires;
+
+        /** Default constructor required by BerkeleyDB JE. */
         public GCRef () {
             super();
         }
+
+        /**
+         * Constructs a GCRef for the given Ref id and expiration time.
+         *
+         * @param id      the id of the Ref to be collected
+         * @param expires the expiration timestamp in epoch milliseconds
+         */
         public GCRef (long id, long expires) {
             this.id = id;
             this.expires = expires;
         }
+
+        /**
+         * Returns the id of the corresponding Ref entry.
+         *
+         * @return the Ref primary key
+         */
         public long getId() {
             return id;
         }
+
+        /**
+         * Returns {@code true} if the expiration time has passed.
+         *
+         * @return {@code true} if this GCRef is expired
+         */
         public boolean isExpired () {
             return expires > 0L && expires < Instant.now().toEpochMilli();
         }
+
+        /**
+         * Returns the expiration timestamp in epoch milliseconds.
+         *
+         * @return expiration time
+         */
         public long getExpiration () {
             return expires;
         }

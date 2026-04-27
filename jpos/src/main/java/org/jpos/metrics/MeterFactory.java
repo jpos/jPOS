@@ -35,6 +35,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 public class MeterFactory {
+    /** Default constructor. */
+    public MeterFactory() {}
     private static final Lock metersLock = new ReentrantLock();
 
     public static Timer timer(MeterRegistry registry, MeterInfo meterInfo, Tags tags) {

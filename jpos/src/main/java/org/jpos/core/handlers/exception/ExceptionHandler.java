@@ -19,6 +19,7 @@
 package org.jpos.core.handlers.exception;
 
 /**
+ * A single handler in the exception-handling pipeline; processes a given exception and decides whether to rethrow it.
  * @author Alwyn Schoeman
  * @since 2.1.2
  */

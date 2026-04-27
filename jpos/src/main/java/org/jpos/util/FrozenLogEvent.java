@@ -21,12 +21,22 @@ package org.jpos.util;
 import java.io.PrintStream;
 import java.io.Serializable;
 
+/** An immutable, serializable snapshot of a {@link LogEvent}. */
 public class FrozenLogEvent extends LogEvent implements Serializable {
+    /** The pre-rendered string representation of this frozen event. */
     private String frozen;
 
+    /**
+     * Creates a FrozenLogEvent from a pre-rendered string.
+     * @param frozen the pre-rendered log event string
+     */
     public FrozenLogEvent(String frozen) {
         this.frozen = frozen;
     }
+    /**
+     * Creates a FrozenLogEvent by capturing the current dump of the given LogEvent.
+     * @param evt the LogEvent to freeze
+     */
     public FrozenLogEvent (LogEvent evt) {
         super(evt.getSource(), evt.getTag(), evt.getRealm());
         frozen = evt.toString();

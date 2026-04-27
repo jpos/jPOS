@@ -28,6 +28,8 @@ import java.time.ZoneId;
 
 @Deprecated(forRemoval = false)
 public class TxtLogWriter implements LogEventWriter {
+    /** Default constructor. */
+    public TxtLogWriter() {}
     private PrintStream ps;
     private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.TXT);
     private Instant start;

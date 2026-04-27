@@ -19,30 +19,70 @@
 package org.jpos.q2.iso;
 
 /**
- * MBean interface.
- * @author Alejandro Revilla
+ * JMX management interface for {@link DirPollAdaptor}.
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision: 1859 $ $Date: 2003-12-05 23:52:20 -0300 (Fri, 05 Dec 2003) $
  */
 public interface DirPollAdaptorMBean extends org.jpos.q2.QBeanSupportMBean {
 
-  void setPath(java.lang.String path) ;
+  /**
+   * Sets the base directory path.
+   * @param path the directory path
+   */
+  void setPath(java.lang.String path);
 
-  void setPoolSize(int size) ;
+  /**
+   * Sets the thread pool size.
+   * @param size the number of threads
+   */
+  void setPoolSize(int size);
 
-  int getPoolSize() ;
+  /**
+   * Returns the thread pool size.
+   * @return pool size
+   */
+  int getPoolSize();
 
-  java.lang.String getPath() ;
+  /**
+   * Returns the base directory path.
+   * @return directory path
+   */
+  java.lang.String getPath();
 
-  void setPollInterval(long pollInterval) ;
+  /**
+   * Sets the polling interval.
+   * @param pollInterval interval in milliseconds
+   */
+  void setPollInterval(long pollInterval);
 
-  long getPollInterval() ;
+  /**
+   * Returns the polling interval.
+   * @return interval in milliseconds
+   */
+  long getPollInterval();
 
-  void setPriorities(java.lang.String priorities) ;
+  /**
+   * Sets the file extension priorities.
+   * @param priorities blank-separated list of extensions
+   */
+  void setPriorities(java.lang.String priorities);
 
-  java.lang.String getPriorities() ;
+  /**
+   * Returns the file extension priorities.
+   * @return blank-separated priority list
+   */
+  java.lang.String getPriorities();
 
-  void setProcessor(java.lang.String processor) ;
+  /**
+   * Sets the processor class name.
+   * @param processor fully qualified class name
+   */
+  void setProcessor(java.lang.String processor);
 
-  java.lang.String getProcessor() ;
+  /**
+   * Returns the processor class name.
+   * @return fully qualified class name
+   */
+  java.lang.String getProcessor();
 
 }

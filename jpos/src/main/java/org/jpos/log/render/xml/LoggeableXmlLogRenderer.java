@@ -24,6 +24,8 @@ import org.jpos.util.Loggeable;
 import java.io.PrintStream;
 
 public final class LoggeableXmlLogRenderer implements LogRenderer<Loggeable> {
+    /** Default constructor. */
+    public LoggeableXmlLogRenderer() {}
     @Override
     public void render(Loggeable obj, PrintStream ps, String indent) {
         obj.dump (ps, indent);

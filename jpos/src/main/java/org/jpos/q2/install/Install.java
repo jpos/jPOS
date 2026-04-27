@@ -27,12 +27,20 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * Utility that installs jPOS modules by resolving and deploying their artifacts into the Q2 deploy directory.
  * @author vsalaman
  */
+/** Q2 package installation utility. */
 public class Install
 {
+    /** Default constructor. */
+    public Install() {}
     private static final String DEFAULT_PREFIX = "META-INF/q2/installs/";
 
+    /** Main entry point for the install utility.
+     * @param args command-line arguments
+     * @throws Exception on error
+     */
     public static void main(String[] args) throws Exception
     {
         CommandLineParser parser = new DefaultParser();
@@ -59,6 +67,14 @@ public class Install
         );
     }
 
+    /**
+     * Installs packages to the output directory.
+     * @param allowOverride   if true, allow overwriting existing files
+     * @param outputBasePath  the output base directory
+     * @param verbose         if true, print progress
+     * @throws IOException on I/O error
+     * @param prefix the installation prefix
+     */
     public void install(boolean allowOverride,File outputBasePath, boolean verbose, String prefix) throws IOException
     {
         if(!outputBasePath.exists())

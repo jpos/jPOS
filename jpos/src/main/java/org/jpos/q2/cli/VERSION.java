@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class VERSION implements CLICommand {
+    /** Default constructor. */
+    public VERSION() {}
     public void exec(CLIContext cli, String[] args) throws IOException, NoSuchAlgorithmException {
         boolean all = args.length > 1 && args[1].startsWith("-a");
         if (args.length > 1 && !all) {

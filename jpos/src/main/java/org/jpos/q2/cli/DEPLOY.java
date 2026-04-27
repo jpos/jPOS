@@ -27,6 +27,11 @@ import org.jpos.q2.CLISubSystem;
  * @author Felipph Calado - luizfelipph@gmail.com
  */
 public class DEPLOY implements CLISubSystem {
+
+    /** Default constructor. */
+    public DEPLOY() {
+        super();
+    }
     @Override
     public String getPrompt(CLIContext ctx, String[] args) {
         return "deploy> ";

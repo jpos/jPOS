@@ -34,26 +34,41 @@ import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
+/** ISOChannelPanel ISOFieldPackager implementation. */
 public class ISOChannelPanel extends JPanel implements Observer {
     private static final long serialVersionUID = -8069489863639386589L;
     /**
-     * @serial
+     * Meter widget used to visualize channel activity.
+     *
+     * @serial embedded child component state
      */
     ISOMeter meter;
     /**
-     * @serial
+     * Rolling log model displayed when the meter is opened.
+     *
+     * @serial serialized log contents
      */
     DefaultListModel log;
     /**
-     * @serial
+     * Human-readable channel name shown in the UI.
+     *
+     * @serial display name persisted with the panel
      */
     String symbolicName;
 
+    /** Fields that must be protected before logging. */
     private int[] protectFields = null;
+    /** Fields that must be wiped before logging. */
     private int[] wipeFields    = null;
 
+    /** Maximum number of log entries to retain. */
     public static final int LOG_CAPACITY = 250;
 
+    /**
+     * Constructs a panel for the given channel.
+     * @param channel      the ISO channel
+     * @param symbolicName the display name
+     */
     public ISOChannelPanel (ISOChannel channel, String symbolicName)
     {
         super();
@@ -70,6 +85,7 @@ public class ISOChannelPanel extends JPanel implements Observer {
      * Unconnected constructor allows for instantiation of
      * ISOChannelPanel without associated ISOChannel
      * (that can be attached later)
+     * @param symbolicName the display name
      */
     public ISOChannelPanel (String symbolicName) {
         super();
@@ -81,9 +97,15 @@ public class ISOChannelPanel extends JPanel implements Observer {
         meter.setConnected(false);
     }
 
+    /** Returns the symbolic name.
+     * @return symbolic name
+     */
     public final String getSymbolicName() {
         return symbolicName;
     }
+    /** Returns the log model.
+     * @return the log model
+     */
     public final ListModel getLog() {
         return log;
     }
@@ -140,12 +162,21 @@ public class ISOChannelPanel extends JPanel implements Observer {
         } else 
             meter.setConnected(true);
     }
+    /** Returns the ISO meter component.
+     * @return the ISOMeter
+     */
     public ISOMeter getISOMeter() {
         return meter;
     }
+    /** Sets the fields to protect in output.
+     * @param fields field numbers to protect
+     */
     public void setProtectFields (int[] fields) {
         protectFields = fields;
     }
+    /** Sets the fields to wipe in output.
+     * @param fields field numbers to wipe
+     */
     public void setWipeFields (int[] fields) {
         wipeFields    = fields;
     }

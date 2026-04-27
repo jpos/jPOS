@@ -39,10 +39,12 @@ import java.util.Map;
  * @see ISOException
  */
 public abstract class ISOComponent implements Cloneable {
+    /** Default constructor. */
+    public ISOComponent() {}
     /**
      * Set a field within this message
      * @param c - a component
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public void set (ISOComponent c) throws ISOException {
         throw new ISOException ("Can't add to Leaf");
@@ -50,7 +52,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * Unset a field
      * @param fldno - the field number
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public void unset (int fldno) throws ISOException {
         throw new ISOException ("Can't remove from Leaf");
@@ -72,7 +74,7 @@ public abstract class ISOComponent implements Cloneable {
      * to this field.
      *
      * @return object representing the field number
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public Object getKey() throws ISOException {
         throw new ISOException ("N/A in Composite");
@@ -80,7 +82,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * valid on Leafs only.
      * @return object representing the field value
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public Object getValue() throws ISOException {
         throw new ISOException ("N/A in Composite");
@@ -88,7 +90,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * get Value as bytes (when possible)
      * @return byte[] representing this field
-     * @exception ISOException
+     * @exception ISOException on ISO error
      */
     public byte[] getBytes() throws ISOException {
         throw new ISOException ("N/A in Composite");
@@ -114,13 +116,50 @@ public abstract class ISOComponent implements Cloneable {
      * @param fieldNumber new field number
      */
     public abstract void setFieldNumber (int fieldNumber);
+    /**
+     * Returns the field number of this component within its parent.
+     * @return the field number
+     */
     public abstract int getFieldNumber ();
+    /**
+     * Sets the value of this component.
+     * @param obj the value to set
+     * @throws ISOException if the value is invalid
+     */
     public abstract void setValue(Object obj) throws ISOException;
+    /**
+     * Returns the packed byte representation of this component.
+     * @return packed byte array
+     * @throws ISOException on packing error
+     */
     public abstract byte[] pack() throws ISOException;
+    /**
+     * Unpacks this component from the given byte array.
+     * @param b the byte array to unpack from
+     * @return number of bytes consumed
+     * @throws ISOException on unpacking error
+     */
     public abstract int unpack(byte[] b) throws ISOException;
+    /**
+     * Dumps this component to the given PrintStream.
+     * @param p the PrintStream to write to
+     * @param indent indentation prefix
+     */
     public abstract void dump (PrintStream p, String indent);
+    /**
+     * Packs this component and writes the result to the given OutputStream.
+     * @param out the OutputStream to write packed bytes to
+     * @throws IOException on write error
+     * @throws ISOException on packing error
+     */
     public void pack (OutputStream out) throws IOException, ISOException {
         out.write (pack ());
     }
+    /**
+     * Unpacks this component from the given InputStream.
+     * @param in the InputStream to read from
+     * @throws IOException on read error
+     * @throws ISOException on unpacking error
+     */
     public abstract void unpack (InputStream in) throws IOException, ISOException;
 }

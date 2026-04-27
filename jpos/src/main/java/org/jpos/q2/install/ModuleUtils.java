@@ -32,10 +32,13 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 /**
+ * Helper utilities for jPOS module installation and descriptor processing.
  * @author vsalaman
  */
 public class ModuleUtils
 {
+    /** Default constructor. */
+    public ModuleUtils() {}
     private static final String MODULES_UUID_DIR = "META-INF/modules/uuids/";
     private static final String MODULES_RKEYS_DIR = "META-INF/modules/rkeys/";
 

@@ -36,10 +36,12 @@ import java.io.InputStream;
  * @see ISOComponent
  */
 public class IFEB_LLNUM extends ISOFieldPackager {
+    /** Default constructor. */
     public IFEB_LLNUM () {
         super();
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */
@@ -49,7 +51,7 @@ public class IFEB_LLNUM extends ISOFieldPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack(ISOComponent c) throws ISOException {
         boolean odd = false;
@@ -92,7 +94,7 @@ public class IFEB_LLNUM extends ISOFieldPackager {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public int unpack(ISOComponent c, byte[] b, int offset)
     throws ISOException {

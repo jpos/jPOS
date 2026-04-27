@@ -144,6 +144,7 @@ public class SecureKeySpec
      */
     protected String keyName;
 
+    /** Default constructor. */
     public SecureKeySpec() {
         super();
     }

@@ -54,23 +54,34 @@ public class Logger implements LogProducer,Configurable
     List<LogListener> listeners;
     public static final String NRPREFIX = "logger.";
 
+    /** Default constructor. */
     public Logger () {
         super();
         listeners = Collections.synchronizedList(new ArrayList<>());
         name = "";
     }
 
+    /** Returns the current configuration.
+     * @return configuration object
+     */
     public Configuration getConfiguration()
     {
         return cfg;
     }
 
     @Override
+    /** Configures this Logger instance.
+     * @param cfg the new configuration
+     * @throws ConfigurationException on configuration error
+     */
     public void setConfiguration(Configuration cfg) throws ConfigurationException
     {
         this.cfg = cfg;
     }
 
+    /** Adds a log listener to this logger.
+     * @param l the listener to add
+     */
     public void addListener (LogListener l) {
         listeners.add(l);
     }
@@ -85,6 +96,9 @@ public class Logger implements LogProducer,Configurable
         }
         listeners.clear ();
     }
+    /** Dispatches a log event to the appropriate logger and its listeners.
+     * @param evt the log event to dispatch
+     */
     public static void log (LogEvent evt) {
         Logger l = null;
         LogSource source = evt.getSource();
@@ -123,6 +137,8 @@ public class Logger implements LogProducer,Configurable
         removeAllListeners ();
     }
     /**
+     * Returns the logger instance registered under the given name, creating one if necessary.
+     * @param name the logger name
      * @return logger instance with given name. Creates one if necessary
      * @see NameRegistrar
      */
@@ -137,6 +153,7 @@ public class Logger implements LogProducer,Configurable
         return l;
     }
     /**
+     * Returns this logger's registered name.
      * @return this logger's name ("" if no name was set)
      */
     public String getName() {

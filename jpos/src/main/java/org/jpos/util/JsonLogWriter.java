@@ -25,6 +25,8 @@ import java.io.PrintStream;
 
 @Deprecated(forRemoval = false)
 public class JsonLogWriter implements LogEventWriter {
+    /** Default constructor. */
+    public JsonLogWriter() {}
     private PrintStream ps;
     private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.JSON);
 

@@ -47,7 +47,10 @@ import java.util.regex.Pattern;
  * @author apr
  * @since 3.0.2
  */
+/** Validates {@link Configuration} properties against annotated field declarations. */
 public class ConfigValidator {
+    /** Default constructor. */
+    public ConfigValidator() { }
     private final List<ValidationRule> rules = new ArrayList<>();
 
     /**

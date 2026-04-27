@@ -31,6 +31,8 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class SpaceUtil {
+    /** Default constructor. */
+    public SpaceUtil() {}
     /**
      * return all entries under a given key
      *

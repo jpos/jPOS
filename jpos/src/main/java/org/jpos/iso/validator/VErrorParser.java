@@ -39,6 +39,8 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class VErrorParser implements LogSource, Loggeable  {
+    /** Default constructor. */
+    public VErrorParser() {}
 
     /**
      * Parse an ISOComponent and get an error vector.
@@ -71,8 +73,7 @@ public class VErrorParser implements LogSource, Loggeable  {
     /**
      * Parse error list, and get an dump
      * the xml string representing the list.
-     * <pre>
-     * Ex:
+     * <pre>{@code
      * <isomsg>
      *   <field id="2">
      *     <error description="Invalid Len Error" reject-code="101"/>
@@ -84,9 +85,9 @@ public class VErrorParser implements LogSource, Loggeable  {
      *       </field>
      *     </field>
      *   </field>
-     *   <error description="Field Expected Error" reject-code="999">
+     *   <error description="Field Expected Error" reject-code="999"/>
      * </isomsg>
-     * </pre>
+     * }</pre>
      * @param p output stream
      * @param indent indent character
      */

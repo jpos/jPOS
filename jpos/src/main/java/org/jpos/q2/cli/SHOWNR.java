@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class SHOWNR implements CLICommand {
+    /** Default constructor. */
+    public SHOWNR() {}
     public void exec(CLIContext cli, String[] args) throws Exception {
         boolean all = args.length > 1 && "-a".equals(args[1]);
         int i = 1;

@@ -34,9 +34,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * A pool of MUX instances providing load-balanced or fail-over multiplexing across multiple connections.
  * @author apr
  */
 public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
+    /** Default constructor. */
+    public MUXPool() {}
     public static final int PRIMARY_SECONDARY = 0;
     public static final int ROUND_ROBIN = 1;
     public static final int ROUND_ROBIN_WITH_OVERRIDE = 2;

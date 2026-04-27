@@ -33,7 +33,9 @@ public class ISOException extends Exception implements Loggeable {
 
     private static final long serialVersionUID = -777216335204861186L;
     /**
-     * @serial
+     * Nested exception wrapped by this ISOException, when present.
+     *
+     * @serial wrapped cause captured for legacy serialization
      */
     Throwable nested = null;
 
@@ -76,15 +78,25 @@ public class ISOException extends Exception implements Loggeable {
     }
 
     /**
+     * Returns the nested (wrapped) exception, if any.
      * @return nested exception (may be null)
      */
     public Throwable getNested() {
         return nested;
     }
 
+    /**
+     * Returns the XML tag name used when dumping this exception.
+     * @return the tag name string
+     */
     protected String getTagName() {
         return "iso-exception";
     }
+    /**
+     * Dumps a human-readable representation of this exception to the print stream.
+     * @param p the output stream
+     * @param indent indentation prefix
+     */
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
         p.println (indent + "<"+getTagName()+">");

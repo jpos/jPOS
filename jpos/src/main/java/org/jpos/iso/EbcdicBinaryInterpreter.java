@@ -26,7 +26,13 @@ package org.jpos.iso;
  */
 @SuppressWarnings("unused")
 public class EbcdicBinaryInterpreter implements BinaryInterpreter {
+    /** Singleton instance. */
     public static final EbcdicBinaryInterpreter INSTANCE = new EbcdicBinaryInterpreter();
+
+    /** Default constructor. */
+    public EbcdicBinaryInterpreter() {
+        super();
+    }
 
     /**
 	 * (non-Javadoc)

@@ -22,6 +22,8 @@ import org.jpos.log.LogRenderer;
 import java.io.PrintStream;
 
 public final class StringMarkdownLogRenderer implements LogRenderer<String> {
+    /** Default constructor. */
+    public StringMarkdownLogRenderer() {}
     @Override
     public void render(String s, PrintStream ps, String indent) {
         ps.println (indent(indent, s));

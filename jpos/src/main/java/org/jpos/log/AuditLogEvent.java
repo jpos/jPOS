@@ -22,6 +22,9 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.jpos.log.evt.*;
 
+/**
+ * Sealed marker interface for all jPOS structured audit log events.
+ */
 @JsonTypeInfo(
   use = JsonTypeInfo.Id.NAME,
   include = JsonTypeInfo.As.PROPERTY,
@@ -46,5 +49,8 @@ import org.jpos.log.evt.*;
   @JsonSubTypes.Type(value = SessionEnd.class, name = "session-end"),
   @JsonSubTypes.Type(value = Txn.class, name = "txn")
 })
-
-public interface AuditLogEvent { }
+public sealed interface AuditLogEvent
+        permits Connect, Deploy, DeployActivity, Disconnect, License, Listen, LogMessage,
+                SessionEnd, SessionStart, Shutdown, Start, Stop, SysInfo,
+                ThrowableAuditLogEvent, Txn, UnDeploy, Warning {
+}

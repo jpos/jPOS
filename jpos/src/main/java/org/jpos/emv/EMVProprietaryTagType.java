@@ -19,6 +19,7 @@
 package org.jpos.emv;
 
 /**
+ * Represents a proprietary (non-standard) EMV tag type definition.
  * @author Vishnu Pillai
  */
 public interface EMVProprietaryTagType extends EMVTagType {

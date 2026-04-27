@@ -30,7 +30,7 @@ import java.net.ServerSocket;
  * Sends [LEN][TPDU][ISOMSG]
  * (len=2 bytes HEX)
  *
- * @author Mladen Mrkic <mmrkic@arius.co.yu>
+ * @author Mladen Mrkic (mmrkic@arius.co.yu)
  * @version $Revision: 2706 $ $Date: 2009-03-05 11:24:43 +0000 (Thu, 05 Mar 2009) $
  * @see ISOMsg
  * @see ISOException
@@ -59,7 +59,7 @@ public class BCDChannel extends BaseChannel {
      * Construct server ISOChannel
      * @param p     an ISOPackager
      * @param TPDU  an optional raw header (i.e. TPDU)
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see ISOPackager
      */
     public BCDChannel (ISOPackager p, byte[] TPDU) throws IOException {
@@ -71,7 +71,7 @@ public class BCDChannel extends BaseChannel {
      * @param p     an ISOPackager
      * @param TPDU  an optional raw header (i.e. TPDU)
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see ISOPackager
      */
     public BCDChannel (ISOPackager p, byte[] TPDU, ServerSocket serverSocket) 

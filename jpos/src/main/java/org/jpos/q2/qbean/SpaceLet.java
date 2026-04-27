@@ -33,6 +33,8 @@ import java.util.Iterator;
 
 @SuppressWarnings("unchecked")
 public class SpaceLet extends QBeanSupport implements Space {
+    /** Default constructor. */
+    public SpaceLet() {}
     Space sp;
     String uri;
     String outScript, outSource;

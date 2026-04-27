@@ -28,6 +28,8 @@ import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class QBeanFactory extends QBeanSupport implements QBeanFactoryMBean {
+    /** Default constructor. */
+    public QBeanFactory() {}
   
     private static Map beanMap = new WeakHashMap();
     private Map privateList; // list of beans in the config file

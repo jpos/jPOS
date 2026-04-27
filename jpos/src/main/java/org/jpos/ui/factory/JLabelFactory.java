@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
+ * UIFactory that creates a {@link javax.swing.JLabel} from XML.
  * @author Alejandro Revilla
  *
  * Creates a JLabel
@@ -37,6 +38,8 @@ import java.awt.*;
  * @see org.jpos.ui.UIFactory
  */
 public class JLabelFactory implements UIFactory {
+    /** Default constructor. */
+    public JLabelFactory() {}
     public JComponent create (UI ui, Element e) {
         JLabel label = new JLabel (e.getText());
         String font = e.getAttributeValue ("font");

@@ -19,16 +19,25 @@
 package org.jpos.tlv;
 
 /**
+ * A composite TLV structure that supports offset-based indexed access to its elements.
  * @author Vishnu Pillai
  *         Date: 1/24/14
  */
 public interface OffsetIndexedComposite {
 
+    /** Increments the current offset by one. */
     void incOffset();
 
+    /** Sets the current offset.
+     * @param offset the new offset value
+     */
     void setOffset(int offset);
 
+    /** Resets the offset to its initial value. */
     void resetOffset();
 
+    /** Returns the current offset.
+     * @return the current offset
+     */
     int getOffset();
 }

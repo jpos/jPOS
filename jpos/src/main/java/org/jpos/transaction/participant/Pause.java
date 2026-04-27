@@ -27,6 +27,8 @@ import org.jpos.transaction.TransactionParticipant;
 import java.util.concurrent.locks.LockSupport;
 
 public class Pause implements TransactionParticipant, Configurable {
+    /** Default constructor. */
+    public Pause() {}
     private long timeout = 0L;
     public int prepare(long id, Serializable context) {
         Context ctx =  (Context) context;

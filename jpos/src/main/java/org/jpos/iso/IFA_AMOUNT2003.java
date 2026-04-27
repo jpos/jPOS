@@ -1,3 +1,4 @@
+/** ISO Amount packager using the 2003 format (extends IFA_NUMERIC). */
 /*
  * jPOS Project [http://jpos.org]
  * Copyright (C) 2000-2026 jPOS Software SRL
@@ -18,7 +19,10 @@
 
 package org.jpos.iso;
 
+/** IFA_AMOUNT2003 ISOFieldPackager implementation. */
 public class IFA_AMOUNT2003 extends IFA_NUMERIC {
+    /** Default constructor. */
+    public IFA_AMOUNT2003() {}
     public ISOComponent createComponent(int fieldNumber) {
         return new ISOAmount (fieldNumber);    
     }

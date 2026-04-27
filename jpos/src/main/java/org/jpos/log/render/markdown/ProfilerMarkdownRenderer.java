@@ -25,6 +25,7 @@ import java.io.PrintStream;
 import java.util.Set;
 
 public final class ProfilerMarkdownRenderer implements LogRenderer<Profiler> {
+    /** Default constructor. */
     public ProfilerMarkdownRenderer() {
     }
 

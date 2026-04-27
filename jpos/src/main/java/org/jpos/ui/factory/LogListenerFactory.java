@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 /**
+ * UIFactory that creates a log-event viewer component from XML.
  * @author Alejandro Revilla
  *
  * a log listener component
@@ -44,6 +45,8 @@ import java.io.PrintStream;
  * @see org.jpos.ui.UIFactory
  */
 public class LogListenerFactory implements UIFactory {
+    /** Default constructor. */
+    public LogListenerFactory() {}
     public JComponent create (UI ui, Element e) {
         JTextArea textArea = new JTextArea (25, 80);
         String font = e.getAttributeValue ("font");

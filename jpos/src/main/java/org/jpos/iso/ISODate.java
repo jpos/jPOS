@@ -37,6 +37,7 @@ public class ISODate {
         throw new AssertionError();
     }
 
+    /** One year in milliseconds (365 days). */
     public static final long ONE_YEAR = 365L*86400L*1000L;
    /**
     * Formats a date object, using the default time zone for this host
@@ -59,6 +60,7 @@ public class ISODate {
      * @param pattern to be used for formatting
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
+     * @return the formatted date string
      */
     public static String formatDate (Date d, String pattern, TimeZone timeZone) {
         SimpleDateFormat df =
@@ -72,6 +74,7 @@ public class ISODate {
      * Warning: return null on invalid dates (prints Exception to console)
      * Uses default time zone for this host
      * @return parsed Date (or null)
+     * @param s the date string to parse
      */
     public static Date parse(String s) {
         return parse(s, TimeZone.getDefault());
@@ -101,6 +104,7 @@ public class ISODate {
      * Warning: return null on invalid dates (prints Exception to console)
      * Uses default time zone for this host
      * @return parsed Date (or null)
+     * @param s the date string to parse
      */
     public static Date parseDateTime(String s) {
         return parseDateTime(s, TimeZone.getDefault());
@@ -219,12 +223,15 @@ public class ISODate {
     }
 
     /**
+     * Formats the given date.
      * @return date in MMddHHmmss format suitable for FIeld 7
+     * @param d the date to format
      */
     public static String getDateTime (Date d) {
         return formatDate (d, "MMddHHmmss");
     }
         /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -234,12 +241,15 @@ public class ISODate {
         return formatDate (d, "MMddHHmmss", timeZone);
     }
     /**
+     * Formats the given date.
      * @return date in HHmmss format - suitable for field 12
+     * @param d the date to format
      */
     public static String getTime (Date d) {
         return formatDate (d, "HHmmss");
     }
     /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -249,12 +259,15 @@ public class ISODate {
         return formatDate (d, "HHmmss", timeZone);
     }
     /**
+     * Formats the given date.
      * @return date in MMdd format - suitable for field 13
+     * @param d the date to format
      */
     public static String getDate(Date d) {
         return formatDate (d, "MMdd");
     }
     /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -264,12 +277,15 @@ public class ISODate {
         return formatDate (d, "MMdd", timeZone);
     }
     /**
+     * Formats the given date.
      * @return date in yyMMdd format - suitable for ANSI field 8
+     * @param d the date to format
      */
     public static String getANSIDate(Date d) {
         return formatDate (d, "yyMMdd");
     }
     /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -278,19 +294,31 @@ public class ISODate {
     public static String getANSIDate(Date d, TimeZone timeZone) {
         return formatDate (d, "yyMMdd", timeZone);
     }
+    /** Formats date as DD/MM/YY.
+     * @param d the date
+     * @return formatted date string
+     */
     public static String getEuropeanDate(Date d) {
         return formatDate (d, "ddMMyy");
     }
+    /** Formats date as DD/MM/YY in the given timezone.
+     * @param d        the date
+     * @param timeZone the timezone
+     * @return formatted date string
+     */
     public static String getEuropeanDate(Date d, TimeZone timeZone) {
         return formatDate (d, "ddMMyy", timeZone);
     }
     /**
+     * Formats the given date.
      * @return date in yyMM format - suitable for field 14
+     * @param d the date to format
      */
     public static String getExpirationDate(Date d) {
         return formatDate (d, "yyMM");
     }
     /**
+         * Formats the given date.
          * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
@@ -301,6 +329,7 @@ public class ISODate {
     }
 
     /**
+     * Formats the given date.
      * @param d date object to be formatted
      * @return date in YDDD format suitable for bit 31 or 37
      * depending on interchange
@@ -313,6 +342,7 @@ public class ISODate {
     }
 
     /**
+     * Formats the given date.
      * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      * and for Uruguay use TimeZone.getTimeZone("GMT-03:00")

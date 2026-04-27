@@ -40,6 +40,8 @@ import java.util.List;
 */
 
 public class QExec extends QBeanSupport implements QExecMBean {
+    /** Default constructor. */
+    public QExec() {}
     String startScript;
     String shutdownScript;
 

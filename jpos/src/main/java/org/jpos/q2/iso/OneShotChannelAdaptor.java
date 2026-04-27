@@ -60,6 +60,7 @@ public class OneShotChannelAdaptor
     long delay;
     int maxConnections;
     int maxConnectAttempts;
+    /** Default constructor. */
     public OneShotChannelAdaptor () {
         super ();
     }

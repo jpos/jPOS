@@ -24,6 +24,8 @@ import java.io.IOException;
 
 @SuppressWarnings("unused")
 public class SHUTDOWN implements CLICommand {
+    /** Default constructor. */
+    public SHUTDOWN() {}
     public void exec(CLIContext cli, String[] args) throws IOException {
         boolean shutdown;
 

@@ -20,7 +20,14 @@ package org.jpos.util;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+/** Utility class for creating pre-configured concurrent executor instances. */
 public class ConcurrentUtil {
+    /** Private constructor — utility class. */
+    private ConcurrentUtil() { }
+    /**
+     * Creates a {@link ScheduledThreadPoolExecutor} with a daemon thread factory.
+     * @return a new ScheduledThreadPoolExecutor
+     */
     public static ScheduledThreadPoolExecutor newScheduledThreadPoolExecutor() {
         ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(1,
           r -> {

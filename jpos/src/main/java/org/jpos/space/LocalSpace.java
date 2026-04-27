@@ -21,8 +21,12 @@ package org.jpos.space;
 import java.util.Set;
 
 /**
+ * Extension of {@link Space} with blocking read/take operations and space-listener support.
  * @author Kris, Bharavi, Alejandro
  * @version $Revision$ $Date$
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 public interface LocalSpace<K,V> extends Space<K,V> {
     /**
@@ -50,11 +54,14 @@ public interface LocalSpace<K,V> extends Space<K,V> {
     void removeListener(K key, SpaceListener<K, V> listener);
 
     /**
+     * Returns the set of all keys currently present in the space.
      * @return Set containing all keys in Space
      */
     Set<K> getKeySet();
 
     /**
+     * Returns the number of entries queued under the given key.
+     * @param key the key to query
      * @return number of entries in a given key
      */
     int size(K key);

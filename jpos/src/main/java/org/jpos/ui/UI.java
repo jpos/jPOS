@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.*;
 
 /**
+ * Central controller for the jPOS Swing-based GUI; manages UI components and their factories.
  * @author Alejandro Revilla
  *
  * <p>jPOS UI main class</p>
@@ -79,18 +80,24 @@ public class UI implements UIFactory, UIObjectFactory {
         this.objFactory = objFactory;
     }
     /**
+     * Sets the XML configuration element for this UI.
      * @param config the Configuration element
      */
     public void setConfig (Element config) {
         this.config = config;
     }
     /**
+     * Sets the optional Log instance used for diagnostic output.
      * @param log an optional Log instance
      * @see org.jpos.util.Log
      */
     public void setLog (Log log) {
         this.log = log;
     }
+    /**
+     * Returns the Log instance, or null if none was set.
+     * @return the Log, or null
+     */
     public Log getLog () {
         return log;
     }
@@ -104,6 +111,7 @@ public class UI implements UIFactory, UIObjectFactory {
         return registrar;
     }
     /**
+     * Returns the component registered under the given id.
      * @param id Component id ("id" configuration attribute)
      * @return the Object or null
      */
@@ -130,13 +138,20 @@ public class UI implements UIFactory, UIObjectFactory {
      * @throws Exception if unable to instantiate
      * @see #setLog
      */
+    /**
+     * Instantiates an object by class name using the current thread's context class loader.
+     * @param clazz fully qualified class name
+     * @return new instance
+     * @throws Exception if the class cannot be found or instantiated
+     */
     public Object newInstance (String clazz) throws Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader ();
         Class type = cl.loadClass (clazz);
         return type.newInstance();
     }
     /**
-     * configure this UI object
+     * Configures this UI from the stored XML element.
+     * @throws JDOMException on XML processing error
      */
     public void configure () throws JDOMException {
         configure (config);
@@ -187,12 +202,18 @@ public class UI implements UIFactory, UIObjectFactory {
         }
     }
     /**
+     * Returns true if this UI object has been disposed.
      * @return true if this UI object has been disposed and is no longer valid
      */
     public boolean isDestroyed () {
         return destroyed;
     }
 
+    /**
+     * Configures the UI from the given XML element.
+     * @param ui the root UI configuration element
+     * @throws JDOMException on XML processing error
+     */
     protected void configure (Element ui) throws JDOMException {
         setLookAndFeel (ui);
         createMappings (ui);
@@ -363,6 +384,10 @@ public class UI implements UIFactory, UIObjectFactory {
             b.addActionListener ((ActionListener) get (actionId));
         }
     }
+    /**
+     * Applies the look-and-feel specified in the UI configuration element.
+     * @param ui the UI configuration element
+     */
     protected void setLookAndFeel (Element ui) {
         String laf = ui.getAttributeValue ("look-and-feel");
         if (laf != null) {
@@ -420,6 +445,12 @@ public class UI implements UIFactory, UIObjectFactory {
         }
         return component;
     }
+    /**
+     * Applies any script element to the component; default implementation is a no-op.
+     * @param component the target component
+     * @param e the script XML element
+     * @return the component after script application
+     */
     protected JComponent doScript (JComponent component, Element e) {
         return component;
     }
@@ -438,6 +469,11 @@ public class UI implements UIFactory, UIObjectFactory {
             c.setPreferredSize (d);
         }
     }
+    /**
+     * Creates a Swing component from the given XML element descriptor.
+     * @param e the XML element describing the component
+     * @return the created JComponent, or {@code null} if none was produced
+     */
     public JComponent create (Element e) {
         JComponent component = null;
 
@@ -458,6 +494,10 @@ public class UI implements UIFactory, UIObjectFactory {
         }
         return component;
     }
+    /**
+     * Returns the application's main frame.
+     * @return the main JFrame
+     */
     public JFrame getMainFrame() {
         return mainFrame;
     }
@@ -491,10 +531,19 @@ public class UI implements UIFactory, UIObjectFactory {
             }
         }
     }
+    /**
+     * Logs a warning.
+     * @param obj the warning object
+     */
     protected void warn (Object obj) {
         if (log != null)
             log.warn (obj);
     }
+    /**
+     * Logs a warning with an associated exception.
+     * @param obj the warning object
+     * @param ex the associated exception
+     */
     protected void warn (Object obj, Exception ex) {
         if (log != null)
             log.warn (obj, ex);

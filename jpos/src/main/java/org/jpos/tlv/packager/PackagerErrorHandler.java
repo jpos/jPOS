@@ -24,6 +24,7 @@ import org.jpos.iso.ISOException;
 
 
 /**
+ * Callback interface invoked when a tagged-sequence packager encounters a packing/unpacking error.
  * @author Vishnu Pillai
  */
 public interface PackagerErrorHandler {

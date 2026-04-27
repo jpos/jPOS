@@ -33,9 +33,16 @@ import java.net.URL;
 import java.util.*;
 import java.util.jar.JarEntry;
 
+/** JLine3 {@link Completer} that provides tab-completion for class names with given prefixes. */
 public class CLIPrefixedClassNameCompleter implements Completer {
+    /** Pre-computed candidate list for tab completion. */
     protected final Collection<Candidate> candidates = new ArrayList<>();
 
+    /**
+     * Creates a completer that includes class names with the given prefixes.
+     * @param prefixes the class name prefixes to include as candidates
+     * @throws IOException if class scanning fails
+     */
     public CLIPrefixedClassNameCompleter(Collection<String> prefixes) throws IOException {
         for (String s : getClassNames(prefixes)) {
             candidates.add(new Candidate(AttributedString.stripAnsi(s), s, null, null, null, null, true));

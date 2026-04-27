@@ -24,6 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 public final class ThrowableMarkdownLogRenderer implements LogRenderer<Throwable> {
+    /** Default constructor. */
+    public ThrowableMarkdownLogRenderer() {}
     @Override
     public void render(Throwable t, PrintStream ps, String indent) {
         ps.println(stackTrace(indent+" ", t));

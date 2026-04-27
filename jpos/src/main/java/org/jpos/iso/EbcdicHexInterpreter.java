@@ -29,6 +29,11 @@ public class EbcdicHexInterpreter implements BinaryInterpreter
     /** An instance of this Interpreter. Only one needed for the whole system */
     public static final EbcdicHexInterpreter INSTANCE = new EbcdicHexInterpreter();
 
+    /** Default constructor. */
+    public EbcdicHexInterpreter() {
+        super();
+    }
+
     /** 0-15 to EBCDIC hex digit lookup table. */
     private static final byte[] HEX_EBCDIC = new byte[] {
               (byte)0xF0, (byte)0xF1, (byte)0xF2, (byte)0xF3, 

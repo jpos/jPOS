@@ -19,6 +19,7 @@
 package org.jpos.tlv;
 
 /**
+ * A {@link TagValue} backed by a literal string value.
  * @author Vishnu Pillai
  *
  */

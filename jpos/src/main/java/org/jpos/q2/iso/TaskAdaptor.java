@@ -33,6 +33,7 @@ import org.jpos.util.NameRegistrar;
 public class TaskAdaptor extends QBeanSupport {
     Object task;
 
+    /** Default constructor. */
     public TaskAdaptor () {
         super ();
     }

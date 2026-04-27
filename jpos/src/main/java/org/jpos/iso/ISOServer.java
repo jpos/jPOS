@@ -70,27 +70,40 @@ public class ISOServer extends Observable
     private List<String> wildcardDeny;
     private PermLogPolicy ipPermLogPolicy= PermLogPolicy.ALLOW_NOLOG;
 
+    /** The channel template used for client-side connections. */
     protected ISOChannel clientSideChannel;
     ISOPackager clientPackager;
+    /** Outgoing and incoming filter chains for client channels. */
     protected Collection clientOutgoingFilters, clientIncomingFilters;
+    /** Registered ISO request listeners. */
     protected List<ISORequestListener> listeners;
+    /** Default maximum number of concurrent sessions. */
     public static final int DEFAULT_MAX_SESSIONS = 100;
+    /** Realm suffix used for the last connected channel. */
     public static final String LAST = ":last";
     String name;
+    /** Timestamp of the last transaction processed. */
     protected long lastTxn = 0l;
+    /** The logger for this server. */
     protected Logger logger;
+    /** The realm string for this server. */
     protected String realm;
+    /** The realm string for channel sessions. */
     protected String realmChannel;
+    /** Optional factory for creating server sockets. */
     protected ISOServerSocketFactory socketFactory = null;
 
     private AtomicInteger connectionCount = new AtomicInteger();
 
     private int backlog;
+    /** The server configuration. */
     protected Configuration cfg;
     private volatile boolean shutdown = false;
     private ServerSocket serverSocket;
     private Map<String,WeakReference<ISOChannel>> channels;
+    /** If true, ISOExceptions are silently ignored. */
     protected boolean ignoreISOExceptions;
+    /** Registered server event listeners. */
     protected List<ISOServerEventListener> serverListeners = null;
     private ExecutorService executor;
     private Semaphore permits;
@@ -101,8 +114,10 @@ public class ISOServer extends Observable
     private final UUID uuid = UUID.randomUUID();
 
    /**
+    * Constructs an ISOServer on the given port.
     * @param port port to listen
     * @param clientSide client side ISOChannel, used as a "clonable template" to accept new connections
+    * @param maxSessions maximum number of concurrent sessions (0 = unlimited)
     */
     public ISOServer(int port, ServerChannel clientSide, int maxSessions) {
         super();
@@ -297,13 +312,21 @@ public class ISOServer extends Observable
     // -- Helper Session inner class. It's a Runnable, running in its own
     // -- thread and handling a connection to this ISOServer
     // --
+    /** Creates a new server session for the given channel.
+     * @param channel the accepted server channel
+     * @return a new Session
+     */
     protected Session createSession (ServerChannel channel) {
         return new Session (channel);
     }
 
+    /** Handles the ISO 8583 exchange for a single accepted server connection. */
     protected class Session implements Runnable, LogSource {
         ServerChannel channel;
         String realm;
+        /** Creates a Session for the given accepted channel.
+         * @param channel the accepted server channel
+         */
         protected Session(ServerChannel channel) {
             this.channel = channel;
             realm = ISOServer.this.getRealm();
@@ -570,8 +593,10 @@ public class ISOServer extends Observable
         NameRegistrar.register ("server."+name, this);
     }
     /**
+     * Returns the ISOServer registered under the given name.
+     * @param name the server's registered name
      * @return ISOServer instance with given name.
-     * @throws NameRegistrar.NotFoundException;
+     * @throws NameRegistrar.NotFoundException if not found in registry
      * @see NameRegistrar
      */
     public static ISOServer getServer (String name)
@@ -580,6 +605,7 @@ public class ISOServer extends Observable
         return NameRegistrar.get ("server."+name);
     }
     /**
+     * Returns this server's registered name.
      * @return this ISOServer's name ("" if no name was set)
      */
     public String getName() {
@@ -632,6 +658,7 @@ public class ISOServer extends Observable
     }
 
     /**
+     * Returns the cumulative number of connections accepted by this server.
      * @return number of connections accepted by this server
      */
     @Override
@@ -640,6 +667,7 @@ public class ISOServer extends Observable
     }
 
     /**
+     * Returns the most recently accepted ISOChannel.
      * @return most recently connected ISOChannel or null
      */
     public ISOChannel getLastConnectedISOChannel () {
@@ -647,6 +675,8 @@ public class ISOServer extends Observable
     }
 
     /**
+     * Returns the ISOChannel registered under the given name.
+     * @param name the channel name
      * @return ISOChannel under the given name
      */
     public ISOChannel getISOChannel (String name) {
@@ -675,6 +705,9 @@ public class ISOServer extends Observable
         }
         return sb.toString();
     }
+    /** Returns a human-readable string summarising RX/TX/connection counters.
+     * @return counters summary string
+     */
     public String getCountersAsString () {
         StringBuilder sb = new StringBuilder ();
         int cnt[] = getCounters();
@@ -694,6 +727,9 @@ public class ISOServer extends Observable
         return sb.toString();
     }
 
+    /** Returns an array of [rx, tx, connected] counters across all active channels.
+     * @return int array: [rx, tx, connected]
+     */
     public int[] getCounters()
     {
         Iterator iter = channels.entrySet().iterator();
@@ -779,13 +815,22 @@ public class ISOServer extends Observable
         sb.append (value);
     }
 
+    /** Registers a listener for server events.
+     * @param listener the listener to add
+     */
     public void addServerEventListener(ISOServerEventListener listener) {
         serverListeners.add(listener);
     }
+    /** Unregisters a previously added server event listener.
+     * @param listener the listener to remove
+     */
     public void removeServerEventListener(ISOServerEventListener listener) {
         serverListeners.remove(listener);
     }
 
+    /** Dispatches an event to all registered server event listeners.
+     * @param event the event to dispatch
+     */
     public void fireEvent(EventObject event) {
         for (ISOServerEventListener l : serverListeners) {
             try {
@@ -828,6 +873,9 @@ public class ISOServer extends Observable
         Logger.log (evt);
     }
 
+    /** Returns the current number of active (in-use) connections.
+     * @return number of active connections
+     */
     public int getActiveConnections () {
         return permitsCount - permits.availablePermits();
     }

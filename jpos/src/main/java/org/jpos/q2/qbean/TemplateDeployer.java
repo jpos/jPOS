@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class TemplateDeployer extends QBeanSupport implements XmlConfigurable {
+    /** Default constructor. */
+    public TemplateDeployer() {}
     Element config;
 
     @Override

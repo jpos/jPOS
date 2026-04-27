@@ -25,6 +25,7 @@ import org.jpos.core.XmlConfigurable;
 import java.io.PrintStream;
 
 /**
+ * A {@link LogListener} that writes log events to a {@link java.io.PrintStream} (default: {@code System.out}).
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @see org.jpos.core.Configurable
@@ -34,6 +35,7 @@ public class SimpleLogListener implements LogListener, XmlConfigurable, Destroya
     LogEventWriter writer = null;
     PrintStream p;
 
+    /** Default constructor. */
     public SimpleLogListener () {
         super();
         setPrintStream(System.out);
@@ -42,12 +44,17 @@ public class SimpleLogListener implements LogListener, XmlConfigurable, Destroya
         this ();
         setPrintStream (p);
     }
+    /**
+     * Sets the print stream used for log output.
+     * @param p the print stream
+     */
     public synchronized void setPrintStream (PrintStream p) {
         this.p = p;
         if (writer != null) {
             writer.setPrintStream(p);
         }
     }
+    /** Closes this listener, flushing any pending output. */
     public synchronized void close() {
         // writer either wraps or use same PrintStream
         if (writer != null) {

@@ -23,6 +23,8 @@ import org.jpos.q2.CLIContext;
 
 public class SLEEP implements CLICommand
 {
+    /** Default constructor. */
+    public SLEEP() {}
     public void exec(CLIContext cli, String[] args) throws Exception
     {
         if (args.length > 1)

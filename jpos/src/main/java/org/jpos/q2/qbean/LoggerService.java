@@ -29,6 +29,8 @@ import org.jpos.util.NameRegistrar;
 
 @SuppressWarnings("unused")
 public class LoggerService extends QBeanSupport implements Runnable {
+    /** Default constructor. */
+    public LoggerService() {}
     Logger logger;
     String queueName;
     Space sp;

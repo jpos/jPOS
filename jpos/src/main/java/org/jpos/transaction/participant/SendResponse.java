@@ -36,6 +36,8 @@ import static org.jpos.transaction.ContextConstants.*;
 
 @SuppressWarnings("unused")
 public class SendResponse implements AbortParticipant, Configurable {
+    /** Default constructor. */
+    public SendResponse() {}
     private String source;
     private String request;
     private String response;

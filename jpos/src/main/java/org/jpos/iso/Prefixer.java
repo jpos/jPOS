@@ -28,29 +28,25 @@ package org.jpos.iso;
 public interface Prefixer
 {
     /**
-	 * Fills a byte array with the field length data in raw form.
-	 * 
-	 * @param length
-	 *            The length to be encoded.
-	 * @param b
-	 *            The byte array to fill with the encoded length.
-	 */
+     * Encodes the field length into the byte array.
+     * @param length the field length to encode
+     * @param b the byte array to write the length prefix into
+     * @throws ISOException if the length exceeds the prefix capacity
+     */
     void encodeLength(int length, byte[] b) throws ISOException;
 
     /**
-	 * Decodes an encoded length.
-	 * 
-	 * @param b
-	 *            The byte array to scan for the length.
-	 * @param offset
-	 *            The offset to start scanning from.
-	 * @return The length in chars of the field data to follow this
-	 *         LengthPrefix.
-	 */
+     * Decodes an encoded length from the byte array.
+     * @param b the byte array containing the length prefix
+     * @param offset the offset in {@code b} where the prefix starts
+     * @return the length in chars of the field data to follow this prefix
+     * @throws ISOException if the prefix cannot be decoded
+     */
     int decodeLength(byte[] b, int offset) throws ISOException;
 
     /**
-	 * Returns the number of bytes taken up by the length encoding.
-	 */
+     * Returns the number of bytes taken up by the length encoding.
+     * @return the number of bytes used by the length encoding
+     */
     int getPackedLength();
 }

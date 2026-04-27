@@ -20,7 +20,11 @@ package org.jpos.iso;
 
 import java.util.EventObject;
 
+/** Event fired when ISOServer shuts down. */
 public final class ISOServerShutdownEvent extends EventObject implements ISOServerEvent {
+    /** Constructs the event.
+     * @param source the event source
+     */
     public ISOServerShutdownEvent(Object source) {
         super(source);
     }

@@ -24,4 +24,8 @@ package org.jpos.emv.cryptogram;
  */
 public class CVN22DataBuilder extends CVN18DataBuilder {
 
+    /** Default constructor. */
+    public CVN22DataBuilder() {
+        super();
+    }
 }

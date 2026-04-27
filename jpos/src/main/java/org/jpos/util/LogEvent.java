@@ -38,6 +38,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 /**
+ * A single structured log event that carries a tag, realm, payload items, and optionally a {@link Throwable}.
  * @author @apr
  */
 public class LogEvent {
@@ -58,6 +59,7 @@ public class LogEvent {
         this.payLoad = Collections.synchronizedList (new ArrayList<>());
     }
 
+    /** Default constructor. */
     public LogEvent () {
         this("info");
     }
@@ -79,14 +81,27 @@ public class LogEvent {
     public String getTag() {
         return tag;
     }
+    /**
+     * Sets the log tag for this event.
+     * @param tag the log tag to set
+     */
     public void setTag (String tag) {
         this.tag = tag;
     }
+    /**
+     * Adds a message or object to this event's payload.
+     * @param msg the message or object to add
+     */
     public void addMessage (Object msg) {
         payLoad.add (msg);
         if (msg instanceof Throwable)
             hasException = true;
     }
+    /**
+     * Adds a message wrapped in an XML tag to this event's payload.
+     * @param tagname the XML tag name to wrap the message in
+     * @param message the message text
+     */
     public void addMessage (String tagname, String message) {
         payLoad.add ("<"+tagname+">"+message+"</"+tagname+">");
     }
@@ -96,9 +111,19 @@ public class LogEvent {
     public void setSource(LogSource source) {
         this.source = source;
     }
+    /**
+     * Controls whether the XML wrapper is suppressed in log output.
+     * @param noArmor if true, suppress the XML wrapper
+     */
     public void setNoArmor (boolean noArmor) {
         this.noArmor = noArmor;
     }
+    /**
+     * Writes the log event header to the given PrintStream.
+     * @param p the PrintStream to write the header to
+     * @param indent the indentation prefix
+     * @return the inner indentation string for nested content
+     */
     protected String dumpHeader (PrintStream p, String indent) {
         if (noArmor) {
             p.println("");
@@ -125,10 +150,20 @@ public class LogEvent {
         }
         return indent + "  ";
     }
+    /**
+     * Writes the log event trailer to the given PrintStream.
+     * @param p the PrintStream to write the trailer to
+     * @param indent the indentation prefix
+     */
     protected void dumpTrailer (PrintStream p, String indent) {
         if (!noArmor)
             p.println (indent + "</log>");
     }
+    /**
+     * Dumps the full log event to the given PrintStream.
+     * @param p     the PrintStream to dump to
+     * @param outer the outer indentation string
+     */
     public void dump (PrintStream p, String outer) {
         var jfr = new LogEventDump();
         jfr.begin();

@@ -22,8 +22,12 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import org.jpos.q2.CLISubSystem;
 
+/** Built-in CLI sub-system command that exits the current sub-system context. */
 @SuppressWarnings("unused")
 public class EXIT implements CLISubSystem, CLICommand {
+    /** Default constructor. */
+    public EXIT() { super(); }
+
     @Override
     public String getPrompt(CLIContext ctx, String[] args) {
         return null;

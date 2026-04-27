@@ -19,7 +19,20 @@
 package org.jpos.q2;
 
 
+/** Extension point for adding sub-systems to the Q2 CLI. */
 public interface CLISubSystem {
+    /**
+     * Returns the prompt string for this sub-system.
+     * @param ctx the CLI context
+     * @param args current command arguments
+     * @return the prompt string
+     */
      String getPrompt(CLIContext ctx, String[] args);
+    /**
+     * Returns the command prefixes registered by this sub-system.
+     * @param ctx the CLI context
+     * @param args current command arguments
+     * @return command prefixes
+     */
      String[] getCompletionPrefixes(CLIContext ctx, String args[]);
 }

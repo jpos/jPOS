@@ -35,24 +35,28 @@ public class ISOField
 {
 
     private static final long serialVersionUID = -4053616930139887829L;
+    /** The ISO field number. */
     protected int fieldNumber;
+    /** The string value of this field. */
     protected String value;
 
     /**
      * No args constructor 
-     * <font size="-1">(required by Externalizable support on ISOMsg)</font>
+     * (required by Externalizable support on ISOMsg)
      */
     public ISOField () {
         fieldNumber = -1;
     }
 
     /**
+     * Constructs a field with the given field number.
      * @param n - the FieldNumber
      */
     public ISOField (int n) {
         fieldNumber = n;
     }
     /**
+     * Constructs a field.
      * @param n - fieldNumber
      * @param v - fieldValue
      */
@@ -63,7 +67,7 @@ public class ISOField
     /**
      * not available on Leaf - always throw ISOException
      * @return never returns
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     @Override
     public byte[] pack() throws ISOException {
@@ -71,9 +75,9 @@ public class ISOField
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @param b
+     * @param b the byte array
      * @return never returns
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     @Override
     public int unpack(byte[] b) throws ISOException {
@@ -81,8 +85,8 @@ public class ISOField
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @param in
-     * @exception ISOException
+     * @param in the input stream
+     * @exception ISOException on ISO processing error
      */
     @Override
     public void unpack(InputStream in) throws ISOException {
@@ -104,7 +108,7 @@ public class ISOField
     }
     /**
      * @param obj - Object representing this field value
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     @Override
     public void setValue(Object obj) throws ISOException {

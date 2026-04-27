@@ -22,10 +22,18 @@ import org.jpos.iso.ISOUtil;
 
 import java.io.PrintStream;
 
+/** A {@link Loggeable} wrapper around a named byte array payload. */
 public class Dumpable implements Loggeable {
+    /** The name label for this dumpable. */
     String name;
+    /** The raw byte payload. */
     byte[] payload;
 
+    /**
+     * Creates a Dumpable with the given name and payload.
+     * @param name the label name
+     * @param payload the raw byte payload
+     */
     public Dumpable (String name, byte[] payload) {
         this.name = name;
         this.payload = payload;

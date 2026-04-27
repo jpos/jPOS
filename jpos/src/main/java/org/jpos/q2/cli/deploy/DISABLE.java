@@ -28,6 +28,11 @@ import org.jpos.q2.CLIContext;
 */
 public class DISABLE implements CLICommand {
 
+    /** Default constructor. */
+    public DISABLE() {
+        super();
+    }
+
 	@Override
 	public void exec(CLIContext ctx, String[] args) throws Exception {
 		if (args.length < 2) {

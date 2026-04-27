@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Abstract base for {@link TagSequence} implementations.
  * @author Vishnu Pillai
  */
 public abstract class TagSequenceBase implements TagSequence {
@@ -38,6 +39,7 @@ public abstract class TagSequenceBase implements TagSequence {
     private final TreeMap<String, List<TagValue>> tagMap = new TreeMap();
     private final LinkedList<TagValue> orderedList = new LinkedList();
 
+    /** Default constructor. */
     public TagSequenceBase() {
         this.tag = "Root";
     }
@@ -192,10 +194,29 @@ public abstract class TagSequenceBase implements TagSequence {
 
     }
 
+    /**
+     * Creates a new nested TagSequence for the given tag identifier.
+     * @param tag the tag identifier for the new nested sequence
+     * @return a new TagSequence for the given tag
+     */
     protected abstract TagSequence createTagValueSequence(String tag);
 
+    /**
+     * Creates a new literal string TagValue pair.
+     * @param tag the tag identifier
+     * @param value the literal string value
+     * @return a new TagValue containing the string value
+     * @throws ISOException on encoding error
+     */
     protected abstract TagValue createLiteralTagValuePair(String tag, String value) throws ISOException;
 
+    /**
+     * Creates a new binary TagValue pair.
+     * @param tag the tag identifier
+     * @param value the binary value bytes
+     * @return a new TagValue containing the binary value
+     * @throws ISOException on encoding error
+     */
     protected abstract TagValue createBinaryTagValuePair(String tag, byte[] value) throws ISOException;
 
 }

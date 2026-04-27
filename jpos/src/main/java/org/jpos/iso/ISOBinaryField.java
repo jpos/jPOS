@@ -39,23 +39,27 @@ public class ISOBinaryField
 {
 
     private static final long serialVersionUID = 7702505828876640372L;
+    /** The ISO field number. */
     protected int fieldNumber;
+    /** The raw binary value. */
     protected byte[] value;
 
     /**
      * No args constructor 
-     * <font size="-1">(required by Externalizable support on ISOMsg)</font>
+     * (required by Externalizable support on ISOMsg)
      */
     public ISOBinaryField () {
         fieldNumber = -1;
     }
     /**
+     * Constructs a binary field with the given field number.
      * @param n - the FieldNumber
      */
     public ISOBinaryField(int n) {
         fieldNumber = n;
     }
     /**
+     * Constructs a binary field.
      * @param n - fieldNumber
      * @param v - fieldValue
      */
@@ -64,6 +68,7 @@ public class ISOBinaryField
         value = v;
     }
     /**
+     * Constructs a binary field.
      * @param n - fieldNumber
      * @param v - fieldValue
      * @param offset - starting offset
@@ -92,21 +97,21 @@ public class ISOBinaryField
 
     /**
      * not available on Leaf - always throw ISOException
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack() throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public int unpack(byte[] b) throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public void unpack(InputStream in) throws ISOException {
         throw new ISOException ("Not available on Leaf");
@@ -125,7 +130,7 @@ public class ISOBinaryField
     }
     /**
      * @param obj - Object representing this field value
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public void setValue (Object obj) throws ISOException {
         if (obj instanceof String)

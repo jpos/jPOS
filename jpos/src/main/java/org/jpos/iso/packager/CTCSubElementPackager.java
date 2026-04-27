@@ -40,6 +40,7 @@ import java.util.Map;
  */
 public class CTCSubElementPackager extends ISOBaseValidatingPackager {
 
+    /** Default constructor. */
     public CTCSubElementPackager() {
         super();
     }

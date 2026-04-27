@@ -21,6 +21,8 @@ import java.io.PrintStream;
 import java.util.regex.Pattern;
 
 public class LogUtil {
+    /** Default constructor. */
+    public LogUtil() {}
     public static final Pattern xmlReservedPattern = Pattern.compile("&|<|>");
 
     public static void dump (PrintStream p, String indent, String s) {

@@ -25,7 +25,7 @@ import java.io.InputStream;
  * Value is represented in BCD
  * ISOFieldPackager Binary LLNUM
  *
- * @author Mladen Mrkic <mmrkic@arius.co.yu>
+ * @author Mladen Mrkic (mmrkic@arius.co.yu)
  *
  * @see ISOComponent
  */
@@ -33,14 +33,17 @@ public class IFA_LLBNUM extends ISOFieldPackager {
     private Interpreter interpreter;
     private Prefixer prefixer;
     
+    /** Default constructor. */
     public IFA_LLBNUM () {
         super();
         interpreter = BCDInterpreter.LEFT_PADDED;
         prefixer = AsciiPrefixer.LL;
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
+     * @param pad if true, pad the number
      */
     public  IFA_LLBNUM (int len, String description, boolean pad) {
         super(len, description);
@@ -58,7 +61,7 @@ public class IFA_LLBNUM extends ISOFieldPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         String s = (String) c.getValue();
@@ -79,7 +82,7 @@ public class IFA_LLBNUM extends ISOFieldPackager {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException

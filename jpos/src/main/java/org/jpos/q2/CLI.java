@@ -29,6 +29,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/** Interactive command-line interface for a running Q2 instance. */
 public class CLI implements Runnable {
     final private static String DEFAULT_PROMPT = "q2> ";
     final private static String ESCAPED_SEMICOLON = "__semicolon__";
@@ -36,6 +37,7 @@ public class CLI implements Runnable {
     private String line = null;
     private boolean keepRunning = false;
     private boolean interactive = false;
+    /** The context for this CLI session. */
     protected CLIContext ctx;
     private CLICommandInterface cmdInterface;
     private Terminal terminal;
@@ -44,10 +46,27 @@ public class CLI implements Runnable {
     private String prompt = DEFAULT_PROMPT;
     private History mainHistory;
 
+    /**
+     * Creates a simple CLI with a single command and no streams.
+     * @param q2 the Q2 instance
+     * @param line the initial command line
+     * @param keepRunning true to keep running after the first command
+     * @throws IOException on I/O failure
+     */
     public CLI(Q2 q2, String line, boolean keepRunning) throws IOException {
         this(q2, System.in, System.out, line, keepRunning, true);
     }
 
+    /**
+     * Creates a full CLI with explicit I/O streams.
+     * @param q2 the Q2 instance
+     * @param in input stream
+     * @param rawout output stream
+     * @param line initial command (may be null for interactive mode)
+     * @param keepRunning true to keep running after commands
+     * @param interactive true for interactive (line-edit) mode
+     * @throws IOException on I/O failure
+     */
     public CLI(Q2 q2, InputStream in, OutputStream rawout, String line, boolean keepRunning, boolean interactive) throws IOException {
         Logger.getLogger("org.jline").setLevel(Level.SEVERE);
         this.q2 = q2;
@@ -63,18 +82,29 @@ public class CLI implements Runnable {
         initCmdInterface(getCompletionPrefixes(), mainHistory);
     }
 
+    /**
+     * Returns true if this CLI is still running.
+     * @return true if running
+     */
     protected boolean running() {
         return getQ2() == null || getQ2().running();
     }
 
+    /** Called when the CLI is stopping; subclasses may override. */
     protected void markStopped() { }
 
+    /** Called when the CLI is starting; subclasses may override. */
     protected void markStarted() { }
 
+    /**
+     * Returns command prefixes registered for tab-completion.
+     * @return array of command prefixes
+     */
     protected String[] getCompletionPrefixes() {
         return new String[] {"org.jpos.q2.cli." };
     }
 
+    /** Called on normal exit; subclasses may override. */
     protected void handleExit() { }
 
     void setPrompt(String prompt, String[] completionPrefixes) throws IOException {
@@ -95,6 +125,9 @@ public class CLI implements Runnable {
         }
     }
 
+    /** Starts the CLI session.
+     * @throws Exception on startup failure
+     */
     public void start() throws Exception {
         markStarted();
         t = new Thread(this);
@@ -102,6 +135,7 @@ public class CLI implements Runnable {
         t.start();
     }
 
+    /** Stops the CLI session. */
     public void stop() {
         markStopped();
         try {
@@ -173,30 +207,62 @@ public class CLI implements Runnable {
         handleExit();
     }
 
+    /**
+     * Returns the Q2 instance this CLI is attached to.
+     * @return the Q2 instance
+     */
     public Q2 getQ2() {
         return q2;
     }
 
+    /**
+     * Returns true if this CLI session is interactive.
+     * @return true if interactive
+     */
     public boolean isInteractive() {
         return interactive;
     }
 
+    /**
+     * Returns the JLine3 LineReader for this session.
+     * @return the LineReader
+     */
     public LineReader getReader() {
         return reader;
     }
 
+    /**
+     * Executes a CLI command with the given I/O streams.
+     * @param in input stream
+     * @param out output stream
+     * @param command command to execute
+     * @throws Exception on execution failure
+     */
     public static void exec (InputStream in, OutputStream out, String command) throws Exception {
         CLI cli = new CLI(Q2.getQ2(), in, out, command, false, false);
         cli.start();
         cli.stop();
     }
 
+    /**
+     * Executes a CLI command and captures its output as a string.
+     * @param command command string to execute
+     * @return captured output
+     * @throws Exception on execution failure
+     */
     public static String exec (String command) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         exec (null, out, command);
         return out.toString();
     }
 
+    /**
+     * Builds a JLine3 Terminal for this session.
+     * @param in input stream
+     * @param out output stream
+     * @return the Terminal
+     * @throws IOException on I/O failure
+     */
     protected Terminal buildTerminal (InputStream in, OutputStream out) throws IOException {
         TerminalBuilder builder = TerminalBuilder.builder()
             .streams(in,out)

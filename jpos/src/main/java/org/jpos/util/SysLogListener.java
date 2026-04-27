@@ -62,6 +62,7 @@ public class SysLogListener implements LogListener, Configurable {
     public static final int LOG_USER = 16;  // local use 0
     public static final int PRI_INFO = 6;   // informational
 
+    /** Default constructor. */
     public SysLogListener () {
         super();
     }

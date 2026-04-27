@@ -20,6 +20,7 @@ package org.jpos.tlv;
 
 
 /**
+ * Describes the data format (encoding, length type) of a TLV field.
  * @author Vishnu Pillai
  */
 public enum TLVDataFormat {

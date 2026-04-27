@@ -23,6 +23,8 @@ import org.jpos.q2.CLIContext;
 
 @SuppressWarnings("unused")
 public class WHOAMI implements CLICommand {
+    /** Default constructor. */
+    public WHOAMI() {}
     public void exec(CLIContext cli, String[] args) throws Exception {
         cli.println(System.getProperty("user.name"));
     }

@@ -50,6 +50,7 @@ public class QueryHost implements TransactionParticipant, Configurable {
     private boolean ignoreUnreachable;
     private boolean checkConnected= true;
 
+    /** Default constructor. */
     public QueryHost () {
         super();
     }

@@ -102,6 +102,10 @@ public class GenericPackager
     private String firstField = null;
     private String filename;
 
+    /**
+     * Default constructor.
+     * @throws ISOException if configuration fails
+     */
     public GenericPackager() throws ISOException
     {
         super();
@@ -111,6 +115,7 @@ public class GenericPackager
      * Create a GenericPackager with the field descriptions
      * from an XML File
      * @param filename The XML field description file
+     * @throws ISOException on packing/unpacking error
      */
     public GenericPackager(String filename) throws ISOException
     {
@@ -122,6 +127,7 @@ public class GenericPackager
      * Create a GenericPackager with the field descriptions
      * from an XML InputStream
      * @param input The XML field description InputStream
+     * @throws ISOException on packing/unpacking error
      */
     public GenericPackager(InputStream input) throws ISOException
     {
@@ -190,6 +196,7 @@ public class GenericPackager
      * The default parser is org.apache.crimson.parser.XMLReaderImpl
      * </pre>
      * @param filename The XML field description file
+     * @throws ISOException on packing/unpacking error
      */
     public void readFile(String filename) throws ISOException
     {
@@ -216,6 +223,7 @@ public class GenericPackager
      * The default parser is org.apache.crimson.parser.XMLReaderImpl
      * </pre>
      * @param input The XML field description InputStream
+     * @throws ISOException on packing/unpacking error
      */
     public void readFile(InputStream input) throws ISOException
     {
@@ -306,18 +314,22 @@ public class GenericPackager
             setHeaderLength(Integer.parseInt(headerLenStr));
     }
 
+    /** SAX entity resolver that redirects jPOS DTD references to bundled classpath resources. */
+    /** SAX EntityResolver that maps jPOS DTD public IDs to bundled classpath resources. */
     public static class GenericEntityResolver implements EntityResolver
     {
+        /** Default constructor. */
+        public GenericEntityResolver() {}
         /**
          * Allow the application to resolve external entities.
-         * <p/>
+         * <p>
          * The strategy we follow is:<p>
          * We first check whether the DTD points to a well defined URI,
-         * and resolve to our internal DTDs.<p>
+         * and resolve to our internal DTDs.
          *
          * If the systemId points to a file, then we attempt to read the
          * DTD from the filesystem, in case they've been modified by the user.
-         * Otherwise, we fallback to the built-in DTDs inside jPOS.<p>
+         * Otherwise, we fallback to the built-in DTDs inside jPOS.
          *
          * @param publicId The public identifier of the external entity
          *                 being referenced, or null if none was supplied.
@@ -375,8 +387,13 @@ public class GenericPackager
         }
     }
 
+    /** SAX content handler that populates this packager from an XML packager descriptor. */
+    /** SAX content handler that populates this packager from an XML packager descriptor. */
+    /** SAX ContentHandler that builds the packager structure from the XML descriptor. */
     public class GenericContentHandler extends DefaultHandler
     {
+        /** Default constructor. */
+        public GenericContentHandler() {}
         private Stack<Object> fieldStack;
 
         @Override

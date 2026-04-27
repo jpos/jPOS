@@ -165,6 +165,7 @@ public class VAPSMSPackager extends ISOBasePackager {
             new IFB_LLCHAR  ( 99, "RESERVED PRIVATE USE"),
             new IFB_BINARY  (  8, "MAC 2")
         };
+    /** Default constructor. */
     public VAPSMSPackager() {
         super();
         setFieldPackager(fld);

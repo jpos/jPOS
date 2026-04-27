@@ -27,6 +27,8 @@ import java.util.Arrays;
  * @version $Revision$ $Date$
  */
 public class Util {
+    /** Default constructor. */
+    public Util() {}
 
     /**
      * DES Keys use the LSB as the odd parity bit.  This method can

@@ -23,11 +23,18 @@ import org.jdom2.Element;
 import javax.swing.*;
 
 /**
+ * Factory interface for creating Swing {@link javax.swing.JComponent} instances from XML configuration elements.
  * @author Alejandro Revilla
  *
  * UI delegates the creation of UI components to an UIFactory.
  */
 public interface UIFactory {
-    JComponent create(UI ui, Element config);
+    /**
+     * Creates a Swing component from the given UI context and XML element.
+     * @param ui the UI container
+     * @param e the XML configuration element
+     * @return a new JComponent
+     */
+    JComponent create(UI ui, Element e);
 }
 

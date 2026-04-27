@@ -29,11 +29,13 @@ package org.jpos.iso;
  * @see ISOFieldPackager
  */
 public class IFE_AMOUNT extends ISOAmountFieldPackager {
+    /** Default constructor. */
     @SuppressWarnings("unused")
     public IFE_AMOUNT() {
         super(0, null, LeftPadder.ZERO_PADDER, EbcdicInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

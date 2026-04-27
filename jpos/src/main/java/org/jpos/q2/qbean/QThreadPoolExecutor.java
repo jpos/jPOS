@@ -38,6 +38,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class QThreadPoolExecutor extends QBeanSupport implements
         QThreadPoolExecutorMBean {
+    /** Default constructor. */
+    public QThreadPoolExecutor() {}
 
     public static final String THREAD_POOL_EXECUTOR__QBEAN_PREFIX = "thread.pool.executor.";
 
@@ -176,7 +178,7 @@ public class QThreadPoolExecutor extends QBeanSupport implements
      * @param attrName
      * @param mandatory
      * @param errDesc
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     protected Attribute getAttribute(Element elt, String attrName,
             boolean mandatory, String errDesc) throws ConfigurationException {

@@ -35,6 +35,11 @@ import org.jpos.transaction.Context;
  *
  */
 public class Delay implements AbortParticipant, Configurable {
+
+    /** Default constructor. */
+    public Delay() {
+        super();
+    }
     long prepareDelay = 0L;
     long commitDelay = 0L;
     long abortDelay = 0L;

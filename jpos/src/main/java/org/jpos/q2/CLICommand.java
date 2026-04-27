@@ -18,6 +18,13 @@
 
 package org.jpos.q2;
 
+/** Command interface for Q2 CLI commands. */
 public interface CLICommand {
+    /**
+     * Executes the CLI command.
+     * @param cli the CLI context
+     * @param strings command arguments
+     * @throws Exception on error
+     */
     void exec(CLIContext cli, String[] strings) throws Exception;
 }

@@ -36,6 +36,7 @@ import org.jpos.util.Logger;
 @SuppressWarnings("unchecked")
 public class TEST0100 extends ISOBaseValidator {
 
+    /** Default constructor. */
     public TEST0100() {
         super();
     }

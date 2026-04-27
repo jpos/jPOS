@@ -27,6 +27,7 @@ import java.awt.*;
 import java.util.Iterator;
 
 /**
+ * UIFactory that creates a {@link java.awt.GridLayout}-based panel from XML.
  * @author Alejandro Revilla
  *
  * creates a panel with a grid layout
@@ -42,7 +43,10 @@ import java.util.Iterator;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
+/** UIFactory that creates GridLayout panels. */
 public class GridLayoutFactory implements UIFactory {
+    /** Default constructor. */
+    public GridLayoutFactory() {}
     public JComponent create (UI ui, Element e) {
         JComponent p;
         try {

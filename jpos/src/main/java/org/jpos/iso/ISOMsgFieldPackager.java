@@ -30,10 +30,13 @@ import java.io.InputStream;
  * @see org.jpos.iso.packager.PostPackager
  */
 public class ISOMsgFieldPackager extends ISOFieldPackager {
+    /** The message-level packager. */
     protected ISOPackager msgPackager;
+    /** The field-level packager. */
     protected ISOFieldPackager fieldPackager;
 
     /**
+     * Constructs a packager with the given field packager and message packager.
      * @param fieldPackager low level field packager
      * @param msgPackager ISOMsgField default packager
      */
@@ -48,7 +51,7 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     @Override
     public byte[] pack (ISOComponent c) throws ISOException {
@@ -86,7 +89,7 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     @Override
     public int unpack (ISOComponent c, byte[] b, int offset)
@@ -106,8 +109,8 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
     /**
      * @param c  - the Component to unpack
      * @param in - input stream
-     * @throws org.jpos.iso.ISOException
-     * @throws java.io.IOException
+     * @throws org.jpos.iso.ISOException on pack/unpack error
+     * @throws java.io.IOException on I/O error
      */
     @Override
     public void unpack (ISOComponent c, InputStream in)
@@ -134,9 +137,15 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
     public int getMaxPackedLength() {
         return fieldPackager.getLength();
     }
+    /** Returns the ISO message packager.
+     * @return the message packager
+     */
     public ISOPackager getISOMsgPackager() {
         return msgPackager;
     }
+    /** Returns the ISO field packager.
+     * @return the field packager
+     */
     public ISOFieldPackager getISOFieldPackager() {
         return fieldPackager;
     }

@@ -25,7 +25,10 @@ import org.jpos.transaction.Context;
 import java.io.PrintStream;
 import java.util.Map;
 
+/** Markdown {@link LogRenderer} for {@link Context} instances. */
 public final class ContextMarkdownRenderer implements LogRenderer<Context> {
+    /** Default constructor. */
+    public ContextMarkdownRenderer() { }
     @Override
     public void render(Context ctx, PrintStream ps, String indent) {
         Map<Object,Object> map = ctx.getMapClone();

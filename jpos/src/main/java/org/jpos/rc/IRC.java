@@ -36,6 +36,7 @@ package org.jpos.rc;
  */
 public interface IRC {
     /**
+     * Returns the numeric internal result code.
      * @return internal result code
      */
     int irc();
@@ -50,11 +51,13 @@ public interface IRC {
     }
 
     /**
+     * Returns true if this IRC represents a successful outcome.
      * @return true if this IRC can be considered a 'success' (not necessarily an approval, could be a partial approval, advice accepted, etc.)
      */
     boolean success();
 
     /**
+     * Returns true if this error type should inhibit the response to the client.
      * @return true if error type should inhibit response back to client
      */
     boolean inhibit();

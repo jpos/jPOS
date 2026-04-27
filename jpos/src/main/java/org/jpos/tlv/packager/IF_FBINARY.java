@@ -29,10 +29,12 @@ import org.jpos.iso.Prefixer;
  */
 public class IF_FBINARY extends ISOBinaryFieldPackager {
 
+    /** Default constructor. */
     public IF_FBINARY() {
         super(LiteralBinaryInterpreter.INSTANCE, FullyConsumingPrefixer.INSTANCE);
     }
 
+    /** A Prefixer that consumes all available bytes (no explicit length). */
     public static class FullyConsumingPrefixer implements Prefixer {
 
         private static final FullyConsumingPrefixer INSTANCE = new FullyConsumingPrefixer();

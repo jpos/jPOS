@@ -31,6 +31,7 @@ import java.util.Map;
 
 
 /**
+ * An {@link org.jpos.iso.ISOComponent} that carries a tagged (TLV) field.
  * @author Vishnu Pillai
  *
  */
@@ -39,6 +40,10 @@ public class ISOTaggedField extends ISOComponent {
     private final ISOComponent delegate;
     private String tag;
 
+    /** Constructs a tagged field with the given tag and delegate.
+     * @param tag      the tag identifier
+     * @param delegate the delegate ISO component
+     */
     public ISOTaggedField(String tag, ISOComponent delegate) {
         if (tag == null) {
             throw new IllegalArgumentException("tag cannot be null");
@@ -51,10 +56,16 @@ public class ISOTaggedField extends ISOComponent {
     }
 
 
+    /** Returns the tag identifier.
+     * @return the tag string
+     */
     public String getTag() {
         return this.tag;
     }
 
+    /** Sets the tag identifier.
+     * @param tag the tag string
+     */
     public void setTag(String tag) {
         this.tag = tag;
     }
@@ -174,6 +185,9 @@ public class ISOTaggedField extends ISOComponent {
     }
 
 
+    /** Returns the delegate ISO component.
+     * @return the delegate
+     */
     public ISOComponent getDelegate() {
         return delegate;
     }

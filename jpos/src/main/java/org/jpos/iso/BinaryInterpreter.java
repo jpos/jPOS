@@ -54,8 +54,9 @@ public interface BinaryInterpreter
     byte[] uninterpret(byte[] rawData, int offset, int length);
 
     /**
-	 * Returns the number of bytes required to interpret a byte array of length
-	 * nBytes.
+	 * Returns the number of bytes required to interpret a byte array of length nBytes.
+	 * @param nBytes the number of raw bytes
+	 * @return the packed length required to represent nBytes
 	 */
     int getPackedLength(int nBytes);
 }

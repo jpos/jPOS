@@ -47,6 +47,7 @@ public class SMAdaptor extends QBeanSupport implements SMAdaptorMBean
     private static final String DEFAULT_IMPL = "org.jpos.security.jceadapter.JCESecurityModule";
     String clazz;
     SMAdapter sm;
+    /** Default constructor. */
     public SMAdaptor () {
         super ();
         clazz = DEFAULT_IMPL;

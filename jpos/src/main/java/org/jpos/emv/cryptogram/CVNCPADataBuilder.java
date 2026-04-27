@@ -22,7 +22,13 @@ import org.jpos.emv.IssuerApplicationData;
 import org.jpos.tlv.TLVList;
 import static org.jpos.emv.cryptogram.CryptogramDataBuilder.minimumSetOfDataElement;
 
+/** CPA (Common Payment Application) cryptogram data builder. */
 public class CVNCPADataBuilder implements CryptogramDataBuilder {
+
+    /** Default constructor. */
+    public CVNCPADataBuilder() {
+        super();
+    }
 
     @Override
     public String getDefaultARPCRequest(boolean approved) {

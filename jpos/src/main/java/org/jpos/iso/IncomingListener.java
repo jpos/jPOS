@@ -33,7 +33,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unused")
+/** ISORequestListener that logs and dispatches incoming ISO messages. */
 public class IncomingListener extends Log implements ISORequestListener, Configurable {
+    /** Default constructor. */
+    public IncomingListener() {}
     long timeout;
     private Space<String,Context> sp;
     private String queue;

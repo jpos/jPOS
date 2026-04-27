@@ -20,8 +20,12 @@ package org.jpos.iso;
 
 import java.util.EventObject;
 
+/** Listener interface for ISOServer events. */
 public interface ISOServerEventListener {
 
+    /** Handles an ISOServer event.
+     * @param event the event to handle
+     */
     void handleISOServerEvent(EventObject event);
 
 }

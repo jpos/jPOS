@@ -25,10 +25,12 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFEA_LLCHAR extends ISOStringFieldPackager {
+    /** Default constructor. */
     public IFEA_LLCHAR() {
         super(NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

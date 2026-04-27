@@ -34,6 +34,8 @@ import java.util.stream.Stream;
 
 
 public final class SysInfoMarkdownRenderer implements LogRenderer<SysInfo> {
+    /** Default constructor. */
+    public SysInfoMarkdownRenderer() {}
 
     @Override
     public void render(SysInfo sysinfo, PrintStream ps, String indent) {

@@ -25,6 +25,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public abstract class QBeanAsyncSupport extends QBeanSupport {
+    /** Default constructor. */
+    public QBeanAsyncSupport() {}
 
     private long startMaxWait;
     private long stopMaxWait;

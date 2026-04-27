@@ -25,11 +25,17 @@ import org.jpos.ui.UI;
 import javax.swing.*;
 
 /**
- * @author Alejandro Revilla
  *
  * UI with BSH script support
+ *
+ * @author Alejandro Revilla
+ *
  */
 public class BSHUI extends UI {
+    /** Default constructor. */
+    public BSHUI() { super(); }
+    /** {@inheritDoc} */
+    @Override
     protected JComponent doScript (JComponent component, Element e) {
         try {
             Interpreter bsh = new Interpreter ();

@@ -26,7 +26,10 @@ import org.jpos.q2.CLIContext;
 * 
 * @author Felipph Calado - luizfelipph@gmail.com
 */
+/** CLI command that enables a disabled Q2 deploy descriptor (renames {@code .xml.off} to {@code .xml}). */
 public class ENABLE implements CLICommand {
+    /** Default constructor. */
+    public ENABLE() { super(); }
 
     @Override
     public void exec(CLIContext ctx, String[] args) throws Exception {

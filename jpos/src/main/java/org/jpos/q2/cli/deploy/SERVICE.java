@@ -35,6 +35,8 @@ import org.jpos.q2.QBean;
 * @author Felipph Calado - luizfelipph@gmail.com
 */
 public class SERVICE implements CLICommand {
+    /** Default constructor. */
+    public SERVICE() {}
 
     @Override
     public void exec(CLIContext ctx, String[] args) throws Exception {

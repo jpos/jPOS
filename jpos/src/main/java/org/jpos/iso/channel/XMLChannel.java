@@ -60,7 +60,7 @@ public class XMLChannel extends BaseChannel {
      * Construct server ISOChannel
      * @param p     an ISOPackager
      * @see ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O error
      */
     public XMLChannel (ISOPackager p) throws IOException {
         super(p);
@@ -69,7 +69,7 @@ public class XMLChannel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public XMLChannel (ISOPackager p, ServerSocket serverSocket) 
@@ -79,7 +79,7 @@ public class XMLChannel extends BaseChannel {
     }
     /**
      * @return a byte array with the received message
-     * @exception IOException
+     * @exception IOException on I/O error
      */
     protected byte[] streamReceive() throws IOException {
         int sp = 0;
