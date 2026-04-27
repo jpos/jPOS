@@ -27,9 +27,11 @@ import org.jpos.log.LogRenderer;
 
 import java.io.PrintStream;
 
+/** JSON {@link LogRenderer} for {@link AuditLogEvent} instances; serialises audit events using Jackson. */
 public final class AuditLogEventJsonLogRenderer implements LogRenderer<AuditLogEvent> {
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /** Creates the renderer and configures the Jackson mapper for ISO-8601 date output. */
     public AuditLogEventJsonLogRenderer () {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

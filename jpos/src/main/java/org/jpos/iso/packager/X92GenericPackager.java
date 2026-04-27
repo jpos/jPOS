@@ -25,21 +25,40 @@ import org.jpos.iso.X92_BITMAP;
 import java.io.InputStream;
 
 /**
+ * ISO-8583 packager for the X9.2 generic message format.
  * @see GenericPackager
  * @author Alejandro Revilla
  * @version $$evision: $ $Date$
  */
 
 public class X92GenericPackager extends GenericPackager {
-    protected static ISOFieldPackager bitMapPackager = 
+    /** Shared bitmap packager used by X9.2 messages. */
+    protected static ISOFieldPackager bitMapPackager =
         new X92_BITMAP (16, "X9.2 BIT MAP");
 
+    /**
+     * Default constructor.
+     *
+     * @throws ISOException if the underlying packager cannot be initialized
+     */
     public X92GenericPackager() throws ISOException {
         super();
     }
+    /**
+     * Constructs a packager loading its field descriptions from an XML file.
+     *
+     * @param filename XML descriptor file
+     * @throws ISOException if the file cannot be read or parsed
+     */
     public X92GenericPackager(String filename) throws ISOException {
         super(filename);
     }
+    /**
+     * Constructs a packager loading its field descriptions from an XML stream.
+     *
+     * @param stream XML descriptor input stream
+     * @throws ISOException if the stream cannot be read or parsed
+     */
     public X92GenericPackager(InputStream stream) throws ISOException {
         super(stream);
     }

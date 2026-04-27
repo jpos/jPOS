@@ -37,7 +37,7 @@ public interface RemoteSpace extends Remote {
      * Write a new entry into the Space
      * @param key Entry's key
      * @param value Object value
-     * @throws RemoteException
+     * @throws RemoteException if the RMI call fails
      */
     void out(Serializable key, Serializable value)
         throws RemoteException;
@@ -49,7 +49,7 @@ public interface RemoteSpace extends Remote {
      * @param key Entry's key
      * @param value Object value
      * @param timeout entry valid time
-     * @throws RemoteException
+     * @throws RemoteException if the RMI call fails
      */
     void out(Serializable key, Serializable value, long timeout)
         throws RemoteException;
@@ -58,7 +58,7 @@ public interface RemoteSpace extends Remote {
      * Take an entry from the space, waiting forever until one exists.
      * @param key Entry's key
      * @return value
-     * @throws RemoteException
+     * @throws RemoteException if the RMI call fails
      */
     Serializable in(Serializable key)
         throws RemoteException;
@@ -67,7 +67,7 @@ public interface RemoteSpace extends Remote {
      * Read an entry from the space, waiting forever until one exists.
      * @param key Entry's key
      * @return value
-     * @throws RemoteException
+     * @throws RemoteException if the RMI call fails
      */
     Serializable rd(Serializable key)
         throws RemoteException;
@@ -78,7 +78,7 @@ public interface RemoteSpace extends Remote {
      * @param key Entry's key
      * @param timeout millis to wait
      * @return value or null
-     * @throws RemoteException
+     * @throws RemoteException if the RMI call fails
      */
     Serializable in(Serializable key, long timeout)
         throws RemoteException;
@@ -90,27 +90,27 @@ public interface RemoteSpace extends Remote {
      * @param key Entry's key
      * @param timeout millis to wait
      * @return value or null
-     * @throws RemoteException
+     * @throws RemoteException if the RMI call fails
      */
     Serializable rd(Serializable key, long timeout)
         throws RemoteException;
 
     /**
-     * In probe takes an entry from the space if one exists, 
+     * In probe takes an entry from the space if one exists,
      * return null otherwise.
      * @param key Entry's key
      * @return value or null
-     * @throws RemoteException
+     * @throws RemoteException if the RMI call fails
      */
     Serializable inp(Serializable key)
         throws RemoteException;
 
     /**
-     * Read probe reads an entry from the space if one exists, 
+     * Read probe reads an entry from the space if one exists,
      * return null otherwise.
      * @param key Entry's key
      * @return value or null
-     * @throws RemoteException
+     * @throws RemoteException if the RMI call fails
      */
     Serializable rdp(Serializable key)
         throws RemoteException;

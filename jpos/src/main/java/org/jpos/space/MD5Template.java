@@ -27,21 +27,45 @@ import java.util.Arrays;
 
 import org.jpos.iso.ISOUtil;
 
+/**
+ * Space {@link Template} that compares entries by an MD5 digest of their
+ * serialized form rather than by reference equality.
+ */
 public class MD5Template implements Template, Serializable  {
     private static final long serialVersionUID = -1204861759575740048L;
+    /** Digest of the serialized comparison value. */
     byte[] digest;
+    /** Key associated with this template. */
     Object key;
 
+    /**
+     * Constructs a template that matches entries whose serialized form digests to {@code value}.
+     *
+     * @param key entry key
+     * @param value reference value to digest
+     */
     public MD5Template (Object key, Object value) {
         super ();
         this.key    = key;
         this.digest = digest (value);
     }
+    /**
+     * Constructs a template directly from a precomputed digest.
+     *
+     * @param key entry key
+     * @param digest precomputed MD5 digest
+     */
     public MD5Template (Object key, byte[] digest) {
         super ();
         this.key = key;
         this.digest = digest;
     }
+    /**
+     * Computes the MD5 digest of {@code obj}'s serialized form.
+     *
+     * @param obj object to digest
+     * @return the MD5 digest bytes
+     */
     public byte[] digest (Object obj) {
         try {
             MessageDigest md = MessageDigest.getInstance ("MD5");
@@ -59,12 +83,27 @@ public class MD5Template implements Template, Serializable  {
         assert false : "hashCode not designed";
         return 42;
     }
+    /**
+     * Returns the key this template is registered under.
+     *
+     * @return the entry key
+     */
     public Object getKey () {
         return key;
     }
+    /**
+     * Returns the digest used for comparison.
+     *
+     * @return the MD5 digest bytes
+     */
     public byte[] getDigest () {
         return digest;
     }
+    /**
+     * Returns the digest as a hex-encoded string.
+     *
+     * @return the digest hex string
+     */
     public String getDigestAsString () {
         return ISOUtil.hexString (digest);
     }
@@ -74,8 +113,15 @@ public class MD5Template implements Template, Serializable  {
         sb.append (key);
         sb.append ("', digest=");
         sb.append (getDigestAsString ());
-        return sb.toString();        
+        return sb.toString();
     }
+    /**
+     * Serializes {@code obj} via {@link ObjectOutputStream}, returning the resulting bytes.
+     *
+     * @param obj object to serialize
+     * @return the serialized byte array
+     * @throws IOException if writing fails
+     */
     public static byte[] serialize (Object obj) throws IOException {
         ByteArrayOutputStream baos;
         ObjectOutputStream oos;

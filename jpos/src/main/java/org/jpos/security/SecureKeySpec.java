@@ -144,6 +144,7 @@ public class SecureKeySpec
      */
     protected String keyName;
 
+    /** Default constructor. */
     public SecureKeySpec() {
         super();
     }
@@ -174,7 +175,7 @@ public class SecureKeySpec
      * LMK protection)</i>
      * This might be different than the bit length of the secureKeyBytes.
      *
-     * @param keyLength
+     * @param keyLength clear key length in bits
      */
     public void setKeyLength(int keyLength) {
         this.keyLength = keyLength;
@@ -252,6 +253,11 @@ public class SecureKeySpec
         return keyBlockVersion;
     }
 
+    /**
+     * Sets the key-block version character (byte 0 of the key block).
+     *
+     * @param keyBlockVersion the version character
+     */
     public void setKeyBlockVersion(char keyBlockVersion) {
         this.keyBlockVersion = keyBlockVersion;
     }
@@ -265,6 +271,11 @@ public class SecureKeySpec
         return keyUsage;
     }
 
+    /**
+     * Sets the primary key usage (bytes 5-6 of the key block).
+     *
+     * @param keyUsage the new key usage
+     */
     public void setKeyUsage(KeyUsage keyUsage) {
         this.keyUsage = keyUsage;
     }
@@ -279,6 +290,11 @@ public class SecureKeySpec
         return algorithm;
     }
 
+    /**
+     * Sets the cryptographic algorithm (byte 7 of the key block).
+     *
+     * @param algorithm the new algorithm
+     */
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
     }
@@ -292,6 +308,11 @@ public class SecureKeySpec
         return modeOfUse;
     }
 
+    /**
+     * Sets the mode of use (byte 8 of the key block).
+     *
+     * @param modeOfUse the new mode of use
+     */
     public void setModeOfUse(ModeOfUse modeOfUse) {
         this.modeOfUse = modeOfUse;
     }
@@ -306,6 +327,11 @@ public class SecureKeySpec
         return keyVersion;
     }
 
+    /**
+     * Sets the key version (bytes 9-10 of the key block).
+     *
+     * @param keyVersion the new key version
+     */
     public void setKeyVersion(String keyVersion) {
         this.keyVersion = keyVersion;
     }
@@ -320,6 +346,11 @@ public class SecureKeySpec
         return exportability;
     }
 
+    /**
+     * Sets the exportability (byte 11 of the key block).
+     *
+     * @param exportability the new exportability flag
+     */
     public void setExportability(Exportability exportability) {
         this.exportability = exportability;
     }
@@ -335,6 +366,11 @@ public class SecureKeySpec
         return reserved;
     }
 
+    /**
+     * Sets the reserved field (bytes 14-15 of the key block).
+     *
+     * @param reserved the new reserved value
+     */
     public void setReserved(String reserved) {
         this.reserved = reserved;
     }
@@ -369,6 +405,11 @@ public class SecureKeySpec
         return keyBlockMAC;
     }
 
+    /**
+     * Sets the key block MAC.
+     *
+     * @param keyBlockMAC the MAC bytes
+     */
     public void setKeyBlockMAC(byte[] keyBlockMAC) {
         this.keyBlockMAC = keyBlockMAC;
     }
@@ -383,6 +424,8 @@ public class SecureKeySpec
     }
 
     /**
+     * Returns the secure (LMK-protected) key bytes.
+     *
      * @return The bytes representing the secured key
      */
     public byte[] getKeyBytes() {
@@ -485,6 +528,12 @@ public class SecureKeySpec
         p.println(indent + "</secure-key-spec>");
     }
 
+    /**
+     * Renders the key-block header fields (version/usage/algorithm/etc.) as XML, indented for {@link #dump}.
+     *
+     * @param indent indent prefix to apply to every emitted line
+     * @return the rendered header XML, or {@code null} if no header fields are set
+     */
     protected String formKeyHeader(String indent) {
         String inner = indent + "  ";
         try (

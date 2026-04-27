@@ -20,10 +20,30 @@ package org.jpos.function;
 
 import java.util.Objects;
 
+/**
+ * Three-argument variant of {@link java.util.function.Consumer}.
+ *
+ * @param <T> first argument type
+ * @param <U> second argument type
+ * @param <V> third argument type
+ */
 @FunctionalInterface
 public interface TriConsumer<T, U, V> {
+    /**
+     * Performs this operation on the given arguments.
+     *
+     * @param t first argument
+     * @param u second argument
+     * @param v third argument
+     */
     void accept(T t, U u, V v);
 
+    /**
+     * Returns a composed {@code TriConsumer} that runs this consumer and then {@code after}.
+     *
+     * @param after the consumer to run after this one
+     * @return the composed consumer
+     */
     default TriConsumer<T, U, V> andThen(TriConsumer<? super T, ? super U, ? super V> after) {
         Objects.requireNonNull(after);
         return (t, u, v) -> {

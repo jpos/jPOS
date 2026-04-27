@@ -21,6 +21,11 @@ package org.jpos.log.evt;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jpos.log.AuditLogEvent;
 
+/**
+ * Audit event carrying a free-form log message.
+ *
+ * @param msg message text, serialised under the {@code m} property
+ */
 public record LogMessage(@JsonProperty("m") String msg) implements AuditLogEvent {
     @Override
     public String toString() {

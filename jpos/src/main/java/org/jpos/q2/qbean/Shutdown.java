@@ -20,7 +20,10 @@ package org.jpos.q2.qbean;
 
 import org.jpos.q2.QBeanSupport;
 
+/** QBean that shuts the hosting Q2 instance down as soon as it starts. */
 public class Shutdown extends QBeanSupport {
+    /** Default constructor; no instance state to initialise. */
+    public Shutdown() {}
     public void startService() {
         getServer().shutdown ();
     }

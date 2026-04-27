@@ -23,7 +23,10 @@ import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
 
+/** Markdown renderer that wraps the {@link Loggeable#dump(PrintStream, String)} output in an XML fenced block. */
 public final class LoggeableMarkdownLogRenderer implements LogRenderer<Loggeable> {
+    /** Default constructor; no instance state to initialise. */
+    public LoggeableMarkdownLogRenderer() {}
     @Override
     public void render(Loggeable obj, PrintStream ps, String indent) {
         ps.println("```xml");

@@ -58,7 +58,7 @@ public class RawChannel extends BaseChannel {
      * Construct server ISOChannel
      * @param p      an ISOPackager
      * @param header an optional raw header (i.e. TPDU)
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public RawChannel (ISOPackager p, byte[] header) throws IOException {
@@ -70,7 +70,7 @@ public class RawChannel extends BaseChannel {
      * @param p      an ISOPackager
      * @param header an optional raw header (i.e. TPDU)
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public RawChannel (ISOPackager p, byte[] header, ServerSocket serverSocket) 

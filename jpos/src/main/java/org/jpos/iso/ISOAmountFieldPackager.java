@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Marker interface for field packagers that handle ISO-8583 amount fields.
  * @author joconnor
  * @version $Revision$ $Date$
  */

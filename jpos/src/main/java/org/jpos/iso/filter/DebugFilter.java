@@ -24,7 +24,10 @@ import org.jpos.iso.ISOChannel;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Dumpable;
 
+/** Diagnostic filter that adds the raw header/image bytes to the log event for inspection. */
 public class DebugFilter implements RawIncomingFilter {
+    /** Default constructor; no instance state to initialise. */
+    public DebugFilter() {}
     public ISOMsg filter(ISOChannel channel, ISOMsg m, byte[] header, byte[] image, LogEvent evt)
             throws VetoException
     {

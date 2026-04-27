@@ -34,27 +34,58 @@ import org.jpos.iso.ISOException;
 public class ISOVException extends ISOException {
 
     private static final long serialVersionUID = 8609716526640071611L;
+    /**
+     * Constructs a validator exception with the given message.
+     *
+     * @param Description failure description
+     */
     public ISOVException( String Description ) {
         super( Description );
     }
 
+    /**
+     * Constructs a validator exception with the given message and the offending error component.
+     *
+     * @param Description failure description
+     * @param errComponent the component that produced the error
+     */
     public ISOVException( String Description, ISOComponent errComponent ) {
         super( Description );
         this.errComponent = errComponent;
     }
 
+    /**
+     * Returns the component that produced the validation error.
+     *
+     * @return the offending {@link ISOComponent}, or {@code null} if not set
+     */
     public ISOComponent getErrComponent(){
         return this.errComponent;
     }
 
+    /**
+     * Indicates whether this exception has already been handled by a {@code catch} clause.
+     *
+     * @return the current treated flag
+     */
     public boolean treated() {
         return treated;
     }
 
+    /**
+     * Replaces the offending component associated with this exception.
+     *
+     * @param c the new error component
+     */
     public void setErrComponent( ISOComponent c ){
         this.errComponent = c;
     }
 
+    /**
+     * Marks this exception as treated (or untreated) by a containing {@code catch} clause.
+     *
+     * @param Treated new treated flag
+     */
     public void setTreated( boolean Treated ){
         treated = Treated;
     }
@@ -64,5 +95,6 @@ public class ISOVException extends ISOException {
      * necessary the replacement of the component by the
      * iso-error-component in the exception instance**/
     protected boolean treated = false;
+    /** The component flagged by this validation error. */
     protected ISOComponent errComponent;
 }

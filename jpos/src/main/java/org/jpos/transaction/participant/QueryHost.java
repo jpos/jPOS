@@ -33,7 +33,13 @@ import org.jpos.util.Chronometer;
 import org.jpos.util.NameRegistrar;
 import org.jpos.transaction.Context;
 
+/**
+ * Transaction participant that routes the request to a downstream MUX,
+ * waits for the response (synchronously or via continuations), and stores
+ * the response back into the {@link Context}.
+ */
 public class QueryHost implements TransactionParticipant, Configurable {
+    /** Default {@link Context} key used to override the per-transaction timeout. */
     public static final String TIMEOUT_NAME = "QUERYHOST_TIMEOUT";
 
     private static final long DEFAULT_TIMEOUT = 30000L;
@@ -50,6 +56,7 @@ public class QueryHost implements TransactionParticipant, Configurable {
     private boolean ignoreUnreachable;
     private boolean checkConnected= true;
 
+    /** Default constructor. */
     public QueryHost () {
         super();
     }
@@ -108,6 +115,13 @@ public class QueryHost implements TransactionParticipant, Configurable {
         checkConnected = cfg.getBoolean("check-connected", checkConnected);
     }
 
+    /**
+     * Resolves the per-transaction request timeout, honouring any value the
+     * upstream code stashed in the context under {@link #TIMEOUT_NAME}.
+     *
+     * @param ctx transaction context
+     * @return effective timeout in milliseconds
+     */
     protected long resolveTimeout(Context ctx) {
         Object o = ctx.get(timeoutName);
         if (o == null)
@@ -118,6 +132,13 @@ public class QueryHost implements TransactionParticipant, Configurable {
             return Long.parseLong(o.toString());
     }
 
+    /**
+     * Indicates whether {@code mux} is currently connected, honouring the
+     * {@code check-connected} configuration switch.
+     *
+     * @param mux MUX selected for this transaction
+     * @return {@code true} if connectivity checks are disabled or the MUX reports connected
+     */
     protected boolean isConnected (MUX mux) {
         if (!checkConnected || mux.isConnected())
             return true;

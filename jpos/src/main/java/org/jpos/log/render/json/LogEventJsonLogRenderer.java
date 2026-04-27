@@ -41,9 +41,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/** JSON renderer for {@link LogEvent}, serialising tag/realm/payload via Jackson. */
 public final class LogEventJsonLogRenderer implements LogRenderer<LogEvent> {
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /** Default constructor. */
     public LogEventJsonLogRenderer() {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

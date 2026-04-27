@@ -59,21 +59,43 @@ import static org.jpos.transaction.ContextConstants.LOGEVT;
 import static org.jpos.transaction.ContextConstants.TIMESTAMP;
 
 
+/**
+ * Multi-participant transaction manager.
+ *
+ * <p>Reads contexts from a configured input space, walks each transaction
+ * through its prepare/commit/abort lifecycle, and persists state to a
+ * persistent space so in-flight transactions can be recovered after a
+ * restart.</p>
+ */
 @SuppressWarnings("unchecked")
-public class TransactionManager 
-    extends QBeanSupport 
+public class TransactionManager
+    extends QBeanSupport
     implements Runnable, TransactionConstants, TransactionManagerMBean, Loggeable, MetricsProvider {
 
+    /** Creates an unconfigured manager; configuration is supplied by Q2 at deploy time. */
+    public TransactionManager() {}
+
+    /** Space-key prefix used to persist a transaction's serialised context. */
     public static final String  CONTEXT    = "$CONTEXT.";
+    /** Space-key prefix used to persist a transaction's lifecycle state. */
     public static final String  STATE      = "$STATE.";
+    /** Space-key prefix used to persist a transaction's group execution stack. */
     public static final String  GROUPS     = "$GROUPS.";
+    /** Space-key under which retried transactions are queued for re-execution. */
     public static final String  RETRY_QUEUE = "$RETRY_QUEUE";
+    /** State marker indicating a transaction is in the prepare phase. */
     public static final Integer PREPARING  = 0;
+    /** State marker indicating a transaction is in the commit phase. */
     public static final Integer COMMITTING = 1;
+    /** State marker indicating a transaction has reached its terminal state. */
     public static final Integer DONE       = 2;
+    /** Group name used when no explicit group is configured. */
     public static final String  DEFAULT_GROUP = "";
+    /** Hard ceiling on participants traversed per transaction (loop prevention). */
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
+    /** Default maximum time, in milliseconds, that a session waits for input. */
     public static final long    MAX_WAIT = 15000L;
+    /** Configured group-name to participant-list mapping. */
     protected Map<String,List<TransactionParticipant>> groups;
     private Set<Destroyable> destroyables = new HashSet<>();
     private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<>();
@@ -174,22 +196,53 @@ public class TransactionManager
             }
         }
     }
+    /**
+     * Enqueues a context at the tail of the input queue (FIFO ordering).
+     *
+     * @param context serialisable transaction context
+     */
     public void queue (Serializable context) {
         iisp.out(queue, context);
     }
+    /**
+     * Pushes a context onto the head of the input queue (LIFO ordering).
+     *
+     * @param context serialisable transaction context
+     */
     public void push (Serializable context) {
         iisp.push(queue, context);
     }
+    /**
+     * Returns the configured input queue name.
+     *
+     * @return the name of the input queue this manager consumes from
+     */
     @SuppressWarnings("unused")
     public String getQueueName() {
         return queue;
     }
+    /**
+     * Returns the volatile space used for in-flight transaction state.
+     *
+     * @return the working {@link Space}
+     */
     public Space getSpace() {
         return sp;
     }
+    /**
+     * Returns the externally visible input space used for queueing contexts.
+     *
+     * @return the input {@link Space}
+     */
     public Space getInputSpace() {
         return isp;
     }
+    /**
+     * Returns the persistent space used to recover in-flight transactions
+     * across restarts.
+     *
+     * @return the persistent {@link Space}
+     */
     public Space getPersistentSpace() {
         return psp;
     }
@@ -342,6 +395,11 @@ public class TransactionManager
         return head.get();
     }
 
+    /**
+     * Returns the count of transactions that have been picked up but not yet completed.
+     *
+     * @return number of in-flight transactions
+     */
     public long getInTransit () {
         return head.get() - tail.get();
     }
@@ -384,18 +442,33 @@ public class TransactionManager
         }
         freezeLog = cfg.getBoolean("freeze-log", true);
     }
+    /**
+     * Registers a listener that observes transaction lifecycle transitions.
+     *
+     * @param l listener to add
+     */
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
             statusListeners.add (l);
             hasStatusListeners = true;
         }
     }
+    /**
+     * Removes a previously registered status listener.
+     *
+     * @param l listener to remove
+     */
     public void removeListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
             statusListeners.remove(l);
             hasStatusListeners = !statusListeners.isEmpty();
         }
     }
+    /**
+     * Returns the TPS counter that tracks transactions per second for this manager.
+     *
+     * @return the {@link TPS} counter
+     */
     public TPS getTPS() {
         return tps;
     }
@@ -443,6 +516,19 @@ public class TransactionManager
         }
     }
 
+    /**
+     * Walks {@code members} in order, invoking each participant's commit phase
+     * and recording trace and timer information.
+     *
+     * @param session  session index that owns this transaction
+     * @param id       transaction identifier
+     * @param context  serialised transaction context
+     * @param members  participants whose commit hooks will run
+     * @param recover  when {@code true}, the manager is replaying a transaction
+     *                 after restart and should call {@link ContextRecovery}
+     * @param evt      optional log event to receive trace messages, or {@code null}
+     * @param prof     optional profiler to receive checkpoints, or {@code null}
+     */
     protected void commit
         (int session, long id, Serializable context, List<TransactionParticipant> members, boolean recover, LogEvent evt, Profiler prof)
     {
@@ -468,7 +554,20 @@ public class TransactionManager
             jfr.commit();
         }
     }
-    protected void abort 
+    /**
+     * Walks {@code members} in order, invoking each participant's abort phase
+     * and recording trace and timer information.
+     *
+     * @param session  session index that owns this transaction
+     * @param id       transaction identifier
+     * @param context  serialised transaction context
+     * @param members  participants whose abort hooks will run
+     * @param recover  when {@code true}, the manager is replaying a transaction
+     *                 after restart and should call {@link ContextRecovery}
+     * @param evt      optional log event to receive trace messages, or {@code null}
+     * @param prof     optional profiler to receive checkpoints, or {@code null}
+     */
+    protected void abort
         (int session, long id, Serializable context, List<TransactionParticipant> members, boolean recover, LogEvent evt, Profiler prof)
     {
         for (TransactionParticipant p :members) {
@@ -491,8 +590,19 @@ public class TransactionManager
             }
         }
     }
+    /**
+     * Invokes {@link AbortParticipant#prepareForAbort(long, Serializable)} on
+     * {@code p} when applicable, swallowing exceptions and recording timer
+     * metrics.
+     *
+     * @param p       participant
+     * @param id      transaction identifier
+     * @param context serialised transaction context
+     * @return result code from the participant, or {@code ABORTED | NO_JOIN}
+     *         when {@code p} is not an {@link AbortParticipant} or threw
+     */
     protected int prepareForAbort
-        (TransactionParticipant p, long id, Serializable context) 
+        (TransactionParticipant p, long id, Serializable context)
     {
         Chronometer c = new Chronometer();
         try {
@@ -509,8 +619,17 @@ public class TransactionManager
         }
         return ABORTED | NO_JOIN;
     }
-    protected int prepare 
-        (TransactionParticipant p, long id, Serializable context) 
+    /**
+     * Invokes the prepare phase on {@code p}, swallowing exceptions (logged as
+     * warnings) and recording timer metrics.
+     *
+     * @param p       participant
+     * @param id      transaction identifier
+     * @param context serialised transaction context
+     * @return result code from the participant, or {@code ABORTED} when {@code p} threw
+     */
+    protected int prepare
+        (TransactionParticipant p, long id, Serializable context)
     {
         Chronometer c = new Chronometer();
         try {
@@ -526,8 +645,16 @@ public class TransactionManager
         }
         return ABORTED;
     }
-    protected void commit 
-        (TransactionParticipant p, long id, Serializable context) 
+    /**
+     * Invokes the commit phase on {@code p}, swallowing exceptions (logged as
+     * warnings) and recording timer metrics.
+     *
+     * @param p       participant
+     * @param id      transaction identifier
+     * @param context serialised transaction context
+     */
+    protected void commit
+        (TransactionParticipant p, long id, Serializable context)
     {
         Chronometer c = new Chronometer();
         try {
@@ -541,8 +668,16 @@ public class TransactionManager
                 metrics.record(getName(p) + "-commit", c.elapsed());
         }
     }
-    protected void abort 
-        (TransactionParticipant p, long id, Serializable context) 
+    /**
+     * Invokes the abort phase on {@code p}, swallowing exceptions (logged as
+     * warnings) and recording timer metrics.
+     *
+     * @param p       participant
+     * @param id      transaction identifier
+     * @param context serialised transaction context
+     */
+    protected void abort
+        (TransactionParticipant p, long id, Serializable context)
     {
         Chronometer c = new Chronometer();
         try {
@@ -556,6 +691,22 @@ public class TransactionManager
                 metrics.record(getName(p) + "-abort", c.elapsed());
         }
     }
+    /**
+     * Drives the prepare phase across {@code iter}, accumulating results into
+     * {@code members} and aborting on retry signals or participant exceptions.
+     *
+     * @param session     session index that owns this transaction
+     * @param id          transaction identifier
+     * @param context     serialised transaction context
+     * @param members     accumulator of participants whose prepare ran
+     * @param iter        participant iterator (may include selectors / groups)
+     * @param abort       when {@code true}, drive the prepare-for-abort path
+     * @param evt         optional log event to receive trace messages, or {@code null}
+     * @param prof        optional profiler to receive checkpoints, or {@code null}
+     * @param chronometer chronometer used to enforce {@code max-time}
+     * @return the bitwise OR of every participant result, suitable for the
+     *         lifecycle dispatcher
+     */
     protected int prepare
         (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof, Chronometer chronometer)
     {
@@ -676,6 +827,13 @@ public class TransactionManager
         }
         return abort ? retry ? RETRY : ABORTED : PREPARED;
     }
+    /**
+     * Returns the configured participants for a named group.
+     *
+     * @param groupName group name (use {@link #DEFAULT_GROUP} for the default chain)
+     * @return participants in declaration order; an empty list when {@code groupName}
+     *         is unknown
+     */
     protected List<TransactionParticipant> getParticipants (String groupName) {
         List<TransactionParticipant> participants = groups.get (groupName);
         if (participants == null) {
@@ -683,6 +841,13 @@ public class TransactionManager
         }
         return participants;
     }
+    /**
+     * Returns the participant chain for a specific transaction, combining the
+     * default group with any groups pushed onto the persistent execution stack.
+     *
+     * @param id transaction identifier
+     * @return participants to invoke in order
+     */
     protected List<TransactionParticipant> getParticipants (long id) {
     	// Use a local copy of participant to avoid adding the 
         // GROUP participant to the DEFAULT_GROUP
@@ -699,6 +864,13 @@ public class TransactionManager
         return participantsChain;
     }
 
+    /**
+     * Instantiates and registers any {@code <status-listener>} children of the
+     * QBean descriptor.
+     *
+     * @param config descriptor element
+     * @throws ConfigurationException if a listener cannot be instantiated or configured
+     */
     protected void initStatusListeners (Element config)  throws ConfigurationException{
         final Iterator iter = config.getChildren ("status-listener").iterator();
         while (iter.hasNext()) {
@@ -710,7 +882,16 @@ public class TransactionManager
         }
     }
 
-    protected void initParticipants (Element config) 
+    /**
+     * Builds the default participant group plus any named {@code <group>}
+     * children from the QBean descriptor.
+     *
+     * @param config descriptor element
+     * @throws ConfigurationException if a group is missing a name, duplicates an
+     *                                existing group, or a participant fails to
+     *                                instantiate
+     */
+    protected void initParticipants (Element config)
         throws ConfigurationException
     {
         groups.put (DEFAULT_GROUP,  initGroup (config));
@@ -726,7 +907,15 @@ public class TransactionManager
             groups.put (name, initGroup (e));
         }
     }
-    protected List<TransactionParticipant> initGroup (Element e) 
+    /**
+     * Instantiates the participants declared inside a {@code <group>} element,
+     * skipping any that are explicitly disabled.
+     *
+     * @param e group element
+     * @return participants in declaration order
+     * @throws ConfigurationException if a participant fails to instantiate
+     */
+    protected List<TransactionParticipant> initGroup (Element e)
         throws ConfigurationException
     {
         List<TransactionParticipant> group = new ArrayList<>();
@@ -739,6 +928,16 @@ public class TransactionManager
         }
         return group;
     }
+    /**
+     * Instantiates a participant from a {@code <participant>} element,
+     * configures it, registers per-participant timers, and tracks any
+     * {@link Destroyable} for cleanup at shutdown.
+     *
+     * @param e participant element
+     * @return the configured participant
+     * @throws ConfigurationException if instantiation, configuration, or
+     *                                timer registration fails
+     */
     public TransactionParticipant createParticipant (Element e)
         throws ConfigurationException
     {
@@ -776,6 +975,14 @@ public class TransactionManager
             return ((LocalSpace) iisp).size(queue);
         return -1;
     }
+    /**
+     * Builds a persistent-space key by combining the manager name, a prefix,
+     * and the transaction id.
+     *
+     * @param prefix key namespace (e.g. {@link #CONTEXT}, {@link #STATE})
+     * @param id     transaction identifier
+     * @return the assembled space key
+     */
     protected String getKey (String prefix, long id) {
         StringBuilder sb = new StringBuilder (getName());
         sb.append ('.');
@@ -783,17 +990,32 @@ public class TransactionManager
         sb.append (id);
         return sb.toString ();
     }
+    /**
+     * Disables auto-commit on a {@link JDBMSpace}; no-op for other space types.
+     *
+     * @param sp the space whose auto-commit should be turned off
+     */
     protected void commitOff (Space sp) {
         if (sp instanceof JDBMSpace jsp) {
             jsp.setAutoCommit(false);
         }
     }
+    /**
+     * Re-enables auto-commit on a {@link JDBMSpace}, flushing any pending
+     * writes; no-op for other space types.
+     *
+     * @param sp the space whose auto-commit should be turned back on
+     */
     protected void commitOn (Space sp) {
         if (sp instanceof JDBMSpace jsp) {
             jsp.commit ();
             jsp.setAutoCommit(true);
         }
     }
+    /**
+     * Advances the persistent {@code tail} pointer past any contiguous
+     * already-DONE transactions, purging their state from the space.
+     */
     protected void checkTail () {
         tailLock.lock();
         try {
@@ -804,6 +1026,12 @@ public class TransactionManager
             tailLock.unlock();
         }
     }
+    /**
+     * Returns whether the transaction at {@code tail} is already DONE; when
+     * {@code true}, removes its persistent state.
+     *
+     * @return {@code true} when the tail transaction has reached terminal state
+     */
     protected boolean tailDone () {
         String stateKey = getKey(STATE, tail.get());
         if (DONE.equals (psp.rdp (stateKey))) {
@@ -812,9 +1040,24 @@ public class TransactionManager
         }
         return false;
     }
+    /**
+     * Snapshots the context for transaction {@code id} without changing its state.
+     *
+     * @param id      transaction identifier
+     * @param context serialised transaction context, or {@code null} to clear it
+     */
     protected void snapshot (long id, Serializable context) {
         snapshot (id, context, null);
     }
+    /**
+     * Snapshots the context and optionally updates the persisted state for
+     * transaction {@code id}. Skipped when recovery is disabled and the
+     * status is not {@link #DONE}.
+     *
+     * @param id      transaction identifier
+     * @param context serialised transaction context, or {@code null} to clear it
+     * @param status  new persisted state, or {@code null} to leave it unchanged
+     */
     protected void snapshot (long id, Serializable context, Integer status) {
         if (!doRecover && status != DONE)
             return; // nothing to do
@@ -837,6 +1080,12 @@ public class TransactionManager
         }
         jfr.commit();
     }
+    /**
+     * Atomically replaces the persisted lifecycle state for {@code id}.
+     *
+     * @param id    transaction identifier
+     * @param state new state, or {@code null} to clear it
+     */
     protected void setState (long id, Integer state) {
         String stateKey  = getKey (STATE, id);
         synchronized (psp) {
@@ -847,10 +1096,23 @@ public class TransactionManager
             commitOn (psp);
         }
     }
+    /**
+     * Pushes a group name onto the persistent execution stack for {@code id}.
+     *
+     * @param id        transaction identifier
+     * @param groupName group to schedule, or {@code null} for a no-op
+     */
     protected void addGroup (long id, String groupName) {
         if (groupName != null)
             psp.out (getKey (GROUPS, id), groupName);
     }
+    /**
+     * Removes persistent state associated with a transaction.
+     *
+     * @param id   transaction identifier
+     * @param full when {@code true}, also removes the lifecycle state entry
+     *             (otherwise only context and group entries are cleared)
+     */
     protected void purge (long id, boolean full) {
         String stateKey   = getKey (STATE, id);
         String contextKey = getKey (CONTEXT, id);
@@ -865,6 +1127,10 @@ public class TransactionManager
         }
     }
 
+    /**
+     * Replays every in-flight transaction recorded in the persistent space,
+     * advancing the tail pointer as each completes. No-op when recovery is disabled.
+     */
     protected void recover () {
         if (doRecover) {
             if (tail.get() < head.get()) {
@@ -875,6 +1141,12 @@ public class TransactionManager
             }
         }
     }
+    /**
+     * Replays a single transaction by inspecting its persisted state and
+     * driving either the commit or abort path before purging its state.
+     *
+     * @param id transaction identifier
+     */
     protected void recover (long id) {
         LogEvent evt = getLog().createLogEvent ("recover");
         Profiler prof = new Profiler();
@@ -905,6 +1177,10 @@ public class TransactionManager
             Logger.log (evt);
         }
     }
+    /**
+     * Lazily starts the {@link RetryTask} that drains the retry queue back into
+     * the input space.
+     */
     protected synchronized void checkRetryTask () {
         if (retryTask == null) {
             retryTask = new RetryTask();
@@ -926,7 +1202,13 @@ public class TransactionManager
         return freezeLog ? new FrozenLogEvent(evt) : evt;
     }
 
+    /**
+     * Background task that periodically pushes any contexts written to the
+     * {@link #RETRY_QUEUE} back onto the input queue.
+     */
     public class RetryTask implements Runnable {
+        /** Creates the retry task bound to the enclosing manager. */
+        public RetryTask() {}
         @Override
         public void run() {
             Thread.currentThread().setName (getName()+"-retry-task");
@@ -941,7 +1223,13 @@ public class TransactionManager
         }
     }
 
+    /**
+     * Background task that throttles the input queue when active sessions
+     * exceed the configured threshold.
+     */
     public class InputQueueMonitor implements Runnable {
+        /** Creates the input-queue monitor bound to the enclosing manager. */
+        public InputQueueMonitor() {}
         @Override
         public void run() {
             Thread.currentThread().setName (getName()+"-input-queue-monitor");
@@ -982,9 +1270,11 @@ public class TransactionManager
         return Math.min(1000, count); // reasonable value for virtual thread creation within one second
     }
   
-    /** 
-     * This method returns true if current session should stop working on more messages
-     * @return
+    /**
+     * Hook used by subclasses to drain a session early. The default
+     * implementation never asks a session to stand down.
+     *
+     * @return {@code true} if the current session should stop accepting new transactions
      */
     protected boolean isSessionToStandDown() {
         return false;
@@ -994,15 +1284,34 @@ public class TransactionManager
     public int getActiveSessions() {
         return activeSessions.intValue();
     }
+    /**
+     * @return the maximum number of sessions this manager may scale up to
+     */
     public int getMaxSessions() {
         return maxSessions;
     }
+    /**
+     * Returns the current thread's transaction context as a raw {@link Serializable}.
+     *
+     * @return the thread-local context, or {@code null} when no transaction is in progress
+     */
     public static Serializable getSerializable() {
         return tlContext.get();
     }
+    /**
+     * Returns the current thread's transaction context, narrowed to the caller's expected type.
+     *
+     * @param <T> caller-supplied context type
+     * @return the thread-local context, or {@code null} when no transaction is in progress
+     */
     public static <T extends Serializable> T getContext() {
         return (T) tlContext.get();
     }
+    /**
+     * Returns the current thread's transaction id, when one is in progress.
+     *
+     * @return the thread-local transaction id, or {@code null}
+     */
     public static Long getId() {
         return tlId.get();
     }
@@ -1110,6 +1419,18 @@ public class TransactionManager
         return action;
     }
 
+    /**
+     * Per-participant configuration: short name, timeouts, dependency sets,
+     * and the timer bundle used to record per-phase metrics.
+     *
+     * @param name     short name used in trace messages and timer tags
+     * @param timeout  per-transaction soft timeout in milliseconds
+     * @param maxTime  hard ceiling in milliseconds (overrides {@code timeout} when smaller)
+     * @param requires names this participant requires from a prior {@code provides}
+     * @param provides names this participant exports for downstream {@code requires}
+     * @param optional names this participant may consume but does not require
+     * @param timers   per-phase Micrometer timers
+     */
     private record ParticipantParams (
       String name,
       long timeout,
@@ -1131,14 +1452,37 @@ public class TransactionManager
         io.micrometer.core.instrument.Timer abortTimer,
         io.micrometer.core.instrument.Timer snapshotTimer)
     { }
+    /**
+     * Single line of participant trace data accumulated on a {@link LogEvent}
+     * during a transaction's lifecycle.
+     *
+     * @param phase   lifecycle phase tag (e.g. {@code prepare}, {@code commit})
+     * @param message free-form message, typically the participant short name
+     * @param info    optional trailing info, rendered after the message
+     */
     public record Trace (String phase, String message, String info) {
         @Override
         public String toString() {
             return "%15s: %s%s".formatted(phase, message, info);
         }
+        /**
+         * Creates a trace line with no trailing info.
+         *
+         * @param phase   lifecycle phase tag
+         * @param message free-form message
+         * @return the assembled trace
+         */
         public static Trace of (String phase, String message) {
             return new Trace (phase, message, "");
         }
+        /**
+         * Creates a trace line with trailing info.
+         *
+         * @param phase   lifecycle phase tag
+         * @param message free-form message
+         * @param info    trailing info
+         * @return the assembled trace
+         */
         public static Trace of (String phase, String message, String info) {
             return new Trace (phase, message, info);
         }

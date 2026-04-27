@@ -30,6 +30,11 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Supplier;
 
+/**
+ * Holds a sensitive string in memory under AES-GCM encryption with a
+ * per-instance key, exposing the cleartext only on demand and zeroing
+ * the buffer when the instance is cleaned.
+ */
 public class SensitiveString implements Supplier<String>, AutoCloseable {
     private SecretKey key;
     private byte[] encoded;
@@ -45,6 +50,18 @@ public class SensitiveString implements Supplier<String>, AutoCloseable {
             Security.addProvider(new BouncyCastleProvider());
     }
 
+    /**
+     * Constructs a new SensitiveString holding the encrypted form of {@code s}.
+     *
+     * @param s plaintext to protect
+     * @throws NoSuchAlgorithmException if AES is unavailable
+     * @throws NoSuchPaddingException if the configured padding is unavailable
+     * @throws InvalidKeyException if the generated key is rejected
+     * @throws IllegalBlockSizeException on AES-GCM block-size errors
+     * @throws BadPaddingException on AES-GCM padding errors
+     * @throws NoSuchProviderException if the configured provider is unavailable
+     * @throws InvalidAlgorithmParameterException if the IV/parameters are rejected
+     */
     public SensitiveString(String s) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidAlgorithmParameterException {
         key = generateKey();
         encoded = encrypt(s.getBytes());
@@ -95,6 +112,7 @@ public class SensitiveString implements Supplier<String>, AutoCloseable {
         return b;
     }
 
+    /** Zeroes the encrypted buffer so the cleartext is no longer recoverable. */
     public void clean () {
         byte[] b = encoded;
         encoded = null;

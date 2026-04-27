@@ -30,64 +30,62 @@ import java.awt.event.MouseListener;
  * ISOMsgPanel
  * Swing based GUI to ISOMsg
  * @author apr@cs.com.uy
- * @author Kris Leite <kleite at imcsoftware.com>
+ * @author Kris Leite (kleite at imcsoftware.com)
  * @see org.jpos.iso.ISOMsg
  */
 @SuppressWarnings("deprecation")
 public class ISOMeter extends JComponent implements Runnable {
 
     private static final long serialVersionUID = -1770533267122111538L;
-    /**
+    /** Background color of the meter.
      * @serial
      */
     Color color = new Color (255, 255, 255);
-    /**
+    /** Off-screen image buffer.
      * @serial
      */
     Image im;
-    /**
+    /** Graphics context for the off-screen buffer.
      * @serial
      */
     Graphics img;
-    /**
+    /** Large and small fonts used for text rendering.
      * @serial
      */
     Font fontBig, fontSmall;
-    /**
+    /** Label shown for positive (inbound) activity.
      * @serial
      */
     String positiveText;
-    /**
+    /** Label shown for negative (outbound) activity.
      * @serial
      */
     String negativeText;
-    /**
+    /** Swing timer controlling periodic refresh.
      * @serial
      */
     Timer ti;
-    /**
-     * handle ISOMeter's counters outside of this class in order
-     * to reduce 'int' to 'String' conversions.
+    /** Positive counter string (managed externally to reduce int-to-String conversions).
      * @serial
      */
     String positiveCounter;
-    /**
+    /** Negative counter string.
      * @serial
      */
     String negativeCounter;
-    /**
+    /** Age counter for the positive text label.
      * @serial
      */
     int lastPositive;
-    /**
+    /** Age counter for the negative text label.
      * @serial
      */
     int lastNegative;
-    /**
+    /** Whether the channel is currently connected.
      * @serial
      */
     boolean connected;
-    /**
+    /** Parent channel panel that owns this meter.
      * @serial
      */
     ISOChannelPanel parent;
@@ -97,11 +95,11 @@ public class ISOMeter extends JComponent implements Runnable {
     final static int mass     = height/2;
     final static int MAX_VALUE = 1000;
 
-    /**
+    /** Y-coordinate samples for the waveform plot.
      * @serial
      */
     int[] yPoints;
-    /**
+    /** X-coordinate positions for the waveform plot.
      * @serial
      */
     int[] xPoints;
@@ -118,9 +116,14 @@ public class ISOMeter extends JComponent implements Runnable {
      */
     int refreshPanel = 50;
 
+    /** Off-screen image buffer used during repaint operations. */
     private Image imb;
+    /** Background thread that advances the animated meter display. */
     private Thread repaintThread;
 
+    /** Constructs an ISOMeter for the given channel panel.
+     * @param parent the parent ISOChannelPanel
+     */
     public ISOMeter(ISOChannelPanel parent) {
         super();
         this.parent = parent;
@@ -146,6 +149,7 @@ public class ISOMeter extends JComponent implements Runnable {
         addMouseListener(mouseListener);
     }
 
+    /** Starts the meter update thread. */
     public synchronized void start() {
         if (repaintThread == null) {
             repaintThread = new Thread (this,"ISOMeter");
@@ -154,6 +158,7 @@ public class ISOMeter extends JComponent implements Runnable {
         }
     }
 
+    /** Shows the log list panel. */
     public void showLogList() {
         JFrame f = new JFrame(parent.getSymbolicName());
         f.getContentPane().add(createLogList());
@@ -164,6 +169,9 @@ public class ISOMeter extends JComponent implements Runnable {
         f.show();
     }
 
+    /** Creates and returns the log list component.
+     * @return the log list JComponent
+     */
     public JComponent createLogList() {
         final JList logList = new JList(parent.getLog());
         JPanel A = new JPanel();
@@ -191,6 +199,9 @@ public class ISOMeter extends JComponent implements Runnable {
         return A;
     }
 
+    /** Sets the current meter value.
+     * @param val the value to display
+     */
     public void setValue(int val) {
         int y = mass - val%1000 * height / 2000;
         yPoints[width-1] = y;
@@ -198,13 +209,22 @@ public class ISOMeter extends JComponent implements Runnable {
         scroll();
     }
 
+    /** Sets whether the log list auto-scrolls.
+     * @param scroll if true, auto-scroll the log
+     */
     public void setScroll (boolean scroll) {
         this.scroll = scroll;
     }
+    /** Sets the refresh interval in milliseconds.
+     * @param refreshPanel the refresh interval
+     */
     public void setRefresh (int refreshPanel) {
         if (refreshPanel > 0)
             this.refreshPanel = refreshPanel;
     }
+    /** Sets whether the channel is connected.
+     * @param connected true if connected
+     */
     public void setConnected(boolean connected) {
         if (this.connected != connected) {
             if (!scroll)
@@ -216,12 +236,22 @@ public class ISOMeter extends JComponent implements Runnable {
         }
         this.connected = connected;
     }
+    /** Sets the positive counter display string.
+     * @param s the counter string
+     */
     public void setPositiveCounter(String s) {
         positiveCounter = s;
     }
+    /** Sets the negative counter display string.
+     * @param s the counter string
+     */
     public void setNegativeCounter(String s){
         negativeCounter = s;
     }
+    /** Sets the meter value with a text label.
+     * @param val        the numeric value
+     * @param textString the display text
+     */
     public void setValue(int val, String textString) {
         setValue(val);
         if (val < 0) {
@@ -233,12 +263,18 @@ public class ISOMeter extends JComponent implements Runnable {
             lastPositive = 0;
         }
     }
+    /** Paints the meter component by rendering the off-screen buffer.
+     * @param g the graphics context
+     */
     public void paint (Graphics g) {
         if (repaintThread == null)
             start();
         plot();
         g.drawImage (im, 0, 0, null);
     }
+    /** Returns the preferred size of this meter component.
+     * @return preferred dimensions
+     */
     public Dimension getPreferredSize() {
         return new Dimension(width, height);
     }
@@ -247,6 +283,7 @@ public class ISOMeter extends JComponent implements Runnable {
         if (continueScroll > 0)
             continueScroll--;
     }
+    /** Renders the meter display. */
     public void plot() {
        if (im == null) {
             im = createImage(width, height);
@@ -293,6 +330,7 @@ public class ISOMeter extends JComponent implements Runnable {
         img.drawString (p, width-55, 13);
         img.drawString (n, width-55, height-3);
     }
+    /** Repaint loop run by the background thread; triggers repaints at the configured interval. */
     public void run () {
         while (isShowing()) {
             if (continueScroll > 0)
@@ -305,6 +343,9 @@ public class ISOMeter extends JComponent implements Runnable {
         }
         repaintThread = null;
     }
+    /** Updates the component by delegating to {@link #paint(Graphics)}.
+     * @param g the graphics context
+     */
     public void update (Graphics g) {
         paint (g);
     }

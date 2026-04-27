@@ -22,8 +22,11 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import org.jpos.util.SystemMonitor;
 
+/** CLI command that dumps the system monitor (memory/threads/uptime). */
 @SuppressWarnings("unused")
 public class SYSMON implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public SYSMON() {}
     public void exec(CLIContext cli, String[] args) throws Exception {
         cli.printLoggeable(new SystemMonitor(), " ");
     }

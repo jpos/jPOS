@@ -27,6 +27,8 @@ import org.jpos.q2.CLISubSystem;
  * @author Felipph Calado - luizfelipph@gmail.com
  */
 public class DEPLOY implements CLISubSystem {
+    /** Default constructor; no instance state to initialise. */
+    public DEPLOY() {}
     @Override
     public String getPrompt(CLIContext ctx, String[] args) {
         return "deploy> ";

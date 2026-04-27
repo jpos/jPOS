@@ -31,32 +31,72 @@ import org.jpos.iso.validator.ISOVException;
  */
 public class IVA_ALPHANUMNOZERO extends IVA_ALPHANUM {
 
+    /** Default constructor. */
     public IVA_ALPHANUMNOZERO() {
         super();
     }
 
+    /**
+     * Constructs a validator using only a description.
+     *
+     * @param Description human-readable field description
+     */
     public IVA_ALPHANUMNOZERO( String Description ) {
         super( Description );
     }
 
+    /**
+     * Constructs a validator with explicit length bounds.
+     *
+     * @param minLen minimum acceptable length
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     */
     public IVA_ALPHANUMNOZERO( int minLen, int maxLen, String Description ) {
         super( minLen, maxLen, Description );
     }
 
+    /**
+     * Constructs a validator with a maximum length.
+     *
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     */
     public IVA_ALPHANUMNOZERO( int maxLen, String Description ) {
         super( maxLen, Description );
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param Description human-readable field description
+     */
     public IVA_ALPHANUMNOZERO( boolean breakOnError, String Description ) {
         this( Description );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag and a maximum length.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     */
     public IVA_ALPHANUMNOZERO( boolean breakOnError, int maxLen, String Description ) {
         this( maxLen, Description );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag and explicit length bounds.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param minLen minimum acceptable length
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     */
     public IVA_ALPHANUMNOZERO( boolean breakOnError, int minLen, int maxLen, String Description ) {
         this( minLen, maxLen, Description );
         this.breakOnError = breakOnError;
@@ -64,6 +104,10 @@ public class IVA_ALPHANUMNOZERO extends IVA_ALPHANUM {
 
     /**
      * Validate that the component is not zero-filled.
+     *
+     * @param f component to validate
+     * @return the validated (possibly wrapped) component
+     * @throws ISOException if {@link #breakOnError} is set and the field is zero-filled or fails alphanumeric validation
      */
     public ISOComponent validate ( ISOComponent f ) throws ISOException {
         ISOField c = (ISOField)f;

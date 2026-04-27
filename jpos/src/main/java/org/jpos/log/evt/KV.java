@@ -22,6 +22,13 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
+/**
+ * Key/value pair serialised as an XML {@code <entry>} element with the key
+ * rendered as an attribute and the value as element text.
+ *
+ * @param key   entry key, written as the {@code key} XML attribute
+ * @param value entry value, written as the element body
+ */
 @JacksonXmlRootElement(localName = "entry")
 public record KV(
   @JacksonXmlProperty(isAttribute = true, localName = "key") String key,

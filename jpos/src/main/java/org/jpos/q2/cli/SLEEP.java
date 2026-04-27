@@ -21,8 +21,11 @@ package org.jpos.q2.cli;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
+/** CLI command that pauses the CLI for a configurable number of seconds. */
 public class SLEEP implements CLICommand
 {
+    /** Default constructor; no instance state to initialise. */
+    public SLEEP() {}
     public void exec(CLIContext cli, String[] args) throws Exception
     {
         if (args.length > 1)

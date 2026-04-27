@@ -44,7 +44,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 import static org.bouncycastle.bcpg.ArmoredOutputStream.VERSION_HDR;
 
+/**
+ * PGP utility helpers used by jPOS for license verification, public-key
+ * loading, and simple encryption/decryption with Bouncy Castle.
+ */
 public class PGPHelper {
+    /** Utility class; instances carry no state. */
+    public PGPHelper() {}
     private static KeyFingerPrintCalculator fingerPrintCalculator = new BcKeyFingerprintCalculator();
     private static final String PUBRING = "META-INF/.pgp/pubring.asc";
     private static final String SIGNER = "license@jpos.org";
@@ -170,6 +176,11 @@ public class PGPHelper {
         }
         throw new IllegalArgumentException("Can't find encryption key in key ring.");
     }
+    /**
+     * Verifies the signature on the bundled licensee file using the embedded jPOS public key.
+     *
+     * @return {@code true} if the signature verifies, {@code false} otherwise (including any error)
+     */
     public static boolean checkSignature() {
         boolean ok = false;
         try (InputStream is = getLicenseeStream()) {
@@ -182,6 +193,14 @@ public class PGPHelper {
         return ok;
     }
 
+    /**
+     * Verifies the licensee file's signature, parses its metadata, and returns
+     * a packed status code combining expiration, fingerprint match, instance
+     * count, and revocation flags.
+     *
+     * @return packed status code; bits encode validity, expiration, fingerprint
+     *         match, revocation, and the configured instance count
+     */
     public static int checkLicense() {
         try (InputStream in = getLicenseeStream()){
             return checkLicense(in);
@@ -312,6 +331,12 @@ public class PGPHelper {
         File l = new File (lf != null ? lf : Q2.LICENSEE);
         return l.canRead() && l.length() < 8192 ? new FileInputStream(l) : Q2.class.getClassLoader().getResourceAsStream(Q2.LICENSEE);
     }
+    /**
+     * Returns the licensee file contents as a UTF-8 string with two leading blank lines.
+     *
+     * @return the licensee text, or empty if the licensee resource is unavailable
+     * @throws IOException if reading the licensee stream fails
+     */
     public static String getLicensee() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (InputStream is = getLicenseeStream()) {
@@ -327,10 +352,22 @@ public class PGPHelper {
         }
         return baos.toString(StandardCharsets.UTF_8.name());
     }
+    /**
+     * Returns the SHA hex hash of the licensee text as produced by {@link #getLicensee()}.
+     *
+     * @return the hex-encoded hash
+     * @throws IOException if the licensee stream cannot be read
+     * @throws NoSuchAlgorithmException if the configured digest is not available
+     */
     public static String getLicenseeHash() throws IOException, NoSuchAlgorithmException {
         return ISOUtil.hexString(hash(getLicensee()));
     }
 
+    /**
+     * Returns the resolved Q2 node number used during license validation.
+     *
+     * @return the Q2 node number, or 0 if it could not be resolved
+     */
     public static int node () {
         return node;
     }
@@ -352,10 +389,10 @@ public class PGPHelper {
      * @param armor true for ascii armor
      * @param ids destination ids
      * @return encrypted data.
-     * @throws IOException
-     * @throws PGPException
-     * @throws NoSuchProviderException
-     * @throws NoSuchAlgorithmException
+     * @throws IOException if reading {@code keyRing} or writing the encrypted output fails
+     * @throws PGPException if a PGP-level error occurs while building the message
+     * @throws NoSuchProviderException if the {@code BC} provider is not registered
+     * @throws NoSuchAlgorithmException if the requested cipher algorithm is unavailable
      */
     public static byte[] encrypt(byte[] clearData, InputStream keyRing,
                                  String fileName, boolean withIntegrityCheck,
@@ -422,10 +459,10 @@ public class PGPHelper {
      * @param armor true for ascii armor
      * @param ids destination ids
      * @return encrypted data.
-     * @throws IOException
-     * @throws PGPException
-     * @throws NoSuchProviderException
-     * @throws NoSuchAlgorithmException
+     * @throws IOException if {@code keyRing} cannot be opened or the encrypted output cannot be written
+     * @throws PGPException if a PGP-level error occurs while building the message
+     * @throws NoSuchProviderException if the {@code BC} provider is not registered
+     * @throws NoSuchAlgorithmException if the requested cipher algorithm is unavailable
      */
     public static byte[] encrypt(byte[] clearData, String keyRing,
                                  String fileName, boolean withIntegrityCheck,
@@ -438,12 +475,13 @@ public class PGPHelper {
      * decrypt the passed in message stream
      *
      * @param encrypted The message to be decrypted.
+     * @param keyIn secret key ring input stream
      * @param password  Pass phrase (key)
      * @return Clear text as a byte array. I18N considerations are not handled
      *         by this routine
-     * @throws IOException
-     * @throws PGPException
-     * @throws NoSuchProviderException
+     * @throws IOException if {@code keyIn} or the encrypted payload cannot be read
+     * @throws PGPException if a PGP-level error occurs while decrypting
+     * @throws NoSuchProviderException if the {@code BC} provider is not registered
      */
     public static byte[] decrypt(byte[] encrypted, InputStream keyIn, char[] password)
       throws IOException, PGPException, NoSuchProviderException {
@@ -501,18 +539,25 @@ public class PGPHelper {
      * decrypt the passed in message stream
      *
      * @param encrypted The message to be decrypted.
+     * @param keyIn path to the secret key ring file
      * @param password  Pass phrase (key)
      * @return Clear text as a byte array. I18N considerations are not handled
      *         by this routine
-     * @throws IOException
-     * @throws PGPException
-     * @throws NoSuchProviderException
+     * @throws IOException if the key file or encrypted payload cannot be read
+     * @throws PGPException if a PGP-level error occurs while decrypting
+     * @throws NoSuchProviderException if the {@code BC} provider is not registered
      */
     public static byte[] decrypt(byte[] encrypted, String keyIn, char[] password)
       throws IOException, PGPException, NoSuchProviderException {
         return decrypt (encrypted, new FileInputStream(keyIn), password);
     }
 
+    /**
+     * Returns the parsed jPOS {@link License} extracted from the licensee resource.
+     *
+     * @return the current license, including text and status flags
+     * @throws IOException if the licensee stream cannot be read
+     */
     public static License getLicense() throws IOException {
         return new License(getLicensee(), checkLicense());
     }

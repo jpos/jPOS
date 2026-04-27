@@ -33,15 +33,20 @@ import java.util.HashMap;
  *   <li>length is encoded as decimal characters
  * </ul>
  *
- * @author Grzegorz Wieczorek <grw1@wp.pl>
+ * @author Grzegorz Wieczorek (grw1 at wp.pl)
  */
 public class CharTagMap extends HashMap<String, CharTag> {
+    /** Default constructor; no instance state to initialise. */
+    public CharTagMap() {}
 
     static final String EXCEPTION_PREFIX = "BAD TLV FORMAT:";
 
+    /** Number of characters used to encode the tag identifier (default {@code 2}). */
     private int tagLen = 0x02;
+    /** Number of characters used to encode the length field (default {@code 3}). */
     private int lenLen = 0x03;
 
+    /** Whether the encoded layout swaps the tag and length blocks. */
     private boolean swapTagWithLength;
 
     /**
@@ -50,11 +55,11 @@ public class CharTagMap extends HashMap<String, CharTag> {
      * This method creates default TLV tag map which works on TLV data with
      * followng parameters:
      * <ul>
-     *   <li><em>TT</em> - 2 <tt>ASCII</tt> characters of tag identifier
-     *   <li><em>LLL</em> - 3 <tt>ASCII</tt> encoded decimal digits represents
+     *   <li><em>TT</em> - 2 {@code ASCII} characters of tag identifier
+     *   <li><em>LLL</em> - 3 {@code ASCII} encoded decimal digits represents
      *      tag value length
      *   </li>
-     *   <li><em>VAL</em> - 0 or more <i>(up to 999)</i> <tt>ASCII</tt>
+     *   <li><em>VAL</em> - 0 or more <i>(up to 999)</i> {@code ASCII}
      *      encoded characters represents tag value
      *   </li>
      * </ul>
@@ -175,6 +180,12 @@ public class CharTagMap extends HashMap<String, CharTag> {
         return tag;
     }
 
+    /**
+     * Validates that {@code tagId} is non-{@code null} and has exactly {@link #tagLen} characters.
+     *
+     * @param tagId candidate tag identifier
+     * @throws IllegalArgumentException if the tag is missing or wrong-sized
+     */
     protected void validateTag(String tagId) throws IllegalArgumentException {
         if (tagId == null)
             throw new IllegalArgumentException("Tag identifier have to be specified");

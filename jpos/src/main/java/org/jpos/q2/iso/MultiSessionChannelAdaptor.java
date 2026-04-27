@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
+ * Q2 QBean that manages multiple concurrent sessions over a single ISOChannel.
  * @author apr
  * @since 1.8.5
  */
@@ -42,6 +43,7 @@ public class MultiSessionChannelAdaptor
     ISOChannel[] channels;
     int roundRobinCounter = 0;
 
+    /** Default constructor. */
     public MultiSessionChannelAdaptor () {
         super ();
         resetCounters();
@@ -72,8 +74,10 @@ public class MultiSessionChannelAdaptor
     public void setSessions(int sessions) {
         this.sessions = sessions;
     }
+    /** Per-session worker that pulls requests from the in-queue and writes them to the channel. */
     @SuppressWarnings("unchecked")
     public class Sender implements Runnable {
+        /** Default constructor. */
         public Sender () {
             super ();
         }
@@ -109,10 +113,16 @@ public class MultiSessionChannelAdaptor
             disconnectAll();
         }
     }
+    /** Per-session worker that drains the channel and posts inbound messages to the out-queue. */
     @SuppressWarnings("unchecked")
     public class Receiver implements Runnable {
         int slot;
         ISOChannel channel;
+        /**
+         * Constructs a Receiver bound to a specific channel slot.
+         *
+         * @param slot index into the {@code channels} array
+         */
         public Receiver (int slot) {
             super ();
             this.channel = channels[slot];

@@ -47,6 +47,8 @@ public class ThroughputControl {
     private long[] sleep;
 
     /**
+     * Constructs a throttle limiting throughput to {@code maxTransactions} per period.
+     *
      * @param maxTransactions Transaction count threshold.
      * @param periodInMillis Time window, expressed in milliseconds.
      */
@@ -55,6 +57,8 @@ public class ThroughputControl {
               new int[] { periodInMillis });
     }
     /**
+     * Constructs a throttle with multiple parallel rate-limit windows.
+     *
      * @param maxTransactions An array with transaction count thresholds.
      * @param periodInMillis An array of time windows, expressed in milliseconds.
      */

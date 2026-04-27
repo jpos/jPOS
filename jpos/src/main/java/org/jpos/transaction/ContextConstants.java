@@ -18,29 +18,67 @@
 
 package org.jpos.transaction;
 
+/**
+ * Well-known keys for entries placed into a transaction {@link Context}.
+ *
+ * <p>Each constant's {@link #toString()} is the canonical context key used
+ * across jPOS participants and adaptors. Refer to the source for a concise
+ * description of each individual constant.
+ */
 public enum ContextConstants {
-    PROFILER, TIMESTAMP,
-    SOURCE, REQUEST, RESPONSE,
+    /** Per-transaction profiler instance. */
+    PROFILER,
+    /** Wall-clock timestamp captured when the transaction started. */
+    TIMESTAMP,
+    /** Source channel/peer from which the request originated. */
+    SOURCE,
+    /** Inbound request message. */
+    REQUEST,
+    /** Outbound response message. */
+    RESPONSE,
+    /** Aggregated log event for the transaction. */
     LOGEVT,
-    DB, TX,
+    /** Database connection or session reserved for this transaction. */
+    DB,
+    /** Database transaction handle, when applicable. */
+    TX,
+    /** International response code resolved during processing. */
     IRC,
+    /** Logical transaction name. */
     TXNNAME,
+    /** Final {@link org.jpos.rc.Result} of the transaction. */
     RESULT,
+    /** Merchant identifier. */
     MID,
+    /** Terminal identifier. */
     TID,
+    /** Processing code. */
     PCODE,
+    /** Cardholder/card data captured by the transaction. */
     CARD,
+    /** Transmission timestamp from the inbound message. */
     TRANSMISSION_TIMESTAMP,
+    /** Transaction timestamp from the inbound message. */
     TRANSACTION_TIMESTAMP,
+    /** Capture date for clearing/settlement. */
     CAPTURE_DATE,
+    /** POS data code describing the entry environment. */
     POS_DATA_CODE,
+    /** Settlement/transaction amount. */
     AMOUNT,
+    /** Cardholder-billing amount in the cardholder's local currency. */
     LOCAL_AMOUNT,
+    /** MTI of the original message, when echoing or reversing. */
     ORIGINAL_MTI,
+    /** STAN of the original message, when echoing or reversing. */
     ORIGINAL_STAN,
+    /** Transmission timestamp of the original message. */
     ORIGINAL_TIMESTAMP,
+    /** Data elements echoed from the original message. */
     ORIGINAL_DATA_ELEMENTS,
+    /** Routing destination chosen for the transaction. */
     DESTINATION,
+    /** Panic flag indicating the transaction must abort immediately. */
     PANIC;
 
     private final String name;

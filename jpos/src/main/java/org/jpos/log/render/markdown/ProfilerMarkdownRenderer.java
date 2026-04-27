@@ -24,7 +24,9 @@ import org.jpos.util.Profiler;
 import java.io.PrintStream;
 import java.util.Set;
 
+/** Markdown renderer for {@link Profiler} traces, emitted as a fenced code block. */
 public final class ProfilerMarkdownRenderer implements LogRenderer<Profiler> {
+    /** Default constructor. */
     public ProfilerMarkdownRenderer() {
     }
 

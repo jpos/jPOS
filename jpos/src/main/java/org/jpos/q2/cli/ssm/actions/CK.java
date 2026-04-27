@@ -30,6 +30,8 @@ import org.jpos.security.jceadapter.JCESecurityModule;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public class CK extends SsmActionBase {
+    /** Default constructor; no instance state to initialise. */
+    public CK() {}
 
     @Override
     protected boolean checkUsage(CLIContext cli, String[] strings) {

@@ -31,12 +31,24 @@ public class SimpleRC implements RC {
 
     }
 
+    /**
+     * Constructs a SimpleRC carrying only the response code.
+     *
+     * @param rc response code (must not be {@code null})
+     * @throws NullPointerException if {@code rc} is {@code null}
+     */
     public SimpleRC(String rc) {
         this.rc = rc;
         if (rc == null)
             throw new NullPointerException ();
     }
 
+    /**
+     * Constructs a SimpleRC with a response code and a human-readable display string.
+     *
+     * @param rc response code (must not be {@code null})
+     * @param display optional display string
+     */
     public SimpleRC (String rc, String display) {
         this(rc);
         this.display = display;

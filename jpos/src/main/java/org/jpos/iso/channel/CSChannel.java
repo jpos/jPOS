@@ -58,7 +58,7 @@ public class CSChannel extends BaseChannel {
     /**
      * Construct server ISOChannel
      * @param p     an ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see ISOPackager
      */
     public CSChannel (ISOPackager p) throws IOException {
@@ -68,7 +68,7 @@ public class CSChannel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see ISOPackager
      */
     public CSChannel (ISOPackager p, ServerSocket serverSocket)
@@ -77,8 +77,9 @@ public class CSChannel extends BaseChannel {
         super(p, serverSocket);
     }
     /**
-     * @param len the packed Message len
-     * @exception IOException
+     * Writes a 4-byte message length header to the output stream.
+     * @param len the packed message length
+     * @exception IOException on I/O failure
      */
     protected void sendMessageLength(int len) throws IOException {
         serverOut.write (len >> 8);
@@ -87,8 +88,10 @@ public class CSChannel extends BaseChannel {
         serverOut.write (0);
     }
     /**
-     * @return the Message len
-     * @exception IOException, ISOException
+     * Reads the 4-byte message length header from the input stream.
+     * @return the message length
+     * @exception IOException on I/O failure
+     * @exception ISOException on protocol error
      */
     protected int getMessageLength() throws IOException, ISOException {
         int l = 0;

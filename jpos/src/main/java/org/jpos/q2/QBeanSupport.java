@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
+ * Base class providing lifecycle management and configuration support for Q2 beans (QBean components).
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
@@ -49,10 +50,14 @@ public class QBeanSupport
     boolean modified;
     String name;
     String configuredRealm;
+    /** Logger associated with this bean. */
     protected Log log;
+    /** Configuration applied to this bean by the container. */
     protected Configuration cfg;
+    /** Lazily-allocated scheduler shared with subclasses; see {@link #getScheduledThreadPoolExecutor()}. */
     protected ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 
+    /** Default constructor. */
     public QBeanSupport () {
         super();
         setLogger (Q2.LOGGER_NAME);
@@ -68,6 +73,11 @@ public class QBeanSupport
     public Q2 getServer () {
         return server;
     }
+    /**
+     * Returns the {@link QFactory} associated with the hosting Q2 server.
+     *
+     * @return the server's QFactory
+     */
     public QFactory getFactory () {
         return getServer().getFactory ();
     }
@@ -103,10 +113,19 @@ public class QBeanSupport
         return log != null ? log.getLogger().getName() : null;
     }
 
+    /**
+     * Returns the {@link Log} used by this bean.
+     *
+     * @return the configured log instance, or {@code null} if logging has not been initialized
+     */
     public Log getLog () {
         return log;
     }
 
+    /**
+     * Returns the default realm for this bean; subclasses may override.
+     * @return default realm string, or null
+     */
     protected String defaultRealm() {
         return null;
     }
@@ -203,6 +222,11 @@ public class QBeanSupport
         return state >= 0 ? stateString[state] : "Unknown";
     }
 
+    /**
+     * Sets the lifecycle state of this bean.
+     *
+     * @param state one of the QBean state constants
+     */
     public void setState (int state) {
         this.state = state;
     }
@@ -218,6 +242,11 @@ public class QBeanSupport
         return persist;
     }
 
+    /**
+     * Marks this bean's persistent state as modified or in sync.
+     *
+     * @param modified {@code true} if the bean has unsaved changes
+     */
     public void setModified (boolean modified) {
         synchronized (this.modifyLock) {
             this.modified = modified;
@@ -231,6 +260,11 @@ public class QBeanSupport
         }
     }
 
+    /**
+     * Indicates whether this bean is currently starting or running.
+     *
+     * @return {@code true} if the state is {@link QBean#STARTING} or {@link QBean#STARTED}
+     */
     public boolean running () {
         return state == QBean.STARTING || state == QBean.STARTED;
     }
@@ -241,6 +275,11 @@ public class QBeanSupport
     {
         this.cfg = cfg;
     }
+    /**
+     * Returns the configuration applied to this bean.
+     *
+     * @return the bean's {@link Configuration}, or {@code null} if not yet configured
+     */
     public Configuration getConfiguration () {
         return cfg;
     }
@@ -263,6 +302,14 @@ public class QBeanSupport
             log.setDefaultTag("component", name);
     }
 
+    /**
+     * Returns a textual dump of this bean's state.
+     *
+     * <p>If the bean implements {@link Loggeable}, its {@code dump} output is returned;
+     * otherwise this delegates to {@link #toString()}.
+     *
+     * @return a string representation suitable for diagnostics
+     */
     public String getDump () {
         if (this instanceof Loggeable) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -272,17 +319,46 @@ public class QBeanSupport
         }
         return toString();
     }
+    /**
+     * Called during the init lifecycle phase; subclasses may override.
+     * @throws Exception on error
+     */
     protected void initService()    throws Exception {}
+    /**
+     * Called during the start lifecycle phase; subclasses may override.
+     * @throws Exception on error
+     */
     protected void startService()   throws Exception {}
+    /**
+     * Called during the stop lifecycle phase; subclasses may override.
+     * @throws Exception on error
+     */
     protected void stopService()    throws Exception {}
+    /**
+     * Called during the destroy lifecycle phase; subclasses may override.
+     * @throws Exception on error
+     */
     protected void destroyService() throws Exception {}
 
+    /**
+     * Lazily creates and returns a {@link ScheduledThreadPoolExecutor} for use by subclasses.
+     *
+     * @return shared scheduled executor for this bean
+     */
     protected synchronized ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor() {
         if (scheduledThreadPoolExecutor == null)
             scheduledThreadPoolExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
         return scheduledThreadPoolExecutor;
     }
 
+    /**
+     * Builds a JDOM {@link Element} reflecting the bean's persistent attributes,
+     * driven by the JavaBean introspection of {@code mbeanClass}.
+     *
+     * @param name the root element name
+     * @param mbeanClass the MBean interface whose properties drive serialization
+     * @return populated element ready for persistence
+     */
     protected Element createElement (String name, Class mbeanClass) {
         Element e = new Element (name);
         Element classPath = persist != null ?
@@ -315,6 +391,14 @@ public class QBeanSupport
         }
         return e;
     }
+    /**
+     * Appends an {@code <attr>} child element with name/type/value to {@code e}.
+     *
+     * @param e parent element
+     * @param name attribute name
+     * @param obj value (rendered via {@code toString()}; {@code null} becomes the literal "null")
+     * @param type optional Java type hint, or {@code null} to omit
+     */
     protected void addAttr (Element e, String name, Object obj, String type) {
         String value = obj == null ? "null" : obj.toString();
         Element attr = new Element ("attr");
@@ -324,13 +408,31 @@ public class QBeanSupport
         attr.setText (value);
         e.addContent (attr);
     }
+    /**
+     * Iterates over top-level {@code <attr>} children of the persisted element.
+     *
+     * @return iterator over the persisted attribute elements
+     */
     protected Iterator getAttrs () {
         return getPersist().getChildren ("attr").iterator();
     }
+    /**
+     * Iterates over {@code <attr>} children nested under the given parent element name.
+     *
+     * @param parent name of the parent element under {@link #getPersist()}
+     * @return iterator over the nested attribute elements
+     */
     protected Iterator getAttrs (String parent) {
         return getPersist().getChild(parent).
             getChildren("attr").iterator();
     }
+    /**
+     * Updates the value of the named attribute within an iterator of {@code <attr>} elements.
+     *
+     * @param attrs iterator over candidate attribute elements
+     * @param name name of the attribute to update
+     * @param obj new value (rendered via {@code toString()}; {@code null} becomes "null")
+     */
     protected void setAttr (Iterator attrs, String name, Object obj) {
         String value = obj == null ? "null" : obj.toString ();
         while (attrs.hasNext ()) {
@@ -341,10 +443,23 @@ public class QBeanSupport
             }
         }
     }
+    /**
+     * Iterates over {@code <property>} children nested under the given parent element name.
+     *
+     * @param parent name of the parent element under {@link #getPersist()}
+     * @return iterator over the nested property elements
+     */
     protected Iterator getProperties (String parent) {
         return getPersist().getChild (parent).
                getChildren ("property").iterator();
     }
+    /**
+     * Updates the value attribute of the named property within an iterator of {@code <property>} elements.
+     *
+     * @param props iterator over candidate property elements
+     * @param name name of the property to update
+     * @param value new value to assign
+     */
     protected void setProperty (Iterator props, String name, String value) {
         while (props.hasNext()) {
             Element e = (Element) props.next();
@@ -354,6 +469,13 @@ public class QBeanSupport
             }
         }
     }
+    /**
+     * Returns the value of the named property from an iterator of {@code <property>} elements.
+     *
+     * @param props iterator over candidate property elements
+     * @param name name of the property to look up
+     * @return the property's value, or {@code null} if not found
+     */
     protected String getProperty (Iterator props, String name) {
         while (props.hasNext()) {
             Element e = (Element) props.next();
@@ -363,6 +485,11 @@ public class QBeanSupport
         }
         return null;
     }
+    /**
+     * Closes a sequence of {@link Closeable} resources, logging any failures as a warning.
+     *
+     * @param closeables resources to close (each is closed independently of the others)
+     */
     protected void close (Closeable... closeables) {
         LogEvent evt = null;
         for (Closeable c : closeables) {

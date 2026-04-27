@@ -25,10 +25,14 @@ import org.jpos.ui.UIAware;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/** UI action that exits the application. */
 public class Exit implements ActionListener, UIAware {
+    /** The UI instance this action is associated with. */
     public UI ui;
+    /** The JVM exit code to use when the action is triggered. */
     public int exitCode = 0;
 
+    /** Default constructor. */
     public Exit () {
         super();
     }

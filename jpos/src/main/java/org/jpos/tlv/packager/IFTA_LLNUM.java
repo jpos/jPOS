@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.ObjectOutput;
 
 /**
+ * ISOFieldPackager for a 2-digit ASCII-length-prefixed numeric tagged field.
  * @author Vishnu Pillai
  */
 public class IFTA_LLNUM extends IFA_LLNUM implements TaggedFieldPackager {
@@ -40,10 +41,16 @@ public class IFTA_LLNUM extends IFA_LLNUM implements TaggedFieldPackager {
 
     private IF_CHAR tagPackager;
 
+    /** Default constructor. */
     public IFTA_LLNUM() {
         super();
     }
 
+    /**
+     * Constructs a packager with the given length and description.
+     * @param len field length
+     * @param description field description
+     */
     public IFTA_LLNUM(int len, String description) {
         super(len, description);
     }
@@ -65,14 +72,32 @@ public class IFTA_LLNUM extends IFA_LLNUM implements TaggedFieldPackager {
         return token;
     }
 
+    /**
+     * Returns the packager used to pack/unpack the tag field.
+     * @return the tag packager
+     */
     protected ISOFieldPackager getTagPackager() {
         return tagPackager;
     }
 
+    /**
+     * Packs the tag portion of the tagged field.
+     * @param c the ISO component
+     * @return packed tag bytes
+     * @throws ISOException on pack error
+     */
     protected byte[] packTag(ISOComponent c) throws ISOException {
         return getTagPackager().pack(new ISOField((Integer) c.getKey(), ((ISOTaggedField) c).getTag()));
     }
 
+    /**
+     * Unpacks the tag from a byte array.
+     * @param c        the ISO component
+     * @param tagBytes byte array containing tag data
+     * @param offset   starting offset
+     * @return number of bytes consumed
+     * @throws ISOException on unpack error
+     */
     protected int unpackTag(ISOComponent c, byte[] tagBytes, int offset) throws ISOException {
         ISOField tagField = new ISOField((Integer) c.getKey());
         int consumed = getTagPackager().unpack(tagField, tagBytes, offset);
@@ -80,6 +105,13 @@ public class IFTA_LLNUM extends IFA_LLNUM implements TaggedFieldPackager {
         return consumed;
     }
 
+    /**
+     * Unpacks the tag from an InputStream.
+     * @param c  the ISO component
+     * @param in the input stream
+     * @throws ISOException on unpack error
+     * @throws IOException on I/O error
+     */
     protected void unpackTag(ISOComponent c, InputStream in) throws ISOException, IOException {
         ISOField tagField = new ISOField((Integer) c.getKey());
         getTagPackager().unpack(tagField, in);

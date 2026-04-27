@@ -36,28 +36,54 @@ import java.util.Map;
  */
 @SuppressWarnings ("unused")
 public abstract class ISOBasePackager implements ISOPackager, LogSource {
+    /** Default constructor; no instance state to initialise. */
+    protected ISOBasePackager() {}
+    /** Per-field packagers indexed by field number. */
     protected ISOFieldPackager[] fld;
+    /** Field number that carries the tertiary bitmap as a Data Element, or {@code -999} if not used. */
     protected int thirdBitmapField= -999;       // for implementations where the tertiary bitmap is inside a Data Element
 
+    /** Logger used to record pack/unpack diagnostics; {@code null} disables logging. */
     protected Logger logger = null;
+    /** When {@code true}, field descriptions are emitted as XML comments in unpack logs. */
     protected boolean logFieldName= true;
+    /** Logger realm associated with this packager. */
     protected String realm = null;
+    /** Number of leading bytes treated as the ISO header during unpack. */
     protected int headerLength = 0;
 
+    /**
+     * Replaces the per-field packager array.
+     *
+     * @param fld new array of field packagers indexed by field number
+     */
     public void setFieldPackager (ISOFieldPackager[] fld) {
         this.fld = fld;
     }
 
+    /**
+     * Configures the Data Element field that holds the tertiary bitmap.
+     *
+     * @param f field number in the range [0, 128]
+     * @throws ISOException if {@code f} is outside the valid range
+     */
     public void setThirdBitmapField(int f) throws ISOException
     {
         if (f < 0 || f > 128)
             throw new ISOException("thirdBitmapField should be >= 0 and <= 128");
         thirdBitmapField= f;
     }
+    /**
+     * Returns the field number carrying the tertiary bitmap as a Data Element.
+     *
+     * @return the configured third-bitmap field number, or {@code -999} if not set
+     */
     public int getThirdBitmapField() { return thirdBitmapField; }
 
     /**
-     * @return true if BitMap have to be emited
+     * Indicates whether a primary bitmap is emitted on pack.
+     *
+     * @return {@code true} if the field-1 packager is an {@link ISOBitMapPackager}
      */
     protected boolean emitBitMap () {
         return fld[1] instanceof ISOBitMapPackager;
@@ -80,7 +106,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      *
      * @param   m   the Component to pack
      * @return      Message image
-     * @exception ISOException
+     * @exception ISOException if the component cannot be packed
      */
     @Override
     public byte[] pack (ISOComponent m) throws ISOException
@@ -218,7 +244,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @param   m   the Container of this message
      * @param   b   ISO message image
      * @return      consumed bytes
-     * @exception ISOException
+     * @exception ISOException if the message image cannot be unpacked
      */
     @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException {
@@ -430,6 +456,13 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     /**
      * Internal helper logging function.
      * Assumes evt is not null.
+     *
+     * @param evt the log event to append messages to (must not be {@code null})
+     * @param fldno the field number being unpacked
+     * @param c the unpacked component carrying the field value
+     * @param fld the field packager that produced {@code c}
+     * @param logFieldName when {@code true}, emits the field description as an XML comment
+     * @throws ISOException if the value cannot be rendered for logging
      */
     protected static void fieldUnpackLogger(LogEvent evt, int fldno, ISOComponent c, ISOFieldPackager fld, boolean logFieldName) throws ISOException
     {
@@ -454,6 +487,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
 
     /**
+     * Returns the human-readable description of a field as defined by its packager.
+     *
      * @param   m   the Container (i.e. an ISOMsg)
      * @param   fldNumber the Field Number
      * @return  Field Description
@@ -462,6 +497,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
         return fld[fldNumber].getDescription();
     }
     /**
+     * Returns the field packager registered for the given field number.
+     *
      * @param   fldNumber the Field Number
      * @return  Field Packager for this field
      */
@@ -469,6 +506,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
         return fld != null && fldNumber < fld.length ? fld[fldNumber] : null;
     }
     /**
+     * Replaces the packager registered for a single field.
+     *
      * @param   fldNumber the Field Number
      * @param   fieldPackager the Field Packager
      */
@@ -477,16 +516,25 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     {
         fld[fldNumber] = fieldPackager;
     }
+    /**
+     * Factory hook returning the {@link ISOMsg} subclass produced during unpack.
+     *
+     * @return a new {@link ISOMsg} instance
+     */
     public ISOMsg createISOMsg () {
         return new ISOMsg();
     }
     /**
+     * Returns the highest valid field number for this packager.
+     *
      * @return 128 for ISO-8583, should return 64 for ANSI X9.2
      */
     protected int getMaxValidField() {
         return 128;
     }
     /**
+     * Returns the field packager used for the primary bitmap.
+     *
      * @return suitable ISOFieldPackager for Bitmap
      */
     protected ISOFieldPackager getBitMapfieldPackager() {
@@ -502,10 +550,20 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     public Logger getLogger() {
         return logger;
     }
+    /**
+     * Returns the configured ISO header length in bytes.
+     *
+     * @return number of leading bytes treated as the ISO header during unpack
+     */
     public int getHeaderLength ()
     {
     	return headerLength;
     }
+    /**
+     * Sets the ISO header length in bytes.
+     *
+     * @param len number of leading bytes to treat as the ISO header during unpack
+     */
     public void setHeaderLength(int len)
     {
     	headerLength = len;

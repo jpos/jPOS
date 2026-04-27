@@ -20,10 +20,12 @@ package org.jpos.util;
 
 
 /**
+ * Implemented by objects that require explicit cleanup on shutdown; the container calls {@link #destroy()} during teardown.
  * @author apr@cs.com.uy
  * @version $Id$
  */
 public interface Destroyable {
+    /** Releases resources held by this object. */
     void destroy();
 }
 

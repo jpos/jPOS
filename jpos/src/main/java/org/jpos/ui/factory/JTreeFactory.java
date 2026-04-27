@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
+ * UIFactory that builds a Swing {@link JTree} from a nested {@code <tree>}/{@code <node>} configuration.
+ *
  * @author Alejandro Revilla
  *
  * Creates a JTree
@@ -55,6 +57,8 @@ import java.util.StringTokenizer;
  */
 @SuppressWarnings("unchecked")
 public class JTreeFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public JTreeFactory() {}
     public JComponent create (UI ui, Element e) {
         final UI parentUI = ui;
         final Map map = new HashMap ();

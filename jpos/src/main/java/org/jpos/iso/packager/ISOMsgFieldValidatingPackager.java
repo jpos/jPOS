@@ -36,6 +36,12 @@ import org.jpos.iso.*;
  */
 public class ISOMsgFieldValidatingPackager extends ISOMsgFieldPackager implements ISOValidator {
 
+    /**
+     * Constructs the validating packager from a field packager and a nested message packager.
+     *
+     * @param fieldPackager packager for the wrapping field
+     * @param msgPackager   packager that handles the inner ISO message
+     */
     public ISOMsgFieldValidatingPackager (
             ISOFieldPackager fieldPackager,
             ISOPackager msgPackager ){

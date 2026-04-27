@@ -18,7 +18,10 @@
 
 package org.jpos.iso;
 
+/** Encoding used for ISO-8583 composite (dataset) data elements. */
 public enum DatasetFormat {
+    /** BER-TLV encoded dataset. */
     TLV,
+    /** Data Bit Map encoded dataset. */
     DBM
 }

@@ -56,6 +56,8 @@ import java.io.Serializable;
  */
 public abstract class SecureKey
         implements Serializable, Loggeable {
+    /** Default constructor; no instance state to initialise. */
+    protected SecureKey() {}
     /**
      * Secure Key Bytes
      */
@@ -99,6 +101,8 @@ public abstract class SecureKey
     }
 
     /**
+     * Returns the secure (LMK-protected) key bytes.
+     *
      * @return The byte[] holding the secure key Bytes
      */
     public byte[] getKeyBytes () {
@@ -111,7 +115,7 @@ public abstract class SecureKey
      * (not in this class, but inside the security module).
      * This check value allows identifying if two secure keys map to the
      * same clear key.
-     * @param keyCheckValue
+     * @param keyCheckValue 3-byte (or longer) key check value
      */
     public void setKeyCheckValue (byte[] keyCheckValue) {
         this.keyCheckValue = keyCheckValue;
@@ -130,13 +134,15 @@ public abstract class SecureKey
     /**
      * Sets the length of the key (in bits) (when it was still clear).
      * This might be different than the bit length of the secureKeyBytes.
-     * @param keyLength
+     * @param keyLength clear key length in bits
      */
     public void setKeyLength (short keyLength) {
         this.keyLength = keyLength;
     }
 
     /**
+     * Returns the clear-key length in bits.
+     *
      * @return The Length of the secure key (when it was still clear)
      */
     public short getKeyLength () {
@@ -147,7 +153,7 @@ public abstract class SecureKey
      * Key Type is useful for stating what this key can be used for.
      * The value of Key Type specifies whether this secure key is a
      * TYPE_TMK (Terminal Master Key), TYPE_ZPK (Zone PIN Key)....<BR>
-     * @param keyType
+     * @param keyType key-type label (e.g. {@code TYPE_ZPK}, {@code TYPE_TMK})
      */
     public void setKeyType (String keyType) {
         this.keyType = keyType;
@@ -181,13 +187,16 @@ public abstract class SecureKey
     public abstract KeyScheme getScheme();
 
     /**
-     * optional key name
+     * Returns the optional key name.
+     *
+     * @return the configured key name, or {@code null} if none was set
      */
     public String getKeyName() {
         return this.keyName;
     }
     /**
-     * optional key name
+     * Sets the optional key name.
+     *
      * @param keyName string
      */
     public void setKeyName (String keyName) {

@@ -26,10 +26,12 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFB_LLLHBINARY extends ISOBinaryFieldPackager {
+    /** Default constructor. */
     public IFB_LLLHBINARY() {
         super(LiteralBinaryInterpreter.INSTANCE, BinaryPrefixer.BB);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

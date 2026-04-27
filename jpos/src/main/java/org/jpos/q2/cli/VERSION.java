@@ -29,8 +29,11 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.stream.Collectors;
 
+/** CLI command that prints jPOS version information; supports {@code -a} for full detail. */
 @SuppressWarnings("unused")
 public class VERSION implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public VERSION() {}
     public void exec(CLIContext cli, String[] args) throws IOException, NoSuchAlgorithmException {
         boolean all = args.length > 1 && args[1].startsWith("-a");
         if (args.length > 1 && !all) {

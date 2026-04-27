@@ -18,6 +18,36 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
+/** ISOMsgCounter implementation. */
+
 public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
     private final static Map<String, Function<ISOMsg,String>> aliases= Map.of(
             "mti",    (m) -> m.getString(0),
@@ -43,6 +73,9 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
     private Logger logger;
     private String realm;
 
+    /** Default constructor.
+     * @throws ConfigurationException if configuration fails
+     */
     public ISOMsgCounter() throws ConfigurationException {
         // Configure initial **default global** tags and fieldsets from env vars.
 
@@ -62,6 +95,7 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
 
 
     /**
+     * Returns the metric meters.
      * @return This overrides the default implementation, also including the keys from the internal field set.
      */
     @Override
@@ -234,6 +268,11 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
 
 
     // copySingleTag: copy the tag name as value if no colon syntax; else, set value as empty string
+    /** Parses tag-value pairs from a string.
+     * @param tp            tag-pair string to parse
+     * @param copySingleTag if true, copy single tags
+     * @return the parsed tag pairs
+     */
     protected Map<String,String> parseTagPairs(String tp, boolean copySingleTag) {
         Map<String,String> ret = new HashMap<>();
         String[] tagPairs = tp.trim().split("[, ]+");
@@ -248,6 +287,10 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
         return ret;
     }
 
+    /** Validates the field set map.
+     * @param fieldsMap the field set map to validate
+     * @throws ConfigurationException if validation fails
+     */
     protected void validateFieldSetMap(Map<String,String> fieldsMap) throws ConfigurationException {
         for (var valexpr : fieldsMap.values()) {
             boolean isField = valexpr.matches("^[0-9]+(\\.[0-9]+)*$");          // is isomsg field path dot-syntax?
@@ -268,18 +311,28 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
     }
 
 
-    /** returns a clone set, which may not be up to date next time you use it */
+    /**
+     * Returns a clone set, which may not be up to date next time you use it.
+     *
+     * @return a snapshot of the live meter set
+     */
     protected Set<Meter> getMeters() {
         return new HashSet<>(meters);
     }
 
     // useful for tests and debugging
+    /** Returns the configured field set map.
+     * @return the field set map
+     */
     protected Map<String,String> getFieldSet() {
         return Map.copyOf(fieldSet);
     }
 
 
     // Make Tags easy to navigate; do not abuse of this one unless you need repeated querying
+    /** Returns the metric tags as a map.
+     * @return the tags map
+     */
     public Map<String,String> getTagsAsMap() {
         Map<String,String> tm= new HashMap<>();                             // make Tags easy to navigate
         getTags().forEach(t->tm.put(t.getKey(),t.getValue()));
@@ -302,12 +355,16 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
 
     /**
     * Hook for subclasses to resolve, against an ISOMsg, the valexpr part of a tag:valexpr in a fieldset.
-    * <br/>
+    * <br>
     * A subclass may add or override its own aliases, or have a special way to convert "valexpr"
     * to a String taken from the given ISOMsg.
-    * <br/>
+    * <br>
     * If the subclass can't resolve the alias/valexpr, it may call super (i.e. this method)
     * as a fallback.
+    *
+    * @param m the ISOMsg whose fields are inspected
+    * @param val the valexpr (alias name or field path) to resolve
+    * @return the resolved value, or an empty string when no value is available
     */
     protected String resolveValExpr(ISOMsg m, String val) {
         var fun = aliases.get(val);   // check if valexpr is a registered alias
@@ -324,6 +381,7 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
      *
      * @param m the ISOMsg
      * @return a micrometer {@link Tags} with all the tags from fieldset and the resolved values from the message
+     * @param val the expression to resolve
      */
     private Tags resolveFieldTags(ISOMsg m, Map<String,String> fieldset) {
         Tags tt = Tags.empty();

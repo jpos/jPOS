@@ -35,36 +35,60 @@ package org.jpos.iso;
  */
 public class ISOVError {
 
+    /** Constructs an error with the given description.
+     * @param Description the error description
+     */
     public ISOVError( String Description ) {
         this.description = Description;
     }
 
+    /** Constructs an error with description and reject code.
+     * @param Description the error description
+     * @param RejectCode  the rejection code
+     */
     public ISOVError( String Description, String RejectCode ) {
         this.description = Description;
         this.rejectCode = RejectCode;
     }
 
+    /** Returns the rejection code.
+     * @return the reject code
+     */
     public String getRejectCode(){
         return rejectCode;
     }
 
+    /** Returns the error ID.
+     * @return the error ID string
+     */
     public String getId(){
         return id;
     }
 
+    /**
+     * Replaces the error identifier.
+     *
+     * @param ID error identifier
+     */
     public void setId ( String ID ){
         id = ID;
     }
 
+    /** Returns the error description.
+     * @return the description
+     */
     public String getDescription() {
         return description;
     }
 
     /** Used by error parsers to set field tree path **/
     protected String id;
+    /** The error description. */
     protected String description = "";
+    /** The rejection code. */
     protected String rejectCode;
     /** default error types **/
     public static final int ERR_INVALID_LENGTH = 1;
+    /** Error code for invalid value. */
     public static final int ERR_INVALID_VALUE = 2;
 }

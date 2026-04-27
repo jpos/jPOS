@@ -37,6 +37,12 @@ public class Recyclable<T> implements Supplier<T> {
     private AtomicLong cycles = new AtomicLong();
     private volatile T obj;
 
+    /**
+     * Constructs a Recyclable that delegates to {@code supplier} and rebuilds the wrapped object every {@code maxCycles} uses.
+     *
+     * @param supplier factory that produces fresh instances
+     * @param maxCycles number of uses before the wrapped instance is replaced
+     */
     public Recyclable(Supplier<T> supplier, long maxCycles) {
         this.supplier = supplier;
         this.maxCycles = maxCycles;

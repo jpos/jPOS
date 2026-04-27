@@ -29,9 +29,12 @@ import java.time.zone.ZoneOffsetTransitionRule;
 import java.util.List;
 import java.util.Locale;
 
+/** CLI command that prints the JVM time zone and its upcoming DST transitions. */
 @SuppressWarnings("unused")
 public class TZCHECK implements CLICommand
 {
+    /** Default constructor; no instance state to initialise. */
+    public TZCHECK() {}
     public void exec(CLIContext cli, String[] args) throws Exception
     {
         ZoneId zi = ZoneId.systemDefault();

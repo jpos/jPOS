@@ -56,6 +56,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * A Q2 adaptor that wraps an {@link org.jpos.iso.ISOChannel} for use within the Q2 container.
  * @author Alejandro Revilla
  */
 @SuppressWarnings("unchecked")
@@ -63,6 +64,7 @@ public class ChannelAdaptor
     extends QBeanSupport
     implements ChannelAdaptorMBean, Channel, Loggeable, ExceptionHandlerConfigAware
 {
+    /** The space used for inter-process message passing. */
     protected Space sp;
     private ISOChannel channel;
     String in, out, ready, reconnect;
@@ -85,6 +87,7 @@ public class ChannelAdaptor
 
     @Config("soft-stop") private long softStop;
 
+    /** Default constructor. */
     public ChannelAdaptor () {
         super ();
         resetCounters();
@@ -208,12 +211,25 @@ public class ChannelAdaptor
         return out;
     }
 
-    /** Parses a {@code <channel>}  element, returning an {@link ISOChannel} */
+    /**
+     * Parses a {@code <channel>} element, returning an {@link ISOChannel}.
+     * @param e the configuration element
+     * @param f the QFactory
+     * @return a configured ISOChannel
+     * @throws ConfigurationException on configuration error
+     */
     public ISOChannel newChannel (Element e, QFactory f) throws ConfigurationException {
         return newChannel(e, f, getRealm());
     }
 
-    /** Parses a {@code <channel>} element, using the provided fallback realm when needed. */
+    /**
+     * Parses a {@code <channel>} element, using the provided fallback realm when none is configured.
+     * @param e             the configuration element
+     * @param f             the QFactory
+     * @param fallbackRealm realm to use if none is configured
+     * @return a configured ISOChannel
+     * @throws ConfigurationException on configuration error
+     */
     public ISOChannel newChannel (Element e, QFactory f, String fallbackRealm) throws ConfigurationException {
         String channelName  = QFactory.getAttributeValue (e, "class");
         String packagerName = QFactory.getAttributeValue (e, "packager");
@@ -291,6 +307,13 @@ public class ChannelAdaptor
         return channel;
     }
 
+    /**
+     * Registers filters defined in the configuration element with the channel.
+     * @param channel the channel to configure
+     * @param e       the configuration element
+     * @param fact    the QFactory
+     * @throws ConfigurationException on error
+     */
     protected void addFilters (FilteredChannel channel, Element e, QFactory fact)
         throws ConfigurationException
     {
@@ -312,6 +335,11 @@ public class ChannelAdaptor
     }
 
 
+    /**
+     * Initialises and returns the ISOChannel from the current configuration.
+     * @return the initialised channel
+     * @throws ConfigurationException on error
+     */
     protected ISOChannel initChannel () throws ConfigurationException {
         Element persist = getPersist ();
         Element e = persist.getChild ("channel");
@@ -333,6 +361,10 @@ public class ChannelAdaptor
         return c;
     }
 
+    /**
+     * Initialises the Space and in/out queues used by this adaptor.
+     * @throws ConfigurationException on error
+     */
     protected void initSpaceAndQueues () throws ConfigurationException {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space"));
@@ -353,8 +385,10 @@ public class ChannelAdaptor
         waitForWorkersOnStop = "yes".equalsIgnoreCase(Environment.get(persist.getChildTextTrim ("wait-for-workers-on-stop")));
     }
 
+    /** Background thread that forwards outgoing messages to the channel. */
     @SuppressWarnings("unchecked")
     public class Sender implements Runnable {
+        /** Default constructor. */
         public Sender () {
             super ();
         }
@@ -403,8 +437,10 @@ public class ChannelAdaptor
             }
         }
     }
+    /** Background thread that reads incoming messages from the channel. */
     @SuppressWarnings("unchecked")
     public class Receiver implements Runnable {
+        /** Default constructor. */
         public Receiver () {
             super ();
         }
@@ -474,6 +510,9 @@ public class ChannelAdaptor
             disconnect();
         }
     }
+    /**
+     * Waits until the reconnect token clears, then attempts to reconnect.
+     */
     protected void checkConnection () {
         while (running() && sp.rdp (reconnect) != null) {
             ISOUtil.sleep(1000);
@@ -493,6 +532,9 @@ public class ChannelAdaptor
         if (running() && sp.rdp (ready) == null)
             sp.out (ready, new Date());
     }
+    /**
+     * Disconnects the channel and releases associated resources.
+     */
     protected void disconnect () {
         // do not synchronize on this as both Sender and Receiver can deadlock against a thread calling stop()
         synchronized (disconnectLock) {
@@ -576,9 +618,20 @@ public class ChannelAdaptor
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());
     }
+    /**
+     * Returns the Space referenced by the given element, or the default space if null.
+     * @param e the element whose text names the space
+     * @return the resolved Space
+     */
     protected Space grabSpace (Element e) {
         return SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
+    /**
+     * Appends a name=value counter entry to the string builder.
+     * @param sb    the builder to append to
+     * @param name  the counter name
+     * @param value the counter value
+     */
     protected void append (StringBuilder sb, String name, int value) {
         sb.append (name);
         sb.append (value);

@@ -21,10 +21,16 @@ package org.jpos.ui.action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/** A Swing {@link ActionListener} that prints the action command to stdout for debugging. */
 public class Debug implements ActionListener {
+    /** Default constructor. */
     public Debug () {
         super();
     }
+    /**
+     * Prints the action command of the event to stdout.
+     * @param ev the action event
+     */
     public void actionPerformed (ActionEvent ev) {
         System.out.println ("Action command: "+ev.getActionCommand ());
         System.out.println (ev.toString ());

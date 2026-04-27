@@ -25,6 +25,8 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that builds a Swing text editor from the configuration element.
+ *
  * @author Alejandro Revilla
  *
  * Creates a text editor
@@ -37,6 +39,8 @@ import javax.swing.*;
  * @see org.jpos.ui.UIFactory
  */
 public class TextFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public TextFactory() {}
     public JComponent create (UI ui, Element e) {
         try {
             String type = e.getAttributeValue ("type", "text/plain");

@@ -34,12 +34,22 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * Pool of {@link MUX} instances that selects a delegate per request based on
+ * the configured strategy (one of {@link #PRIMARY_SECONDARY}, {@link #ROUND_ROBIN},
+ * {@link #ROUND_ROBIN_WITH_OVERRIDE}, or {@link #SPLIT_BY_DIVISOR}).
+ *
  * @author apr
  */
 public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
+    /** Default constructor; no instance state to initialise. */
+    public MUXPool() {}
+    /** Strategy: try MUXes in order, falling through to the next when unusable. */
     public static final int PRIMARY_SECONDARY = 0;
+    /** Strategy: round-robin selection across the registered MUXes. */
     public static final int ROUND_ROBIN = 1;
+    /** Strategy: round-robin selection with per-MTI override routing. */
     public static final int ROUND_ROBIN_WITH_OVERRIDE = 2;
+    /** Strategy: hash-by-divisor selection driven by a configured field value. */
     public static final int SPLIT_BY_DIVISOR = 3;
 
     int strategy = 0;
@@ -103,6 +113,12 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         NameRegistrar.unregister ("mux."+getName ());
     }
 
+    /**
+     * Instantiates a custom {@link StrategyHandler} from an XML configuration element.
+     *
+     * @param e {@code <strategy-handler>} element, or {@code null} to leave the handler unset
+     * @throws ConfigurationException if the handler cannot be instantiated
+     */
     protected void initHandler(Element e) throws ConfigurationException {
         if (e == null)
             return;
@@ -167,10 +183,23 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         mux.send(m);
     }
 
+    /**
+     * Returns the first usable MUX, scanning from index 0 and waiting up to {@code maxWait}.
+     *
+     * @param maxWait wall-clock deadline in milliseconds since epoch
+     * @return a usable MUX, or {@code null} if none became available before the deadline
+     */
     protected MUX firstAvailableMUX (long maxWait) {
         return nextAvailableMUX(0, maxWait);
     }
 
+    /**
+     * Returns the next usable MUX starting from {@code mnumber}, waiting up to {@code maxWait}.
+     *
+     * @param mnumber starting index (round-robin counter)
+     * @param maxWait wall-clock deadline in milliseconds since epoch
+     * @return a usable MUX, or {@code null} if none became available before the deadline
+     */
     protected MUX nextAvailableMUX (int mnumber, long maxWait) {
         do {
             for (int i=0; i<mux.length; i++) {
@@ -273,6 +302,11 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         return strategy;
     }
 
+    /**
+     * Returns the configured custom strategy handler, if any.
+     *
+     * @return the {@link StrategyHandler}, or {@code null} when not configured
+     */
     public StrategyHandler getStrategyHandler() {
         return strategyHandler;
     }

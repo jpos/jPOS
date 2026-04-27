@@ -137,6 +137,7 @@ subprojects {
             windowTitle = "jPOS ${project.version}"
             header = "<b>jPOS ${project.version}</b>"
             linkSource = true
+            addStringOption('Xmaxwarns', '10000')
             links(
                 'https://docs.oracle.com/en/java/javase/17/docs/api'
             )

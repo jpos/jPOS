@@ -27,6 +27,8 @@ import java.util.*;
  * using a thread-safe approach to ensure proper operation in multi-threaded environments.
  */
 public class LogRendererRegistry {
+    /** Default constructor; no instance state to initialise. */
+    public LogRendererRegistry() {}
     private static final Map<LogRendererRegistry.Key, LogRenderer<?>> renderers = Collections.synchronizedMap(
       new LinkedHashMap<>()
     );
@@ -38,6 +40,7 @@ public class LogRendererRegistry {
 
     /**
      * Registers a {@link LogRenderer} in the registry with a key generated from the renderer's class and type.
+     * @param <T> caller-side type variable (the registry stores wildcard renderers; this method is generic for caller convenience)
      * @param renderer The renderer to register. Must not be null.
      * @throws NullPointerException if the renderer is null.
      */
@@ -63,6 +66,7 @@ public class LogRendererRegistry {
      * it attempts to find a renderer for any superclass or implemented interfaces. If no specific renderer is found,
      * it defaults to a renderer for {@link Object}, if present for the given type.
      *
+     * @param <T> expected concrete renderer type
      * @param clazz The class for which a renderer is required.
      * @param type The type of the renderer.
      * @return The matching {@link LogRenderer}, or a default renderer if no specific match is found.

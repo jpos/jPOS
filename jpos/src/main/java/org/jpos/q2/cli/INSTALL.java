@@ -22,9 +22,12 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import org.jpos.q2.install.Install;
 
+/** CLI command that delegates to {@link Install#main(String[])} to extract the installation skeleton. */
 @SuppressWarnings("unused")
 public class INSTALL implements CLICommand
 {
+    /** Default constructor; no instance state to initialise. */
+    public INSTALL() {}
     public void exec(CLIContext cli, String[] args) throws Exception
     {
         Install.main(args);

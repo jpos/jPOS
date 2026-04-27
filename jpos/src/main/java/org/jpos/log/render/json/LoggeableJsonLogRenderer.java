@@ -23,7 +23,10 @@ import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
 
+/** JSON renderer that wraps {@link Loggeable#dump(PrintStream, String)} output as a single string field. */
 public final class LoggeableJsonLogRenderer implements LogRenderer<Loggeable> {
+    /** Default constructor; no instance state to initialise. */
+    public LoggeableJsonLogRenderer() {}
     @Override
     public void render(Loggeable obj, PrintStream ps, String indent) {
         ps.println("{\"" + obj.getClass().getSimpleName()+"\": \"");

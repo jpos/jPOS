@@ -21,11 +21,18 @@ package org.jpos.tlv;
 import org.jpos.iso.ISOMsg;
 
 /**
+ * A {@link TagValue} that wraps an {@link org.jpos.iso.ISOMsg} as its value.
  * @author Vishnu Pillai
  *
  */
 public class ISOMsgTagValue extends TagValueBase<ISOMsg> {
 
+    /**
+     * Constructs a tag/value pair wrapping an ISO message.
+     *
+     * @param tag tag identifier
+     * @param value ISO message value
+     */
     public ISOMsgTagValue(String tag, ISOMsg value) {
         super(tag, value);
     }

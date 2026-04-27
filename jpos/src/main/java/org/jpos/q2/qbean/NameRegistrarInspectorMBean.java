@@ -25,6 +25,9 @@ package org.jpos.q2.qbean;
  */
 public interface NameRegistrarInspectorMBean {
 
+  /** Returns a snapshot of the current name registry.
+   * @return map of registered names to their objects
+   */
   java.util.Map getRegistry() ;
 
 }

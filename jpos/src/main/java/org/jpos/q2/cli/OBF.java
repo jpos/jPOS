@@ -31,6 +31,8 @@ import java.util.Base64;
  * Obfuscate a secret
  */
 public class OBF implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public OBF() {}
     @Override
     public void exec(CLIContext cli, String[] args) throws Exception {
         if (args.length != 2) {
@@ -39,6 +41,11 @@ public class OBF implements CLICommand {
         }
         cli.println (String.format("obf::%s", obf(args[1])));
     }
+    /**
+     * Prints command usage to {@code cli}.
+     *
+     * @param cli the CLI context to write to
+     */
     public void usage(CLIContext cli) {
         cli.println("Usage: obf \"secret\"");
     }

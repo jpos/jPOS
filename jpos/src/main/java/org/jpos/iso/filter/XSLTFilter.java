@@ -50,7 +50,7 @@ public class XSLTFilter implements ISOFilter, Configurable {
 
     /**
      * Default noargs constructor
-     * @throws ISOException
+     * @throws ISOException on pack/unpack error
      */
     public XSLTFilter () throws ISOException {
         super();
@@ -61,9 +61,11 @@ public class XSLTFilter implements ISOFilter, Configurable {
     }
 
     /**
-     * @param xsltfile XSL Transformation file
-     * @param reread true if you want XSLT file re-read from disk
-     * @throws ISOException
+     * Creates a filter backed by the supplied XSL transformation file.
+     *
+     * @param xsltfile XSL transformation file
+     * @param reread true if you want the XSLT file re-read from disk
+     * @throws ISOException on pack/unpack error
      */
     public XSLTFilter (String xsltfile, boolean reread) 
         throws ISOException
@@ -105,11 +107,13 @@ public class XSLTFilter implements ISOFilter, Configurable {
     }
 
     /**
+     * Applies the configured XSLT transformation to the supplied message.
+     *
      * @param channel current ISOChannel instance
      * @param m ISOMsg to filter
-     * @param evt LogEvent
-     * @return an ISOMsg (possibly parameter m)
-     * @throws VetoException
+     * @param evt LogEvent collecting filter diagnostics
+     * @return an ISOMsg, usually the same instance passed in
+     * @throws VetoException if the transformation fails
      */
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) 
         throws VetoException

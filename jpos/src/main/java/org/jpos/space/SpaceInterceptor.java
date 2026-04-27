@@ -23,9 +23,18 @@ package org.jpos.space;
  *
  * @author Alejandro Revilla
  * @since  1.4.7
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 public class SpaceInterceptor<K,V> implements Space<K,V> {
+    /** Underlying space delegated to by every operation. */
     protected Space<K,V> sp;
+    /**
+     * Constructs an interceptor wrapping the given space.
+     *
+     * @param sp space to delegate to
+     */
     public SpaceInterceptor (Space<K,V> sp) {
         super();
         this.sp = sp;

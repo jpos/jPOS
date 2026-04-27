@@ -22,6 +22,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.jpos.log.AuditLogEvent;
 
+/**
+ * Audit log event identifying a transaction by name and id.
+ *
+ * @param name transaction name
+ * @param id   numeric transaction id
+ */
 @JacksonXmlRootElement(localName = "txn")
 public record Txn(
     @JacksonXmlProperty(isAttribute = true) String name,

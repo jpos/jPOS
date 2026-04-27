@@ -38,6 +38,7 @@ import java.util.Map;
  */
 public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOValidator {
 
+    /** Default constructor. */
     public ISOBaseValidatingPackager() {
         super();
     }
@@ -86,11 +87,18 @@ public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOVal
 //        this.fldVld = fvlds;
 //    }
 
+    /**
+     * Sets the array of field validators.
+     * @param fvlds the field validator array
+     */
     public void setFieldValidator( ISOValidator[] fvlds ){
         this.fldVld = fvlds;
     }
 
-
+    /**
+     * Sets the array of message-level validators.
+     * @param msgVlds the message validator array
+     */
     public void setMsgValidator( ISOBaseValidator[] msgVlds ){
         this.msgVld = msgVlds;
     }

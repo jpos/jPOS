@@ -46,6 +46,13 @@ public class SimpleMsg implements Loggeable {
     String msgName;
     Object msgContent;
 
+    /**
+     * Constructs a SimpleMsg with an XML tag, an optional name attribute, and a payload.
+     *
+     * @param tagName XML tag name
+     * @param msgName optional name attribute, or {@code null}
+     * @param msgContent message payload (rendered specially for byte arrays, collections, throwables, and loggeables)
+     */
     public SimpleMsg(String tagName, String msgName, Object msgContent) {
         this.tagName = tagName;
         this.msgName = msgName;
@@ -55,6 +62,12 @@ public class SimpleMsg implements Loggeable {
             this.msgContent = msgContent;
     }
 
+    /**
+     * Constructs a SimpleMsg with no name attribute.
+     *
+     * @param tagName XML tag name
+     * @param msgContent message payload
+     */
     public SimpleMsg(String tagName, Object msgContent) {
         this(tagName, null, msgContent);
     }
@@ -129,10 +142,20 @@ public class SimpleMsg implements Loggeable {
         }
     }
 
+    /**
+     * Replaces the message payload.
+     *
+     * @param msgContent new payload
+     */
     public void setMsgContent(Object msgContent) {
         this.msgContent = msgContent;
     }
 
+    /**
+     * Returns the current message payload.
+     *
+     * @return the payload (may be {@code null})
+     */
     public Object getMsgContent() {
         return msgContent;
     }

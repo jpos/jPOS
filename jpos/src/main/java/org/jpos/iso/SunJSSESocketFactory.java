@@ -32,6 +32,8 @@ import java.security.Security;
  */
 @Deprecated
 public class SunJSSESocketFactory extends GenericSSLSocketFactory {
+    /** Default constructor; no instance state to initialise. */
+    public SunJSSESocketFactory() {}
     static {
         try {
             Security.addProvider((java.security.Provider) Class.forName("com.sun.net.ssl.internal.ssl.Provider")

@@ -25,9 +25,12 @@ import org.jpos.log.LogRenderer;
 import java.io.IOException;
 import java.io.PrintStream;
 
+/** Renders a JDOM {@link Element} as Markdown-formatted log output. */
 public final class ElementMarkdownLogRenderer implements LogRenderer<Element> {
+    /** XML pretty-printer used to format element content. */
     final XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
 
+    /** Default constructor; configures the XML outputter with Unix line separators. */
     public ElementMarkdownLogRenderer() {
         out.getFormat().setLineSeparator("\n");
     }

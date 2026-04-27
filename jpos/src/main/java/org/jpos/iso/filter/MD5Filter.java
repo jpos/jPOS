@@ -48,6 +48,7 @@ public class MD5Filter implements ISOFilter, Configurable {
     String key;
     int[] fields;
 
+    /** Default constructor. */
     public MD5Filter() {
         super();
     }
@@ -74,6 +75,11 @@ public class MD5Filter implements ISOFilter, Configurable {
 
         fields = f;
     }
+    /**
+     * Replaces the fields used in MD5 hashing.
+     *
+     * @param fields field numbers to include in the digest
+     */
     public void setFields (int[] fields) {
         this.fields = fields;
     }
@@ -136,7 +142,9 @@ public class MD5Filter implements ISOFilter, Configurable {
         return m;
     }
     /**
-     * hook for custom key storage (i.e. crypto cards)
+     * Hook for custom key storage (i.e. crypto cards).
+     *
+     * @return the bytes used as the digest key
      */
     protected byte[] getKey() {
         return key.getBytes();

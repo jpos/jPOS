@@ -23,8 +23,11 @@ import org.jpos.q2.CLIContext;
 
 import java.io.InputStream;
 
+/** CLI command that displays the manual page for another CLI command. */
 @SuppressWarnings("unused")
 public class MAN implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public MAN() {}
     public void exec(CLIContext cli, String[] args) throws Exception {
         if (args.length < 2) {
             cli.println("What manual page do you want?");

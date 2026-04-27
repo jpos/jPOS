@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Marker interface for {@link org.jpos.iso.ISOFieldPackager} implementations that handle string fields.
  * @author joconnor
  * @version $Revision$ $Date$
  */
@@ -129,7 +130,7 @@ public class ISOStringFieldPackager extends ISOFieldPackager
     /**
      * Convert the component into a byte[].
      * @return byte array representation of component
-     * @throws org.jpos.iso.ISOException
+     * @throws org.jpos.iso.ISOException on pack/unpack error
 	 */
     @Override
     public byte[] pack(ISOComponent c) throws ISOException

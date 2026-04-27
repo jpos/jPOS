@@ -25,6 +25,9 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that builds a Swing panel, optionally registering it under an id
+ * so other elements can re-target it later.
+ *
  * @author Alejandro Revilla
  *
  * creates a panel (with an optional "id")
@@ -42,6 +45,8 @@ import javax.swing.*;
  * @see org.jpos.ui.action.Redirect
  */
 public class PanelFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public PanelFactory() {}
     public JComponent create (UI ui, Element e) {
         JPanel p = new JPanel ();
         if (e.getChildren().size() > 0)

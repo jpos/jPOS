@@ -61,14 +61,15 @@ import java.util.Arrays;
  *
  * Configuration properties accept comma/space-separated values, but can also be given in multiple occurrences.
  * All occurrences of the same property will be merged into a single list.
- * <p>
+ *
  * @author Alejandro Revilla
  * @author David Bergert
  * @author Barzilai Spinak
- * </p>
  **/
 
 public class ProtectDebugInfo implements AbortParticipant, Configurable {
+     /** Creates the participant; configuration is supplied via {@link #setConfiguration(Configuration)}. */
+     public ProtectDebugInfo() {}
      private static final String COMMA_SPACE_SEPARATOR = "[,\\s]+";
      private String[] protectedEntries;
      private String[] wipedEntries;

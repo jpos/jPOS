@@ -27,6 +27,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
+ * UIFactory that builds a Swing {@link JLabel} from the configuration element.
+ *
  * @author Alejandro Revilla
  *
  * Creates a JLabel
@@ -37,6 +39,8 @@ import java.awt.*;
  * @see org.jpos.ui.UIFactory
  */
 public class JLabelFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public JLabelFactory() {}
     public JComponent create (UI ui, Element e) {
         JLabel label = new JLabel (e.getText());
         String font = e.getAttributeValue ("font");

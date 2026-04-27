@@ -60,6 +60,7 @@ public class OneShotChannelAdaptor
     long delay;
     int maxConnections;
     int maxConnectAttempts;
+    /** Default constructor. */
     public OneShotChannelAdaptor () {
         super ();
     }
@@ -74,6 +75,7 @@ public class OneShotChannelAdaptor
         return (Space<String,Object>) SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
 
+    /** Reads the bean's persist element and initializes its in/out queue references. */
     public void initAdaptor() {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space"));
@@ -145,9 +147,15 @@ public class OneShotChannelAdaptor
         return (ISOMsg) sp.in (out, timeout);
     }
 
+    /** Per-message worker that opens an ad-hoc channel, sends the request, and forwards any response. */
     public class Worker implements Runnable {
         ISOChannel channel;
         int id;
+        /**
+         * Constructs a Worker with the given identifier.
+         *
+         * @param i worker identifier (used in the thread name)
+         */
         public Worker (int i) {
             super ();
             id = i;
@@ -192,6 +200,11 @@ public class OneShotChannelAdaptor
             }
         }
 
+        /**
+         * Builds and configures the channel used by this worker for one request/response cycle.
+         *
+         * @throws ConfigurationException if the channel configuration is missing or invalid
+         */
         public void initChannel () throws ConfigurationException {
             Element persist = getPersist ();
             Element e = persist.getChild ("channel");

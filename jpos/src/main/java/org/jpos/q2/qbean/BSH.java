@@ -25,7 +25,14 @@ import org.jdom2.Element;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
 
+/**
+ * QBean that runs a BeanShell script (loaded from {@code <script>} children
+ * of its persist element) on a dedicated thread.
+ */
 public class BSH extends QBeanSupport implements Runnable {
+    /** Default constructor; no instance state to initialise. */
+    public BSH() {}
+    /** BeanShell interpreter executing the configured scripts. */
     protected Interpreter bsh;
 
     public void initService() {

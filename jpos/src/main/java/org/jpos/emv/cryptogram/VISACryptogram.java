@@ -34,6 +34,13 @@ public class VISACryptogram implements CryptogramSpec {
     private final ARPCMethod arpcMethod;
     private final SKDMethod skdMethod;
 
+    /**
+     * Configures the cryptogram spec from the encoded Cryptogram Version Number.
+     *
+     * @param cryptogramVersionNumber two-hex-digit VISA Cryptogram Version Number;
+     *                                supported values are CVN 10, 18 and 34 (CVN '22')
+     * @throws IllegalArgumentException if the CVN is not one of the supported variants
+     */
     public VISACryptogram(String cryptogramVersionNumber) {
         this.number = Integer.parseInt(cryptogramVersionNumber, 16);
         if (number == 10) {

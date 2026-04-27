@@ -19,16 +19,19 @@
 package org.jpos.ui;
 
 /**
+ * Factory interface for creating arbitrary objects used within the jPOS UI framework.
  * @author Alejandro Revilla
  *
  * UI delegates object creation to an object factory
  * (i.e. in Q2, we delegate to an MBeanServer via QFactory)
  */
+/** Factory interface for instantiating UI objects by class name. */
 public interface UIObjectFactory {
     /**
-     * @param clazz the Clazzzz
+     * Instantiates an object by class name.
+     * @param clazz the class name to instantiate
      * @return the Object
-     * @throws throws may throw something
+     * @throws Exception if the class cannot be instantiated
      */
     Object newInstance(String clazz) throws Exception;
 }

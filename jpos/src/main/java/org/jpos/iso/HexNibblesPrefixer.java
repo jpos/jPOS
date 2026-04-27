@@ -26,10 +26,16 @@ package org.jpos.iso;
  */
 @SuppressWarnings("unused")
 public class HexNibblesPrefixer implements Prefixer {
+    /** LL (2-digit hex nibbles) prefixer instance. */
     public static final HexNibblesPrefixer LL = new HexNibblesPrefixer(2);
+    /** LLL (3-digit hex nibbles) prefixer instance. */
     public static final HexNibblesPrefixer LLL = new HexNibblesPrefixer(3);
     private int nDigits;
 
+    /**
+     * Constructs a HexNibblesPrefixer with the given number of digits.
+     * @param nDigits number of hex nibble digits in the length prefix
+     */
     public HexNibblesPrefixer(int nDigits) {
         this.nDigits = nDigits;
     }

@@ -30,6 +30,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 /**
+ * Builds a Swing {@link JTextArea} that subscribes to a named jPOS logger and
+ * renders incoming log events live, with caps on retained events and lines.
+ *
  * @author Alejandro Revilla
  *
  * a log listener component
@@ -44,6 +47,8 @@ import java.io.PrintStream;
  * @see org.jpos.ui.UIFactory
  */
 public class LogListenerFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public LogListenerFactory() {}
     public JComponent create (UI ui, Element e) {
         JTextArea textArea = new JTextArea (25, 80);
         String font = e.getAttributeValue ("font");
@@ -68,6 +73,10 @@ public class LogListenerFactory implements UIFactory {
         }
         return textArea;
     }
+    /**
+     * Buffers log events from the registered logger and pushes them to the live
+     * {@link JTextArea}, trimming as configured.
+     */
     public static class Listener implements LogListener, Runnable {
         final LogProducer logger;
         JTextArea text;
@@ -75,7 +84,16 @@ public class LogListenerFactory implements UIFactory {
         int cnt;
         int maxEvents;
         int maxLines;
-        public Listener 
+        /**
+         * Constructs a Listener bound to the given logger and Swing widget.
+         *
+         * @param logger upstream log producer
+         * @param ui parent UI used for redraw scheduling
+         * @param text destination text area
+         * @param maxEvents maximum number of events kept in memory
+         * @param maxLines maximum number of lines retained in {@code text}
+         */
+        public Listener
             (LogProducer logger, UI ui, JTextArea text, int maxEvents, int maxLines)
         {
             super ();

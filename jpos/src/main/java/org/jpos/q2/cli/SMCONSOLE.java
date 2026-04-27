@@ -22,8 +22,11 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import java.io.PrintStream;
 
+/** CLI command that opens the SSM console subsystem. */
 public class SMCONSOLE implements CLICommand
 {
+    /** Default constructor; no instance state to initialise. */
+    public SMCONSOLE() {}
     public void exec(CLIContext cli, String[] args)
     {
         try

@@ -19,11 +19,18 @@
 package org.jpos.tlv;
 
 /**
+ * A {@link TagValue} backed by a literal string value.
  * @author Vishnu Pillai
  *
  */
 public class LiteralTagValue extends TagValueBase<String> {
 
+    /**
+     * Constructs a literal tag/value pair.
+     *
+     * @param tag tag identifier
+     * @param value literal string value
+     */
     public LiteralTagValue(String tag, String value) {
         super(tag, value);
     }

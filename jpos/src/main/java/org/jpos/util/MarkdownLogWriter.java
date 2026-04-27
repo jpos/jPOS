@@ -28,8 +28,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * {@link LogEventWriter} that renders events using the registered Markdown
+ * {@link LogRenderer}, prefixing each entry with a timestamp.
+ */
 @Deprecated(forRemoval = false)
 public class MarkdownLogWriter implements LogEventWriter {
+    /** Creates a writer that renders events with the registered Markdown renderer. */
+    public MarkdownLogWriter() {}
     private PrintStream ps;
     private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.MARKDOWN);
     private Instant start;

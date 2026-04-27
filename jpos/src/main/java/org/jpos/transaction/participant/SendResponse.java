@@ -34,8 +34,15 @@ import org.jpos.transaction.TransactionManager;
 
 import static org.jpos.transaction.ContextConstants.*;
 
+/**
+ * Transaction participant that sends the response message stored in the
+ * {@link Context} back over the originating {@link ISOSource}, with optional
+ * header handling driven by {@link HeaderStrategy}.
+ */
 @SuppressWarnings("unused")
 public class SendResponse implements AbortParticipant, Configurable {
+    /** Default constructor; no instance state to initialise. */
+    public SendResponse() {}
     private String source;
     private String request;
     private String response;
@@ -106,26 +113,43 @@ public class SendResponse implements AbortParticipant, Configurable {
             throw new ConfigurationException (e.getMessage());
         }
     }
+    /**
+     * Captures the input space from the hosting transaction manager so the
+     * participant can re-arm a {@link SpaceSource} during commit.
+     *
+     * @param tm the hosting transaction manager
+     */
     public void setTransactionManager(TransactionManager tm) {
         isp = (LocalSpace) tm.getInputSpace();
     }
 
+    /** Strategy contract for populating the response message's ISO header. */
     private interface HeaderHandler {
+        /**
+         * Adjusts {@code r}'s header based on the request {@code m}.
+         *
+         * @param m original request message
+         * @param r response message about to be sent
+         */
         void handleHeader (ISOMsg m, ISOMsg r);
     }
 
+    /** Selects how the response message's ISO header is populated before sending. */
     @SuppressWarnings("unused")
     public enum HeaderStrategy implements HeaderHandler {
+        /** Copies the request header onto the response. */
         PRESERVE_ORIGINAL() {
             @Override
             public void handleHeader(ISOMsg m, ISOMsg r) {
                 r.setHeader(m.getHeader());
             }
         },
+        /** Leaves whatever header the response already carries (default). */
         PRESERVE_RESPONSE() {
             @Override
             public void handleHeader(ISOMsg m, ISOMsg r) { }
         },
+        /** Clears the response header so the channel emits no header bytes. */
         SET_TO_NULL() {
             @Override
             public void handleHeader(ISOMsg m, ISOMsg r) {

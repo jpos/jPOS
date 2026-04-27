@@ -25,10 +25,16 @@ package org.jpos.iso;
  */
 @SuppressWarnings("unused")
 public class IFB_LLHEX extends ISOBinaryFieldPackager {
+    /** Default constructor. */
     public IFB_LLHEX() {
         super(LiteralBinaryInterpreter.INSTANCE, HexNibblesPrefixer.LL);
     }
 
+        /**
+     * Constructs a packager with the given length and description.
+     * @param len field length
+     * @param description field description
+     */
     public IFB_LLHEX (int len, String description) {
         super(len, description, LiteralBinaryInterpreter.INSTANCE, HexNibblesPrefixer.LL);
         checkLength(len, 99);

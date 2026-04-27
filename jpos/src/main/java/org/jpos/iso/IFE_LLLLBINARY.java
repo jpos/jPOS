@@ -19,16 +19,19 @@
 package org.jpos.iso;
 
 /**
+ * ISOFieldPackager EBCDIC variable-length binary field with a 4-digit length prefix.
  *
- * @author edwin < edwinkun at gmail dot com >
+ * @author edwin (edwinkun at gmail dot com)
  */
 public class IFE_LLLLBINARY extends ISOBinaryFieldPackager 
 {
+    /** Default constructor. */
     public IFE_LLLLBINARY()
     {
         super(LiteralBinaryInterpreter.INSTANCE, EbcdicPrefixer.LLLL);
     }
     /**
+    * Constructs a packager with the given length and description.
     * @param len - field len
     * @param description symbolic descrption
     */

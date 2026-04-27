@@ -26,12 +26,15 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFB_LLNUM extends ISOStringFieldPackager {
+    /** Default constructor. */
     public IFB_LLNUM() {
         super(NullPadder.INSTANCE, BCDInterpreter.RIGHT_PADDED, BcdPrefixer.LL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
+     * @param isLeftPadded if true, apply padding
      */
     public IFB_LLNUM(int len, String description, boolean isLeftPadded) {
         super(len, description, NullPadder.INSTANCE,
@@ -40,6 +43,13 @@ public class IFB_LLNUM extends ISOStringFieldPackager {
         checkLength(len, 99);
     }
     
+        /**
+     * Constructs a packager with extended options.
+     * @param len          field length
+     * @param description  field description
+     * @param isLeftPadded if true, left-pad the value
+     * @param fPadded if true, use F-padded BCD encoding
+     */
     public IFB_LLNUM(int len, String description, boolean isLeftPadded, boolean fPadded) {
         super(len, description, NullPadder.INSTANCE,
                 isLeftPadded ? BCDInterpreter.LEFT_PADDED :

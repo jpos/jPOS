@@ -25,10 +25,25 @@ package org.jpos.q2.qbean;
  */
 public interface SpaceProxyAdaptorMBean extends org.jpos.q2.QBeanSupportMBean {
 
+  /**
+   * Sets the configured space name exposed by this adaptor.
+   *
+   * @param spaceName SpaceFactory-style space URI
+   */
   void setSpaceName(java.lang.String spaceName) ;
 
+  /**
+   * Returns the configured space name.
+   *
+   * @return SpaceFactory-style space URI
+   */
   java.lang.String getSpaceName() ;
 
+  /**
+   * Returns a snapshot of the keys currently held by the underlying space.
+   *
+   * @return current key set
+   */
   java.util.Set getKeys() ;
 
 }

@@ -27,7 +27,10 @@ import org.jpos.util.NameRegistrar;
 import java.util.Iterator;
 import java.util.Map;
 
+/** CLI command that lists the registered NameRegistrar entries. */
 public class SHOWNR implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public SHOWNR() {}
     public void exec(CLIContext cli, String[] args) throws Exception {
         boolean all = args.length > 1 && "-a".equals(args[1]);
         int i = 1;

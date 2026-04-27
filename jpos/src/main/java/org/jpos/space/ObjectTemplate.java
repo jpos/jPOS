@@ -18,11 +18,21 @@
 
 package org.jpos.space;
 
+/**
+ * Reference-equality {@link Template} that matches space entries equal to a
+ * captured value under the configured key.
+ */
 public class ObjectTemplate implements Template {
-  
+
     Object key;
     Object value;
 
+    /**
+     * Constructs a template matching {@code value} under {@code key}.
+     *
+     * @param key entry key
+     * @param value reference value compared via {@code equals}
+     */
     public ObjectTemplate(Object key, Object value) {
         super();
         this.key = key;

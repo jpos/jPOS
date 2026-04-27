@@ -32,6 +32,8 @@ import java.util.Map;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public class SSM implements CLISubSystem, CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public SSM() {}
     private static final String SYSTEM_KEY = "SSM";
     private static final String JCE_KEY = "jce-sm";
 
@@ -51,10 +53,23 @@ public class SSM implements CLISubSystem, CLICommand {
         cli.getUserData().put(SYSTEM_KEY, new HashMap<String, Object>());
     }
 
+    /**
+     * Returns the {@link JCESecurityModule} stashed in the SSM-subsystem storage.
+     *
+     * @param cliContext CLI context
+     * @return the active security module, or {@code null} if none has been set
+     */
     public static JCESecurityModule getSecurityModule(CLIContext cliContext) {
         return (JCESecurityModule) getSystemStorage(cliContext).get(JCE_KEY);
     }
 
+    /**
+     * Stashes a {@link JCESecurityModule} in the SSM-subsystem storage so other
+     * SSM commands can resolve it.
+     *
+     * @param cliContext CLI context
+     * @param securityModule security module to store
+     */
     public static void setSecurityModule(CLIContext cliContext, JCESecurityModule securityModule) {
         getSystemStorage(cliContext).put(JCE_KEY, securityModule);
     }

@@ -25,7 +25,10 @@ import org.jpos.iso.ISOPackager;
 
 import java.io.*;
 
+/** {@link ISOPackager} that round-trips messages via Java serialization. */
 public class NativePackager implements ISOPackager {
+    /** Default constructor; no instance state to initialise. */
+    public NativePackager() {}
     @Override
     public byte[] pack(ISOComponent c) throws ISOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -19,22 +19,40 @@
 package org.jpos.emv;
 
 /**
+ * Thrown when an EMV tag number is not recognised in the current tag dictionary.
  * @author Vishnu Pillai
  */
 public class UnknownTagNumberException extends Exception {
 
+    /** Default constructor. */
     public UnknownTagNumberException() {
         super();
     }
 
+    /**
+     * Constructs a new exception with the given detail message.
+     *
+     * @param message failure description
+     */
     public UnknownTagNumberException(final String message) {
         super(message);
     }
 
+    /**
+     * Constructs a new exception with the given detail message and cause.
+     *
+     * @param message failure description
+     * @param cause underlying cause
+     */
     public UnknownTagNumberException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Constructs a new exception wrapping the given cause.
+     *
+     * @param cause underlying cause
+     */
     public UnknownTagNumberException(final Throwable cause) {
         super(cause);
     }

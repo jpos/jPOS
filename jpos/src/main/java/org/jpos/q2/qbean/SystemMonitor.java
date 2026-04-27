@@ -57,6 +57,8 @@ import java.util.stream.Collectors;
 public class SystemMonitor extends QBeanSupport
         implements Runnable, SystemMonitorMBean
 {
+    /** Default constructor; no instance state to initialise. */
+    public SystemMonitor() {}
     private long sleepTime = 60 * 60 * 1000;
     private long drift = 0;
     private boolean detailRequired = false;

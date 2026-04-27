@@ -31,7 +31,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import org.jpos.iso.ISOUtil;
 
+/** {@link NACChannel} variant that uses {@code FSDMsg} as its message factory. */
 public class FSDChannel extends NACChannel {
+    /** Default constructor; no instance state to initialise. */
+    public FSDChannel() {}
     String schema;
     Charset charset;
 

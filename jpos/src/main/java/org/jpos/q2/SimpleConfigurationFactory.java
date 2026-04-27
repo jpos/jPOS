@@ -35,7 +35,14 @@ import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.ISOUtil;
 import org.yaml.snakeyaml.Yaml;
 
+/**
+ * Default {@link ConfigurationFactory} that builds a {@link SimpleConfiguration}
+ * from {@code <property>} children, with optional inclusion of YAML or
+ * {@code .properties} files (and per-environment overlays).
+ */
 public class SimpleConfigurationFactory implements ConfigurationFactory {
+    /** Default constructor; no instance state to initialise. */
+    public SimpleConfigurationFactory() {}
     @Override
     public Configuration getConfiguration(Element e) throws ConfigurationException {
         Properties props = new Properties();
@@ -53,6 +60,14 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
         return new SimpleConfiguration(props);
     }
 
+    /**
+     * Adds {@code value} to {@code props} under {@code name}, promoting the entry to a
+     * {@code String[]} when more than one value has been registered for the same key.
+     *
+     * @param props target properties
+     * @param name property name
+     * @param value property value to add
+     */
     protected void processProperty(Properties props, String name, String value) {
         Object obj = props.get(name);
         if (obj instanceof String[]) {
@@ -70,6 +85,14 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
             props.put(name, value);
     }
 
+    /**
+     * Loads {@code baseFile} (and optional per-environment overlays) into {@code props}.
+     *
+     * @param props target properties
+     * @param baseFile path to the base file (resolved against the {@link Environment})
+     * @param isEnv when {@code true}, also loads {@code baseFile-<env>.yml/.properties} overlays
+     * @throws ConfigurationException if no matching file can be loaded
+     */
     protected void processFile(Properties props, String baseFile, boolean isEnv) throws ConfigurationException {
         baseFile = Environment.get(baseFile);
         boolean foundFile = false;
@@ -81,6 +104,13 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
         }
     }
 
+    /**
+     * Builds the list of candidate file names: the base file plus per-environment overlays.
+     *
+     * @param baseFile base file name
+     * @param environmnents comma-separated list of environment names to overlay
+     * @return ordered list of candidate file names to attempt loading
+     */
     protected List<String> getFiles(String baseFile, String environmnents) {
         List<String> files = new ArrayList<>();
         files.add(baseFile);
@@ -96,6 +126,14 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
         return files;
     }
 
+    /**
+     * Loads the contents of {@code fileName} into {@code props}, dispatching by extension.
+     *
+     * @param props target properties
+     * @param fileName path to a {@code .yml} or {@code .properties} file
+     * @return {@code true} if the file existed and was read, {@code false} otherwise
+     * @throws ConfigurationException if the file is present but cannot be parsed
+     */
     protected boolean readYamlFile(Properties props, String fileName) throws ConfigurationException {
         try {
             if (fileName.endsWith(".yml")) {
@@ -108,6 +146,14 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
         }
     }
 
+    /**
+     * Loads a Java {@code .properties} file into {@code props}.
+     *
+     * @param props target properties
+     * @param fileName path to the properties file
+     * @return {@code true} if the file existed and was read, {@code false} otherwise
+     * @throws IOException if the file cannot be read
+     */
     protected boolean readPropertyFile(Properties props, String fileName) throws IOException {
         File f = new File(fileName);
         if (f.exists() && f.canRead()) {
@@ -119,6 +165,14 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
         return false;
     }
 
+    /**
+     * Loads a YAML file into {@code props}, flattening nested maps into dotted keys.
+     *
+     * @param props target properties
+     * @param fileName path to the YAML file
+     * @return {@code true} if the file existed and was read, {@code false} otherwise
+     * @throws IOException if the file cannot be read
+     */
     protected boolean readYAML(Properties props, String fileName) throws IOException {
         File f = new File(fileName);
         if (f.exists() && f.canRead()) {

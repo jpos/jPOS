@@ -32,6 +32,13 @@ import java.util.Objects;
  * @since 3.0.0
  */
 public record AuditLogEventType(String name, Class<? extends AuditLogEvent> clazz) {
+    /**
+     * Validates the record components: {@code name} must be non-null and
+     * non-blank, and {@code clazz} must be non-null.
+     *
+     * @throws NullPointerException     if {@code name} or {@code clazz} is {@code null}
+     * @throws IllegalArgumentException if {@code name} is blank
+     */
     public AuditLogEventType {
         Objects.requireNonNull(name, "name");
         Objects.requireNonNull(clazz, "clazz");

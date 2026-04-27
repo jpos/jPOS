@@ -27,8 +27,14 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
+/**
+ * QBean that pulls events from a configured space queue and forwards them to
+ * a {@link Logger}, decoupling event production from logging I/O.
+ */
 @SuppressWarnings("unused")
 public class LoggerService extends QBeanSupport implements Runnable {
+    /** Default constructor; no instance state to initialise. */
+    public LoggerService() {}
     Logger logger;
     String queueName;
     Space sp;

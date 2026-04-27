@@ -27,7 +27,10 @@ import org.jpos.util.Log;
 
 import java.io.InputStream;
 
+/** Pass-through {@link ISOPackager} that delegates pack/unpack to the component's own implementation. */
 public class FSDPackager extends Log implements ISOPackager {
+    /** Default constructor; no instance state to initialise. */
+    public FSDPackager() {}
     public byte[] pack (ISOComponent m) throws ISOException {
         return m.pack ();
     }

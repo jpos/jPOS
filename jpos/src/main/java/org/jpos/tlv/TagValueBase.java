@@ -19,13 +19,22 @@
 package org.jpos.tlv;
 
 /**
+ * Abstract base for {@link TagValue} implementations.
  * @author Vishnu Pillai
+
+ * @param <T> the tag value type
  */
 public abstract class TagValueBase<T> implements TagValue<T> {
 
     private final String tag;
     private final T value;
 
+    /**
+     * Constructs a tag/value pair.
+     *
+     * @param tag tag identifier
+     * @param value tag value
+     */
     public TagValueBase(String tag, T value) {
         this.tag = tag;
         this.value = value;

@@ -28,16 +28,19 @@ package org.jpos.iso;
  */
 public interface Channel {
     /**
+     * Sends an ISO message over this channel.
      * @param m message to send
      */
     void send(ISOMsg m);
     /**
+     * Receives an ISO message from this channel.
      * @return received message
      */
     ISOMsg receive();
     /**
+     * Receives an ISO message, waiting at most {@code timeout} milliseconds.
      * @param timeout time to wait for a message
-     * @return received message or null
+     * @return received message or null on timeout
      */
     ISOMsg receive(long timeout);
 }

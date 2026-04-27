@@ -35,6 +35,7 @@ import org.jpos.util.Logger;
  */
 public class ISOBaseValidator implements ISOValidator, LogSource, Configurable {
 
+    /** Default constructor. */
     public ISOBaseValidator() {
         super();
     }
@@ -51,10 +52,20 @@ public class ISOBaseValidator implements ISOValidator, LogSource, Configurable {
         this.cfg = cfg;
     }
 
+    /**
+     * Returns whether validation should stop on first error.
+     *
+     * @return true if break-on-error is set
+     */
     public boolean breakOnError(){
         return breakOnError;
     }
 
+    /**
+     * Sets whether validation should stop on first error.
+     *
+     * @param breakOnErr if true, stop on first error
+     */
     public void setBreakOnError( boolean breakOnErr ){
         this.breakOnError = breakOnErr;
     }
@@ -84,10 +95,13 @@ public class ISOBaseValidator implements ISOValidator, LogSource, Configurable {
         return realm;
     }
 
+    /** The logger for this validator. */
     protected Logger logger = null;
+    /** The realm string for this validator. */
     protected String realm = null;
     /** Flag used to indicate if validat process break
      * on first error or keep an error set **/
     protected boolean breakOnError = false;
+    /** The configuration for this validator. */
     protected Configuration cfg;
 }

@@ -47,17 +47,32 @@ public class SimpleKeyFile
     Properties props = new Properties();
     File file;
     String header = "Key File";
+    /** Logger receiving load/save diagnostic events. */
     protected Logger logger = null;
+    /** Logger realm associated with this store. */
     protected String realm = null;
 
+    /** Default constructor. */
     public SimpleKeyFile () {
     }
 
+    /**
+     * Constructs the store and immediately loads keys from {@code keyFileName}.
+     *
+     * @param keyFileName path to the properties file backing this store
+     * @throws SecureKeyStoreException if the file cannot be created or loaded
+     */
     public SimpleKeyFile (String keyFileName) throws SecureKeyStoreException
     {
         init(keyFileName);
     }
 
+    /**
+     * Loads (or creates) the underlying properties file and reads its contents.
+     *
+     * @param keyFileName path to the properties file backing this store
+     * @throws SecureKeyStoreException if the file cannot be created or loaded
+     */
     public void init (String keyFileName) throws SecureKeyStoreException {
         file = new File(keyFileName);
         try {
@@ -88,7 +103,7 @@ public class SimpleKeyFile
     /**
      *
      * @param cfg configuration object
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
@@ -158,6 +173,11 @@ public class SimpleKeyFile
         }
     }
 
+    /**
+     * Loads the underlying properties file into memory.
+     *
+     * @throws SecureKeyStoreException if the file is unreadable or malformed
+     */
     void load () throws SecureKeyStoreException {
         InputStream in;
         try {
@@ -174,6 +194,11 @@ public class SimpleKeyFile
         }
     }
 
+    /**
+     * Persists the current in-memory key map back to the properties file.
+     *
+     * @throws SecureKeyStoreException if the file is unwritable or the write fails
+     */
     void store () throws SecureKeyStoreException {
         try {
             if (!file.canWrite())
@@ -187,6 +212,14 @@ public class SimpleKeyFile
         }
     }
 
+    /**
+     * Returns the trimmed property stored under {@code alias.subName}.
+     *
+     * @param alias key alias
+     * @param subName property name within the alias
+     * @return the trimmed property value
+     * @throws SecureKeyStoreException if the property is not present
+     */
     public String getProperty (String alias, String subName) throws SecureKeyStoreException {
         // key here has nothing to do with cryptographic keys
         String key = alias + "." + subName;
@@ -196,6 +229,13 @@ public class SimpleKeyFile
         return value.trim();
     }
 
+    /**
+     * Sets the property stored under {@code alias.subName}.
+     *
+     * @param alias key alias
+     * @param subName property name within the alias
+     * @param value new property value
+     */
     public void setProperty (String alias, String subName, String value) {
         // key here has nothing to do with cryptographic keys
         String key = alias + "." + subName;

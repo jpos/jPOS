@@ -27,6 +27,8 @@ package org.jpos.iso;
  */
 public class NullPadder implements Padder
 {
+    /** Public constructor; prefer {@link #INSTANCE} for repeated use. */
+    public NullPadder() {}
     /** The only instance you need */
     public static final NullPadder INSTANCE = new NullPadder();
 

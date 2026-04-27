@@ -26,7 +26,7 @@ import java.io.ObjectOutput;
 
 /**
  * Base class and template for handling tagged fields.
- * <p/>
+ * <p>
  * This should support both fixed length and variable length tags.
  */
 public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
@@ -37,11 +37,13 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
     private boolean packingLenient = false;
     private boolean unpackingLenient = false;
 
+    /** Default constructor. */
     public TaggedFieldPackagerBase() {
         super();
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len         -
      *                    field len
      * @param description symbolic description
@@ -55,7 +57,7 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
      * @param c -
      *          a component
      * @return packed component
-     * @throws org.jpos.iso.ISOException
+     * @throws org.jpos.iso.ISOException on pack/unpack error
      */
     @Override
     public byte[] pack(ISOComponent c) throws ISOException {
@@ -95,7 +97,7 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
      * @param offset -
      *               starting offset within the binary image
      * @return consumed bytes
-     * @throws ISOException
+     * @throws ISOException on pack/unpack error
      */
     @Override
     public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException {
@@ -157,11 +159,22 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
         return delegate;
     }
 
+    /**
+     * Returns the delegate packager for the given length and description.
+     * @param len         field length
+     * @param description field description
+     * @return the delegate ISOFieldPackager
+     */
     protected abstract ISOFieldPackager getDelegate(int len, String description);
 
+    /**
+     * Returns the fixed length of the tag name in bytes.
+     * @return tag name length
+     */
     protected abstract int getTagNameLength();
 
     /**
+     * Returns whether lenient packing is enabled.
      * @return A boolean value for or against lenient packing
      */
     protected boolean isPackingLenient() {
@@ -169,16 +182,27 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
     }
 
     /**
+     * Returns whether lenient unpacking is enabled.
      * @return A boolean value for or against lenient unpacking
      */
     protected boolean isUnpackingLenient() {
         return unpackingLenient;
     }
 
+    /**
+     * Sets whether packing should tolerate optional fields that are missing.
+     *
+     * @param packingLenient {@code true} to allow lenient packing
+     */
     public void setPackingLenient(boolean packingLenient) {
         this.packingLenient = packingLenient;
     }
 
+    /**
+     * Sets whether unpacking should tolerate unknown or malformed tags.
+     *
+     * @param unpackingLenient {@code true} to allow lenient unpacking
+     */
     public void setUnpackingLenient(boolean unpackingLenient) {
         this.unpackingLenient = unpackingLenient;
     }
@@ -188,18 +212,38 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
         return getTagNameLength() + getDelegate().getMaxPackedLength();
     }
 
+    /**
+     * Returns the parent field number this tagged field is contained in.
+     *
+     * @return parent field number
+     */
     public int getParentFieldNumber() {
         return parentFieldNumber;
     }
 
+    /**
+     * Sets the parent field number this tagged field is contained in.
+     *
+     * @param parentFieldNumber parent field number
+     */
     public void setParentFieldNumber(int parentFieldNumber) {
         this.parentFieldNumber = parentFieldNumber;
     }
 
+    /**
+     * Sets the {@link TagMapper} used to translate tag identifiers.
+     *
+     * @param tagMapper tag mapper
+     */
     public void setTagMapper(TagMapper tagMapper) {
         this.tagMapper = tagMapper;
     }
 
+    /**
+     * Returns the {@link TagMapper} used to translate tag identifiers.
+     *
+     * @return tag mapper, or {@code null} if none is configured
+     */
     protected TagMapper getTagMapper() {
         return tagMapper;
     }

@@ -39,10 +39,12 @@ import java.util.Map;
  * @see ISOException
  */
 public abstract class ISOComponent implements Cloneable {
+    /** Default constructor; no instance state to initialise. */
+    protected ISOComponent() {}
     /**
      * Set a field within this message
      * @param c - a component
-     * @exception ISOException
+     * @exception ISOException always thrown by leaves; composites override this
      */
     public void set (ISOComponent c) throws ISOException {
         throw new ISOException ("Can't add to Leaf");
@@ -50,7 +52,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * Unset a field
      * @param fldno - the field number
-     * @exception ISOException
+     * @exception ISOException always thrown by leaves; composites override this
      */
     public void unset (int fldno) throws ISOException {
         throw new ISOException ("Can't remove from Leaf");
@@ -72,7 +74,7 @@ public abstract class ISOComponent implements Cloneable {
      * to this field.
      *
      * @return object representing the field number
-     * @exception ISOException
+     * @exception ISOException thrown by composites; leaves return their key
      */
     public Object getKey() throws ISOException {
         throw new ISOException ("N/A in Composite");
@@ -80,7 +82,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * valid on Leafs only.
      * @return object representing the field value
-     * @exception ISOException
+     * @exception ISOException thrown by composites; leaves return their value
      */
     public Object getValue() throws ISOException {
         throw new ISOException ("N/A in Composite");
@@ -88,7 +90,7 @@ public abstract class ISOComponent implements Cloneable {
     /**
      * get Value as bytes (when possible)
      * @return byte[] representing this field
-     * @exception ISOException
+     * @exception ISOException thrown by composites or when the value cannot be rendered as bytes
      */
     public byte[] getBytes() throws ISOException {
         throw new ISOException ("N/A in Composite");
@@ -114,13 +116,57 @@ public abstract class ISOComponent implements Cloneable {
      * @param fieldNumber new field number
      */
     public abstract void setFieldNumber (int fieldNumber);
+    /**
+     * Returns the field number this component occupies within its container.
+     *
+     * @return the field number
+     */
     public abstract int getFieldNumber ();
+    /**
+     * Sets the value of this component.
+     *
+     * @param obj new value
+     * @throws ISOException if the value is rejected by the component implementation
+     */
     public abstract void setValue(Object obj) throws ISOException;
+    /**
+     * Packs this component into its on-wire byte representation.
+     *
+     * @return packed bytes
+     * @throws ISOException if packing fails
+     */
     public abstract byte[] pack() throws ISOException;
+    /**
+     * Unpacks this component from {@code b} starting at offset 0.
+     *
+     * @param b packed bytes
+     * @return number of bytes consumed
+     * @throws ISOException if unpacking fails
+     */
     public abstract int unpack(byte[] b) throws ISOException;
+    /**
+     * Writes a human-readable dump of this component for diagnostics.
+     *
+     * @param p destination stream
+     * @param indent prefix to apply to every emitted line
+     */
     public abstract void dump (PrintStream p, String indent);
+    /**
+     * Packs this component and writes it to {@code out}.
+     *
+     * @param out destination stream
+     * @throws IOException if writing fails
+     * @throws ISOException if packing fails
+     */
     public void pack (OutputStream out) throws IOException, ISOException {
         out.write (pack ());
     }
+    /**
+     * Unpacks this component by reading from {@code in}.
+     *
+     * @param in source stream
+     * @throws IOException if reading fails
+     * @throws ISOException if unpacking fails
+     */
     public abstract void unpack (InputStream in) throws IOException, ISOException;
 }

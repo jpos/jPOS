@@ -21,12 +21,26 @@ package org.jpos.util;
 import java.io.PrintStream;
 import java.io.Serializable;
 
+/**
+ * {@link LogEvent} that captures a precomputed Markdown rendering and replays
+ * it verbatim on subsequent {@code dump}/{@code toString} calls.
+ */
 public class MarkdownLogEvent extends LogEvent {
     private String frozen;
 
+    /**
+     * Constructs a MarkdownLogEvent from a precomputed Markdown string.
+     *
+     * @param frozen the Markdown text to render
+     */
     public MarkdownLogEvent(String frozen) {
         this.frozen = frozen;
     }
+    /**
+     * Constructs a MarkdownLogEvent by capturing {@code evt}'s rendered form.
+     *
+     * @param evt source event whose rendered text is captured
+     */
     public MarkdownLogEvent (LogEvent evt) {
         super(evt.getSource(), evt.getTag(), evt.getRealm());
         frozen = evt.toString();

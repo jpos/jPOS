@@ -27,10 +27,17 @@ import org.jpos.emv.UnknownTagNumberException;
 import org.jpos.iso.ISOException;
 
 /**
+ * Default {@link BERTLVFormatMapper} that resolves a TLV tag number to an
+ * {@link TLVDataFormat} via the EMV standard tag table, deferring proprietary
+ * tags to {@link #getProprietaryTagType(Integer)}.
+ *
  * @author Vishnu Pillai
  */
 public class DefaultICCBERTLVFormatMapper implements BERTLVFormatMapper {
+    /** Public constructor; prefer {@link #INSTANCE} for repeated use. */
+    public DefaultICCBERTLVFormatMapper() {}
 
+    /** Shared singleton instance. */
     public static DefaultICCBERTLVFormatMapper INSTANCE = new DefaultICCBERTLVFormatMapper();
 
     private EMVTagType getTagType(final Integer tagNumber) throws UnknownTagNumberException {
@@ -54,9 +61,9 @@ public class DefaultICCBERTLVFormatMapper implements BERTLVFormatMapper {
 
     /**
      * Subclasses should override this method to provide an implementation of org.jpos.emv.EMVProprietaryTagType
-     * @param tagNumber
+     * @param tagNumber proprietary tag number to resolve
      * @return EMVProprietaryTagType
-     * @throws UnknownTagNumberException
+     * @throws UnknownTagNumberException if the tag number is not registered with this mapper
      */
     protected EMVProprietaryTagType getProprietaryTagType(Integer tagNumber) throws UnknownTagNumberException {
         throw new UnknownTagNumberException(Integer.toHexString(tagNumber));

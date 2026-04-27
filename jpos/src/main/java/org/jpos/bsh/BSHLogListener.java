@@ -38,60 +38,44 @@ import java.util.Objects;
  * can define scripts whose name depends on the event being processed, and the
  * realm of the object that generated it.
  * This way you can set a configuration like this:
+ * <pre>{@code
  * <log-listener class="org.jpos.bsh.BSHLoglistener">
  *    <property name="source" value="general.bsh"/>
- *    <property name="source" value="tag_$tag.bsh"/> <!--this is to handle
- * specific tags-->
- *    <property name="source" value="realm_$realm.bsh"/> <!-- to handle specific
- * realms-->
- *    <property name="source" value="tag_$tag_realm_$realm.bsh"/> <!-- to handle
- * specific tags from specific realms-->
+ *    <property name="source" value="tag_$tag.bsh"/>
+ *    <property name="source" value="realm_$realm.bsh"/>
+ *    <property name="source" value="tag_$tag_realm_$realm.bsh"/>
  * </log-listener>
- * <!-- the following lines are for html doc-->
- * <br>
- * <pre>
- * <font color="#008080">&lt;</font><font color="#008080">log-listener</font><font color="#008080"> </font><font color="#2e8b57"><b>class</b></font>=<font color="#ff00ff">&quot;org.jpos.bsh.BSHLoglistener&quot;</font><font color="#008080">&gt;</font>
- *       <font color="#008080">&lt;</font><font color="#008080">property</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;source&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;general.bsh&quot;</font><font color="#008080">/&gt;</font>
- *       <font color="#008080">&lt;</font><font color="#008080">property</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;source&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;tag_$tag.bsh&quot;</font><font color="#008080">/&gt;</font> <font color="#0000ff">&lt;!</font><font color="#0000ff">--this is to handle specific tags--</font><font color="#0000ff">&gt;</font>
- *       <font color="#008080">&lt;</font><font color="#008080">property</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;source&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;realm_$realm.bsh&quot;</font><font color="#008080">/&gt;</font> <font color="#0000ff">&lt;!</font><font color="#0000ff">-- to handle specific realms--</font><font color="#0000ff">&gt;</font>
- *       <font color="#008080">&lt;</font><font color="#008080">property</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;source&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;tag_$tag_realm_$realm.bsh&quot;</font><font color="#008080">/&gt;</font> <font color="#0000ff">&lt;!</font><font color="#0000ff">-- to handle specific tags from specific realms--</font><font color="#0000ff">&gt;</font>
- * <font color="#008080">&lt;/log-listener&gt;</font>
- * </pre>
- * <!-- end of lines for html doc-->
+ * }</pre>
  * If a source with the given name is not found, or it canbe read, it is not processed, so this lets
  * you change what is processed in real time, if you put a file called
  * tag_SystemMonitor_realm_monitor.bsh it will be executed whenever the system
  * monitor is run.<BR>
  * If you want to filter an event so that the remaining log listeners don't see
  * it, you have to set event = null in your script.<br>
- * <table border=1 color="black">
- * <caption>Other Configuration Options: </caption>
- * <th><td> Name                </td><td>Type       </td><td>Description</td></th>
- * <tr><td> filter-by-default   </td><td>boolean    </td><td>
- *  If true, filter the events if no script is processed, this way you can put a
- * Log Listener that filters every thing unless you put some script file, even if
- * it is empty, you also can dynamically change what kind of message are filtered
- * by placing empty files with names like tag_SystemMonitor_realm_monitor.bsh in
- * the previous example, if you "touch" a file with this name these events will
- * begin to be processed.</TD></TR>
- * <TR><TD> preload-scripts     </TD><TD>boolean    </TD><TD>If true scripts a
- * loaded once, and kept in memory, being realoaded only if they are touched. This
- * is good when you have lots of RAM memory but ou have troubles with
- * speed</TD></TR>
- * <TR><TD> save-name-space     </TD><TD>boolean    </TD><TD>If true the namespace
- * of the script instance will be saved so that in the next event you can access
- * them from the script, by default it's off, this property is overriden if the
- * script exposes a boolean variable named saveNameSpace</TD></TR>
- * <TR><TD> reload              </TD><TD>long       </TD><TD>this property is used
- * if the preload-script property is true, is the time in milliseconds between
- * updates in the script, during this time BSHLogListener will not check if the
- * script source was modified or deleted on disk </TD></TR>
- * </TABLE>
+ * <table>
+ * <caption>Other Configuration Options</caption>
+ * <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+ * <tbody>
+ * <tr><td>{@code filter-by-default}</td><td>boolean</td><td>
+ *   If true, filter the events if no script is processed, so you can dynamically
+ *   control what is logged by placing or removing script files.</td></tr>
+ * <tr><td>{@code preload-scripts}</td><td>boolean</td><td>
+ *   If true, scripts are loaded once and kept in memory, reloaded only when touched.</td></tr>
+ * <tr><td>{@code save-name-space}</td><td>boolean</td><td>
+ *   If true, the BeanShell namespace is preserved between events (default: false).
+ *   Overridden by a {@code saveNameSpace} variable in the script.</td></tr>
+ * <tr><td>{@code reload}</td><td>long</td><td>
+ *   When {@code preload-scripts} is true, the interval in milliseconds between
+ *   script modification checks.</td></tr>
+ * </tbody>
+ * </table>
  */
 public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.Configurable {
     /**Holds the configuration for this object*/
     protected Configuration cfg;
+    /** Pattern names used for script filename matching. */
     protected static final String[] patterns = {"tag", "realm"};
+    /** Cache of loaded BeanShell scripts keyed by filename. */
     protected Map<String, ScriptInfo> scripts = new HashMap<>();
     /** Creates a new instance of BSHLogListener */
     public BSHLogListener() {
@@ -101,6 +85,13 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     public void setConfiguration(org.jpos.core.Configuration cfg) {
         this.cfg = cfg;
     }
+    /**
+     * Replaces pattern tokens in the source strings.
+     * @param src source strings
+     * @param patterns patterns to replace
+     * @param to replacement strings
+     * @return result array with patterns replaced
+     */
     protected static String[] replace(String[] src, String[] patterns, String[] to){
         String[] ret = new String[src.length];
         for(int i=0; i<src.length; i++){
@@ -184,6 +175,12 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
             return ret;
         }
     }
+    /**
+     * Loads a BeanShell script from a file.
+     * @param f script file to load
+     * @return file contents as a string
+     * @throws IOException on read failure
+     */
     protected String loadCode(File f) throws IOException{
         StringBuilder buf = new StringBuilder((int)f.length());
         char[] content = new char[(int)f.length()];
@@ -197,27 +194,49 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         return buf.toString();
     }
 
+    /**
+     * Returns the cached ScriptInfo for the given filename, or null.
+     * @param filename the script filename key
+     * @return cached ScriptInfo or null
+     */
     protected ScriptInfo getScriptInfo(String filename){
         Objects.requireNonNull(filename, "The script file name cannot be null");
         return scripts.get(filename);
     }
 
+    /**
+     * Stores a ScriptInfo in the cache.
+     * @param filename the script filename key
+     * @param code the script source code
+     * @param lastModified last-modified timestamp
+     */
     protected void addScriptInfo(String filename, String code, long lastModified){
         Objects.requireNonNull(filename, "The script file name cannot be null");
         scripts.put(filename, new ScriptInfo(code, lastModified));
     }
+    /** Holds a cached BeanShell script and its namespace. */
     protected static class ScriptInfo{
         String code;
         long lastModified;
         long lastCheck;
         NameSpace nameSpace;
         
+        /** Default constructor creating an empty ScriptInfo. */
         public ScriptInfo(){
         }
+        /**
+         * Creates a ScriptInfo with the given BeanShell namespace.
+         * @param ns the BeanShell namespace to use
+         */
         public ScriptInfo(NameSpace ns){
             nameSpace = ns;
         }
         
+        /**
+         * Creates a ScriptInfo with the given code and timestamp.
+         * @param code the script source code
+         * @param lastModified last-modified timestamp of the script file
+         */
         public ScriptInfo(String code, long lastModified){
             setCode(code);
             setLastModified(lastModified);

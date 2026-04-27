@@ -50,6 +50,10 @@ public class GenericTaggedFieldsPackager extends GenericPackager
     private int     lenSize;
     private boolean swapTagAndLen;
 
+    /**
+     * Default constructor.
+     * @throws ISOException if configuration fails
+     */
     public GenericTaggedFieldsPackager() throws ISOException {
         super();
     }
@@ -59,6 +63,11 @@ public class GenericTaggedFieldsPackager extends GenericPackager
       return fieldId;
     }
 
+    /**
+     * Unpacks a TLV byte array into a CharTagMap.
+     * @param b the TLV bytes
+     * @return the parsed tag-value map
+     */
     protected CharTagMap unpackTLV(byte[] b) {
         CharTagMap tm = tagMapBuilder.build();
         tm.unpack(new String(b, ISOUtil.CHARSET));
@@ -121,7 +130,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager
      * Pack the subfield into a byte array
      *
      * @return packed array of bytes
-     * @throws org.jpos.iso.ISOException
+     * @throws org.jpos.iso.ISOException on pack/unpack error
      */
     @Override
     public byte[] pack(ISOComponent m) throws ISOException {

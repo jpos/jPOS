@@ -23,7 +23,10 @@ import org.jpos.transaction.TransactionManager;
 
 import java.io.PrintStream;
 
+/** Markdown renderer for {@link TransactionManager.Trace} payloads. */
 public final class TransactionManagerTraceMarkdownLogRenderer implements LogRenderer<TransactionManager.Trace> {
+    /** Default constructor; no instance state to initialise. */
+    public TransactionManagerTraceMarkdownLogRenderer() {}
     @Override
     public void render(TransactionManager.Trace t, PrintStream ps, String indent) {
         ps.println (indent(indent, t.toString()));

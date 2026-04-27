@@ -21,6 +21,13 @@ package org.jpos.log.evt;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.jpos.log.AuditLogEvent;
 
+/**
+ * Audit event reporting the active jPOS license and its status code.
+ *
+ * @param license license identifier or descriptor
+ * @param status  license status, rendered as a hexadecimal {@code status}
+ *                XML attribute by {@link #toString()}
+ */
 public record License(String license, @JacksonXmlProperty(isAttribute = true) int status) implements AuditLogEvent {
     @Override
     public String toString() {

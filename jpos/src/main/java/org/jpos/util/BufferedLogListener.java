@@ -26,9 +26,16 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+/**
+ * {@link LogListener} that buffers a configurable window of recent events and
+ * replays them (asynchronously) to any registered downstream listeners.
+ */
 public class BufferedLogListener implements LogListener, Configurable, LogProducer {
+    /** Creates a listener using the {@link #DEFAULT_SIZE} buffer capacity. */
+    public BufferedLogListener() {}
     int maxSize;
     String name;
+    /** Default buffer capacity used when {@code size} is not configured. */
     public static final int DEFAULT_SIZE = 100;
     List<LogListener> listeners = new ArrayList<LogListener>();
     final List<LogEvent> events = new ArrayList<LogEvent>();
@@ -80,6 +87,11 @@ public class BufferedLogListener implements LogListener, Configurable, LogProduc
         }
     }
 
+    /**
+     * Returns the configured buffer capacity.
+     *
+     * @return the maximum number of events retained in the buffer
+     */
     public int getMaxSize() {
         return maxSize;
     }

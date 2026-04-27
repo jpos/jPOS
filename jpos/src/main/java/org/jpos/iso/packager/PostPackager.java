@@ -60,15 +60,17 @@ import org.jpos.util.Logger;
 /**
  * ISO 8583 v1987 Packager for Postilion
  *
- * @author Victor A. Salaman <salaman@teknos.com>
- * @version Id: PostPackager.java,v 1.9 1999/09/17 12:08:02 salaman Exp 
+ * @author Victor A. Salaman (salaman@teknos.com)
+ * @version $Id$
  * @see ISOPackager
  * @see ISOBasePackager
  * @see ISOComponent
  */
 
 public class PostPackager extends ISOBasePackager {
+    /** Sub-packager handling the Postilion private-use bitmap (DE-127). */
     protected PostPrivatePackager p127 = new PostPrivatePackager();
+    /** Field-by-field packager array for the ISO-8583 v1987 Postilion variant. */
     protected ISOFieldPackager fld[] = {
             new IFA_NUMERIC (  4, "MESSAGE TYPE INDICATOR"),
             new IFB_BITMAP  ( 16, "BIT MAP"),
@@ -203,9 +205,11 @@ public class PostPackager extends ISOBasePackager {
             ),
             new IFA_LLLCHAR (999, "MAC 2")
         };
+        /** Inner packager handling Postilion's private-use sub-fields nested under DE-127. */
         protected static class PostPrivatePackager extends ISOBasePackager
-        { 
-                protected ISOFieldPackager fld127[] = 
+        {
+                /** Field-by-field packager array for the DE-127 sub-message. */
+                protected ISOFieldPackager fld127[] =
                 {
                         new IF_CHAR             (0,   "PLACEHOLDER"),
                         new IFB_BITMAP  (8,       "BITMAP"),
@@ -235,15 +239,24 @@ public class PostPackager extends ISOBasePackager {
                     new IFA_LLLLCHAR(8000,  "ICC DATA")
                 };  
 
+        /** Default constructor. Configures the inner field-packager array. */
         protected PostPrivatePackager()
         {   super();
             setFieldPackager(fld127);
         }
     }
+    /** Default constructor. */
     public PostPackager() {
         super();
         setFieldPackager(fld);
     }
+    /**
+     * Forwards the logger configuration to the nested DE-127 sub-packager so
+     * its diagnostics share the parent realm namespace.
+     *
+     * @param logger logger to bind
+     * @param realm logger realm
+     */
     public void setLogger (Logger logger, String realm) {
         super.setLogger (logger, realm);
         p127.setLogger (logger, realm + ".PostPrivatePackager");

@@ -20,19 +20,32 @@ package org.jpos.tlv;
 
 
 /**
+ * Describes the data format (encoding, length type) of a TLV field.
  * @author Vishnu Pillai
  */
 public enum TLVDataFormat {
+    /** ASCII digits {@code 0-9}. */
     ASCII_NUMERIC,
+    /** ASCII alphabetic characters. */
     ASCII_ALPHA,
+    /** ASCII alphanumeric characters. */
     ASCII_ALPHA_NUMERIC,
+    /** ASCII alphanumeric characters and spaces. */
     ASCII_ALPHA_NUMERIC_SPACE,
+    /** ASCII alphanumeric and special characters. */
     ASCII_ALPHA_NUMERIC_SPECIAL,
+    /** Raw binary bytes. */
     BINARY,
+    /** Compressed numeric (digits packed into nibbles, with padding). */
     COMPRESSED_NUMERIC,
+    /** Constructed data object containing nested TLVs. */
     CONSTRUCTED,
+    /** Packed BCD numeric (two digits per byte). */
     PACKED_NUMERIC,
+    /** Packed BCD date in {@code YYMMDD} form. */
     PACKED_NUMERIC_DATE_YYMMDD,
+    /** Packed BCD time in {@code HHMMSS} form. */
     PACKED_NUMERIC_TIME_HHMMSS,
+    /** Proprietary/unspecified format. */
     PROPRIETARY
 }

@@ -115,8 +115,10 @@ public class SubConfiguration implements Configuration {
     /**
      * Creates a new object, it takes the class from the value of the property
      * <code>propertyName</code>
-     * @param propertyName Property whose value is the class name of  
+     * @param propertyName Property whose value is the class name of
      * the object being created.
+     * @return the instantiated (and optionally configured) object
+     * @throws ConfigurationException if the class cannot be resolved or instantiated
      */
     public Object getObject (String propertyName) throws ConfigurationException{
         try{

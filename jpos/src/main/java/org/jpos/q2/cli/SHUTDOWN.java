@@ -22,8 +22,11 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import java.io.IOException;
 
+/** CLI command that requests an orderly Q2 shutdown. */
 @SuppressWarnings("unused")
 public class SHUTDOWN implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public SHUTDOWN() {}
     public void exec(CLIContext cli, String[] args) throws IOException {
         boolean shutdown;
 

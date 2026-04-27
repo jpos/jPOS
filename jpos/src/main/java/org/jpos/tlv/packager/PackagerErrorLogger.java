@@ -33,9 +33,14 @@ import java.io.PrintStream;
 
 
 /**
+ * Default {@link PackagerErrorHandler} that records pack/unpack failures to a
+ * dedicated logger instead of aborting the operation.
+ *
  * @author Vishnu Pillai
  */
 public class PackagerErrorLogger implements PackagerErrorHandler, Configurable, LogSource {
+    /** Default constructor; no instance state to initialise. */
+    public PackagerErrorLogger() {}
 
     private Logger logger = Logger.getLogger("PACKAGER_ERROR_LOGGER");
     private String realm;

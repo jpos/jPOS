@@ -31,7 +31,17 @@ import org.jpos.log.AuditLogEvent;
  */
 
 public record DeployActivity(@JacksonXmlProperty(isAttribute = true) Action action, String info) implements AuditLogEvent {
+    /** Filesystem-level event observed in the deploy directory. */
     public enum Action {
-        CREATE, DELETE, MODIFY, RENAME, RENAME_ERROR
+        /** A new descriptor was created. */
+        CREATE,
+        /** An existing descriptor was deleted. */
+        DELETE,
+        /** An existing descriptor was modified in place. */
+        MODIFY,
+        /** A descriptor was renamed. */
+        RENAME,
+        /** A rename was attempted but could not be completed. */
+        RENAME_ERROR
     }
 }

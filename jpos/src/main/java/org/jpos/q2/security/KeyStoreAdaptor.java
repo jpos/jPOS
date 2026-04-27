@@ -42,9 +42,11 @@ import org.jpos.util.NameRegistrar;
  */
 public class KeyStoreAdaptor extends QBeanSupport implements KeyStoreAdaptorMBean
 {
+    /** Default {@link SecureKeyStore} implementation used when no class is configured. */
     public static final String DEFAULT_IMPL="org.jpos.security.SimpleKeyFile";
     String clazz;
     SecureKeyStore ks;
+    /** Default constructor. */
     public KeyStoreAdaptor () {
         super ();
         clazz = DEFAULT_IMPL;

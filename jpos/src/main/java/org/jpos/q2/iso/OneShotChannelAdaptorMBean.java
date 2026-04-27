@@ -26,24 +26,74 @@ package org.jpos.q2.iso;
  */
 public interface OneShotChannelAdaptorMBean extends org.jpos.q2.QBeanSupportMBean {
 
+  /**
+   * Sets the inbound queue name.
+   *
+   * @param in queue name
+   */
   void setInQueue(java.lang.String in) ;
 
+  /**
+   * Returns the inbound queue name.
+   *
+   * @return queue name
+   */
   java.lang.String getInQueue() ;
 
+  /**
+   * Sets the outbound queue name.
+   *
+   * @param out queue name
+   */
   void setOutQueue(java.lang.String out) ;
 
+  /**
+   * Returns the outbound queue name.
+   *
+   * @return queue name
+   */
   java.lang.String getOutQueue() ;
 
+  /**
+   * Sets the remote host.
+   *
+   * @param host host name or address
+   */
   void setHost(java.lang.String host) ;
 
+  /**
+   * Returns the configured remote host.
+   *
+   * @return host name or address
+   */
   java.lang.String getHost() ;
 
+  /**
+   * Sets the remote port.
+   *
+   * @param port TCP port number
+   */
   void setPort(int port) ;
 
+  /**
+   * Returns the configured remote port.
+   *
+   * @return TCP port number
+   */
   int getPort() ;
 
+  /**
+   * Sets the socket-factory class name.
+   *
+   * @param sFac socket factory class name
+   */
   void setSocketFactory(java.lang.String sFac) ;
 
+  /**
+   * Returns the configured socket-factory class name.
+   *
+   * @return socket factory class name
+   */
   java.lang.String getSocketFactory() ;
 
 }

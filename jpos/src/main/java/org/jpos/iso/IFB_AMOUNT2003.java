@@ -18,7 +18,10 @@
 
 package org.jpos.iso;
 
+/** Binary numeric packager that creates {@link ISOAmount} components, used for ISO-8583:2003 amount fields. */
 public class IFB_AMOUNT2003 extends IFB_NUMERIC {
+    /** Default constructor; no instance state to initialise. */
+    public IFB_AMOUNT2003() {}
     public ISOComponent createComponent(int fieldNumber) {
         return new ISOAmount (fieldNumber);    
     }

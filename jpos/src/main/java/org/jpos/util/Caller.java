@@ -25,16 +25,35 @@ import java.util.regex.Pattern;
  * Return Caller's short class name, method and line number
  */
 public class Caller {
+    /** Utility class; instances carry no state. */
+    public Caller() {}
     private static String JAVA_ID_PATTERN = "(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)\\.*";
     private static Pattern FQCN = Pattern.compile(JAVA_ID_PATTERN + "(\\." + JAVA_ID_PATTERN + ")*");
+    /**
+     * Returns information for the immediate caller of the method that calls this helper.
+     *
+     * @return abbreviated {@code class.method:line} string
+     */
     public static String info() {
         return info(1);
     }
 
+    /**
+     * Returns information for the caller {@code pos} frames above the immediate caller.
+     *
+     * @param pos additional stack frames to skip past the immediate caller
+     * @return abbreviated {@code class.method:line} string
+     */
     public static String info(int pos) {
         return info (Thread.currentThread().getStackTrace()[2+pos]);
     }
 
+    /**
+     * Formats a stack trace element as {@code abbreviatedClass.method:line}.
+     *
+     * @param st stack frame to format
+     * @return abbreviated {@code class.method:line} string
+     */
     public static String info (StackTraceElement st) {
         String clazz = st.getClassName();
         Matcher matcher = FQCN.matcher(clazz);
@@ -50,6 +69,13 @@ public class Caller {
     }
 
 
+    /**
+     * Abbreviates a fully-qualified class name by collapsing every package segment
+     * to its first character (e.g. {@code o.j.u.Caller}).
+     *
+     * @param clazz fully-qualified class name
+     * @return the abbreviated class name
+     */
     public static String shortClassName(String clazz) {
         Matcher matcher = FQCN.matcher(clazz);
         StringBuilder sb = new StringBuilder();

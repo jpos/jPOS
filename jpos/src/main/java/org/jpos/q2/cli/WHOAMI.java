@@ -21,8 +21,11 @@ package org.jpos.q2.cli;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
+/** CLI command that prints the current OS user. */
 @SuppressWarnings("unused")
 public class WHOAMI implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public WHOAMI() {}
     public void exec(CLIContext cli, String[] args) throws Exception {
         cli.println(System.getProperty("user.name"));
     }

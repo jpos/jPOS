@@ -20,11 +20,29 @@ package org.jpos.transaction;
 
 import java.util.concurrent.Future;
 
+/** Implemented by objects that can be paused and resumed during transaction processing. */
 public interface Pausable {
+    /**
+     * Sets the maximum pause duration.
+     * @param timeoutInMillis timeout in milliseconds
+     */
     void setTimeout (long timeoutInMillis);
+    /**
+     * Returns the configured pause timeout.
+     * @return timeout in milliseconds
+     */
     long getTimeout();
+    /**
+     * Pauses execution and returns a {@link Future} that resolves to the resume result.
+     * @return a Future resolving to the result code passed to {@link #resume(int)}
+     */
     Future<Integer> pause();
+    /**
+     * Resumes a paused execution with the given result code.
+     * @param result the result code to deliver to the waiting Future
+     */
     void resume(int result);
 
+    /** Resets the pause state so this object can be reused. */
     void reset();
 }

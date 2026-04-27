@@ -31,59 +31,144 @@ import org.jpos.iso.validator.ISOVException;
  */
 public class IVA_NUMNOZERO extends IVA_NUM {
 
+    /** Default constructor. */
     public IVA_NUMNOZERO(  ) {
         super();
     }
 
+    /**
+     * Constructs a validator with explicit length bounds and numeric radix.
+     *
+     * @param minLen minimum acceptable length
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     * @param radix numeric radix (e.g. 10, 16)
+     */
     public IVA_NUMNOZERO( int minLen, int maxLen, String Description, int radix ) {
         super( minLen, maxLen, Description, radix );
     }
 
+    /**
+     * Constructs a validator with explicit length bounds.
+     *
+     * @param minLen minimum acceptable length
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     */
     public IVA_NUMNOZERO( int minLen, int maxLen, String Description ) {
         super( minLen, maxLen, Description );
     }
 
+    /**
+     * Constructs a validator with a minimum length and numeric radix.
+     *
+     * @param minLen minimum acceptable length
+     * @param Description human-readable field description
+     * @param radix numeric radix
+     */
     public IVA_NUMNOZERO( int minLen, String Description, int radix ) {
         super( minLen, Description, radix );
     }
 
+    /**
+     * Constructs a validator with a maximum length.
+     *
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     */
     public IVA_NUMNOZERO( int maxLen, String Description ) {
         super( maxLen, Description );
     }
 
+    /**
+     * Constructs a validator using only a description and numeric radix.
+     *
+     * @param Description human-readable field description
+     * @param radix numeric radix
+     */
     public IVA_NUMNOZERO( String Description, int radix ) {
         super( Description, radix );
     }
 
+    /**
+     * Constructs a validator using only a description.
+     *
+     * @param Description human-readable field description
+     */
     public IVA_NUMNOZERO( String Description ) {
         super( Description );
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param Description human-readable field description
+     */
     public IVA_NUMNOZERO( boolean breakOnError, String Description ) {
         this( Description );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag and numeric radix.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param Description human-readable field description
+     * @param radix numeric radix
+     */
     public IVA_NUMNOZERO( boolean breakOnError, String Description, int radix ) {
         this( Description, radix );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag and a maximum length.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     */
     public IVA_NUMNOZERO( boolean breakOnError, int maxLen, String Description ) {
         this( maxLen, Description );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag, max length, and radix.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     * @param radix numeric radix
+     */
     public IVA_NUMNOZERO( boolean breakOnError, int maxLen, String Description, int radix ) {
         this( maxLen, Description, radix );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag and explicit length bounds.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param minLen minimum acceptable length
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     */
     public IVA_NUMNOZERO( boolean breakOnError, int minLen, int maxLen, String Description ) {
         this( minLen, maxLen, Description );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag, length bounds, and radix.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param minLen minimum acceptable length
+     * @param maxLen maximum acceptable length
+     * @param Description human-readable field description
+     * @param radix numeric radix
+     */
     public IVA_NUMNOZERO( boolean breakOnError, int minLen, int maxLen, String Description, int radix ) {
         this( minLen, maxLen, Description, radix );
         this.breakOnError = breakOnError;
@@ -92,6 +177,10 @@ public class IVA_NUMNOZERO extends IVA_NUM {
 
     /**
      * Validate that component is not zero-filled.
+     *
+     * @param f component to validate
+     * @return the validated (possibly wrapped) component
+     * @throws ISOException if {@link #breakOnError} is set and the field is zero-filled or fails numeric validation
      */
     public ISOComponent validate ( ISOComponent f ) throws ISOException {
         ISOField c = (ISOField)f;

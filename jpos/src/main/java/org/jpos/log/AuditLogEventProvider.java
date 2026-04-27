@@ -38,6 +38,8 @@ import java.util.Collection;
  */
 public interface AuditLogEventProvider {
     /**
+     * Returns the {@link AuditLogEventType} mappings contributed by this provider.
+     *
      * @return the type mappings contributed by this provider; must not be {@code null}.
      */
     Collection<AuditLogEventType> types();

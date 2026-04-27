@@ -51,6 +51,7 @@ public class SecureDESKey extends SecureVariantKey {
      */
     protected static final Pattern KEY_TYPE_PATTERN = Pattern.compile("([^:;]*)([:;])?([^:;])?([^:;])?");
 
+    /** Default constructor. */
     public SecureDESKey() {
         super();
     }
@@ -58,11 +59,11 @@ public class SecureDESKey extends SecureVariantKey {
     /**
      * Constructs an SecureDESKey
      * @param keyLength e.g. LENGTH_DES, LENGTH_DES3_2KEY, LENGTH_DES3_3KEY
-     * @param keyType
-     * @param variant
-     * @param scheme
+     * @param keyType key-type label (e.g. {@code ZPK}, {@code TMK})
+     * @param variant LMK variant byte applied during encryption under the LMK
+     * @param scheme key scheme (encryption form)
      * @param keyBytes DES Key in the secure proprietary format of your security module
-     * @param keyCheckValue
+     * @param keyCheckValue 3-byte (or longer) key check value
      * @see SMAdapter
      */
     public SecureDESKey (short keyLength, String keyType, byte variant, KeyScheme scheme, byte[] keyBytes,
@@ -78,9 +79,9 @@ public class SecureDESKey extends SecureVariantKey {
     /**
      * Constructs an SecureDESKey
      * @param keyLength e.g. LENGTH_DES, LENGTH_DES3_2KEY, LENGTH_DES3_3KEY
-     * @param keyType
+     * @param keyType key-type label (e.g. {@code ZPK}, {@code TMK})
      * @param keyBytes DES Key in the secure proprietary format of your security module
-     * @param keyCheckValue
+     * @param keyCheckValue 3-byte (or longer) key check value
      * @see SMAdapter
      */
     public SecureDESKey (short keyLength, String keyType, byte[] keyBytes,
@@ -95,8 +96,8 @@ public class SecureDESKey extends SecureVariantKey {
 
     /**
      * Constructs an SecureDESKey
-     * @param keyLength
-     * @param keyType
+     * @param keyLength e.g. LENGTH_DES, LENGTH_DES3_2KEY, LENGTH_DES3_3KEY
+     * @param keyType key-type label (e.g. {@code ZPK}, {@code TMK})
      * @param keyHexString secure key represented as HexString instead of byte[]
      * @param keyCheckValueHexString key check value represented as HexString instead of byte[]
      */
@@ -107,10 +108,10 @@ public class SecureDESKey extends SecureVariantKey {
 
     /**
      * Constructs an SecureDESKey
-     * @param keyLength
-     * @param keyType
-     * @param variant
-     * @param scheme
+     * @param keyLength e.g. LENGTH_DES, LENGTH_DES3_2KEY, LENGTH_DES3_3KEY
+     * @param keyType key-type label (e.g. {@code ZPK}, {@code TMK})
+     * @param variant LMK variant byte applied during encryption under the LMK
+     * @param scheme key scheme (encryption form)
      * @param keyHexString secure key represented as HexString instead of byte[]
      * @param keyCheckValueHexString key check value represented as HexString instead of byte[]
      */

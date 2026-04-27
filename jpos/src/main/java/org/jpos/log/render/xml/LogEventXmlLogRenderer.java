@@ -41,9 +41,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/** XML renderer for {@link LogEvent}, emitting wrapped {@code <log>} elements with payload children. */
 public final class LogEventXmlLogRenderer implements LogRenderer<LogEvent> {
     private final XmlMapper mapper = new XmlMapper();
 
+    /** Default constructor. */
     public LogEventXmlLogRenderer() {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

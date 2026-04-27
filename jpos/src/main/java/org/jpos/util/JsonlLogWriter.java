@@ -68,6 +68,7 @@ public class JsonlLogWriter extends BaseLogEventWriter implements Configurable {
     private Set<Integer> protectFields = Set.of(2);
     private Set<Integer> wipeFields = Set.of(35, 45, 48, 52, 55);
 
+    /** Default constructor. */
     public JsonlLogWriter() {
         initMapper();
         try {

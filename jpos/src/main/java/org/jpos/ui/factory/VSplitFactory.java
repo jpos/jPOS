@@ -25,6 +25,9 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that builds a vertical {@link JSplitPane} from the configuration
+ * element's {@code <top>} and {@code <bottom>} children.
+ *
  * @author Alejandro Revilla
  *
  * creates a vertical split pane
@@ -38,6 +41,8 @@ import javax.swing.*;
  * @see org.jpos.ui.UIFactory
  */
 public class VSplitFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public VSplitFactory() {}
     public JComponent create (UI ui, Element e) {
         JSplitPane splitPane = new JSplitPane(
             JSplitPane.VERTICAL_SPLIT,

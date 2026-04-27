@@ -76,6 +76,7 @@ public class OneShotChannelAdaptorMK2
 
     ScheduledExecutorService checkTimer;
 
+    /** Default constructor. */
     public OneShotChannelAdaptorMK2()
     {
         super();
@@ -305,11 +306,22 @@ public class OneShotChannelAdaptorMK2
         sp.put(ready, new Date());
     }
 
+    /**
+     * Sends a message via the inbound queue with no expiration.
+     *
+     * @param m message to send
+     */
     public void send(ISOMsg m)
     {
         sp.out(in, m);
     }
 
+    /**
+     * Sends a message via the inbound queue with a per-entry lease.
+     *
+     * @param m message to send
+     * @param timeout entry lease in milliseconds
+     */
     public void send(ISOMsg m, long timeout)
     {
         sp.out(in, m, timeout);
@@ -464,22 +476,39 @@ public class OneShotChannelAdaptorMK2
         setModified(true);
     }
 
+    /**
+     * Returns the configured socket-factory class name.
+     *
+     * @return socket factory class name
+     */
     public String getSocketFactory()
     {
         return getProperty(getProperties("channel"), "socketFactory");
     }
 
+    /**
+     * Sets the socket-factory class name.
+     *
+     * @param sFac socket factory class name
+     */
     public synchronized void setSocketFactory(String sFac)
     {
         setProperty(getProperties("channel"), "socketFactory", sFac);
         setModified(true);
     }
 
+    /** Per-message worker that opens an ad-hoc channel, sends a request, and forwards the response. */
     public class Worker implements Runnable
     {
         ISOMsg req;
         int id;
 
+        /**
+         * Constructs a Worker for the given request.
+         *
+         * @param req message to send
+         * @param id worker identifier (used in the thread name)
+         */
         public Worker(ISOMsg req, int id)
         {
             this.req = req;

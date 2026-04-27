@@ -20,6 +20,7 @@ package org.jpos.transaction;
 
 import java.io.Serializable;
 
+/** Event describing a transaction status transition. */
 public class TransactionStatusEvent {
     int session;
     long id;
@@ -28,13 +29,21 @@ public class TransactionStatusEvent {
     State state;
     Serializable context;
 
+    /** Enumeration of transaction lifecycle states. */
     public enum State {
+        /** Transaction is ready for processing. */
         READY(0),
+        /** Transaction is in the prepare phase. */
         PREPARING(1),
+        /** Transaction is preparing for abort. */
         PREPARING_FOR_ABORT(2),
+        /** Transaction is committing. */
         COMMITING(3),
+        /** Transaction is aborting. */
         ABORTING(4),
+        /** Transaction processing is complete. */
         DONE(5),
+        /** Transaction is paused. */
         PAUSED(6);
 
         int state;
@@ -47,11 +56,25 @@ public class TransactionStatusEvent {
         public String toString () {
             return stateAsString [state];
         }
+        /**
+         * Returns the numeric representation of the state.
+         *
+         * @return integer state code
+         */
         public int intValue() {
             return state;
         }
     }
 
+    /**
+     * Creates a transaction status event.
+     *
+     * @param session session identifier
+     * @param state transaction state
+     * @param id transaction identifier
+     * @param info human-readable status information
+     * @param context transaction context when available
+     */
     public TransactionStatusEvent (int session, State state, long id, String info, Serializable context) {
         super();
         this.session = session;
@@ -64,21 +87,51 @@ public class TransactionStatusEvent {
     public String toString() {
         return String.format("%02d %08d %s %s", session, id, state.toString(), info);
     }
+    /**
+     * Returns the session identifier.
+     *
+     * @return session identifier
+     */
     public int getSession() {
         return session;
     }
+    /**
+     * Returns the transaction identifier.
+     *
+     * @return transaction identifier
+     */
     public long getId() {
         return id;
     }
+    /**
+     * Returns the status information string.
+     *
+     * @return status information
+     */
     public String getInfo() {
         return info;
     }
+    /**
+     * Returns the transaction state.
+     *
+     * @return current state
+     */
     public State getState() {
         return state;
     }
+    /**
+     * Returns the transaction state as display text.
+     *
+     * @return state name
+     */
     public String getStateAsString () {
         return state.toString();
     }
+    /**
+     * Returns the transaction context.
+     *
+     * @return transaction context
+     */
     public Serializable getContext(){
         return context;
     }

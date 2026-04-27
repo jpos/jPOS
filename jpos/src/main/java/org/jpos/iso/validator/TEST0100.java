@@ -36,10 +36,16 @@ import org.jpos.util.Logger;
 @SuppressWarnings("unchecked")
 public class TEST0100 extends ISOBaseValidator {
 
+    /** Default constructor. */
     public TEST0100() {
         super();
     }
 
+    /**
+     * Constructs the validator with the requested error behaviour.
+     *
+     * @param breakOnError when {@code true}, validation throws on the first error
+     */
     public TEST0100( boolean breakOnError ) {
         super( breakOnError );
     }

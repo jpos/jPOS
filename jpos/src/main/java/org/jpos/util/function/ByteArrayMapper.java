@@ -21,6 +21,7 @@ package org.jpos.util.function;
 import java.util.function.Function;
 
 /**
+ * Functional interface for transforming a {@code byte[]} payload; used by log stream mappers.
  * @author Alwyn Schoeman
  * @since 2.1.4
  */

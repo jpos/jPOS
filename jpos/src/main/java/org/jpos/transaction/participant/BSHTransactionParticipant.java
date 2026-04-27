@@ -56,11 +56,16 @@ public class BSHTransactionParticipant extends SimpleLogSource
     implements TransactionParticipant, AbortParticipant, XmlConfigurable 
 {
     
+    /** BeanShell method for the prepare phase. */
     protected BSHMethod prepareMethod;
+    /** BeanShell method for the prepare-for-abort phase. */
     protected BSHMethod prepareForAbortMethod;
+    /** BeanShell method for the commit phase. */
     protected BSHMethod commitMethod;
+    /** BeanShell method for the abort phase. */
     protected BSHMethod abortMethod;
 
+    /** Whether to log trace events. */
     boolean trace;
     
     /** Creates a new instance of BSHTransactionParticipant */
@@ -83,6 +88,12 @@ public class BSHTransactionParticipant extends SimpleLogSource
             Logger.log(ev);
     }
     
+    /**
+     * Default abort handling when no BeanShell abort method is configured (no-op).
+     * @param id transaction id
+     * @param context transaction context
+     * @param ev log event
+     */
     protected void defaultAbort(long id, Serializable context, LogEvent ev) {}
     
     public void commit(long id, java.io.Serializable context) {
@@ -100,6 +111,11 @@ public class BSHTransactionParticipant extends SimpleLogSource
             Logger.log(ev);
     }
     
+    /** Default commit implementation (no-op).
+     * @param id transaction id
+     * @param context transaction context
+     * @param ev log event
+     */
     protected void defaultCommit(long id, Serializable context, LogEvent ev) {}
     
     public int prepare(long id, java.io.Serializable context) {
@@ -120,6 +136,7 @@ public class BSHTransactionParticipant extends SimpleLogSource
         return result;
     }
 
+    /** {@inheritDoc} */
     public int prepareForAbort(long id, java.io.Serializable context) {
         LogEvent ev = new LogEvent(this, "prepare-for-abort");
         int result = ABORTED | READONLY;
@@ -136,6 +153,12 @@ public class BSHTransactionParticipant extends SimpleLogSource
         return result;
     }
     
+    /** Default prepare implementation; returns PREPARED|READONLY.
+     * @param id transaction id
+     * @param context transaction context
+     * @param ev log event
+     * @return transaction result code
+     */
     protected int defaultPrepare(long id, Serializable context, LogEvent ev) {
         return PREPARED | READONLY;
     }
@@ -152,6 +175,17 @@ public class BSHTransactionParticipant extends SimpleLogSource
         }
     }
     
+    /**
+     * Executes the given BSHMethod with the standard transaction parameters.
+     * @param m the BSHMethod to execute
+     * @param id transaction id
+     * @param context transaction context
+     * @param evt log event
+     * @param resultName the result variable name
+     * @return the value of resultName after execution
+     * @throws bsh.EvalError on BeanShell evaluation error
+     * @throws java.io.IOException if the script cannot be read
+     */
     protected Object executeMethod(BSHMethod m, long id, Serializable context, LogEvent evt, String resultName) 
     throws EvalError, IOException {
         Map params = new HashMap();

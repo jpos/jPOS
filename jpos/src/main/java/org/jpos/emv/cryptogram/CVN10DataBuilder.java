@@ -30,6 +30,8 @@ import static org.jpos.emv.cryptogram.CryptogramDataBuilder.minimumSetOfDataElem
  * @author Rainer Reyes
  */
 public class CVN10DataBuilder implements CryptogramDataBuilder {
+    /** Default constructor; no instance state to initialise. */
+    public CVN10DataBuilder() {}
 
     @Override
     public String getDefaultARPCRequest(boolean approved) {

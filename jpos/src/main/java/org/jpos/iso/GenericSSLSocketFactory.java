@@ -55,6 +55,8 @@ public class GenericSSLSocketFactory
         extends SimpleLogSource 
         implements ISOServerSocketFactory,ISOClientSocketFactory, Configurable
 { 
+    /** Default constructor; no instance state to initialise. */
+    public GenericSSLSocketFactory() {}
 
     private SSLContext sslc=null;
     private SSLServerSocketFactory  serverFactory=null;
@@ -71,28 +73,58 @@ public class GenericSSLSocketFactory
 
     private Configuration cfg;
 
+    /**
+     * Sets the path of the JKS key store used for the TLS handshake.
+     *
+     * @param keyStore filesystem path of the JKS key store
+     */
     public void setKeyStore(String keyStore){
-        this.keyStore=keyStore;  
+        this.keyStore=keyStore;
     }
 
+    /**
+     * Sets the key store password.
+     *
+     * @param password key store password
+     */
     public void setPassword(String password){
-        this.password=password;  
+        this.password=password;
     }
 
+    /**
+     * Sets the password protecting the private key entry.
+     *
+     * @param keyPassword password protecting the private key entry
+     */
     public void setKeyPassword(String keyPassword){
-        this.keyPassword=keyPassword;  
+        this.keyPassword=keyPassword;
     }
 
+    /**
+     * Sets the Common Name (CN) used to verify the peer certificate.
+     *
+     * @param serverName expected Common Name (CN) of the peer certificate
+     */
     public void setServerName(String serverName){
-        this.serverName=serverName;  
+        this.serverName=serverName;
     }
 
+    /**
+     * Toggles whether accepted sockets require TLS client authentication.
+     *
+     * @param clientAuthNeeded require TLS client authentication on accepted sockets
+     */
     public void setClientAuthNeeded(boolean clientAuthNeeded){
-        this.clientAuthNeeded=clientAuthNeeded;  
+        this.clientAuthNeeded=clientAuthNeeded;
     }
 
+    /**
+     * Toggles whether outbound sockets validate the server certificate chain.
+     *
+     * @param serverAuthNeeded validate the server certificate chain on outbound sockets
+     */
     public void setServerAuthNeeded(boolean serverAuthNeeded){
-        this.serverAuthNeeded=serverAuthNeeded;  
+        this.serverAuthNeeded=serverAuthNeeded;
     }
 
     private TrustManager[] getTrustManagers(KeyStore ks)
@@ -295,36 +327,79 @@ public class GenericSSLSocketFactory
         }
     }
 
+    /**
+     * Returns the path of the configured JKS key store.
+     *
+     * @return filesystem path of the JKS key store
+     */
     public String getKeyStore() {
         return keyStore;
     }
 
-    // Have custom hooks get passwords
-    // You really need to modify these two implementations
+    /**
+     * Hook returning the key store password.
+     * Subclasses are expected to override this to source the password
+     * from a secret manager rather than a system property.
+     *
+     * @return key store password
+     */
     protected String getPassword() {
         return System.getProperty("jpos.ssl.storepass", "password");
     }
 
+    /**
+     * Hook returning the private-key entry password.
+     * Subclasses are expected to override this to source the password
+     * from a secret manager rather than a system property.
+     *
+     * @return private-key entry password
+     */
     protected String getKeyPassword() {
         return System.getProperty("jpos.ssl.keypass", "password");
     }
 
+    /**
+     * Returns the configured peer certificate Common Name.
+     *
+     * @return expected Common Name (CN) of the peer certificate
+     */
     public String getServerName() {
         return serverName;
     }
 
+    /**
+     * Returns whether accepted sockets require TLS client authentication.
+     *
+     * @return {@code true} when accepted sockets require TLS client authentication
+     */
     public boolean getClientAuthNeeded() {
         return clientAuthNeeded;
     }
 
+    /**
+     * Returns whether outbound sockets validate the server certificate chain.
+     *
+     * @return {@code true} when outbound sockets validate the server certificate chain
+     */
     public boolean getServerAuthNeeded() {
         return serverAuthNeeded;
     }
-    
+
+    /**
+     * Sets the explicit list of TLS cipher suites enabled on created sockets.
+     *
+     * @param enabledCipherSuites cipher suites to enable on created sockets;
+     *                            {@code null} or empty leaves provider defaults in place
+     */
     public void setEnabledCipherSuites(String[] enabledCipherSuites) {
         this.enabledCipherSuites = enabledCipherSuites;
     }
 
+    /**
+     * Returns the explicit list of TLS cipher suites enabled on created sockets.
+     *
+     * @return cipher suites enabled on created sockets, or {@code null} when provider defaults apply
+     */
     public String[] getEnabledCipherSuites() {
         return enabledCipherSuites;
     }
@@ -341,6 +416,11 @@ public class GenericSSLSocketFactory
         enabledCipherSuites = cfg.getAll("addEnabledCipherSuite");
         enabledProtocols = cfg.getAll("addEnabledProtocol");
     }
+    /**
+     * Returns the configuration applied via {@link #setConfiguration(Configuration)}.
+     *
+     * @return active configuration, or {@code null} if not yet configured
+     */
     public Configuration getConfiguration() {
         return cfg;
     }

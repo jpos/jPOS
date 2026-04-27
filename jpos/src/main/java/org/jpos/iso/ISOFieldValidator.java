@@ -34,35 +34,63 @@ import org.jpos.iso.validator.ISOVException;
  */
 public class ISOFieldValidator implements Configurable, ISOValidator {
 
+    /** Default constructor. */
     public ISOFieldValidator( ) {
         description = "";
     }
 
+    /** Constructs a validator with the given description.
+     * @param Description the field description
+     */
     public ISOFieldValidator( String Description ) {
         description = Description;
     }
 
+    /** Constructs a validator with max length and description.
+     * @param maxLen field maximum length
+     * @param Description field description
+     */
     public ISOFieldValidator( int maxLen, String Description ) {
         description = Description;
         this.minLen = 0;
         this.maxLen = maxLen;
     }
 
+    /** Constructs a validator with min/max length and description.
+     * @param minLen minimum field length
+     * @param maxLen maximum field length
+     * @param Description field description
+     */
     public ISOFieldValidator( int minLen, int maxLen, String Description ) {
         description = Description;
         this.minLen = minLen;  this.maxLen = maxLen;
     }
 
+    /** Full constructor with all options.
+     * @param breakOnError if true, stop validation on first error
+     * @param minLen minimum field length
+     * @param maxLen maximum field length
+     * @param Description field description
+     */
     public ISOFieldValidator( boolean breakOnError, int minLen, int maxLen, String Description ) {
         this( minLen, maxLen, Description );
         this.breakOnError = breakOnError;
     }
 
+    /** Constructs a validator with error-break flag, max length and description.
+     * @param breakOnError if true, stop validation on first error
+     * @param maxLen maximum field length
+     * @param Description field description
+     */
     public ISOFieldValidator( boolean breakOnError, int maxLen, String Description ) {
         this( maxLen, Description );
         this.breakOnError = breakOnError;
     }
 
+    /** Constructs a validator with break-on-error flag and description.
+     * @param breakOnError if true, stop on first error
+     * @param Description field description
+     */
     public ISOFieldValidator( boolean breakOnError, String Description ) {
         this( Description );
         this.breakOnError = breakOnError;
@@ -82,7 +110,7 @@ public class ISOFieldValidator implements Configurable, ISOValidator {
      * Default config params are: min-len Minimun length,
      * max-len Max length, break-on-error break condition.
      * @param cfg configuration instance
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
@@ -91,34 +119,58 @@ public class ISOFieldValidator implements Configurable, ISOValidator {
         this.breakOnError = cfg.getBoolean( "break-on-error", false );
     }
 
+    /** Sets the maximum field length.
+     * @param maxLen maximum length
+     */
     public void setMaxLength( int maxLen ){
         this.maxLen = maxLen;
     }
 
+    /** Sets the minimum field length.
+     * @param minLen minimum length
+     */
     public void setMinLength( int minLen ){
         this.minLen = minLen;
     }
 
+    /** Sets whether to break on first error.
+     * @param breakOnErr if true, stop on first error
+     */
     public void setBreakOnError( boolean breakOnErr ){
         this.breakOnError = breakOnErr;
     }
 
+    /** Returns whether break-on-error is set.
+     * @return true if break-on-error is enabled
+     */
     public boolean breakOnError(){
         return breakOnError;
     }
 
+    /** Returns the field description.
+     * @return the description string
+     */
     public String getDescription() {
         return description;
     }
 
+    /** Sets the field description.
+     * @param description the description
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /** Sets the field ID.
+     * @param f the field ID
+     */
     public void setFieldId ( int f ){
         fieldId = f;
     }
 
+    /** Returns the field ID.
+     * @return the field ID
+     */
     public int getFieldId(){
         return fieldId;
     }
@@ -178,5 +230,6 @@ public class ISOFieldValidator implements Configurable, ISOValidator {
     protected int minLen = 0, maxLen = 999999;
     /** Flag used to indicate if validat process break on first error or keep an error vector **/
     protected boolean breakOnError = false;
+    /** The validator configuration. */
     protected Configuration cfg;
 }

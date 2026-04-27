@@ -18,6 +18,10 @@
 
 package org.jpos.space;
 
+/**
+ * SpaceListener that copies entries written under one key to another key
+ * (optionally in a different space) with a configurable lease timeout.
+ */
 @SuppressWarnings("unchecked")
 public class SpaceTap implements SpaceListener {
     LocalSpace ssp;
@@ -27,19 +31,23 @@ public class SpaceTap implements SpaceListener {
     long tapTimeout;
 
     /**
+     * Constructs a tap that copies within a single space.
+     *
      * @param sp space
      * @param key key to monitor
-     * @param tapKey key to use when copying 
+     * @param tapKey key to use when copying
      * @param tapTimeout copy timeout in millis
      */
     public SpaceTap (LocalSpace sp, Object key, Object tapKey, long tapTimeout) {
         this (sp, sp, key, tapKey, tapTimeout);
     }
     /**
+     * Constructs a tap that copies between two spaces.
+     *
      * @param ssp source space
      * @param dsp destination space
      * @param key key to monitor
-     * @param tapKey key to use when copying 
+     * @param tapKey key to use when copying
      * @param tapTimeout copy timeout in millis
      */
     public SpaceTap (LocalSpace ssp, LocalSpace dsp, Object key, Object tapKey, long tapTimeout) {
@@ -57,6 +65,7 @@ public class SpaceTap implements SpaceListener {
         dsp.out (tapKey, value, tapTimeout);
     }
    
+    /** Detaches this tap from its source space and clears the reference. */
     public void close() {
         if (ssp != null) {
             ssp.removeListener (key, this);

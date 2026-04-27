@@ -29,8 +29,15 @@ import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * CLI command that subscribes to one or more named transaction managers and
+ * mirrors their {@link TransactionStatusListener} events to the terminal until
+ * the user presses Enter.
+ */
 @SuppressWarnings("unused")
 public class TMMON implements CLICommand, TransactionStatusListener {
+    /** Default constructor; no instance state to initialise. */
+    public TMMON() {}
     PrintStream p;
     CLIContext cli;
     boolean ansi;
@@ -71,6 +78,11 @@ public class TMMON implements CLICommand, TransactionStatusListener {
         }
     }
 
+    /**
+     * Prints command usage and lists the registered transaction managers.
+     *
+     * @param cli the CLI context to write to
+     */
     public void usage(CLIContext cli) {
         cli.println("Usage: tmmon [tm-name] [tm-name] ...");
         showTMs(cli);

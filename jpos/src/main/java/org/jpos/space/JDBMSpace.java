@@ -37,6 +37,8 @@ import java.util.*;
 /**
  * JDBM based persistent space implementation
  *
+ * @param <K> key type stored in this space
+ * @param <V> value type stored in this space
  * @author Alejandro Revilla
  * @author Kris Leite
  * @version $Revision$ $Date$
@@ -44,12 +46,19 @@ import java.util.*;
  */
 @SuppressWarnings("unchecked")
 public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentSpace {
+    /** JDBM hash tree storing the space entries. */
     protected HTree htree;
+    /** Underlying JDBM record manager used to persist {@link #htree}. */
     protected RecordManager recman;
+    /** Shared serializer used for {@code Ref} values stored in {@link #htree}. */
     protected static final Serializer refSerializer = new Ref ();
+    /** Cache of named JDBM spaces, keyed by space name. */
     protected static final Map<String,Space> spaceRegistrar = new HashMap<String,Space> ();
+    /** Whether mutating operations should commit immediately. */
     protected boolean autoCommit = true;
+    /** Space name used for registration. */
     protected String name;
+    /** Periodic interval, in milliseconds, between background GC sweeps. */
     public static final long GCDELAY = 5*60*1000;
     private static final long NRD_RESOLUTION = 500L;
 
@@ -79,6 +88,8 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
         DefaultTimer.getTimer().schedule (this, GCDELAY, GCDELAY);
     }
     /**
+     * Returns a reference to the default JDBMSpace, backed by a file named {@code space}.
+     *
      * @return reference to default JDBMSpace
      */
     public static JDBMSpace getSpace() {
@@ -391,6 +402,8 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
     }
 
     /**
+     * Returns the approximate number of entries currently stored under {@code key}.
+     *
      * @param key the Key
      * @return aproximately queue size
      */
@@ -511,6 +524,11 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
             throw new SpaceError (e);
         }
     }
+    /**
+     * Returns a space-separated list of every key currently stored in this space.
+     *
+     * @return all keys, joined by single-space separators
+     */
     public String getKeys () {
         StringBuilder sb = new StringBuilder();
         try {

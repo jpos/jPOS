@@ -34,8 +34,11 @@ import java.net.Socket;
  */
 @SuppressWarnings("unused")
 public class ChannelInfoFilter implements ISOFilter, Configurable {
+    /** Space field name to store the channel name. */
     String channelNameField;
+    /** Space field name to store socket info. */
     String socketInfoField;
+    /** Default constructor. */
     public ChannelInfoFilter() {
         super();
     }

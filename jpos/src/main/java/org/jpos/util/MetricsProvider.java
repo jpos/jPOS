@@ -18,6 +18,12 @@
 
 package org.jpos.util;
 
+/** Implemented by components that publish a {@link Metrics} instance for inspection or dumping. */
 public interface MetricsProvider {
+    /**
+     * Returns the metrics aggregator owned by this component.
+     *
+     * @return the live {@link Metrics} instance
+     */
     Metrics getMetrics();
 }

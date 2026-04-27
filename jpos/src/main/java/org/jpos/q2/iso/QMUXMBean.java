@@ -24,22 +24,108 @@ package org.jpos.q2.iso;
  * @version $Revision: 2223 $ $Date: 2005-11-29 21:04:41 -0200 (Tue, 29 Nov 2005) $
  */
 public interface QMUXMBean extends org.jpos.q2.QBeanSupportMBean {
+    /**
+     * Sets the inbound (response) queue name.
+     *
+     * @param in queue name
+     */
     void setInQueue(java.lang.String in) ;
+    /**
+     * Returns the inbound (response) queue name.
+     *
+     * @return queue name
+     */
     String getInQueue() ;
+    /**
+     * Sets the outbound (request) queue name.
+     *
+     * @param out queue name
+     */
     void setOutQueue(java.lang.String out) ;
+    /**
+     * Returns the outbound (request) queue name.
+     *
+     * @return queue name
+     */
     String getOutQueue() ;
+    /**
+     * Sets the queue name where unmatched inbound messages are forwarded.
+     *
+     * @param unhandled queue name
+     */
     void setUnhandledQueue(java.lang.String unhandled) ;
+    /**
+     * Returns the queue name where unmatched inbound messages are forwarded.
+     *
+     * @return queue name, or {@code null} if not configured
+     */
     String getUnhandledQueue() ;
+    /** Resets all transaction counters and the last-transaction timestamp. */
     void resetCounters();
+    /**
+     * Returns the current counters formatted as a single human-readable string.
+     *
+     * @return counter snapshot suitable for diagnostics
+     */
     String getCountersAsString();
+    /**
+     * Returns the number of messages transmitted since the last reset.
+     *
+     * @return TX message count
+     */
     int getTXCounter();
+    /**
+     * Returns the number of messages received since the last reset.
+     *
+     * @return RX message count
+     */
     int getRXCounter();
+    /**
+     * Returns the number of TX requests that expired without a matching response.
+     *
+     * @return expired TX count
+     */
     int getTXExpired();
+    /**
+     * Returns the number of TX requests still awaiting a response.
+     *
+     * @return pending TX count
+     */
     int getTXPending();
+    /**
+     * Returns the number of received responses that arrived too late and were discarded.
+     *
+     * @return expired RX count
+     */
     int getRXExpired();
+    /**
+     * Returns the number of in-flight responses awaiting matching.
+     *
+     * @return pending RX count
+     */
     int getRXPending();
+    /**
+     * Returns the number of received messages that did not match any pending request.
+     *
+     * @return unhandled RX count
+     */
     int getRXUnhandled();
+    /**
+     * Returns the number of unmatched messages successfully forwarded to listeners.
+     *
+     * @return forwarded RX count
+     */
     int getRXForwarded();
+    /**
+     * Returns the wall-clock timestamp of the last successful transaction.
+     *
+     * @return milliseconds since the epoch, or {@code 0} if no transaction has completed
+     */
     long getLastTxnTimestampInMillis();
+    /**
+     * Returns the time elapsed since the last successful transaction.
+     *
+     * @return idle time in milliseconds, or {@code -1} if no transaction has completed
+     */
     long getIdleTimeInMillis();
 }

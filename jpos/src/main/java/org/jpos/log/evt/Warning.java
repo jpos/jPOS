@@ -20,4 +20,9 @@ package org.jpos.log.evt;
 
 import org.jpos.log.AuditLogEvent;
 
+/**
+ * Audit log event for a free-form warning message.
+ *
+ * @param warn warning text
+ */
 public record Warning (String warn) implements AuditLogEvent { }

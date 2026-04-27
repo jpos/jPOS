@@ -23,6 +23,15 @@ import org.jpos.log.AuditLogEvent;
 
 import java.net.InetAddress;
 
+/**
+ * Audit log event recorded when a server starts listening on a port (or fails to bind).
+ *
+ * @param port port number bound, or attempted
+ * @param bindAddr bind address, or {@code null} for any-interface
+ * @param permits configured connection permit count
+ * @param backlog configured listen backlog
+ * @param error error description if the bind failed, otherwise {@code null}
+ */
 public record Listen(
   int port,
   @JsonInclude(JsonInclude.Include.NON_NULL) InetAddress bindAddr,
@@ -31,6 +40,14 @@ public record Listen(
   @JsonInclude(JsonInclude.Include.NON_NULL) String error
 ) implements AuditLogEvent {
 
+    /**
+     * Convenience constructor for successful binds (no error string).
+     *
+     * @param port port number bound
+     * @param bindAddr bind address
+     * @param permits configured connection permit count
+     * @param backlog configured listen backlog
+     */
     public Listen(int port,
                   @JsonInclude(JsonInclude.Include.NON_NULL) InetAddress bindAddr,
                   int permits,

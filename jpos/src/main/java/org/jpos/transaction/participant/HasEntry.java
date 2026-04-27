@@ -33,9 +33,14 @@ import java.io.Serializable;
  * If "yes" or "no" is not specified, it returns the constant UNKNOWN
  */
 public class HasEntry implements GroupSelector, Configurable {
+    /** Default constructor; no instance state to initialise. */
+    public HasEntry() {}
     private Configuration cfg;
+    /** Configuration property whose value is returned when the context entry is present. */
     public static final String YES = "yes";
+    /** Configuration property whose value is returned when the context entry is absent. */
     public static final String NO  = "no";
+    /** Default selector returned when neither {@link #YES} nor {@link #NO} is configured. */
     public static final String UNKNOWN = "UNKNOWN";
     public int prepare (long id, Serializable o) {
         return PREPARED | NO_JOIN | READONLY;

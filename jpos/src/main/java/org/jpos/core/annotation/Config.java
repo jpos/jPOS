@@ -21,8 +21,16 @@ package org.jpos.core.annotation;
 import java.lang.annotation.*;
 
 
+/**
+ * Marks a field for automatic configuration injection from a jPOS {@link org.jpos.core.Configuration}.
+ * The {@link #value()} attribute specifies the property name; if omitted, the field name is used.
+ */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Config {
+    /**
+     * Returns the property name to inject (defaults to field name).
+     * @return property name
+     */
     String value();
 }

@@ -21,6 +21,7 @@ package org.jpos.core;
 import org.jpos.iso.ISOException;
 
 /**
+ * Thrown when a configurable component cannot be initialised due to invalid or missing configuration.
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @see Configurable
@@ -29,15 +30,29 @@ import org.jpos.iso.ISOException;
 public class ConfigurationException extends ISOException {
 
     private static final long serialVersionUID = -5605240786314946532L;
+    /** Default constructor. */
     public ConfigurationException () {
         super();
     }
+    /**
+     * Creates a ConfigurationException with a detail message.
+     * @param detail error message
+     */
     public ConfigurationException (String detail) {
         super (detail);
     }
+    /**
+     * Creates a ConfigurationException wrapping a root cause.
+     * @param nested the root cause
+     */
     public ConfigurationException (Throwable nested) {
         super (nested);
     }
+    /**
+     * Creates a ConfigurationException with a detail message and root cause.
+     * @param detail error message
+     * @param nested the root cause
+     */
     public ConfigurationException (String detail, Throwable nested) {
         super (detail, nested);
     }

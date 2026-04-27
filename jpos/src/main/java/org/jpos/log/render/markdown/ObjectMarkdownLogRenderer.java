@@ -21,7 +21,10 @@ package org.jpos.log.render.markdown;
 import org.jpos.log.LogRenderer;
 import java.io.PrintStream;
 
+/** Default Markdown renderer used when no more specific {@link LogRenderer} matches. */
 public final class ObjectMarkdownLogRenderer implements LogRenderer<Object> {
+    /** Default constructor; no instance state to initialise. */
+    public ObjectMarkdownLogRenderer() {}
     @Override
     public void render(Object obj, PrintStream ps, String indent) {
         // ps.printf ("> %s%n%n%s%n", obj.getClass().getCanonicalName(), obj);

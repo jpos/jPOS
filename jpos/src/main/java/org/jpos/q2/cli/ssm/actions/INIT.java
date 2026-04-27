@@ -36,6 +36,8 @@ import java.util.Properties;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public class INIT implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public INIT() {}
 
     @Override
     public void exec(CLIContext cli, String[] strings) throws Exception {

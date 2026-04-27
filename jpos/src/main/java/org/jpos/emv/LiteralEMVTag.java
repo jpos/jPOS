@@ -23,20 +23,45 @@ import org.jpos.tlv.TLVDataFormat;
 
 
 /**
+ * An EMV tag whose value is represented as a literal string.
  * @author Vishnu Pillai
  */
 public class LiteralEMVTag extends EMVTag<String> {
 
+    /**
+     * Constructs a literal EMV tag for a standard tag type.
+     *
+     * @param tagType standard tag type
+     * @param value literal value
+     * @throws IllegalArgumentException if {@code value} is incompatible with {@code tagType}
+     */
     public LiteralEMVTag(EMVStandardTagType tagType, String value)
             throws IllegalArgumentException {
         super(tagType, value);
     }
 
+    /**
+     * Constructs a literal EMV tag for a proprietary tag type.
+     *
+     * @param tagType proprietary tag type
+     * @param tagNumber proprietary tag number
+     * @param value literal value
+     * @throws IllegalArgumentException if {@code value} is incompatible with {@code tagType}
+     */
     public LiteralEMVTag(EMVProprietaryTagType tagType, Integer tagNumber, String value)
             throws IllegalArgumentException {
         super(tagType, tagNumber, value);
     }
 
+    /**
+     * Constructs a literal EMV tag for a proprietary tag type with an explicit data format.
+     *
+     * @param tagType proprietary tag type
+     * @param tagNumber proprietary tag number
+     * @param dataFormat TLV data format applied to {@code value}
+     * @param value literal value
+     * @throws IllegalArgumentException if {@code value} is incompatible with {@code tagType}/{@code dataFormat}
+     */
     public LiteralEMVTag(EMVProprietaryTagType tagType, Integer tagNumber, TLVDataFormat dataFormat, String value)
             throws IllegalArgumentException {
         super(tagType, tagNumber, dataFormat, value);

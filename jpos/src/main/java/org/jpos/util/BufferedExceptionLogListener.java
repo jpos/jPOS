@@ -18,8 +18,14 @@
 
 package org.jpos.util;
 
+/**
+ * {@link BufferedLogListener} variant that only retains events whose payload
+ * carries an exception, useful for buffering recent failures for triage.
+ */
 @SuppressWarnings("unused")
 public class BufferedExceptionLogListener extends BufferedLogListener {
+    /** Creates a listener with the inherited default capacity. */
+    public BufferedExceptionLogListener() {}
     public LogEvent log(LogEvent ev) {
         if (hasException(ev))
              super.log(ev);

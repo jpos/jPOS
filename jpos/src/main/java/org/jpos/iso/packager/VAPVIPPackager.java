@@ -34,6 +34,7 @@ import org.jpos.iso.*;
 @Deprecated
 public class VAPVIPPackager extends ISOBasePackager {
     private static final boolean pad = true;
+    /** Field-by-field packager array for the VAPVIP variant. */
     protected ISOFieldPackager fld[] = {
             new IFB_NUMERIC (  4, "MESSAGE TYPE INDICATOR", true),
             new IFB_BITMAP  ( 16, "BIT MAP"),
@@ -169,7 +170,9 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IFB_BINARY  (  8, "MAC 2")
         };
 
+    /** Inner packager handling the VAPVIP DE-127 sub-message. */
     protected static class F127Packager extends ISOBasePackager {
+        /** Field-by-field packager array for the DE-127 sub-message. */
         protected ISOFieldPackager fld127[] = {
             new IFE_CHAR    (1,   "FILE UPDATE COD"),
             new IFB_LLHNUM  (19,  "ACCOUNT NUMBER", true),
@@ -178,12 +181,14 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IFE_CHAR    (9,   "REGION CODING"),
             new IFB_NUMERIC (4,   "FILLER", true),
         };
+        /** Default constructor. Configures the inner field-packager array. */
         protected F127Packager () {
             super();
             setFieldPackager(fld127);
         }
     }
 
+    /** Default constructor. */
     public VAPVIPPackager() {
         super();
         setFieldPackager(fld);

@@ -20,4 +20,11 @@ package org.jpos.log.evt;
 
 import org.jpos.log.AuditLogEvent;
 
+/**
+ * Audit event recorded when a server session terminates.
+ *
+ * @param connections active connection count after this session ended
+ * @param permits     remaining session permits
+ * @param info        free-form description of the closing session
+ */
 public record SessionEnd(int connections, int permits, String info) implements AuditLogEvent { }

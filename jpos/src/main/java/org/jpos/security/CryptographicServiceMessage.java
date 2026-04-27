@@ -31,7 +31,6 @@ import java.util.*;
  * It is typically the contents of ISOField(123).
  * For more information refer to ANSI X9.17: Financial Institution Key Mangement
  * (Wholesale).
- * </p>
  * @author Hani S. Kirollos
  * @version $Revision$ $Date$
  */
@@ -41,30 +40,48 @@ public class CryptographicServiceMessage implements Loggeable {
     Map<String, String> fields = new LinkedHashMap<>();
     String mcl;
 
+    /** Message Class Label for RSI. */
     public static final String MCL_RSI = "RSI";
+    /** Message Class Label for KSM (Key Service Message). */
     public static final String MCL_KSM = "KSM";
+    /** Message Class Label for RSM. */
     public static final String MCL_RSM = "RSM";
+    /** Message Class Label for ESM. */
     public static final String MCL_ESM = "ESM";
 
+    /** Tag name for Receiver. */
     public static final String TAG_RCV = "RCV";
+    /** Tag name for Originator. */
     public static final String TAG_ORG = "ORG";
+    /** Tag name for Server. */
     public static final String TAG_SVR = "SVR";
+    /** Tag name for Key Data. */
     public static final String TAG_KD  = "KD" ;
+    /** Tag name for Clear Text PIN. */
     public static final String TAG_CTP = "CTP";
+    /** Tag name for Counter. */
     public static final String TAG_CTR = "CTR";
+    /** Tag name for Error Flag. */
     public static final String TAG_ERF = "ERF";
 
+    /** Exception thrown when CSM parsing fails. */
     public static class ParsingException extends Exception {
 
         private static final long serialVersionUID = 6984718759445061L;
+        /** Default constructor. */
         public ParsingException() {
             super();
         }
+        /**
+         * Constructs a ParsingException with the given message.
+         * @param detail the error message
+         */
         public ParsingException(String detail) {
             super(detail);
         }
     }
 
+    /** Default constructor. */
     public CryptographicServiceMessage() {
     }
 
@@ -76,10 +93,18 @@ public class CryptographicServiceMessage implements Loggeable {
         setMCL(mcl);
     }
 
+    /**
+     * Sets the message class label.
+     * @param mcl the message class label (e.g. MCL_KSM, MCL_RSM)
+     */
     public void setMCL(String mcl) {
         this.mcl = mcl;
     }
 
+    /**
+     * Returns the message class label.
+     * @return the message class label
+     */
     public String getMCL() {
         return mcl;
     }
@@ -120,9 +145,9 @@ public class CryptographicServiceMessage implements Loggeable {
     }
 
     /**
-     * Returns the field content of a field with the given tag
-     * @param tag
-     * @return field Field Content, or null if tag not found
+     * Returns the field content of a field with the given tag.
+     * @param tag the field tag (case-insensitive)
+     * @return field content, or {@code null} if tag not found
      */
     public String getFieldContent(String tag) {
         return fields.get(tag.toUpperCase());
@@ -134,6 +159,7 @@ public class CryptographicServiceMessage implements Loggeable {
      * This is the inverse of parse
      * @return the CSM in string format
      */
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         StringBuilder csm = new StringBuilder();
@@ -159,6 +185,7 @@ public class CryptographicServiceMessage implements Loggeable {
      * @see org.jpos.util.Loggeable
      */
     @Override
+    /** {@inheritDoc} */
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
         p.print(indent + "<csm");
@@ -171,10 +198,10 @@ public class CryptographicServiceMessage implements Loggeable {
     }
 
     /**
-     * Parses a csm string
-     * @param csmString
-     * @return CSM object
-     * @throws ParsingException
+     * Parses a CSM string into a {@link CryptographicServiceMessage} object.
+     * @param csmString the CSM string to parse
+     * @return the parsed CSM object
+     * @throws ParsingException if the string cannot be parsed
      */
     public static CryptographicServiceMessage parse(String csmString) throws ParsingException {
         CryptographicServiceMessage csm = new CryptographicServiceMessage();

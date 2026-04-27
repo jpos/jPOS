@@ -33,7 +33,9 @@ import org.jpos.iso.*;
  */
 @Deprecated
 public class VAPSMSPackager extends ISOBasePackager {
+    /** Whether numeric fields are right-padded with the configured fill character. */
     private static final boolean pad = true;
+    /** Field packager table indexed by field number. */
     protected ISOFieldPackager fld[] = {
             new IFB_NUMERIC (  4, "MESSAGE TYPE INDICATOR", true),
             new IFB_BITMAP  ( 16, "BIT MAP"),
@@ -165,6 +167,7 @@ public class VAPSMSPackager extends ISOBasePackager {
             new IFB_LLCHAR  ( 99, "RESERVED PRIVATE USE"),
             new IFB_BINARY  (  8, "MAC 2")
         };
+    /** Default constructor. */
     public VAPSMSPackager() {
         super();
         setFieldPackager(fld);

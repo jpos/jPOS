@@ -212,6 +212,12 @@ public class ISODataset implements Dataset {
         return null;
     }
 
+    /**
+     * Returns the {@link ISOComponent} of the first matching element.
+     *
+     * @param id element identifier
+     * @return matching component, or {@code null} if no element has the given id
+     */
     public ISOComponent getComponent(int id) {
         DatasetElement element = getElement(id);
         return element != null ? element.getComponent() : null;

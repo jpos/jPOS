@@ -28,6 +28,8 @@ package org.jpos.iso;
  */
 public interface ISORequestListener {
     /**
+     * Called when an unmatched request is received.
+     * Processes an unmatched ISO request.
      * @param  source source where you optionally can reply
      * @param  m   the unmatched request
      * @return true if request was handled by this listener

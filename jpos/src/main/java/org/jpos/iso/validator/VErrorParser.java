@@ -39,6 +39,8 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class VErrorParser implements LogSource, Loggeable  {
+    /** Default constructor; no instance state to initialise. */
+    public VErrorParser() {}
 
     /**
      * Parse an ISOComponent and get an error vector.
@@ -52,6 +54,11 @@ public class VErrorParser implements LogSource, Loggeable  {
         return _errors;
     }
 
+    /**
+     * Returns an XML rendering of the parsed error list.
+     *
+     * @return the XML string (currently a stub; always empty)
+     */
     public String parseXMLErrorList(){
         /** @todo !!!!!!!! */
         return "";
@@ -71,7 +78,7 @@ public class VErrorParser implements LogSource, Loggeable  {
     /**
      * Parse error list, and get an dump
      * the xml string representing the list.
-     * <pre>
+     * <pre>{@code
      * Ex:
      * <isomsg>
      *   <field id="2">
@@ -86,7 +93,7 @@ public class VErrorParser implements LogSource, Loggeable  {
      *   </field>
      *   <error description="Field Expected Error" reject-code="999">
      * </isomsg>
-     * </pre>
+     * }</pre>
      * @param p output stream
      * @param indent indent character
      */
@@ -132,7 +139,9 @@ public class VErrorParser implements LogSource, Loggeable  {
         }
     }
 
+    /** Logger receiving parser diagnostic events. */
     protected Logger logger = null;
+    /** Logger realm associated with this parser. */
     protected String realm=null;
     private Vector _errors = null;
 }

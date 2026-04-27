@@ -26,7 +26,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
+/** Jackson serializer that renders a {@link Throwable} as {@code {message, stacktrace}}. */
 public class ThrowableSerializer extends JsonSerializer<Throwable> {
+    /** Default constructor used by Jackson registration. */
+    public ThrowableSerializer() {}
     @Override
     public void serialize(Throwable t, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         gen.writeStartObject();

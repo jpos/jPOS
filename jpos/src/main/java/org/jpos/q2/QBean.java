@@ -30,13 +30,20 @@ package org.jpos.q2;
 public interface QBean {
 
     // State
+    /** QBean is stopped. */
     int STOPPED    = 0;
+    /** QBean is in the process of stopping. */
     int STOPPING   = 1;
+    /** QBean is in the process of starting. */
     int STARTING   = 2;
+    /** QBean is running. */
     int STARTED    = 3;
+    /** QBean has failed. */
     int FAILED     = 4;
+    /** QBean has been destroyed. */
     int DESTROYED  = 5;
 
+    /** Human-readable names for each QBean state, indexed by state constant. */
     String stateString[] = {
         "Stopped", "Stopping", "Starting", "Started", "Failed", "Destroyed"
     };
@@ -66,11 +73,13 @@ public interface QBean {
     void destroy () throws Exception;
 
     /**
+     * Returns the current state of this QBean.
      * @return state (STARTING, STARTED, FAILED, DESTROYED ...)
      */
     int getState ();
 
     /**
+     * Returns the current state as a human-readable string.
      * @return state (STARTING, STARTED, FAILED, DESTROYED ...)
      */
     default String getStateAsString () {

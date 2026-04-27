@@ -27,6 +27,8 @@ package org.jpos.iso;
  */
 public class EbcdicInterpreter implements Interpreter
 {
+    /** Public constructor; prefer {@link #INSTANCE} for repeated use. */
+    public EbcdicInterpreter() {}
     /** An instance of this Interpreter. Only one needed for the whole system */
     public static final EbcdicInterpreter INSTANCE = new EbcdicInterpreter();
 

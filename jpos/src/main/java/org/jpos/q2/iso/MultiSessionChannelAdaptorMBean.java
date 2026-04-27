@@ -25,6 +25,16 @@ package org.jpos.q2.iso;
  */
 @SuppressWarnings("unused")
 public interface MultiSessionChannelAdaptorMBean extends ChannelAdaptorMBean {
+    /**
+     * Returns the configured number of channel sessions.
+     *
+     * @return session count
+     */
     int getSessions();
+    /**
+     * Sets the number of parallel channel sessions to maintain.
+     *
+     * @param sessions session count
+     */
     void setSessions(int sessions);
 }

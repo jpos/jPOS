@@ -36,7 +36,14 @@ import org.jpos.util.Caller;
 
 import static org.jpos.transaction.ContextConstants.*;
 
+/**
+ * Transaction participant that validates the presence and shape of selected
+ * ISOMsg fields against the configured rules, marking the transaction with
+ * {@link CMF}-coded errors when validation fails.
+ */
 public class CheckFields implements TransactionParticipant, Configurable {
+    /** Default constructor; no instance state to initialise. */
+    public CheckFields() {}
     private Configuration cfg;
     private String request;
     private Pattern PCODE_PATTERN = Pattern.compile("^[\\d|\\w]{6}$");

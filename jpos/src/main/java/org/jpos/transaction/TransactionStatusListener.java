@@ -20,6 +20,12 @@ package org.jpos.transaction;
 
 import java.util.EventListener;
 
+/** Listener notified when a transaction status changes. */
 public interface TransactionStatusListener extends EventListener {
+    /**
+     * Handles a transaction status update.
+     *
+     * @param e transaction status event
+     */
     void update(TransactionStatusEvent e);
 }

@@ -21,6 +21,15 @@ package org.jpos.q2;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/** Q2 CLI command interface for external command execution. */
 public interface Command {
+    /**
+     * Executes this command.
+     * @param is input stream
+     * @param os output stream
+     * @param err error stream
+     * @param strings command arguments
+     * @throws Exception on execution failure
+     */
     void exec(InputStream is, OutputStream os, OutputStream err, String[] strings) throws Exception;
 }

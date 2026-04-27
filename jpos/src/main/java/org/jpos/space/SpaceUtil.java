@@ -31,6 +31,8 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class SpaceUtil {
+    /** Default constructor; no instance state to initialise. */
+    public SpaceUtil() {}
     /**
      * return all entries under a given key
      *
@@ -62,6 +64,9 @@ public class SpaceUtil {
     }
 
     /**
+     * @param sp the Space
+     * @param key entry's key
+     * @param value entry's value
      * @deprecated Use space.put instead
      */
     @Deprecated
@@ -70,23 +75,44 @@ public class SpaceUtil {
     }
 
     /**
+     * @param sp the Space
+     * @param key entry's key
+     * @param value entry's value
+     * @param timeout entry lifespan in milliseconds
      * @deprecated use space.put instead
      */
     @Deprecated
     public static void wipeAndOut  (Space sp, Object key, Object value, long timeout) {
         sp.out(key, value, timeout);
     }
+    /**
+     * Atomically increments and returns the long counter stored under {@code key}.
+     *
+     * @param sp the Space
+     * @param key counter's key
+     * @return the new counter value
+     */
     public static long nextLong (Space sp, Object key) {
         long l = 0L;
         synchronized (sp) {
             Object obj = sp.inp (key);
             wipe (sp, key); // just in case
-            if (obj instanceof Long) 
+            if (obj instanceof Long)
                 l = (Long) obj;
             sp.out (key, ++l);
         }
         return l;
     }
+    /**
+     * Writes {@code value} only when the slot at {@code key} is empty after an {@code nrd} probe.
+     *
+     * @param sp the Space
+     * @param key entry's key
+     * @param value entry's value
+     * @param nrdTimeout how long {@code nrd} waits for the slot to become non-empty
+     * @param outTimeout entry lifespan once written
+     * @return {@code true} if the value was written, {@code false} if the slot was already populated
+     */
     public static boolean outIfEmpty (Space sp, Object key, Object value, long nrdTimeout, long outTimeout) {
         synchronized (sp) {
             if (sp.nrd(key, nrdTimeout) == null) {
@@ -96,12 +122,27 @@ public class SpaceUtil {
         }
         return false;
     }
+    /**
+     * Blocks until the slot at {@code key} is empty, then writes {@code value} with the given lifespan.
+     *
+     * @param sp the Space
+     * @param key entry's key
+     * @param value entry's value
+     * @param timeout entry lifespan once written
+     */
     public static void outWhenEmpty (Space sp, Object key, Object value, long timeout) {
         synchronized (sp) {
             sp.nrd(key);
             sp.out(key, value, timeout);
         }
     }
+    /**
+     * Blocks until the slot at {@code key} is empty, then writes {@code value}.
+     *
+     * @param sp the Space
+     * @param key entry's key
+     * @param value entry's value
+     */
     public static void outWhenEmpty (Space sp, Object key, Object value) {
         synchronized (sp) {
             sp.nrd(key);

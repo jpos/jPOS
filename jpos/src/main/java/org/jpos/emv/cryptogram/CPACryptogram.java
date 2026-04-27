@@ -26,6 +26,8 @@ import org.jpos.security.SKDMethod;
  * Common Payment Application (CPA) Cryptogram Specification
  */
 public class CPACryptogram implements CryptogramSpec {
+    /** Default constructor; no instance state to initialise. */
+    public CPACryptogram() {}
 
     @Override
     public MKDMethod getMKDMethod() {

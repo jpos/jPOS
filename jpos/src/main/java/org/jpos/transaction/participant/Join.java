@@ -31,35 +31,79 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Transaction participant that runs a list of nested participants concurrently
+ * (one virtual thread each) and merges their lifecycle results.
+ */
 @SuppressWarnings("unchecked")
 public class Join
-       implements TransactionConstants, AbortParticipant, 
+       implements TransactionConstants, AbortParticipant,
                   XmlConfigurable
 {
+    /** Default constructor; no instance state to initialise. */
+    public Join() {}
     private TransactionManager tm;
     private final List<TransactionParticipant> participants = new ArrayList<> ();
 
+    /**
+     * Runs {@code prepare} on every nested participant in parallel and merges their results.
+     *
+     * @param id transaction id
+     * @param o transaction context
+     * @return the merged action mask
+     */
     public int prepare (long id, Serializable o) {
         return mergeActions(
             joinRunners(prepare (createRunners(id, o)))
         );
     }
-    public int prepareForAbort  (long id, Serializable o) { 
+    /**
+     * Runs {@code prepareForAbort} on every nested participant in parallel and merges their results.
+     *
+     * @param id transaction id
+     * @param o transaction context
+     * @return the merged action mask
+     */
+    public int prepareForAbort  (long id, Serializable o) {
         return mergeActions(
             joinRunners(prepareForAbort (createRunners(id, o)))
         );
     }
-    public void commit (long id, Serializable o) { 
+    /**
+     * Runs {@code commit} on every nested participant in parallel.
+     *
+     * @param id transaction id
+     * @param o transaction context
+     */
+    public void commit (long id, Serializable o) {
         joinRunners(commit (createRunners(id, o)));
     }
-    public void abort  (long id, Serializable o) { 
+    /**
+     * Runs {@code abort} on every nested participant in parallel.
+     *
+     * @param id transaction id
+     * @param o transaction context
+     */
+    public void abort  (long id, Serializable o) {
         joinRunners(abort (createRunners(id, o)));
     }
+    /**
+     * Reads {@code <participant>} children from {@code e} and instantiates each via the
+     * associated {@link TransactionManager}.
+     *
+     * @param e XML configuration element
+     * @throws ConfigurationException if any nested participant fails to instantiate
+     */
     public void setConfiguration (Element e) throws ConfigurationException {
         for (Element element : e.getChildren("participant")) {
             participants.add(tm.createParticipant(element));
         }
     }
+    /**
+     * Captures the {@link TransactionManager} used to construct nested participants.
+     *
+     * @param mgr the hosting transaction manager
+     */
     public void setTransactionManager (TransactionManager mgr) {
         this.tm = mgr;
     }
@@ -114,40 +158,62 @@ public class Join
                (no_join  ? NO_JOIN  : 0) |
                (readonly ? READONLY : 0);
     }
+    /**
+     * Wraps a single nested {@link TransactionParticipant} in its own virtual thread
+     * so its lifecycle calls can run concurrently with siblings.
+     */
     public static class Runner implements Runnable {
         private TransactionParticipant p;
+        /** Result code returned by the most recent lifecycle call. */
         public int rc;
         long id;
         int mode;
         private Serializable ctx;
         Thread t;
+        /** Mode constant: prepare. */
         public static final int PREPARE = 0;
+        /** Mode constant: prepareForAbort. */
         public static final int PREPARE_FOR_ABORT = 1;
+        /** Mode constant: commit. */
         public static final int COMMIT = 2;
+        /** Mode constant: abort. */
         public static final int ABORT = 3;
+        /** Human-readable labels indexed by mode constant. */
         public static final String[] MODES = {
             "prepare", "prepareForAbort", "commit", "abort"
         };
 
         private String threadName;
 
+        /**
+         * Constructs a Runner for the given participant and transaction.
+         *
+         * @param p nested participant to invoke
+         * @param id transaction id
+         * @param ctx transaction context
+         */
         public Runner (TransactionParticipant p, long id, Serializable ctx) {
             this.p = p;
             this.id = id;
             this.ctx = ctx;
         }
+        /** Schedules the participant's {@code prepare} call on a virtual thread. */
         public void prepare() {
             createThread (PREPARE);
         }
+        /** Schedules the participant's {@code prepareForAbort} call on a virtual thread. */
         public void prepareForAbort() {
             createThread (PREPARE_FOR_ABORT);
         }
+        /** Schedules the participant's {@code commit} call on a virtual thread. */
         public void commit () {
             createThread (COMMIT);
         }
+        /** Schedules the participant's {@code abort} call on a virtual thread. */
         public void abort () {
             createThread (ABORT);
         }
+        /** Invokes the appropriate lifecycle method on the wrapped participant. */
         public void run() {
             switch (mode) {
                 case PREPARE -> rc = p.prepare(id, ctx);
@@ -165,6 +231,7 @@ public class Join
                 }
             }
         }
+        /** Waits for the runner's virtual thread to terminate, swallowing interrupts. */
         public void join () {
             try {
                 t.join ();

@@ -25,6 +25,7 @@ package org.jpos.util;
  * @version $Revision$ $Date$
  */
 public class ExceptionLogFilter implements LogListener {
+    /** Creates an ExceptionLogFilter. */
     public ExceptionLogFilter () {
         super();
     }

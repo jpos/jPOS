@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * ISO-8583 packager for the VISA-1 message format.
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOPackager
@@ -38,6 +39,7 @@ import java.io.InputStream;
 public class VISA1Packager
     extends SimpleLogSource implements ISOPackager, VISA1ResponseFilter
 {
+    /** ASCII Field Separator (0x1C) used between VISA1 sub-fields. */
     public static final byte[] FS = { (byte)'\034' };
     int[] sequence;
     int respField;
@@ -46,12 +48,14 @@ public class VISA1Packager
     VISA1ResponseFilter filter;
 
     /**
+     * Constructs a VISA1Packager with the given field sequence and response-handling rules.
+     *
      * @param sequence array of fields that go to VISA1 request
      * @param respField where to put response
      * @param badResultCode (i.e. "05")
      * @param okPattern (i.e. "AUT. ")
      */
-    public VISA1Packager 
+    public VISA1Packager
         (int[] sequence, int respField, String badResultCode, String okPattern)
     { 
         super();
@@ -61,10 +65,24 @@ public class VISA1Packager
         this.okPattern     = okPattern;
         setVISA1ResponseFilter (this);
     }
+    /**
+     * Replaces the VISA1 response filter used to inspect inbound responses.
+     *
+     * @param filter the new response filter
+     */
     public void setVISA1ResponseFilter (VISA1ResponseFilter filter) {
         this.filter = filter;
     }
 
+    /**
+     * Handles the VISA1-specific encoding of field 35 (track-2 data with entry mode).
+     *
+     * @param m message being packed
+     * @param bout destination byte stream
+     * @return number of bytes written
+     * @throws ISOException on field-access failure
+     * @throws IOException if writing to {@code bout} fails
+     */
     protected int handleSpecialField35 (ISOMsg m, ByteArrayOutputStream bout)
         throws ISOException, IOException
     {

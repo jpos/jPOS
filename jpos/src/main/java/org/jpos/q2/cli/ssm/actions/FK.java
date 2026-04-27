@@ -29,6 +29,8 @@ import org.jpos.security.jceadapter.JCESecurityModule;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public class FK extends SsmActionBase {
+    /** Default constructor; no instance state to initialise. */
+    public FK() {}
     private boolean prompt = false;
 
     @Override

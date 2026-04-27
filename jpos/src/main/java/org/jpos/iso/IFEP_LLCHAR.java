@@ -39,10 +39,12 @@ import java.io.InputStream;
  * @see ISOComponent
  */
 public class IFEP_LLCHAR extends ISOFieldPackager {
+    /** Default constructor. */
     public IFEP_LLCHAR() {
         super();
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */
@@ -52,7 +54,7 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         int len;
@@ -76,7 +78,7 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException

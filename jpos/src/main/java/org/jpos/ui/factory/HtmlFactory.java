@@ -29,6 +29,8 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 /**
+ * UIFactory that builds a Swing HTML browser/editor pane.
+ *
  * @author Alejandro Revilla
  *
  * Creates an html browser/editor
@@ -41,6 +43,8 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  * @see org.jpos.ui.UIFactory
  */
 public class HtmlFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public HtmlFactory() {}
     public JComponent create (UI ui, Element e) {
         try {
             JEditorPane editorPane = new JEditorPane (e.getText());

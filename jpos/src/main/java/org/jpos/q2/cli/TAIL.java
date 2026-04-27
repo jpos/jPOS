@@ -30,7 +30,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * CLI command that subscribes to one or more named loggers and streams their
+ * events to the terminal until the user presses Enter.
+ */
 public class TAIL implements CLICommand, LogListener {
+    /** Default constructor; no instance state to initialise. */
+    public TAIL() {}
     PrintStream p;
     CLIContext cli;
     boolean ansi;
@@ -63,6 +69,11 @@ public class TAIL implements CLICommand, LogListener {
         }
     }
 
+    /**
+     * Prints command usage and lists the registered loggers.
+     *
+     * @param cli the CLI context to write to
+     */
     public void usage(CLIContext cli) {
         cli.println("Usage: tail [log-name] [log-name] ...");
         showLoggers(cli);

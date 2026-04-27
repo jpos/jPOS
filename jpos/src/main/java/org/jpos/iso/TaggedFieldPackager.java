@@ -19,12 +19,21 @@
 package org.jpos.iso;
 
 /**
+ * Marker interface for packagers that support tagged (TLV-style) ISO fields.
  * @author Vishnu Pillai
  *         Date: 1/22/14
  */
 public interface TaggedFieldPackager {
 
+    /**
+     * Sets the tag token for this packager.
+     * @param token the tag token
+     */
     void setToken(String token);
 
+    /**
+     * Returns the tag token for this packager.
+     * @return the tag token
+     */
     String getToken();
 }

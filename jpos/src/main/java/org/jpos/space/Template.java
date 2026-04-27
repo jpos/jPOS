@@ -22,7 +22,18 @@ package org.jpos.space;
  * Used by JDBMSpace to match entries based on its value
  */
 public interface Template {
+    /**
+     * Returns the key this template matches against.
+     *
+     * @return the entry key
+     */
     Object getKey();
+    /**
+     * Indicates whether the candidate {@code obj} matches this template.
+     *
+     * @param obj candidate value
+     * @return {@code true} when matched
+     */
     boolean equals(Object obj);
 }
 

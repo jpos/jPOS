@@ -21,10 +21,34 @@ package org.jpos.function;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * Three-argument variant of {@link java.util.function.Function}.
+ *
+ * @param <T> first argument type
+ * @param <U> second argument type
+ * @param <V> third argument type
+ * @param <R> result type
+ */
 @FunctionalInterface
 public interface TriFunction<T, U, V, R> {
+    /**
+     * Applies this function to the given arguments.
+     *
+     * @param t first argument
+     * @param u second argument
+     * @param v third argument
+     * @return the function result
+     */
     R apply(T t, U u, V v);
 
+    /**
+     * Returns a composed {@code TriFunction} that first applies this function and
+     * then applies {@code after} to the result.
+     *
+     * @param <K> result type of the composed function
+     * @param after function applied to the result of this function
+     * @return the composed function
+     */
     default <K> TriFunction<T, U, V, K> andThen(Function<? super R, ? extends K> after) {
         Objects.requireNonNull(after);
         return (T t, U u, V v) -> after.apply(apply(t, u, v));

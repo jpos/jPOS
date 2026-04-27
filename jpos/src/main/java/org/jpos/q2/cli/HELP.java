@@ -21,8 +21,11 @@ package org.jpos.q2.cli;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
+/** CLI command that prints a short help message pointing the user to tab-completion and {@code man}. */
 public class HELP implements CLICommand
 {
+    /** Default constructor; no instance state to initialise. */
+    public HELP() {}
     public void exec(CLIContext cli, String[] args)
     {
         cli.println("Type tab to see list of available commands");

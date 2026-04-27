@@ -22,7 +22,17 @@ package org.jpos.rc;
  * Result Code
  */
 public interface RC {
+    /**
+     * Returns the response code value.
+     *
+     * @return response code (e.g. {@code "00"}, {@code "05"})
+     */
     String rc();
+    /**
+     * Returns a human-readable rendering of the response code.
+     *
+     * @return display string, or {@code null} when not set
+     */
     String display();
 }
 

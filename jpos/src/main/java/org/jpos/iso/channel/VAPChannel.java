@@ -65,7 +65,7 @@ public class VAPChannel extends BaseChannel {
     /**
      * Construct server ISOChannel
      * @param p     an ISOPackager (should be ISO87BPackager)
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see org.jpos.iso.packager.ISO87BPackager
      */
     public VAPChannel (ISOPackager p) throws IOException {
@@ -75,7 +75,7 @@ public class VAPChannel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public VAPChannel (ISOPackager p, ServerSocket serverSocket) 
@@ -83,15 +83,35 @@ public class VAPChannel extends BaseChannel {
     {
         super(p, serverSocket);
     }
+    /**
+     * Sets the source identifier carried in the BASE1 header.
+     *
+     * @param srcid source id
+     */
     public void setSrcId (String srcid) {
         this.srcid = srcid;
     }
+    /**
+     * Returns the configured source identifier.
+     *
+     * @return source id
+     */
     public String getSrcId () {
         return srcid;
     }
+    /**
+     * Sets the destination identifier carried in the BASE1 header.
+     *
+     * @param dstid destination id
+     */
     public void setDstId (String dstid) {
         this.dstid = dstid;
     }
+    /**
+     * Returns the configured destination identifier.
+     *
+     * @return destination id
+     */
     public String getDstId () {
         return dstid;
     }
@@ -105,8 +125,9 @@ public class VAPChannel extends BaseChannel {
     /**
      * This method reads in a Base 1 Header.
      *
-     * @param hLen
-     * @throws IOException
+     * @param hLen requested header length (ignored — the actual length is read from the wire)
+     * @return the header bytes read from the wire
+     * @throws IOException on I/O error
      */
     protected byte[] readHeader(int hLen)
         throws IOException {
@@ -157,7 +178,7 @@ public class VAPChannel extends BaseChannel {
     /**
      * @param   m   the message
      * @param   len already packed message len (to avoid re-pack)
-     * @exception IOException
+     * @exception IOException on I/O error
      */
     protected void sendMessageHeader(ISOMsg m, int len) 
         throws IOException
@@ -220,8 +241,8 @@ public class VAPChannel extends BaseChannel {
      * Sending an incoming message is seen as a reply.
      *
      * @param m the Message to be sent
-     * @exception IOException
-     * @exception ISOException
+     * @exception IOException on I/O error
+     * @exception ISOException on pack/unpack error
      * @see ISOChannel#send
      */
     public void send (ISOMsg m) throws IOException, ISOException

@@ -25,7 +25,13 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.q2.QBeanSupport;
 
+/**
+ * QBean that enforces a single live Q2 instance by binding a configured TCP
+ * port at startup; a second instance fails to start when the port is taken.
+ */
 public class QSingleInstancePortBasedManager extends QBeanSupport {
+    /** Default constructor; no instance state to initialise. */
+    public QSingleInstancePortBasedManager() {}
 
     ServerSocket ss;
 

@@ -82,6 +82,8 @@ import java.io.Serializable;
 public class JSParticipant extends Log
     implements TransactionParticipant, AbortParticipant, XmlConfigurable 
 {
+    /** Default constructor; no instance state to initialise. */
+    public JSParticipant() {}
     private Invocable js;
     boolean trace;
     boolean hasPrepare;

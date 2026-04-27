@@ -26,6 +26,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * {@link OutputStream} that buffers writes and periodically flushes the
+ * accumulated bytes as a single {@link LogEvent} after a configurable delay.
+ */
 public class LogEventOutputStream extends OutputStream implements LogSource, Runnable {
     private ByteArrayOutputStream baos = new ByteArrayOutputStream();
     private Logger logger;
@@ -35,12 +39,21 @@ public class LogEventOutputStream extends OutputStream implements LogSource, Run
     private volatile LogEvent evt;
     private long delay;
 
+    /** Default constructor. */
     public LogEventOutputStream() {
         super();
         baos = new ByteArrayOutputStream();
         logService = Executors.newScheduledThreadPool(1);
     }
 
+    /**
+     * Constructs a stream that flushes the buffered bytes as log events on the
+     * configured logger/realm after {@code delay} ms of inactivity.
+     *
+     * @param logger destination logger
+     * @param realm logger realm
+     * @param delay flush delay in milliseconds
+     */
     public LogEventOutputStream(Logger logger, String realm, long delay) {
         this();
         this.logger = logger;

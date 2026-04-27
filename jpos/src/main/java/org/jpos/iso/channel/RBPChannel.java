@@ -27,6 +27,8 @@ import java.io.IOException;
  * Implements Record Boundary Preservation protocol
  */
 public class RBPChannel extends BaseChannel {
+    /** Default constructor; no instance state to initialise. */
+    public RBPChannel() {}
     static final byte[] PROTOCOL_IDENTIFIER = new byte[] {(byte) 0xd0, 0x4a };
     static final byte[] MORE = new byte[] {(byte) 0x01, 0x00 };
     static final byte[] LAST = new byte[] {(byte) 0x00, 0x00 };

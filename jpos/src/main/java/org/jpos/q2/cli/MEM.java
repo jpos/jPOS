@@ -21,8 +21,11 @@ package org.jpos.q2.cli;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
+/** CLI command that prints JVM heap usage statistics; supports {@code --gc}. */
 public class MEM implements CLICommand
 {
+    /** Default constructor; no instance state to initialise. */
+    public MEM() {}
     public void exec(CLIContext cli, String[] args) throws Exception
     {
         if (args.length > 1 && "--gc".equals(args[1]))

@@ -31,6 +31,10 @@ public class DefaultTimer {
 
     private DefaultTimer() { }
 
+    /**
+     * Returns the shared daemon {@link Timer} instance, creating it lazily if needed.
+     * @return the default timer
+     */
     public static Timer getTimer() {
         if (defaultTimer == null) {
             synchronized (DefaultTimer.class) {

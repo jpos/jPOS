@@ -26,6 +26,8 @@ package org.jpos.iso;
  */
 public class AsciiHexInterpreter implements BinaryInterpreter
 {
+    /** Public constructor; prefer {@link #INSTANCE} for repeated use. */
+    public AsciiHexInterpreter() {}
     /** An instance of this Interpreter. Only one needed for the whole system */
     public static final AsciiHexInterpreter INSTANCE = new AsciiHexInterpreter();
 

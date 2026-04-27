@@ -40,22 +40,40 @@ import java.util.Map;
  */
 public interface SecureKeyStore {
 
+    /** Exception type raised by {@link SecureKeyStore} implementations. */
     class SecureKeyStoreException extends ISOException {
 
         private static final long serialVersionUID = 1976885367352075834L;
 
+        /** Constructs a new exception with no detail message. */
         public SecureKeyStoreException () {
             super();
         }
 
+        /**
+         * Constructs a new exception with the given detail message.
+         *
+         * @param detail failure description
+         */
         public SecureKeyStoreException (String detail) {
             super(detail);
         }
 
+        /**
+         * Constructs a new exception wrapping {@code nested}.
+         *
+         * @param nested underlying cause
+         */
         public SecureKeyStoreException (Exception nested) {
             super(nested);
         }
 
+        /**
+         * Constructs a new exception with the given detail message and cause.
+         *
+         * @param detail failure description
+         * @param nested underlying cause
+         */
         public SecureKeyStoreException (String detail, Exception nested) {
             super(detail, nested);
         }

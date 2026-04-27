@@ -23,7 +23,10 @@ import org.jpos.log.evt.License;
 
 import java.io.PrintStream;
 
+/** Plain-text renderer for {@link License} audit records. */
 public final class LicenseTxtLogRenderer implements LogRenderer<License> {
+    /** Default constructor; no instance state to initialise. */
+    public LicenseTxtLogRenderer() {}
     public Class<?> clazz() {
         return License.class;
     }

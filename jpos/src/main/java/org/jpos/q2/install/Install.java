@@ -27,12 +27,23 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * Command-line tool that extracts the bundled installation skeletons under
+ * {@code META-INF/q2/installs/} into a target directory.
+ *
  * @author vsalaman
  */
 public class Install
 {
+    /** Default constructor; no instance state to initialise. */
+    public Install() {}
     private static final String DEFAULT_PREFIX = "META-INF/q2/installs/";
 
+    /**
+     * Entry point: parses the command-line options and invokes {@link #install}.
+     *
+     * @param args command-line arguments (see option descriptions in source)
+     * @throws Exception if option parsing or extraction fails
+     */
     public static void main(String[] args) throws Exception
     {
         CommandLineParser parser = new DefaultParser();
@@ -59,6 +70,15 @@ public class Install
         );
     }
 
+    /**
+     * Extracts every classpath resource under {@code prefix} into {@code outputBasePath}.
+     *
+     * @param allowOverride overwrite existing files when {@code true}
+     * @param outputBasePath destination directory (created when missing)
+     * @param verbose log each extracted file when {@code true}
+     * @param prefix classpath prefix to scan
+     * @throws IOException if classpath enumeration or extraction fails
+     */
     public void install(boolean allowOverride,File outputBasePath, boolean verbose, String prefix) throws IOException
     {
         if(!outputBasePath.exists())

@@ -20,4 +20,9 @@ package org.jpos.log.evt;
 
 import org.jpos.log.AuditLogEvent;
 
+/**
+ * Audit log event recorded when a Q2 deploy descriptor is undeployed.
+ *
+ * @param path path of the undeployed descriptor
+ */
 public record UnDeploy(String path) implements AuditLogEvent { }

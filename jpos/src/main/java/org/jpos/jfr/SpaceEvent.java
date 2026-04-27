@@ -19,17 +19,29 @@
 package org.jpos.jfr;
 
 import jdk.jfr.*;
+/**
+ * JFR event recorded around individual jPOS space operations, threshold-filtered
+ * to avoid storms (default 10 ms).
+ */
 @Category("jPOS")
 @Name("jpos.Space")
 @StackTrace
 @Threshold("10 ms")
 public class SpaceEvent extends Event {
+    /** Operation name (e.g. {@code in}, {@code out}, {@code rdp}). */
     @Name("op")
     public String operation;
 
+    /** Space key associated with the operation. */
     @Name("key")
     public String key;
 
+    /**
+     * Constructs a SpaceEvent describing the given operation and key.
+     *
+     * @param operation operation name
+     * @param key space key
+     */
     public SpaceEvent(String operation, String key) {
         this.operation = operation;
         this.key = key;

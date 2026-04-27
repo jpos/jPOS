@@ -56,6 +56,11 @@ public class LogCompressor {
         executor.allowCoreThreadTimeOut(true);
     }
 
+    /**
+     * Returns the lazy-initialised singleton.
+     *
+     * @return the shared {@link LogCompressor}
+     */
     public static LogCompressor getInstance() {
         if (instance == null) {
             synchronized (LogCompressor.class) {
@@ -66,6 +71,12 @@ public class LogCompressor {
         return instance;
     }
 
+    /**
+     * Submits a compression task for {@code logFile} on the shared executor.
+     *
+     * @param logFile log file being compressed (used for diagnostic logging)
+     * @param task compression task to run
+     */
     public void submit(File logFile, Runnable task) {
         executor.execute(() -> {
             try {

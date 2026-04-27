@@ -25,26 +25,92 @@ package org.jpos.q2.iso;
  */
 public interface QServerMBean extends org.jpos.q2.QBeanSupportMBean {
 
+  /**
+   * Sets the TCP port the server listens on.
+   *
+   * @param port TCP port number
+   */
   void setPort(int port) ;
 
+  /**
+   * Returns the configured listen port.
+   *
+   * @return TCP port number
+   */
   int getPort() ;
 
+  /**
+   * Sets the fully qualified packager class name used by accepted channels.
+   *
+   * @param packager packager class name
+   */
   void setPackager(java.lang.String packager) ;
 
+  /**
+   * Returns the configured packager class name.
+   *
+   * @return packager class name
+   */
   java.lang.String getPackager() ;
 
+  /**
+   * Sets the fully qualified channel class name instantiated for each accepted connection.
+   *
+   * @param channel channel class name
+   */
   void setChannel(java.lang.String channel) ;
 
+  /**
+   * Returns the configured channel class name.
+   *
+   * @return channel class name
+   */
   java.lang.String getChannel() ;
 
+  /**
+   * Sets the maximum number of concurrent client sessions accepted by the server.
+   *
+   * @param maxSessions maximum sessions
+   */
   void setMaxSessions(int maxSessions) ;
 
+  /**
+   * Returns the configured maximum number of concurrent client sessions.
+   *
+   * @return maximum sessions
+   */
   int getMaxSessions() ;
-  
+
+  /**
+   * Sets the fully qualified socket-factory class name used to create the server socket.
+   *
+   * @param sFactory socket factory class name
+   */
   void setSocketFactory(java.lang.String sFactory) ;
 
+  /**
+   * Returns the configured socket-factory class name.
+   *
+   * @return socket factory class name
+   */
   java.lang.String getSocketFactory() ;
+  /**
+   * Returns the names of all currently-active accepted channels, comma-separated.
+   *
+   * @return comma-separated active channel names
+   */
   String getISOChannelNames();
+  /**
+   * Returns aggregated counters across all active channels.
+   *
+   * @return counter snapshot suitable for diagnostics
+   */
   String getCountersAsString ();
+  /**
+   * Returns counters for a single named accepted channel.
+   *
+   * @param isoChannelName accepted channel's name
+   * @return counter snapshot suitable for diagnostics, or empty if the channel is unknown
+   */
   String getCountersAsString (String isoChannelName);
 }

@@ -18,11 +18,29 @@
 
 package org.jpos.iso;
 
+/**
+ * Base class for fixed-byte flag fields (e.g. POS data codes), exposing a
+ * shared {@link #setFlags(boolean, Flag...)} helper that toggles bits within
+ * a packed byte buffer.
+ */
 @SuppressWarnings("unused")
 public abstract class PosFlags {
+    /** Default constructor; no instance state to initialise. */
+    protected PosFlags() {}
 
+    /** Single flag identified by its byte offset and bit-mask within {@link #getBytes()}. */
     public interface Flag {
+        /**
+         * Returns the byte offset within {@link #getBytes()} where this flag's mask starts.
+         *
+         * @return byte offset
+         */
         int getOffset();
+        /**
+         * Returns the multi-byte bit mask for this flag (low byte applied at {@link #getOffset()}).
+         *
+         * @return bit mask as a packed integer
+         */
         int intValue();
     }
 
@@ -49,6 +67,11 @@ public abstract class PosFlags {
             }
         }
     }
+    /**
+     * Returns the underlying byte buffer holding the packed flags.
+     *
+     * @return live byte array (callers may modify it)
+     */
     public abstract byte[] getBytes();
 
     public String toString() {

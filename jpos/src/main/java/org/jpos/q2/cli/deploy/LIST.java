@@ -29,6 +29,8 @@ import org.jpos.q2.Q2;
 * @author Felipph Calado - luizfelipph@gmail.com
 */
 public class LIST implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public LIST() {}
 
     @Override
     public void exec(CLIContext ctx, String[] args) throws Exception {
@@ -40,7 +42,11 @@ public class LIST implements CLICommand {
     }
 
     /**
-     * Utils
+     * Renders the contents of {@code folder} as a tree-formatted string.
+     *
+     * @param folder root directory to render
+     * @return the tree rendering
+     * @throws IllegalArgumentException if {@code folder} is not a directory
      */
     public static String printDirectoryTree(File folder) {
         if (!folder.isDirectory()) {

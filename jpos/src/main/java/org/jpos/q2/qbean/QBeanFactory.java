@@ -26,8 +26,15 @@ import org.jpos.util.NameRegistrar;
 
 import java.util.*;
 
+/**
+ * QBean that instantiates and registers arbitrary beans declared in its
+ * persist element, exposing them through {@link #getBean(String)} and the
+ * JMX {@link QBeanFactoryMBean} interface.
+ */
 @SuppressWarnings("unchecked")
 public class QBeanFactory extends QBeanSupport implements QBeanFactoryMBean {
+    /** Default constructor; no instance state to initialise. */
+    public QBeanFactory() {}
   
     private static Map beanMap = new WeakHashMap();
     private Map privateList; // list of beans in the config file

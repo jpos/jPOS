@@ -22,7 +22,10 @@ import org.jpos.emv.IssuerApplicationData;
 import org.jpos.tlv.TLVList;
 import static org.jpos.emv.cryptogram.CryptogramDataBuilder.minimumSetOfDataElement;
 
+/** {@link CryptogramDataBuilder} for the EMV Common Personalisation Application (CPA) cryptogram version. */
 public class CVNCPADataBuilder implements CryptogramDataBuilder {
+    /** Default constructor; no instance state to initialise. */
+    public CVNCPADataBuilder() {}
 
     @Override
     public String getDefaultARPCRequest(boolean approved) {

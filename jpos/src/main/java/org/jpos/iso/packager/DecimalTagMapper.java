@@ -45,6 +45,7 @@ public class DecimalTagMapper implements TagMapper {
      */
     static final int RADIX_ALFANUM                      = 36;
 
+    /** Number of characters in each tag identifier. */
     protected final int tagSize;
 
     /**
@@ -57,6 +58,10 @@ public class DecimalTagMapper implements TagMapper {
      */
     private   final int tagMaxValueUpperLetter;
 
+    /**
+     * Creates a DecimalTagMapper for the given tag size.
+     * @param tagSize the number of characters in a tag identifier
+     */
     protected DecimalTagMapper(int tagSize) {
         this.tagSize = tagSize;
         int tmv = 1;

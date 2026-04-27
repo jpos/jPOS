@@ -26,8 +26,13 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.util.LogEvent;
 import org.jpos.util.ThroughputControl;
 
+/**
+ * ISOFilter that throttles message flow through a {@link ThroughputControl}
+ * configured from the channel's {@link Configuration}.
+ */
 public class ThroughputControlFilter implements ISOFilter, Configurable {
     ThroughputControl tc;
+    /** Default constructor. */
     public ThroughputControlFilter () {
         super();
         tc = null;

@@ -26,6 +26,8 @@ package org.jpos.iso;
  */
 public class LiteralInterpreter implements Interpreter
 {
+    /** Public constructor; prefer {@link #INSTANCE} for repeated use. */
+    public LiteralInterpreter() {}
     /** An instance of this Interpreter. Only one needed for the whole system */
     public static final LiteralInterpreter INSTANCE = new LiteralInterpreter();
 

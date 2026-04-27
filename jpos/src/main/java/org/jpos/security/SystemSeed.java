@@ -25,11 +25,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+/**
+ * Provides deterministic byte sequences derived from a built-in seed table,
+ * used as a stable source of pseudo-random data when no live RNG is needed.
+ */
 @SuppressWarnings("unused")
 public class SystemSeed {
+    /** Default constructor; no instance state to initialise. */
+    public SystemSeed() {}
+    /**
+     * Returns {@code l} bytes from the seed table, starting at offset 0.
+     *
+     * @param l number of bytes to return
+     * @return the requested bytes
+     */
     public static byte[] getSeed (int l) {
         return getSeed(0, l);
     }
+    /**
+     * Returns {@code l} bytes from the seed table, starting at the given offset.
+     *
+     * @param offset starting offset (wrapped modulo the seed table length)
+     * @param l number of bytes to return
+     * @return the requested bytes
+     */
     public static byte[] getSeed (int offset, int l) {
         ByteBuffer buf = ByteBuffer.allocate(l);
         while (buf.hasRemaining()) {

@@ -28,7 +28,7 @@ import java.net.ServerSocket;
 /**
  * Sends a four ASCII hex characters indicating message length (up to 0xffff)
  *
- * @author Mladen Mrkic <mmrkic@arius.co.yu>
+ * @author Mladen Mrkic (mmrkic@arius.co.yu)
  * @author apr
  * @version $Revision$ $Date$
  * @see ISOMsg
@@ -36,6 +36,7 @@ import java.net.ServerSocket;
  * @see ISOChannel
  */
 public class HEXChannel extends BaseChannel {
+    /** Default constructor. */
     public HEXChannel () {
         super();
     }
@@ -55,7 +56,7 @@ public class HEXChannel extends BaseChannel {
      * Construct server ISOChannel
      * @param p     an ISOPackager
      * @param TPDU  an optional raw header (i.e. TPDU)
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public HEXChannel (ISOPackager p, byte[] TPDU) throws IOException {
@@ -67,7 +68,7 @@ public class HEXChannel extends BaseChannel {
      * @param p     an ISOPackager
      * @param TPDU  an optional raw header (i.e. TPDU)
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public HEXChannel (ISOPackager p, byte[] TPDU, ServerSocket serverSocket) 

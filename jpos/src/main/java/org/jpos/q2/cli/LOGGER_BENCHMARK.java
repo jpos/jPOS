@@ -26,8 +26,11 @@ import org.jpos.util.Profiler;
 
 import java.util.concurrent.CountDownLatch;
 
+/** CLI command that benchmarks logger throughput for a given thread count and message count. */
 @SuppressWarnings("unused")
 public class LOGGER_BENCHMARK implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public LOGGER_BENCHMARK() {}
     public void exec(CLIContext ctx, String[] args) throws Exception {
         if (args.length != 3) {
             ctx.println (String.format ("Usage: %s threads messages", args[0]));

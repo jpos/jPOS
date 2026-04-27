@@ -25,14 +25,12 @@ import java.util.Map;
 /**
  * Interface that modifies an implementing class to add an exception handling pipeline.
  *
- * <p>
- *     The main pipeline consists of multiple sub-pipelines:
- *     <ul>
- *         <li>A pipeline for which handlers are called regardless of the type of exception handled.  Stored under a null key.</li>
- *         <li>A pipeline per targeted exception type.</li>
- *     </ul>
- *     The targeted pipeline always executes before the default pipeline.
- * </p>
+ * The main pipeline consists of multiple sub-pipelines:
+ * <ul>
+ *     <li>A pipeline for which handlers are called regardless of the type of exception handled.  Stored under a null key.</li>
+ *     <li>A pipeline per targeted exception type.</li>
+ * </ul>
+ * The targeted pipeline always executes before the default pipeline.
  * <p>
  *     In the event that both of the pipelines are empty, the default behavior is to rethrow the initial exception.
  * </p>
@@ -46,7 +44,7 @@ import java.util.Map;
 public interface ExceptionHandlerAware {
 
     /**
-     *
+     * Returns the map of targeted exception handlers, keyed by exception class.
      * @return A map of exception classes to exception handlers.  These handlers only execute if the exception matches.
      */
     Map<Class<? extends Exception>, List<ExceptionHandler>> getExceptionHandlers();

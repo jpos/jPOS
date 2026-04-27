@@ -63,9 +63,12 @@ public class ProtectedLogListener implements LogListener, Configurable
     String[] protectFields = null;
     String[] wipeFields    = null;
     Configuration cfg   = null;
+    /** Replacement value substituted for wiped string fields. */
     public static final String WIPED = "[WIPED]";
+    /** Replacement value substituted for wiped binary fields. */
     public static final byte[] BINARY_WIPED = ISOUtil.hex2byte ("AA55AA55");
 
+    /** Default constructor. */
     public ProtectedLogListener () {
         super();
     }
@@ -78,7 +81,7 @@ public class ProtectedLogListener implements LogListener, Configurable
     *  <li>[wipe]      blank separated list of fields to be wiped
     * </ul>
     * @param cfg Configuration 
-    * @throws ConfigurationException
+    * @throws ConfigurationException if configuration is invalid
     */
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException

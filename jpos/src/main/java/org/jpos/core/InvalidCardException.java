@@ -19,6 +19,7 @@
 package org.jpos.core;
 
 /**
+ * Thrown when card data (PAN, expiry, etc.) is invalid or cannot be parsed.
  * @author apr@cs.com.uy
  * @version $Id$
  * @since jPOS 1.1
@@ -26,9 +27,15 @@ package org.jpos.core;
 public class InvalidCardException extends Exception {
 
     private static final long serialVersionUID = -7842869068559382395L;
+    /** Default constructor. */
     public InvalidCardException () {
         super();
     }
+    /**
+     * Constructs the exception with the given detail message.
+     *
+     * @param s detail message describing the invalid card data
+     */
     public InvalidCardException (String s) {
         super(s);
     }

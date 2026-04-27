@@ -30,12 +30,12 @@ import java.net.ServerSocket;
  * This channel uses a 3-byte big-endian length prefix (24-bit unsigned) and no
  * additional message header.
  *
- * <h3>Keep-alive handling</h3>
+ * <h2>Keep-alive handling</h2>
  * A zero-length frame is treated as a keep-alive. When a keep-alive is received and either
  * {@code replyKeepAlive} is enabled or {@link #isExpectKeepAlive()} returns {@code true}, the channel
  * echoes the keep-alive back to the peer.
  *
- * <h3>Configuration</h3>
+ * <h2>Configuration</h2>
  * <ul>
  *   <li>{@code reply-keepalive} (boolean, default {@code true}): Whether to echo a received
  *   keep-alive (zero-length frame) back to the peer.</li>
@@ -97,8 +97,8 @@ public class CMFChannel extends BaseChannel {
     /**
      * Constructs a server {@code CMFChannel}.
      *
-     * This constructor creates a {@link ServerSocket} internally (as per {@link BaseChannel})
-     * and waits for inbound connections when {@link #accept()} is invoked.
+     * This constructor creates a {@link java.net.ServerSocket} internally (as per {@link BaseChannel})
+     * and waits for inbound connections when {@link BaseChannel#accept(java.net.ServerSocket)} is invoked.
      *
      * @param p the {@link ISOPackager} used to pack/unpack {@link ISOMsg}s.
      * @throws IOException if the underlying server socket cannot be created.
@@ -110,7 +110,7 @@ public class CMFChannel extends BaseChannel {
     }
 
     /**
-     * Constructs a server {@code CMFChannel} associated with an existing {@link ServerSocket}.
+     * Constructs a server {@code CMFChannel} associated with an existing {@link java.net.ServerSocket}.
      *
      * @param p            the {@link ISOPackager} used to pack/unpack {@link ISOMsg}s.
      * @param serverSocket the server socket used to accept a connection.

@@ -58,10 +58,14 @@ public class SysLogListener implements LogListener, Configurable {
     private int            defaultFacility;
     private int            defaultSeverity;
     private Configuration  cfg;
+    /** Default UDP port used by syslog daemons. */
     public static final int SYSLOG_PORT = 514;
+    /** Default syslog facility code (LOG_USER). */
     public static final int LOG_USER = 16;  // local use 0
+    /** Default syslog severity code (informational). */
     public static final int PRI_INFO = 6;   // informational
 
+    /** Default constructor. */
     public SysLogListener () {
         super();
     }

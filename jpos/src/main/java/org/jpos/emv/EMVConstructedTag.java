@@ -25,16 +25,28 @@ import java.io.Serializable;
 
 
 /**
+ * An EMV tag whose value is a constructed (composite) TLV structure.
+ * @param <T> the type of the contained value
  * @author Vishnu Pillai
  */
 public class EMVConstructedTag<T> implements Serializable {
 
+    /** EMV tag classification and metadata. */
     private final EMVTagType tagType;
+    /** TLV data format used to encode the value. */
     private final TLVDataFormat dataFormat;
+    /** Numeric EMV tag identifier. */
     private final Integer tagNumber;
+    /** Parsed value carried by this tag. */
     private final T value;
 
 
+    /**
+     * Creates an EMVConstructedTag for a standard tag type.
+     * @param tagType the standard EMV tag type
+     * @param value the tag value
+     * @throws IllegalArgumentException if tagType or value is null, or the value type is incompatible
+     */
     public EMVConstructedTag(final EMVStandardTagType tagType, final T value) throws IllegalArgumentException {
         if (tagType == null) {
             throw new IllegalArgumentException("tagType cannot be null");
@@ -66,6 +78,13 @@ public class EMVConstructedTag<T> implements Serializable {
     }
 
 
+    /**
+     * Creates an EMVConstructedTag for a proprietary tag type.
+     * @param tagType the proprietary EMV tag type
+     * @param tagNumber the proprietary tag number
+     * @param value the tag value
+     * @throws IllegalArgumentException if any argument is invalid
+     */
     public EMVConstructedTag(final EMVProprietaryTagType tagType, Integer tagNumber, final T value)
             throws IllegalArgumentException {
         if (tagType == null) {
@@ -99,6 +118,14 @@ public class EMVConstructedTag<T> implements Serializable {
     }
 
 
+    /**
+     * Creates an EMVConstructedTag for a proprietary tag type with an explicit data format.
+     * @param tagType the proprietary EMV tag type
+     * @param tagNumber the proprietary tag number
+     * @param dataFormat the TLV data format
+     * @param value the tag value
+     * @throws IllegalArgumentException if any argument is invalid
+     */
     public EMVConstructedTag(final EMVProprietaryTagType tagType, Integer tagNumber, TLVDataFormat dataFormat,
                              final T value) throws IllegalArgumentException {
         if (tagType == null) {
@@ -132,22 +159,42 @@ public class EMVConstructedTag<T> implements Serializable {
         }
     }
 
+    /**
+     * Returns the TLV data format for this tag.
+     * @return the data format
+     */
     public TLVDataFormat getDataFormat() {
         return dataFormat;
     }
 
+    /**
+     * Returns the numeric tag number.
+     * @return tag number
+     */
     public Integer getTagNumber() {
         return tagNumber;
     }
 
+    /**
+     * Returns the EMV tag type descriptor.
+     * @return tag type
+     */
     public EMVTagType getTagType() {
         return tagType;
     }
 
+    /**
+     * Returns the tag value.
+     * @return the value
+     */
     public T getValue() {
         return value;
     }
 
+    /**
+     * Returns the tag number as an uppercase hexadecimal string.
+     * @return hex tag number string
+     */
     public String getTagNumberHex() {
         return Integer.toHexString(tagNumber).toUpperCase();
     }

@@ -26,19 +26,33 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 /**
+ * A {@link Configuration} implementation backed by a {@link java.util.Properties} object.
  * @author apr@cs.com.uy
  * @version $Id$
  * @since jPOS 1.1
  */
 public class SimpleConfiguration implements Configuration, Serializable {
+    /** Backing property store used by this configuration instance. */
     private Properties props;
 
+    /** Default constructor. */
     public SimpleConfiguration () {
         props = new Properties();
     }
+    /**
+     * Wraps the supplied {@link Properties} as a configuration.
+     *
+     * @param props backing properties (used by reference)
+     */
     public SimpleConfiguration (Properties props) {
         this.props = props;
     }
+    /**
+     * Loads a configuration from a Java {@code .properties} file.
+     *
+     * @param filename path to the properties file
+     * @throws IOException if the file cannot be read
+     */
     public SimpleConfiguration (String filename)
         throws IOException
     {
@@ -47,7 +61,7 @@ public class SimpleConfiguration implements Configuration, Serializable {
     }
 
     /**
-     * Returns the value of the configuration property named <tt>name</tt>, or the default value <tt>def</tt>.
+     * Returns the value of the configuration property named {@code name}, or the default value {@code def}.
      *
      * If the property value has the format <code>${xxx}</code> then its value is taken from a system property
      * if it exists, or an environment variable. System property takes priority over environment variable.
@@ -57,8 +71,8 @@ public class SimpleConfiguration implements Configuration, Serializable {
      *
      * @param name The configuration property key name.
      * @param def  The default value.
-     * @return  The value stored under <tt>name</tt>,
-     *          or <tt>def</tt> if there's no configuration property under the given <tt>name</tt>.
+     * @return  The value stored under {@code name},
+     *          or {@code def} if there's no configuration property under the given {@code name}.
      */
     public String get (String name, String def) {
         Object obj = props.get (name);
@@ -144,7 +158,13 @@ public class SimpleConfiguration implements Configuration, Serializable {
         return v.length() == 0 ? def :
                 v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes");
     }
-    public void load(String filename) 
+    /**
+     * Loads a Java {@code .properties} file into this configuration.
+     *
+     * @param filename path to the properties file
+     * @throws IOException if the file cannot be read
+     */
+    public void load(String filename)
         throws IOException
     {
         FileInputStream fis = new FileInputStream(filename);

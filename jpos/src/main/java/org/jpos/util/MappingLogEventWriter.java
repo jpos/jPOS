@@ -55,6 +55,8 @@ import java.util.List;
  * @since 2.1.4
  */
 public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConfigurable {
+    /** Creates a writer with no mappers configured; mappers are wired by {@link #setConfiguration(Element)}. */
+    public MappingLogEventWriter() {}
     List<LogEventMapper> eventMappers;
     List<ByteArrayMapper> outputMappers;
     ByteArrayOutputStream captureOutputStream;
@@ -103,6 +105,9 @@ public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConf
         configureOutputMappers(e);
     }
 
+    /**
+     * Lazily allocates the capture stream pair when at least one output mapper is configured.
+     */
     protected void configureCaptureStreams() {
         if (outputMappers != null && !outputMappers.isEmpty()) {
             captureOutputStream = new ByteArrayOutputStream();
@@ -110,6 +115,12 @@ public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConf
         }
     }
 
+    /**
+     * Reads {@code <event-mapper>} children from {@code e} and instantiates each.
+     *
+     * @param e XML configuration element
+     * @throws ConfigurationException if any mapper class cannot be instantiated or configured
+     */
     protected void configureEventMappers(Element e) throws ConfigurationException {
         List<Element> eventMappers = e.getChildren("event-mapper");
         LogEventMapper mapper;
@@ -138,6 +149,12 @@ public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConf
         }
     }
 
+    /**
+     * Reads {@code <output-mapper>} children from {@code e} and instantiates each.
+     *
+     * @param e XML configuration element
+     * @throws ConfigurationException if any mapper class cannot be instantiated or configured
+     */
     protected void configureOutputMappers(Element e) throws ConfigurationException {
         List<Element> outputMappers = e.getChildren("output-mapper");
         ByteArrayMapper mapper;
@@ -166,6 +183,12 @@ public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConf
         }
     }
 
+    /**
+     * Applies every registered event mapper, in order, to {@code ev}.
+     *
+     * @param ev event to transform
+     * @return the transformed event
+     */
     protected LogEvent mapEvents(LogEvent ev) {
         if (eventMappers != null) {
             for (LogEventMapper mapper : eventMappers) {
@@ -175,6 +198,12 @@ public class MappingLogEventWriter extends BaseLogEventWriter implements XmlConf
         return ev;
     }
 
+    /**
+     * Applies every registered output mapper, in order, to the captured output bytes.
+     *
+     * @param output bytes captured from {@link #writeToCaptureStream(LogEvent)}
+     * @return the transformed output bytes
+     */
     protected byte[] mapOutput(byte[] output) {
         if (outputMappers != null) {
             for (ByteArrayMapper mapper : outputMappers) {

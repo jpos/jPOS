@@ -34,10 +34,14 @@ import java.util.GregorianCalendar;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  */
+/** QBean adaptor that runs a configured {@link Runnable} task once per day at a configured time. */
 public class DailyTaskAdaptor extends QBeanSupport implements Runnable {
+    /** The task to execute daily. */
     Runnable task;
+    /** The thread running the task loop. */
     Thread thisThread = null;
 
+    /** Default constructor. */
     public DailyTaskAdaptor () {
         super ();
     }
@@ -73,6 +77,10 @@ public class DailyTaskAdaptor extends QBeanSupport implements Runnable {
             }
         }
     }
+    /**
+     * Returns the next scheduled execution time based on the {@code start} configuration property.
+     * @return the next execution {@link Date}
+     */
     public Date getWhen() {
         String s = cfg.get ("start")+":00:00"; // NOPMD
         int hh = Integer.parseInt(s.substring (0, 2));
@@ -93,6 +101,7 @@ public class DailyTaskAdaptor extends QBeanSupport implements Runnable {
 
         return when;
     }
+    /** Blocks the current thread until the daily start time arrives. */
     protected void waitUntilStartTime() {
         Date when = getWhen();
         while (running()) {

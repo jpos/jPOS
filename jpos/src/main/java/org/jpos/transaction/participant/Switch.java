@@ -25,8 +25,15 @@ import org.jpos.transaction.Context;
 import org.jpos.transaction.GroupSelector;
 import static org.jpos.transaction.ContextConstants.TXNNAME;
 
+/**
+ * {@link GroupSelector} that picks the next participant group based on the
+ * transaction name stored in the context (default key {@link
+ * org.jpos.transaction.ContextConstants#TXNNAME}).
+ */
 @SuppressWarnings("unused")
 public class Switch implements Configurable, GroupSelector {
+    /** Creates the selector; configuration is supplied via {@link #setConfiguration(Configuration)}. */
+    public Switch() {}
     private Configuration cfg;
     private String txnNameEntry;
     public String select (long id, Serializable ser) {

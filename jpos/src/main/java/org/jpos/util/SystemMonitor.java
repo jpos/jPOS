@@ -42,6 +42,8 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
         super();
     }
     /**
+     * Constructs a monitor with the given polling interval and logger binding.
+     *
      * @param sleepTime sleep
      * @param logger current logger
      * @param realm  instance realm
@@ -63,6 +65,8 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
     }
 
     /**
+     * Sets the polling interval and (re)starts the monitor thread.
+     *
      * @param sleepTime new sleepTime;
      */
     public void setSleepTime (int sleepTime) {
@@ -77,6 +81,13 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
             p.println (indent + list[i]);
     }
 
+    /**
+     * Recursively dumps {@code g} and every parent thread group, with their threads.
+     *
+     * @param g starting thread group
+     * @param p destination stream
+     * @param indent prefix used for indentation
+     */
     public void showThreadGroup (ThreadGroup g, PrintStream p, String indent) {
         if (g.getParent() != null)
             showThreadGroup (g.getParent(), p, indent + "  ");
@@ -95,6 +106,7 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
         }
     }
 
+    /** Signals the monitor's run loop to terminate. */
     public void shutdown() {
         shutdown = true;
     }

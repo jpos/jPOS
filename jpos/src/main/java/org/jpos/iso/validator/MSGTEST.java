@@ -33,10 +33,16 @@ import org.jpos.util.Logger;
  */
 public class MSGTEST extends ISOBaseValidator {
 
+    /** Default constructor. */
     public MSGTEST() {
         super();
     }
 
+    /**
+     * Constructs the validator with the requested error behaviour.
+     *
+     * @param breakOnError when {@code true}, validation throws on the first error
+     */
     public MSGTEST( boolean breakOnError ) {
         super(breakOnError);
     }

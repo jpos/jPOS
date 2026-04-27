@@ -27,16 +27,32 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.UUID;
 
+/**
+ * Serializable {@link ISOSource} that forwards outbound messages through a
+ * {@link Space}, decoupling the originating source from the response-routing
+ * thread. Used by SendResponse and other deferred-send participants.
+ */
 @SuppressWarnings("unused unchecked")
 public class SpaceSource implements ISOSource, SpaceListener<String,ISOMsg>, Serializable {
     private static final long serialVersionUID = -2629671264411649185L;
 
     private transient Space isp = SpaceFactory.getSpace();
     private transient LocalSpace sp;
+    /** Space key used to correlate request and reply messages. */
     private String key;
+    /** Message expiration timeout, in milliseconds. */
     private long timeout;
+    /** Last known connectivity state of the wrapped source. */
     private boolean connected;
 
+    /**
+     * Constructs a SpaceSource that publishes the original {@code source} into
+     * the internal jPOS space and listens on the correlation key for responses.
+     *
+     * @param sp local space used for response delivery
+     * @param source originating source whose connectivity is captured at construction
+     * @param timeout space-entry lease in milliseconds
+     */
     public SpaceSource(LocalSpace sp, ISOSource source, long timeout) {
         this.key = "SS." + UUID.randomUUID().toString();
         this.connected = source.isConnected();
@@ -45,6 +61,12 @@ public class SpaceSource implements ISOSource, SpaceListener<String,ISOMsg>, Ser
         isp.out (key, source, timeout);
     }
 
+    /**
+     * Re-initialises the space binding after deserialization.
+     *
+     * @param sp local space used for response delivery
+     * @param timeout space-entry lease in milliseconds
+     */
     public void init (LocalSpace sp, long timeout) {
         this.sp = sp;
         this.timeout = timeout;

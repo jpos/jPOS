@@ -26,6 +26,11 @@ import org.jpos.space.SpaceError;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.TSpace;
 
+/**
+ * {@link LogListener} that publishes events into a {@link Space} queue,
+ * optionally freezing them to a {@link FrozenLogEvent} first so background
+ * subscribers see a stable snapshot.
+ */
 public class SpaceLogListener implements LogListener, Configurable {
     String queueName;
     Space sp;
@@ -34,6 +39,7 @@ public class SpaceLogListener implements LogListener, Configurable {
     boolean frozen = true;
     Configuration cfg;
 
+    /** Default constructor. */
     @SuppressWarnings("unused")
     public SpaceLogListener() {
         super();
@@ -53,7 +59,7 @@ public class SpaceLogListener implements LogListener, Configurable {
 
     /**
      * @param cfg Configuration object
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     @Override
     public void setConfiguration(Configuration cfg) throws ConfigurationException {

@@ -26,6 +26,9 @@ package org.jpos.iso;
  */
 @SuppressWarnings("unused")
 public class EbcdicBinaryInterpreter implements BinaryInterpreter {
+    /** Public constructor; prefer {@link #INSTANCE} for repeated use. */
+    public EbcdicBinaryInterpreter() {}
+    /** Shared singleton instance. */
     public static final EbcdicBinaryInterpreter INSTANCE = new EbcdicBinaryInterpreter();
 
     /**

@@ -18,8 +18,18 @@
 
 package org.jpos.util;
 
+/** Interface for objects that produce log events and manage a list of {@link LogListener}s. */
 public interface LogProducer {
+    /**
+     * Adds a log listener.
+     * @param l the listener to add
+     */
     void addListener(LogListener l);
+    /**
+     * Removes a specific log listener.
+     * @param l the listener to remove
+     */
     void removeListener(LogListener l);
+    /** Removes all registered log listeners. */
     void removeAllListeners();
 }

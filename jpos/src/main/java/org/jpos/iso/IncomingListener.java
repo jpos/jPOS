@@ -32,8 +32,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@link ISORequestListener} that wraps each inbound message into a transaction
+ * {@link Context} and forwards it to a configured space queue for asynchronous
+ * processing.
+ */
 @SuppressWarnings("unused")
 public class IncomingListener extends Log implements ISORequestListener, Configurable {
+    /** Default constructor; no instance state to initialise. */
+    public IncomingListener() {}
     long timeout;
     private Space<String,Context> sp;
     private String queue;

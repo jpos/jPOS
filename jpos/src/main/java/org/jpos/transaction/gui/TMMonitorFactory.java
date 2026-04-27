@@ -26,7 +26,13 @@ import org.jdom2.Element;
 
 import javax.swing.*;
 
+/**
+ * UIFactory that builds a {@link TMMonitor} bound to the named transaction
+ * manager resolved from {@link NameRegistrar}.
+ */
 public class TMMonitorFactory implements UIFactory {
+    /** Default constructor; no instance state to initialise. */
+    public TMMonitorFactory() {}
     public JComponent create(UI ui, Element e) {
         try {
             TransactionManager tm =

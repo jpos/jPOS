@@ -27,6 +27,8 @@ import java.awt.*;
 import java.util.Iterator;
 
 /**
+ * UIFactory that builds a Swing panel using {@link GridLayout} with {@code <cell>} children.
+ *
  * @author Alejandro Revilla
  *
  * creates a panel with a grid layout
@@ -43,6 +45,8 @@ import java.util.Iterator;
  * @see org.jpos.ui.UIFactory
  */
 public class GridLayoutFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public GridLayoutFactory() {}
     public JComponent create (UI ui, Element e) {
         JComponent p;
         try {

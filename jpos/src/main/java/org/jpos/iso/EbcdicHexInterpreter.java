@@ -26,6 +26,8 @@ package org.jpos.iso;
  */
 public class EbcdicHexInterpreter implements BinaryInterpreter
 {
+    /** Public constructor; prefer {@link #INSTANCE} for repeated use. */
+    public EbcdicHexInterpreter() {}
     /** An instance of this Interpreter. Only one needed for the whole system */
     public static final EbcdicHexInterpreter INSTANCE = new EbcdicHexInterpreter();
 

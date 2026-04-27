@@ -104,6 +104,7 @@ import static java.util.ResourceBundle.getBundle;
 
 
 /**
+ * The Q2 application container — bootstraps and manages the lifecycle of QBean components.
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @author <a href="mailto:alwynschoeman@yahoo.com">Alwyn Schoeman</a>
@@ -111,21 +112,36 @@ import static java.util.ResourceBundle.getBundle;
  */
 @SuppressWarnings("unchecked")
 public class Q2 implements FileFilter, Runnable {
+    /** Default subdirectory under {@link #getDeployDir()} that Q2 scans for deployable XML. */
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
+    /** JMX domain under which Q2 registers its MBeans. */
     public static final String JMX_NAME            = "Q2";
+    /** Logger name used for Q2 lifecycle events. */
     public static final String LOGGER_NAME         = "Q2";
+    /** Realm tag for Q2 lifecycle log entries. */
     public static final String REALM               = Realm.Q2_LIFECYCLE;
+    /** File name for the logger configuration auto-deployed at startup. */
     public static final String LOGGER_CONFIG       = "00_logger.xml";
+    /** Object-name prefix used for QBean services. */
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
+    /** Object name of the Q2 class loader MBean. */
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
+    /** Suffix appended to deploy files that duplicate a prior deployment. */
     public static final String DUPLICATE_EXTENSION = "DUP";
+    /** Suffix appended to deploy files that fail to load. */
     public static final String ERROR_EXTENSION     = "BAD";
+    /** Suffix recognised as environment-variable overlays in deploy. */
     public static final String ENV_EXTENSION       = "ENV";
+    /** File name of the embedded licensee descriptor. */
     public static final String LICENSEE            = "LICENSEE.asc";
+    /** SHA-256 hash of the public key bundled with the {@link #LICENSEE} verifier. */
     public static final byte[] PUBKEYHASH          = ISOUtil.hex2byte("C0C73A47A5A27992267AC825F3C8B0666DF3F8A544210851821BFCC1CFA9136C");
 
+    /** Element name used to mark a QBean as protected (cannot be undeployed). */
     public static final String PROTECTED_QBEAN        = "protected-qbean";
+    /** Deploy-directory poll interval in milliseconds. */
     public static final int SCAN_INTERVAL             = 2500;
+    /** Maximum time, in milliseconds, that Q2 waits for QBeans to stop on shutdown. */
     public static final long SHUTDOWN_TIMEOUT         = 60000;
 
     private MBeanServer server;
@@ -262,18 +278,36 @@ public class Q2 implements FileFilter, Runnable {
     public Q2 (String deployDir) {
         this (new String[] { "-d", deployDir });
     }
+    /**
+     * Starts Q2 on a new daemon-style worker thread.
+     *
+     * @throws IllegalStateException if {@link #stop()} has already been called on this instance
+     */
     public void start () {
         if (shutdown.getCount() == 0)
             throw new IllegalStateException("Q2 has been stopped");
         new Thread(this).start();
     }
+    /**
+     * Initiates an orderly shutdown of Q2 and the QBeans it has deployed.
+     */
     public void stop () {
         shutdown(true);
     }
+    /**
+     * Returns the Micrometer registry that aggregates Q2 metrics.
+     *
+     * @return the active {@link MeterRegistry}
+     */
     public MeterRegistry getMeterRegistry() {
         return meterRegistry;
     }
 
+    /**
+     * Returns the Prometheus-flavoured registry exposed for scraping.
+     *
+     * @return the {@link PrometheusMeterRegistry} backing the Prometheus endpoint
+     */
     public PrometheusMeterRegistry getPrometheusMeterRegistry () {
         return prometheusRegistry;
     }
@@ -381,21 +415,47 @@ public class Q2 implements FileFilter, Runnable {
             stopJFR();
         }
     }
+    /**
+     * Initiates an orderly shutdown of Q2 without waiting for the worker thread to terminate.
+     */
     public void shutdown () {
         shutdown(false);
     }
+    /**
+     * Returns whether Q2 has started and has not yet been shut down.
+     *
+     * @return {@code true} once {@link #run()} has begun and shutdown has not been requested
+     */
     public boolean running() {
         return started && shutdown.getCount() > 0;
     }
+    /**
+     * Returns whether Q2 has finished its initial deployment scan and is ready
+     * to serve requests.
+     *
+     * @return {@code true} once the initial deploy has completed and shutdown is not in progress
+     */
     public boolean ready() {
         return ready.getCount() == 0 && shutdown.getCount() > 0;
     }
+    /**
+     * Waits up to {@code millis} milliseconds for Q2 to become {@link #ready() ready}.
+     *
+     * @param millis maximum time to wait, in milliseconds
+     * @return {@code true} if Q2 is ready when this method returns
+     */
     public boolean ready (long millis) {
         try {
             ready.await(millis, TimeUnit.MILLISECONDS);
         } catch (InterruptedException ignored) { }
         return ready();
     }
+    /**
+     * Initiates shutdown and optionally blocks until the worker thread terminates.
+     *
+     * @param join when {@code true}, waits up to {@link #SHUTDOWN_TIMEOUT} ms for the
+     *             Q2 worker thread to terminate
+     */
     public void shutdown (boolean join) {
         if (log != null) {
             audit(auditStop(Duration.between(startTime, Instant.now())));
@@ -416,35 +476,85 @@ public class Q2 implements FileFilter, Runnable {
         }
         q2Thread = null;
     }
+    /**
+     * Returns the dynamic class loader Q2 uses to load deployed QBeans.
+     *
+     * @return the active {@link QClassLoader}
+     */
     public QClassLoader getLoader () {
         return loader;
     }
+    /**
+     * Returns the {@link QFactory} responsible for instantiating QBeans from deploy descriptors.
+     *
+     * @return the active {@link QFactory}
+     */
     public QFactory getFactory () {
         return factory;
     }
+    /**
+     * Returns the original command-line arguments Q2 was launched with.
+     *
+     * @return the command-line argument array
+     */
     public String[] getCommandLineArgs() {
         return args;
     }
+    /**
+     * {@link FileFilter} hook used by the deploy-directory scan: accepts readable
+     * XML descriptors and, when recursive scanning is enabled, sub-directories
+     * other than {@code lib}.
+     *
+     * @param f candidate file
+     * @return {@code true} if {@code f} should be considered for deployment
+     */
     public boolean accept (File f) {
         return f.canRead() &&
             (isXml(f) ||
                     recursive && f.isDirectory() && !"lib".equalsIgnoreCase (f.getName()));
     }
+    /**
+     * Returns the directory Q2 scans for deploy descriptors.
+     *
+     * @return the deploy directory
+     */
     public File getDeployDir () {
         return deployDir;
     }
 
+    /**
+     * Returns the configured {@code WatchService} class name, or {@code null}
+     * when polling is used.
+     *
+     * @return the fully-qualified watch-service class name, or {@code null}
+     */
     public String getWatchServiceClassname() {
         return watchServiceClassname;
     }
 
+    /**
+     * Returns the running Q2 instance from the {@link NameRegistrar}, if any.
+     *
+     * @return the registered Q2 instance, or {@code null} if none is registered
+     */
     public static Q2 getQ2() {
         return NameRegistrar.getIfExists(JMX_NAME);
     }
+    /**
+     * Waits up to {@code timeout} milliseconds for a Q2 instance to register itself.
+     *
+     * @param timeout maximum time to wait, in milliseconds
+     * @return the registered Q2 instance
+     */
     public static Q2 getQ2(long timeout) {
         return NameRegistrar.get(JMX_NAME, timeout);
     }
 
+    /**
+     * Returns the node identifier embedded in the licensee descriptor.
+     *
+     * @return the node identifier
+     */
     public static int node() {
         return PGPHelper.node();
     }
@@ -723,11 +833,20 @@ public class Q2 implements FileFilter, Runnable {
             getLog().warn ("start", e);
         }
     }
+    /**
+     * Sleeps the calling thread for at most {@code sleep} milliseconds, returning
+     * early if shutdown is requested in the meantime.
+     *
+     * @param sleep maximum sleep time, in milliseconds
+     */
     public void relax (long sleep) {
         try {
             shutdown.await(sleep, TimeUnit.MILLISECONDS);
         } catch (InterruptedException ignored) { }
     }
+    /**
+     * Sleeps for one second, returning early on shutdown.
+     */
     public void relax () {
         relax (1000);
     }
@@ -744,6 +863,12 @@ public class Q2 implements FileFilter, Runnable {
         }
         audit (auditStart());
     }
+    /**
+     * Returns the lifecycle log used by Q2 itself, lazily attaching a stdout
+     * listener when no logger is configured and Q2 is not running under the CLI.
+     *
+     * @return the Q2 lifecycle {@link Log}
+     */
     public Log getLog () {
         if (log == null) {
             Logger logger = Logger.getLogger (LOGGER_NAME);
@@ -762,18 +887,42 @@ public class Q2 implements FileFilter, Runnable {
         }
         return deployLog;
     }
+    /**
+     * Returns the JMX MBean server backing Q2's QBean registrations.
+     *
+     * @return the active {@link MBeanServer}
+     */
     public MBeanServer getMBeanServer () {
         return server;
     }
+    /**
+     * Returns Q2's uptime since {@link #run()} captured the start instant.
+     *
+     * @return the elapsed duration between start and now
+     */
     public Duration getUptime() {
         return Duration.between(startTime, Instant.now());
     }
+    /**
+     * Prints the Q2 version banner to {@code System.out}.
+     */
     public void displayVersion () {
         System.out.println(getVersionString());
     }
+    /**
+     * Returns the per-process random identifier assigned to this Q2 instance.
+     *
+     * @return a stable {@link UUID} for the running instance
+     */
     public UUID getInstanceId() {
         return instanceId;
     }
+    /**
+     * Builds the multi-line version banner used by {@link #displayVersion()},
+     * combining jPOS version metadata with any embedded application metadata.
+     *
+     * @return the formatted version banner
+     */
     public static String getVersionString() {
         String appVersionString = getAppVersionString();
         int l = PGPHelper.checkLicense();
@@ -917,6 +1066,20 @@ public class Q2 implements FileFilter, Runnable {
             // a bundle, we want it to be transient.
         }
     }
+    /**
+     * Writes a single QBean descriptor to {@code fileName} inside the deploy
+     * directory, optionally encrypting it and/or marking it transient.
+     *
+     * @param e            QBean descriptor element
+     * @param fileName     target file name relative to the deploy directory
+     * @param encrypt      when {@code true} the descriptor is DES-encrypted
+     *                     before being written
+     * @param isTransient  when {@code true} the file is tagged with the running
+     *                     instance id and removed on JVM exit
+     * @throws ISOException             if encryption fails
+     * @throws IOException              if writing the descriptor fails
+     * @throws GeneralSecurityException if the encryption cipher is unavailable
+     */
     public void deployElement (Element e, String fileName, boolean encrypt, boolean isTransient)
         throws ISOException, IOException, GeneralSecurityException
     {
@@ -946,11 +1109,26 @@ public class Q2 implements FileFilter, Runnable {
         cipher.init (mode, new SecretKeySpec(getKey(), "DES"));
         return cipher.doFinal (data);
     }
+    /**
+     * Derives the 8-byte DES key used to protect deploy descriptors. Subclasses
+     * may override to source the key material from a secret manager.
+     *
+     * @return the DES key for {@link #encrypt(Document)} / {@link #decrypt(Document)}
+     */
     protected byte[] getKey() {
         return
           ISOUtil.xor(SystemSeed.getSeed(8, 8),
           ISOUtil.hex2byte(System.getProperty("jpos.deploy.key", "BD653F60F980F788")));
     }
+    /**
+     * Wraps {@code doc} in a {@code <protected-qbean>} envelope whose body is the
+     * DES-encrypted, hex-encoded XML payload.
+     *
+     * @param doc QBean descriptor to encrypt
+     * @return an encrypted document suitable for writing to the deploy directory
+     * @throws GeneralSecurityException if the DES cipher fails
+     * @throws IOException              if serialising the input document fails
+     */
     protected Document encrypt (Document doc)
         throws GeneralSecurityException, IOException
     {
@@ -974,6 +1152,17 @@ public class Q2 implements FileFilter, Runnable {
         return secureDoc;
     }
 
+    /**
+     * Reverses {@link #encrypt(Document)}: when {@code doc} is a
+     * {@code <protected-qbean>} envelope, returns the decrypted descriptor;
+     * otherwise returns {@code doc} unchanged.
+     *
+     * @param doc descriptor read from the deploy directory
+     * @return decrypted document, or {@code doc} when not an encrypted envelope
+     * @throws GeneralSecurityException if the DES cipher fails
+     * @throws IOException              if reading the embedded payload fails
+     * @throws JDOMException            if the decrypted payload is not well-formed XML
+     */
     protected Document decrypt (Document doc)
         throws GeneralSecurityException, IOException, JDOMException
     {
@@ -1077,26 +1266,65 @@ public class Q2 implements FileFilter, Runnable {
         builder.setFeature("http://apache.org/xml/features/xinclude", true);
         return builder;
     }
+    /**
+     * Standalone entry point: instantiates Q2, requests {@code System.exit(0)}
+     * on shutdown, and starts the worker thread.
+     *
+     * @param args command-line arguments accepted by {@link #Q2(String[])}
+     * @throws Exception if Q2 fails to construct or start
+     */
     public static void main (String[] args) throws Exception {
         Q2 q2 = new Q2(args);
         q2.setExit (true);
         q2.start();
     }
+    /**
+     * Returns the jPOS build version, sourced from the bundled buildinfo resource.
+     *
+     * @return the jPOS version string
+     */
     public static String getVersion() {
         return getBundle("org/jpos/q2/buildinfo").getString ("version");
     }
+    /**
+     * Returns the source revision of the running jPOS build.
+     *
+     * @return the revision string from the bundled revision resource
+     */
     public static String getRevision() {
         return getBundle("org/jpos/q2/revision").getString ("revision");
     }
+    /**
+     * Returns the source branch of the running jPOS build.
+     *
+     * @return the branch name from the bundled revision resource
+     */
     public static String getBranch() {
         return getBundle("org/jpos/q2/revision").getString ("branch");
     }
+    /**
+     * Returns the timestamp at which the running jPOS jar was built.
+     *
+     * @return the build timestamp string from the bundled buildinfo resource
+     */
     public static String getBuildTimestamp() {
         return getBundle("org/jpos/q2/buildinfo").getString ("buildTimestamp");
     }
+    /**
+     * Returns a release identifier combining {@link #getVersion()} and {@link #getRevision()}.
+     *
+     * @return version and revision separated by a space
+     */
     public static String getRelease() {
         return getVersion() + " " + getRevision();
     }
+    /**
+     * Returns the application's version banner, when an embedded application has
+     * deployed its own {@code buildinfo}/{@code revision} resources, or
+     * {@code null} when none is present.
+     *
+     * @return the formatted application version string, or {@code null} when absent
+     */
     public static String getAppVersionString() {
         try {
             ResourceBundle buildinfo = getBundle("buildinfo");
@@ -1113,6 +1341,12 @@ public class Q2 implements FileFilter, Runnable {
             return null;
         }
     }
+    /**
+     * Returns the JVM class path, expanded against the {@code Class-Path}
+     * manifest entry when the JVM was launched with a single executable jar.
+     *
+     * @return the class path; never {@code null}, possibly empty
+     */
     public static String getClassPath() {
         try {
             String cp = System.getProperty("java.class.path");
@@ -1131,6 +1365,12 @@ public class Q2 implements FileFilter, Runnable {
         } catch (Exception ignored) { }
         return "";
     }
+    /**
+     * Returns the SHA-1 hash of the class path returned by {@link #getClassPath()}.
+     *
+     * @return the hex-encoded SHA-1 hash, or an empty string when the class path
+     *         is empty or hashing fails
+     */
     public static String getClassPathHash() {
         String cp = getClassPath();
         if (cp.isEmpty()) return "";
@@ -1140,55 +1380,126 @@ public class Q2 implements FileFilter, Runnable {
         } catch (Exception ignored) { }
         return "";
     }
+    /**
+     * Returns {@code true} if the dynamic class loader has been disabled via command-line options.
+     *
+     * @return {@code true} if dynamic classloading is disabled
+     */
     public boolean isDisableDynamicClassloader() {
         return disableDynamicClassloader;
     }
 
+    /**
+     * Bookkeeping record for a deployed QBean: when it was deployed, its JMX
+     * registration, the underlying object, and whether it should start eagerly.
+     */
     public static class QEntry {
         long deployed;
         ObjectInstance instance;
         Object obj;
         boolean eagerStart;
+        /** Creates an empty entry; fields are populated as deployment progresses. */
         public QEntry () {
             super();
         }
+        /**
+         * Creates an entry pre-populated with a deploy timestamp and JMX instance.
+         *
+         * @param deployed deploy timestamp in milliseconds since the epoch
+         * @param instance JMX registration for the deployed QBean
+         */
         public QEntry (long deployed, ObjectInstance instance) {
             super();
             this.deployed = deployed;
             this.instance = instance;
         }
+        /**
+         * Returns the deploy timestamp.
+         *
+         * @return deploy timestamp in milliseconds since the epoch
+         */
         public long getDeployed () {
             return deployed;
         }
+        /**
+         * Updates the deploy timestamp.
+         *
+         * @param deployed deploy timestamp in milliseconds since the epoch
+         */
         public void setDeployed (long deployed) {
             this.deployed = deployed;
         }
+        /**
+         * Sets the JMX registration for the deployed QBean.
+         *
+         * @param instance JMX registration for the deployed QBean
+         */
         public void setInstance (ObjectInstance instance) {
             this.instance = instance;
         }
+        /**
+         * Returns the JMX registration for the deployed QBean.
+         *
+         * @return JMX registration for the deployed QBean, or {@code null} if not yet registered
+         */
         public ObjectInstance getInstance () {
             return instance;
         }
+        /**
+         * Returns the {@link ObjectName} of the deployed QBean.
+         *
+         * @return the JMX {@link ObjectName} of the deployed QBean, or {@code null} if not registered
+         */
         public ObjectName getObjectName () {
             return instance != null ? instance.getObjectName () : null;
         }
+        /**
+         * Binds the underlying QBean (or QPersist) instance.
+         *
+         * @param obj underlying QBean (or QPersist) instance
+         */
         public void setObject (Object obj) {
             this.obj = obj;
         }
+        /**
+         * Returns the underlying QBean (or QPersist) instance.
+         *
+         * @return underlying QBean (or QPersist) instance, or {@code null} when not bound
+         */
         public Object getObject () {
             return obj;
         }
+        /**
+         * Returns whether the bound object implements {@link QBean}.
+         *
+         * @return {@code true} when the bound object implements {@link QBean}
+         */
         public boolean isQBean () {
             return obj instanceof QBean;
         }
+        /**
+         * Returns whether the bound object implements {@link QPersist}.
+         *
+         * @return {@code true} when the bound object implements {@link QPersist}
+         */
         public boolean isQPersist () {
             return obj instanceof QPersist;
         }
 
+        /**
+         * Returns whether this QBean is configured for eager start.
+         *
+         * @return {@code true} when this QBean should be started immediately on deploy
+         */
         public boolean isEagerStart() {
             return eagerStart;
         }
 
+        /**
+         * Sets whether this QBean should start immediately on deploy.
+         *
+         * @param eagerStart whether this QBean should be started immediately on deploy
+         */
         public void setEagerStart(boolean eagerStart) {
             this.eagerStart = eagerStart;
         }
@@ -1218,6 +1529,20 @@ public class Q2 implements FileFilter, Runnable {
         }
     }
 
+    /**
+     * Renders a deploy template, prefixing every QBean inside with {@code prefix}
+     * and writing the result as {@code filename} under the deploy directory.
+     * Templates can be loaded either from a {@code jar:} URL or from a file path.
+     *
+     * @param template path or {@code jar:} URL of the template document
+     * @param filename target file name relative to the deploy directory
+     * @param prefix   prefix prepended to each contained QBean's name
+     * @throws IOException              if reading the template or writing the result fails
+     * @throws JDOMException            if the template is not well-formed XML
+     * @throws GeneralSecurityException if encryption is requested and fails
+     * @throws ISOException             if encryption fails
+     * @throws NullPointerException     if {@code template} is {@code null}
+     */
     public void deployTemplate (String template, String filename, String prefix)
       throws IOException, JDOMException, GeneralSecurityException, ISOException, NullPointerException {
         if (template.startsWith("jar:")) {
@@ -1398,6 +1723,13 @@ public class Q2 implements FileFilter, Runnable {
         meterRegistry.add (prometheusRegistry);
     }
 
+    /**
+     * Prepends comma-separated values of the {@code q2.args} environment property,
+     * if any, to the supplied command-line arguments.
+     *
+     * @param args original command-line arguments
+     * @return the merged argument array; {@code args} unchanged when no override is set
+     */
     public String[] environmentArgs (String[] args) {
         String envArgs = Environment.getEnvironment().getProperty("${q2.args}", null);
         return (envArgs != null && !"${q2.args}".equals(envArgs) ?

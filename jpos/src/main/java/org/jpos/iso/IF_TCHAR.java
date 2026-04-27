@@ -26,10 +26,12 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IF_TCHAR extends IF_TBASE {
+    /** Default constructor. */
     public IF_TCHAR() {
         super();
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */
@@ -37,6 +39,7 @@ public class IF_TCHAR extends IF_TBASE {
         super(len, description);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      * @param token token descrption
@@ -48,7 +51,7 @@ public class IF_TCHAR extends IF_TBASE {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     @Override
     public byte[] pack (ISOComponent c) throws ISOException {
@@ -60,7 +63,7 @@ public class IF_TCHAR extends IF_TBASE {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     @Override
     public int unpack (ISOComponent c, byte[] b, int offset)

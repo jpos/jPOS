@@ -25,6 +25,8 @@ import org.jpos.ui.UIFactory;
 import javax.swing.*;
 
 /**
+ * UIFactory that builds a horizontal {@link JSplitPane} from {@code <left>}/{@code <right>} children.
+ *
  * @author Alejandro Revilla
  *
  * creates a horizontal split pane
@@ -38,6 +40,8 @@ import javax.swing.*;
  * @see org.jpos.ui.UIFactory
  */
 public class HSplitFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public HSplitFactory() {}
     public JComponent create (UI ui, Element e) {
         JSplitPane splitPane = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT,

@@ -20,9 +20,24 @@ package org.jpos.q2;
 
 import java.io.File;
 
+/**
+ * Provides optional decoration (variable substitution, templating, etc.) for Q2 deploy descriptor files.
+ */
 public interface ConfigDecorationProvider
 {
+    /**
+     * Initializes this provider with the given Q2 deploy directory.
+     * @param deployDir the Q2 deploy directory
+     * @throws Exception on initialization failure
+     */
     void initialize(File deployDir) throws Exception;
+    /** Releases resources used by this provider. */
     void uninitialize();
+    /**
+     * Processes and decorates a deploy descriptor file.
+     * @param f deploy descriptor file
+     * @return the decorated content
+     * @throws Exception on processing failure
+     */
     String decorateFile(File f) throws Exception;
 }

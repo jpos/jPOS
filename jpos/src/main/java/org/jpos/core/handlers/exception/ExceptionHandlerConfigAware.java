@@ -30,6 +30,13 @@ import org.jpos.q2.QFactory;
  */
 public interface ExceptionHandlerConfigAware {
 
+    /**
+     * Parses {@code exception-handler} child elements from {@code elem} and registers them with {@code receiver}.
+     * @param receiver the object that will receive the configured handlers
+     * @param elem the XML element containing {@code exception-handler} children
+     * @param fact the QFactory used to instantiate handler classes
+     * @throws ConfigurationException if a handler class cannot be found or configured
+     */
     default void addExceptionHandlers(ExceptionHandlerAware receiver, Element elem, QFactory fact)
             throws ConfigurationException
     {

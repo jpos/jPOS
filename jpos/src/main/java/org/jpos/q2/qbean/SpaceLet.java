@@ -31,8 +31,14 @@ import org.jpos.util.NameRegistrar;
 import java.io.IOException;
 import java.util.Iterator;
 
+/**
+ * QBean that adapts a {@link Space} for scripted access via BeanShell, allowing
+ * incoming/outgoing operations to be intercepted by configured BSH snippets.
+ */
 @SuppressWarnings("unchecked")
 public class SpaceLet extends QBeanSupport implements Space {
+    /** Default constructor; no instance state to initialise. */
+    public SpaceLet() {}
     Space sp;
     String uri;
     String outScript, outSource;

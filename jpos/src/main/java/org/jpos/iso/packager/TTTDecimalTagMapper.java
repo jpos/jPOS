@@ -53,6 +53,7 @@ package org.jpos.iso.packager;
  */
 public class TTTDecimalTagMapper extends DecimalTagMapper {
 
+    /** Default constructor. */
     public TTTDecimalTagMapper() {
         super(3);
     }

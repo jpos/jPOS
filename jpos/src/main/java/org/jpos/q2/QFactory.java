@@ -44,17 +44,28 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
+ * Factory responsible for creating, configuring, and deploying QBean instances from XML deploy descriptors.
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("unchecked")
 public class QFactory {
+    /** ObjectName of the QClassLoader MBean. */
     ObjectName loaderName;
+    /** The Q2 server instance. */
     Q2 q2;
+    /** Resource bundle mapping element names to class names. */
     ResourceBundle classMapping;
+    /** Default configuration factory used when no custom one is specified. */
     ConfigurationFactory defaultConfigurationFactory = new SimpleConfigurationFactory();
 
+    /**
+     * Constructs a QFactory with the given class loader object name and Q2 instance.
+     *
+     * @param loaderName the ObjectName of the QClassLoader MBean
+     * @param q2         the Q2 server instance
+     */
     public QFactory (ObjectName loaderName, Q2 q2) {
         super ();
         this.loaderName = loaderName;
@@ -62,6 +73,16 @@ public class QFactory {
         classMapping = ResourceBundle.getBundle(this.getClass().getName());
     }
 
+    /**
+     * Instantiates the MBean class described by the given XML element.
+     *
+     * @param server the Q2 server instance
+     * @param e      the XML element defining the class to instantiate
+     * @return the newly instantiated object
+     * @throws ReflectionException      if the class cannot be instantiated via reflection
+     * @throws MBeanException           if the MBeanServer reports an error
+     * @throws InstanceNotFoundException if the class loader MBean is not found
+     */
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public Object instantiate (Q2 server, Element e)
         throws ReflectionException,
@@ -83,6 +104,22 @@ public class QFactory {
         return mserver.instantiate (clazz, loaderName);
     }
 
+    /**
+     * Registers and initializes a QBean MBean in the MBeanServer.
+     *
+     * @param server the Q2 server instance
+     * @param e      the XML element defining the QBean
+     * @param obj    the instantiated QBean object
+     * @return the registered {@link ObjectInstance}
+     * @throws MalformedObjectNameException    if the object name is malformed
+     * @throws InstanceAlreadyExistsException  if a bean with this name is already deployed
+     * @throws InstanceNotFoundException       if the class loader MBean is not found
+     * @throws MBeanException                  if the MBeanServer reports an error
+     * @throws NotCompliantMBeanException      if the object is not a valid MBean
+     * @throws InvalidAttributeValueException  if an attribute value is invalid
+     * @throws ReflectionException             if a reflective operation fails
+     * @throws ConfigurationException          if configuration fails
+     */
     public ObjectInstance createQBean (Q2 server, Element e, Object obj)
         throws MalformedObjectNameException,
                InstanceAlreadyExistsException,
@@ -129,6 +166,11 @@ public class QFactory {
 
         return instance;
     }
+    /**
+     * Returns the Q2 server instance associated with this factory.
+     *
+     * @return the Q2 server instance
+     */
     public Q2 getQ2() {
         return q2;
     }
@@ -151,6 +193,18 @@ public class QFactory {
         }
     }
 
+    /**
+     * Sets an attribute on the given MBean, silently ignoring unknown attributes.
+     *
+     * @param server     the MBeanServer
+     * @param objectName the ObjectName of the MBean
+     * @param attribute  the attribute name
+     * @param value      the attribute value
+     * @throws InstanceNotFoundException     if the MBean is not found
+     * @throws MBeanException                if the MBeanServer reports an error
+     * @throws InvalidAttributeValueException if the value is invalid
+     * @throws ReflectionException           if a reflective operation fails
+     */
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public void setAttribute
         (MBeanServer server, ObjectName objectName,
@@ -171,6 +225,15 @@ public class QFactory {
         }
     }
 
+    /**
+     * Invokes the {@code start} method on the given QBean MBean.
+     *
+     * @param server     the Q2 server instance
+     * @param objectName the ObjectName of the QBean MBean
+     * @throws InstanceNotFoundException if the MBean is not found
+     * @throws MBeanException            if the MBeanServer reports an error
+     * @throws ReflectionException       if a reflective operation fails
+     */
     public void startQBean (Q2 server, ObjectName objectName)
         throws InstanceNotFoundException,
                MBeanException,
@@ -180,6 +243,16 @@ public class QFactory {
         mserver.invoke (objectName, "start",  null, null);
     }
 
+    /**
+     * Stops, destroys, and unregisters the given QBean MBean.
+     *
+     * @param server     the Q2 server instance
+     * @param objectName the ObjectName of the QBean MBean
+     * @param obj        the underlying QBean object
+     * @throws InstanceNotFoundException if the MBean is not found
+     * @throws MBeanException            if the MBeanServer reports an error
+     * @throws ReflectionException       if a reflective operation fails
+     */
     public void destroyQBean (Q2 server, ObjectName objectName, Object obj)
         throws InstanceNotFoundException,
                MBeanException,
@@ -194,6 +267,14 @@ public class QFactory {
             mserver.unregisterMBean (objectName);
     }
 
+    /**
+     * Configures a QBean by applying attributes from the given XML element.
+     *
+     * @param server     the MBeanServer
+     * @param objectName the ObjectName of the QBean
+     * @param e          the XML element containing {@code attr} child elements
+     * @throws ConfigurationException if attribute setting fails
+     */
     public void configureQBean(MBeanServer server, ObjectName objectName, Element e)
         throws ConfigurationException
     {
@@ -206,6 +287,13 @@ public class QFactory {
         }
 
     }
+    /**
+     * Builds a JMX {@link AttributeList} from {@code attr} child elements of the given element.
+     *
+     * @param e the XML element containing {@code attr} child elements
+     * @return list of JMX Attribute objects
+     * @throws ConfigurationException if attribute conversion fails
+     */
     public AttributeList getAttributeList(Element e)
         throws ConfigurationException
     {
@@ -260,16 +348,16 @@ public class QFactory {
     }
 
 
-    /** Creats a collection from a definition element with the format.
-     * <PRE>
-     *    <{attr|item} type="...">
-     *        <item [type="..."]>...</item>
+    /** Creates a collection from a definition element with the format.
+     * <pre>{@code
+     *    <attr type="...">
+     *        <item type="...">...</item>
      *        ...
      *    </attr>
-     * </PRE>
+     * }</pre>
      * @param type class type
      * @param e the Element
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      * @return the object collection
      */
     @SuppressWarnings("unchecked")
@@ -287,9 +375,10 @@ public class QFactory {
         }
     }
     /**
-     * sets the first character of the string to the upper case
-     * @param name attribute name
-     * @return attribute name
+     * Capitalizes the first letter of an attribute name to produce a setter/getter name.
+     *
+     * @param name the raw attribute name
+     * @return the capitalized attribute name
      */
     public String getAttributeName(String name)
     {
@@ -301,6 +390,14 @@ public class QFactory {
         return tmp.toString();
     }
 
+    /**
+     * Instantiates the class with the given name via the Q2 MBeanServer.
+     *
+     * @param <T>   the expected return type
+     * @param clazz the fully-qualified class name to instantiate
+     * @return the newly instantiated object
+     * @throws ConfigurationException if instantiation fails
+     */
     public <T> T newInstance (String clazz)
         throws ConfigurationException
     {
@@ -312,6 +409,14 @@ public class QFactory {
         }
     }
 
+    /**
+     * Instantiates the given class via the Q2 MBeanServer.
+     *
+     * @param <T>   the expected return type
+     * @param clazz the Class to instantiate
+     * @return the newly instantiated object
+     * @throws ConfigurationException if instantiation fails
+     */
     public <T> T newInstance (Class<T> clazz)
             throws ConfigurationException
     {
@@ -327,6 +432,7 @@ public class QFactory {
      * It also calls {@link #setLogger} to set logger and realm, and {@link #setConfiguration(Object, Element)}
      * to trigger the standard [auto]configuration sequence from properties and XML.</p>
      *
+     * @param <T> expected concrete type returned to the caller
      * @param e The XML config
      * @return the new instance, or null if not enabled
      * @throws ConfigurationException if the instance can't be created (e.g. class not found)
@@ -341,6 +447,13 @@ public class QFactory {
         return obj;
     }
 
+    /**
+     * Returns a {@link Configuration} built from the given XML element, with optional merge.
+     *
+     * @param e the XML element to build the configuration from
+     * @return the resulting Configuration
+     * @throws ConfigurationException if configuration building or merging fails
+     */
     public Configuration getConfiguration (Element e)
         throws ConfigurationException
     {
@@ -377,10 +490,23 @@ public class QFactory {
         return cfg;
     }
 
+    /**
+     * Sets the logger and realm on the object if it implements {@link LogSource}.
+     *
+     * @param obj the object to configure
+     * @param e   the XML element containing logger/realm attributes
+     */
     public void setLogger (Object obj, Element e) {
         setLogger(obj, e, null);
     }
 
+    /**
+     * Sets the logger and realm on the object if it implements {@link LogSource}, with a fallback realm.
+     *
+     * @param obj           the object to configure
+     * @param e             the XML element containing logger/realm attributes
+     * @param fallbackRealm realm to use when none is specified in the element
+     */
     public void setLogger (Object obj, Element e, String fallbackRealm) {
         if (obj instanceof LogSource) {
             String loggerName = getAttributeValue (e, "logger");
@@ -394,6 +520,12 @@ public class QFactory {
         }
     }
 
+    /**
+     * Returns the default realm name for the given XML element name.
+     *
+     * @param elementName the XML element name (e.g. "channel", "server")
+     * @return the corresponding default realm string
+     */
     protected String defaultRealm(String elementName) {
         return switch (elementName) {
             case "channel" -> Realm.COMM_CHANNEL;
@@ -404,10 +536,25 @@ public class QFactory {
         };
     }
 
+    /**
+     * Returns the value of the named attribute from the element, with environment variable substitution.
+     *
+     * @param e    the XML element
+     * @param name the attribute name
+     * @return the resolved attribute value, or {@code null} if not present
+     */
     public static String getAttributeValue (Element e, String name) {
         String s = e.getAttributeValue(name);
         return Environment.getEnvironment().getProperty(s, s);
     }
+
+    /**
+     * Applies configuration from the XML element to the given object.
+     *
+     * @param obj the object to configure
+     * @param e   the XML element containing configuration attributes
+     * @throws ConfigurationException if configuration fails
+     */
     public void setConfiguration (Object obj, Element e)
         throws ConfigurationException
     {
@@ -471,9 +618,22 @@ public class QFactory {
             );
         }
     }
+    /**
+     * Returns {@code true} if the element's {@code enabled} attribute evaluates to true.
+     *
+     * @param e the XML element
+     * @return {@code true} if enabled
+     */
     public static boolean isEnabled(Element e) {
         return isTrue(getEnabledAttribute(e));
     }
+
+    /**
+     * Returns {@code true} if the element's {@code eager-start} attribute evaluates to true.
+     *
+     * @param e the XML element
+     * @return {@code true} if eager start is requested
+     */
     public static boolean isEagerStart(Element e) {
         return isTrue(getEagerStartAttribute(e));
     }
@@ -483,9 +643,22 @@ public class QFactory {
           attribute.contains(Environment.getEnvironment().getName());
     }
 
+    /**
+     * Returns the value of the {@code enabled} attribute, defaulting to {@code "true"}.
+     *
+     * @param e the XML element
+     * @return the enabled attribute value
+     */
     public static String getEnabledAttribute (Element e) {
         return getAttribute(e, "enabled", "true");
     }
+
+    /**
+     * Returns the value of the {@code eager-start} attribute, defaulting to {@code "false"}.
+     *
+     * @param e the XML element
+     * @return the eager-start attribute value
+     */
     public static String getEagerStartAttribute (Element e) {
         return getAttribute(e, "eager-start", "false");
     }
@@ -493,6 +666,13 @@ public class QFactory {
         return Environment.get(e.getAttributeValue(attr, def));
     }
 
+    /**
+     * Automatically configures fields annotated with {@link Config} on the given object.
+     *
+     * @param obj the object to autoconfigure
+     * @param cfg the Configuration to read values from
+     * @throws IllegalAccessException if field access fails
+     */
     @SuppressWarnings("rawtypes")
     public static void autoconfigure (Object obj, Configuration cfg) throws IllegalAccessException {
         Class cc = obj.getClass();
@@ -546,6 +726,12 @@ public class QFactory {
        return e;
     }
 
+    /**
+     * Creates an {@link ExecutorService} using either virtual or platform threads.
+     *
+     * @param virtual {@code true} to use virtual threads, {@code false} for platform threads
+     * @return a new ExecutorService
+     */
     public static ExecutorService executorService(boolean virtual) {
         return virtual ?
             Executors.newVirtualThreadPerTaskExecutor() :

@@ -18,10 +18,15 @@
 
 package org.jpos.transaction;
 
+/** Bit-flag constants returned by {@link TransactionParticipant} lifecycle methods to signal outcomes. */
 public interface TransactionConstants {
+    /** Transaction has been aborted. */
     int ABORTED  = 0;
+    /** Transaction has been prepared successfully. */
     int PREPARED = 1;
+    /** Transaction should be retried. */
     int RETRY    = 2;
+    /** Transaction is paused. */
     int PAUSE    = 4;
 
     /**
@@ -34,5 +39,6 @@ public interface TransactionConstants {
      */
     int READONLY = 0x80;
 
+    /** Shortcut for a read-only, non-joining abort ({@code READONLY | NO_JOIN}). */
     int FAIL = READONLY | NO_JOIN; // shortcut to heavily used action combination - assumes ABORTED == 0
 }

@@ -27,12 +27,15 @@ package org.jpos.iso;
  */
 
 public class IFB_FLLLNUM extends ISOStringFieldPackager {
+    /** Default constructor. */
     public IFB_FLLLNUM() {
         super(NullPadder.INSTANCE, BCDInterpreter.RIGHT_PADDED_F, BcdPrefixer.LLL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
+     * @param isLeftPadded if true, apply padding
      */
     public IFB_FLLLNUM(int len, String description, boolean isLeftPadded) {
         super(len, description, NullPadder.INSTANCE,

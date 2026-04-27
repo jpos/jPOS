@@ -32,15 +32,32 @@ package org.jpos.space;
 public class SpaceError extends Error {
 
     private static final long serialVersionUID = 2478239452513511965L;
+    /** Default constructor. */
     public SpaceError() {
         super();
     }
+    /**
+     * Constructs a new error with the given detail message.
+     *
+     * @param message failure description
+     */
     public SpaceError(String message) {
         super(message);
     }
+    /**
+     * Constructs a new error with the given detail message and cause.
+     *
+     * @param message failure description
+     * @param cause underlying cause
+     */
     public SpaceError(String message, Throwable cause) {
         super(message, cause);
     }
+    /**
+     * Constructs a new error wrapping the given cause.
+     *
+     * @param cause underlying cause
+     */
     public SpaceError(Throwable cause) {
         super(cause);
     }

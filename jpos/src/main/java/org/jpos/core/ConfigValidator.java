@@ -48,6 +48,8 @@ import java.util.regex.Pattern;
  * @since 3.0.2
  */
 public class ConfigValidator {
+    /** Default constructor; no instance state to initialise. */
+    public ConfigValidator() {}
     private final List<ValidationRule> rules = new ArrayList<>();
 
     /**

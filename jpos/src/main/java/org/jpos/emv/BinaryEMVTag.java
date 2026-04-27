@@ -23,20 +23,42 @@ import org.jpos.tlv.TLVDataFormat;
 
 
 /**
+ * An EMV tag whose value is represented as raw binary data.
  * @author Vishnu Pillai
  */
 public class BinaryEMVTag extends EMVTag<byte[]> {
 
+    /**
+     * Creates a BinaryEMVTag with a standard tag type.
+     * @param tagType the standard EMV tag type
+     * @param value the raw byte value
+     * @throws IllegalArgumentException if the value is invalid for the tag type
+     */
     public BinaryEMVTag(EMVStandardTagType tagType, byte[] value)
             throws IllegalArgumentException {
         super(tagType, value);
     }
 
+    /**
+     * Creates a BinaryEMVTag with a proprietary tag type.
+     * @param tagType the proprietary tag type
+     * @param tagNumber the numeric tag identifier
+     * @param value the raw byte value
+     * @throws IllegalArgumentException if the value is invalid
+     */
     public BinaryEMVTag(EMVProprietaryTagType tagType, Integer tagNumber, byte[] value)
             throws IllegalArgumentException {
         super(tagType, tagNumber, value);
     }
 
+    /**
+     * Creates a BinaryEMVTag with a proprietary tag type and explicit format.
+     * @param tagType the proprietary tag type
+     * @param tagNumber the numeric tag identifier
+     * @param dataFormat the TLV data format
+     * @param value the raw byte value
+     * @throws IllegalArgumentException if the value is invalid
+     */
     public BinaryEMVTag(EMVProprietaryTagType tagType, Integer tagNumber, TLVDataFormat dataFormat, byte[] value)
             throws IllegalArgumentException {
         super(tagType, tagNumber, dataFormat, value);

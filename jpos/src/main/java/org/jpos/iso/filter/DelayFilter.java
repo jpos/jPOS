@@ -33,11 +33,13 @@ import org.jpos.util.LogEvent;
  */
 public class DelayFilter implements ISOFilter, Configurable {
     int delay;
+    /** Default constructor (zero delay). */
     public DelayFilter() {
         super();
         delay = 0;
     }
    /**
+    * Creates a DelayFilter with the specified delay.
     * @param delay desired delay, expressed in milliseconds
     */
     public DelayFilter(int delay) {

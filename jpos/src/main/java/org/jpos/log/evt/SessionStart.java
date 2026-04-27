@@ -36,5 +36,12 @@ package org.jpos.log.evt;/*
 
 import org.jpos.log.AuditLogEvent;
 
+/**
+ * Audit event recorded when a server session opens.
+ *
+ * @param connections active connection count after this session started
+ * @param permits     remaining session permits
+ * @param info        free-form description of the opening session
+ */
 public record SessionStart(int connections, int permits, String info) implements AuditLogEvent {
 }

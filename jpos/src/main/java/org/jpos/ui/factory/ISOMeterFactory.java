@@ -31,17 +31,22 @@ import javax.swing.*;
 import java.util.Observable;
 
 /**
+ * UIFactory that builds an {@link ISOMeter} hooked to the channel resolved
+ * from the configuration's {@code idref} attribute.
+ *
  * @author Alejandro Revilla
  *
  * Creates an ISOMeter component
  * i.e:
  * <pre>
- *  &lt;iso-meter idref="id" scroll="true|false" refresh="nnn"/&gt
+ *  &lt;iso-meter idref="id" scroll="true|false" refresh="nnn"/&gt;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
 
 public class ISOMeterFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public ISOMeterFactory() {}
     public JComponent create (UI ui, Element e) {
         ISOChannelPanel icp = null;
         try {

@@ -21,59 +21,63 @@ package org.jpos.iso;
 import java.io.Serializable;
 
 /**
+ * Represents the optional header portion of an ISO-8583 message frame.
  * @author Eoin.Flood@orbiscom.com
  */
 
 public interface ISOHeader extends Cloneable,Serializable
 {
     /**
-     * Return this header as byte array.
+     * Packs this header into a byte array.
+     * @return this header serialised as a byte array
      */
     byte[] pack();
 
     /**
-     * Create a new ISOHeader from a byte array.
-     *
-     * @return The Number of bytes consumed.
+     * Unpacks the header from a raw byte array.
+     * @param b raw bytes to parse
+     * @return the number of bytes consumed
      */
     int unpack(byte[] b);
 
     /**
-     * Set the Destination address in this ISOHeader.
+     * Sets the destination address in this ISOHeader.
+     * @param dst the destination address
      */
     void setDestination(String dst);
 
     /**
-     * Return the destination address in this ISOHeader.
-     * returns null if there is no destination address
+     * Returns the destination address in this ISOHeader.
+     * @return the destination address, or null if not set
      */
     String getDestination();
 
     /**
-     * Set the Source address in this ISOHeader.
+     * Sets the source address in this ISOHeader.
+     * @param src the source address
      */
     void setSource(String src);
 
     /**
-     * Return the source address in this ISOHeader.
-     * returns null if there is no source address
+     * Returns the source address in this ISOHeader.
+     * @return the source address, or null if not set
      */
     String getSource();
 
     /**
-     * return the number of bytes in this ISOHeader
+     * Returns the number of bytes in this ISOHeader when packed.
+     * @return header length in bytes
      */
     int getLength();
-    
+
     /**
-     * Swap the source and destination addresses in this ISOHeader
-     * (if they exist).
+     * Swaps the source and destination addresses in this ISOHeader (if they exist).
      */
     void swapDirection();
 
     /**
-     * Allow object to be cloned.
+     * Returns a clone of this ISOHeader.
+     * @return cloned ISOHeader instance
      */
     Object clone();
 }
-

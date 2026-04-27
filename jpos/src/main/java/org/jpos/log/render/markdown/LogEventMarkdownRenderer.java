@@ -26,7 +26,10 @@ import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/** Markdown renderer for {@link LogEvent}, formatted as an H2 heading per event. */
 public final class LogEventMarkdownRenderer implements LogRenderer<LogEvent> {
+    /** Default constructor; no instance state to initialise. */
+    public LogEventMarkdownRenderer() {}
     @Override
     public void render(LogEvent evt, PrintStream ps, String indent) {
         ps.printf ("## %s %s %s [%s]%s%n",

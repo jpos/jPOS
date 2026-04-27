@@ -23,7 +23,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Java-serialization helpers with deserialization filters that reject
+ * known gadget-chain classes and enforce a depth limit.
+ */
 public class Serializer {
+    /** Utility class; instances carry no state. */
+    public Serializer() {}
     private static final int MAX_DEPTH = 32;
 
     private static final Set<String> REJECTED_CLASSES = Set.of(
@@ -120,26 +126,67 @@ public class Serializer {
         return ois;
     }
 
+    /**
+     * Serializes {@code obj} into a byte array using standard Java serialization.
+     *
+     * @param obj object to serialize
+     * @return the serialized byte array
+     * @throws IOException if writing fails
+     */
     public static byte[] serialize (Object obj) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(baos);
         os.writeObject(obj);
         return baos.toByteArray();
     }
+    /**
+     * Deserializes the byte array using {@link #createSafeObjectInputStream(InputStream)}.
+     *
+     * @param b serialized bytes
+     * @return the deserialized object
+     * @throws IOException if reading fails
+     * @throws ClassNotFoundException if a referenced class cannot be loaded
+     */
     public static Object deserialize (byte[] b) throws IOException, ClassNotFoundException {
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
         ObjectInputStream is = createSafeObjectInputStream(bais);
         return is.readObject();
     }
+    /**
+     * Deserializes the byte array and casts the result to {@code T}.
+     *
+     * @param <T> expected concrete type
+     * @param b serialized bytes
+     * @param clazz expected class (used for the unchecked cast)
+     * @return the deserialized object
+     * @throws IOException if reading fails
+     * @throws ClassNotFoundException if a referenced class cannot be loaded
+     */
     @SuppressWarnings("unchecked")
     public static <T> T deserialize (byte[] b, Class<T> clazz) throws IOException, ClassNotFoundException {
         return (T) deserialize(b);
     }
+    /**
+     * Round-trips an object through serialization and back, useful for deep-cloning.
+     *
+     * @param <T> object type
+     * @param obj object to clone
+     * @return a fresh deserialized copy of {@code obj}
+     * @throws IOException if serialization fails
+     * @throws ClassNotFoundException if a referenced class cannot be loaded
+     */
     @SuppressWarnings("unchecked")
     public static <T> T serializeDeserialize (T obj) throws IOException, ClassNotFoundException {
         return (T) deserialize (serialize(obj));
     }
 
+    /**
+     * Serializes a {@code Map<String,String>} using a compact entry-by-entry format.
+     *
+     * @param m the map to serialize
+     * @return the serialized byte array
+     * @throws IOException if writing fails
+     */
     public static byte[] serializeStringMap (Map<String,String> m)
       throws IOException
     {
@@ -155,6 +202,14 @@ public class Serializer {
         oos.close();
         return baos.toByteArray();
     }
+    /**
+     * Inverse of {@link #serializeStringMap(Map)}; only allows JDK collection/string classes.
+     *
+     * @param buf the serialized bytes
+     * @return the deserialized map
+     * @throws ClassNotFoundException if a referenced class cannot be loaded
+     * @throws IOException if reading fails
+     */
     public static Map<String,String> deserializeStringMap (byte[] buf)
       throws ClassNotFoundException, IOException
     {

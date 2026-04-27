@@ -32,13 +32,26 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 /**
+ * Helpers that enumerate jPOS module metadata embedded under
+ * {@code META-INF/modules/} on the runtime classpath.
+ *
  * @author vsalaman
  */
 public class ModuleUtils
 {
+    /** Default constructor; no instance state to initialise. */
+    public ModuleUtils() {}
     private static final String MODULES_UUID_DIR = "META-INF/modules/uuids/";
     private static final String MODULES_RKEYS_DIR = "META-INF/modules/rkeys/";
 
+    /**
+     * Enumerates every classpath resource located under {@code prefix}, traversing
+     * both directory- and JAR-based class-loader entries.
+     *
+     * @param prefix classpath prefix to scan (e.g. {@code "META-INF/modules/uuids/"})
+     * @return resource paths relative to the classpath root
+     * @throws IOException if classpath enumeration fails
+     */
     public static List<String> getModuleEntries(String prefix) throws IOException {
         List<String> result = new ArrayList<>();
 
@@ -66,6 +79,13 @@ public class ModuleUtils
         return result;
     }
 
+    /**
+     * Returns the sorted list of module UUIDs discovered under
+     * {@code META-INF/modules/uuids/}.
+     *
+     * @return module UUIDs (one per registered module)
+     * @throws IOException if classpath enumeration fails
+     */
     public static List<String> getModulesUUIDs() throws IOException {
         return getModuleEntries(MODULES_UUID_DIR).stream()
           .sorted()
@@ -73,6 +93,13 @@ public class ModuleUtils
           .collect(Collectors.toList());
     }
 
+    /**
+     * Returns the sorted list of revocation-key identifiers discovered under
+     * {@code META-INF/modules/rkeys/}.
+     *
+     * @return revocation key identifiers
+     * @throws IOException if classpath enumeration fails
+     */
     public static List<String> getRKeys () throws IOException {
         return ModuleUtils.getModuleEntries(MODULES_RKEYS_DIR)
           .stream()
@@ -81,6 +108,14 @@ public class ModuleUtils
           .collect(Collectors.toList());
     }
 
+    /**
+     * Returns the Base64-encoded SHA-256 hash of the concatenated module UUIDs,
+     * used as a per-installation fingerprint by license verification.
+     *
+     * @return Base64 SHA-256 hash, or empty string when no UUIDs are registered
+     * @throws IOException if classpath enumeration fails
+     * @throws NoSuchAlgorithmException if SHA-256 is unavailable
+     */
     public static String getSystemHash() throws IOException, NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         List<String> uuids = getModulesUUIDs();

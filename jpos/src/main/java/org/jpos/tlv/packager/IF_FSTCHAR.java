@@ -36,6 +36,7 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
 
     private char terminator = '\\';
 
+    /** Default constructor. */
     public IF_FSTCHAR() {
         super();
     }
@@ -54,6 +55,7 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
     }
 
     /**
+     * Constructs a packager with the given length and description.
      * @param len         - field len
      * @param description symbolic descrption
      */
@@ -64,7 +66,7 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
     /**
      * @param c - a component
      * @return packed component
-     * @throws org.jpos.iso.ISOException
+     * @throws org.jpos.iso.ISOException on pack/unpack error
      */
     public byte[] pack(ISOComponent c) throws ISOException {
         int len;
@@ -86,7 +88,7 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
      * @param b      - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @throws org.jpos.iso.ISOException
+     * @throws org.jpos.iso.ISOException on pack/unpack error
      */
     public int unpack(ISOComponent c, byte[] b, int offset)
             throws ISOException {

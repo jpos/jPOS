@@ -38,8 +38,15 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Transaction participant that picks a routing destination for an inbound
+ * request based on the cardholder's BIN ranges and PAN regular expressions
+ * declared in its XML configuration.
+ */
 @SuppressWarnings("unused")
 public class SelectDestination implements TransactionParticipant, Configurable, XmlConfigurable {
+    /** Default constructor; no instance state to initialise. */
+    public SelectDestination() {}
     private String requestName;
     private String destinationName;
     private String defaultDestination;
@@ -86,18 +93,18 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
     }
 
     /**
-     * @param xml Configuration element
-     * @throws ConfigurationException
-     *
-     *
      * SelectDestination expects an XML configuration in the following format:
      *
+     * <pre>{@code
      * <endpoint destination="XXX">
      *   4000000..499999
      *   4550000..455999
      *   5
      * </endpoint>
+     * }</pre>
      *
+     * @param xml Configuration element
+     * @throws ConfigurationException if the XML cannot be parsed into BIN ranges or regexes
      */
     public void setConfiguration(Element xml) throws ConfigurationException {
         for (Element ep : xml.getChildren("endpoint")) {
@@ -146,6 +153,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
           .map(PanRegExp::destination).orElse(null);
     }
 
+    /** Inclusive numeric BIN range mapped to a routing destination. */
     public static class BinRange implements Comparable {
         private String destination;
         private BigInteger low;
@@ -203,10 +211,21 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
         public int compareTo(Object o) {
             return toString().compareTo(o.toString());
         }
+        /**
+         * Indicates whether {@code i} falls inside this range (inclusive).
+         *
+         * @param i candidate BIN value
+         * @return {@code true} if {@code low <= i <= high}
+         */
         public boolean isInRange (BigInteger i) {
             return i.compareTo(low) >=0 && i.compareTo(high) <=0;
         }
 
+        /**
+         * Returns the destination assigned to this range.
+         *
+         * @return destination identifier
+         */
         public String destination() {
             return destination;
         }

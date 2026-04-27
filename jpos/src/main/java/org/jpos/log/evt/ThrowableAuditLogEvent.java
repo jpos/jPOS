@@ -23,6 +23,11 @@ import org.jpos.util.Caller;
 
 import java.util.StringJoiner;
 
+/**
+ * Audit log event wrapping a {@link Throwable} for structured error reporting.
+ *
+ * @param ex the captured throwable
+ */
 public record ThrowableAuditLogEvent(Throwable ex) implements AuditLogEvent {
     @Override
     public String toString() {

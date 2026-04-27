@@ -23,8 +23,15 @@ import org.jpos.core.XmlConfigurable;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.util.NameRegistrar;
 
+/**
+ * QBean that registers its raw XML configuration element under {@link NameRegistrar}
+ * so other beans can look it up at runtime.
+ */
 @SuppressWarnings("unused")
 public class QXmlConfig extends QBeanSupport implements XmlConfigurable {
+    /** Default constructor; no instance state to initialise. */
+    public QXmlConfig() {}
+    /** Prefix used when registering the configuration element in {@link NameRegistrar}. */
     public static final String XML_PREFIX = "config.xml.";
 
     @Override
@@ -38,6 +45,13 @@ public class QXmlConfig extends QBeanSupport implements XmlConfigurable {
     public void setConfiguration(Element e) {
         NameRegistrar.register(XML_PREFIX + getName(), e);
     }
+    /**
+     * Looks up the configuration element registered under {@code name}.
+     *
+     * @param name configuration name (without the {@link #XML_PREFIX} prefix)
+     * @return the registered configuration element
+     * @throws NameRegistrar.NotFoundException if no configuration is registered under that name
+     */
     public static Element getConfiguration (String name)
             throws NameRegistrar.NotFoundException
     {
@@ -45,6 +59,8 @@ public class QXmlConfig extends QBeanSupport implements XmlConfigurable {
     }
 
     /**
+     * Looks up the configuration element registered under {@code name}, waiting up to {@code timeout}.
+     *
      * @param name configuration name
      * @param timeout in millis
      * @return Configuration Element or null

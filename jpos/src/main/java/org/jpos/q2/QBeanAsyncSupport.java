@@ -24,7 +24,14 @@ import org.jpos.core.ConfigurationException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Base class for QBeans whose start/stop lifecycle should run on a background
+ * thread, optionally with a bounded wait controlled by the {@code startMaxWait}
+ * and {@code stopMaxWait} configuration properties.
+ */
 public abstract class QBeanAsyncSupport extends QBeanSupport {
+    /** Default constructor; no instance state to initialise. */
+    protected QBeanAsyncSupport() {}
 
     private long startMaxWait;
     private long stopMaxWait;
@@ -44,6 +51,11 @@ public abstract class QBeanAsyncSupport extends QBeanSupport {
         }
     }
 
+    /**
+     * Performs the actual start work on the background scheduler thread.
+     *
+     * @throws Exception on failure
+     */
     protected abstract void doStart() throws Exception;
 
     @Override
@@ -60,6 +72,11 @@ public abstract class QBeanAsyncSupport extends QBeanSupport {
         }
     }
 
+    /**
+     * Performs the actual stop work on the background scheduler thread.
+     *
+     * @throws Exception on failure
+     */
     protected abstract void doStop() throws Exception;
 
     @Override

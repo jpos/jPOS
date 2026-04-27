@@ -49,6 +49,12 @@ public class ISOVField extends ISOField implements ISOVErrorList {
         this.value = Source.value;
     }
 
+    /**
+     * Wraps the source field and attaches an initial validation error.
+     *
+     * @param Source     wrapped {@link ISOField}
+     * @param FirstError initial error attached to the field
+     */
     public ISOVField( ISOField Source, ISOVError FirstError ) {
         this( Source );
         this.errors.addLast( FirstError );

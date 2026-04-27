@@ -27,7 +27,6 @@ import java.util.Objects;
  * exported outside the cryptographic domain in which the key is found.
  * <p>
  * Each value repesents byte 11 of the Keyblok Header.
- * <p>
  */
 public enum Exportability {
 

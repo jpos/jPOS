@@ -21,7 +21,10 @@ package org.jpos.log.render.txt;
 import org.jpos.log.LogRenderer;
 import java.io.PrintStream;
 
+/** Default plain-text renderer used when no more specific {@link LogRenderer} matches. */
 public final class ObjectTxtLogRenderer implements LogRenderer<Object> {
+    /** Default constructor; no instance state to initialise. */
+    public ObjectTxtLogRenderer() {}
     @Override
     public void render(Object obj, PrintStream ps, String indent) {
         String[] lines = String.valueOf(obj).split("\\R", -1);

@@ -23,11 +23,17 @@ package org.jpos.iso;
  */
 public class IFEPE_LLBINARY extends ISOTagBinaryFieldPackager {
 
+    /** Default constructor. */
     public IFEPE_LLBINARY() {
         super(0,null, EbcdicPrefixer.LL, NullPadder.INSTANCE,
                 LiteralBinaryInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
 
+    /**
+     * Constructs a packager with the given length and description.
+     * @param len field length
+     * @param description field description
+     */
     public IFEPE_LLBINARY(int len, String description) {
          super(len, description, EbcdicPrefixer.LL, NullPadder.INSTANCE,
                  LiteralBinaryInterpreter.INSTANCE, EbcdicPrefixer.LL);

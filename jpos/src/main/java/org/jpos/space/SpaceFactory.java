@@ -33,10 +33,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  *   <li>name
  *   <li>optional parameter
  *  </ul>
- * <p>
- * <p>
  *
- * Examples:
+ * <p>Examples:
  *
  * <pre>
  *   // default unnamed space (tspace:default)
@@ -60,17 +58,29 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  *
  */
 public class SpaceFactory {
+    /** Default constructor; no instance state to initialise. */
+    public SpaceFactory() {}
+    /** Scheme constant for transient (in-memory) spaces. */
     public static final String TSPACE     = "tspace";
+    /** Scheme constant for L-space (Loom-optimized) transient spaces. */
     public static final String LSPACE     = "lspace";
+    /** Scheme alias for {@link #TSPACE}. */
     public static final String TRANSIENT  = "transient";
+    /** Scheme constant for persistent (jdbm-backed) spaces. */
     public static final String PERSISTENT = "persistent";
+    /** Scheme constant used to look up an externally-registered spacelet. */
     public static final String SPACELET   = "spacelet";
+    /** Scheme constant for JDBM-backed spaces. */
     public static final String JDBM       = "jdbm";
+    /** Scheme constant for Berkeley DB (JE) backed spaces. */
     public static final String JE         = "je";
+    /** Default name used for unnamed spaces. */
     public static final String DEFAULT    = "default";
     private static ScheduledThreadPoolExecutor gcExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
 
     /**
+     * Returns the default transient space (equivalent to {@code tspace:default}).
+     *
      * @return the default TransientSpace
      */
     public static Space getSpace () {
@@ -78,7 +88,9 @@ public class SpaceFactory {
     }
 
     /**
-     * @param spaceUri 
+     * Resolves a space URI of the form {@code scheme:name[:param]}.
+     *
+     * @param spaceUri space URI; {@code null} returns the default space
      * @return Space for given URI or null
      */
     public static Space getSpace (String spaceUri) {
@@ -108,6 +120,16 @@ public class SpaceFactory {
         }
         return getSpace (scheme, name, param);
     }
+    /**
+     * Resolves the space identified by {@code scheme}, {@code name}, and optional {@code param},
+     * registering a newly-created space in {@link NameRegistrar} on first use.
+     *
+     * @param scheme space scheme (one of the {@code TSPACE}/{@code LSPACE}/... constants)
+     * @param name space name
+     * @param param optional scheme-specific parameter (e.g. file path for {@code jdbm:})
+     * @return the resolved space
+     * @throws SpaceError if the scheme is unknown or registration fails
+     */
     public static Space getSpace (String scheme, String name, String param) {
         Space sp = null;
         String uri = normalize (scheme, name, param);
@@ -127,6 +149,11 @@ public class SpaceFactory {
         }
         return sp;
     }
+    /**
+     * Returns the shared executor used by spaces to run lease-expiry/GC tasks.
+     *
+     * @return the shared GC executor
+     */
     public static ScheduledThreadPoolExecutor getGCExecutor() {
         return gcExecutor;
     }

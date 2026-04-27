@@ -27,6 +27,8 @@ import org.jpos.q2.CLIContext;
 * @author Felipph Calado - luizfelipph@gmail.com
 */
 public class DISABLE implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public DISABLE() {}
 
 	@Override
 	public void exec(CLIContext ctx, String[] args) throws Exception {

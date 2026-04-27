@@ -23,8 +23,14 @@ import org.jpos.log.LogRendererRegistry;
 
 import java.io.PrintStream;
 
+/**
+ * {@link LogEventWriter} that renders events using the registered JSON
+ * {@link LogRenderer}.
+ */
 @Deprecated(forRemoval = false)
 public class JsonLogWriter implements LogEventWriter {
+    /** Creates a writer that renders events with the registered JSON renderer. */
+    public JsonLogWriter() {}
     private PrintStream ps;
     private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.JSON);
 

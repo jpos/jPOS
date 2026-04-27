@@ -18,18 +18,36 @@
 
 package org.jpos.util;
 
+/**
+ * Canonical realm strings used by jPOS log sources to group related events.
+ *
+ * <p>Constants in this class are passed to {@link Log}/{@link Logger}
+ * so events can be filtered or routed by component family.
+ */
 public final class Realm {
+    /** Generic communications realm. */
     public static final String COMM = "comm";
+    /** Channel-level communications realm. */
     public static final String COMM_CHANNEL = "comm/channel";
+    /** Server-side communications realm. */
     public static final String COMM_SERVER = "comm/server";
+    /** MUX communications realm. */
     public static final String COMM_MUX = "comm/mux";
+    /** Client-side communications realm. */
     public static final String COMM_CLIENT = "comm/client";
+    /** Transaction-manager realm. */
     public static final String TXN = "txn";
+    /** Q2 container realm. */
     public static final String Q2 = "q2";
+    /** Q2 deploy/undeploy realm. */
     public static final String Q2_DEPLOY = "q2/deploy";
+    /** Q2 startup/shutdown lifecycle realm. */
     public static final String Q2_LIFECYCLE = "q2/lifecycle";
+    /** Q2 system monitor (SysInfo) realm. */
     public static final String Q2_SYSMON = "q2/sysinfo";
+    /** Security/SM realm. */
     public static final String SECURITY = "security";
+    /** Generic system realm. */
     public static final String SYSTEM = "system";
 
     private Realm() {

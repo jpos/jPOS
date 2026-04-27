@@ -24,7 +24,10 @@ import org.jpos.security.SystemSeed;
 import java.nio.ByteBuffer;
 import java.util.Base64;
 
+/** {@link EnvironmentProvider} that resolves {@code obf::} references by deobfuscating the encoded value. */
 public class ObfEnvironmentProvider implements EnvironmentProvider {
+    /** Default constructor; no instance state to initialise. */
+    public ObfEnvironmentProvider() {}
     @Override
     public String prefix() {
         return "obf::";

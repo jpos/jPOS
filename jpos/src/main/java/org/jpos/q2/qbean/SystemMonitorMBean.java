@@ -25,12 +25,32 @@ package org.jpos.q2.qbean;
  */
 public interface SystemMonitorMBean extends org.jpos.q2.QBeanSupportMBean {
 
+  /**
+   * Sets the polling interval in milliseconds.
+   *
+   * @param sleepTime polling interval in milliseconds
+   */
   void setSleepTime(long sleepTime) ;
 
+  /**
+   * Returns the configured polling interval.
+   *
+   * @return polling interval in milliseconds
+   */
   long getSleepTime() ;
 
+  /**
+   * Toggles whether the dump should include detailed thread/memory information.
+   *
+   * @param detail {@code true} to enable detailed dumps
+   */
   void setDetailRequired(boolean detail) ;
 
+  /**
+   * Indicates whether detailed dumps are currently enabled.
+   *
+   * @return {@code true} if detailed dumps are enabled
+   */
   boolean getDetailRequired() ;
 
 }

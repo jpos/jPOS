@@ -91,6 +91,7 @@ public class Environment implements Loggeable {
         }
     }
 
+    /** Maps boolean-like string values to their logical negation. */
     protected static Map<String,String> notMap = new HashMap<>();
     static {
         notMap.put("false", "true");

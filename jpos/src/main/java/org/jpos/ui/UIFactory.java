@@ -23,11 +23,18 @@ import org.jdom2.Element;
 import javax.swing.*;
 
 /**
- * @author Alejandro Revilla
- *
  * UI delegates the creation of UI components to an UIFactory.
+ *
+ * @author Alejandro Revilla
  */
 public interface UIFactory {
+    /**
+     * Builds a Swing component from the given XML configuration element.
+     *
+     * @param ui parent {@link UI} instance
+     * @param config XML configuration describing the component
+     * @return the constructed Swing component
+     */
     JComponent create(UI ui, Element config);
 }
 

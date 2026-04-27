@@ -27,8 +27,14 @@ import org.jpos.transaction.TransactionParticipant;
 
 import java.io.Serializable;
 
+/**
+ * Transaction participant that forwards the context to a configured space
+ * queue, handing the work off to another asynchronous worker.
+ */
 @SuppressWarnings("unchecked")
 public class Forward implements TransactionParticipant, Configurable  {
+    /** Default constructor; no instance state to initialise. */
+    public Forward() {}
     Space sp;
     String queue;
     long timeout;

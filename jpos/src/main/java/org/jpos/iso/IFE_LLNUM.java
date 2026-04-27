@@ -31,10 +31,12 @@ package org.jpos.iso;
  */
 public class IFE_LLNUM extends ISOStringFieldPackager 
 {
+    /** Default constructor. */
     public IFE_LLNUM() {
         super(NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

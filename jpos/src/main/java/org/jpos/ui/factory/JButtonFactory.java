@@ -27,6 +27,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
+ * UIFactory that builds a Swing {@link JButton} bound to a configured action.
+ *
  * @author Alejandro Revilla
  *
  * Creates a JButton
@@ -37,6 +39,8 @@ import java.awt.*;
  * @see org.jpos.ui.UIFactory
  */
 public class JButtonFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public JButtonFactory() {}
     public JComponent create (UI ui, Element e) {
         JButton button = new JButton (e.getText());
         button.setHorizontalAlignment(JLabel.CENTER);

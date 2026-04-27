@@ -27,7 +27,13 @@ import org.jpos.util.Logger;
 
 import java.io.Serializable;
 
+/**
+ * Diagnostic transaction participant that logs the {@link Context} at every
+ * lifecycle phase, useful for tracing TM behaviour during development.
+ */
 public class Debug extends Log implements AbortParticipant {
+    /** Default constructor; no instance state to initialise. */
+    public Debug() {}
     public int prepare (long id, Serializable o) {
         if (o instanceof Context ctx) {
             ctx.log("Debug::prepare");

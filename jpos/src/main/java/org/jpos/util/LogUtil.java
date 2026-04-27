@@ -20,9 +20,24 @@ package org.jpos.util;
 import java.io.PrintStream;
 import java.util.regex.Pattern;
 
+/**
+ * Helpers for emitting strings that may contain XML-reserved characters
+ * inside log payloads, optionally wrapping them in {@code CDATA} blocks.
+ */
 public class LogUtil {
+    /** Utility class; instances carry no state. */
+    public LogUtil() {}
+    /** Regex matching XML-reserved characters that force CDATA escaping. */
     public static final Pattern xmlReservedPattern = Pattern.compile("&|<|>");
 
+    /**
+     * Writes {@code s} to {@code p}, wrapping it in {@code <![CDATA[...]]>} when
+     * the string contains XML-reserved characters.
+     *
+     * @param p destination stream
+     * @param indent prefix used when the value is dumped on a single line
+     * @param s value to emit
+     */
     public static void dump (PrintStream p, String indent, String s) {
         try {
             boolean expanded = s.length() > 60;
@@ -43,6 +58,13 @@ public class LogUtil {
         }
     }
 
+    /**
+     * Indicates whether {@code s} contains any XML-reserved characters and therefore
+     * needs {@code CDATA} escaping when embedded in XML output.
+     *
+     * @param s value to inspect
+     * @return {@code true} if any of {@code &}, {@code <}, or {@code >} is present
+     */
     public static boolean needsCDATA(String s) {
         return xmlReservedPattern.matcher(s).find();
     }

@@ -31,6 +31,8 @@ import org.jpos.security.jceadapter.JCESecurityModule;
  * @author Alwyn Schoeman - alwyn.schoeman@gmail.com
  */
 public class KE extends SsmActionBase implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public KE() {}
 
     @Override
     protected boolean checkUsage(CLIContext cli, String[] strings) {

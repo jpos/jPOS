@@ -22,11 +22,21 @@ package org.jpos.util;
 import java.util.EventListener;
 
 /**
+ * Implemented by objects that wish to receive and process {@link LogEvent} instances produced by a {@link Logger}.
  * @author apr@cs.com.uy
  * @version $Id$
  */
 public interface LogListener extends EventListener {
+    /**
+     * Processes a log event.
+     * @param ev the log event
+     * @return the (potentially modified) log event, or null to suppress it
+     */
     LogEvent log(LogEvent ev);
+    /**
+     * Sets the log event writer for this listener. Default implementation is a no-op for backward compatibility.
+     * @param w the log event writer
+     */
     default void setLogEventWriter (LogEventWriter w) {
         // do nothing, for backward compatibility
     }

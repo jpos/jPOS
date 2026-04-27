@@ -28,7 +28,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
+/**
+ * QBean that exposes the Q2 Prometheus meter registry over an embedded HTTP
+ * server, optionally serving a {@code status-path} probe used by orchestrators.
+ */
 public class PrometheusService extends QBeanSupport {
+    /** Default constructor; no instance state to initialise. */
+    public PrometheusService() {}
     @Config("port")
     private int port;
     @Config("path")
@@ -72,6 +78,14 @@ public class PrometheusService extends QBeanSupport {
         server.stop(2);
     }
 
+    /**
+     * Builds a {@code <prometheus>} bean descriptor with the given configuration.
+     *
+     * @param port HTTP port to bind
+     * @param path path that serves the Prometheus scrape
+     * @param statusPath path that serves the status probe, or {@code null} to disable
+     * @return populated descriptor element
+     */
     public static Element createDescriptor (int port, String path, String statusPath) {
         return new Element("prometheus")
           .addContent(createProperty ("port", Integer.toString(port)))

@@ -38,12 +38,14 @@ import java.util.List;
  * </log-listener>
  */
 
+/** IgnoreLogListener ISOFieldPackager implementation. */
 public class IgnoreLogListener implements LogListener, Configurable {
     String[] realms;
     String[] mtis;
     int ignore;
     int ignored = 0;
 
+    /** Default constructor. */
     public IgnoreLogListener() {
         super();
     }

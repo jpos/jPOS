@@ -25,11 +25,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author apr@jpos.org
- * @since jPOS 2.0.5
  *
  * This class is based on the old 'CardHolder' class and adds support for multiple
  * PAN and Expiration dates taken from manual entry, track1, track1. It also corrects the name.
+ *
+ * @author apr@jpos.org
+ * @since jPOS 2.0.5
+ *
  */
 
 @SuppressWarnings("unused")
@@ -44,6 +46,11 @@ public class Track1 {
 
     private Track1 () { }
 
+    /**
+     * Copies the track1 fields from the supplied {@link Builder}.
+     *
+     * @param builder builder carrying the parsed or assembled track1 fields
+     */
     public Track1 (Builder builder) {
         pan                = builder.pan;
         nameOnCard         = builder.nameOnCard;
@@ -54,44 +61,84 @@ public class Track1 {
         track              = builder.track;
     }
 
+    /**
+     * Returns the primary account number.
+     *
+     * @return primary account number
+     */
     public String getPan() {
         return pan;
     }
 
+    /**
+     * Returns the cardholder name encoded on the track.
+     *
+     * @return cardholder name as encoded on the track
+     */
     public String getNameOnCard() {
         return nameOnCard;
     }
 
+    /**
+     * Returns the expiration date.
+     *
+     * @return expiration date in {@code YYMM} form, or {@code null} if absent
+     */
     public String getExp() {
         return exp;
     }
 
+    /**
+     * Returns the CVV/CVC value, when present.
+     *
+     * @return CVV/CVC value, or {@code null} if not present in the track
+     */
     public String getCvv() {
         return cvv;
     }
 
+    /**
+     * Returns the service code.
+     *
+     * @return three-digit service code, or {@code null} if absent
+     */
     public String getServiceCode() {
         return serviceCode;
     }
 
+    /**
+     * Returns the discretionary data trailing the service code.
+     *
+     * @return remaining discretionary data, or {@code null} if absent
+     */
     public String getDiscretionaryData() {
         return discretionaryData;
     }
 
+    /**
+     * Returns the raw track1 string this object was built from.
+     *
+     * @return raw track1 string this object was built from, or {@code null} when assembled programmatically
+     */
     public String getTrack() {
 
         return track;
     }
 
     /**
-     * @return true if the Track 1 service code indicates an IC card.
+     * Returns {@code true} when the service code marks this as an IC (EMV) card.
+     *
+     * @return {@code true} if the Track 1 service code indicates an IC card
      */
     public boolean isEMV() {
         return isICCard();
     }
 
     /**
-     * @return true if the Track 1 service code indicates an IC card.
+     * Returns {@code true} when the service code marks this as an IC card
+     * (first digit {@code 2} for international or {@code 6} for national).
+     *
+     * @return {@code true} if the Track 1 service code indicates an IC card
      */
     public boolean isICCard() {
         return serviceCode != null && serviceCode.length() == 3 &&
@@ -99,7 +146,10 @@ public class Track1 {
     }
 
     /**
-     * @return true if the Track 1 service code indicates an international IC card.
+     * Returns {@code true} when the service code marks this as an
+     * internationally-usable IC card (first digit {@code 2}).
+     *
+     * @return {@code true} if the Track 1 service code indicates an international IC card
      */
     public boolean isInternationalICCard() {
         return serviceCode != null && serviceCode.length() == 3 && serviceCode.charAt(0) == '2';
@@ -129,10 +179,19 @@ public class Track1 {
         return Objects.hash(pan, nameOnCard, exp, serviceCode, cvv, discretionaryData, track);
     }
 
+    /**
+     * Creates a new builder for assembling a {@code Track1}.
+     *
+     * @return a new {@link Builder} for assembling a {@code Track1}
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Fluent builder that parses a raw track1 string or assembles a {@code Track1}
+     * from individual fields and validates the result against a configurable pattern.
+     */
     public static class Builder {
         private static String TRACK1_EXPR = "^[%]?[A-Z]+([0-9]{1,19})\\^([^\\^]{2,26})\\^([0-9]{4})([0-9]{3})([0-9]{4})?([0-9]{1,10})?";
         private static Pattern TRACK1_PATTERN = Pattern.compile(TRACK1_EXPR);
@@ -146,27 +205,63 @@ public class Track1 {
         private Pattern pattern = TRACK1_PATTERN;
         private Builder () { }
 
+        /**
+         * Sets the primary account number.
+         *
+         * @param pan primary account number
+         * @return this builder
+         */
         public Builder pan (String pan) {
             this.pan = pan; return this;
         }
 
+        /**
+         * Sets the cardholder name.
+         *
+         * @param nameOnCard cardholder name as encoded on the track
+         * @return this builder
+         */
         public Builder nameOnCard (String nameOnCard) {
             this.nameOnCard = nameOnCard;
             return this;
         }
 
+        /**
+         * Sets the expiration date.
+         *
+         * @param exp expiration date in {@code YYMM} form
+         * @return this builder
+         */
         public Builder exp (String exp) {
             this.exp = exp; return this;
         }
 
+        /**
+         * Sets the CVV/CVC value.
+         *
+         * @param cvv CVV/CVC value
+         * @return this builder
+         */
         public Builder cvv (String cvv) {
             this.cvv = cvv; return this;
         }
 
+        /**
+         * Sets the service code.
+         *
+         * @param serviceCode three-digit service code
+         * @return this builder
+         */
         public Builder serviceCode (String serviceCode) {
             this.serviceCode = serviceCode; return this;
         }
 
+        /**
+         * Sets the discretionary data trailing the service code.
+         *
+         * @param discretionaryData discretionary data trailing the service code
+         * @return this builder
+         */
         public Builder discretionaryData (String discretionaryData) {
             this.discretionaryData = discretionaryData;
             return this;
@@ -182,6 +277,14 @@ public class Track1 {
             return this;
         }
 
+        /**
+         * Parses a raw track1 string and populates the builder fields.
+         *
+         * @param s raw track1 data
+         * @return this builder
+         * @throws InvalidCardException if {@code s} is null or does not match
+         *                              the configured pattern
+         */
         public Builder track (String s)
           throws InvalidCardException
         {
@@ -234,6 +337,12 @@ public class Track1 {
             return this;
         }
 
+        /**
+         * Builds the immutable {@link Track1}. If no raw track string was set,
+         * one is assembled from the individual fields via {@link #buildTrackData()}.
+         *
+         * @return the built {@link Track1}
+         */
         public Track1 build() {
             if (this.track == null)
                 buildTrackData();

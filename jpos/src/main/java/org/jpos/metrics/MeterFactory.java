@@ -34,9 +34,24 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
+/**
+ * Factory helpers that create or look up Micrometer meters defined by
+ * {@link MeterInfo}, ensuring duplicate registrations resolve to the same instance.
+ */
 public class MeterFactory {
+    /** Default constructor; no instance state to initialise. */
+    public MeterFactory() {}
     private static final Lock metersLock = new ReentrantLock();
 
+    /**
+     * Returns the {@link Timer} associated with {@code meterInfo} and {@code tags},
+     * creating it (with histogram and 50/95 percentiles) when absent.
+     *
+     * @param registry the Micrometer registry
+     * @param meterInfo meter id/description/default-tag descriptor
+     * @param tags extra tags to combine with {@link MeterInfo#add(Tags)}
+     * @return the (possibly existing) Timer
+     */
     public static Timer timer(MeterRegistry registry, MeterInfo meterInfo, Tags tags) {
         return createMeter(registry, meterInfo, tags,
           () -> Timer.builder(meterInfo.id()).tags(meterInfo.add(tags)).description(meterInfo.description())
@@ -47,19 +62,57 @@ public class MeterFactory {
             .register(registry));
     }
 
+    /**
+     * Returns the {@link Counter} associated with {@code meterInfo} and {@code tags},
+     * creating it when absent.
+     *
+     * @param registry the Micrometer registry
+     * @param meterInfo meter id/description/default-tag descriptor
+     * @param tags extra tags to combine with {@link MeterInfo#add(Tags)}
+     * @return the (possibly existing) Counter
+     */
     public static Counter counter(MeterRegistry registry, MeterInfo meterInfo, Tags tags) {
         return createMeter(registry, meterInfo, tags,
           () -> Counter.builder(meterInfo.id()).tags(meterInfo.add(tags)).description(meterInfo.description()).register(registry));
     }
 
+    /**
+     * Registers (or updates) a freely-named {@link Counter}, bypassing the
+     * {@link MeterInfo} catalog.
+     *
+     * @param registry the Micrometer registry
+     * @param meterName meter id
+     * @param tags meter tags
+     * @param description meter description
+     * @return the registered Counter
+     */
     public static Counter updateCounter(MeterRegistry registry, String meterName, Tags tags, String description) {
         return Counter.builder(meterName).tags(tags).description(description).register(registry);
     }
 
+    /**
+     * Registers (or updates) the {@link Counter} identified by {@code meterInfo}.
+     *
+     * @param registry the Micrometer registry
+     * @param meterInfo meter id/description/default-tag descriptor
+     * @param tags extra tags to combine with {@link MeterInfo#add(Tags)}
+     * @return the registered Counter
+     */
     public static Counter updateCounter(MeterRegistry registry, MeterInfo meterInfo, Tags tags) {
         return updateCounter(registry, meterInfo.id(), meterInfo.add(tags), meterInfo.description());
     }
 
+    /**
+     * Returns the {@link Gauge} associated with {@code meterInfo} and {@code tags},
+     * creating one bound to {@code n} when absent.
+     *
+     * @param registry the Micrometer registry
+     * @param meterInfo meter id/description/default-tag descriptor
+     * @param tags extra tags to combine with {@link MeterInfo#add(Tags)}
+     * @param unit base unit, or {@code null} for none
+     * @param n supplier called to read the current gauge value
+     * @return the (possibly existing) Gauge
+     */
     public static Gauge gauge(MeterRegistry registry, MeterInfo meterInfo, Tags tags, String unit, Supplier<Number> n) {
         return createMeter(registry, meterInfo, tags,
           () -> Gauge.builder(meterInfo.id(), n)
@@ -69,6 +122,12 @@ public class MeterFactory {
             .register(registry));
     }
 
+    /**
+     * Removes the supplied meters from the registry, skipping {@code null} entries.
+     *
+     * @param registry the Micrometer registry
+     * @param meters meters to remove
+     */
     public static void remove  (MeterRegistry registry, Meter... meters) {
         Arrays.stream(meters).filter(Objects::nonNull).forEach(registry::remove);
     }

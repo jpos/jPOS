@@ -33,6 +33,7 @@ import java.util.Map;
 
 
 /**
+ * A {@link TagValue} whose value is a reference to an {@link org.jpos.iso.ISOMsg}.
  * @author Vishnu Pillai
  */
 public class ISOMsgRef {
@@ -40,6 +41,9 @@ public class ISOMsgRef {
     private final ISOMsg delegate;
     private int offset = 0;
 
+    /** Constructs a reference wrapper for the given message.
+     * @param delegate the ISO message to wrap
+     */
     public ISOMsgRef(ISOMsg delegate) {
         if (delegate == null) {
             throw new IllegalArgumentException("delegate cannot be null");
@@ -47,11 +51,16 @@ public class ISOMsgRef {
         this.delegate = delegate;
     }
 
+    /** Returns an offset-indexed reference message for the given field.
+     * @param fieldNumber the field number
+     * @return the reference ISOMsg
+     */
     public ISOMsg reference(int fieldNumber) {
         return new Ref(fieldNumber);
     }
 
 
+    /** Inner class providing offset-indexed access to a referenced ISO message. */
     public class Ref extends ISOMsg implements OffsetIndexedComposite {
 
         private Integer fieldNumber;

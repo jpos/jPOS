@@ -36,17 +36,25 @@ import java.util.Vector;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * A pool of {@link ISOChannel} instances; tries each in order until one connects.
+ */
 @SuppressWarnings("unchecked")
 public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneable {
+    /** Whether this pool is in a usable state. */
     boolean usable = true;
+    /** Registered name of this pool. */
     String name = "";
+    /** Logger for this pool. */
     protected Logger logger;
+    /** Log realm for this pool. */
     protected String realm;
     Configuration cfg = null;
     List pool;
     ISOChannel current;
     Lock lock = new ReentrantLock();
 
+    /** Default constructor. */
     public ChannelPool () {
         super ();
         pool = new Vector ();
@@ -167,23 +175,49 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
             }
         }
     }
+    /**
+     * Adds a channel to the pool.
+     * @param channel the channel to add
+     */
     public void addChannel (ISOChannel channel) {
         pool.add (channel);
     }
+    /**
+     * Adds a channel to the pool by its registered name.
+     * @param name the NameRegistrar name of the channel to add
+     * @throws NameRegistrar.NotFoundException if name not found
+     */
     public void addChannel (String name) 
         throws NameRegistrar.NotFoundException
     {
         pool.add (NameRegistrar.get ("channel."+name));
     }
+    /**
+     * Removes a channel from the pool.
+     * @param channel the channel to remove
+     */
     public void removeChannel (ISOChannel channel) {
         pool.remove (channel);
     }
+    /**
+     * Removes a channel from the pool by its registered name.
+     * @param name the channel name to remove
+     * @throws NameRegistrar.NotFoundException if name not found
+     */
     public void removeChannel (String name) throws NameRegistrar.NotFoundException {
         pool.remove (NameRegistrar.get ("channel."+name));
     }
+    /**
+     * Returns the number of channels in the pool.
+     * @return channel count
+     */
     public int size() {
         return pool.size();
     }
+    /** Returns the currently active channel, trying to connect if necessary.
+     * @return the active ISOChannel
+     * @throws IOException if no channel can be connected
+     */
     public ISOChannel getCurrent () throws IOException {
         lock.lock();
         try {

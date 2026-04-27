@@ -33,6 +33,13 @@ public class MChipCryptogram implements CryptogramSpec {
     private final SKDMethod skdMethod;
 
 
+    /**
+     * Configures the cryptogram spec from the encoded Cryptogram Version Number.
+     *
+     * @param cryptogramVersionNumber two-hex-digit Cryptogram Version Number (CVN)
+     *                                that selects the data builder and SKD method
+     * @throws IllegalArgumentException if the CVN does not encode a supported variant
+     */
     public MChipCryptogram(String cryptogramVersionNumber) {
         byte data = (byte) Integer.parseInt(cryptogramVersionNumber, 16);
         this.dataBuilder = new CVNMCDataBuilder((data & 1) == 1); // byte 1 = 1

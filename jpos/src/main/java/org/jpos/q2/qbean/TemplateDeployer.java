@@ -31,7 +31,13 @@ import org.jpos.q2.QFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+/**
+ * QBean that materialises {@code <template>} children of its persist element
+ * into actual deploy descriptors when the bean initialises.
+ */
 public class TemplateDeployer extends QBeanSupport implements XmlConfigurable {
+    /** Default constructor; no instance state to initialise. */
+    public TemplateDeployer() {}
     Element config;
 
     @Override

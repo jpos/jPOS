@@ -26,7 +26,13 @@ import org.jpos.transaction.Context;
 import org.jpos.transaction.TransactionParticipant;
 import java.util.concurrent.locks.LockSupport;
 
+/**
+ * Diagnostic transaction participant that parks the current thread for a
+ * configurable {@code timeout} during prepare.
+ */
 public class Pause implements TransactionParticipant, Configurable {
+    /** Default constructor; no instance state to initialise. */
+    public Pause() {}
     private long timeout = 0L;
     public int prepare(long id, Serializable context) {
         Context ctx =  (Context) context;

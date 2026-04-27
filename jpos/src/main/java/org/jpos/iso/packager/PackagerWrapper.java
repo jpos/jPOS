@@ -36,11 +36,16 @@ import org.jpos.util.Logger;
 public abstract class PackagerWrapper 
     implements ISOPackager, LogSource, Configurable
 {
+    /** Logger receiving wrapped pack/unpack diagnostic events. */
     protected Logger logger = null;
+    /** Logger realm associated with this packager. */
     protected String realm = null;
+    /** Underlying packager that this wrapper delegates to. */
     protected ISOPackager standardPackager = null;
+    /** Configuration applied to this wrapper (and propagated to the inner packager when configurable). */
     protected Configuration cfg;
 
+    /** Default constructor. */
     public PackagerWrapper() {
         super();
     }
@@ -53,10 +58,20 @@ public abstract class PackagerWrapper
         return standardPackager != null ? 
             standardPackager.getFieldDescription (m, fldNumber) : "";
     }
+    /**
+     * Replaces the underlying packager.
+     *
+     * @param packger inner packager to delegate to
+     */
     public void setPackager(ISOPackager packger)
     {
         this.standardPackager=packger;
     }
+    /**
+     * Returns the underlying packager.
+     *
+     * @return the inner packager, or {@code null} if none is configured
+     */
     public ISOPackager getPackager()
     {
         return standardPackager;
@@ -77,7 +92,7 @@ public abstract class PackagerWrapper
     /**
      * requires <code>inner-packager</code> property
      * @param cfg Configuration object
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     public void setConfiguration (Configuration cfg) 
         throws ConfigurationException

@@ -39,11 +39,13 @@ public interface ClientChannel extends ISOChannel {
     void setHost(String host, int port);
 
     /**
+     * Returns the remote host this client channel connects to.
      * @return hostname (may be null)
      */
     String getHost();
 
     /**
+     * Returns the remote port this client channel connects to.
      * @return port number (may be 0)
      */
     int getPort();

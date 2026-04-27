@@ -26,8 +26,18 @@ package org.jpos.q2.security;
  */
 public interface KeyStoreAdaptorMBean extends org.jpos.q2.QBeanSupportMBean {
 
+  /**
+   * Sets the fully-qualified secure key-store implementation class name.
+   *
+   * @param clazz implementation class name
+   */
   void setImpl(java.lang.String clazz) ;
 
+  /**
+   * Returns the configured secure key-store implementation class name.
+   *
+   * @return implementation class name
+   */
   java.lang.String getImpl() ;
 
 }

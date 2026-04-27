@@ -45,7 +45,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LogPackager extends DefaultHandler
                          implements ISOPackager, LogSource
 {
+    /** Logger receiving pack/unpack diagnostic events. */
     protected Logger logger = null;
+    /** Logger realm associated with this packager. */
     protected String realm = null;
     private ByteArrayOutputStream out;
     private PrintStream p;
@@ -54,15 +56,28 @@ public class LogPackager extends DefaultHandler
 
     private Lock lock = new ReentrantLock();
 
+    /** XML element name for the outer log wrapper. */
     public static final String LOG_TAG       = "log";
+    /** XML element name for an ISO message. */
     public static final String ISOMSG_TAG    = "isomsg";
+    /** XML element name for an ISO field. */
     public static final String ISOFIELD_TAG  = "field";
+    /** XML attribute carrying the field number. */
     public static final String ID_ATTR       = "id";
+    /** XML attribute carrying the field value. */
     public static final String VALUE_ATTR    = "value";
+    /** XML attribute identifying the field type ({@link #TYPE_BINARY}, {@link #TYPE_BITMAP}). */
     public static final String TYPE_ATTR     = "type";
+    /** Field-type marker: hex-encoded binary value. */
     public static final String TYPE_BINARY   = "binary";
+    /** Field-type marker: bitmap value. */
     public static final String TYPE_BITMAP   = "bitmap";
 
+    /**
+     * Constructs the packager and prepares its underlying SAX parser.
+     *
+     * @throws ISOException if the configured SAX parser cannot be instantiated
+     */
     public LogPackager() throws ISOException {
         super();
         out = new ByteArrayOutputStream();

@@ -20,7 +20,20 @@ package org.jpos.util;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+/**
+ * Helpers that build pre-tuned {@link java.util.concurrent} primitives for
+ * use across jPOS, currently focused on virtual-thread-backed scheduled
+ * executors with sensible shutdown semantics.
+ */
 public class ConcurrentUtil {
+    /** Utility class; instances carry no state. */
+    public ConcurrentUtil() {}
+    /**
+     * Returns a single-thread {@link ScheduledThreadPoolExecutor} backed by a
+     * named virtual thread, configured to drop delayed/periodic tasks at shutdown.
+     *
+     * @return the configured scheduler
+     */
     public static ScheduledThreadPoolExecutor newScheduledThreadPoolExecutor() {
         ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(1,
           r -> {

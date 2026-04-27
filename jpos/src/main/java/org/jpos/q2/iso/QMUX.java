@@ -40,6 +40,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * A Q2-managed multiplexer that routes ISO messages between channels and listeners.
  * @author Alejandro Revilla
  */
 @SuppressWarnings("unchecked")
@@ -49,11 +50,17 @@ public class QMUX
 {
     static final String nomap = "0123456789";
     static final String DEFAULT_KEY = "41, 11";
+    /** Local space backing the in/out queues. */
     protected LocalSpace sp;
+    /** Queue names: inbound responses, outbound requests, and unhandled messages. */
     protected String in, out, unhandled;
+    /** Optional list of "ready indicator" keys polled to determine connectivity. */
     protected String[] ready;
+    /** Default field-number key components used to correlate responses. */
     protected String[] key;
+    /** Comma-separated response codes to ignore (treat as if no response was received). */
     protected String ignorerc;
+    /** Three-character MTI mapping table used by {@link #mapMTI(String)}. */
     protected String[] mtiMapping;
     private boolean headerIsKey;
     private boolean returnRejects;
@@ -75,6 +82,7 @@ public class QMUX
     private Counter rxMatchCounter;
     private Counter rxUnhandledCounter;
 
+    /** Default constructor. */
     public QMUX () {
         super ();
         listeners = new ArrayList<>();
@@ -139,8 +147,11 @@ public class QMUX
     }
 
     /**
+     * Returns the MUX registered under the given name.
+     *
+     * @param name MUX name (without the {@code mux.} prefix)
      * @return MUX with name using NameRegistrar
-     * @throws NameRegistrar.NotFoundException
+     * @throws NameRegistrar.NotFoundException if not found in registry
      * @see NameRegistrar
      */
     public static MUX getMUX (String name)
@@ -227,6 +238,12 @@ public class QMUX
         synchronized (this) { tx++; rxPending++; }
     }
 
+    /**
+     * Returns whether {@code msg} should be considered for response-matching by {@link #notify(Object, Object)}.
+     *
+     * @param msg message just dequeued from the inbound space
+     * @return {@code true} when the message should be matched against pending requests
+     */
     protected boolean isNotifyEligible(ISOMsg msg) {
         if (returnRejects)
             return true;
@@ -272,6 +289,14 @@ public class QMUX
         }
     }
 
+    /**
+     * Builds the correlation key used to pair a response with its request,
+     * applying any per-MTI/per-PCODE overrides and special-cases for STAN/PAN fields.
+     *
+     * @param m message whose key should be derived
+     * @return the computed key (queue prefix + MTI + selected field values)
+     * @throws ISOException if no key fields are present in {@code m}
+     */
     public String getKey (ISOMsg m) throws ISOException {
         if (out == null)
             throw new NullPointerException ("Misconfigured QMUX. Please verify out queue is not null.");
@@ -362,6 +387,11 @@ public class QMUX
     public String getOutQueue () {
         return out;
     }
+    /**
+     * Returns the {@link Space} backing this MUX's queues.
+     *
+     * @return the local space
+     */
     public Space getSpace() {
         return sp;
     }
@@ -373,6 +403,11 @@ public class QMUX
     public String getUnhandledQueue () {
         return unhandled;
     }
+    /**
+     * Returns the configured ready-indicator key names polled to determine connectivity.
+     *
+     * @return the ready indicator names, or {@code null} if none were configured
+     */
     @SuppressWarnings("unused")
     public String[] getReadyIndicatorNames() {
         return ready;
@@ -386,16 +421,35 @@ public class QMUX
                 addISORequestListener (listener);
         }
     }
+    /**
+     * Registers a request listener invoked for messages that don't match a pending request.
+     *
+     * @param l listener to add
+     */
     public void addISORequestListener(ISORequestListener l) {
         listeners.add (l);
     }
+    /**
+     * Removes a previously registered request listener.
+     *
+     * @param l listener to remove
+     * @return {@code true} if the listener was registered, {@code false} otherwise
+     */
     public boolean removeISORequestListener(ISORequestListener l) {
     	return listeners.remove(l);
     }
+    /**
+     * Resets all in-memory transaction counters and the last-transaction timestamp.
+     */
     public synchronized void resetCounters() {
         rx = tx = rxExpired = txExpired = rxPending = rxUnhandled = rxForwarded = 0;
         lastTxn = 0l;
     }
+    /**
+     * Returns the current counters formatted as a single human-readable string.
+     *
+     * @return a comma-separated counter snapshot suitable for diagnostics
+     */
     public String getCountersAsString () {
         StringBuffer sb = new StringBuffer();
         append (sb, "tx=", tx);
@@ -462,6 +516,13 @@ public class QMUX
         return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
     }
 
+    /**
+     * Dispatches an inbound message that did not match any pending request,
+     * giving registered request listeners a chance to handle it before falling
+     * back to the configured {@link #unhandled} queue.
+     *
+     * @param m the unmatched inbound message
+     */
     protected void processUnhandled (ISOMsg m) {
         ISOSource source = m.getSource();
         source = source != null ? source : this;
@@ -492,9 +553,9 @@ public class QMUX
      * sends (or hands back) an ISOMsg
      *
      * @param m the Message to be sent
-     * @throws java.io.IOException
-     * @throws org.jpos.iso.ISOException
-     * @throws org.jpos.iso.ISOFilter.VetoException;
+     * @throws java.io.IOException if the underlying space cannot accept the message
+     * @throws org.jpos.iso.ISOException on pack/unpack error
+     * @throws org.jpos.iso.ISOFilter.VetoException if a filter vetoes the message
      */
     public void send(ISOMsg m) throws IOException, ISOException {
         if (!isConnected())
@@ -555,20 +616,40 @@ public class QMUX
         sb.append (name);
         sb.append (value);
     }
+    /**
+     * Tracks an asynchronous request awaiting a response, with optional timeout
+     * scheduling and elapsed-time measurement.
+     */
     public class AsyncRequest implements Runnable {
         ISOResponseListener rl;
         Object handBack;
         ScheduledFuture future;
         Chronometer chrono;
+        /**
+         * Constructs an async request paired with the given listener and hand-back token.
+         *
+         * @param rl listener to invoke on response/expiration
+         * @param handBack opaque token relayed back to {@code rl}
+         */
         public AsyncRequest (ISOResponseListener rl, Object handBack) {
             super();
             this.rl = rl;
             this.handBack = handBack;
             this.chrono = new Chronometer();
         }
+        /**
+         * Sets the scheduled future used to enforce the request timeout.
+         *
+         * @param future timeout future, or {@code null} for no timeout
+         */
         public void setFuture(ScheduledFuture future) {
             this.future = future;
         }
+        /**
+         * Notifies the listener that a response has been received, cancelling the timeout future.
+         *
+         * @param response inbound response message
+         */
         public void responseReceived (ISOMsg response) {
             if (future == null || future.cancel(false)) {
                 synchronized (QMUX.this) {

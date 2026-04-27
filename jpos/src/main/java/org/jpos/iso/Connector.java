@@ -41,11 +41,16 @@ public class Connector
     private Logger logger;
     private String realm;
     private boolean preserveSourceHeader = true;
+    /** Name of the QMUX to look up. */
     protected String muxName;
+    /** Name of the channel to look up. */
     protected String channelName;
+    /** Response timeout in milliseconds (0 = no timeout). */
     protected int timeout = 0;
+    /** Shared thread pool for processing incoming messages. */
     protected static ThreadPool pool;
 
+    /** Default constructor. */
     public Connector () {
         super();
     }
@@ -85,6 +90,7 @@ public class Connector
         }
     }
     
+    /** Runnable that processes a single incoming message through the MUX. */
     protected class Process implements Runnable {
         ISOSource source;
         ISOMsg m;

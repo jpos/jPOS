@@ -42,6 +42,7 @@ public class QMUXProxyAdaptor
     private String qmuxName;
     private QMUX qmux;
 
+    /** Default constructor. */
     public QMUXProxyAdaptor () {
         super ();
     }

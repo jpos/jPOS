@@ -23,7 +23,10 @@ import static  org.jpos.transaction.TransactionManager.Trace;
 
 import java.io.PrintStream;
 
+/** Markdown renderer that emits an array of {@link Trace} entries as a Mermaid {@code gitGraph}. */
 public final class TransactionManagerTraceArrayMarkdownLogRenderer implements LogRenderer<Trace[]> {
+    /** Default constructor; no instance state to initialise. */
+    public TransactionManagerTraceArrayMarkdownLogRenderer() {}
     @Override
     public void render(Trace[] traces, PrintStream ps, String indent) {
         ps.println ("```mermaid");

@@ -21,15 +21,46 @@ package org.jpos.log;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+/**
+ * Strategy that renders an object of type {@code T} into a target log format
+ * (XML, JSON, plain text, or Markdown).
+ *
+ * @param <T> the concrete type rendered by this strategy
+ */
 public interface LogRenderer<T> {
+    /**
+     * Renders the given object to the print stream with the specified indentation.
+     * @param obj the object to render
+     * @param ps the output stream
+     * @param indent indentation prefix
+     */
     void render (T obj, PrintStream ps, String indent);
+    /**
+     * Returns the class this renderer handles.
+     * @return the handled class
+     */
     Class<?> clazz();
+    /**
+     * Returns the log event type this renderer handles.
+     * @return the handled event type
+     */
     Type type();
 
+    /**
+     * Renders the given object to the print stream with no indentation.
+     * @param obj the object to render
+     * @param ps the output stream
+     */
     default void render (T obj, PrintStream ps) {
         render (obj, ps, "");
     }
 
+    /**
+     * Renders the given object to a string with the specified indentation.
+     * @param obj the object to render
+     * @param indent indentation prefix
+     * @return rendered string
+     */
     default String render (T obj, String indent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
@@ -37,10 +68,21 @@ public interface LogRenderer<T> {
         return baos.toString();
     }
 
+    /**
+     * Renders the given object to a string with no indentation.
+     * @param obj the object to render
+     * @return rendered string
+     */
     default String render (T obj) {
         return render (obj, "");
     }
 
+    /**
+     * Prepends {@code indent} to each line of {@code s}.
+     * @param indent the indentation string
+     * @param s the multi-line string to indent
+     * @return the indented string
+     */
     default String indent (String indent, String s) {
         if (s == null || s.isEmpty() || indent==null || indent.isEmpty()) {
             return s;
@@ -57,10 +99,15 @@ public interface LogRenderer<T> {
     }
 
 
+    /** Supported log output format types. */
     enum Type {
+        /** Renders to XML output. */
         XML,
+        /** Renders to JSON output. */
         JSON,
+        /** Renders to plain text. */
         TXT,
+        /** Renders to Markdown. */
         MARKDOWN
     }
 }

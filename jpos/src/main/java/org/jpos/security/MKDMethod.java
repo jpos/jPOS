@@ -38,7 +38,7 @@ public enum MKDMethod {
     * Uses PAN, PAN Sequence Number, IMK, Triple DES
     * Described in EMV v4.2 Book 2, Annex A1.4.1
     */
-   OPTION_A
+   OPTION_A,
 
    /**
     * Uses PAN, PAN Sequence Number, IMK, Triple DES and SHA-1
@@ -46,6 +46,6 @@ public enum MKDMethod {
     * Described in EMV v4.2 Book 2, Annex A1.4.2
     * NOTE: For PAN with length less or equals 16 it works as {@code OPTION_A}
     */
-  ,OPTION_B
+   OPTION_B
 
 }

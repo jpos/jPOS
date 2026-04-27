@@ -31,12 +31,12 @@ import java.nio.ByteBuffer;
  * opting not to add a newline at the end of the data.
  *
  * Example: <br>
- *     <pre>
+ *     <pre>{@code
  *         <output-mapper class="org.jpos.util.function.RemoveNewLinesMapper">
  *             <properties name="combine-spaces" value="true"/>
- *             <properties name="newline-at-end" value="false/>
+ *             <properties name="newline-at-end" value="false"/>
  *         </output-mapper>
- *     </pre><br>
+ *     }</pre><br>
  *
  * <b>NB. Do not set combine-spaces to true if you have data where spaces are significant.</b>
  *
@@ -44,6 +44,8 @@ import java.nio.ByteBuffer;
  * @since 2.1.4
  */
 public class RemoveNewLinesMapper implements ByteArrayMapper, Configurable {
+    /** Creates a mapper with default settings; tweak via {@link #setConfiguration(Configuration)}. */
+    public RemoveNewLinesMapper() {}
     boolean combineSpaces = false;
     boolean newLineAtEnd = true;
     final byte SPACE = ' ';

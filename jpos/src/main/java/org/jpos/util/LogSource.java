@@ -20,12 +20,26 @@ package org.jpos.util;
 
 
 /**
+ * Implemented by objects that own a {@link Logger} and can produce {@link LogEvent} instances.
  * @author apr@cs.com.uy
  * @version $Id$
  */
 public interface LogSource {
+    /**
+     * Attaches a {@link Logger} and realm to this log source.
+     * @param logger the logger to use
+     * @param realm  the log realm (diagnostic label)
+     */
     void setLogger(Logger logger, String realm);
+    /**
+     * Returns the log realm associated with this source.
+     * @return log realm
+     */
     String getRealm();
+    /**
+     * Returns the Logger associated with this source.
+     * @return the Logger
+     */
     Logger getLogger();
 }
 

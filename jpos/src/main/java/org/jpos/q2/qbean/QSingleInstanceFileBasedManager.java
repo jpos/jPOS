@@ -26,7 +26,14 @@ import java.nio.channels.FileLock;
 
 import org.jpos.q2.QBeanSupport;
 
+/**
+ * QBean that enforces a single live Q2 instance by acquiring an exclusive
+ * file lock on a configured lockfile; a second instance fails to start when
+ * the file is already locked.
+ */
 public class QSingleInstanceFileBasedManager extends QBeanSupport {
+    /** Default constructor; no instance state to initialise. */
+    public QSingleInstanceFileBasedManager() {}
 
     File             lockFile;
     FileChannel      lockChannel;

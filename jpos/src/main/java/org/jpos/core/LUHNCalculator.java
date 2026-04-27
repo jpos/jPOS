@@ -18,7 +18,20 @@
 
 package org.jpos.core;
 
+/** Strategy interface for LUHN check-digit calculation and verification. */
 public interface LUHNCalculator {
+    /**
+     * Verifies the LUHN check digit of a full PAN.
+     * @param pan the full card PAN including check digit
+     * @return {@code true} if the check digit is valid
+     * @throws InvalidCardException if the PAN is null or too short
+     */
     boolean verify (String pan) throws InvalidCardException;
+    /**
+     * Computes the LUHN check digit for a PAN body (without check digit).
+     * @param pan the PAN without the check digit
+     * @return the computed check digit character
+     * @throws InvalidCardException if the PAN contains non-digit characters
+     */
     char calculate (String pan) throws InvalidCardException;
 }

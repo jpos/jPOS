@@ -58,6 +58,7 @@ public class QServer
     private String channelString, packagerString, socketFactoryString;
     private ISOChannel channel = null;       // is never connected; but passed to ISOServer as a clonable "template" for new connections
     private ISOServer server;
+    /** Local space used for inbound/outbound queue routing when configured. */
     protected LocalSpace sp;
     private String inQueue;
     private String outQueue;
@@ -67,6 +68,7 @@ public class QServer
     private Gauge connectionsGauge;
     private static final String CHANNEL_NAME_REGEXP = " (?=\\d+ \\S+:\\S+)";
 
+    /** Default constructor. */
     public QServer () {
         super ();
     }
@@ -251,6 +253,11 @@ public class QServer
         return server.getISOChannelNames();
     }
 
+    /**
+     * Returns the underlying {@link ISOServer} created by this bean.
+     *
+     * @return the live server, or {@code null} if not yet started
+     */
     public ISOServer getISOServer() {
         return server;
     }

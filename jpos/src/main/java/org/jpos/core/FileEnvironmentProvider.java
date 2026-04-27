@@ -23,7 +23,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/** {@link EnvironmentProvider} that resolves {@code file::} references by reading the file contents. */
 public class FileEnvironmentProvider implements EnvironmentProvider {
+    /** Default constructor; no instance state to initialise. */
+    public FileEnvironmentProvider() {}
     @Override
     public String prefix() {
         return "file::";

@@ -26,7 +26,9 @@ import java.io.InputStream;
  * {@link ISODatasetField}.
  */
 public class DatasetFieldPackager extends ISOFieldPackager {
+    /** Inner packager that handles the dataset payload (TLV/DBM). */
     protected ISODatasetPackager datasetPackager;
+    /** Outer field packager handling length and transport encoding. */
     protected ISOFieldPackager fieldPackager;
 
     /**

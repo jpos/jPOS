@@ -42,6 +42,9 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class EuroSubFieldPackager extends ISOBasePackager
 {
+    /** Default constructor; no instance state to initialise. */
+    public EuroSubFieldPackager() {}
+    /** Length prefixer used to pack/unpack each Euro subfield's tag. */
     protected static Prefixer tagPrefixer = AsciiPrefixer.LL;
 
     /**

@@ -25,7 +25,13 @@ import org.jpos.transaction.Context;
 
 import java.io.Serializable;
 
+/**
+ * Diagnostic transaction participant that records a configurable trace label
+ * at each lifecycle phase via {@link Context#checkPoint(String)}.
+ */
 public class Trace implements AbortParticipant, Configurable {
+    /** Creates the participant; configuration is supplied via {@link #setConfiguration(Configuration)}. */
+    public Trace() {}
     String trace;
     public int prepare (long id, Serializable o) {
         Context ctx = (Context) o;

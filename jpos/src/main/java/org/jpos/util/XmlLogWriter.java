@@ -23,8 +23,15 @@ import org.jpos.log.LogRendererRegistry;
 
 import java.io.PrintStream;
 
+/**
+ * {@link LogEventWriter} that renders events using the registered XML
+ * {@link LogRenderer}. Retained for backwards compatibility; new code should
+ * configure renderers directly.
+ */
 @Deprecated(forRemoval = false)
 public class XmlLogWriter implements LogEventWriter {
+    /** Creates a writer that renders events with the registered XML renderer. */
+    public XmlLogWriter() {}
     private PrintStream ps;
     private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.XML);
 

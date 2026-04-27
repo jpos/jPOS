@@ -149,6 +149,11 @@ public class StatefulFilter implements ISOFilter, Configurable{
         setSavedFields(ISOUtil.toIntArray(cfg.get("saved-fields", "")));
         setIgnoredFields(ISOUtil.toIntArray(cfg.get("ignored-fields", "")));
     }
+    /**
+     * Resolves a {@link Space} from the given URI and uses it as the backing space.
+     *
+     * @param uri Space URI accepted by {@link SpaceFactory#getSpace(String)}
+     */
     public void setSpace(String uri){
         setSpace(SpaceFactory.getSpace(uri));
     }

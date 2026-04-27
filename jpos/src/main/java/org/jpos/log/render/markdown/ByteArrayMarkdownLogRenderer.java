@@ -23,7 +23,10 @@ import org.jpos.log.LogRenderer;
 
 import java.io.PrintStream;
 
+/** Markdown renderer for {@code byte[]} payloads (hex dump, fenced when long). */
 public final class ByteArrayMarkdownLogRenderer implements LogRenderer<byte[]> {
+    /** Default constructor; no instance state to initialise. */
+    public ByteArrayMarkdownLogRenderer() {}
     @Override
     public void render(byte[] b, PrintStream ps, String indent) {
         if (b.length > 16) {

@@ -86,6 +86,8 @@ public final class AuditLogEventRegistry {
     private AuditLogEventRegistry() { }
 
     /**
+     * Returns every registered type mapping.
+     *
      * @return all known type mappings, built-ins first, then ServiceLoader-discovered.
      */
     public static Collection<AuditLogEventType> types() {
@@ -97,6 +99,8 @@ public final class AuditLogEventRegistry {
      * {@code ObjectMapper}. Renderers should call this once after constructing
      * their mapper.
      *
+     * @param <M>    concrete mapper type, allowing fluent chaining on subclasses
+     *               such as {@code XmlMapper}
      * @param mapper the Jackson {@link ObjectMapper} (or subclass, e.g. {@code XmlMapper})
      * @return the same mapper for chaining
      */

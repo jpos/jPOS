@@ -70,7 +70,11 @@ public class BSHMethod {
      *  Example 2 :
      *          &lt;routing file='cfg\files\routing1.bsh' cache='false'/>
      *  </pre>
-     */ 
+     * Creates a BSHMethod from the given XML element configuration.
+     * @param e the XML element configuration (may be null)
+     * @return a configured BSHMethod, or null if element is null
+     * @throws IOException if the script file cannot be read
+     */
     public static BSHMethod createBshMethod(Element e) throws IOException {
         if (e == null) {
             return null;
@@ -115,27 +119,28 @@ public class BSHMethod {
         this.source = source; 
     }
 
-    /** Sets the given arguments to the Interpreter, evaluates the script and 
-     *  returns the object stored on the variable named resultName.
-     *
-     *  @param arguments    Parameters to set to the Interpreter. For every 
-     *                      Map.Entry (key, value), interpreter.set(key, value)
-     *                      is called. All keys must be Strings.
+    /**
+     * Sets the given arguments in the Interpreter, evaluates the script,
+     * and returns the object stored in the variable named {@code resultName}.
+     * @param arguments map of variable name to value pairs (all keys must be Strings)
+     * @param resultName the variable name whose value to return
+     * @return the value of resultName after script evaluation
+     * @throws bsh.EvalError on BeanShell evaluation error
+     * @throws IOException if the script cannot be read
      */
     public Object execute(Map arguments, String resultName) throws EvalError, IOException {
         Interpreter i = initInterpreter(arguments);
         return i.get(resultName);
     }
     
-    /** Sets the given arguments to the Interpreter, evaluates the script and 
-     *  returns a map that has the Strings of the returnNames collection as keys
-     *  and the objects stored in the variables thus named as values.
-     *  
-     *  @param arguments    Parameters to set to the Interpreter. For every 
-     *                      Map.Entry (key, value), interpreter.set(key, value)
-     *                      is called. All keys must be Strings.
-     *  @param returnNames  Collection of Strings. The names of the variables 
-     *                      wich`s contents are to be returned.
+    /**
+     * Sets the given arguments in the Interpreter, evaluates the script,
+     * and returns a map of named result variables.
+     * @param arguments map of variable name to value pairs (all keys must be Strings)
+     * @param returnNames collection of variable names to extract from the interpreter
+     * @return map of variable name to value pairs after script evaluation
+     * @throws bsh.EvalError on BeanShell evaluation error
+     * @throws IOException if the script cannot be read
      */
     public Map execute(Map arguments, Collection returnNames) throws EvalError, IOException {
         Interpreter i = initInterpreter(arguments);
@@ -148,6 +153,13 @@ public class BSHMethod {
         return result;
     }
     
+    /**
+     * Initialises a BeanShell Interpreter with the given arguments and evaluates the script.
+     * @param arguments map of variable name to value pairs to set in the interpreter
+     * @return a configured Interpreter after script evaluation
+     * @throws EvalError on script evaluation error
+     * @throws IOException if the script cannot be read
+     */
     protected Interpreter initInterpreter(Map arguments) throws EvalError, IOException {
         Interpreter i = new Interpreter();
         Map.Entry entry;

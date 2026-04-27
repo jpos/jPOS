@@ -25,11 +25,14 @@ import org.jpos.ui.UI;
 import javax.swing.*;
 
 /**
- * @author Alejandro Revilla
+ * UI subclass that runs the {@code <bsh>} content of a UI configuration through
+ * a BeanShell interpreter to produce a Swing component.
  *
- * UI with BSH script support
+ * @author Alejandro Revilla
  */
 public class BSHUI extends UI {
+    /** Default constructor; no instance state to initialise. */
+    public BSHUI() {}
     protected JComponent doScript (JComponent component, Element e) {
         try {
             Interpreter bsh = new Interpreter ();

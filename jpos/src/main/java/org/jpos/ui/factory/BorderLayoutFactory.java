@@ -26,6 +26,9 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
+ * UIFactory that builds a Swing panel using {@link BorderLayout} from
+ * {@code <north>/<south>/<east>/<west>/<center>} children.
+ *
  * @author Alejandro Revilla
  *
  * creates a panel with a Border layout
@@ -42,6 +45,8 @@ import java.awt.*;
  * @see org.jpos.ui.UIFactory
  */
 public class BorderLayoutFactory implements UIFactory {
+    /** Default constructor for {@link UIFactory} discovery. */
+    public BorderLayoutFactory() {}
     UI ui;
 
     public JComponent create (UI ui, Element e) {

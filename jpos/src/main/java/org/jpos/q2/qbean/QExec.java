@@ -40,6 +40,8 @@ import java.util.List;
 */
 
 public class QExec extends QBeanSupport implements QExecMBean {
+    /** Default constructor; no instance state to initialise. */
+    public QExec() {}
     String startScript;
     String shutdownScript;
 
@@ -84,6 +86,14 @@ public class QExec extends QBeanSupport implements QExecMBean {
         }
     }
 
+    /**
+     * Tokenises a command line, honouring double-quoted segments and
+     * backslash-escaped characters.
+     *
+     * @param commandLine the command-line string
+     * @return the parsed argument list
+     * @throws IllegalArgumentException if {@code commandLine} is {@code null} or empty
+     */
     public static List<String> parseCommandLine(String commandLine) {
         if (commandLine == null || commandLine.isEmpty())
             throw new IllegalArgumentException("Empty command");

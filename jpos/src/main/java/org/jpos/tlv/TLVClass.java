@@ -18,10 +18,17 @@
 
 package org.jpos.tlv;
 
+/**
+ * BER-TLV tag class encoded in bits 7–8 of the first tag byte.
+ */
 public enum TLVClass {
+    /** Class bits {@code 00} — universally defined tag. */
     UNIVERSAL(0),
+    /** Class bits {@code 01} — application-specific tag. */
     APPLICATION(1 << 6),
+    /** Class bits {@code 10} — context-specific tag (most EMV tags). */
     CONTEXT_SPECIFIC(2 << 6),
+    /** Class bits {@code 11} — private-use tag. */
     PRIVATE(3 << 6);
 
     int value;
@@ -30,6 +37,12 @@ public enum TLVClass {
         this.value = value;
     }
 
+    /**
+     * Resolves the {@link TLVClass} encoded in the top two bits of {@code firstByte}.
+     *
+     * @param firstByte the first byte of a BER-TLV tag
+     * @return the matching class, defaulting to {@link #UNIVERSAL}
+     */
     public static TLVClass valueOf (byte firstByte) {
         int i = (int) firstByte & 0xC0;
         for (TLVClass c : values()) {

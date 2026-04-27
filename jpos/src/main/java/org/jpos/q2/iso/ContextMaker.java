@@ -42,6 +42,8 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class ContextMaker extends QBeanSupport implements Runnable,
 		Loggeable {
+    /** Default constructor; no instance state to initialise. */
+    public ContextMaker() {}
 
 	Space sp;
 

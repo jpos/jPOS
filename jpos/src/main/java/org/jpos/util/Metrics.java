@@ -25,11 +25,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+/** HdrHistogram-backed metrics aggregator with on-demand histogram creation per name. */
 public class Metrics implements Loggeable {
     private Histogram template;
     private Map<String,Histogram> metrics = new ConcurrentHashMap<>();
     private double conversion = 1;
 
+    /** Constructs a Metrics instance using the given Histogram as a template for new buckets.
+     * @param template the Histogram template; may be {@code null}
+     */
     public Metrics(Histogram template) {
         super();
         this.template = template;
@@ -38,12 +42,19 @@ public class Metrics implements Loggeable {
         }
     }
 
+    /** Returns a snapshot copy of all recorded histograms.
+     * @return map of metric name to histogram copy
+     */
     public Map<String, Histogram> metrics() {
         return metrics.entrySet()
           .stream()
           .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().copy()));
     }
 
+    /** Returns a snapshot copy of all histograms whose name starts with the given prefix.
+     * @param prefix the metric name prefix to filter by
+     * @return map of matching metric name to histogram copy
+     */
     public Map<String, Histogram> metrics(String prefix) {
         return metrics.entrySet()
           .stream()
@@ -51,6 +62,10 @@ public class Metrics implements Loggeable {
           .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().copy()));
     }
 
+    /** Records an elapsed time observation for the named metric.
+     * @param name the metric name
+     * @param elapsed the elapsed value to record
+     */
     public void record(String name, long elapsed) {
         Histogram h = getHistogram(name);
         long l = Math.min(elapsed, h.getHighestTrackableValue());
@@ -69,6 +84,10 @@ public class Metrics implements Loggeable {
         return h;
     }
 
+    /** Dumps all metric percentile summaries to the given stream.
+     * @param ps the output stream
+     * @param indent indent prefix
+     */
     public void dump(PrintStream ps, String indent) {
         metrics.entrySet()
           .stream()
@@ -102,6 +121,10 @@ public class Metrics implements Loggeable {
         }
     }
 
+    /** Writes HDR histogram files for all metrics to the given directory.
+     * @param dir output directory
+     * @param prefix filename prefix for histogram files
+     */
     public void dumpHistograms(File dir, String prefix) {
         metrics.entrySet()
           .stream()
@@ -110,6 +133,7 @@ public class Metrics implements Loggeable {
     }
 
     /**
+     * Sets the conversion divisor applied to percentile values during dump.
      * @param conversion
      *            This is used to divide the percentile values while dumping. 
      *            If you are using nano seconds to record and want to display the numbers in millis then conversion can be set to 1000000.

@@ -63,12 +63,29 @@ import java.util.TreeMap;
 @SuppressWarnings("unchecked")
 public class GenericValidatingPackager extends GenericPackager implements ISOValidator {
 
+    /**
+     * Default constructor.
+     *
+     * @throws ISOException if the underlying packager cannot be initialized
+     */
     public GenericValidatingPackager(  ) throws ISOException{
         super();
     }
+    /**
+     * Constructs a packager loading its field/validator descriptions from an XML file.
+     *
+     * @param fileName XML descriptor file
+     * @throws ISOException if the file cannot be parsed
+     */
     public GenericValidatingPackager( String fileName ) throws ISOException {
         super( fileName );
     }
+    /**
+     * Constructs a packager loading its field/validator descriptions from an XML stream.
+     *
+     * @param stream XML descriptor input stream
+     * @throws ISOException if the stream cannot be parsed
+     */
     public GenericValidatingPackager (InputStream stream) throws ISOException {
         super (stream);
     }
@@ -129,14 +146,31 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
             bitmapField = Integer.parseInt( bmapfield );
     }
 
+    /**
+     * Replaces the message-level validator array.
+     *
+     * @param msgVlds new message-level validators
+     */
     public void setMsgValidator( ISOBaseValidator[] msgVlds ){
         this.mvlds = msgVlds;
     }
 
+    /**
+     * Replaces the field-level validator array.
+     *
+     * @param fvlds new field-level validators
+     */
     public void setFieldValidator( ISOFieldValidator[] fvlds ){
         this.fvlds = fvlds;
     }
 
+    /**
+     * Runs all configured field- and message-level validators against {@code m}.
+     *
+     * @param m component (typically an {@code ISOMsg}) to validate
+     * @return the validated component, possibly with error fields attached
+     * @throws ISOException if validation fails and a validator throws
+     */
     public ISOComponent validate(ISOComponent m) throws ISOException {
         LogEvent evt = new LogEvent( this, "validate" );
         try {
@@ -175,8 +209,11 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
 
 /*  Values copied from ISOBasePackager
 These can be changes using attributes on the isopackager node */
+    /** Highest valid field number; copied from ISOBasePackager and overridable via XML. */
     protected  int maxValidField=128;
+    /** Whether the primary bitmap is emitted on pack; overridable via XML. */
     protected boolean emitBitmap=true;
+    /** Field number that carries the primary bitmap; overridable via XML. */
     protected int bitmapField=1;
     /** FieldValidator array. **/
     protected ISOValidator[] fvlds = {};
@@ -188,8 +225,11 @@ These can be changes using attributes on the isopackager node */
     static final int inc = 500;
 
 
+    /** SAX handler that builds the packager's field-and-validator graph from the descriptor XML. */
     @SuppressWarnings("unchecked")
     public class GenericValidatorContentHandler extends DefaultHandler {
+        /** Default constructor; no instance state to initialise. */
+        public GenericValidatorContentHandler() {}
         @Override
         public void startDocument(){
             fieldStack = new Stack<Object>();

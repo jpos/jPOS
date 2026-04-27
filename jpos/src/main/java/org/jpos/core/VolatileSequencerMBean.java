@@ -20,13 +20,33 @@ package org.jpos.core;
 
 
 /**
+ * JMX management interface for {@link VolatileSequencer}.
  * @author apr@cs.com.uy
  * @version $Id$
  * @since jPOS 1.3.9
  */
 public interface VolatileSequencerMBean {
+    /**
+     * Returns the names of every registered counter.
+     *
+     * @return array of counter names
+     */
     String[] getCounterNames();
+    /**
+     * Increments {@code counterName} by {@code add} and returns its new value.
+     *
+     * @param counterName name of the counter
+     * @param add increment to apply
+     * @return the counter's new value
+     */
     int get(String counterName, int add);
+    /**
+     * Replaces the value of {@code counterName}.
+     *
+     * @param counterName name of the counter
+     * @param value new value
+     * @return the previous value
+     */
     int set(String counterName, int value);
 }
 

@@ -22,8 +22,11 @@ import org.jline.utils.InfoCmp;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
+/** CLI command that clears the terminal screen. */
 public class CLR implements CLICommand
 {
+    /** Default constructor; no instance state to initialise. */
+    public CLR() {}
     public void exec(CLIContext ctx, String[] args) throws Exception {
         ctx.getReader().getTerminal().puts(InfoCmp.Capability.clear_screen);
     }

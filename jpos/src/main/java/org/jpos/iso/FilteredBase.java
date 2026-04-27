@@ -38,8 +38,10 @@ import java.util.Vector;
 public abstract class FilteredBase extends Observable
     implements FilteredChannel, Cloneable
 {
+    /** Filters applied to inbound and outbound traffic respectively. */
     protected Vector incomingFilters, outgoingFilters;
 
+    /** Default constructor. Initializes both filter chains as empty. */
     public FilteredBase () {
         super();
         incomingFilters = new Vector();
@@ -119,7 +121,15 @@ public abstract class FilteredBase extends Observable
     public void removeOutgoingFilter (ISOFilter filter) {
         removeFilter (filter, ISOMsg.OUTGOING);
     }
-    protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt) 
+    /**
+     * Runs every outgoing filter against {@code m} and notifies observers of the result.
+     *
+     * @param m outbound message
+     * @param evt log event filters may decorate
+     * @return the (possibly transformed) message
+     * @throws VetoException if any filter vetoes the message
+     */
+    protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt)
         throws VetoException
     {
         Iterator iter  = outgoingFilters.iterator();
@@ -132,7 +142,15 @@ public abstract class FilteredBase extends Observable
         notifyObservers (m);
         return m;
     }
-    protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
+    /**
+     * Runs every incoming filter against {@code m} and notifies observers of the result.
+     *
+     * @param m inbound message
+     * @param evt log event filters may decorate
+     * @return the (possibly transformed) message
+     * @throws VetoException if any filter vetoes the message
+     */
+    protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt)
         throws VetoException
     {
         Iterator iter  = incomingFilters.iterator();

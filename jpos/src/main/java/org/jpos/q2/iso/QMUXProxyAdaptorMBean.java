@@ -26,8 +26,18 @@ package org.jpos.q2.iso;
  */
 public interface QMUXProxyAdaptorMBean extends org.jpos.q2.QBeanSupportMBean {
 
+    /**
+     * Sets the name of the underlying QMUX exposed via this RMI proxy.
+     *
+     * @param qmuxName QMUX name
+     */
     void setQmuxName(java.lang.String qmuxName) ;
 
+    /**
+     * Returns the configured QMUX name.
+     *
+     * @return QMUX name
+     */
     java.lang.String getQmuxName() ;
 
 }

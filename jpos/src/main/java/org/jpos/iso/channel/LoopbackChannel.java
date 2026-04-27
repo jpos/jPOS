@@ -32,6 +32,10 @@ import org.jpos.util.*;
 
 import java.io.IOException;
 
+/**
+ * In-memory ISO channel that loops messages back through a {@link BlockingQueue},
+ * useful for testing without external network resources.
+ */
 public class LoopbackChannel extends FilteredBase implements LogSource {
     boolean usable = true;
     private int[] cnt;
@@ -40,6 +44,7 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
     Logger logger;
     String realm;
 
+    /** Default constructor. */
     public LoopbackChannel () {
         super();
         cnt = new int[SIZEOF_CNT];
@@ -128,6 +133,11 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
         notifyObservers();
     }
 
+    /**
+     * Returns the live counter array (transmitted/received tallies).
+     *
+     * @return counter array as managed by this channel
+     */
     public int[] getCounters() {
         return cnt;
     }
@@ -141,10 +151,16 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
         return name;
     }
 
+    /**
+     * Returns the packager configured on this channel.
+     *
+     * @return {@code null}; the loopback channel has no packager because messages are queued as objects
+     */
     public ISOPackager getPackager() {
         return null;
     }
 
+    /** Resets the connect/transmit/receive counters to zero. */
     public void resetCounters() {
         for (int i=0; i<SIZEOF_CNT; i++)
             cnt[i] = 0;

@@ -30,6 +30,10 @@ public class CVNMCDataBuilder implements CryptogramDataBuilder {
     // counter is used only in M/CHIP advance
     private final boolean includeCounters;
 
+    /**
+     * Creates a CVNMCDataBuilder.
+     * @param includeCounters {@code true} to include counters (M/CHIP Advance mode)
+     */
     public CVNMCDataBuilder(boolean includeCounters) {
         this.includeCounters = includeCounters;
     }

@@ -25,7 +25,13 @@ import org.jpos.transaction.TransactionParticipant;
 
 import java.io.Serializable;
 
+/**
+ * Transaction participant that records a single configurable
+ * {@link Context#checkPoint(String)} marker during prepare.
+ */
 public class CheckPoint implements TransactionParticipant, Configurable  {
+    /** Default constructor; no instance state to initialise. */
+    public CheckPoint() {}
     Configuration cfg;
     public int prepare (long id, Serializable o) {
         if (o instanceof Context) 

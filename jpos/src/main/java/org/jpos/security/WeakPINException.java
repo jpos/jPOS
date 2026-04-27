@@ -27,18 +27,35 @@ public class WeakPINException extends SMException {
 
     private static final long serialVersionUID = 5731194571388461393L;
 
+    /** Default constructor. */
     public WeakPINException () {
         super();
     }
 
+    /**
+     * Constructs a new exception with the given detail message.
+     *
+     * @param s failure description
+     */
     public WeakPINException (String s) {
         super(s);
     }
 
+    /**
+     * Constructs a new exception wrapping the given cause.
+     *
+     * @param e underlying cause
+     */
     public WeakPINException (Exception e) {
         super(e);
     }
 
+    /**
+     * Constructs a new exception with the given detail message and cause.
+     *
+     * @param s failure description
+     * @param e underlying cause
+     */
     public WeakPINException (String s, Exception e) {
         super(s, e);
     }

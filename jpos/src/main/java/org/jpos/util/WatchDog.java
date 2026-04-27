@@ -34,25 +34,48 @@ public class WatchDog extends TimerTask {
     String realm;
     private static Timer timer = new Timer(true);
     private static AtomicLong counter = new AtomicLong(0L);
+    /** Number of timer schedules between proactive cancellation purges. */
     public static long PURGE_INTERVAL = 1000L;
 
+    /**
+     * Schedules a silent watchdog that fires after {@code duration} milliseconds.
+     *
+     * @param duration delay in milliseconds before {@link #run()} fires
+     */
     public WatchDog (long duration) {
         timer.schedule(this, duration);
         if (counter.incrementAndGet() % PURGE_INTERVAL == 0)
             timer.purge();  // pro-active purge due to excessive number of timertask cancels.
     }
+    /**
+     * Schedules a watchdog that, if not cancelled in time, logs {@code message} as a warning.
+     *
+     * @param duration delay in milliseconds before {@link #run()} fires
+     * @param message warning message to log when the timer expires
+     */
     public WatchDog (long duration, String message) {
         this(duration);
         this.logName = "Q2";
         this.realm = "watchdog";
         this.message = message;
     }
+    /**
+     * Overrides the logger name used for the warning.
+     *
+     * @param logName logger name (defaults to {@code Q2})
+     */
     public void setLogName (String logName) {
         this.logName = logName;
     }
+    /**
+     * Overrides the realm used for the warning.
+     *
+     * @param realm logger realm (defaults to {@code watchdog})
+     */
     public void setRealm (String realm) {
         this.realm = realm;
     }
+    /** Logs the configured message at warning level when the timer expires. */
     public void run () {
         if (message != null)
             Log.getLog (logName, realm).warn (message);

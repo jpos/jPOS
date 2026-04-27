@@ -30,6 +30,7 @@ import java.util.Map;
  */
 public class NameRegistrarInspector implements NameRegistrarInspectorMBean {
 
+    /** Default constructor. */
     public NameRegistrarInspector () {
     }
 

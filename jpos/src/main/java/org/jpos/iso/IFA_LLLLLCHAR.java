@@ -21,15 +21,17 @@ package org.jpos.iso;
 /**
  * ISOFieldPackager ASCII variable len CHAR
  *
- * @author Victor A. Salaman <salaman@teknos.com>
+ * @author Victor A. Salaman (salaman@teknos.com)
  * @version $Id$
  * @see ISOComponent
  */
 public class IFA_LLLLLCHAR extends ISOStringFieldPackager {
+    /** Default constructor. */
     public IFA_LLLLLCHAR () {
         super(NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, AsciiPrefixer.LLLLL);
     }
     /**
+     * Constructs a packager with the given length and description.
      * @param len - field len
      * @param description symbolic descrption
      */

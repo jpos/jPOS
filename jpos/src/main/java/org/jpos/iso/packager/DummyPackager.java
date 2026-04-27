@@ -26,7 +26,10 @@ import org.jpos.util.Log;
 
 import java.io.InputStream;
 
+/** Stub {@link ISOPackager} that throws on every operation; used for testing wiring without packing. */
 public class DummyPackager extends Log implements ISOPackager {
+    /** Default constructor; no instance state to initialise. */
+    public DummyPackager() {}
     public byte[] pack (ISOComponent m) throws ISOException {
         throw new ISOException ("DummyPackager.pack N/A");
     }

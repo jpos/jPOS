@@ -25,12 +25,32 @@ package org.jpos.q2.qbean;
  */
 public interface QExecMBean extends org.jpos.q2.QBeanSupportMBean {
 
+  /**
+   * Sets the path to the script executed when the bean starts.
+   *
+   * @param scriptPath path to the start script
+   */
   void setStartScript(java.lang.String scriptPath) ;
 
+  /**
+   * Returns the configured start-script path.
+   *
+   * @return start-script path
+   */
   java.lang.String getStartScript() ;
 
+  /**
+   * Sets the path to the script executed when the bean shuts down.
+   *
+   * @param scriptPath path to the shutdown script
+   */
   void setShutdownScript(java.lang.String scriptPath) ;
 
+  /**
+   * Returns the configured shutdown-script path.
+   *
+   * @return shutdown-script path
+   */
   java.lang.String getShutdownScript() ;
 
 }

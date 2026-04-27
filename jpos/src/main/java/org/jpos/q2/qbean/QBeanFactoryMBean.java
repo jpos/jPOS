@@ -20,6 +20,13 @@ package org.jpos.q2.qbean;
 
 import org.jpos.q2.QBeanSupportMBean;
 
+/** JMX interface for the {@link QBeanFactory} bean. */
 public interface QBeanFactoryMBean extends QBeanSupportMBean {
+    /**
+     * Returns the registered object associated with {@code beanName}.
+     *
+     * @param beanName the bean name to resolve
+     * @return the resolved bean, or {@code null} if not registered
+     */
     Object getBean(String beanName);
 }

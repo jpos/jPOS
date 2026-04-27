@@ -48,7 +48,7 @@ import org.jpos.space.SpaceFactory;
 /**
  * General purpose, Field Separator delimited message.
  *
- * <h1>How to use</h1>
+ * <h2>How to use</h2>
  * <p>
  * The message format (or schema) is defined in xml files containing a schema element, with an optional id attribute, and multiple
  * field elements. A field element is made up of the following attributes:
@@ -76,7 +76,6 @@ import org.jpos.space.SpaceFactory;
  * <dt>K</dt><dd>Constant. The value is specified by the field content. No padding is done.</dd>
  * <dt>N</dt><dd>Numeric. Padding, if any, is done with zeros to the left.</dd>
  * </dl>
- * </p>
  * <p>
  * Supported field separators are:
  * <dl>
@@ -90,7 +89,6 @@ import org.jpos.space.SpaceFactory;
  * <dt>DS</dt><dd>A dummy separator. This is similar to EOF, but the message stream must not end before it is allowed.</dd>
  * <dt>EOM</dt><dd>End of message separator. This reads all bytes available in the stream.
  * </dl>
- * </p>
  * <p>
  * Key fields allow you to specify a tree of possible message formats. The key fields are the fork points of the tree.
  * Multiple key fields are supported. It is also possible to have more key fields specified in appended schemas.
@@ -103,12 +101,19 @@ import org.jpos.space.SpaceFactory;
  */
 @SuppressWarnings("unchecked")
 public class FSDMsg implements Loggeable, Cloneable {
+    /** Field Separator character (ASCII 0x1C). */
     public static char FS = '\034';
+    /** Unit Separator character (ASCII 0x1F). */
     public static char US = '\037';
+    /** Group Separator character (ASCII 0x1D). */
     public static char GS = '\035';
+    /** Record Separator character (ASCII 0x1E). */
     public static char RS = '\036';
+    /** End of File character (null byte). */
     public static char EOF = '\000';
+    /** Pipe character (ASCII 0x7C). */
     public static char PIPE = '\u007C';
+    /** End of Message marker (null byte). */
     public static char EOM = '\000';
 
     private static final Set<String> DUMMY_SEPARATORS = new HashSet<>(Arrays.asList("DS", "EOM"));
@@ -154,32 +159,42 @@ public class FSDMsg implements Loggeable, Cloneable {
         setSeparator("EOF", EOF);
         setSeparator("PIPE", PIPE);
     }
+    /**
+     * Returns the base schema path used to load field definitions.
+     * @return the base schema path
+     */
     public String getBasePath() {
         return basePath;
     }
+    /**
+     * Returns the base schema name used to load field definitions.
+     * @return the base schema name
+     */
     public String getBaseSchema() {
         return baseSchema;
     }
 
+    /**
+     * Sets the character set used for packing and unpacking string fields.
+     * @param charset the character set to use
+     */
     public void setCharset(Charset charset) {
         this.charset = charset;
     }
 
-    /*
-     * add a new or override an existing separator type/char pair.
-     *
-     *  @param separatorName   string of type used in definition (FS, US etc)
-     *  @param separator       char representing type
+    /**
+     * Adds or overrides a separator type/char pair.
+     * @param separatorName string identifier for the separator type (e.g. "FS", "US")
+     * @param separator the character representing this separator
      */
     public void setSeparator(String separatorName, char separator) {
         separators.put(separatorName, separator);
     }
 
-    /*
-     * add a new or override an existing separator type/char pair.
-     *
-     *  @param separatorName   string of type used in definition (FS, US etc)
-     *  @param separator       char representing type
+    /**
+     * Removes a previously defined separator type.
+     * @param separatorName string identifier for the separator type to remove
+     * @throws IllegalArgumentException if the separator was not previously defined
      */
     public void unsetSeparator(String separatorName) {
         if (!separators.containsKey(separatorName))
@@ -194,8 +209,8 @@ public class FSDMsg implements Loggeable, Cloneable {
      *
      * @param is input stream
      *
-     * @throws IOException
-     * @throws JDOMException
+     * @throws IOException on I/O error
+     * @throws JDOMException on XML parsing error
      */
     public void unpack (InputStream is)
         throws IOException, JDOMException {
@@ -220,8 +235,8 @@ public class FSDMsg implements Loggeable, Cloneable {
      *
      * @param b message image
      *
-     * @throws IOException
-     * @throws JDOMException
+     * @throws IOException on I/O error while reading the byte array
+     * @throws JDOMException on schema parsing error
      */
     public void unpack (byte[] b)
         throws IOException, JDOMException {
@@ -229,10 +244,11 @@ public class FSDMsg implements Loggeable, Cloneable {
     }
 
     /**
-     * @return message string
-     * @throws org.jdom2.JDOMException
-     * @throws java.io.IOException
-     * @throws ISOException
+     * Packs this FSDMsg into its string representation.
+     * @return the packed message string
+     * @throws org.jdom2.JDOMException on schema parsing error
+     * @throws java.io.IOException on I/O error
+     * @throws ISOException on packing error
      */
     public String pack ()
         throws JDOMException, IOException, ISOException
@@ -241,17 +257,45 @@ public class FSDMsg implements Loggeable, Cloneable {
         pack (getSchema (baseSchema), sb);
         return sb.toString ();
     }
+    /**
+     * Packs this message into a byte array.
+     * @return the packed bytes
+     * @throws ISOException on pack error
+     * @throws IOException on I/O error
+     * @throws JDOMException on schema parse error
+     */
     public byte[] packToBytes ()
         throws JDOMException, IOException, ISOException
     {
         return pack().getBytes(charset);
     }
 
+    /**
+     * Returns the formatted value for the named field.
+     * @param id        field identifier
+     * @param type      field type
+     * @param length    field length
+     * @param defValue  default value if field is absent
+     * @param separator field separator
+     * @return formatted field value
+     * @throws ISOException on error
+     */
 	    protected String get (String id, String type, int length, String defValue, String separator)
         throws ISOException
     {
 	    return get(id,type,length,defValue,separator,true);
     }
+    /**
+     * Returns the formatted value for the named field with optional unpadding.
+     * @param id        field identifier
+     * @param type      field type
+     * @param length    field length
+     * @param defValue  default value
+     * @param separator field separator
+     * @param unPad     if true, strip padding
+     * @return formatted field value
+     * @throws ISOException on error
+     */
     protected String get (String id, String type, int length, String defValue, String separator, boolean unPad)
         throws ISOException
     {
@@ -348,6 +392,11 @@ public class FSDMsg implements Loggeable, Cloneable {
         return type.startsWith("B");
     }
 
+    /**
+     * Tests whether a byte matches any configured separator character.
+     * @param b the byte to test
+     * @return true if the byte corresponds to any configured separator
+     */
     public boolean isSeparator(byte b) {
         return separators.containsValue((char) b);
     }
@@ -371,6 +420,14 @@ public class FSDMsg implements Loggeable, Cloneable {
                       separator+" which was not previously defined.");
     }
 
+    /**
+     * Packs this message into the given StringBuilder using the provided schema.
+     * @param schema the schema element
+     * @param sb     the target StringBuilder
+     * @throws ISOException on pack error
+     * @throws IOException on I/O error
+     * @throws JDOMException on schema error
+     */
     protected void pack (Element schema, StringBuilder sb)
         throws JDOMException, IOException, ISOException
     {
@@ -431,6 +488,13 @@ public class FSDMsg implements Loggeable, Cloneable {
     	return ISOUtil.normalize(value);
     }
 
+    /**
+     * Unpacks a message from the reader using the provided schema.
+     * @param r      the reader
+     * @param schema the schema element
+     * @throws IOException on I/O error
+     * @throws JDOMException on schema error
+     */
     protected void unpack (InputStreamReader r, Element schema)
         throws IOException, JDOMException {
 
@@ -471,6 +535,15 @@ public class FSDMsg implements Loggeable, Cloneable {
         String s = e.getAttributeValue ("id");
         return s == null ? "" : s;
     }
+    /**
+     * Reads a field value from the stream.
+     * @param r         the reader
+     * @param len       maximum field length
+     * @param type      field type
+     * @param separator field separator
+     * @return the field value
+     * @throws IOException on I/O error
+     */
     protected String read (InputStreamReader r, int len, String type, String separator)
         throws IOException
     {
@@ -551,6 +624,16 @@ public class FSDMsg implements Loggeable, Cloneable {
         return sb.toString();
     }
 
+    /**
+     * Reads a named field value from the stream.
+     * @param r         the reader
+     * @param fieldName the field name
+     * @param len       maximum field length
+     * @param type      field type
+     * @param separator field separator
+     * @return the field value
+     * @throws IOException on I/O error
+     */
     protected String readField (InputStreamReader r, String fieldName, int len,
                                 String type, String separator) throws IOException
     {
@@ -563,38 +646,87 @@ public class FSDMsg implements Loggeable, Cloneable {
         return fieldValue;
     }
 
+    /**
+     * Sets a field value; removes the field if value is null.
+     * @param name the field name
+     * @param value the field value, or null to remove
+     */
     public void set (String name, String value) {
         if (value != null)
             fields.put (name, value);
         else
             fields.remove (name);
     }
+    /**
+     * Sets the binary header bytes for this message.
+     * @param h the header bytes to set
+     */
     public void setHeader (byte[] h) {
         this.header = h;
     }
+    /**
+     * Returns the binary header bytes.
+     * @return the header bytes, or null if not set
+     */
     public byte[] getHeader () {
         return header;
     }
+    /**
+     * Returns the header as a hex string, or empty string if no header is set.
+     * @return the header as a hex string
+     */
     public String getHexHeader () {
         return header != null ? ISOUtil.hexString (header).substring (2) : "";
     }
+    /**
+     * Returns the value of the named field.
+     * @param fieldName the field name to retrieve
+     * @return the field value, or null if not set
+     */
     public String get (String fieldName) {
         return fields.get (fieldName);
     }
+    /**
+     * Returns the value of the named field, or a default if not set.
+     * @param fieldName the field name
+     * @param def the default value if not set
+     * @return the field value, or the default
+     */
     public String get (String fieldName, String def) {
         String s = fields.get (fieldName);
         return s != null ? s : def;
     }
+    /**
+     * Copies a field value from another FSDMsg into this message.
+     * @param fieldName the field to copy
+     * @param msg the source FSDMsg
+     */
     public void copy (String fieldName, FSDMsg msg) {
         fields.put (fieldName, msg.get (fieldName));
     }
+    /**
+     * Copies a field value from another FSDMsg into this message, using a default if not present.
+     * @param fieldName the field to copy
+     * @param msg the source FSDMsg
+     * @param def default value if the field is not present in msg
+     */
     public void copy (String fieldName, FSDMsg msg, String def) {
         fields.put (fieldName, msg.get(fieldName, def));
     }
+    /**
+     * Returns the value of the named field decoded from hex.
+     * @param name the field name containing a hex-encoded value
+     * @return decoded bytes, or null if field not set
+     */
     public byte[] getHexBytes (String name) {
         String s = get (name);
         return s == null ? null : ISOUtil.hex2byte (s);
     }
+    /**
+     * Returns the integer value of the named field, or 0 if absent or non-numeric.
+     * @param name the field name
+     * @return integer value of the field
+     */
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public int getInt (String name) {
         int i = 0;
@@ -603,6 +735,12 @@ public class FSDMsg implements Loggeable, Cloneable {
         } catch (Exception ignored) { }
         return i;
     }
+    /**
+     * Returns the integer value of the named field, or a default if absent or non-numeric.
+     * @param name the field name
+     * @param def the default value to return if the field is absent or non-numeric
+     * @return integer value of the field or the default
+     */
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public int getInt (String name, int def) {
         int i = def;
@@ -611,6 +749,10 @@ public class FSDMsg implements Loggeable, Cloneable {
         } catch (Exception ignored) { }
         return i;
     }
+    /**
+     * Serializes this FSDMsg to a JDOM XML Element.
+     * @return XML Element representing this message
+     */
     public Element toXML () {
         Element e = new Element ("message");
         if (header != null) {
@@ -626,14 +768,36 @@ public class FSDMsg implements Loggeable, Cloneable {
         }
         return e;
     }
+    /**
+     * Returns the root schema Element for the base schema.
+     * @return the root schema Element
+     * @throws JDOMException on XML parsing error
+     * @throws IOException on I/O error
+     */
     protected Element getSchema ()
         throws JDOMException, IOException {
         return getSchema (baseSchema);
     }
+    /**
+     * Returns the root schema Element for the named message schema.
+     * @param message the schema message name
+     * @return the root schema Element
+     * @throws JDOMException on XML parsing error
+     * @throws IOException on I/O error
+     */
     protected Element getSchema (String message)
         throws JDOMException, IOException {
         return getSchema (message, "", null);
     }
+    /**
+     * Returns the root schema Element located at the given path.
+     * @param prefix    the schema path prefix
+     * @param suffix    the schema path suffix
+     * @param defSuffix the default suffix to use if the path is not found
+     * @return the root schema Element
+     * @throws JDOMException on XML parsing error
+     * @throws IOException on I/O error
+     */
     protected Element getSchema (String prefix, String suffix, String defSuffix)
         throws JDOMException, IOException {
         if (basePath == null)
@@ -660,6 +824,14 @@ public class FSDMsg implements Loggeable, Cloneable {
         return schema;
     }
 
+    /**
+     * Loads and parses the schema from the given URI.
+     * @param uri     the URI of the schema resource to load
+     * @param throwex if true, throw an exception if the resource is not found
+     * @return the parsed root Element, or null if not found and throwex is false
+     * @throws JDOMException on XML parsing error
+     * @throws IOException on I/O error
+     */
     protected Element loadSchema(String uri, boolean throwex)
         throws JDOMException, IOException {
         SAXBuilder builder = new SAXBuilder();
@@ -683,6 +855,13 @@ public class FSDMsg implements Loggeable, Cloneable {
         }
     }
 
+    /**
+     * Returns an InputStream for the given classpath resource.
+     * @param resource the classpath resource path
+     * @return the InputStream, or null if the resource is not found
+     * @throws IOException on I/O error
+     * @throws JDOMException on XML error
+     */
     protected InputStream schemaResouceInputStream(String resource)
         throws JDOMException, IOException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -693,9 +872,17 @@ public class FSDMsg implements Loggeable, Cloneable {
     /**
      * @return message's Map
      */
+    /**
+     * Returns the underlying fields map.
+     * @return the fields map
+     */
     public Map getMap () {
         return fields;
     }
+    /**
+     * Sets the underlying fields map.
+     * @param fields the fields map to set
+     */
     public void setMap (Map fields) {
         this.fields = fields;
     }
@@ -714,6 +901,11 @@ public class FSDMsg implements Loggeable, Cloneable {
     private void append (PrintStream p, String f, String v, String indent) {
         p.println (indent + f + ": '" + v + "'");
     }
+    /**
+     * Returns true if this message has a value for the named field.
+     * @param fieldName the field name to check
+     * @return true if the field is present
+     */
     public boolean hasField(String fieldName) {
         return fields.containsKey(fieldName);
     }
@@ -728,6 +920,10 @@ public class FSDMsg implements Loggeable, Cloneable {
             throw new InternalError();
         }
     }
+    /**
+     * Copies all fields from the given message into this message.
+     * @param m the source message to merge from
+     */
     public void merge (FSDMsg m) {
         for (Entry<String,String> entry: m.fields.entrySet())
              set (entry.getKey(), entry.getValue());

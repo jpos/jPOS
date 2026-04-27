@@ -23,7 +23,7 @@ import org.jpos.iso.*;
 /**
  * BASE24 Packager made from ISO 8583 v1987 ASCII Packager
  *
- * @author Mike Trank <mike@netcomsa.com>
+ * @author Mike Trank (mike@netcomsa.com)
  * @version $Id$
  * @see ISOPackager
  * @see ISOBasePackager
@@ -36,6 +36,7 @@ import org.jpos.iso.*;
  *  There are notes where the comments are........ Mike.
  */
 public class BASE24Packager extends ISOBasePackager {
+    /** BASE-24 field packager definitions for fields 0-128. */
     protected ISOFieldPackager fld[] = {
             new IFA_NUMERIC (  4, "MESSAGE TYPE INDICATOR"),
             new IFA_BITMAP  ( 16, "BIT MAP"),
@@ -174,6 +175,7 @@ public class BASE24Packager extends ISOBasePackager {
             new IFA_LLCHAR (99, "BASE24-POS User Data"),
             new IFA_NUMERIC (16, "MAC 2")
         };
+    /** Creates BASE24Packager with the default BASE-24 field configuration. */
     public BASE24Packager() {
         super();
         setFieldPackager(fld);

@@ -22,14 +22,20 @@ import org.jpos.iso.ISOException;
 import org.jpos.tlv.TagSequenceBase;
 
 /**
+ * An ordered sequence of EMV tag-value elements.
  * @author Vishnu Pillai
  */
 public class EMVTagSequence extends TagSequenceBase {
 
+    /** Creates a root EMVTagSequence with no parent tag. */
     public EMVTagSequence() {
         super();
     }
 
+    /**
+     * Creates a nested EMVTagSequence for the given tag identifier.
+     * @param tag the tag identifier for this nested sequence
+     */
     protected EMVTagSequence(String tag) {
         super(tag);
     }

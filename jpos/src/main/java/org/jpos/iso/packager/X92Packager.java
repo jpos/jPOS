@@ -30,9 +30,11 @@ import org.jpos.iso.*;
  * @see ISOComponent
  */
 public class X92Packager extends ISOBasePackager {
-    protected ISOFieldPackager bitMapPackager = 
+    /** Bitmap packager used by the X9.2 variant. */
+    protected ISOFieldPackager bitMapPackager =
         new X92_BITMAP (16, "X9.2 BIT MAP");
 
+    /** Field-by-field packager array for the X9.2 message variant. */
     protected ISOFieldPackager fld[] = {
             new IFA_NUMERIC(     4, "MESSAGE TYPE"                          ),
             new IFA_FLLNUM (    19, "PAN - PRIMARY ACCOUNT NUMBER"          ),
@@ -101,6 +103,7 @@ public class X92Packager extends ISOBasePackager {
             new IFA_BINARY(      0, "UNUSED"                                )
         };
             
+    /** Default constructor. */
     public X92Packager() {
         super();
         setFieldPackager(fld);

@@ -33,6 +33,7 @@ import org.jpos.util.NameRegistrar;
 public class TaskAdaptor extends QBeanSupport {
     Object task;
 
+    /** Default constructor. */
     public TaskAdaptor () {
         super ();
     }
@@ -55,6 +56,11 @@ public class TaskAdaptor extends QBeanSupport {
         if (task instanceof Destroyable)
             ((Destroyable)task).destroy ();
     }
+    /**
+     * Returns the wrapped task instance.
+     *
+     * @return the task object, or {@code null} before {@code initService}
+     */
     public Object getObject () {
         return task;
     }

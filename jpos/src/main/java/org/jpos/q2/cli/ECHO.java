@@ -22,8 +22,11 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
+/** CLI command that prints its argument back to the console. */
 public class ECHO implements CLICommand
 {
+    /** Default constructor; no instance state to initialise. */
+    public ECHO() {}
     public void exec(CLIContext cli, String[] args)
     {
         String s = ISOUtil.unPadLeft(args[0].substring(4), ' ');

@@ -20,16 +20,38 @@ package org.jpos.core;
 
 
 /**
- * @author apr@cs.com.uy
- * @version $Id$
- * @since jPOS 1.1
  *
  * Multipurpose sequencer.<br>
  * CardAgents requires persistent sequence number<br>
  * Sequencer interface isolate from particular DB implementations
+ *
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @since jPOS 1.1
+ *
  */
 public interface Sequencer {
+    /**
+     * Increments {@code counterName} by 1 and returns its new value.
+     *
+     * @param counterName name of the counter
+     * @return the counter's new value
+     */
     int get(String counterName);
+    /**
+     * Increments {@code counterName} by {@code add} and returns its new value.
+     *
+     * @param counterName name of the counter
+     * @param add increment to apply
+     * @return the counter's new value
+     */
     int get(String counterName, int add);
+    /**
+     * Replaces the value of {@code counterName}.
+     *
+     * @param counterName name of the counter
+     * @param value new value
+     * @return the previous value
+     */
     int set(String counterName, int value);
 }

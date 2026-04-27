@@ -33,6 +33,7 @@ import org.jpos.iso.validator.ISOVException;
  */
 public class IVA_NUM extends ISOFieldValidator {
 
+    /** Default constructor. */
     public IVA_NUM(  ) {
         super(  );
     }
@@ -45,15 +46,34 @@ public class IVA_NUM extends ISOFieldValidator {
         super( Description );
     }
 
+    /**
+     * Constructs a validator with the given description and numeric radix.
+     *
+     * @param Description Brief description.
+     * @param radix numeric radix
+     */
     public IVA_NUM( String Description, int radix ) {
         super( Description );
         this.radix = radix;
     }
 
+    /**
+     * Constructs a validator with a maximum length.
+     *
+     * @param maxLen maximum acceptable length
+     * @param Description Brief description.
+     */
     public IVA_NUM( int maxLen, String Description ) {
         super( maxLen, Description );
     }
 
+    /**
+     * Constructs a validator with a maximum length and numeric radix.
+     *
+     * @param maxLen maximum acceptable length
+     * @param Description Brief description.
+     * @param radix numeric radix
+     */
     public IVA_NUM( int maxLen, String Description, int radix ) {
         super( maxLen, Description );
         this.radix = radix;
@@ -81,31 +101,76 @@ public class IVA_NUM extends ISOFieldValidator {
         this.radix = radix;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag and description.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param Description Brief description.
+     */
     public IVA_NUM( boolean breakOnError, String Description ) {
         this( Description );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag, description, and radix.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param Description Brief description.
+     * @param radix numeric radix
+     */
     public IVA_NUM( boolean breakOnError, String Description, int radix ) {
         this( Description, radix );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag and a maximum length.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param maxLen maximum acceptable length
+     * @param Description Brief description.
+     */
     public IVA_NUM( boolean breakOnError, int maxLen, String Description ) {
         this( maxLen, Description );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag, max length, and radix.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param maxLen maximum acceptable length
+     * @param Description Brief description.
+     * @param radix numeric radix
+     */
     public IVA_NUM( boolean breakOnError, int maxLen, String Description, int radix ) {
         this( maxLen, Description, radix );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag and explicit length bounds.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param minLen minimum acceptable length
+     * @param maxLen maximum acceptable length
+     * @param Description Brief description.
+     */
     public IVA_NUM( boolean breakOnError, int minLen, int maxLen, String Description ) {
         this( minLen, maxLen, Description );
         this.breakOnError = breakOnError;
     }
 
+    /**
+     * Constructs a validator with a custom break-on-error flag, length bounds, and radix.
+     *
+     * @param breakOnError if {@code true}, validation throws on the first error
+     * @param minLen minimum acceptable length
+     * @param maxLen maximum acceptable length
+     * @param Description Brief description.
+     * @param radix numeric radix
+     */
     public IVA_NUM( boolean breakOnError, int minLen, int maxLen, String Description, int radix ) {
         this( minLen, maxLen, Description, radix );
         this.breakOnError = breakOnError;
@@ -115,7 +180,7 @@ public class IVA_NUM extends ISOFieldValidator {
      * Configure the validator. @see ISOFieldValidator class.
      * Take config param "radix" wich specify the numeric radix.
      * @param cfg configuration instance
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         super.setConfiguration( cfg );

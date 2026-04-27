@@ -18,6 +18,14 @@
 
 package org.jpos.core;
 
+/**
+ * Validates {@link Card} instances (e.g. checks expiry, Luhn check, BIN ranges).
+ */
 public interface CardValidator {
+    /**
+     * Validates the given card.
+     * @param card the card to validate
+     * @throws InvalidCardException if the card is invalid
+     */
     void validate (Card card) throws InvalidCardException;
 }

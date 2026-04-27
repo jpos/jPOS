@@ -31,6 +31,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * logging needs to be minimized while retaining some visibility.
  */
 public class SnapshotLogListener implements LogListener, Configurable {
+    /** Creates an empty listener; window and period are wired by {@link #setConfiguration(Configuration)}. */
+    public SnapshotLogListener() {}
     private long windowMillis;
     private long periodMillis;
     private AtomicLong lastWindowStart = new AtomicLong(0);

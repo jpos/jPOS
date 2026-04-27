@@ -29,6 +29,9 @@ public class BinaryPrefixer implements Prefixer
     /**
 	 * A length prefixer for up to 255 chars. The length is encoded with 1 unsigned byte.
 	 */
+    /**
+     * Pre-built {@link BinaryPrefixer} for common binary length prefix sizes.
+     */
     public static final BinaryPrefixer B = new BinaryPrefixer(1);
 
     /**
@@ -39,6 +42,10 @@ public class BinaryPrefixer implements Prefixer
     /** The number of digits allowed to express the length */
     private int nBytes;
 
+    /**
+     * Creates a BinaryPrefixer with the given number of bytes.
+     * @param nBytes the number of bytes used for the length prefix
+     */
     public BinaryPrefixer(int nBytes)
     {
         this.nBytes = nBytes;

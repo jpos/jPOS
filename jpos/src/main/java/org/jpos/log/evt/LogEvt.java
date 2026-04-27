@@ -28,6 +28,15 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Top-level structured log envelope serialised as the {@code <log>} element.
+ *
+ * @param ts       event timestamp
+ * @param kind     event kind/category
+ * @param lifespan lifespan in milliseconds, or {@code null} when not measured
+ * @param tags     optional tag map (omitted from output when empty)
+ * @param events   payload of structured audit events
+ */
 @JacksonXmlRootElement(localName = "log")
 public record LogEvt(
   @JacksonXmlProperty(isAttribute = true) Instant ts,

@@ -27,7 +27,10 @@ import org.jpos.util.NameRegistrar;
 import java.io.File;
 import java.io.IOException;
 
+/** CLI command that dumps every {@link org.jpos.util.MetricsProvider} bean's metrics into the given directory. */
 public class DUMPMETRICS implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public DUMPMETRICS() {}
     public void exec(CLIContext ctx, String[] args) throws IOException {
         if (args.length != 2) {
             ctx.println (String.format ("Usage: %s<path-to-dump-directory>", args[0]));

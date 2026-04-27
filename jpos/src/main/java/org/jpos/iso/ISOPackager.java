@@ -22,34 +22,46 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Core interface for ISO-8583 packagers; responsible for packing and unpacking {@link org.jpos.iso.ISOMsg} instances.
  * @author apr
  * @version $Id$
  * @see ISOComponent
  */
 public interface ISOPackager {
     /**
+     * Packs an ISO-8583 message into a byte array.
      * @param   m   the Component to pack
      * @return      Message image
-     * @exception ISOException on error
+     * @exception ISOException on packing error
      */
     byte[] pack(ISOComponent m) throws ISOException;
 
     /**
+     * Unpacks an ISO-8583 byte array into the given message container.
      * @param   m   the Container of this message
      * @param   b   ISO message image
      * @return      consumed bytes
-     * @exception ISOException on error
+     * @exception ISOException on unpacking error
      */
     int unpack(ISOComponent m, byte[] b) throws ISOException;
 
+    /**
+     * Unpacks an ISO-8583 message from an input stream into the given container.
+     * @param m the container
+     * @param in the input stream
+     * @throws IOException on I/O failure
+     * @throws ISOException on unpacking error
+     */
     void unpack(ISOComponent m, InputStream in) throws IOException, ISOException;
 
     /**
+     * Returns a human-readable description of this packager.
      * @return  Packager's Description
      */
     String getDescription();
     
     /**
+     * Emits a description of the field identified by {@code fldno} in the given message to the log event.
      * @param   m   the Container (i.e. an ISOMsg)
      * @param   fldNumber the Field Number
      * @return  Field Description
@@ -57,7 +69,8 @@ public interface ISOPackager {
     String getFieldDescription(ISOComponent m, int fldNumber);
 
     /**
-     * @return an ISOMsg
+     * Creates and returns a new ISOMsg instance appropriate for this packager.
+     * @return a new ISOMsg
      */
     ISOMsg createISOMsg();
 }

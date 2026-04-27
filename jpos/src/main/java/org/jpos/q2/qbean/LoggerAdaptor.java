@@ -27,7 +27,13 @@ import org.jpos.util.*;
 import java.io.IOException;
 import java.io.PrintStream;
 
+/**
+ * QBean that materialises a named {@link Logger} from its persist element,
+ * optionally redirecting {@code System.out}/{@code System.err} to it.
+ */
 public class LoggerAdaptor extends QBeanSupport {
+    /** Default constructor; no instance state to initialise. */
+    public LoggerAdaptor() {}
     private Logger logger;
     private PrintStream originalOut = null;
     private PrintStream originalErr = null;

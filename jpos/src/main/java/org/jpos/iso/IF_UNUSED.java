@@ -30,15 +30,15 @@ package org.jpos.iso;
  * @see IF_NOP
  */
 public class IF_UNUSED extends ISOFieldPackager {
-    /**
-     */
+    /** (no description) */
+    /** Default constructor. */
     public IF_UNUSED () {
         super(0, "<dummy>");
     }
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         throw new ISOException("IF_UNUSED: Packager should not pack field " + c.getKey());

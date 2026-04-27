@@ -23,5 +23,7 @@ package org.jpos.emv.cryptogram;
  * @author Rainer Reyes
  */
 public class CVN22DataBuilder extends CVN18DataBuilder {
+    /** Default constructor; no instance state to initialise. */
+    public CVN22DataBuilder() {}
 
 }

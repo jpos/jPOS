@@ -33,6 +33,11 @@ public class XML2003Packager extends XMLPackager
 {
     private final int[] BINARY_FIELDS  = new int[] { 72 };
 
+    /**
+     * Creates the packager and forces field 72 to be treated as binary.
+     *
+     * @throws ISOException if the underlying XMLPackager fails to initialise
+     */
     public XML2003Packager() throws ISOException {
         super();
         forceBinary(BINARY_FIELDS);

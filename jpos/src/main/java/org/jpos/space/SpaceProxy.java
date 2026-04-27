@@ -44,11 +44,22 @@ public class SpaceProxy implements RemoteSpace, Configurable {
     Configuration cfg;
     private RemoteRef ref;
     private RemoteStub stub;
+    /**
+     * Constructs a proxy backed by the default jPOS space.
+     *
+     * @throws RemoteException if RMI export fails
+     */
     public SpaceProxy () throws RemoteException {
         super();
         sp = SpaceFactory.getSpace ();
         startService ();
     }
+    /**
+     * Constructs a proxy backed by the space resolved from {@code spaceUri}.
+     *
+     * @param spaceUri SpaceFactory-style space URI
+     * @throws RemoteException if RMI export fails
+     */
     public SpaceProxy (String spaceUri) throws RemoteException {
         super ();
         sp = SpaceFactory.getSpace (spaceUri);
@@ -106,6 +117,7 @@ public class SpaceProxy implements RemoteSpace, Configurable {
     {
         return (Serializable) sp.rdp (key);
     }
+    /** Unexports this proxy from the RMI runtime, retrying once after a brief delay. */
     public void shutdown() {
         try {
             if (UnicastRemoteObject.unexportObject (this, false)) 
@@ -127,8 +139,13 @@ public class SpaceProxy implements RemoteSpace, Configurable {
             throw new ConfigurationException (e);
         }
     }
+    /**
+     * Returns the underlying local-space key set when available.
+     *
+     * @return the live key set, or {@code null} when the proxied space is not local
+     */
     public Set getKeySet () {
-        if (sp instanceof LocalSpace) 
+        if (sp instanceof LocalSpace)
             return ((LocalSpace)sp).getKeySet ();
         else
             return null;

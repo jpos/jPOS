@@ -43,6 +43,7 @@ public class NCCChannel extends BaseChannel {
      * Public constructor 
      */
     boolean tpduSwap = true;
+    /** Default constructor. */
     public NCCChannel () {
         super();
     }
@@ -62,7 +63,7 @@ public class NCCChannel extends BaseChannel {
      * Construct server ISOChannel
      * @param p     an ISOPackager
      * @param TPDU  an optional raw header (i.e. TPDU)
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public NCCChannel (ISOPackager p, byte[] TPDU) throws IOException {
@@ -74,7 +75,7 @@ public class NCCChannel extends BaseChannel {
      * @param p     an ISOPackager
      * @param TPDU  an optional raw header (i.e. TPDU)
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O error
      * @see ISOPackager
      */
     public NCCChannel (ISOPackager p, byte[] TPDU, ServerSocket serverSocket) 

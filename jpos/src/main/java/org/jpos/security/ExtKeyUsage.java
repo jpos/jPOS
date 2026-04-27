@@ -206,7 +206,7 @@ public class ExtKeyUsage extends KeyUsage {
     /**
      * Returns the enum constant of this type with the specified {@code code}.
      *
-     * @param code
+     * @param code the TR-31 key usage code to look up
      * @return the enum constant with the specified processing code or
      *         {@code null} if unknown.
      */
@@ -218,6 +218,10 @@ public class ExtKeyUsage extends KeyUsage {
         return TR31MAP.get(code);
     }
 
+    /**
+     * Returns an unmodifiable map of all KeyUsage entries (TR-31 and extended) keyed by code.
+     * @return unmodifiable map of code to KeyUsage
+     */
     public static Map<String, KeyUsage> entries() {
         Map ret = new LinkedHashMap(TR31MAP);
         ret.putAll(MAP);

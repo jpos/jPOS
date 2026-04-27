@@ -19,7 +19,10 @@
 package org.jpos.iso;
 
 
+/** {@code IF_CHAR} variant that emits an empty byte array for missing components, used by Mastercard TCC fields. */
 public class IFMC_TCC extends IF_CHAR{
+    /** Default constructor; no instance state to initialise. */
+    public IFMC_TCC() {}
     @Override
     public byte[] pack(ISOComponent c) throws ISOException {
         if (c != null) return super.pack(c);

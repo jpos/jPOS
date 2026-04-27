@@ -21,7 +21,10 @@ package org.jpos.log.render.markdown;
 import org.jpos.log.LogRenderer;
 import java.io.PrintStream;
 
+/** Markdown renderer for plain {@link String} payloads (preserves indentation). */
 public final class StringMarkdownLogRenderer implements LogRenderer<String> {
+    /** Default constructor; no instance state to initialise. */
+    public StringMarkdownLogRenderer() {}
     @Override
     public void render(String s, PrintStream ps, String indent) {
         ps.println (indent(indent, s));

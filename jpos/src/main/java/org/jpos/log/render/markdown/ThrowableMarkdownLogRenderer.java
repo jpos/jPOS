@@ -23,7 +23,10 @@ import org.jpos.log.LogRenderer;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+/** Markdown renderer that emits a {@link Throwable}'s stack trace, indented for diagnostics. */
 public final class ThrowableMarkdownLogRenderer implements LogRenderer<Throwable> {
+    /** Default constructor; no instance state to initialise. */
+    public ThrowableMarkdownLogRenderer() {}
     @Override
     public void render(Throwable t, PrintStream ps, String indent) {
         ps.println(stackTrace(indent+" ", t));

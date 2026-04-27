@@ -37,18 +37,34 @@ import org.jpos.iso.ISOResponseListener;
 public interface RemoteQMUX extends Remote  {
 
     /**
+     * Sends {@code m} and blocks for up to {@code timeout} ms waiting for a matching response.
+     *
      * @param m message to send
      * @param timeout time to wait for a message
      * @return received message or null
-     * @throws ISOException
+     * @throws ISOException on pack/unpack error
+     * @throws RemoteException if the RMI call fails
      */
     ISOMsg request(ISOMsg m, long timeout) throws ISOException, RemoteException;
 
+    /**
+     * Sends {@code m} asynchronously, dispatching the response (or expiration) to {@code r}.
+     *
+     * @param m message to send
+     * @param timeout time to wait for a response
+     * @param r response listener notified on success or expiration
+     * @param handBack opaque token relayed back to {@code r}
+     * @throws ISOException on pack/unpack error
+     * @throws RemoteException if the RMI call fails
+     */
     void request(ISOMsg m, long timeout, ISOResponseListener r, Object handBack)
         throws ISOException, RemoteException;
 
     /**
+     * Indicates whether the underlying MUX is currently connected.
+     *
      * @return true if connected
+     * @throws RemoteException if the RMI call fails
      */
     boolean isConnected() throws RemoteException;
 }

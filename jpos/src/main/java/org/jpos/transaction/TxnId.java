@@ -149,10 +149,20 @@ public class TxnId {
      * @param toInclusive inclusive upper bound.
      */
     public record TxnIdRange(long fromInclusive, long toInclusive) {
+        /**
+         * Indicates whether this range covers no values.
+         *
+         * @return {@code true} when {@code fromInclusive > toInclusive}
+         */
         public boolean isEmpty() {
             return fromInclusive > toInclusive;
         }
 
+        /**
+         * Returns a canonical empty range (1, 0).
+         *
+         * @return an empty {@link TxnIdRange}
+         */
         public static TxnIdRange empty() {
             return new TxnIdRange(1L, 0L);
         }

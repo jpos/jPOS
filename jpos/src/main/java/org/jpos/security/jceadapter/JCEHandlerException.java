@@ -18,28 +18,45 @@
 
 package  org.jpos.security.jceadapter;
 
+import org.jpos.security.SMException;
+
+
 /**
  * Signals that a JCE Handler exception of some sort has occurred.
  * @author Hani Samuel Kirollos
  * @version $Revision$ $Date$
  */
-import org.jpos.security.SMException;
-
-
 public class JCEHandlerException extends SMException {
 
+    /** Constructs a new exception with no detail message. */
     public JCEHandlerException () {
         super();
     }
 
+    /**
+     * Constructs a new exception with the given detail message.
+     *
+     * @param s failure description
+     */
     public JCEHandlerException (String s) {
         super(s);
     }
 
+    /**
+     * Constructs a new exception wrapping the given cause.
+     *
+     * @param e underlying cause
+     */
     public JCEHandlerException (Exception e) {
         super(e);
     }
 
+    /**
+     * Constructs a new exception with the given detail message and cause.
+     *
+     * @param s failure description
+     * @param e underlying cause
+     */
     public JCEHandlerException (String s, Exception e) {
         super(s, e);
     }

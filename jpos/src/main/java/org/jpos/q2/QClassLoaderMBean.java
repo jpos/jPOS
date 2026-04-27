@@ -26,6 +26,12 @@ package org.jpos.q2;
  */
 public interface QClassLoaderMBean {
 
+  /**
+   * Adds a URL to the class loader's search path.
+   *
+   * @param url URL string (any form parsable by {@link java.net.URL})
+   * @throws java.net.MalformedURLException if {@code url} is not a valid URL
+   */
   void addURL(java.lang.String url) throws java.net.MalformedURLException;
 
 }

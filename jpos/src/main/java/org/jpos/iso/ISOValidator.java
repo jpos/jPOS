@@ -33,9 +33,10 @@ package org.jpos.iso;
 public interface ISOValidator {
 
     /**
-     * Validate an ISOComponent.
-     * @throws ISOException if break-on-error is assummed and there are
-     * some errors.
+     * Validates an ISOComponent.
+     * @param m the ISO component to validate
+     * @return the validated (possibly modified) component
+     * @throws ISOException if break-on-error is assumed and there are some errors
      */
     ISOComponent validate(ISOComponent m) throws ISOException;
 }

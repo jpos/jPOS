@@ -24,11 +24,25 @@ import org.jpos.iso.ISOException;
 
 
 /**
+ * Callback interface invoked when a tagged-sequence packager encounters a packing/unpacking error.
  * @author Vishnu Pillai
  */
 public interface PackagerErrorHandler {
 
+    /**
+     * Invoked when packing {@code m} fails.
+     *
+     * @param m component being packed
+     * @param e failure raised by the packager
+     */
     void handlePackError(ISOComponent m, ISOException e);
 
+    /**
+     * Invoked when unpacking {@code msg} into {@code isoComponent} fails.
+     *
+     * @param isoComponent destination component
+     * @param msg raw bytes being unpacked
+     * @param e failure raised by the packager
+     */
     void handleUnpackError(ISOComponent isoComponent, byte[] msg, ISOException e);
 }

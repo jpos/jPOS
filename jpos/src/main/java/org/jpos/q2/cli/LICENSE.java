@@ -24,7 +24,10 @@ import java.io.InputStream;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
+/** CLI command that prints the bundled jPOS source license to the console. */
 public class LICENSE implements CLICommand {
+    /** Default constructor; no instance state to initialise. */
+    public LICENSE() {}
     public void exec(CLIContext cli, String[] args) throws IOException {
         InputStream input = new BufferedInputStream(getClass().getResourceAsStream("/JPOS_LICENSE"));
         try {

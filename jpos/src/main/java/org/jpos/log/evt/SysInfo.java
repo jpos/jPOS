@@ -27,6 +27,52 @@ import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Audit event capturing a snapshot of the running JVM and host: OS / JDK
+ * identity, runtime resources (memory, threads, GC), classpath fingerprint,
+ * the process configuration, and selected runtime tables (name registrar,
+ * threads, deployed scripts).
+ *
+ * @param osName             value of {@code os.name}
+ * @param osVersion          value of {@code os.version}
+ * @param javaVersion        running JDK version
+ * @param javaVendor         running JDK vendor
+ * @param aes                maximum supported AES key size (e.g. {@code "256"})
+ *                           or a diagnostic string when probing fails
+ * @param host               host name reported by the OS
+ * @param userName           value of {@code user.name}
+ * @param cwd                current working directory
+ * @param watchService       fully-qualified class name of the active
+ *                           {@code WatchService}, or a marker when polling is in use
+ * @param environment        active jPOS environment name
+ * @param args               original command-line arguments, joined into a single string
+ * @param encoding           default platform {@link Charset}
+ * @param zoneInfo           default time-zone identifier
+ * @param processName        JVM process name (typically {@code pid@host})
+ * @param freeSpace          deploy-directory free space, formatted human-readable
+ * @param usableSpace        deploy-directory usable space, formatted human-readable
+ * @param version            jPOS version string
+ * @param revision           jPOS source revision (branch / commit)
+ * @param classPath          effective classpath, expanded against the launcher
+ *                           manifest when applicable
+ * @param classPathHash      hex SHA-1 of {@code classPath} for change-tracking
+ * @param instance           per-process random instance identifier
+ * @param uptime             elapsed time since Q2 startup
+ * @param loadAverage        OS load average over the last minute
+ * @param processors         number of available logical processors
+ * @param drift              measured wall-clock drift in milliseconds
+ * @param maxMemory          {@code Runtime.maxMemory()} in bytes
+ * @param totalMemory        {@code Runtime.totalMemory()} in bytes
+ * @param freeMemory         {@code Runtime.freeMemory()} in bytes
+ * @param inUseMemory        {@code totalMemory - freeMemory} in bytes
+ * @param gcTotalCnt         total GC collection count across all collectors
+ * @param gcTotalTime        total GC time in milliseconds across all collectors
+ * @param threadCount        live thread count
+ * @param threadPeak         peak live thread count since JVM start
+ * @param nameRegistrarEntries snapshot of the {@code NameRegistrar}, key/value pairs
+ * @param threads            snapshot of running threads, key/value pairs
+ * @param scripts            output of deployed monitoring scripts
+ */
 @JsonPropertyOrder({
   "osName", "osVersion", "javaVersion", "javaVendor", "aes", "host", "userName", "cwd", "watch-service", "environment",
   "args", "encoding", "zone-info", "processName", "freeSpace", "usableSpace", "version", "revision", "class-path", "class-path-hash", "instance",

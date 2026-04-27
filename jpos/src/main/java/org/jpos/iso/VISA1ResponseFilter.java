@@ -18,8 +18,14 @@
 
 package org.jpos.iso;
 
+/**
+ * Strategy that extracts the authorization number out of a VISA1 response payload.
+ */
 public interface VISA1ResponseFilter {
     /**
+     * Inspects {@code response} and returns the embedded authorization number, if any.
+     *
+     * @param response raw VISA1 response payload
      * @return authorization number or null
      */
     String guessAutNumber(String response);

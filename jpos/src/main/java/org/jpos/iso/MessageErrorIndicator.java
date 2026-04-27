@@ -379,25 +379,53 @@ public class MessageErrorIndicator {
             return new FieldError(severity, errorCode, deNumber, 0, 0, 0);
         }
 
-        /** @return error severity */
+        /**
+         * Returns the severity of this error set.
+         *
+         * @return error severity
+         */
         public Severity severity() { return severity; }
 
-        /** @return message error code numeric value */
+        /**
+         * Returns the raw 4-digit error code value carried on the wire.
+         *
+         * @return message error code numeric value
+         */
         public int errorCode() { return errorCode; }
 
-        /** @return resolved {@link ErrorCode} or {@code null} for private/national-use codes */
+        /**
+         * Returns the {@link ErrorCode} matching {@link #errorCode()}, if any.
+         *
+         * @return resolved {@link ErrorCode} or {@code null} for private/national-use codes
+         */
         public ErrorCode errorCodeEnum() { return ErrorCode.of(errorCode); }
 
-        /** @return data element number in error */
+        /**
+         * Returns the data element number flagged by this error.
+         *
+         * @return data element number in error
+         */
         public int deNumber() { return deNumber; }
 
-        /** @return sub-element number (constructed DEs), 0 otherwise */
+        /**
+         * Returns the sub-element number for constructed data elements.
+         *
+         * @return sub-element number (constructed DEs), 0 otherwise
+         */
         public int subElement() { return subElement; }
 
-        /** @return dataset identifier (composite DEs), 0 otherwise */
+        /**
+         * Returns the dataset identifier byte for composite data elements.
+         *
+         * @return dataset identifier (composite DEs), 0 otherwise
+         */
         public int datasetIdentifier() { return datasetIdentifier; }
 
-        /** @return dataset bit number or TLV tag (composite DEs), 0 otherwise */
+        /**
+         * Returns the DBM bit number or BER-TLV tag for composite data elements.
+         *
+         * @return dataset bit number or TLV tag (composite DEs), 0 otherwise
+         */
         public int datasetBitOrTag() { return datasetBitOrTag; }
 
         /**

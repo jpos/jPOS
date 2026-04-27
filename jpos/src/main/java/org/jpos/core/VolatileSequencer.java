@@ -22,21 +22,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ *
+ * A simple sequencer intended for Debugging applications.<br>
+ * Production grade Sequencers are required to be persistent capables
+ *
  * @author apr@cs.com.uy
  * @version $Id$
  * @since jPOS 1.1
  *
- * A simple sequencer intended for Debugging applications.<br>
- * Production grade Sequencers are required to be persistent capables
  */
 @SuppressWarnings("unchecked")
 public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {
     private Map map;
+    /** Default constructor. */
     public VolatileSequencer () {
         map = new HashMap();
     }
     /**
-     * @param counterName
+     * @param counterName name of the counter
      * @param add increment
      * @return counterName's value + add
      */
@@ -50,15 +53,15 @@ public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {
         return i;
     }
     /**
-     * @param counterName
+     * @param counterName name of the counter
      * @return counterName's value + 1
      */
     public int get (String counterName) {
         return get (counterName, 1);
     }
     /**
-     * @param counterName
-     * @param newValue
+     * @param counterName name of the counter
+     * @param newValue value to assign to the counter
      * @return oldValue
      */
     synchronized public int set (String counterName, int newValue) {

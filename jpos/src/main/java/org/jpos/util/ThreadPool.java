@@ -49,6 +49,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     private String realm;
     private int jobs = 0;
     private final String namePrefix;
+    /** Default maximum number of threads when no explicit limit is configured. */
     public static final int DEFAULT_MAX_THREADS = 100;
 
     
@@ -59,7 +60,15 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         .factory());
 
 
+    /**
+     * Marks jobs that can be supervised and interrupted when expired.
+     */
     public interface Supervised {
+        /**
+         * Indicates whether the supervised job has expired.
+         *
+         * @return {@code true} if the job should be interrupted
+         */
         boolean expired();
     }
 
@@ -118,6 +127,8 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     }
 
     /**
+     * Constructs a ThreadPool with the default name {@code "ThreadPool"}.
+     *
      * @param poolSize starting pool size
      * @param maxPoolSize maximum number of threads on this pool
      */
@@ -125,6 +136,8 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         this(poolSize, maxPoolSize, "ThreadPool");
     }
     /**
+     * Constructs a ThreadPool with an explicit name.
+     *
      * @param name pool name
      * @param poolSize starting pool size
      * @param maxPoolSize maximum number of threads on this pool
@@ -149,10 +162,20 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     public ThreadPool () {
         this(1, DEFAULT_MAX_THREADS);
     }
+
+    /**
+     * Closes the pool queue and stops accepting new jobs.
+     */
     public void close () {
         pool.close();
     }
 
+    /**
+     * Executes a runnable using the pool infrastructure.
+     *
+     * @param action runnable to execute
+     * @throws Closed if the pool is no longer accepting jobs
+     */
     public synchronized void execute(Runnable action) throws Closed {
         executor.submit(() -> {
             threadCount.incrementAndGet();
@@ -208,18 +231,24 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         return maxPoolSize;
     }
     /**
+     * Returns the number of threads currently executing a job.
+     *
      * @return number of active threads
      */
     public int getActiveCount () {
         return active;
     }
     /**
+     * Returns the number of threads currently waiting for work.
+     *
      * @return number of idle threads
      */
     public int getIdleCount () {
         return pool.consumerCount ();
     }
     /**
+     * Returns the number of threads available to accept new work without spawning.
+     *
      * @return number of available threads
      */
     synchronized public int getAvailableCount () {
@@ -233,6 +262,9 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         return pool.pending ();
     }
 
+    /**
+     * Supervises pooled threads and interrupts expired supervised jobs.
+     */
     public void supervise () {
         Thread[] t = new Thread[maxPoolSize];
         int cnt = enumerate (t);
@@ -254,7 +286,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     
    /** 
     * @param cfg Configuration object
-    * @throws ConfigurationException
+    * @throws ConfigurationException if configuration is invalid
     */
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         maxPoolSize = cfg.getInt("max-size", DEFAULT_MAX_THREADS);

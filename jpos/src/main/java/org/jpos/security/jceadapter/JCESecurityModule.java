@@ -139,8 +139,9 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     /**
+     * Creates a JCE Security Module initialised with the given LMK file.
      * @param lmkFile Local Master Keys filename of the JCE Security Module
-     * @throws SMException
+     * @throws SMException on initialisation failure
      */
     public JCESecurityModule (String lmkFile) throws SMException
     {
@@ -148,12 +149,27 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         init(null, lmkFile, false);
     }
 
+    /**
+     * Constructs a JCE security module backed by the given LMK file and JCE provider.
+     *
+     * @param lmkFile path to the Local Master Keys file
+     * @param jceProviderClassName fully qualified JCE provider class name
+     * @throws SMException if initialization fails
+     */
     public JCESecurityModule (String lmkFile, String jceProviderClassName) throws SMException
     {
         Objects.requireNonNull(lmkFile);
         init(jceProviderClassName, lmkFile, false);
     }
 
+    /**
+     * Constructs a JCE security module from a {@link Configuration}, logger, and realm.
+     *
+     * @param cfg configuration to apply (see {@link #setConfiguration(Configuration)})
+     * @param logger logger to bind
+     * @param realm logger realm
+     * @throws ConfigurationException if the configuration is invalid
+     */
     public JCESecurityModule (Configuration cfg, Logger logger, String realm) throws ConfigurationException
     {
         setLogger(logger, realm);
@@ -174,7 +190,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      *             Default is DESEDEMAC from BouncyCastle provider<br>
      *             that is suitable for BASE24 with double length MAC key<br>
      *             ANSI X9.19<br>
-     * @throws ConfigurationException
+     * @throws ConfigurationException if configuration is invalid
      */
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
@@ -371,6 +387,16 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return new String(bhc);
     }
 
+    /**
+     * Concatenates two single-length DES keys into a double-length DESede key,
+     * decrypting them from the LMK first. Returns the single non-null key when
+     * one of the two is {@code null} or longer than single-length.
+     *
+     * @param keyA first secured key, may be {@code null}
+     * @param keyB second secured key, may be {@code null}
+     * @return a clear-text DES/DESede key, or {@code null} if both inputs are {@code null}
+     * @throws SMException if key decryption or assembly fails
+     */
     protected Key concatKeys(SecureDESKey keyA, SecureDESKey keyB)
             throws SMException {
         if ( keyA!=null && keyA.getKeyLength()==SMAdapter.LENGTH_DES
@@ -387,12 +413,33 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return null;
     }
 
+    /**
+     * Calculates a CVV using the supplied clear CVK and an expiry {@link Date}
+     * formatted as {@code yyMM}.
+     *
+     * @param accountNo cardholder primary account number
+     * @param cvk clear CVK
+     * @param expDate expiry date
+     * @param serviceCode 3-digit service code
+     * @return the 3-digit CVV
+     * @throws SMException if the cipher operation fails
+     */
     protected String calculateCVV(String accountNo, Key cvk, Date expDate,
                                 String serviceCode) throws SMException {
         String ed = ISODate.formatDate(expDate, "yyMM");
         return calculateCVD(accountNo, cvk, ed, serviceCode);
     }
 
+    /**
+     * Calculates a CVD/CVV from the supplied clear CVK using the Visa algorithm.
+     *
+     * @param accountNo cardholder primary account number
+     * @param cvk clear CVK
+     * @param expDate expiry date as {@code yyMM}
+     * @param serviceCode 3-digit service code
+     * @return the 3-digit CVD/CVV
+     * @throws SMException if the cipher operation fails
+     */
     protected String calculateCVD(String accountNo, Key cvk, String expDate,
                                 String serviceCode) throws SMException {
         Key udka = jceHandler.formDESKey(SMAdapter.LENGTH_DES
@@ -425,6 +472,15 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return calculateCVD(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
     }
 
+    /**
+     * Validates the lengths of the CAVV inputs, throwing {@link SMException}
+     * with a descriptive message when any value is {@code null} or wrong-sized.
+     *
+     * @param upn 4-digit unpredictable number
+     * @param authrc 1-character authorization result code
+     * @param sfarc 2-character second-factor authorization result code
+     * @throws SMException if any argument is {@code null} or has the wrong length
+     */
     protected void checkCAVVArgs(String upn, String authrc, String sfarc)
             throws SMException {
         if (upn == null)
@@ -452,6 +508,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return calculateCVD(accountNo,concatKeys(cvk, null),upn,authrc+sfarc);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                      String cvv, Date expDate, String serviceCode) throws SMException {
@@ -459,6 +516,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return result.equals(cvv);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                      String cvv, String expDate, String serviceCode) throws SMException {
@@ -474,6 +532,18 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return result.equals(cavv);
     }
 
+    /**
+     * Computes a dynamic CVV (dCVV) using ATC and an issuer master key.
+     *
+     * @param accountNo cardholder primary account number
+     * @param imkac issuer master key for AC, encrypted under the LMK
+     * @param expDate expiry date as {@code yyMM}
+     * @param serviceCode 3-digit service code
+     * @param atc application transaction counter
+     * @param mkdm master-key derivation method (defaults to {@link MKDMethod#OPTION_A})
+     * @return the calculated dCVV
+     * @throws SMException if key derivation or computation fails
+     */
     protected String calculatedCVV(String accountNo, SecureDESKey imkac,
                      String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
@@ -512,6 +582,19 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return res.equals(dcvv);
     }
 
+    /**
+     * Computes the contactless CVC3 from the issuer master key, ATC, UPN, and track data.
+     *
+     * @param imkcvc3 issuer master key for CVC3, encrypted under the LMK
+     * @param accountNo cardholder primary account number
+     * @param acctSeqNo PAN sequence number, or {@code null}
+     * @param atc application transaction counter
+     * @param upn unpredictable number
+     * @param data IVCVC3 seed (or 2 bytes pre-computed IVCVC3)
+     * @param mkdm master-key derivation method (defaults to {@link MKDMethod#OPTION_A})
+     * @return the 5-digit CVC3
+     * @throws SMException if key derivation or computation fails
+     */
     protected String calculateCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
                      byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm)
                      throws SMException {
@@ -715,18 +798,18 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * Derive ICC Master Key from Issuer Master Key and preformated PAN/PANSeqNo
      *
      * Compute two 8-byte numbers:
-     * <li> left part is a result of Tripple-DES encription {@code panpsn}
-     * with {@code imk} as the key
-     * <li> right part is a result of Tripple-DES binary inverted
-     * {@code panpsn} with {@code imk} as the key
-     * <li> concatenate left and right parts
+     * <ul>
+     * <li>left part is a result of Triple-DES encryption of {@code panpsn} with {@code imk} as the key</li>
+     * <li>right part is a result of Triple-DES encryption of binary-inverted {@code panpsn} with {@code imk} as the key</li>
+     * <li>concatenate left and right parts</li>
+     * </ul>
      * <br>
      * Described in EMV v4.2 Book 2, Annex A1.4.1 Master Key Derivation point 2
      *
      * @param imk 16-bytes Issuer Master Key
      * @param panpsn preformated PAN and PAN Sequence Number
      * @return derived 16-bytes ICC Master Key with adjusted DES parity
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException on cryptographic failure
      */
     protected Key deriveICCMasterKey(Key imk, byte[] panpsn)
             throws JCEHandlerException {
@@ -746,6 +829,16 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return jceHandler.formDESKey(SMAdapter.LENGTH_DES3_2KEY, mk);
     }
 
+    /**
+     * Calculates a 4-digit PVV using the IBM 3624 algorithm.
+     *
+     * @param pinUnderLmk PIN block encrypted under the LMK
+     * @param key clear PVV key
+     * @param keyIdx PVV key index (only the low decimal digit is used)
+     * @param excludes optional list of PINs to reject before computing the PVV
+     * @return the 4-digit PVV
+     * @throws SMException if the PIN is on the excludes list or computation fails
+     */
     protected String calculatePVV(EncryptedPIN pinUnderLmk, Key key, int keyIdx
                                ,List<String> excludes) throws SMException {
         String pin = decryptPINImpl(pinUnderLmk);
@@ -946,9 +1039,19 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     /**
-     * Calculate ARQC.
+     * Calculate ARQC (Application Request Cryptogram).
      * <p>
-     * Entry point e.g. for simulator systems
+     * Entry point e.g. for simulator systems.
+     * @param mkdm Master Key Derivation Method
+     * @param skdm Session Key Derivation Method
+     * @param imkac Issuer Master Key for Application Cryptogram
+     * @param accountNo account number
+     * @param accntSeqNo account sequence number
+     * @param atc Application Transaction Counter
+     * @param upn Unpredictable Number
+     * @param transData transaction data
+     * @return computed ARQC bytes
+     * @throws SMException on cryptographic failure
      */
     protected byte[] calculateARQC(MKDMethod mkdm, SKDMethod skdm
             ,SecureDESKey imkac, String accountNo, String accntSeqNo, byte[] atc
@@ -1054,9 +1157,16 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     /**
-     * Calculate ARPC.
+     * Calculate ARPC (Application Response Cryptogram).
      * <p>
-     * Entry point e.g. for simulator systems
+     * Entry point e.g. for simulator systems.
+     * @param skarpc Session Key for ARPC computation
+     * @param arqc Application Request Cryptogram
+     * @param arpcMethod ARPC generation method
+     * @param arc Authorization Response Code
+     * @param propAuthData proprietary authentication data (may be {@code null})
+     * @return computed ARPC bytes
+     * @throws SMException on cryptographic failure
      */
     protected byte[] calculateARPC(Key skarpc, byte[] arqc, ARPCMethod arpcMethod
              ,byte[] arc, byte[] propAuthData) throws SMException {
@@ -1177,7 +1287,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @param data the data to be MACed
      * @param kd the key used for MACing
      * @return generated CBC-MAC bytes
-     * @throws SMException
+     * @throws SMException on MAC computation failure
      */
     @Override
     protected byte[] generateCBC_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
@@ -1197,7 +1307,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @param data the data to be MACed
      * @param kd the key used for MACing
      * @return generated EDE-MAC bytes
-     * @throws SMException
+     * @throws SMException on MAC computation failure
      */
     @Override
     protected byte[] generateEDE_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
@@ -1226,9 +1336,9 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
 
     /**
      * Generates a random clear key component.
-     * @param keyLength
-     * @return clear key componenet
-     * @throws SMException
+     * @param keyLength the desired key length (e.g. LENGTH_DES, LENGTH_DES3_2KEY)
+     * @return clear key component as a hex string
+     * @throws SMException on key generation failure
      */
     public String generateClearKeyComponent (short keyLength) throws SMException {
         String clearKeyComponenetHexString;
@@ -1256,7 +1366,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * Generates key check value.<br>
      * @param secureDESKey SecureDESKey with untrusted or fake Key Check Value
      * @return generated Key Check Value
-     * @throws SMException
+     * @throws SMException on cryptographic failure
      */
     @Override
     protected byte[] generateKeyCheckValueImpl (SecureDESKey secureDESKey) throws SMException {
@@ -1314,8 +1424,8 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @param clearComponent1HexString HexString containing the first component
      * @param clearComponent2HexString HexString containing the second component
      * @param clearComponent3HexString HexString containing the second component
-     * @return forms an SecureDESKey from two clear components
-     * @throws SMException
+     * @return SecureDESKey formed from the three clear components
+     * @throws SMException on key formation failure
      */
     public SecureDESKey formKEYfromThreeClearComponents(
             short keyLength,
@@ -1368,10 +1478,10 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
 
 
     /**
-     * Calculates a key check value over a clear key
-     * @param key
+     * Calculates a key check value over a clear key.
+     * @param key the clear key
      * @return the key check value
-     * @exception SMException
+     * @exception SMException on error
      */
     protected byte[] calculateKeyCheckValue (Key key) throws SMException {
         byte[] encryptedZeroBlock = jceHandler.encryptData(zeroBlock, key);
@@ -1379,12 +1489,12 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     /**
-     * Encrypts a clear DES Key under LMK to form a SecureKey
-     * @param keyLength
-     * @param keyType
-     * @param clearDESKey
-     * @return secureDESKey
-     * @throws SMException
+     * Encrypts a clear DES Key under LMK to form a SecureKey.
+     * @param keyLength the key length (e.g. LENGTH_DES, LENGTH_DES3_2KEY)
+     * @param keyType the key type as defined in SMAdapter (e.g. ZMK, TMK)
+     * @param clearDESKey the clear DES key to encrypt
+     * @return secureDESKey the key encrypted under LMK
+     * @throws SMException on encryption failure
      */
     protected SecureDESKey encryptToLMK (short keyLength, String keyType, Key clearDESKey) throws SMException {
         Key novar, left, medium, right;
@@ -1432,10 +1542,10 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     /**
-     * Decrypts a secure DES key from encryption under LMK
-     * @param secureDESKey (Key under LMK)
+     * Decrypts a secure DES key from encryption under LMK.
+     * @param secureDESKey key encrypted under LMK
      * @return clear key
-     * @throws SMException
+     * @throws SMException on decryption failure
      */
     protected Key decryptFromLMK (SecureDESKey secureDESKey) throws SMException {
         Key left, medium, right;
@@ -1507,11 +1617,10 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     /**
      * Calculates the clear PIN Block
      * @param pin as entered by the card holder on the PIN entry device
-     * @param pinBlockFormat
+     * @param pinBlockFormat the PIN block format identifier
      * @param accountNumber (the 12 right-most digits of the account number excluding the check digit)
      * @return The clear PIN Block
-     * @throws SMException
-     *
+     * @throws SMException on invalid PIN or format error
      */
     protected byte[] calculatePINBlock (String pin, byte pinBlockFormat, String accountNumber) throws SMException {
         byte[] pinBlock = null;
@@ -1656,10 +1765,10 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * Calculates the clear pin (as entered by card holder on the pin entry device)
      * givin the clear PIN block
      * @param pinBlock clear PIN Block
-     * @param pinBlockFormat
-     * @param accountNumber
+     * @param pinBlockFormat the PIN block format identifier
+     * @param accountNumber the 12 right-most digits of the account number
      * @return the pin
-     * @throws SMException
+     * @throws SMException on invalid PIN block or format error
      */
     protected String calculatePIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) throws SMException {
         String pin = null;
@@ -1926,7 +2035,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
 
     /**
      * Generates new LMK keys
-     * @exception SMException
+     * @exception SMException on error
      */
     private void generateLMK () throws SMException {
         lmks.clear();
@@ -1943,7 +2052,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     /**
      * reads (loads) LMK's from lmkFile
      * @param lmkFile
-     * @exception SMException
+     * @exception SMException on error
      */
     private void readLMK (File lmkFile) throws SMException {
         lmks.clear();
@@ -1975,7 +2084,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     /**
      * Writes a newly generated LMK's to lmkFile
      * @param lmkFile
-     * @exception SMException
+     * @exception SMException on error
      */
     private void writeLMK (File lmkFile) throws SMException {
         Properties lmkProps = new Properties();
@@ -2044,6 +2153,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      */
     private static final byte[] zeroBlock = ISOUtil.hex2byte("0000000000000000");
 
+    /** Helper used for raw JCE cipher and key operations. */
     protected JCEHandler jceHandler;
 
     //--------------------------------------------------------------------------------------------------
@@ -2068,6 +2178,17 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         );
     }
 
+    /**
+     * DUKPT helper that applies a single- or triple-DES "X9.24" style transform
+     * over an 8-byte block. For an 8-byte key the operation is
+     * {@code data = (data XOR key) | encrypt | XOR key}; for a 16-byte key it
+     * is the standard EDE3 transform.
+     *
+     * @param data 8-byte input block
+     * @param key single- or double-length DES key
+     * @return the transformed 8-byte block
+     * @throws JCEHandlerException on cipher failure
+     */
     protected byte[] specialEncrypt(byte[] data, byte[] key)
             throws JCEHandlerException
     {
@@ -2087,6 +2208,14 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return data;
     }
 
+    /**
+     * Inverse of {@link #specialEncrypt(byte[], byte[])}.
+     *
+     * @param data 8-byte input block
+     * @param key single- or double-length DES key
+     * @return the transformed 8-byte block
+     * @throws JCEHandlerException on cipher failure
+     */
     protected byte[] specialDecrypt(byte[] data, byte[] key)
             throws JCEHandlerException
     {
@@ -2249,6 +2378,16 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         }
    }
 
+    /**
+     * Computes the DUKPT-derived working key for the given KSN and BDK.
+     *
+     * @param ksn key serial number
+     * @param bdk base derivation key, encrypted under the LMK
+     * @param tdes if {@code true}, use the triple-DES variant; otherwise single-DES
+     * @param dataEncryption {@code true} when deriving a data-encryption variant key
+     * @return the derived working key bytes
+     * @throws SMException if derivation fails
+     */
     protected byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk, boolean tdes, boolean dataEncryption)
             throws SMException
     {
@@ -2375,6 +2514,15 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return curkey;
     }
 
+    /**
+     * Imports a 128-bit BDK assembled from three clear hex-encoded components.
+     *
+     * @param clearComponent1HexString first hex component
+     * @param clearComponent2HexString second hex component
+     * @param clearComponent3HexString third hex component
+     * @return the secured BDK encrypted under the LMK
+     * @throws SMException if any component is malformed or assembly fails
+     */
     public SecureDESKey importBDK(String clearComponent1HexString,
                                   String clearComponent2HexString,
                                   String clearComponent3HexString) throws SMException
@@ -2391,6 +2539,19 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return new KeySerialNumber (buf.array());
     }
 
+    /**
+     * Translates a DUKPT-encrypted PIN block to a target encryption key,
+     * optionally re-formatting the PIN block.
+     *
+     * @param pinUnderDuk PIN block encrypted under a derived DUKPT key
+     * @param ksn key serial number used to derive the source key
+     * @param bdk base derivation key, encrypted under the LMK
+     * @param kd2 destination key, encrypted under the LMK
+     * @param destinationPINBlockFormat target PIN block format
+     * @param tdes if {@code true}, derive using triple-DES
+     * @return the PIN re-encrypted under {@code kd2}
+     * @throws SMException if derivation, decryption, or re-encryption fails
+     */
     protected EncryptedPIN translatePINImpl
             (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
              SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes)
@@ -2434,13 +2595,13 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     /**
      * Exports PIN to DUKPT Encryption.
      *
-     * @param pinUnderLmk
-     * @param ksn
-     * @param bdk
-     * @param tdes
-     * @param destinationPINBlockFormat
+     * @param pinUnderLmk PIN block encrypted under the LMK
+     * @param ksn key serial number used to derive the working key
+     * @param bdk base derivation key, encrypted under the LMK
+     * @param tdes if {@code true}, derive using triple-DES
+     * @param destinationPINBlockFormat target PIN block format
      * @return The encrypted pin
-     * @throws SMException
+     * @throws SMException if derivation, decryption, or re-encryption fails
      */
     public EncryptedPIN exportPIN
             (EncryptedPIN pinUnderLmk, KeySerialNumber ksn, SecureDESKey bdk, boolean tdes,

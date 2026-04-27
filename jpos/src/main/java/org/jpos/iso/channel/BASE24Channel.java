@@ -60,7 +60,7 @@ public class BASE24Channel extends BaseChannel {
      * Construct server ISOChannel
      * @param p     an ISOPackager
      * @see ISOPackager
-     * @exception IOException
+     * @exception IOException on I/O failure
      */
     public BASE24Channel (ISOPackager p) throws IOException {
         super(p);
@@ -69,7 +69,7 @@ public class BASE24Channel extends BaseChannel {
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on I/O failure
      * @see ISOPackager
      */
     public BASE24Channel (ISOPackager p, ServerSocket serverSocket) 
@@ -80,14 +80,14 @@ public class BASE24Channel extends BaseChannel {
     /**
      * @param m the Message to send (in this case it is unused)
      * @param len   message len (ignored)
-     * @exception IOException
+     * @exception IOException on I/O failure
      */
     protected void sendMessageTrailler(ISOMsg m, int len) throws IOException {
         serverOut.write (3);
     }
     /**
      * @return a byte array with the received message
-     * @exception IOException
+     * @exception IOException on I/O failure
      */
     protected byte[] streamReceive() throws IOException {
         int i;

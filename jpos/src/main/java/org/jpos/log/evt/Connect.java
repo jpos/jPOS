@@ -21,7 +21,21 @@ package org.jpos.log.evt;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.jpos.log.AuditLogEvent;
 
+/**
+ * Audit log event recording a channel connection attempt.
+ * @param host remote host name or address
+ * @param remotePort remote port number
+ * @param localPort local port number
+ * @param error error message, or {@code null} on success
+ */
 public record Connect(String host, int remotePort, int localPort, @JsonInclude(JsonInclude.Include.NON_NULL) String error) implements AuditLogEvent {
+    /**
+     * Creates a Connect event.
+     * @param host remote host
+     * @param remotePort remote port
+     * @param localPort local port
+     * @param error error message, or null on success
+     */
     public Connect(String host, int remotePort, int localPort, String error) {
         this.host = host;
         this.remotePort = remotePort;
@@ -29,6 +43,12 @@ public record Connect(String host, int remotePort, int localPort, @JsonInclude(J
         this.error = error;
     }
 
+    /**
+     * Creates a Connect event for a successful connection.
+     * @param host remote host
+     * @param remotePort remote port
+     * @param localPort local port
+     */
     public Connect(String host, int remotePort, int localPort) {
         this(host, remotePort, localPort, null);
     }

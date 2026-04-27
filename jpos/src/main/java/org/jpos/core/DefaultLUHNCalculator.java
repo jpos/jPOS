@@ -18,7 +18,10 @@
 
 package org.jpos.core;
 
+/** Default {@link LUHNCalculator} that computes/validates the LUHN check digit. */
 public class DefaultLUHNCalculator implements LUHNCalculator {
+    /** Default constructor; no instance state to initialise. */
+    public DefaultLUHNCalculator() {}
     /**
      * Compute card's check digit (LUHN)
      * @param p PAN (without checkdigit)

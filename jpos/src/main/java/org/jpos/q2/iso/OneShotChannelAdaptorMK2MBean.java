@@ -29,26 +29,81 @@ import org.jpos.q2.QBeanSupportMBean;
  */
 public interface OneShotChannelAdaptorMK2MBean extends QBeanSupportMBean
 {
+    /**
+     * Indicates whether the adaptor's underlying channel is currently connected.
+     *
+     * @return {@code true} if the channel is up
+     */
     boolean isConnected();
 
+    /**
+     * Returns the inbound queue name.
+     *
+     * @return queue name
+     */
     java.lang.String getInQueue();
 
+    /**
+     * Sets the inbound queue name.
+     *
+     * @param in queue name
+     */
     void setInQueue(java.lang.String in);
 
+    /**
+     * Returns the outbound queue name.
+     *
+     * @return queue name
+     */
     java.lang.String getOutQueue();
 
+    /**
+     * Sets the outbound queue name.
+     *
+     * @param out queue name
+     */
     void setOutQueue(java.lang.String out);
 
+    /**
+     * Returns the configured remote host.
+     *
+     * @return host name or address
+     */
     java.lang.String getHost();
 
+    /**
+     * Sets the remote host.
+     *
+     * @param host host name or address
+     */
     void setHost(java.lang.String host);
 
+    /**
+     * Returns the configured remote port.
+     *
+     * @return TCP port number
+     */
     int getPort();
 
+    /**
+     * Sets the remote port.
+     *
+     * @param port TCP port number
+     */
     void setPort(int port);
 
+    /**
+     * Returns the configured socket-factory class name.
+     *
+     * @return socket factory class name
+     */
     java.lang.String getSocketFactory();
 
+    /**
+     * Sets the socket-factory class name.
+     *
+     * @param sFac socket factory class name
+     */
     void setSocketFactory(java.lang.String sFac);
 
 }

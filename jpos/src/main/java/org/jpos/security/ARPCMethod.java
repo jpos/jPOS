@@ -30,18 +30,22 @@ public enum ARPCMethod {
    /**
     * Method for the generation of an 8-byte ARPC consists of applying
     * the Triple-DES algorithm:
-    * <li>the 8-byte ARQC
-    * <li>the 2-byte Authorisation Response Code (ARC)
+    * <ul>
+    *   <li>the 8-byte ARQC
+    *   <li>the 2-byte Authorisation Response Code (ARC)
+    * </ul>
     */
-   METHOD_1
+   METHOD_1,
 
    /**
     * Method For the generation of a 4-byte ARPC consists of applying
     * the MAC algorithm:
-    * <li>the 4-byte ARQC
-    * <li>the 4-byte binary Card Status Update (CSU)
-    * <li>the 0-8 byte binary Proprietary Authentication Data
+    * <ul>
+    *   <li>the 4-byte ARQC
+    *   <li>the 4-byte binary Card Status Update (CSU)
+    *   <li>the 0-8 byte binary Proprietary Authentication Data
+    * </ul>
     */
-  ,METHOD_2
+   METHOD_2
 
 }

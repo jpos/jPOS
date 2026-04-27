@@ -25,8 +25,18 @@ package org.jpos.q2.iso;
  */
 public interface MUXPoolMBean extends org.jpos.q2.QBeanSupportMBean {
 
+    /**
+     * Returns the names of the MUXes in this pool.
+     *
+     * @return MUX names
+     */
     String[] getMuxNames();
 
+    /**
+     * Returns the configured selection strategy.
+     *
+     * @return strategy code (see MUXPool strategy constants)
+     */
     int getStrategy();
 
 }

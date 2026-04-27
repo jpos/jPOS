@@ -63,6 +63,12 @@ public class ISOVMsg extends ISOMsg implements ISOVErrorList {
         copyFromParent( Source );
     }
 
+    /**
+     * Wraps the source message and attaches an initial validation error.
+     *
+     * @param Source     original {@link ISOMsg} to wrap
+     * @param FirstError initial error attached to the message
+     */
     public ISOVMsg( ISOMsg Source, ISOVError FirstError ) {
         /** @todo Try best strategy */
         copyFromParent( Source );

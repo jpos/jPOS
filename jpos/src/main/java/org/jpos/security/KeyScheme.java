@@ -57,7 +57,7 @@ public enum KeyScheme {
     T,
 
     /**
-     * Encryption of single/double/triple-length DES & AES keys using the ANSI
+     * Encryption of single/double/triple-length DES &amp; AES keys using the ANSI
      * X9 TR-31 Key Block methods.
      * <p>
      * Only used for exporting keys <i>(e.g. under a KEK)</i>.
@@ -70,7 +70,7 @@ public enum KeyScheme {
     R,
 
     /**
-     * Encryption of all DES, AES, HMAC & RSA keys using proprietary Key Block
+     * Encryption of all DES, AES, HMAC &amp; RSA keys using proprietary Key Block
      * methods.
      * <p>
      * Used for encrypting keys for local use <i>(under a Key Block LMK)</i> or

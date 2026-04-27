@@ -27,10 +27,17 @@ import org.jpos.util.Logger;
 import java.io.Serializable;
 
 /**
+ * BeanShell-backed {@link GroupSelector} that evaluates a {@code <select>} script
+ * to choose the next participant group, falling back to {@link #defaultSelect}
+ * when the script returns {@code null}.
+ *
  * @author  AMarques
  */
 public class BSHGroupSelector extends BSHTransactionParticipant implements GroupSelector {
-    
+    /** Default constructor; no instance state to initialise. */
+    public BSHGroupSelector() {}
+
+    /** Compiled BSH method invoked to determine the active group. */
     protected BSHMethod selectMethod;
     
     public void setConfiguration(Element e) throws ConfigurationException {
@@ -60,6 +67,14 @@ public class BSHGroupSelector extends BSHTransactionParticipant implements Group
         return result;
     }
     
+    /**
+     * Hook returning the default group when the BSH script returns {@code null}.
+     * Subclasses may override to provide deterministic fallback selection.
+     *
+     * @param id transaction id
+     * @param context transaction context
+     * @return default group identifier (empty string by default)
+     */
     public String defaultSelect(long id, Serializable context) {
         return "";
     }

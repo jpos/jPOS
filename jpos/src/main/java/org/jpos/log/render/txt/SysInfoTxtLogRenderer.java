@@ -28,7 +28,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/** Plain-text renderer for {@link SysInfo} audit records. */
 public final class SysInfoTxtLogRenderer implements LogRenderer<SysInfo> {
+    /** Default constructor; no instance state to initialise. */
+    public SysInfoTxtLogRenderer() {}
     public Class<?> clazz() {
         return SysInfo.class;
     }

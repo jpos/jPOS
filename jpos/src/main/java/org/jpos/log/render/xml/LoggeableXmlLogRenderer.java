@@ -23,7 +23,10 @@ import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
 
+/** XML {@link LogRenderer} that delegates to the {@link Loggeable#dump(PrintStream, String)} contract. */
 public final class LoggeableXmlLogRenderer implements LogRenderer<Loggeable> {
+    /** Default constructor; no instance state to initialise. */
+    public LoggeableXmlLogRenderer() {}
     @Override
     public void render(Loggeable obj, PrintStream ps, String indent) {
         obj.dump (ps, indent);

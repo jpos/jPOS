@@ -30,11 +30,13 @@ package org.jpos.iso;
  */
 public class IFE_LLBINARY extends ISOBinaryFieldPackager 
 {
+    /** Default constructor. */
     public IFE_LLBINARY()
     {
         super(LiteralBinaryInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
     /**
+    * Constructs a packager with the given length and description.
     * @param len - field len
     * @param description symbolic descrption
     */

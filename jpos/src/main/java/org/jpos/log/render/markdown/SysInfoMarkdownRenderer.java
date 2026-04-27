@@ -33,7 +33,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+/** Markdown renderer for {@link SysInfo} audit records. */
 public final class SysInfoMarkdownRenderer implements LogRenderer<SysInfo> {
+    /** Default constructor; no instance state to initialise. */
+    public SysInfoMarkdownRenderer() {}
 
     @Override
     public void render(SysInfo sysinfo, PrintStream ps, String indent) {

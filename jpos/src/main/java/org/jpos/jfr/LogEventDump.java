@@ -20,8 +20,12 @@ package org.jpos.jfr;
 
 import jdk.jfr.*;
 
+/** JFR event recorded around individual {@code LogEvent} dump operations, threshold-filtered to 10 ms. */
 @Category("jPOS")
 @Name("jpos.LogEvent")
 @StackTrace
 @Threshold("10 ms")
-public class LogEventDump extends Event { }
+public class LogEventDump extends Event {
+    /** Default constructor; no instance state to initialise. */
+    public LogEventDump() {}
+}

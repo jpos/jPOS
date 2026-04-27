@@ -22,8 +22,15 @@ import org.jpos.core.Configuration;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.util.NameRegistrar;
 
+/**
+ * QBean that publishes its {@link Configuration} into {@link NameRegistrar}
+ * so other beans can resolve it by name.
+ */
 @SuppressWarnings("unused")
 public class QConfig extends QBeanSupport {
+    /** Default constructor; no instance state to initialise. */
+    public QConfig() {}
+    /** Prefix used when registering the configuration in {@link NameRegistrar}. */
     public static final String PREFIX = "config.";
 
     @Override
@@ -35,6 +42,13 @@ public class QConfig extends QBeanSupport {
     protected void destroyService() {
         NameRegistrar.unregister (PREFIX + getName());
     }
+    /**
+     * Looks up the {@link Configuration} registered under {@code name}.
+     *
+     * @param name configuration name (without the {@link #PREFIX} prefix)
+     * @return the registered configuration
+     * @throws NameRegistrar.NotFoundException if no configuration is registered under that name
+     */
     public static Configuration getConfiguration (String name)
             throws NameRegistrar.NotFoundException
     {
@@ -42,6 +56,8 @@ public class QConfig extends QBeanSupport {
     }
 
     /**
+     * Looks up the {@link Configuration} registered under {@code name}, waiting up to {@code timeout}.
+     *
      * @param name configuration name
      * @param timeout in millis
      * @return Configuration object or null

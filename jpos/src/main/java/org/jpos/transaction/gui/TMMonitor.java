@@ -35,24 +35,39 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Swing panel that displays transaction-manager activity in real time.
+ */
 public class TMMonitor extends JPanel
         implements TransactionStatusListener, SwingConstants, ActionListener, AncestorListener
 {
+    /** UI container that owns this monitor. */
     UI ui;
+    /** Transaction manager being monitored. */
     TransactionManager txnmgr;
+    /** Table used to render session rows. */
     JTable table;
+    /** Backing table model for the session view. */
     AbstractTableModel model;
+    /** Latest event observed for each transaction-manager session. */
     TransactionStatusEvent[] events;
+    /** Current transactions-per-second indicator. */
     JLabel tps = new JLabel("0");
+    /** Average transactions-per-second indicator. */
     JLabel tpsAvg = new JLabel("0.00");
+    /** Peak transactions-per-second indicator. */
     JLabel tpsPeak = new JLabel("0");
+    /** Current in-transit transaction counter. */
     JLabel inTransit = new JLabel("0");
+    /** Current outstanding-transaction counter. */
     JLabel outstanding = new JLabel("0");
+    /** Periodic timer used to refresh TPS counters. */
     Timer timer;
 
     static final Font SMALL  = Font.decode ("terminal-plain-8");
     static final Font LARGE  = Font.decode ("terminal-plain-18");
 
+    /** Background color palette indexed by transaction state. */
     Color[] color = new Color[] {
         /* READY               */ Color.white,
         /* PREPARING           */ new Color (0xb3, 0xb3, 0xff), // blue
@@ -63,6 +78,12 @@ public class TMMonitor extends JPanel
         /* PAUSED              */ new Color (0xff, 0x7f, 0x50)  // orange
     };
 
+    /**
+     * Constructs a Swing monitor for the given transaction manager.
+     *
+     * @param ui parent UI used for redraw scheduling
+     * @param tmmgr transaction manager whose sessions are displayed
+     */
     public TMMonitor (UI ui, TransactionManager tmmgr) {
         super();
         this.ui = ui;

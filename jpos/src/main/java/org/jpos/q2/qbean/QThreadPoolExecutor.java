@@ -38,15 +38,22 @@ import java.util.concurrent.TimeUnit;
  */
 public class QThreadPoolExecutor extends QBeanSupport implements
         QThreadPoolExecutorMBean {
+    /** Default constructor; no instance state to initialise. */
+    public QThreadPoolExecutor() {}
 
+    /** Prefix used when registering pooled executors in {@link NameRegistrar}. */
     public static final String THREAD_POOL_EXECUTOR__QBEAN_PREFIX = "thread.pool.executor.";
 
+    /** XML attribute selecting the executor type ({@code fixed}, {@code cached}, {@code scheduled}, {@code single}). */
     public static final String XML_CONFIG_ATTR__EXEC_SRV_TYPE = "type";
 
+    /** XML attribute setting the executor's core pool size. */
     public static final String XML_CONFIG_ATTR__EXEC_SRV_COREPOOLSIZE = "corePoolSize";
 
+    /** XML attribute setting the awaitTermination timeout, in seconds. */
     public static final String XML_CONFIG_ATTR__EXEC_SRV_TERMINATION_TIMER = "terminationTimer";
 
+    /** Default {@link #XML_CONFIG_ATTR__EXEC_SRV_TERMINATION_TIMER} value, in seconds. */
     public static final int DEFAULT_TERMINATION_TIMER = 15;
 
     private String execSrvType;
@@ -167,16 +174,25 @@ public class QThreadPoolExecutor extends QBeanSupport implements
         }
     }
 
+    /**
+     * Returns the {@link NameRegistrar} key under which this bean's executor is registered.
+     *
+     * @return the registration name (prefix concatenated with this bean's configured name)
+     */
     protected String getRegistrationName() {
         return THREAD_POOL_EXECUTOR__QBEAN_PREFIX + getName();
     }
 
     /**
-     * @param elt
-     * @param attrName
-     * @param mandatory
-     * @param errDesc
-     * @throws ConfigurationException
+     * Returns a required or optional XML attribute, raising a configuration error
+     * with {@code errDesc} as context when a mandatory attribute is missing or empty.
+     *
+     * @param elt source element
+     * @param attrName attribute name to look up
+     * @param mandatory if {@code true}, missing/empty attributes raise an exception
+     * @param errDesc human-readable description appended to the error message
+     * @return the attribute, or {@code null} when not mandatory and absent
+     * @throws ConfigurationException if the attribute is mandatory and missing/empty
      */
     protected Attribute getAttribute(Element elt, String attrName,
             boolean mandatory, String errDesc) throws ConfigurationException {
@@ -196,10 +212,11 @@ public class QThreadPoolExecutor extends QBeanSupport implements
     }
 
     /**
-     * Retrieves a thread pool executor from NameRegistrar given its name
-     * 
-     * @param name
-     * @throws NotFoundException
+     * Retrieves a thread pool executor from NameRegistrar given its name.
+     *
+     * @param name bean name (without the {@link #THREAD_POOL_EXECUTOR__QBEAN_PREFIX} prefix)
+     * @return the registered {@link ThreadPoolExecutor}
+     * @throws NotFoundException if no executor is registered under that name
      */
     public static ThreadPoolExecutor getThreadPoolExecutor(java.lang.String name)
             throws NotFoundException {
@@ -216,12 +233,13 @@ public class QThreadPoolExecutor extends QBeanSupport implements
     }
 
     /**
-     * Retrieves a thread pool executor from NameRegistrar given its name, and
-     * its expected class
-     * 
-     * @param name
-     * @param clazz
-     * @throws NotFoundException
+     * Retrieves a thread pool executor from NameRegistrar given its name and expected class.
+     *
+     * @param <T> expected concrete executor type
+     * @param name bean name (without the {@link #THREAD_POOL_EXECUTOR__QBEAN_PREFIX} prefix)
+     * @param clazz expected executor class
+     * @return the registered executor, narrowed to {@code T}
+     * @throws NotFoundException if no executor of the expected class is registered under that name
      */
     @SuppressWarnings("unchecked")
     public static <T extends ThreadPoolExecutor> T getThreadPoolExecutor(
@@ -379,18 +397,38 @@ public class QThreadPoolExecutor extends QBeanSupport implements
         return executorService.isTerminating();
     }
 
+    /**
+     * Returns the core pool size requested at configuration time.
+     *
+     * @return the initially configured core pool size
+     */
     public int getInitialCorePoolSize() {
         return initialCorePoolSize;
     }
 
+    /**
+     * Sets the executor type ({@code fixed}, {@code cached}, {@code scheduled}, or {@code single}).
+     *
+     * @param execSrvType the new executor type
+     */
     protected void setExecSrvType(String execSrvType) {
         this.execSrvType = execSrvType;
     }
 
+    /**
+     * Sets the initial core pool size used when the executor is created.
+     *
+     * @param initialCorePoolSize core pool size
+     */
     protected void setInitialCorePoolSize(int initialCorePoolSize) {
         this.initialCorePoolSize = initialCorePoolSize;
     }
 
+    /**
+     * Sets the awaitTermination timeout, in seconds.
+     *
+     * @param terminationTimer timeout used during shutdown
+     */
     protected void setTerminationTimer(int terminationTimer) {
         this.terminationTimer = terminationTimer;
     }

@@ -31,12 +31,18 @@ import java.util.concurrent.TimeUnit;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since !.4.9
+
+ * @param <K> the key type
+ * @param <V> the value type
  */
 
 @SuppressWarnings("unchecked")
 public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
+    /** Backing map keyed by user-supplied keys; values are entries or lists of entries. */
     protected Map entries;
+    /** Per-key space listeners; itself a {@link TSpace} so it inherits the dispatch model. */
     protected TSpace sl;    // space listeners
+    /** Periodic interval, in milliseconds, between background GC sweeps. */
     public static final long GCDELAY = 5*1000;
     private static final long GCLONG = 60_000L;
     private static final long NRD_RESOLUTION = 500L;
@@ -45,6 +51,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private final Set[] expirables;
     private long lastLongGC = System.nanoTime();
 
+    /** Default constructor. */
     public TSpace () {
         super();
         entries = new HashMap ();
@@ -211,6 +218,10 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
     }
 
+    /**
+     * Sweeps the short-lived expirable set, and the long-lived set when its
+     * sweep interval has elapsed.
+     */
     public void gc () {
         gc(0);
         if (System.nanoTime() - lastLongGC > GCLONG*ONE_MILLION) {
@@ -278,6 +289,11 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             sl.inp (new ObjectTemplate (key, listener));
         }
     }
+    /**
+     * Indicates whether the space currently holds any entries.
+     *
+     * @return {@code true} if no entries are stored
+     */
     public boolean isEmpty() {
         return entries.isEmpty();
     }
@@ -287,6 +303,11 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         return new HashSet<K>(entries.keySet());
     }
 
+    /**
+     * Returns a space-separated list of every key currently stored.
+     *
+     * @return all keys, joined by single-space separators
+     */
     public String getKeysAsString () {
         StringBuilder sb = new StringBuilder();
         Object[] keys;
@@ -335,6 +356,12 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         jfr.commit();
     }
 
+    /**
+     * Notifies every listener registered against {@code key} of an entry change.
+     *
+     * @param key entry key
+     * @param value the value just written or {@code null} when entries were removed
+     */
     public void notifyListeners (Object key, Object value) {
         var jfr = new SpaceEvent("notify", "" + key);
         jfr.begin();

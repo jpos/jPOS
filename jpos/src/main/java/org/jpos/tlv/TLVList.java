@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * An ordered list of TLV (Tag-Length-Value) records.
  * @author bharavi
  */
 
@@ -54,6 +55,7 @@ public class TLVList implements Serializable, Loggeable {
     private static final int LEN_SIZE_MASK  = 0x7F;
     private static final int EXT_LEN_MASK   = 0x80;
 
+    /** Ordered collection of decoded TLV elements. */
     private final List<TLVMsg> tags = new ArrayList<>();
 
     /**
@@ -72,10 +74,15 @@ public class TLVList implements Serializable, Loggeable {
      */
     private int lengthSize = 0;
 
+    /** Cached tag identifier used by linear search helpers. */
     private int tagToFind = -1;
+    /** Cached index of the most recent occurrence found by a search helper. */
     private int indexLastOccurrence = -1;
 
+    /** Builder for configured {@link TLVList} instances. */
     public static class TLVListBuilder {
+        /** Default constructor; configure tag/length sizes via the fluent setters. */
+        public TLVListBuilder() {}
 
         private int tagSize = 0;
         private int lengthSize = 0;
@@ -154,36 +161,40 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * Unpack a message.
+     * Unpacks a TLV-encoded message.
      *
      * @param buf raw message
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if the buffer contains an invalid TLV structure
      */
     public void unpack(byte[] buf) throws IllegalArgumentException {
         unpack(buf, 0);
     }
 
     /**
-     * @return a list of tags.
+     * Returns the decoded tags in insertion order.
+     *
+     * @return a list of tags
      */
     public List<TLVMsg> getTags() {
         return tags;
     }
 
     /**
-     * @return an enumeration of the List of tags.
+     * Returns the decoded tags as an enumeration.
+     *
+     * @return an enumeration of the list of tags
      */
     public Enumeration<TLVMsg> elements() {
         return Collections.enumeration(tags);
     }
 
     /**
-     * Unpack a message with a starting offset.
+     * Unpacks a TLV-encoded message starting at the provided offset.
      *
      * @param buf raw message
      * @param offset the offset
-     * @throws IndexOutOfBoundsException if {@code offset} exceeds {code buf.length}
-     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException if {@code offset} exceeds {@code buf.length}
+     * @throws IllegalArgumentException if the buffer contains an invalid TLV structure
      */
     public void unpack(byte[] buf, int offset) throws IllegalArgumentException
             , IndexOutOfBoundsException {
@@ -319,7 +330,7 @@ public class TLVList implements Serializable, Loggeable {
      * @param index zero based index of TLV message
      * @return TLV message instance
      * @throws IndexOutOfBoundsException if the index is out of range
-     * (index < 0 || index >= size())
+     * (index &lt; 0 || index &gt;= size())
      */
     public TLVMsg index(int index) throws IndexOutOfBoundsException {
         return tags.get(index);
@@ -444,7 +455,7 @@ public class TLVList implements Serializable, Loggeable {
      * Read length bytes and return the int value
      * @param buffer buffer
      * @return value length
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if the encoded length cannot be parsed
      */
     protected int getValueLength(ByteBuffer buffer) throws IllegalArgumentException {
         if (lengthSize > 0) {

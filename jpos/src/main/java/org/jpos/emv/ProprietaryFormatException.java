@@ -19,21 +19,39 @@
 package org.jpos.emv;
 
 /**
+ * Thrown when an EMV field uses a proprietary format that cannot be processed.
  * @author Vishnu Pillai
  */
 public class ProprietaryFormatException extends Exception {
+    /** Default constructor. */
     public ProprietaryFormatException() {
         super();
     }
 
+    /**
+     * Constructs a new exception with the given detail message.
+     *
+     * @param message failure description
+     */
     public ProprietaryFormatException(final String message) {
         super(message);
     }
 
+    /**
+     * Constructs a new exception with the given detail message and cause.
+     *
+     * @param message failure description
+     * @param cause underlying cause
+     */
     public ProprietaryFormatException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Constructs a new exception wrapping the given cause.
+     *
+     * @param cause underlying cause
+     */
     public ProprietaryFormatException(final Throwable cause) {
         super(cause);
     }

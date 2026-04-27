@@ -26,8 +26,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.StringTokenizer;
 
+/**
+ * UI action that re-targets one or more registered UI components,
+ * usually wired to a button or menu item.
+ */
 public class Redirect implements ActionListener, UIAware {
+    /** Parent UI providing the registry of redirectable components. */
     public UI ui;
+    /** Default constructor. */
     public Redirect () {
         super();
     }

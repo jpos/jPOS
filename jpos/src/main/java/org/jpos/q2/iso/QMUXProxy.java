@@ -42,6 +42,12 @@ public class QMUXProxy implements RemoteQMUX, Configurable {
     QMUX qmux;
     private RemoteRef ref;
     private RemoteStub stub;
+    /**
+     * Constructs an RMI-exported proxy for the given QMUX.
+     *
+     * @param qmux underlying MUX exposed over RMI
+     * @throws RemoteException if RMI export fails
+     */
     public QMUXProxy (QMUX qmux) throws RemoteException {
         super();
         this.qmux = qmux;

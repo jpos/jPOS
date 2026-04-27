@@ -18,7 +18,14 @@
 
 package org.jpos.core;
 
+/**
+ * Default {@link CardValidator} that cross-checks the PAN, expiration, and
+ * service code across explicit fields and embedded tracks 1/2, and verifies
+ * the LUHN check digit using a configurable {@link LUHNCalculator}.
+ */
 public class DefaultCardValidator implements CardValidator {
+    /** Default constructor; no instance state to initialise. */
+    public DefaultCardValidator() {}
     private static LUHNCalculator DEFAULT_LUHN_CALCULATOR = new DefaultLUHNCalculator();
     private LUHNCalculator luhnCalculator = DEFAULT_LUHN_CALCULATOR;
 
@@ -67,6 +74,11 @@ public class DefaultCardValidator implements CardValidator {
         }
     }
 
+    /**
+     * Replaces the {@link LUHNCalculator} used to verify PAN check digits.
+     *
+     * @param luhnCalculator new calculator (or {@code null} to skip LUHN verification)
+     */
     public void setLuhnCalculator(LUHNCalculator luhnCalculator) {
         this.luhnCalculator = luhnCalculator;
     }

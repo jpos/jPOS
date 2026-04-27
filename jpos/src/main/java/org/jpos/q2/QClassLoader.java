@@ -42,9 +42,17 @@ public class QClassLoader
     MBeanServer server;
     long lastModified;
 
-    public QClassLoader 
-        (MBeanServer server, File libDir, ObjectName loaderName, 
-         ClassLoader mainClassLoader) 
+    /**
+     * Constructs a Q2 classloader and registers it with the given MBean server.
+     *
+     * @param server MBean server hosting this classloader
+     * @param libDir directory scanned for {@code .jar} files
+     * @param loaderName JMX name under which this loader is registered
+     * @param mainClassLoader parent class loader
+     */
+    public QClassLoader
+        (MBeanServer server, File libDir, ObjectName loaderName,
+         ClassLoader mainClassLoader)
     {
         super(new URL[] { }, mainClassLoader);
         this.loaderName = loaderName;
@@ -60,10 +68,26 @@ public class QClassLoader
         return f.getName().endsWith (".jar");
     }
 
+    /**
+     * Indicates whether the watched lib directory has changed since the last scan.
+     *
+     * @return {@code true} if {@link #libDir} is readable and its mtime has advanced
+     */
     public boolean isModified () {
         return libDir.canRead () && lastModified != libDir.lastModified();
     }
-    public QClassLoader scan (boolean forceNewClassLoader) 
+    /**
+     * Re-scans the lib directory, replacing the live class loader if needed,
+     * and returns the up-to-date loader.
+     *
+     * @param forceNewClassLoader force a fresh loader even when the directory is unchanged
+     * @return the (possibly new) classloader
+     * @throws InstanceAlreadyExistsException if the loader can't be re-registered
+     * @throws InstanceNotFoundException if the previous loader can't be unregistered
+     * @throws NotCompliantMBeanException if the loader fails MBean compliance checks
+     * @throws MBeanRegistrationException if MBean (un)registration fails
+     */
+    public QClassLoader scan (boolean forceNewClassLoader)
         throws InstanceAlreadyExistsException,
                InstanceNotFoundException,
                NotCompliantMBeanException,
@@ -91,6 +115,7 @@ public class QClassLoader
         server.registerMBean (loader, loaderName);
         return loader;
     }
+    /** Forces {@link #scan(boolean)} to instantiate a fresh classloader on its next call. */
     public void forceNewClassLoaderOnNextScan() {
         this.lastModified = 0L;
     }

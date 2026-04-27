@@ -38,10 +38,15 @@ import java.util.HashSet;
 public class BSHRequestListener extends Log
     implements ISORequestListener, Configurable
 {
+    /** Macro string replaced with the actual MTI in script filenames. */
     protected static final String MTI_MACRO = "$mti";
+    /** MTI whitelist for script execution. */
     protected HashSet<String> whitelist;
+    /** BeanShell source file paths. */
     protected String[] bshSource;
+    /** Configuration for this listener. */
     Configuration cfg;
+    /** Default constructor. */
     public BSHRequestListener () {
         super();
     }

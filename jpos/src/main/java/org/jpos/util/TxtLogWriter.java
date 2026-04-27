@@ -26,8 +26,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * {@link LogEventWriter} that renders events using the registered plain-text
+ * {@link LogRenderer}, prefixing each entry with a timestamp.
+ */
 @Deprecated(forRemoval = false)
 public class TxtLogWriter implements LogEventWriter {
+    /** Creates a writer that renders events with the registered plain-text renderer. */
+    public TxtLogWriter() {}
     private PrintStream ps;
     private final LogRenderer<LogEvent> renderer = LogRendererRegistry.getRenderer(LogEvent.class, LogRenderer.Type.TXT);
     private Instant start;
