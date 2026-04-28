@@ -41,14 +41,17 @@ import java.util.Arrays;
  *        &lt;property name="protect-entry" value="PAN, EXP, REQUEST_ICC_DATA" /&gt;
  *        &lt;property name="wipe-entry"    value="EXPDATE" /&gt;
  *
+ *        &lt;-- if the protected ctx entry is an ISOMsg --&gt;
  *        &lt;property name="protect-ISOMsg" value="2" /&gt;
  *        &lt;property name="protect-ISOMsg" value="35, 45" /&gt;
  *        &lt;property name="wipe-ISOMsg"    value="52, 55" /&gt;
  *
+ *        &lt;-- if the protected ctx entry is a TLVList --&gt;
  *        &lt;property name="wipe-TLVList" value="0x56" /&gt;
  *        &lt;property name="wipe-TLVList" value="0x57" /&gt;
  *        &lt;property name="wipe-TLVList" value="0x5a, 0x5f20" /&gt;
  *
+ *        &lt;-- if the protected ctx entry is a FSDMsg --&gt;
  *        &lt;property name="protect-FSDMsg" value="account-number" /&gt;
  *        &lt;property name="protect-FSDMsg" value="track2-data" /&gt;
  *        &lt;property name="wipe-FSDMsg"    value="secret-key" /&gt;
@@ -72,6 +75,7 @@ public class ProtectDebugInfo implements AbortParticipant, Configurable {
      private String[] protectFSD;
      private String[] protectISO;
      private String[] wipeISO;
+     private String[] wipeFSD;
      private String[] wipeTLV;
 
      public int prepare (long id, Serializable o) {
@@ -113,14 +117,18 @@ public class ProtectDebugInfo implements AbortParticipant, Configurable {
                  if (m != null) {
                      for (String p: protectFSD)
                          protectField(m,p);
+                     for (String p: wipeFSD)
+                         wipeField(m,p);
                  }
              }
+
              if (o instanceof String){
                  String p = ctx.get(s);
                  if (p != null){
                      ctx.put(s, protect (p));
                  }
              }
+
              if (o instanceof TLVList) {
                  TLVList tlv = ctx.get(s);
                  if (tlv != null) {
@@ -148,7 +156,7 @@ public class ProtectDebugInfo implements AbortParticipant, Configurable {
                         m.set(f, ProtectedLogListener.BINARY_WIPED);
                 }
             } catch (ISOException ignored) {
-                //ignore, valid routes for some messages in the context may not be vaild for others
+                //ignore, valid routes for some messages in the context may not be valid for others
                 //e.g. in transaction switches with protocol conversion
             }
         }
@@ -191,6 +199,7 @@ public class ProtectDebugInfo implements AbortParticipant, Configurable {
          this.protectFSD = getValues(cfg, "protect-FSDMsg");
          this.protectISO = getValues(cfg, "protect-ISOMsg");
          this.wipeISO = getValues(cfg, "wipe-ISOMsg");
+         this.wipeFSD = getValues(cfg, "wipe-FSDMsg");
          this.wipeTLV = getValues(cfg, "wipe-TLVList");
      }
      private String[] getValues (Configuration cfg, String name) {
