@@ -111,6 +111,26 @@ public class PGPHelper {
         return verify;
     }
 
+    private static String readClearText(InputStream in) throws IOException {
+        boolean newl = false;
+        int ch;
+        ArmoredInputStream ain = new ArmoredInputStream(in, true);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        while ((ch = ain.read()) >= 0 && ain.isClearText()) {
+            if (newl) {
+                out.write((byte) '\n');
+                newl = false;
+            }
+            if (ch == '\n') {
+                newl = true;
+                continue;
+            }
+            out.write((byte) ch);
+        }
+        return out.toString(StandardCharsets.UTF_8.name());
+    }
+
     private static PGPPublicKey readPublicKey(InputStream in, String id)
             throws IOException, PGPException
     {
@@ -163,11 +183,20 @@ public class PGPHelper {
     }
 
     public static int checkLicense() {
+        try (InputStream in = getLicenseeStream()){
+            return checkLicense(in);
+        } catch (Exception ignored) {
+            // NOPMD: signature isn't good
+        }
+        return 0x90000;
+    }
+
+    private static int checkLicense(InputStream in) {
         int rc = 0x90000;
         boolean newl = false;
         int ch;
 
-        try (InputStream in = getLicenseeStream()){
+        try {
             InputStream ks = Q2.class.getClassLoader().getResourceAsStream(PUBRING);
             PGPPublicKey pk = readPublicKey(ks, SIGNER);
             ArmoredInputStream ain = new ArmoredInputStream(in, true);
@@ -242,6 +271,40 @@ public class PGPHelper {
             // NOPMD: signature isn't good
         }
         return rc;
+    }
+
+    /**
+     * Returns the verified clear-text license payload.
+     * <p>
+     * The returned value is the text covered by the clear-text PGP signature, not
+     * the armored license block. If the bundled or configured license cannot be
+     * signature-verified, or if {@link #checkLicense()} reports an unacceptable
+     * status, this method returns {@code null}.
+     * <p>
+     * Status bit {@code 0x10000} (license not bound to this system hash, used by
+     * the Community Edition license) is considered acceptable. Critical status
+     * bits {@code 0xE0000} are not.
+     *
+     * @return verified clear-text license payload, or {@code null}
+     * @throws IOException if the license stream cannot be read
+     */
+    public static String getVerifiedLicenseText() throws IOException {
+        byte[] license;
+        try (InputStream is = getLicenseeStream()) {
+            if (is == null)
+                return null;
+            license = is.readAllBytes();
+        }
+        try (InputStream ks = Q2.class.getClassLoader().getResourceAsStream(PUBRING)) {
+            PGPPublicKey pk = readPublicKey(ks, SIGNER);
+            if (!verifySignature(new ByteArrayInputStream(license), pk))
+                return null;
+        } catch (PGPException | RuntimeException e) {
+            return null;
+        }
+        if ((checkLicense(new ByteArrayInputStream(license)) & 0xE0000) != 0)
+            return null;
+        return readClearText(new ByteArrayInputStream(license));
     }
 
     static InputStream getLicenseeStream() throws FileNotFoundException {
