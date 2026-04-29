@@ -41,17 +41,17 @@ import java.util.Arrays;
  *        &lt;property name="protect-entry" value="PAN, EXP, REQUEST_ICC_DATA" /&gt;
  *        &lt;property name="wipe-entry"    value="EXPDATE" /&gt;
  *
- *        &lt;-- if the protected ctx entry is an ISOMsg --&gt;
+ *        &lt;!-- if the protected ctx entry is an ISOMsg --&gt;
  *        &lt;property name="protect-ISOMsg" value="2" /&gt;
  *        &lt;property name="protect-ISOMsg" value="35, 45" /&gt;
  *        &lt;property name="wipe-ISOMsg"    value="52, 55" /&gt;
  *
- *        &lt;-- if the protected ctx entry is a TLVList --&gt;
+ *        &lt;!-- if the protected ctx entry is a TLVList --&gt;
  *        &lt;property name="wipe-TLVList" value="0x56" /&gt;
  *        &lt;property name="wipe-TLVList" value="0x57" /&gt;
  *        &lt;property name="wipe-TLVList" value="0x5a, 0x5f20" /&gt;
  *
- *        &lt;-- if the protected ctx entry is a FSDMsg --&gt;
+ *        &lt;!-- if the protected ctx entry is a FSDMsg --&gt;
  *        &lt;property name="protect-FSDMsg" value="account-number" /&gt;
  *        &lt;property name="protect-FSDMsg" value="track2-data" /&gt;
  *        &lt;property name="wipe-FSDMsg"    value="secret-key" /&gt;
@@ -59,7 +59,7 @@ import java.util.Arrays;
  *    &lt;/participant&gt;
  *</pre>
  *
- * Configuration properties admit comma/space-separated values, but can also be given in occurrences.
+ * Configuration properties accept comma/space-separated values, but can also be given in multiple occurrences.
  * All occurrences of the same property will be merged into a single list.
  * <p>
  * @author Alejandro Revilla
