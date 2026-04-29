@@ -21,10 +21,48 @@ package org.jpos.util;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PGPHelperTest {
+    @Test
+    public void testGetVerifiedLicenseText() throws Exception {
+        String licenseText = PGPHelper.getVerifiedLicenseText();
+
+        assertNotNull(licenseText);
+        assertTrue(licenseText.contains("jPOS Community Edition"));
+        assertFalse(licenseText.contains("BEGIN PGP SIGNATURE"));
+    }
+
+    @Test
+    public void testGetVerifiedLicenseTextRejectsTamperedLicense() throws Exception {
+        String previousLicensee = System.getProperty("LICENSEE");
+        Path license = Path.of("src/main/resources/LICENSEE.asc");
+        Path tamperedLicense = Files.createTempFile("licensee", ".asc");
+        Files.writeString(
+          tamperedLicense,
+          Files.readString(license, StandardCharsets.UTF_8).replace("jPOS Community Edition", "jPOS Tampered Edition"),
+          StandardCharsets.UTF_8
+        );
+
+        try {
+            System.setProperty("LICENSEE", tamperedLicense.toString());
+            assertNull(PGPHelper.getVerifiedLicenseText());
+        } finally {
+            if (previousLicensee != null)
+                System.setProperty("LICENSEE", previousLicensee);
+            else
+                System.clearProperty("LICENSEE");
+            Files.deleteIfExists(tamperedLicense);
+        }
+    }
+
     @Test
     public void testEncryptDecrypt() throws Exception {
         String s = "The quick brown fox jumps over the lazy dog 0123456789";
