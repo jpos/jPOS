@@ -41,4 +41,23 @@ public interface ISOSource {
      * @return true if source is connected and usable
      */
     boolean isConnected();
+
+    /**
+     * If this ISOSource is connected, this returns true right away. Otherwise, it waits the specified timeout for connection. 
+     *
+     * @param timeout the time to wait for a connection, in ms
+     * @return If the ISOSource connected during the specified timeout
+     */
+    default boolean isConnected(long timeout) {
+        if (isConnected()) return true;
+        long end = System.nanoTime() + timeout * 1_000_000L;
+        long sleep = Math.min(500, timeout);
+        while (sleep > 0 && !Thread.currentThread().isInterrupted()) { // Honor interruptions.
+            ISOUtil.sleep(sleep);
+            if (isConnected()) return true;
+            sleep = Math.min(500, (end - System.nanoTime())/1_000_000L);
+        }
+        return false;
+    }
+
 }
