@@ -293,15 +293,16 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
 
     @Override
     public boolean isConnected(long timeout) {
-        if (isConnected())
-            return true;
+        
+        if (isConnected()) return true;
+        if (timeout <= 0) return isConnected();
+        
 
         CompletableFuture<Boolean> result = new CompletableFuture<>();
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             for (MUX m : mux) {
                 executor.execute(() -> {
-                    if (m.isConnected(timeout))
-                        result.complete(true);
+                    if (m.isConnected(timeout)) result.complete(true);
                 });
             }
             try {

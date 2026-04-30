@@ -514,10 +514,9 @@ public class QMUX
 
     @Override
     public boolean isConnected(long timeout) {
-        if (isConnected())
-            return true;
-        if (ready == null || ready.length == 0)
-            return running();
+        if (isConnected()) return true;
+        if (timeout <= 0) return isConnected();
+        if (ready == null || ready.length == 0) return running();
 
         CompletableFuture<Boolean> result = new CompletableFuture<>();
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
