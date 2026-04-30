@@ -22,12 +22,14 @@ import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.jdom2.Element;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.MUX;
+import org.jpos.space.Space;
 import org.junit.jupiter.api.Test;
 
 public class MUXPoolTest {
@@ -103,6 +105,7 @@ public class MUXPoolTest {
             Thread.sleep(200);
             return true;
         });
+        when(m1.isConnected()).thenReturn(true);
         when(m2.isConnected(anyLong())).thenReturn(false);
 
         assertTrue(pool.isConnected(1000), "Pool should be connected if at least one MUX is connected");
@@ -116,7 +119,9 @@ public class MUXPoolTest {
         pool.mux = new MUX[] { m1, m2 };
 
         when(m1.isConnected(anyLong())).thenReturn(false);
+        when(m1.isConnected()).thenReturn(false);
         when(m2.isConnected(anyLong())).thenReturn(false);
+        when(m2.isConnected()).thenReturn(false);
 
         assertFalse(pool.isConnected(500), "Pool should not be connected if all MUXes timeout or return false");
     }
@@ -127,15 +132,56 @@ public class MUXPoolTest {
         MUX m1 = mock(MUX.class);
         pool.mux = new MUX[] { m1 };
         when(m1.isConnected(0)).thenReturn(false);
+        when(m1.isConnected()).thenReturn(false);
         assertFalse(pool.isConnected(0), "Should return false for zero timeout");
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
-    public void testIsConnectedWithNegativeTimeout() throws Exception {
+    public void testIsConnectedWithTimeoutAndCheckEnabled() throws Exception {
         MUXPool pool = new MUXPool();
-        MUX m1 = mock(MUX.class);
-        pool.mux = new MUX[] { m1 };
-        when(m1.isConnected(-1)).thenReturn(false);
-        assertFalse(pool.isConnected(-1), "Should return false for negative timeout");
+        pool.checkEnabled = true;
+        Space sp = mock(Space.class);
+        pool.sp = sp;
+
+        QMUX qmux = mock(QMUX.class);
+        when(qmux.getName()).thenReturn("qmux1");
+        when(qmux.isConnected(anyLong())).thenReturn(true);
+        when(qmux.isConnected()).thenReturn(true);
+        when(qmux.getReadyIndicatorNames()).thenReturn(new String[]{"ready1"});
+
+        pool.mux = new MUX[] { qmux };
+
+        // Mock Space behavior: qmux1.enabled matches ready1 value (non-blocking)
+        Object value = new Object();
+        when(sp.rdp("qmux1.enabled")).thenReturn(value);
+        when(sp.rdp("ready1")).thenReturn(value);
+
+        assertTrue(pool.isConnected(1000), "Pool should be connected if QMUX is connected and enabled indicator matches ready indicator");
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Test
+    public void testIsConnectedWithTimeoutAndCheckEnabledFail() throws Exception {
+        MUXPool pool = new MUXPool();
+        pool.checkEnabled = true;
+        Space sp = mock(Space.class);
+        pool.sp = sp;
+
+        QMUX qmux = mock(QMUX.class);
+        when(qmux.getName()).thenReturn("qmux1");
+        when(qmux.isConnected(anyLong())).thenReturn(true);
+        when(qmux.isConnected()).thenReturn(true);
+        when(qmux.getReadyIndicatorNames()).thenReturn(new String[]{"ready1"});
+
+        pool.mux = new MUX[] { qmux };
+
+        // Mock Space behavior: ready1 is available, but qmux1.enabled does NOT match ready1 value
+        Object value1 = new Object();
+        Object value2 = new Object();
+        when(sp.rdp("ready1")).thenReturn(value1);
+        when(sp.rdp("qmux1.enabled")).thenReturn(value2);
+
+        assertFalse(pool.isConnected(1000), "Pool should NOT be connected if enabled indicator does NOT match ready indicator");
     }
 }

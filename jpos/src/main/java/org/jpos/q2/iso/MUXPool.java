@@ -293,16 +293,14 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
 
     @Override
     public boolean isConnected(long timeout) {
-        
         if (isConnected()) return true;
         if (timeout <= 0) return isConnected();
-        
 
         CompletableFuture<Boolean> result = new CompletableFuture<>();
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             for (MUX m : mux) {
                 executor.execute(() -> {
-                    if (m.isConnected(timeout)) result.complete(true);
+                    if (isUsable(m, timeout)) result.complete(true);
                 });
             }
             try {
@@ -330,6 +328,17 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             return mux.isConnected() && sp.rdp (enabledKey) == sp.rdp (readyNames[0]);
         }
         return mux.isConnected() && sp.rdp (enabledKey) != null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean isUsable(MUX mux, long timeout) {
+        if (checkEnabled && (mux instanceof QMUX qmux)) {
+            // We assume that the probability of enabled to change from false to true during timeout is small enough 
+            // to not wait until it gets enabled again
+            if (sp.rdp(qmux.getName() + ".enabled") == null)
+                return false;
+        }
+        return mux.isConnected(timeout) && isUsable(mux);
     }
 
     private String[] toStringArray (String s) {
