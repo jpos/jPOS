@@ -297,10 +297,10 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         if (timeout <= 0) return isConnected();
 
         CompletableFuture<Boolean> result = new CompletableFuture<>();
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
             for (MUX m : mux) {
                 executor.execute(() -> {
-                    if (isUsable(m, timeout)) result.complete(true);
+                    if (isUsable(m, timeout, executor)) result.complete(true);
                 });
             }
             try {
@@ -317,8 +317,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
 
     @SuppressWarnings("unchecked")
     private boolean isUsable (MUX mux) {
-        if (!checkEnabled || !(mux instanceof QMUX))
-            return mux.isConnected();
+        if (!checkEnabled || !(mux instanceof QMUX)) return mux.isConnected();
 
         QMUX qmux = (QMUX) mux;
         String enabledKey = qmux.getName() + ".enabled";
@@ -331,14 +330,46 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean isUsable(MUX mux, long timeout) {
-        if (checkEnabled && (mux instanceof QMUX qmux)) {
-            // We assume that the probability of enabled to change from false to true during timeout is small enough 
-            // to not wait until it gets enabled again
-            if (sp.rdp(qmux.getName() + ".enabled") == null)
-                return false;
+    private boolean isUsable(MUX mux, long timeout, ExecutorService executor) {
+        if (!checkEnabled || !(mux instanceof QMUX qmux)) return mux.isConnected(timeout);
+
+        long remaining = timeout;
+        long end = System.nanoTime() + timeout * 1_000_000L;
+        String enabledKey = qmux.getName() + ".enabled";
+        while (remaining > 0 && ! Thread.currentThread().isInterrupted()) { //Honor interruption
+            final long wait = remaining;
+            Future<Boolean> muxConnected = executor.submit(() -> mux.isConnected(wait));
+            Future<Boolean> enabled = executor.submit(() -> {
+                Object ready = sp.rd(enabledKey, wait);
+                String[] readyNames = qmux.getReadyIndicatorNames();
+                if (readyNames != null && readyNames.length == 1) {
+                    // check that 'mux.enabled' entry has the same content as 'ready'
+                    if (ready == sp.rdp (readyNames[0])) {
+                        return true;
+                    } else { // relax for some time and retry
+                        ISOUtil.sleep(Math.clamp((end - System.nanoTime()) / 1_000_000L, 0L, 100L)); 
+                        return ready == sp.rdp (readyNames[0]);
+                    }
+                }
+                return ready != null;
+            });
+
+            try {
+                if (muxConnected.get(remaining, TimeUnit.MILLISECONDS) 
+                        && enabled.get(remaining, TimeUnit.MILLISECONDS) 
+                        && isUsable(mux)
+                ) return true;
+                // if both conditions don't meet at the same time, try another round, provided there is time.
+                remaining = (end - System.nanoTime()) / 1_000_000L;
+            } catch (ExecutionException | TimeoutException _) {
+                // Last non-blocking check before failing
+                return isUsable(mux);
+            } catch (InterruptedException _) {
+                Thread.currentThread().interrupt();
+                return isUsable(mux);
+            }
         }
-        return mux.isConnected(timeout) && isUsable(mux);
+        return false;
     }
 
     private String[] toStringArray (String s) {
