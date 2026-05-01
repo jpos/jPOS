@@ -49,26 +49,30 @@ if [ -z "${JAVA_HOME:-}" ]; then
   fi
 fi
 
-# Base JVM invocation
+# Base JVM invocation. Order matters: every JVM flag (-D, -X, --add-*,
+# agent flags from --debug, INHERITED_JAVA_OPTS from the env var) MUST
+# land before -jar @jarname@. Anything after -jar is treated as a
+# program argument by Java and triggers "Unrecognized option".
 JAVA_CMD="${JAVA_HOME:+$JAVA_HOME/bin/}java"
+
+ENV_JAVA_OPTS=( ${INHERITED_JAVA_OPTS} )
+
 CMD=(
   "$JAVA_CMD" -server
   -Xmx4G
   --enable-native-access=ALL-UNNAMED
   --sun-misc-unsafe-memory-access=allow
   -Xlog:gc:log/gc.log
-  -jar @jarname@
 )
-
-# Only pass --pid if enabled
+# JVM flags: in-script defaults first, then env-supplied, then CLI -D.
+CMD+=( ${ENV_JAVA_OPTS[@]+"${ENV_JAVA_OPTS[@]}"} )
+CMD+=( ${EXTRA_JAVA_OPTS[@]+"${EXTRA_JAVA_OPTS[@]}"} )
+# Now the jar selector itself.
+CMD+=( -jar @jarname@ )
+# Program args — these go to Q2's main, not the JVM.
 if $USE_PID; then
   CMD+=( --pid="$PID_FILE" )
 fi
-
-ENV_JAVA_OPTS=( ${INHERITED_JAVA_OPTS} )
-
-CMD+=( ${ENV_JAVA_OPTS[@]+"${ENV_JAVA_OPTS[@]}"} )
-CMD+=( ${EXTRA_JAVA_OPTS[@]+"${EXTRA_JAVA_OPTS[@]}"} )
 CMD+=( ${EXTRA_OTHER_OPTS[@]+"${EXTRA_OTHER_OPTS[@]}"} )
 
 exec "${CMD[@]}"
