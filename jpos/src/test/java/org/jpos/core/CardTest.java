@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -61,6 +62,80 @@ public class CardTest  {
         assertEquals("123", t1.getServiceCode(), "serviceCode");
         assertEquals("4567", t1.getCvv(), "cvv");
         assertEquals("1234567890", t1.getDiscretionaryData(), "discretionaryData");
+    }
+
+    @Test
+    public void testTrack1With13DigitPan() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .track("%B4444444444444^JOHN DOE^190210110000293").build();
+
+        assertEquals("4444444444444", t1.getPan(), "pan");
+        assertEquals("1902", t1.getExp(), "exp");
+        assertEquals("101", t1.getServiceCode(), "serviceCode");
+    }
+
+    @Test
+    public void testTrack1With19DigitPanDoesNotTruncate() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .track("%B4444444444444444444^TEST^190210110000293").build();
+
+        assertEquals("4444444444444444444", t1.getPan(), "pan");
+        assertEquals("1902", t1.getExp(), "exp");
+        assertEquals("101", t1.getServiceCode(), "serviceCode");
+    }
+
+    @Test
+    public void testTrack1WithMinNameLength() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .track("%B4444444444444^AB^190210110000293").build();
+
+        assertEquals("AB", t1.getNameOnCard(), "nameOnCard");
+    }
+
+    @Test
+    public void testTrack1WithMaxNameLength() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .track("%B4444444444444^ABCDEFGHIJKLMNOPQRSTUVWXYZ^190210110000293").build();
+
+        assertEquals("ABCDEFGHIJKLMNOPQRSTUVWXYZ", t1.getNameOnCard(), "nameOnCard");
+    }
+
+    @Test
+    public void testTrack1WithSpecialCharactersInName() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .track("%B4444444444444^JOHN SMITH & CO., INC.^190210110000293").build();
+
+        assertEquals("JOHN SMITH & CO., INC.", t1.getNameOnCard(), "nameOnCard");
+    }
+
+    @Test
+    public void testTrack1RejectsPanTooLong() {
+        assertThrows(InvalidCardException.class,
+          () -> Track1.builder().track("%B444444444444444444444^TEST^190210110000293"));
+    }
+
+    @Test
+    public void testTrack1RejectsNameTooShort() {
+        assertThrows(InvalidCardException.class,
+          () -> Track1.builder().track("%B4444444444444^A^190210110000293"));
+    }
+
+    @Test
+    public void testTrack1RejectsNameTooLong() {
+        assertThrows(InvalidCardException.class,
+          () -> Track1.builder().track("%B4444444444444^ABCDEFGHIJKLMNOPQRSTUVWXYZA^190210110000293"));
+    }
+
+    @Test
+    public void testTrack1RejectsInvalidTrackData() {
+        assertThrows(InvalidCardException.class,
+          () -> Track1.builder().track("INVALID_TRACK_DATA"));
+    }
+
+    @Test
+    public void testTrack1RejectsEmptyString() {
+        assertThrows(InvalidCardException.class,
+          () -> Track1.builder().track(""));
     }
 
     @Test
