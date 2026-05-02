@@ -83,6 +83,28 @@ public class Track1 {
         return track;
     }
 
+    /**
+     * @return true if the Track 1 service code indicates an IC card.
+     */
+    public boolean isEMV() {
+        return isICCard();
+    }
+
+    /**
+     * @return true if the Track 1 service code indicates an IC card.
+     */
+    public boolean isICCard() {
+        return serviceCode != null && serviceCode.length() == 3 &&
+          (serviceCode.charAt(0) == '2' || serviceCode.charAt(0) == '6');
+    }
+
+    /**
+     * @return true if the Track 1 service code indicates an international IC card.
+     */
+    public boolean isInternationalICCard() {
+        return serviceCode != null && serviceCode.length() == 3 && serviceCode.charAt(0) == '2';
+    }
+
     @Override
     public String toString() {
         return pan != null ? ISOUtil.protect(pan) : "nil";
