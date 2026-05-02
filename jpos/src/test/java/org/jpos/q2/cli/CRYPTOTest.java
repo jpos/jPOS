@@ -26,30 +26,84 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit test for CRYPTO command
+ * Unit tests for the {@link CRYPTO} CLI command.
+ * <p>
+ * The CRYPTO command allows users to encrypt secrets via the jPOS CLI:
+ * <pre>{@code
+ * crypto "my-secret-password"          # encrypt with default key
+ * crypto "my-secret-password" db       # encrypt with "db" named key
+ * }</pre>
+ * </p>
+ * <h3>Test Key Injection Pattern</h3>
+ * <p>
+ * These tests use the same {@link SystemKeyManager.KeySupplier} injection pattern as other
+ * SystemKeyManager tests. The supplier is set up in {@link #setup()} with a default key,
+ * and individual test methods add additional named keys as needed via {@code testKeys.put()}.
+ * </p>
+ * <p>
+ * Cleanup happens in {@link #cleanup()}, which resets the supplier to null (restoring
+ * environment-variable behavior) and clears the local test key map.
+ * </p>
  */
 public class CRYPTOTest {
 
+    // Local storage for test keys: maps key names to their raw byte values.
+    // Populated in setup() with the default key, and extended by individual test methods.
+    private final Map<String, byte[]> testKeys = new HashMap<>();
+
+    /**
+     * Sets up a test supplier with a randomly generated default key before each test.
+     * This ensures every test starts with a valid encryption key without relying on
+     * environment variables.
+     */
     @BeforeEach
     void setup() {
-        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("default"), SystemKeyManager.getInstance().generateKey("default"));
+        SystemKeyManager manager = SystemKeyManager.getInstance();
+        String base64Key = manager.generateKey("default");
+        testKeys.put("default", Base64.getDecoder().decode(base64Key));
+        manager.setKeySupplier(this::getTestKey);
     }
 
+    /**
+     * Cleans up the supplier after each test to ensure test isolation.
+     */
     @AfterEach
     void cleanup() {
-        System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("default"));
-        System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("db"));
-        System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("api"));
-        System.clearProperty(SystemKeyManager.getInstance().getEnvVarName("cache"));
+        SystemKeyManager.getInstance().setKeySupplier(null);
+        testKeys.clear();
     }
 
+    /**
+     * Returns a SecretKey for the given key name by looking it up in the testKeys map.
+     * This method is used as a method reference for {@link SystemKeyManager#setKeySupplier(KeySupplier)}.
+     *
+     * @param name the key name to look up
+     * @return the SecretKey, or null if not found
+     */
+    private SecretKey getTestKey(String name) {
+        byte[] bytes = testKeys.get(name);
+        return bytes != null ? new SecretKeySpec(bytes, "AES") : null;
+    }
+
+    /**
+     * Verifies that the CRYPTO command encrypts a secret and produces output
+     * starting with {@code enc::}, which is the prefix used by {@link CryptoEnvironmentProvider}.
+     * <p>
+     * The test then decrypts the output to verify the round-trip produces the original input.
+     * </p>
+     */
     @Test
     public void testCryptoCommandEncryptsDirectly() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -71,15 +125,21 @@ public class CRYPTOTest {
         assertNotNull(output);
         assertTrue(output.startsWith("enc::"), "Output should start with 'enc::'");
         
-        // Let's decrypt it to make sure it encrypted correctly
+        // Decrypt the output to verify the round-trip produces the original input
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
         String decrypted = provider.get(output.substring(5));
         assertEquals("my-secret-password", decrypted, "Decrypted text should match the CLI input");
     }
 
+    /**
+     * Verifies that the CRYPTO command with a named key ("db") produces output
+     * starting with {@code enc::db:}, which includes the key name in the ciphertext.
+     */
     @Test
     public void testCryptoCommandWithKeyName() throws Exception {
-        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("db"), SystemKeyManager.getInstance().generateKey("db"));
+        SystemKeyManager manager = SystemKeyManager.getInstance();
+        String base64Key = manager.generateKey("db");
+        testKeys.put("db", Base64.getDecoder().decode(base64Key));
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayInputStream in = new ByteArrayInputStream(new byte[0]);
@@ -100,12 +160,15 @@ public class CRYPTOTest {
         assertNotNull(output);
         assertTrue(output.startsWith("enc::db:"), "Output should start with 'enc::db:'");
         
-        // Decrypt to verify
+        // Decrypt to verify the round-trip produces the original input
         CryptoEnvironmentProvider provider = new CryptoEnvironmentProvider();
         String decrypted = provider.get(output.substring(5));
         assertEquals("my-secret-password", decrypted, "Decrypted text should match the CLI input");
     }
 
+    /**
+     * Verifies that the CRYPTO command rejects too many arguments by printing usage instructions.
+     */
     @Test
     public void testCryptoCommandTooManyArguments() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -127,6 +190,10 @@ public class CRYPTOTest {
         assertTrue(output.contains("Usage: crypto"), "Output should contain usage instructions when given too many arguments");
     }
 
+    /**
+     * Verifies that {@link CryptoEnvironmentProvider#encrypt(String)} produces valid encrypted output
+     * with the correct prefix and a ciphertext long enough to indicate real encryption.
+     */
     @Test
     public void testCryptoDirectly() throws Exception {
         String input = "my-password";
@@ -139,9 +206,15 @@ public class CRYPTOTest {
 
         byte[] decoded = java.util.Base64.getDecoder().decode(encryptedPart);
         assertNotNull(decoded);
-        assertTrue(decoded.length > 12);
+        assertTrue(decoded.length > 12, "Ciphertext should be longer than just the plaintext");
     }
 
+    /**
+     * Verifies that encrypting the same value twice produces different ciphertexts.
+     * This confirms that AES-GCM is using a random IV (initialization vector) each time,
+     * which is essential for semantic security — identical plaintexts should not produce
+     * identical ciphertexts.
+     */
     @Test
     public void testDifferentEncryptions() throws Exception {
         String input = "same-password";
@@ -151,9 +224,15 @@ public class CRYPTOTest {
         assertNotEquals(encrypted1, encrypted2);
     }
 
+    /**
+     * Verifies that encrypting with a named key ("db") produces output starting with
+     * {@code enc::db:}, confirming the key name is embedded in the ciphertext prefix.
+     */
     @Test
     public void testEncryptWithKeyName() throws Exception {
-        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("db"), SystemKeyManager.getInstance().generateKey("db"));
+        SystemKeyManager manager = SystemKeyManager.getInstance();
+        String base64Key = manager.generateKey("db");
+        testKeys.put("db", Base64.getDecoder().decode(base64Key));
 
         String input = "my-password";
         String encrypted = CryptoEnvironmentProvider.encrypt(input, "db");
@@ -162,11 +241,20 @@ public class CRYPTOTest {
         assertTrue(encrypted.startsWith("enc::db:"), "Output should start with 'enc::db:'");
     }
 
+    /**
+     * Verifies that encrypting with multiple named keys ("db", "api", "cache") produces
+     * distinct ciphertexts for each key. This confirms that different keys produce
+     * different encrypted outputs even when the plaintext is identical.
+     */
     @Test
     public void testEncryptWithMultipleKeyNames() throws Exception {
-        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("db"), SystemKeyManager.getInstance().generateKey("db"));
-        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("api"), SystemKeyManager.getInstance().generateKey("api"));
-        System.setProperty(SystemKeyManager.getInstance().getEnvVarName("cache"), SystemKeyManager.getInstance().generateKey("cache"));
+        SystemKeyManager manager = SystemKeyManager.getInstance();
+        String base64Db = manager.generateKey("db");
+        String base64Api = manager.generateKey("api");
+        String base64Cache = manager.generateKey("cache");
+        testKeys.put("db", Base64.getDecoder().decode(base64Db));
+        testKeys.put("api", Base64.getDecoder().decode(base64Api));
+        testKeys.put("cache", Base64.getDecoder().decode(base64Cache));
 
         String input = "test-password";
         String encryptedDb = CryptoEnvironmentProvider.encrypt(input, "db");
@@ -181,13 +269,14 @@ public class CRYPTOTest {
         assertTrue(encryptedApi.startsWith("enc::api:"));
         assertTrue(encryptedCache.startsWith("enc::cache:"));
 
-        String base64Db = encryptedDb.substring(7);
-        String base64Api = encryptedApi.substring(8);
-        String base64Cache = encryptedCache.substring(9);
+        // Extract the ciphertext portion (after the key name prefix)
+        String encryptedPartDb = encryptedDb.substring(7);
+        String encryptedPartApi = encryptedApi.substring(8);
+        String encryptedPartCache = encryptedCache.substring(9);
 
-        assertNotEquals(base64Db, base64Api, "Base64 parts should be different for different keys");
-        assertNotEquals(base64Api, base64Cache, "Base64 parts should be different for different keys");
-        assertNotEquals(base64Db, base64Cache, "Base64 parts should be different for different keys");
+        assertNotEquals(encryptedPartDb, encryptedPartApi, "Base64 parts should be different for different keys");
+        assertNotEquals(encryptedPartApi, encryptedPartCache, "Base64 parts should be different for different keys");
+        assertNotEquals(encryptedPartDb, encryptedPartCache, "Base64 parts should be different for different keys");
     }
 
 }
