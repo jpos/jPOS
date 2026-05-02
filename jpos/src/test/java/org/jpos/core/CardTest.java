@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class CardTest  {
@@ -59,6 +61,52 @@ public class CardTest  {
         assertEquals("123", t1.getServiceCode(), "serviceCode");
         assertEquals("4567", t1.getCvv(), "cvv");
         assertEquals("1234567890", t1.getDiscretionaryData(), "discretionaryData");
+    }
+
+    @Test
+    public void testTrack1InternationalICCard() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .track("%B4111111111111111^FAT ALBERT                ^401122645671234567890?").build();
+
+        assertEquals("226", t1.getServiceCode(), "serviceCode");
+        assertTrue(t1.isEMV(), "emv");
+        assertTrue(t1.isICCard(), "icCard");
+        assertTrue(t1.isInternationalICCard(), "internationalICCard");
+    }
+
+    @Test
+    public void testTrack1NationalICCard() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .track("%B4111111111111111^FAT ALBERT                ^401162645671234567890?").build();
+
+        assertEquals("626", t1.getServiceCode(), "serviceCode");
+        assertTrue(t1.isEMV(), "emv");
+        assertTrue(t1.isICCard(), "icCard");
+        assertFalse(t1.isInternationalICCard(), "internationalICCard");
+    }
+
+    @Test
+    public void testTrack1NonICCard() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .track("%B4111111111111111^FAT ALBERT                ^401110145671234567890?").build();
+
+        assertEquals("101", t1.getServiceCode(), "serviceCode");
+        assertFalse(t1.isEMV(), "emv");
+        assertFalse(t1.isICCard(), "icCard");
+        assertFalse(t1.isInternationalICCard(), "internationalICCard");
+    }
+
+    @Test
+    public void testTrack1WithoutServiceCode() throws Throwable {
+        Track1 t1 = Track1.builder()
+          .pan("4111111111111111")
+          .nameOnCard("FAT ALBERT")
+          .exp("4011")
+          .build();
+
+        assertFalse(t1.isEMV(), "emv");
+        assertFalse(t1.isICCard(), "icCard");
+        assertFalse(t1.isInternationalICCard(), "internationalICCard");
     }
 
     @Test
