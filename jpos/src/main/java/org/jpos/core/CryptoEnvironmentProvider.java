@@ -24,7 +24,6 @@ import org.jpos.q2.Q2;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -37,7 +36,8 @@ import java.util.Base64;
  * Format: {@code enc::<base64-encoded-ciphertext>}
  * <ul>
  * <li>Algorithm: AES-256-GCM with authenticated encryption</li>
- * <li>Key: 256-bit AES key loaded from environment variable via SystemKeyManager</li>
+ * <li>Key: 256-bit AES key loaded from environment variable via
+ * SystemKeyManager</li>
  * <li>IV/Nonce: 12 bytes (generated per encryption)</li>
  * <li>Authentication: 16-byte GCM tag included in ciphertext</li>
  * </ul>
@@ -45,7 +45,6 @@ import java.util.Base64;
 public class CryptoEnvironmentProvider implements EnvironmentProvider {
     private static final Log log = Log.getLog(Q2.LOGGER_NAME, "crypto-env-provider");
 
-    private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
     private static final String ENC_PREFIX = "enc::";
     private static final int IV_SIZE_BYTES = 12;
@@ -66,7 +65,8 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             if (colonIdx >= 0) {
                 String possibleKeyName = config.substring(0, colonIdx);
                 // Valid key names are alphanumeric with optional hyphens/underscores.
-                // If it doesn't match this pattern, it's probably just part of the Base64 payload.
+                // If it doesn't match this pattern, it's probably just part of the Base64
+                // payload.
                 if (possibleKeyName.matches("^[a-zA-Z0-9_\\-]+$")) {
                     keyName = possibleKeyName;
                     encoded = config.substring(colonIdx + 1);
@@ -92,24 +92,29 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             SecretKey key = SystemKeyManager.getInstance().getKey(keyName);
             if (key == null) {
                 String envVarName = SystemKeyManager.getInstance().getEnvVarName(keyName);
-                log.warn("Key not found in environment for name: " + 
-                        (keyName != null && !keyName.isEmpty() ? keyName : "default") + 
-                        ". Please set " + envVarName);
-                throw new RuntimeException("Key not found in environment for name: " + 
-                        (keyName != null && !keyName.isEmpty() ? keyName : "default") + 
-                        ". Please set " + envVarName);
+                String kName = keyName != null && !keyName.isEmpty() ? keyName : "default";
+                log.warn("Key not found in environment for name: " + kName + ". Please set " + envVarName);
+                throw new RuntimeException(
+                        "Key not found in environment for name: " + kName + ". Please set " + envVarName);
             }
-            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), ALGORITHM);
-
-            // Decrypt with GCM authentication
+            // Decrypt with GCM authentication — pass SecretKey directly to support
+            // non-extractable keys (HSM/PKCS#11) where getEncoded() returns null
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
-            cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
+            cipher.init(Cipher.DECRYPT_MODE, key, gcmParameterSpec);
             byte[] plaintext = cipher.doFinal(ciphertext);
 
             return new String(plaintext, StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            log.warn("Failed to decrypt value: invalid Base64 encoding or key length — config=" + config, e);
+            throw new RuntimeException("Failed to decrypt value: invalid Base64 encoding or key length", e);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to decrypt value", e);
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            log.warn("Failed to decrypt value: " + e.getMessage() + " — config=" + config, e);
+            throw new RuntimeException(
+                    "Failed to decrypt value: " + e.getClass().getSimpleName() + " — " + e.getMessage(), e);
         }
     }
 
@@ -122,11 +127,11 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
     public static String encrypt(String value) {
         return encrypt(value, null);
     }
-    
+
     /**
      * Helper method to encrypt a value with a named key.
      * 
-     * @param value the plaintext value to encrypt
+     * @param value   the plaintext value to encrypt
      * @param keyName the name of the key to use (null for default)
      * @return base64-encoded ciphertext with enc::keyname: prefix
      */
@@ -135,23 +140,20 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             SecretKey key = SystemKeyManager.getInstance().getKey(keyName);
             if (key == null) {
                 String envVarName = SystemKeyManager.getInstance().getEnvVarName(keyName);
-                log.warn("Key not found in environment for name: " + 
-                        (keyName != null && !keyName.isEmpty() ? keyName : "default") + 
-                        ". Please set " + envVarName);
-                throw new IllegalArgumentException("Key not found in environment for name: " + 
-                        (keyName != null && !keyName.isEmpty() ? keyName : "default") + 
-                        ". Please set " + envVarName);
+                String kName = keyName != null && !keyName.isEmpty() ? keyName : "default";
+                log.warn("Key not found in environment for name: " + kName + ". Please set " + envVarName);
+                throw new IllegalArgumentException(
+                        "Key not found in environment for name: " + kName + ". Please set " + envVarName);
             }
-            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), ALGORITHM);
-
+            // Encrypt with GCM authentication — pass SecretKey directly to support
+            // non-extractable keys (HSM/PKCS#11) where getEncoded() returns null
             // Generate secure random 12-byte IV
             byte[] iv = new byte[IV_SIZE_BYTES];
             new SecureRandom().nextBytes(iv);
 
-            // Encrypt with GCM authentication
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BITS, iv);
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
+            cipher.init(Cipher.ENCRYPT_MODE, key, gcmParameterSpec);
             byte[] ciphertext = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
 
             // Combine IV and ciphertext
@@ -160,15 +162,19 @@ public class CryptoEnvironmentProvider implements EnvironmentProvider {
             buf.put(ciphertext);
 
             String base64 = Base64.getEncoder().encodeToString(buf.array());
-            
+
             // If keyName is provided, include it in the prefix
             if (keyName != null && !keyName.isEmpty()) {
-                 return ENC_PREFIX + keyName + ":" + base64;
-             } else {
-                 return ENC_PREFIX + base64;
+                return ENC_PREFIX + keyName + ":" + base64;
+            } else {
+                return ENC_PREFIX + base64;
             }
+        } catch (IllegalArgumentException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to encrypt value", e);
+            log.warn("Failed to encrypt value: " + e.getMessage() + " — keyName=" + keyName, e);
+            throw new RuntimeException(
+                    "Failed to encrypt value: " + e.getClass().getSimpleName() + " — " + e.getMessage(), e);
         }
     }
 }

@@ -16,12 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.q2.cli;
+package org.jpos.core;
 
-import org.jpos.core.CryptoEnvironmentProvider;
-import org.jpos.core.SystemKeyManager;
 import org.jpos.q2.CLI;
 import org.jpos.q2.CLIContext;
+import org.jpos.q2.cli.CRYPTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

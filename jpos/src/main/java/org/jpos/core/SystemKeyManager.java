@@ -41,7 +41,21 @@ import java.util.Base64;
  * Keys are loaded strictly from environment variables at lookup time.
  * No internal caching is performed — each call to {@link #getKey(String)}
  * performs a fresh lookup via the current {@link KeySupplier}. This ensures
- * that key changes are always visible and prevents stale keys from persisting.
+ * that key changes are always visible and prevents stale keys from persisting
+ * within a single JVM process.
+ * </p>
+ * <h4>Key Rotation Limitation</h4>
+ * <p>
+ * Because the default supplier reads from {@code System.getenv()}, environment
+ * variable changes take effect only after a JVM restart. The JVM caches its
+ * environment variables at startup, so changing an environment variable in a
+ * running process will not affect key resolution. To rotate keys in production,
+ * deploy a new process instance with the updated environment variables.
+ * </p>
+ * <p>
+ * Real-time key rotation is possible only by providing a custom
+ * {@link KeySupplier} (e.g., one that polls an external secrets manager or
+ * KMS on each call). The default supplier does not support this.
  * </p>
  *
  * <h3>Key Naming Convention</h3>
@@ -72,10 +86,10 @@ import java.util.Base64;
  *       {@code System.getenv()}, ensuring encryption keys can never be set
  *       at runtime via {@code System.setProperty()} — a security backdoor
  *       that was removed in a previous revision.</li>
- *   <li><b>Tests:</b> Test code injects a custom supplier via
- *       {@link #setKeySupplier(KeySupplier)} that returns deterministic,
- *       pre-generated keys. This eliminates the need for test infrastructure
- *       (maps, internal caches) to leak into production code.</li>
+ *   <li><b>Tests:</b> Test code within {@code org.jpos.core} injects a custom
+ *       supplier via {@link #setKeySupplier(KeySupplier)} that returns
+ *       deterministic, pre-generated keys. This eliminates the need for test
+ *       infrastructure (maps, internal caches) to leak into production code.</li>
  * </ul>
  * <p>
  * The supplier field is {@code volatile} and null-safe: setting it to
@@ -128,8 +142,7 @@ public class SystemKeyManager {
     /**
      * Returns the singleton SystemKeyManager instance.
      * <p>
-     * This is a true singleton — all callers receive the same instance,
-     * and the supplier can be swapped at runtime via {@link #setKeySupplier(KeySupplier)}.
+     * This is a true singleton — all callers receive the same instance.
      * </p>
      *
      * @return the SystemKeyManager instance
@@ -141,14 +154,18 @@ public class SystemKeyManager {
     /**
      * Sets a custom KeySupplier for key resolution.
      * <p>
-     * This method is primarily intended for use in test code to inject
-     * deterministic keys instead of relying on environment variables.
+     * This method is package-private and intended solely for use by test code
+     * within the {@code org.jpos.core} package to inject deterministic keys
+     * instead of relying on environment variables. It is not part of the
+     * public production API.
      * </p>
      * <h4>Production Use</h4>
      * <p>
-     * In production, leave the supplier unset (or set it to {@code null}
-     * to restore default behavior). The default supplier loads keys from
-     * environment variables only — never from {@code System.getProperty()}.
+     * In production, do not call this method. The default supplier loads keys
+     * from environment variables only — never from {@code System.getProperty()}.
+     * If real-time key rotation is needed (e.g., polling a KMS), configure it
+     * through your deployment infrastructure by providing a custom supplier
+     * at application startup via the appropriate initialization mechanism.
      * </p>
      * <h4>Test Use</h4>
      * <p>
@@ -176,7 +193,7 @@ public class SystemKeyManager {
      * @param keySupplier the supplier to use for key resolution; pass {@code null}
      *                    to restore the default environment-variable-based behavior
      */
-    public void setKeySupplier(KeySupplier keySupplier) {
+    void setKeySupplier(KeySupplier keySupplier) {
         this.keySupplier = keySupplier;
     }
 
@@ -259,7 +276,7 @@ public class SystemKeyManager {
      * This method generates a cryptographically strong random key but does NOT
      * set any environment variable or store the key anywhere. The caller is
      * responsible for setting the environment variable manually (or injecting
-     * the key via {@link #setKeySupplier(KeySupplier)} in test code).
+     * the key via package-private {@link #setKeySupplier(KeySupplier)} in test code).
      * </p>
      * <h4>Usage</h4>
      * <pre>{@code
@@ -356,17 +373,21 @@ public class SystemKeyManager {
      */
     @FunctionalInterface
     public interface KeySupplier {
-        /**
-         * Returns the SecretKey for the given name, or {@code null} if not found.
-         * <p>
-         * This method is called by {@link SystemKeyManager#getKey(String)} for
-         * every key lookup. Implementations should perform a fresh lookup each time —
-         * no caching is expected or required.
-         * </p>
-         *
-         * @param keyName the name of the key to resolve; never {@code null} (null/empty names are normalized by caller)
-         * @return the SecretKey for the given name, or {@code null} if not found
-         */
+    /**
+          * Returns the SecretKey for the given name, or {@code null} if not found.
+          * <p>
+          * This method is called by {@link SystemKeyManager#getKey(String)} for
+          * every key lookup. Implementations should perform a fresh lookup each time —
+          * no caching is expected or required. For real-time key rotation (e.g., polling
+          * an external secrets manager), implement this interface and set it via
+          * {@link SystemKeyManager#setKeySupplier(KeySupplier)}. Note that the default
+          * supplier ({@link EnvKeySupplier}) loads from environment variables, which are
+          * immutable within a running JVM process.
+          * </p>
+          *
+          * @param keyName the name of the key to resolve; never {@code null} (null/empty names are normalized by caller)
+          * @return the SecretKey for the given name, or {@code null} if not found
+          */
         SecretKey get(String keyName);
     }
 
@@ -376,6 +397,8 @@ public class SystemKeyManager {
      * This is the production supplier used when no custom supplier is set via
      * {@link #setKeySupplier(KeySupplier)}. It reads keys from environment variables
      * using the naming convention defined by {@link #getEnvVarName(String)}.
+     * Environment variables are immutable within a running JVM process; changes
+     * require a restart to take effect.
      * </p>
      * <h4>Security Boundary</h4>
      * <p>
