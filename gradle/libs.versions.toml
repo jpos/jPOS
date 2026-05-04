@@ -3,7 +3,7 @@ jdom = "2.0.6.1"
 sleepycatje = "18.3.12"
 commonscli = "1.11.0"
 commonslang3 = "3.20.0"
-jline = "4.0.12"
+jline = "4.0.14"
 jna = '5.18.1'
 jansi = '2.4.3'
 beanshell = "2.0b6"
@@ -19,7 +19,7 @@ hdrhistogram = "2.2.2"
 yaml = "2.6"
 micrometercore = "1.16.5"
 micrometerprometheus = "1.16.5"
-jackson = '2.21.2'
+jackson = '2.21.3'
 jdbm = '1.0'
 
 [libraries]
