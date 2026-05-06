@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jpos.log.AuditLogEvent;
+import org.jpos.log.AuditLogEventRegistry;
 
 import org.jpos.log.LogRenderer;
 import org.jpos.log.evt.LogEvt;
@@ -51,6 +52,7 @@ public final class LogEventJsonLogRenderer implements LogRenderer<LogEvent> {
         SimpleModule module = new SimpleModule();
         module.addSerializer(Throwable.class, new ThrowableSerializer());
         mapper.registerModule(module);
+        AuditLogEventRegistry.register(mapper);
     }
 
     @Override

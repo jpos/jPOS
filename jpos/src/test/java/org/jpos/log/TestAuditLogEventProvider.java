@@ -18,19 +18,18 @@
 
 package org.jpos.log;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.List;
 
 /**
- * Marker interface for log payload event records.
- *
- * <p>Concrete implementations are mapped to a stable type id through
- * {@link AuditLogEventRegistry}. Built-in ids are listed there; external
- * modules contribute their own via {@link AuditLogEventProvider} and
- * {@link java.util.ServiceLoader}.</p>
+ * Provider used by the {@code AuditLogEventRegistry} tests to verify
+ * {@link java.util.ServiceLoader} discovery of external types.
  */
-@JsonTypeInfo(
-  use = JsonTypeInfo.Id.NAME,
-  include = JsonTypeInfo.As.PROPERTY,
-  property = "t"
-)
-public interface AuditLogEvent { }
+public class TestAuditLogEventProvider implements AuditLogEventProvider {
+
+    public record CustomEvent(String value) implements AuditLogEvent { }
+
+    @Override
+    public List<AuditLogEventType> types() {
+        return List.of(new AuditLogEventType("custom-test", CustomEvent.class));
+    }
+}

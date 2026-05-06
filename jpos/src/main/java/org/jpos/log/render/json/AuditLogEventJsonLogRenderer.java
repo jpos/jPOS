@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jpos.log.AuditLogEvent;
+import org.jpos.log.AuditLogEventRegistry;
 import org.jpos.log.LogRenderer;
 
 import java.io.PrintStream;
@@ -32,6 +33,7 @@ public final class AuditLogEventJsonLogRenderer implements LogRenderer<AuditLogE
     public AuditLogEventJsonLogRenderer () {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        AuditLogEventRegistry.register(mapper);
     }
 
     @Override

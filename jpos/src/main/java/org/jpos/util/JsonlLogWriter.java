@@ -29,6 +29,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.jpos.log.AuditLogEvent;
+import org.jpos.log.AuditLogEventRegistry;
 import org.jpos.log.evt.LogEvt;
 import org.jpos.log.evt.LogMessage;
 import org.jpos.log.evt.ThrowableAuditLogEvent;
@@ -172,6 +173,7 @@ public class JsonlLogWriter extends BaseLogEventWriter implements Configurable {
         SimpleModule module = new SimpleModule();
         module.addSerializer(Throwable.class, new ThrowableSerializer());
         mapper.registerModule(module);
+        AuditLogEventRegistry.register(mapper);
     }
 
     private static Set<Integer> toIntSet(String spaceSeparated) {

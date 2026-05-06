@@ -18,19 +18,24 @@
 
 package org.jpos.log;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.Objects;
 
 /**
- * Marker interface for log payload event records.
+ * Pairs a stable type id with the {@link AuditLogEvent} implementation it identifies.
  *
- * <p>Concrete implementations are mapped to a stable type id through
- * {@link AuditLogEventRegistry}. Built-in ids are listed there; external
- * modules contribute their own via {@link AuditLogEventProvider} and
- * {@link java.util.ServiceLoader}.</p>
+ * <p>Used by {@link AuditLogEventProvider} implementations and by
+ * {@link AuditLogEventRegistry} to register Jackson subtype mappings.</p>
+ *
+ * @param name  stable type id used as the JSON/XML discriminator value (e.g. {@code "warn"})
+ * @param clazz the {@link AuditLogEvent} implementation
+ *
+ * @since 3.0.0
  */
-@JsonTypeInfo(
-  use = JsonTypeInfo.Id.NAME,
-  include = JsonTypeInfo.As.PROPERTY,
-  property = "t"
-)
-public interface AuditLogEvent { }
+public record AuditLogEventType(String name, Class<? extends AuditLogEvent> clazz) {
+    public AuditLogEventType {
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(clazz, "clazz");
+        if (name.isBlank())
+            throw new IllegalArgumentException("name must not be blank");
+    }
+}
