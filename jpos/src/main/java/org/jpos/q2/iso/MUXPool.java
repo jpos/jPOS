@@ -31,6 +31,7 @@ import org.jpos.util.Realm;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -290,10 +291,33 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         return false;
     }
 
+    @Override
+    public boolean isConnected(long timeout) {
+        if (isConnected()) return true;
+        if (timeout <= 0) return isConnected();
+
+        CompletableFuture<Boolean> result = new CompletableFuture<>();
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (MUX m : mux) {
+                executor.execute(() -> {
+                    if (isUsable(m, timeout, executor)) result.complete(true);
+                });
+            }
+            try {
+                return result.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException | TimeoutException _) {
+            } finally {
+                executor.shutdownNow();
+            }
+        }
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     private boolean isUsable (MUX mux) {
-        if (!checkEnabled || !(mux instanceof QMUX))
-            return mux.isConnected();
+        if (!checkEnabled || !(mux instanceof QMUX)) return mux.isConnected();
 
         QMUX qmux = (QMUX) mux;
         String enabledKey = qmux.getName() + ".enabled";
@@ -303,6 +327,49 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             return mux.isConnected() && sp.rdp (enabledKey) == sp.rdp (readyNames[0]);
         }
         return mux.isConnected() && sp.rdp (enabledKey) != null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean isUsable(MUX mux, long timeout, ExecutorService executor) {
+        if (!checkEnabled || !(mux instanceof QMUX qmux)) return mux.isConnected(timeout);
+
+        long remaining = timeout;
+        long end = System.nanoTime() + timeout * 1_000_000L;
+        String enabledKey = qmux.getName() + ".enabled";
+        while (remaining > 0 && ! Thread.currentThread().isInterrupted()) { //Honor interruption
+            final long wait = remaining;
+            Future<Boolean> muxConnected = executor.submit(() -> mux.isConnected(wait));
+            Future<Boolean> enabled = executor.submit(() -> {
+                Object ready = sp.rd(enabledKey, wait);
+                String[] readyNames = qmux.getReadyIndicatorNames();
+                if (readyNames != null && readyNames.length == 1) {
+                    // check that 'mux.enabled' entry has the same content as 'ready'
+                    if (ready == sp.rdp (readyNames[0])) {
+                        return true;
+                    } else { // relax for some time and retry
+                        ISOUtil.sleep(Math.clamp((end - System.nanoTime()) / 1_000_000L, 0L, 100L)); 
+                        return ready == sp.rdp (readyNames[0]);
+                    }
+                }
+                return ready != null;
+            });
+
+            try {
+                if (muxConnected.get(remaining, TimeUnit.MILLISECONDS) 
+                        && enabled.get(remaining, TimeUnit.MILLISECONDS) 
+                        && isUsable(mux)
+                ) return true;
+                // if both conditions don't meet at the same time, try another round, provided there is time.
+                remaining = (end - System.nanoTime()) / 1_000_000L;
+            } catch (ExecutionException | TimeoutException _) {
+                // Last non-blocking check before failing
+                return isUsable(mux);
+            } catch (InterruptedException _) {
+                Thread.currentThread().interrupt();
+                return isUsable(mux);
+            }
+        }
+        return false;
     }
 
     private String[] toStringArray (String s) {
