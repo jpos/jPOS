@@ -24,7 +24,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-/** ISOAmount ISOFieldPackager implementation. */
+/** ISO component representing an amount with currency and decimal scale. */
 public class ISOAmount 
     extends ISOComponent 
     implements Cloneable, Externalizable
@@ -226,4 +226,3 @@ public class ISOAmount
           '}';
     }
 }
-

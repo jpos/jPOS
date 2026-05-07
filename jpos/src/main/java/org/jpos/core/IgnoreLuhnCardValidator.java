@@ -18,7 +18,7 @@
 
 package org.jpos.core;
 
-/** IgnoreLuhnCardValidator ISOFieldPackager implementation. */
+/** Card validator variant that skips LUHN check-digit validation. */
 public class IgnoreLuhnCardValidator extends DefaultCardValidator {
     /** Default constructor. */
     public IgnoreLuhnCardValidator() {
@@ -26,4 +26,3 @@ public class IgnoreLuhnCardValidator extends DefaultCardValidator {
         setLuhnCalculator(null);
     }
 }
-

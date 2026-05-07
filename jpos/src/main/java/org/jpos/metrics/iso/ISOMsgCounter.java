@@ -18,36 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
-/** ISOMsgCounter implementation. */
-
+/** Counts ISO messages using Micrometer meters and tags resolved from message fields. */
 public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
     private final static Map<String, Function<ISOMsg,String>> aliases= Map.of(
             "mti",    (m) -> m.getString(0),
@@ -380,8 +351,8 @@ public class ISOMsgCounter implements ISOMsgMetrics, LogSource, Configurable {
      * This method relies on the protected {@link #resolveValExpr(ISOMsg, String)} to resolve each valexpr.
      *
      * @param m the ISOMsg
+     * @param fieldset field-to-tag mapping to resolve against the message
      * @return a micrometer {@link Tags} with all the tags from fieldset and the resolved values from the message
-     * @param val the expression to resolve
      */
     private Tags resolveFieldTags(ISOMsg m, Map<String,String> fieldset) {
         Tags tt = Tags.empty();

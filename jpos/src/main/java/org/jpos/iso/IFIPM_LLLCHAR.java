@@ -50,7 +50,7 @@ public class IFIPM_LLLCHAR extends ISOFieldPackager {
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException on ISO processing error on ISO processing error
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         int len;
@@ -74,7 +74,7 @@ public class IFIPM_LLLCHAR extends ISOFieldPackager {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException on ISO processing error on ISO processing error
+     * @exception ISOException on ISO processing error
      */
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
@@ -110,4 +110,3 @@ public class IFIPM_LLLCHAR extends ISOFieldPackager {
         return getLength() + 7;
     }
 }
-

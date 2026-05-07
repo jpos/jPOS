@@ -23,7 +23,7 @@ import org.xml.sax.Attributes;
 import java.io.IOException;
 import java.io.InputStream;
 
-/** IFEP_LLLBINARY ISOFieldPackager implementation. */
+/** EBCDIC LLLVAR binary field packager with a two-byte tag header. */
 public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPackagerParams {
     Integer fieldId = null;
 
@@ -68,7 +68,7 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
     /**
      * @param c - a component
      * @return packed component
-     * @exception ISOException on ISO processing error on ISO processing error on ISO processing error
+     * @exception ISOException on ISO processing error
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         int len = ((byte[]) c.getValue()).length;
@@ -95,7 +95,7 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException on ISO processing error on ISO processing error on ISO processing error
+     * @exception ISOException on ISO processing error
      */
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException

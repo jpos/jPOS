@@ -38,7 +38,7 @@ import java.util.List;
  * </log-listener>
  */
 
-/** IgnoreLogListener ISOFieldPackager implementation. */
+/** Log listener that suppresses configured realms or MTIs. */
 public class IgnoreLogListener implements LogListener, Configurable {
     String[] realms;
     String[] mtis;
@@ -90,4 +90,3 @@ public class IgnoreLogListener implements LogListener, Configurable {
         return Arrays.stream(realms).anyMatch(r -> realm != null && realm.startsWith(r));
     }
 }
-

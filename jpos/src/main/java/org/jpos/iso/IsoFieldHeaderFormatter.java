@@ -18,36 +18,7 @@
 
 package org.jpos.iso;
 
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
-/** IsoFieldHeaderFormatter implementation. */
-
+/** Formats tagged-field headers where tag and length can appear in either order. */
 public class IsoFieldHeaderFormatter {
 
     private boolean tagFirst;
@@ -116,16 +87,17 @@ public class IsoFieldHeaderFormatter {
     }
 
     /** Formatter with tag before length. */
-        public static IsoFieldHeaderFormatter TAG_FIRST = new IsoFieldHeaderFormatter(true);
+    public static IsoFieldHeaderFormatter TAG_FIRST = new IsoFieldHeaderFormatter(true);
     /** Formatter with length before tag. */
-        public static IsoFieldHeaderFormatter LENGTH_FIRST = new IsoFieldHeaderFormatter(false);
+    public static IsoFieldHeaderFormatter LENGTH_FIRST = new IsoFieldHeaderFormatter(false);
 
-/** Returns the total length of tag and length fields.
+    /**
+     * Returns the total length of tag and length fields.
      * @param tagPrefixer    the tag prefixer
      * @param prefixer       the length prefixer
      * @return total length in bytes
      */
-        public int getTotalLength(final Prefixer tagPrefixer, final Prefixer prefixer) {
+    public int getTotalLength(final Prefixer tagPrefixer, final Prefixer prefixer) {
         if (tagPrefixer == null || prefixer == null) {
             throw new IllegalArgumentException("Neither tag or length prefixer was provided.");
         }

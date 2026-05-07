@@ -794,7 +794,7 @@ public abstract class BaseChannel extends Observable
      * sends a byte[] over the TCP/IP session
      * @param b the byte array to be sent
      * @exception IOException on I/O error on I/O error on I/O error
-     * @exception ISOException on ISO processing error on ISO processing error on ISO processing error
+     * @exception ISOException on ISO processing error
      * @exception ISOFilter.VetoException if a filter vetoes the message
      */
     public void send (byte[] b) throws IOException, ISOException {

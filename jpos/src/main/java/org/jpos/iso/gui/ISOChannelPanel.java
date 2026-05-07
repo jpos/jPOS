@@ -34,7 +34,7 @@ import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
-/** ISOChannelPanel ISOFieldPackager implementation. */
+/** Swing panel that displays ISO channel activity and recent log entries. */
 public class ISOChannelPanel extends JPanel implements Observer {
     private static final long serialVersionUID = -8069489863639386589L;
     /**
@@ -221,4 +221,3 @@ public class ISOChannelPanel extends JPanel implements Observer {
         }
     }
 }
-

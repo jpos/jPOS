@@ -1513,8 +1513,8 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param keyLength see method description
-     * @param keyType see method description
+     * @param keyLength requested key length
+     * @param keyType requested key type
      * @return generated key
      * @throws SMException on security module error
      */
@@ -1525,7 +1525,7 @@ public class BaseSMAdapter<T>
     /**
      * Your SMAdapter should override this method if it has this functionality.
      *
-     * @param keySpec see method description
+     * @param keySpec key specification
      * @return generated key
      * @throws SMException on security module error
      */
@@ -1535,7 +1535,7 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param kd see method description
+     * @param kd secure key
      * @return generated Key Check Value
      * @throws SMException on security module error
      */
@@ -1545,8 +1545,8 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param key see method description
-     * @param destKeyScheme see method description
+     * @param key secure key
+     * @param destKeyScheme destination key scheme
      * @return translated key with {@code destKeyScheme} scheme
      * @throws SMException on security module error
      */
@@ -1557,11 +1557,11 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param keyLength see method description
-     * @param keyType — see method description
-     * @param encryptedKey see method description
-     * @param kek — see method description
-     * @param checkParity see method description
+     * @param keyLength requested key length
+     * @param keyType requested key type
+     * @param encryptedKey encrypted key bytes
+     * @param kek key-encrypting key
+     * @param checkParity whether to check DES key parity
      * @return imported key
      * @throws SMException on security module error
      */
@@ -1573,10 +1573,10 @@ public class BaseSMAdapter<T>
     /**
      * Your SMAdapter should override this method if it has this functionality.
      *
-     * @param kek see method description
-     * @param key — see method description
-     * @param keySpec see method description
-     * @param checkParity see method description
+     * @param kek key-encrypting key
+     * @param key secure key
+     * @param keySpec key specification
+     * @param checkParity whether to check DES key parity
      * @return imported key
      * @throws SMException on security module error
      */
@@ -1587,8 +1587,8 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param key see method description
-     * @param kek see method description
+     * @param key secure key
+     * @param kek key-encrypting key
      * @return exported key
      * @throws SMException on security module error
      */
@@ -1599,9 +1599,9 @@ public class BaseSMAdapter<T>
     /**
      * Your SMAdapter should override this method if it has this functionality.
      *
-     * @param kek see method description
-     * @param key — see method description
-     * @param keySpec see method description
+     * @param kek key-encrypting key
+     * @param key secure key
+     * @param keySpec key specification
      * @return exported key
      * @throws SMException on security module error
      */
@@ -1612,8 +1612,8 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pin see method description
-     * @param accountNumber see method description
+     * @param pin clear PIN value
+     * @param accountNumber account number associated with the PIN block
      * @return encrypted PIN under LMK
      * @throws SMException on security module error
      */
@@ -1624,9 +1624,9 @@ public class BaseSMAdapter<T>
     /**
      * Your SMAdapter should override this method if it has this functionality.
      *
-     * @param pin see method description
-     * @param accountNumber — see method description
-     * @param pek see method description
+     * @param pin clear PIN value
+     * @param accountNumber account number associated with the PIN block
+     * @param pek PIN-encrypting key
      * @return encrypted PIN under PEK.
      * @throws SMException on security module error
      */
@@ -1636,7 +1636,7 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderLmk see method description
+     * @param pinUnderLmk PIN block encrypted under the LMK
      * @return clear pin as entered by card holder
      * @throws SMException on security module error
      */
@@ -1646,8 +1646,8 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderKd1 see method description
-     * @param kd1 see method description
+     * @param pinUnderKd1 PIN block encrypted under the source key
+     * @param kd1 source key
      * @return imported pin
      * @throws SMException on security module error
      */
@@ -1657,10 +1657,10 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderKd1 see method description
-     * @param kd1 — see method description
-     * @param kd2 see method description
-     * @param destinationPINBlockFormat see method description
+     * @param pinUnderKd1 PIN block encrypted under the source key
+     * @param kd1 source key
+     * @param kd2 destination key
+     * @param destinationPINBlockFormat destination PIN block format
      * @return translated pin
      * @throws SMException on security module error
      */
@@ -1672,9 +1672,9 @@ public class BaseSMAdapter<T>
     /**
      * Your SMAdapter should override this method if it has this functionality
      * @deprecated
-     * @param pinUnderDuk see method description
-     * @param ksn — see method description
-     * @param bdk see method description
+     * @param pinUnderDuk PIN block encrypted under a DUKPT-derived key
+     * @param ksn key serial number
+     * @param bdk base derivation key
      * @return imported pin
      * @throws SMException on security module error
      */
@@ -1686,10 +1686,10 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderDuk see method description
-     * @param ksn — see method description
-     * @param bdk see method description
-     * @param tdes see method description
+     * @param pinUnderDuk PIN block encrypted under a DUKPT-derived key
+     * @param ksn key serial number
+     * @param bdk base derivation key
+     * @param tdes whether to use triple-DES DUKPT derivation
      * @return imported pin
      * @throws SMException on security module error
      */
@@ -1701,11 +1701,11 @@ public class BaseSMAdapter<T>
     /**
      * Your SMAdapter should override this method if it has this functionality
      * @deprecated
-     * @param pinUnderDuk see method description
-     * @param ksn — see method description
-     * @param bdk see method description
-     * @param kd2 — see method description
-     * @param destinationPINBlockFormat see method description
+     * @param pinUnderDuk PIN block encrypted under a DUKPT-derived key
+     * @param ksn key serial number
+     * @param bdk base derivation key
+     * @param kd2 destination key
+     * @param destinationPINBlockFormat destination PIN block format
      * @return translated pin
      * @throws SMException on security module error
      */
@@ -1717,12 +1717,12 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderDuk see method description
-     * @param ksn — see method description
-     * @param bdk see method description
-     * @param kd2 — see method description
-     * @param tdes see method description
-     * @param destinationPINBlockFormat see method description
+     * @param pinUnderDuk PIN block encrypted under a DUKPT-derived key
+     * @param ksn key serial number
+     * @param bdk base derivation key
+     * @param kd2 destination key
+     * @param tdes whether to use triple-DES DUKPT derivation
+     * @param destinationPINBlockFormat destination PIN block format
      * @return translated pin
      * @throws SMException on security module error
      */
@@ -1734,9 +1734,9 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderLmk see method description
-     * @param kd2 — see method description
-     * @param destinationPINBlockFormat see method description
+     * @param pinUnderLmk PIN block encrypted under the LMK
+     * @param kd2 destination key
+     * @param destinationPINBlockFormat destination PIN block format
      * @return exported pin
      * @throws SMException on security module error
      */
@@ -1747,9 +1747,9 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNumber see method description
-     * @param pinLen — see method description
-     * @param excludes see method description
+     * @param accountNumber account number associated with the PIN block
+     * @param pinLen requested PIN length
+     * @param excludes PIN values to reject
      * @return generated PIN under LMK
      * @throws SMException on security module error
      */
@@ -1760,11 +1760,11 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param pinUnderKd1 — see method description
-     * @param kd1 see method description
-     * @param template — see method description
-     * @param fields see method description
+     * @param accountNo card account number
+     * @param pinUnderKd1 PIN block encrypted under the source key
+     * @param kd1 source key
+     * @param template decimalisation table template
+     * @param fields template fields
      * @throws SMException on security module error
      */
     protected void printPINImpl(String accountNo, EncryptedPIN pinUnderKd1, T kd1
@@ -1774,11 +1774,11 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderLMK see method description
-     * @param pvkA — see method description
-     * @param pvkB see method description
-     * @param pvkIdx — see method description
-     * @param excludes see method description
+     * @param pinUnderLMK PIN block encrypted under the LMK
+     * @param pvkA first PIN verification key
+     * @param pvkB second PIN verification key
+     * @param pvkIdx PIN verification key index
+     * @param excludes PIN values to reject
      * @return PVV (VISA PIN Verification Value)
      * @throws SMException on security module error
      */
@@ -1790,12 +1790,12 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderKd1 see method description
-     * @param kd1 — see method description
-     * @param pvkA see method description
-     * @param pvkB — see method description
-     * @param pvkIdx see method description
-     * @param excludes see method description
+     * @param pinUnderKd1 PIN block encrypted under the source key
+     * @param kd1 source key
+     * @param pvkA first PIN verification key
+     * @param pvkB second PIN verification key
+     * @param pvkIdx PIN verification key index
+     * @param excludes PIN values to reject
      * @return PVV (VISA PIN Verification Value)
      * @throws SMException on security module error
      */
@@ -1807,12 +1807,12 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderKd see method description
-     * @param kd — see method description
-     * @param pvkA see method description
-     * @param pvkB — see method description
-     * @param pvki see method description
-     * @param pvv see method description
+     * @param pinUnderKd PIN block encrypted under the key
+     * @param kd secure key
+     * @param pvkA first PIN verification key
+     * @param pvkB second PIN verification key
+     * @param pvki PIN verification key index
+     * @param pvv PIN verification value
      * @return true if pin is valid false if not
      * @throws SMException on security module error
      */
@@ -1823,12 +1823,12 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderLmk see method description
-     * @param pvk — see method description
-     * @param decTab see method description
-     * @param pinValData — see method description
-     * @param minPinLen see method description
-     * @param excludes see method description
+     * @param pinUnderLmk PIN block encrypted under the LMK
+     * @param pvk PIN verification key
+     * @param decTab decimalisation table
+     * @param pinValData PIN validation data
+     * @param minPinLen minimum PIN length
+     * @param excludes PIN values to reject
      * @return IBM PIN Offset
      * @throws SMException on security module error
      */
@@ -1840,13 +1840,13 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderKd1 see method description
-     * @param kd1 — see method description
-     * @param pvk see method description
-     * @param decTab — see method description
-     * @param pinValData see method description
-     * @param minPinLen — see method description
-     * @param excludes see method description
+     * @param pinUnderKd1 PIN block encrypted under the source key
+     * @param kd1 source key
+     * @param pvk PIN verification key
+     * @param decTab decimalisation table
+     * @param pinValData PIN validation data
+     * @param minPinLen minimum PIN length
+     * @param excludes PIN values to reject
      * @return IBM PIN Offset
      * @throws SMException on security module error
      */
@@ -1859,13 +1859,13 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderKd see method description
-     * @param kd — see method description
-     * @param pvk see method description
-     * @param offset — see method description
-     * @param decTab see method description
-     * @param pinValData — see method description
-     * @param minPinLen see method description
+     * @param pinUnderKd PIN block encrypted under the key
+     * @param kd secure key
+     * @param pvk PIN verification key
+     * @param offset PIN offset
+     * @param decTab decimalisation table
+     * @param pinValData PIN validation data
+     * @param minPinLen minimum PIN length
      * @return true if pin is valid false if not
      * @throws SMException on security module error
      */
@@ -1877,12 +1877,12 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param pvk — see method description
-     * @param decTab see method description
-     * @param pinValData — see method description
-     * @param minPinLen see method description
-     * @param offset see method description
+     * @param accountNo card account number
+     * @param pvk PIN verification key
+     * @param decTab decimalisation table
+     * @param pinValData PIN validation data
+     * @param minPinLen minimum PIN length
+     * @param offset PIN offset
      * @return derived PIN under LMK
      * @throws SMException on security module error
      */
@@ -1894,11 +1894,11 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param cvkA — see method description
-     * @param cvkB see method description
-     * @param expDate — see method description
-     * @param serviceCode see method description
+     * @param accountNo card account number
+     * @param cvkA first card verification key
+     * @param cvkB second card verification key
+     * @param expDate card expiration date
+     * @param serviceCode card service code
      * @return Card Verification Code/Value
      * @throws SMException on security module error
      */
@@ -1910,11 +1910,11 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param cvkA — see method description
-     * @param cvkB see method description
-     * @param expDate — see method description
-     * @param serviceCode see method description
+     * @param accountNo card account number
+     * @param cvkA first card verification key
+     * @param cvkB second card verification key
+     * @param expDate card expiration date
+     * @param serviceCode card service code
      * @return Card Verification Digit (Code/Value)
      * @throws SMException on security module error
      */
@@ -1926,11 +1926,11 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param cvk — see method description
-     * @param upn see method description
-     * @param authrc — see method description
-     * @param sfarc see method description
+     * @param accountNo card account number
+     * @param cvk card verification key
+     * @param upn unpredictable number
+     * @param authrc authorization response code
+     * @param sfarc second-factor authorization response code
      * @return Cardholder Authentication Verification Value
      * @throws SMException on security module error
      */
@@ -1941,12 +1941,12 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param cvkA — see method description
-     * @param cvkB see method description
-     * @param cvv — see method description
-     * @param expDate see method description
-     * @param serviceCode see method description
+     * @param accountNo card account number
+     * @param cvkA first card verification key
+     * @param cvkB second card verification key
+     * @param cvv card verification value
+     * @param expDate card expiration date
+     * @param serviceCode card service code
      * @return true if CVV/CVC is falid or false if not
      * @throws SMException on security module error
      */
@@ -1957,12 +1957,12 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param cvkA — see method description
-     * @param cvkB see method description
-     * @param cvv — see method description
-     * @param expDate see method description
-     * @param serviceCode see method description
+     * @param accountNo card account number
+     * @param cvkA first card verification key
+     * @param cvkB second card verification key
+     * @param cvv card verification value
+     * @param expDate card expiration date
+     * @param serviceCode card service code
      * @return {@code true} if CVV/CVC is valid or {@code false} otherwise
      * @throws SMException on security module error
      */
@@ -1973,12 +1973,12 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param cvk — see method description
-     * @param cavv see method description
-     * @param upn — see method description
-     * @param authrc see method description
-     * @param sfarc see method description
+     * @param accountNo card account number
+     * @param cvk card verification key
+     * @param cavv cardholder authentication verification value
+     * @param upn unpredictable number
+     * @param authrc authorization response code
+     * @param sfarc second-factor authorization response code
      * @return Cardholder Authentication Verification Value
      * @throws SMException on security module error
      */
@@ -1989,13 +1989,13 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param imkac — see method description
-     * @param dcvv see method description
-     * @param expDate — see method description
-     * @param serviceCode see method description
-     * @param atc — see method description
-     * @param mkdm see method description
+     * @param accountNo card account number
+     * @param imkac issuer master key for application cryptograms
+     * @param dcvv dynamic card verification value
+     * @param expDate card expiration date
+     * @param serviceCode card service code
+     * @param atc application transaction counter
+     * @param mkdm master-key derivation method
      * @return true if dcvv is valid false if not
      * @throws SMException on security module error
      */
@@ -2007,13 +2007,13 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param accountNo see method description
-     * @param imkac — see method description
-     * @param dcvv see method description
-     * @param expDate — see method description
-     * @param serviceCode see method description
-     * @param atc — see method description
-     * @param mkdm see method description
+     * @param accountNo card account number
+     * @param imkac issuer master key for application cryptograms
+     * @param dcvv dynamic card verification value
+     * @param expDate card expiration date
+     * @param serviceCode card service code
+     * @param atc application transaction counter
+     * @param mkdm master-key derivation method
      * @return true if dcvv is valid false if not
      * @throws SMException on security module error
      */
@@ -2025,14 +2025,14 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param imkcvc3 see method description
-     * @param accountNo — see method description
-     * @param acctSeqNo see method description
-     * @param atc — see method description
-     * @param upn see method description
-     * @param data — see method description
-     * @param mkdm see method description
-     * @param cvc3 see method description
+     * @param imkcvc3 issuer master key for CVC3
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
+     * @param atc application transaction counter
+     * @param upn unpredictable number
+     * @param data input data
+     * @param mkdm master-key derivation method
+     * @param cvc3 card validation code 3
      * @return true if cvc3 is valid false if not
      * @throws SMException on security module error
      */
@@ -2044,15 +2044,15 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param mkdm see method description
-     * @param skdm — see method description
-     * @param imkac see method description
-     * @param accountNo — see method description
-     * @param acctSeqNo see method description
-     * @param arqc — see method description
-     * @param atc see method description
-     * @param upn — see method description
-     * @param txnData see method description
+     * @param mkdm master-key derivation method
+     * @param skdm session-key derivation method
+     * @param imkac issuer master key for application cryptograms
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
+     * @param arqc application request cryptogram
+     * @param atc application transaction counter
+     * @param upn unpredictable number
+     * @param txnData transaction data
      * @return true if ARQC/TC/AAC is valid or false if not
      * @throws SMException on security module error
      */
@@ -2064,17 +2064,17 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param mkdm see method description
-     * @param skdm — see method description
-     * @param imkac see method description
-     * @param accountNo — see method description
-     * @param acctSeqNo see method description
-     * @param arqc — see method description
-     * @param atc see method description
-     * @param upn — see method description
-     * @param arpcMethod see method description
-     * @param arc — see method description
-     * @param propAuthData see method description
+     * @param mkdm master-key derivation method
+     * @param skdm session-key derivation method
+     * @param imkac issuer master key for application cryptograms
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
+     * @param arqc application request cryptogram
+     * @param atc application transaction counter
+     * @param upn unpredictable number
+     * @param arpcMethod ARPC generation method
+     * @param arc authorization response code
+     * @param propAuthData proprietary authentication data
      * @return calculated ARPC
      * @throws SMException on security module error
      */
@@ -2087,18 +2087,18 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param mkdm see method description
-     * @param skdm — see method description
-     * @param imkac see method description
-     * @param accountNo — see method description
-     * @param acctSeqNo see method description
-     * @param arqc — see method description
-     * @param atc see method description
-     * @param upn — see method description
-     * @param transData see method description
-     * @param arpcMethod — see method description
-     * @param arc see method description
-     * @param propAuthData see method description
+     * @param mkdm master-key derivation method
+     * @param skdm session-key derivation method
+     * @param imkac issuer master key for application cryptograms
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
+     * @param arqc application request cryptogram
+     * @param atc application transaction counter
+     * @param upn unpredictable number
+     * @param transData transaction data
+     * @param arpcMethod ARPC generation method
+     * @param arc authorization response code
+     * @param propAuthData proprietary authentication data
      * @return calculated ARPC
      * @throws SMException on security module error
      */
@@ -2113,14 +2113,14 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param mkdm see method description
-     * @param skdm — see method description
-     * @param imksmi see method description
-     * @param accountNo — see method description
-     * @param acctSeqNo see method description
-     * @param atc — see method description
-     * @param arqc see method description
-     * @param data see method description
+     * @param mkdm master-key derivation method
+     * @param skdm session-key derivation method
+     * @param imksmi issuer master key for secure messaging integrity
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
+     * @param atc application transaction counter
+     * @param arqc application request cryptogram
+     * @param data input data
      * @return generated 8 bytes MAC
      * @throws SMException on security module error
      */
@@ -2132,21 +2132,21 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param mkdm see method description
-     * @param skdm — see method description
-     * @param padm see method description
-     * @param imksmi — see method description
-     * @param accountNo see method description
-     * @param acctSeqNo — see method description
-     * @param atc see method description
-     * @param arqc — see method description
-     * @param data see method description
-     * @param currentPIN — see method description
-     * @param newPIN see method description
-     * @param kd1 — see method description
-     * @param imksmc see method description
-     * @param imkac — see method description
-     * @param destinationPINBlockFormat see method description
+     * @param mkdm master-key derivation method
+     * @param skdm session-key derivation method
+     * @param padm proprietary authentication data method
+     * @param imksmi issuer master key for secure messaging integrity
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
+     * @param atc application transaction counter
+     * @param arqc application request cryptogram
+     * @param data input data
+     * @param currentPIN current PIN value
+     * @param newPIN replacement PIN value
+     * @param kd1 source key
+     * @param imksmc issuer master key for secure messaging confidentiality
+     * @param imkac issuer master key for application cryptograms
+     * @param destinationPINBlockFormat destination PIN block format
      * @return Pair of values, encrypted PIN and 8 bytes MAC
      * @throws SMException on security module error
      */
@@ -2161,10 +2161,10 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param cipherMode see method description
-     * @param kd — see method description
-     * @param data see method description
-     * @param iv see method description
+     * @param cipherMode cipher mode
+     * @param kd secure key
+     * @param data input data
+     * @param iv initialization vector
      * @return encrypted data
      * @throws SMException on security module error
      */
@@ -2175,10 +2175,10 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param cipherMode see method description
-     * @param kd — see method description
-     * @param data see method description
-     * @param iv see method description
+     * @param cipherMode cipher mode
+     * @param kd secure key
+     * @param data input data
+     * @param iv initialization vector
      * @return decrypted data
      * @throws SMException on security module error
      */
@@ -2189,8 +2189,8 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param data see method description
-     * @param kd see method description
+     * @param data input data
+     * @param kd secure key
      * @return generated CBC-MAC
      * @throws SMException on security module error
      */
@@ -2200,8 +2200,8 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param data see method description
-     * @param kd see method description
+     * @param data input data
+     * @param kd secure key
      * @return generated EDE-MAC
      * @throws SMException on security module error
      */
@@ -2224,8 +2224,8 @@ public class BaseSMAdapter<T>
     /**
      * Your SMAdapter should override this method if it has this functionality.
      *
-     * @param key see method description
-     * @param keySpec see method description
+     * @param key secure key
+     * @param keySpec key specification
      * @return key encrypted under the new LMK
      * @throws SMException if the parity of the imported key is not adjusted AND checkParity = true
      */
@@ -2247,7 +2247,7 @@ public class BaseSMAdapter<T>
     /**
      * Your SMAdapter should override this method if it has this functionality.
      *
-     * @param keySpec see method description
+     * @param keySpec key specification
      * @return key pair generated according to passed parameters
      * @throws SMException on security module error
      */

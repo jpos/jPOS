@@ -137,7 +137,7 @@ public enum EMVStandardTagType implements EMVTagType {
     APPLICATION_PRIORITY_INDICATOR_0x87(0x87, "Application Priority Indicator",
             "Indicates the priority of a given application or group of applications in a directory",
             DataSource.ICC, TLVDataFormat.BINARY, new FixedDataLength(1), 0x61, new FixedByteLength(1)),
-    /** EMV tag: Application Reference Currency. 1-4 currency codes used between the terminal and the ICC when the Transaction Currency Code is . */
+    /** EMV tag: Application Reference Currency. */
     APPLICATION_REFERENCE_CURRENCY_0x9F3B(
             0x9F3B,
             "Application Reference Currency",
@@ -145,7 +145,7 @@ public enum EMVStandardTagType implements EMVTagType {
                     + "different from the Application Currency Code; each code is 3 digits according to ISO 4217",
             DataSource.ICC, TLVDataFormat.PACKED_NUMERIC, new FixedDataLength(3), 0x70,
             new VariableByteLength(2, 8)),
-    /** EMV tag: Application Reference Currency Exponent. Indicates the implied position of the decimal point from the right of the amount, for each of the 1-4 . */
+    /** EMV tag: Application Reference Currency Exponent. */
     APPLICATION_REFERENCE_CURRENCY_EXPONENT_0x9F43(
             0x9F43,
             "Application Reference Currency Exponent",
@@ -190,7 +190,7 @@ public enum EMVStandardTagType implements EMVTagType {
     AUTHORISATION_RESPONSE_CODE_0x8A(0x8A, "Authorisation Response Code",
             "Code that defines the disposition of a message", DataSource.ISSUER,
             TLVDataFormat.ASCII_ALPHA_NUMERIC, new FixedDataLength(2), 0x00, new FixedByteLength(2)),
-    /** EMV tag: Bank Identifier Code (BIC). Uniquely identifies a bank as defined in ISO 9362.. */
+    /** EMV tag: Bank Identifier Code (BIC). */
     BANK_IDENTIFIER_CODE_0x5F54(0x5F54, "Bank Identifier Code (BIC)",
             "Uniquely identifies a bank as defined in ISO 9362.", DataSource.ICC,
             TLVDataFormat.PROPRIETARY, new VariableDiscreteDataLength(DataLength.DATA_LENGTH_PROPRIETARY,
@@ -215,7 +215,7 @@ public enum EMVStandardTagType implements EMVTagType {
             "Indicates cardholder name according to ISO 7813", DataSource.ICC,
             TLVDataFormat.ASCII_ALPHA_NUMERIC_SPECIAL, new VariableDataLength(2, 26), 0x70,
             new VariableByteLength(2, 26)),
-    /** EMV tag: Cardholder Name Extended. Indicates the whole cardholder name when greater than 26 characters using the same coding convention as . */
+    /** EMV tag: Cardholder Name Extended. */
     CARDHOLDER_NAME_EXTENDED_0x9F0B(
             0x9F0B,
             "Cardholder Name Extended",
@@ -251,7 +251,7 @@ public enum EMVStandardTagType implements EMVTagType {
     CRYPTOGRAM_INFORMATION_DATA_0x9F27(0x9F27, "Cryptogram Information Data",
             "Indicates the type of cryptogram and the actions to be performed by the terminal",
             DataSource.ICC, TLVDataFormat.BINARY, new FixedDataLength(1), 0x77, new FixedByteLength(1)),
-    /** EMV tag: Data Authentication Code. An issuer assigned value that is retained by the terminal during the verification process of the . */
+    /** EMV tag: Data Authentication Code. */
     DATA_AUTHENTICATION_CODE_0x9F45(0x9F45, "Data Authentication Code",
             "An issuer assigned value that is retained by the terminal during the verification process of the "
                     + "Signed Static Application Data", DataSource.ICC, TLVDataFormat.BINARY,
@@ -338,14 +338,14 @@ public enum EMVStandardTagType implements EMVTagType {
             "Unique and permanent serial number assigned to the IFD by the manufacturer",
             DataSource.TERMINAL, TLVDataFormat.ASCII_ALPHA_NUMERIC, new FixedDataLength(8), 0x00,
             new FixedByteLength(8)),
-    /** EMV tag: International Bank Account Number (IBAN). Uniquely identifies the account of a customer at a financial institution as defined in ISO 13616.. */
+    /** EMV tag: International Bank Account Number (IBAN). */
     INTERNATIONAL_BANK_ACCOUNT_NUMBER_0x5F53(
             0x5F53,
             "International Bank Account Number (IBAN)",
             "Uniquely identifies the account of a customer at a financial institution as defined in ISO 13616.",
             DataSource.ICC, TLVDataFormat.BINARY, new VariableDataLength(1, 34), 0xBF0C,
             new VariableByteLength(1, 34)),
-    /** EMV tag: Issuer Action Code - Default. Specifies the issuer’s conditions that cause a transaction to be rejected if it might have been . */
+    /** EMV tag: Issuer Action Code - Default. */
     ISSUER_ACTION_CODE_DEFAULT_0x9F0D(0x9F0D, "Issuer Action Code - Default",
             "Specifies the issuer’s conditions that cause a transaction to be rejected if it might have been "
                     + "approved online, but the terminal is unable to process the transaction online",
@@ -360,7 +360,7 @@ public enum EMVStandardTagType implements EMVTagType {
     ISSUER_ACTION_CODE_ONLINE_0x9F0F(0x9F0F, "Issuer Action Code - Online",
             "Specifies the issuer’s conditions that cause a transaction to be transmitted online",
             DataSource.ICC, TLVDataFormat.BINARY, new FixedDataLength(5), 0x70, new FixedByteLength(5)),
-    /** EMV tag: Issuer Application Data. Contains proprietary application data for transmission to the issuer in an online transaction.. */
+    /** EMV tag: Issuer Application Data. */
     ISSUER_APPLICATION_DATA_0x9F10(
             0x9F10,
             "Issuer Application Data",
@@ -394,7 +394,7 @@ public enum EMVStandardTagType implements EMVTagType {
             "Issuer Country Code (alpha3 format)",
             "Indicates the country of the issuer as defined in ISO 3166 (using a 3 character alphabetic code)",
             DataSource.ICC, TLVDataFormat.ASCII_ALPHA, new FixedDataLength(3), 0xBF0C, new FixedByteLength(3)),
-    /** EMV tag: Issuer Identification Number (IIN). The number that identifies the major industry and the card issuer and that forms the first part of . */
+    /** EMV tag: Issuer Identification Number (IIN). */
     ISSUER_IDENTIFICATION_NUMBER_0x42(
             0x42,
             "Issuer Identification Number (IIN)",
@@ -407,7 +407,7 @@ public enum EMVStandardTagType implements EMVTagType {
             TLVDataFormat.BINARY, new VariableDataLength(DataLength.DATA_LENGTH_VAR,
             DataLength.DATA_LENGTH_VAR), 0x70, new VariableByteLength(ByteLength.BYTE_LENGTH_VAR,
             ByteLength.BYTE_LENGTH_VAR)),
-    /** EMV tag: Issuer Public Key Exponent. Issuer public key exponent used for the verification of the Signed Static Application Data and . */
+    /** EMV tag: Issuer Public Key Exponent. */
     ISSUER_PUBLIC_KEY_EXPONENT_0x9F32(0x9F32, "Issuer Public Key Exponent",
             "Issuer public key exponent used for the verification of the Signed Static Application Data and "
                     + "the ICC Public Key Certificate", DataSource.ICC, TLVDataFormat.BINARY,
@@ -441,13 +441,13 @@ public enum EMVStandardTagType implements EMVTagType {
             DataSource.ISSUER, TLVDataFormat.CONSTRUCTED, new VariableDataLength(
             DataLength.DATA_LENGTH_VAR, DataLength.DATA_LENGTH_VAR), 0x00, new VariableByteLength(
             ByteLength.BYTE_LENGTH_VAR, ByteLength.BYTE_LENGTH_VAR)),
-    /** EMV tag: Issuer URL. The URL provides the location of the Issuer’s Library Server on the Internet.. */
+    /** EMV tag: Issuer URL. */
     ISSUER_URL_0x5F50(0x5F50, "Issuer URL",
             "The URL provides the location of the Issuer’s Library Server on the Internet.",
             DataSource.ICC, TLVDataFormat.ASCII_ALPHA_NUMERIC_SPECIAL, new VariableDataLength(
             DataLength.DATA_LENGTH_VAR, DataLength.DATA_LENGTH_VAR), 0xBF0C,
             new VariableByteLength(ByteLength.BYTE_LENGTH_VAR, ByteLength.BYTE_LENGTH_VAR)),
-    /** EMV tag: Language Preference. 1-4 languages stored in order of preference, each represented by 2 alphabetical characters . */
+    /** EMV tag: Language Preference. */
     LANGUAGE_PREFERENCE_0x5F2D(0x5F2D, "Language Preference",
             "1-4 languages stored in order of preference, each represented by 2 alphabetical characters "
                     + "according to ISO 639", DataSource.ICC, TLVDataFormat.ASCII_ALPHA_NUMERIC,
@@ -461,19 +461,19 @@ public enum EMVStandardTagType implements EMVTagType {
     LOG_ENTRY_0x9F4D(0x9F4D, "Log Entry",
             "Provides the SFI of the Transaction Log file and its number of records", DataSource.ICC,
             TLVDataFormat.BINARY, new FixedDataLength(1), 0xBF0C, new FixedByteLength(2)),
-    /** EMV tag: Log Format. List (in tag and length format) of data objects representing the logged data elements that are . */
+    /** EMV tag: Log Format. */
     LOG_FORMAT_0x9F4F(0x9F4F, "Log Format",
             "List (in tag and length format) of data objects representing the logged data elements that are "
                     + "passed to the terminal when a transaction log record is read", DataSource.ICC,
             TLVDataFormat.BINARY, new VariableDataLength(DataLength.DATA_LENGTH_VAR,
             DataLength.DATA_LENGTH_VAR), 0x00, new VariableByteLength(ByteLength.BYTE_LENGTH_VAR,
             ByteLength.BYTE_LENGTH_VAR)),
-    /** EMV tag: Lower Consecutive Offline Limit. Issuer-specified preference for the maximum number of consecutive offline transactions for this . */
+    /** EMV tag: Lower Consecutive Offline Limit. */
     LOWER_CONSECUTIVE_OFFLINE_LIMIT_0x9F14(0x9F14, "Lower Consecutive Offline Limit",
             "Issuer-specified preference for the maximum number of consecutive offline transactions for this "
                     + "ICC application allowed in a terminal with online capability", DataSource.ICC,
             TLVDataFormat.BINARY, new FixedDataLength(1), 0x70, new FixedByteLength(1)),
-    /** EMV tag: Merchant Category Code. Classifies the type of business being done by the merchant, represented according to ISO 8583:1993 . */
+    /** EMV tag: Merchant Category Code. */
     MERCHANT_CATEGORY_CODE_0x9F15(
             0x9F15,
             "Merchant Category Code",
@@ -495,12 +495,12 @@ public enum EMVStandardTagType implements EMVTagType {
     PERSONAL_IDENTIFICATION_NUMBER_TRY_COUNTER_0x9F17(0x9F17,
             "Personal Identification Number (PIN) Try Counter", "Number of PIN tries remaining",
             DataSource.ICC, TLVDataFormat.BINARY, new FixedDataLength(2), 0x00, new FixedByteLength(1)),
-    /** EMV tag: Point-of-Service (POS) Entry Mode. Indicates the method by which the PAN was entered, according to the first two digits of the ISO . */
+    /** EMV tag: Point-of-Service (POS) Entry Mode. */
     POINT_OF_SERVICE_POS_ENTRY_MODE_0x9F39(0x9F39, "Point-of-Service (POS) Entry Mode",
             "Indicates the method by which the PAN was entered, according to the first two digits of the ISO "
                     + "8583:1987 POS Entry Mode", DataSource.TERMINAL, TLVDataFormat.PACKED_NUMERIC,
             new FixedDataLength(2), 0x00, new FixedByteLength(1)),
-    /** EMV tag: Processing Options Data Object List (PDOL). Contains a list of terminal resident data objects (tags and lengths) needed by the ICC in processing . */
+    /** EMV tag: Processing Options Data Object List (PDOL). */
     PROCESSING_OPTIONS_DATA_OBJECT_LIST_0x9F38(
             0x9F38,
             "Processing Options Data Object List (PDOL)",
@@ -508,7 +508,7 @@ public enum EMVStandardTagType implements EMVTagType {
                     + "the GET PROCESSING OPTIONS command", DataSource.ICC, TLVDataFormat.BINARY,
             new VariableDataLength(DataLength.DATA_LENGTH_VAR, DataLength.DATA_LENGTH_VAR), 0xA5,
             new VariableByteLength(ByteLength.BYTE_LENGTH_VAR, ByteLength.BYTE_LENGTH_VAR)),
-    /** EMV tag: READ RECORD Response Message Template. Contains the contents of the record read. (Mandatory for SFIs 1-10. Response messages for SFIs 11-30 . */
+    /** EMV tag: READ RECORD Response Message Template. */
     READ_RECORD_RESPONSE_MESSAGE_TEMPLATE_0x70(
             0x70,
             "READ RECORD Response Message Template",
@@ -535,7 +535,7 @@ public enum EMVStandardTagType implements EMVTagType {
     SERVICE_CODE_0x5F30(0x5F30, "Service Code",
             "Service code as defined in ISO/IEC 7813 for track 1 and track 2", DataSource.ICC,
             TLVDataFormat.PACKED_NUMERIC, new FixedDataLength(3), 0x70, new FixedByteLength(2)),
-    /** EMV tag: Short File Identifier (SFI). Identifies the AEF referenced in commands related to a given ADF or DDF. It is a binary data object . */
+    /** EMV tag: Short File Identifier (SFI). */
     SHORT_FILE_IDENTIFIER_0x88(
             0x88,
             "Short File Identifier (SFI)",
@@ -554,7 +554,7 @@ public enum EMVStandardTagType implements EMVTagType {
             TLVDataFormat.BINARY, new VariableDataLength(DataLength.DATA_LENGTH_VAR,
             DataLength.DATA_LENGTH_VAR), 0x70, new VariableByteLength(ByteLength.BYTE_LENGTH_VAR,
             ByteLength.BYTE_LENGTH_VAR)),
-    /** EMV tag: Static Data Authentication Tag List. List of tags of primitive data objects defined in this specification whose value fields are to be . */
+    /** EMV tag: Static Data Authentication Tag List. */
     STATIC_DATA_AUTHENTICATION_TAG_LIST_0x9F4A(
             0x9F4A,
             "Static Data Authentication Tag List",
@@ -610,7 +610,7 @@ public enum EMVStandardTagType implements EMVTagType {
             TLVDataFormat.COMPRESSED_NUMERIC, new VariableDataLength(DataLength.DATA_LENGTH_VAR,
             DataLength.DATA_LENGTH_VAR), 0x70, new VariableByteLength(ByteLength.BYTE_LENGTH_VAR,
             ByteLength.BYTE_LENGTH_VAR)),
-    /** EMV tag: Track 2 Equivalent Data. Contains the data elements of track 2 according to ISO/IEC 7813, excluding start sentinel, . */
+    /** EMV tag: Track 2 Equivalent Data. */
     TRACK_2_EQUIVALENT_DATA_0x57(0x57, "Track 2 Equivalent Data",
             "Contains the data elements of track 2 according to ISO/IEC 7813, excluding start sentinel, "
                     + "end sentinel, and Longitudinal Redundancy Check (LRC), as follows:",
@@ -632,7 +632,7 @@ public enum EMVStandardTagType implements EMVTagType {
             "Indicates the currency code of the transaction according to ISO 4217",
             DataSource.TERMINAL, TLVDataFormat.PACKED_NUMERIC, new FixedDataLength(3), 0x00,
             new FixedByteLength(2)),
-    /** EMV tag: Transaction Currency Exponent. Indicates the implied position of the decimal point from the right of the transaction amount . */
+    /** EMV tag: Transaction Currency Exponent. */
     TRANSACTION_CURRENCY_EXPONENT_0x5F36(0x5F36, "Transaction Currency Exponent",
             "Indicates the implied position of the decimal point from the right of the transaction amount "
                     + "represented according to ISO 4217", DataSource.TERMINAL,
@@ -648,12 +648,12 @@ public enum EMVStandardTagType implements EMVTagType {
             DataSource.TERMINAL, TLVDataFormat.BINARY, new VariableDataLength(DataLength.DATA_LENGTH_VAR,
             DataLength.DATA_LENGTH_VAR), 0x00, new VariableByteLength(ByteLength.BYTE_LENGTH_VAR,
             ByteLength.BYTE_LENGTH_VAR)),
-    /** EMV tag: Transaction Reference Currency Code. Code defining the common currency used by the terminal in case the Transaction Currency Code is . */
+    /** EMV tag: Transaction Reference Currency Code. */
     TRANSACTION_REFERENCE_CURRENCY_CODE_0x9F3C(0x9F3C, "Transaction Reference Currency Code",
             "Code defining the common currency used by the terminal in case the Transaction Currency Code is "
                     + "different from the Application Currency Code", DataSource.TERMINAL,
             TLVDataFormat.PACKED_NUMERIC, new FixedDataLength(3), 0x00, new FixedByteLength(2)),
-    /** EMV tag: Transaction Reference Currency Exponent. Indicates the implied position of the decimal point from the right of the transaction amount, . */
+    /** EMV tag: Transaction Reference Currency Exponent. */
     TRANSACTION_REFERENCE_CURRENCY_EXPONENT_0x9F3D(0x9F3D,
             "Transaction Reference Currency Exponent",
             "Indicates the implied position of the decimal point from the right of the transaction amount, "
@@ -673,7 +673,7 @@ public enum EMVStandardTagType implements EMVTagType {
     TRANSACTION_TIME_0x9F21(0x9F21, "Transaction Time",
             "Local time that the transaction was authorised", DataSource.TERMINAL, TLVDataFormat.PACKED_NUMERIC_TIME_HHMMSS,
             new FixedDataLength(6), 0x00, new FixedByteLength(3)),
-    /** EMV tag: Transaction Type. Indicates the type of financial transaction, represented by the first two digits of the ISO 8583:1987 . */
+    /** EMV tag: Transaction Type. */
     TRANSACTION_TYPE_0x9C(
             0x9C,
             "Transaction Type",
@@ -686,7 +686,7 @@ public enum EMVStandardTagType implements EMVTagType {
             "Value to provide variability and uniqueness to the generation of a cryptogram",
             DataSource.TERMINAL, TLVDataFormat.BINARY, new FixedDataLength(4), 0x00,
             new FixedByteLength(4)),
-    /** EMV tag: Upper Consecutive Offline Limit. Issuer-specified preference for the maximum number of consecutive offline transactions for this ICC . */
+    /** EMV tag: Upper Consecutive Offline Limit. */
     UPPER_CONSECUTIVE_OFFLINE_LIMIT_0x9F23(
             0x9F23,
             "Upper Consecutive Offline Limit",
@@ -704,7 +704,7 @@ public enum EMVStandardTagType implements EMVTagType {
     private final DataLength dataLength;
     private final ByteLength byteLength;
 
-    /** EMV tag: Illegal attempt to add duplicate EMVTagType with tagNumber: . . Enum: . */
+    /** Error message used when a duplicate EMV tag number is registered. */
     EMVStandardTagType(final int tagNumber, final String tagName, final String tagDescription,
                        final DataSource source, final TLVDataFormat format, final DataLength dataLength,
                        final Integer template, final ByteLength byteLength) {

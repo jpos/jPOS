@@ -18,7 +18,7 @@
 
 package org.jpos.iso;
 
-/** IFEMC_LLCHAR ISOFieldPackager implementation. */
+/** EBCDIC LLVAR tagged character field packager for MasterCard-style fields. */
 public class IFEMC_LLCHAR extends ISOTagStringFieldPackager {
     /** Default constructor. */
     public IFEMC_LLCHAR() {

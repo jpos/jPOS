@@ -22,11 +22,11 @@ public interface ISOMsgMetrics {
     /** Environment variable name for channel fields configuration. */
     String ENV_CHANNEL_FIELDS =     "metrics.channel.fields";
     /** Default channel fields for metrics. */
-        String DEFAULT_CHANNEL_FIELDS = "mti";
+    String DEFAULT_CHANNEL_FIELDS = "mti";
 
     /** Implemented by components that expose an {@link ISOMsgMetrics} instance. */
     interface Source{
-            /**
+        /**
          * Sets the ISOMsgMetrics instance.
          * @param metrics the ISOMsgMetrics to attach
          */
@@ -65,7 +65,7 @@ public interface ISOMsgMetrics {
      * @param tags the tags to add
      * @return the updated Tags
      */
-        default Tags addTags(String ...tags) { return addTags(Tags.of(tags)); }
+    default Tags addTags(String ...tags) { return addTags(Tags.of(tags)); }
     /** Returns all metric tags.
      * @return the metric tags
      */
@@ -95,7 +95,6 @@ public interface ISOMsgMetrics {
      * what has been configured. If this object hasn't been successfully registered, it throws an
      * {@link IllegalStateException}.
      *
-      * @throws IllegalStateException when this object hasn't been registered
      * @param m          the ISO message
      * @param meterInfo  the meter info to record
      * @throws IllegalStateException if recording fails
@@ -135,10 +134,11 @@ public interface ISOMsgMetrics {
      */
     void unregister();
 
-/** Returns the meter registry.
+    /**
+     * Returns the meter registry.
      * @return the MeterRegistry
      */
-        MeterRegistry getRegistry();
+    MeterRegistry getRegistry();
 
     /** Removes all registered meters. */
     void removeMeters();

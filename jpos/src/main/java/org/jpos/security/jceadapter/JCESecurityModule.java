@@ -389,8 +389,8 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
 
     /**
      * Concatenates two single-length DES keys into a double-length DESede key,
-     * decrypting them from the LMK first. Returns the single non-null key when
-     * one of the two is {@code null} or longer than single-length.
+     * decrypting them from the LMK first. If either non-null input is already
+     * longer than single-length, decrypts and returns that key.
      *
      * @param keyA first secured key, may be {@code null}
      * @param keyB second secured key, may be {@code null}
@@ -1420,10 +1420,10 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * Forms a key from 3 clear components and returns it encrypted under its corresponding LMK
      * The corresponding LMK is determined from the keyType
      * @param keyLength e.g. LENGTH_DES, LENGTH_DES3_2, LENGTH_DES3_3, ..
-     * @param keyType possible values are those defined in the SecurityModule inteface. e.g., ZMK, TMK,...
+     * @param keyType possible values are those defined in the SecurityModule interface, e.g. ZMK, TMK
      * @param clearComponent1HexString HexString containing the first component
      * @param clearComponent2HexString HexString containing the second component
-     * @param clearComponent3HexString HexString containing the second component
+     * @param clearComponent3HexString HexString containing the third component
      * @return SecureDESKey formed from the three clear components
      * @throws SMException on key formation failure
      */
