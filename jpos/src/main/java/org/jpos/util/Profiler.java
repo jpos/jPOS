@@ -21,9 +21,9 @@ package org.jpos.util;
 import org.jpos.iso.ISOUtil;
 
 import java.io.PrintStream;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Simple Profiler
@@ -45,7 +45,7 @@ public class Profiler implements Loggeable {
     /**
      * reset timers
      */
-    public void reset() {
+    public synchronized void reset() {
         start = partial = System.nanoTime();
         events = new LinkedHashMap<>();
     }
@@ -104,30 +104,32 @@ public class Profiler implements Loggeable {
      */
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
-        if (!events.containsKey("end"))
-            checkPoint ("end");
-        Collection c = events.values();
-        Iterator iter = c.iterator();
+        List<Entry> snapshot;
+        synchronized (this) {
+            if (!events.containsKey("end"))
+                checkPoint ("end");
+            snapshot = new ArrayList<>(events.values());
+        }
         p.println (indent + "<profiler>");
-        while (iter.hasNext()) 
-            p.println (inner + ISOUtil.normalize(iter.next().toString()));
+        for (Entry entry : snapshot)
+            p.println (inner + ISOUtil.normalize(entry.toString()));
         p.println (indent + "</profiler>");
     }
     /** Returns all profiler events collected since the last reset.
      * @return ordered map of event name to Entry
      */
-    public LinkedHashMap<String, Entry> getEvents() {
-        return events;
+    public synchronized LinkedHashMap<String, Entry> getEvents() {
+        return new LinkedHashMap<>(events);
     }
     /** Returns the profiler entry for the given event name.
      * @param eventName the event name
      * @return the corresponding Entry, or {@code null} if not found
      */
-    public Entry getEntry(String eventName) {
+    public synchronized Entry getEntry(String eventName) {
          return events.get(eventName);
     }
     /** Removes the "end" checkpoint so profiling can continue. */
-    public void reenable() {
+    public synchronized void reenable() {
         events.remove("end");
     }
     /** A single timed checkpoint entry recorded by the Profiler. */

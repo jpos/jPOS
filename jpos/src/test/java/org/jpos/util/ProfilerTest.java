@@ -77,6 +77,23 @@ public class ProfilerTest {
     }
 
     @Test
+    public void testDumpWhileProfilingDoesNotThrowConcurrentModificationException() throws Throwable {
+        Profiler profiler = new Profiler();
+        Profiler.Entry mutatingEntry = new Profiler.Entry() {
+            @Override
+            public String toString() {
+                profiler.checkPoint("mutated");
+                return super.toString();
+            }
+        };
+        mutatingEntry.setEventName("mutating-entry");
+        profiler.events.put("mutating-entry", mutatingEntry);
+        profiler.checkPoint("second-entry");
+
+        profiler.dump(new PrintStream(new ByteArrayOutputStream()), "testProfilerIndent");
+    }
+
+    @Test
     public void testGetPartial() throws Throwable {
         new Profiler().getPartial();
         assertTrue(true, "Test completed without Exception");
