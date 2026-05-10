@@ -198,6 +198,18 @@ public class ISOMsg extends ISOComponent
             recalcMaxField();
         return maxField;
     }
+
+    /**
+     * Returns a snapshot of field numbers as a new TreeSet.
+     * Safe for concurrent iteration during dump operations.
+     * TreeSet maintains sorted order required for XMLPackager.
+     * @return new TreeSet containing current field numbers
+     */
+    public Set<Integer> getFieldNumbers() {
+        synchronized (fields) {
+            return new TreeSet<>(fields.keySet());
+        }
+    }
     private void recalcMaxField() {
         maxField = 0;
         for (Object obj : fields.keySet()) {
@@ -232,11 +244,13 @@ public class ISOMsg extends ISOComponent
      */
     public void set (ISOComponent c) throws ISOException {
         if (c != null) {
-            Integer i = (Integer) c.getKey();
-            fields.put (i, c);
-            if (i > maxField)
-                maxField = i;
-            dirty = true;
+            synchronized (fields) {
+                Integer i = (Integer) c.getKey();
+                fields.put (i, c);
+                if (i > maxField)
+                    maxField = i;
+                dirty = true;
+            }
         }
     }
 
@@ -654,7 +668,7 @@ public class ISOMsg extends ISOComponent
         if (header instanceof Loggeable)
             ((Loggeable) header).dump (p, newIndent);
 
-        for (int i : fields.keySet()) {
+        for (int i : getFieldNumbers()) {
            //If you want the bitmap dumped in the log, change the condition from (i >= 0) to (i >= -1). 
             if (i >= 0) {
                 if ((c = (ISOComponent) fields.get(i)) != null)

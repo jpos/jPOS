@@ -287,7 +287,11 @@ public class ISODatasetField extends ISOComponent {
     public void dump(PrintStream p, String indent) {
         p.println(indent + "<" + XMLPackager.ISOFIELD_TAG + " " + XMLPackager.ID_ATTR + "=\"" + fieldNumber + "\" type=\"dataset\">");
         String innerIndent = indent + "  ";
-        for (Dataset dataset : datasets) {
+        List<Dataset> snapshot;
+        synchronized (datasets) {
+            snapshot = new ArrayList<>(datasets);
+        }
+        for (Dataset dataset : snapshot) {
             p.println(innerIndent + "<dataset id=\"" + String.format("%02X", dataset.getIdentifier()) + "\" format=\"" + dataset.getFormat() + "\">");
             String datasetIndent = innerIndent + "  ";
             for (DatasetElement element : dataset.getElements()) {
