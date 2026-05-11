@@ -27,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
@@ -71,7 +73,8 @@ public class ProfilerTest {
             if (isJavaVersionAtMost(JAVA_14)) {
                 assertNull(ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("Cannot invoke \"java.io.PrintStream.println(String)\" because \"p\" is null", ex.getMessage(), "ex.getMessage()");
+                assertEquals("Cannot invoke \"java.io.PrintStream.println(String)\" because \"p\" is null",
+                        ex.getMessage(), "ex.getMessage()");
             }
         }
     }
@@ -91,6 +94,115 @@ public class ProfilerTest {
         profiler.checkPoint("second-entry");
 
         profiler.dump(new PrintStream(new ByteArrayOutputStream()), "testProfilerIndent");
+    }
+
+    /**
+     * Verifies that concurrent calls to {@link Profiler#dump} and
+     * {@link Profiler#checkPoint}
+     * do not cause a {@link java.util.ConcurrentModificationException}.
+     *
+     * <p>
+     * This test simulates the real-world scenario where one thread is
+     * logging/dumping
+     * profiler results while other threads are simultaneously recording
+     * checkpoints.
+     * The race condition occurs when dump() iterates over the events map while
+     * checkPoint() modifies it from another thread.
+     * </p>
+     *
+     * <p>
+     * Test strategy: spawn multiple writer threads calling checkPoint()
+     * concurrently
+     * with a dumper thread calling dump(). Both use CountDownLatch to start
+     * simultaneously,
+     * maximizing the chance of interleaving. Thread.yield() calls increase
+     * contention
+     * by giving other threads opportunity to acquire the profiler's lock.
+     * </p>
+     *
+     * @throws Throwable if any thread encounters an exception during execution
+     */
+    @Test
+    public void testConcurrentDumpAndCheckpoint() throws Throwable {
+        Profiler profiler = new Profiler();
+
+        // Test configuration: 4 writer threads each performing 2000 checkpoint
+        // operations
+        // with a single dumper thread performing 2000 dump operations.
+        // This creates significant contention on the profiler's internal lock.
+        final int threads = 4;
+        final int iterations = 2000;
+
+        // startLatch ensures all threads begin simultaneously, maximizing race
+        // conditions
+        final CountDownLatch startLatch = new CountDownLatch(1);
+
+        // failed flag captured by all threads; any exception sets it to true
+        final AtomicBoolean failed = new AtomicBoolean(false);
+
+        // Spawn writer threads that continuously call checkPoint()
+        final Thread[] writers = new Thread[threads];
+        for (int i = 0; i < threads; i++) {
+            final int threadNum = i;
+            writers[i] = new Thread(() -> {
+                try {
+                    // Wait for start signal before beginning
+                    startLatch.await();
+
+                    for (int j = 0; j < iterations; j++) {
+                        // Each thread records checkpoints with unique names to avoid lock
+                        // contention on the same key, but still modifies the shared events map
+                        profiler.checkPoint("t" + threadNum + "i" + j);
+
+                        // Yield every 10 iterations to increase chance of lock contention
+                        // between threads, improving the likelihood of catching the race
+                        if (j % 10 == 0) {
+                            Thread.yield();
+                        }
+                    }
+                } catch (Exception e) {
+                    // Capture any exception (including ConcurrentModificationException)
+                    failed.set(true);
+                }
+            });
+            writers[i].start();
+        }
+
+        // Spawn dumper thread that continuously calls dump()
+        final Thread dumper = new Thread(() -> {
+            try {
+                // Wait for start signal before beginning
+                startLatch.await();
+
+                for (int j = 0; j < iterations; j++) {
+                    // dump() iterates over the events map while writers modify it,
+                    // triggering ConcurrentModificationException if not properly synchronized
+                    profiler.dump(new PrintStream(new ByteArrayOutputStream()), "");
+
+                    // Yield every 10 iterations to increase contention with writers
+                    if (j % 10 == 0) {
+                        Thread.yield();
+                    }
+                }
+            } catch (Exception e) {
+                // Capture any exception (including ConcurrentModificationException)
+                failed.set(true);
+            }
+        });
+        dumper.start();
+
+        // Start all threads at the same moment
+        startLatch.countDown();
+
+        // Wait for dumper to finish first, then writers
+        dumper.join();
+        for (Thread t : writers) {
+            t.join();
+        }
+
+        // Assert no thread encountered an exception
+        assertTrue(!failed.get(),
+                "Concurrent modification or other exception should not occur");
     }
 
     @Test
