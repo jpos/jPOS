@@ -39,10 +39,16 @@ import java.util.*;
 public class ISOMsg extends ISOComponent
     implements Cloneable, Loggeable, Externalizable
 {
-    /** Map of field number to field value. */
+    /** Map of field number to field value. All mutations and iterations must synchronize on this object. */
     protected Map<Integer,Object> fields;
-    /** Highest field number currently set in this message. */
-    protected int maxField;
+    /**
+     * Highest field number currently set in this message.
+     * <p>
+     * Declared {@code volatile} so that any thread reading it (even indirectly via
+     * {@link #recalcMaxField()}) sees the latest value written under {@code synchronized(fields)}.
+     * This prevents stale reads when concurrent threads modify {@code fields}.
+     */
+    protected volatile int maxField;
     /** The packager used to pack/unpack this message. */
     protected ISOPackager packager;
     /** Dirty flags for tracking state changes. */
@@ -190,13 +196,23 @@ public class ISOMsg extends ISOComponent
     }
     /**
      * Returns the highest field number present in this message.
+     * <p>
+     * Synchronizes on {@code fields} to ensure a consistent view of both the
+     * {@code maxFieldDirty} flag and the {@code maxField} value. If the dirty
+     * flag is set, {@link #recalcMaxField()} walks the map keys to recompute
+     * the maximum. This method must use the same lock as {@link #set(ISOComponent)},
+     * {@link #unset(int)}, and {@link #recalcBitMap()} to prevent concurrent
+     * modification and stale reads of {@code maxField}.
+     *
      * @return the max field number
      */
     @Override
     public int getMaxField() {
-        if (maxFieldDirty)
-            recalcMaxField();
-        return maxField;
+        synchronized (fields) {
+            if (maxFieldDirty)
+                recalcMaxField();
+            return maxField;
+        }
     }
 
     /**
@@ -210,6 +226,12 @@ public class ISOMsg extends ISOComponent
             return new TreeSet<>(fields.keySet());
         }
     }
+    /**
+     * Recomputes {@link #maxField} by scanning all keys in the fields map.
+     * <p>
+     * Must only be called from within a {@code synchronized(fields)} block —
+     * callers include {@link #getMaxField()} and {@link #recalcBitMap()}.
+     */
     private void recalcMaxField() {
         maxField = 0;
         for (Object obj : fields.keySet()) {
@@ -239,7 +261,17 @@ public class ISOMsg extends ISOComponent
         return packager;
     }
     /**
-     * Set a field within this message
+     * Set a field within this message.
+     * <p>
+     * Synchronizes on {@code fields} to provide mutual exclusion with all other
+     * methods that mutate the fields map: {@link #unset(int)}, {@link #recalcBitMap()},
+     * {@link #pack()}, and {@link #unpack(byte[])}. This ensures that a thread
+     * iterating over {@code fields.keySet()} (e.g. during dump() or bitmap recalculation)
+     * never observes a partially-modified map.
+     * <p>
+     * Updates {@code maxField} if the new field number exceeds it, and marks the
+     * message as dirty so that the bitmap will be recalculated on the next pack().
+     *
      * @param c - a component
      */
     public void set (ISOComponent c) throws ISOException {
@@ -247,6 +279,7 @@ public class ISOMsg extends ISOComponent
             synchronized (fields) {
                 Integer i = (Integer) c.getKey();
                 fields.put (i, c);
+                // Update maxField under the same lock for atomic visibility with map mutation.
                 if (i > maxField)
                     maxField = i;
                 dirty = true;
@@ -474,12 +507,19 @@ public class ISOMsg extends ISOComponent
 
     /**
      * Unset a field if it exists, otherwise ignore.
+     * <p>
+     * Synchronizes on {@code fields} to ensure mutual exclusion with {@link #set(ISOComponent)},
+     * {@link #recalcBitMap()}, {@link #pack()}, and {@link #unpack(byte[])}. The removal from the
+     * map and the dirty-flag updates are performed atomically under a single lock acquisition.
+     *
      * @param fldno - the field number
      */
     @Override
     public void unset (int fldno) {
-        if (fields.remove (fldno) != null)
-            dirty = maxFieldDirty = true;
+        synchronized (fields) {
+            if (fields.remove (fldno) != null)
+                dirty = maxFieldDirty = true;
+        }
     }
 
     /**
@@ -576,21 +616,38 @@ public class ISOMsg extends ISOComponent
         return this;
     }
     /**
-     * setup BitMap
-     * @exception ISOException on error
+     * Recomputes the bitmap by scanning all field numbers and setting corresponding bits.
+     * <p>
+     * Synchronizes on {@code fields} to prevent concurrent modification while iterating
+     * the map. This method is called from {@link #pack()} under the same lock, ensuring
+     * that no writer can modify the map between iteration and bitmap insertion.
+     * <p>
+     * Calls {@link #set(ISOComponent)} internally with a new {@link ISOBitMap}.
+     * Because both use the same monitor ({@code fields}), this is reentrant — the JVM
+     * lock count increments rather than blocking. The inner {@code set()} also sets
+     * {@code dirty = true}, which we clear at the end to mark completion.
+     * <p>
+     * If the message is not dirty (no fields have been added/removed since the last
+     * bitmap calculation), this method returns immediately without work.
+     *
+     * @exception ISOException on error during bitmap creation or insertion
      */
     public void recalcBitMap () throws ISOException {
-        if (!dirty)
-            return;
+        synchronized (fields) {
+            if (!dirty)
+                return;
 
-        int mf = Math.min (getMaxField(), 192);
+            // Limit scan range to 192 to avoid excessive work on sparse messages with high field numbers.
+            int mf = Math.min (getMaxField(), 192);
 
-        BitSet bmap = new BitSet (mf+62 >>6 <<6);
-        for (int i=1; i<=mf; i++)
-            if (fields.get (i) != null)
-                bmap.set (i);
-        set (new ISOBitMap (-1, bmap));
-        dirty = false;
+            BitSet bmap = new BitSet (mf+62 >>6 <<6);
+            for (int i=1; i<=mf; i++)
+                if (fields.get (i) != null)
+                    bmap.set (i);
+            // Reentrant: set() acquires the same fields lock, incrementing the monitor count.
+            set (new ISOBitMap (-1, bmap));
+            dirty = false;
+        }
     }
     /**
      * clone fields
@@ -602,35 +659,57 @@ public class ISOMsg extends ISOComponent
     }
     /**
      * Packs this message using the configured packager.
+     * <p>
+     * Synchronizes on {@code fields} (not {@code this}) to ensure mutual exclusion with
+     * all mutating methods: {@link #set(ISOComponent)}, {@link #unset(int)}, and
+     * {@link #recalcBitMap()}. This is critical — if pack() used a different lock than
+     * set()/unset(), concurrent threads could modify the fields map while it is being
+     * iterated during bitmap recalculation, causing {@code ConcurrentModificationException}
+     * or silent data corruption.
+     * <p>
+     * Calls {@link #recalcBitMap()} first to ensure the bitmap reflects the current state
+     * of all fields before packing begins.
+     *
      * @return the packed message
      * @exception ISOException on packing error
      */
     @Override
     public byte[] pack() throws ISOException {
-        synchronized (this) {
+        synchronized (fields) {
             recalcBitMap();
             return packager.pack(this);
         }
     }
     /**
      * Unpacks the raw byte array into this message.
+     * <p>
+     * Synchronizes on {@code fields} to prevent concurrent modification while the
+     * packager inserts fields during unpacking. Uses the same lock as {@link #set(ISOComponent)},
+     * {@link #unset(int)}, and {@link #recalcBitMap()} for consistent mutual exclusion.
+     *
      * @param b - raw message
      * @return consumed bytes
      * @exception ISOException on unpacking error
      */
     @Override
     public int unpack(byte[] b) throws ISOException {
-        synchronized (this) {
+        synchronized (fields) {
             return packager.unpack(this, b);
         }
     }
-    /** {@inheritDoc}
+    /**
+     * Unpacks from an input stream.
+     * <p>
+     * Synchronizes on {@code fields} for the same reasons as {@link #unpack(byte[])}.
+     * Uses the same lock ({@code fields}) as all mutating methods to ensure that no
+     * writer can modify the map while unpacking is in progress.
+     *
      * @throws IOException on I/O failure
      * @throws ISOException on unpacking error
      */
     @Override
     public void unpack (InputStream in) throws IOException, ISOException {
-        synchronized (this) {
+        synchronized (fields) {
             packager.unpack(this, in);
         }
     }
