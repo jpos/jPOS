@@ -1106,6 +1106,34 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public byte[] generateApplicationCryptogram(MKDMethod mkdm, SKDMethod skdm, T imkac
+            ,String accountNo, String acctSeqNo, byte[] atc, byte[] upn, byte[] txnData)
+            throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        cmdParameters.add(new SimpleMsg("parameter", "txn data", txnData == null ? "" : ISOUtil.hexString(txnData)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate Application Cryptogram", cmdParameters));
+        try {
+            byte[] result = generateApplicationCryptogramImpl(mkdm, skdm, imkac, accountNo, acctSeqNo, atc, upn, txnData);
+            evt.addMessage(new SimpleMsg("result", "Application Cryptogram", result == null ? "" : ISOUtil.hexString(result)));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public byte[] generateARPC(MKDMethod mkdm, SKDMethod skdm, T imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
@@ -2150,6 +2178,25 @@ public class BaseSMAdapter<T>
     protected boolean verifyARQCImpl(MKDMethod mkdm, SKDMethod skdm, T imkac
             ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc
             ,byte[] upn, byte[] txnData) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm master-key derivation method
+     * @param skdm session-key derivation method
+     * @param imkac issuer master key for application cryptograms
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
+     * @param atc application transaction counter
+     * @param upn unpredictable number
+     * @param txnData transaction data
+     * @return calculated 8-byte Application Cryptogram (ARQC/TC/AAC)
+     * @throws SMException on security module error
+     */
+    protected byte[] generateApplicationCryptogramImpl(MKDMethod mkdm, SKDMethod skdm, T imkac
+            ,String accountNo, String acctSeqNo, byte[] atc, byte[] upn, byte[] txnData)
+            throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

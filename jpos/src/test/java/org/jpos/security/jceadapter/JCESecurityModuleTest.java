@@ -1315,6 +1315,88 @@ public class JCESecurityModuleTest {
         assertTrue(result);
     }
 
+    @Test
+    public void testGenerateApplicationCryptogram_VSDC_P00() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_VSDC_P80() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("2263CD868F3E0234");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataPad80()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_MCHIP_P00() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("9FFD1D52AE0EC0F3");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), etd.getUPN(), etd.getDataNoPad()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_MCHIP_P80() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), etd.getUPN(), etd.getDataPad80()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_CSKD_P00() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("36DBEE15F36B1E7F");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_CSKD_P80() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataPad80()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_VSDC_P00_RoundTrip() throws Throwable {
+        byte[] generated = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        );
+        assertTrue(jcesecmod.verifyARQC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, generated
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        ));
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_RejectsUnsupportedSKD() throws Throwable {
+        assertThrows(SMException.class, () -> {
+            jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.AEPIS_V40
+                            ,imkac, accountNoA, accountNoA_CSN
+                            ,etd.getATC(), null, etd.getDataNoPad()
+            );
+        });
+    }
+
     @Test //OK
     public void testVerifyARQCGenerateARPCImpl_VSDC_P00_M1() throws Throwable {
         byte[] arqc   = ISOUtil.hex2byte("26C8A1042D1CAF3E");

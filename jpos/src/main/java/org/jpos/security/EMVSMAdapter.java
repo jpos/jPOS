@@ -30,7 +30,9 @@ package org.jpos.security;
  *   <li>{@link #generateCVC3} must produce a CVC3 accepted by
  *       {@link SMAdapter#verifyCVC3};
  *   <li>{@link #generatedCVV} must produce a dCVV accepted by
- *       {@link SMAdapter#verifydCVV}.
+ *       {@link SMAdapter#verifydCVV};
+ *   <li>{@link #generateApplicationCryptogram} must produce an
+ *       ARQC/TC/AAC accepted by {@link SMAdapter#verifyARQC}.
  * </ul>
  * <p>
  * Implementations that cannot perform a given operation should leave the
@@ -85,5 +87,43 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
      */
     String generatedCVV(String accountNo, T imkac, String expDate,
                         String serviceCode, byte[] atc, MKDMethod mkdm)
+            throws SMException;
+
+    /**
+     * Generate an Application Cryptogram (ARQC / TC / AAC).
+     * <p>
+     * The three cryptogram types share the same MAC computation; the type the
+     * card emits is determined by the {@code Cryptogram Information Data} byte
+     * supplied as part of {@code txnData}. This method is the generation
+     * counterpart of
+     * {@link SMAdapter#verifyARQC(MKDMethod, SKDMethod, Object, String, String, byte[], byte[], byte[], byte[])}
+     * and is expected to return bytes that the verifier would accept.
+     *
+     * @param mkdm ICC Master Key Derivation Method. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} and {@link SKDMethod#MCHIP} this parameter
+     *        is ignored and {@link MKDMethod#OPTION_A} is always used.
+     * @param skdm Session Key Derivation Method
+     * @param imkac the issuer master key for generating and verifying
+     *        Application Cryptograms, encrypted under the LMK
+     * @param accountNo account number including BIN and check digit
+     * @param acctSeqNo account sequence number, 2 decimal digits
+     * @param atc application transaction counter. This is used for Session
+     *        Key Generation. A 2 byte value must be supplied.
+     *        For {@code skdm} equals {@link SKDMethod#VSDC} is not used.
+     * @param upn unpredictable number. This is used for Session Key Generation.
+     *        A 4 byte value must be supplied. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} is not used.
+     * @param txnData transaction data. Transaction data elements and their
+     *        order is dependent to proper cryptogram version. If the data
+     *        supplied is a multiple of 8 bytes, no extra padding is added.
+     *        If it is not a multiple of 8 bytes, additional zero padding is added.
+     *        <b>If alternative padding methods are required, it has to be
+     *        applied before</b>.
+     * @return 8-byte computed Application Cryptogram
+     * @throws SMException on security module error
+     */
+    byte[] generateApplicationCryptogram(MKDMethod mkdm, SKDMethod skdm, T imkac,
+                        String accountNo, String acctSeqNo, byte[] atc,
+                        byte[] upn, byte[] txnData)
             throws SMException;
 }

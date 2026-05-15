@@ -1105,6 +1105,13 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
+    protected byte[] generateApplicationCryptogramImpl(MKDMethod mkdm, SKDMethod skdm,
+            SecureDESKey imkac, String accountNo, String accntSeqNo, byte[] atc,
+            byte[] upn, byte[] txnData) throws SMException {
+        return calculateARQC(mkdm, skdm, imkac, accountNo, accntSeqNo, atc, upn, txnData);
+    }
+
+    @Override
     public byte[] generateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accountNo, String accntSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
