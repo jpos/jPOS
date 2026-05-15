@@ -335,4 +335,75 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
      * @throws SMException on security module error
      */
     byte[] generateSM_MAC(T sessionKey, byte[] data) throws SMException;
+
+    /**
+     * Encrypt a PIN block for Secure Messaging directly under a supplied
+     * SM session encryption key.
+     * <p>
+     * This is the SM-PIN-encrypt half of the integrated
+     * {@link SMAdapter#translatePINGenerateSM_MAC translatePINGenerateSM_MAC},
+     * exposed as a stand-alone primitive. The caller supplies the SK-SMC
+     * directly — typically the output of
+     * {@link #deriveSecureMessagingSessionKey(MKDMethod, SKDMethod, Object, String, String, byte[], byte[])}
+     * with an IMK-SMC — and the new PIN already encrypted under an existing
+     * key {@code kd1}. The method translates the PIN into
+     * {@code destinationPINBlockFormat} and re-encrypts it under the
+     * SK-SMC for transmission to the card in an issuer script.
+     * <p>
+     * Composability:
+     * <pre>
+     *   EMVDerivedKey&lt;T&gt; udkAc  = deriveICCMasterKey(mkdm, imkAc,  pan, psn);  // FORMAT41/42 only
+     *   EMVDerivedKey&lt;T&gt; udkSmc = deriveICCMasterKey(mkdm, imkSmc, pan, psn);  // not strictly needed; PR 7 below does its own derivation
+     *   EMVDerivedKey&lt;T&gt; skSmc  = deriveSecureMessagingSessionKey(
+     *           mkdm, skdm, imkSmc, pan, psn, atc, arqc);
+     *   EncryptedPIN     enc    = encryptSecureMessagingPIN(
+     *           skSmc.key(), newPIN, kd1, destinationPINBlockFormat,
+     *           paddingMethod, currentPIN, udkAc.key());
+     * </pre>
+     * <p>
+     * Per-format input requirements:
+     * <ul>
+     *   <li>{@code FORMAT34}, {@code FORMAT35} (EMV / Mastercard): only
+     *       {@code sessionKey}, {@code newPIN}, {@code kd1},
+     *       {@code destinationPINBlockFormat}, {@code paddingMethod} are
+     *       used. {@code currentPIN} and {@code udkAc} may be {@code null}.
+     *   <li>{@code FORMAT41} (Visa, new PIN only): {@code udkAc} is
+     *       required (used as the PAN-like diversifier in the PIN block).
+     *       {@code currentPIN} may be {@code null}.
+     *   <li>{@code FORMAT42} (Visa, PIN change with current PIN): both
+     *       {@code currentPIN} and {@code udkAc} are required.
+     * </ul>
+     * <p>
+     * If {@code paddingMethod} is {@code null}, {@link PaddingMethod#MCHIP}
+     * is used (no SM-specific padding added). The integrated
+     * {@code translatePINGenerateSM_MAC} auto-derives padding from the
+     * SKDMethod; this direct method has no SKDMethod context, so the
+     * caller picks.
+     *
+     * @param sessionKey the SM session encryption key (SK-SMC), wrapped
+     *        per the adapter's convention
+     * @param newPIN the PIN currently wrapped under {@code kd1}
+     * @param kd1 the key currently wrapping {@code newPIN}
+     * @param destinationPINBlockFormat the target PIN block format
+     *        (e.g. {@link SMAdapter#FORMAT34}, {@link SMAdapter#FORMAT35},
+     *        {@link SMAdapter#FORMAT41}, {@link SMAdapter#FORMAT42})
+     * @param paddingMethod the SM padding method; {@code null} defaults to
+     *        {@link PaddingMethod#MCHIP}
+     * @param currentPIN the current PIN wrapped under {@code kd1};
+     *        required only for {@link SMAdapter#FORMAT42}, otherwise
+     *        may be {@code null}
+     * @param udkAc the ICC AC Master Key (typically the output of
+     *        {@link #deriveICCMasterKey} with an IMK-AC), wrapped per the
+     *        adapter's convention; required only for
+     *        {@link SMAdapter#FORMAT41} and {@link SMAdapter#FORMAT42},
+     *        otherwise may be {@code null}
+     * @return the PIN re-encrypted under the SK-SMC in
+     *         {@code destinationPINBlockFormat}
+     * @throws SMException on security module error
+     * @see SMAdapter#translatePINGenerateSM_MAC
+     * @see SMAdapter#translatePIN
+     */
+    EncryptedPIN encryptSecureMessagingPIN(T sessionKey, EncryptedPIN newPIN,
+            T kd1, byte destinationPINBlockFormat, PaddingMethod paddingMethod,
+            EncryptedPIN currentPIN, T udkAc) throws SMException;
 }

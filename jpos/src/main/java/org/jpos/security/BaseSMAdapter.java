@@ -1354,6 +1354,37 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public EncryptedPIN encryptSecureMessagingPIN(T sessionKey, EncryptedPIN newPIN,
+            T kd1, byte destinationPINBlockFormat, PaddingMethod paddingMethod,
+            EncryptedPIN currentPIN, T udkAc) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "session key", sessionKey));
+        cmdParameters.add(new SimpleMsg("parameter", "new pin", newPIN));
+        cmdParameters.add(new SimpleMsg("parameter", "kd1", kd1));
+        cmdParameters.add(new SimpleMsg("parameter", "dest pin block format",
+                String.format("%02X", destinationPINBlockFormat & 0xff)));
+        cmdParameters.add(new SimpleMsg("parameter", "padding method", paddingMethod));
+        cmdParameters.add(new SimpleMsg("parameter", "current pin",
+                currentPIN == null ? "" : currentPIN));
+        cmdParameters.add(new SimpleMsg("parameter", "udk-ac", udkAc == null ? "" : udkAc));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Encrypt Secure Messaging PIN", cmdParameters));
+        try {
+            EncryptedPIN result = encryptSecureMessagingPINImpl(
+                    sessionKey, newPIN, kd1, destinationPINBlockFormat,
+                    paddingMethod, currentPIN, udkAc);
+            evt.addMessage(new SimpleMsg("result", "Encrypted PIN", result == null ? "" : result));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
            ,SKDMethod skdm, PaddingMethod padm, T imksmi
            ,String accountNo, String acctSeqNo, byte[] atc, byte[] arqc
@@ -2487,6 +2518,26 @@ public class BaseSMAdapter<T>
            ,byte[] data, EncryptedPIN currentPIN, EncryptedPIN newPIN
            ,T kd1, T imksmc, T imkac
            ,byte destinationPINBlockFormat) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Direct SM PIN encryption from a supplied SM session encryption key.
+     * @param sessionKey the SM session encryption key (SK-SMC)
+     * @param newPIN the PIN currently wrapped under kd1
+     * @param kd1 the key currently wrapping newPIN
+     * @param destinationPINBlockFormat the target PIN block format
+     * @param paddingMethod SM padding method; {@code null} defaults to MCHIP
+     * @param currentPIN current PIN (required for FORMAT42); may be {@code null}
+     * @param udkAc ICC AC Master Key (required for FORMAT41/42); may be {@code null}
+     * @return the PIN re-encrypted under sessionKey in destinationPINBlockFormat
+     * @throws SMException on security module error
+     */
+    protected EncryptedPIN encryptSecureMessagingPINImpl(T sessionKey,
+            EncryptedPIN newPIN, T kd1, byte destinationPINBlockFormat,
+            PaddingMethod paddingMethod, EncryptedPIN currentPIN, T udkAc)
+            throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

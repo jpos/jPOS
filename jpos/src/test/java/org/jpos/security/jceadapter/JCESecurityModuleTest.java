@@ -2502,4 +2502,94 @@ public class JCESecurityModuleTest {
         assertEquals(8, a.length);
     }
 
+    @Test
+    public void testEncryptSecureMessagingPIN_MCHIP_Format34_MatchesIntegrated() throws Throwable {
+        // Mirrors testTranslatePINGenerateSM_MACImpl1: MCHIP + FORMAT34, no UDK, no current PIN.
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmc,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        EncryptedPIN result = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                PaddingMethod.MCHIP, null, null);
+
+        EncryptedPIN expected = new EncryptedPIN("F473D25D9B478970", SMAdapter.FORMAT34, accountNoA);
+        assertArrayEquals(expected.getPINBlock(), result.getPINBlock());
+        assertEquals(SMAdapter.FORMAT34, result.getPINBlockFormat());
+    }
+
+    @Test
+    public void testEncryptSecureMessagingPIN_CSKD_Format41_MatchesIntegrated() throws Throwable {
+        // Mirrors testTranslatePINGenerateSM_MACImpl2: EMV_CSKD + FORMAT41,
+        // CCD padding (the SKDMethod auto-derive); requires UDK-AC.
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.EMV_CSKD, imksmc,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        EMVDerivedKey<SecureDESKey> udkAc = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+
+        EncryptedPIN result = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT41,
+                PaddingMethod.CCD, null, udkAc.key());
+
+        EncryptedPIN expected = new EncryptedPIN("E60663E4B11CDB2DE4667CC9433384B4",
+                SMAdapter.FORMAT41, accountNoA);
+        assertArrayEquals(expected.getPINBlock(), result.getPINBlock());
+        assertEquals(SMAdapter.FORMAT41, result.getPINBlockFormat());
+    }
+
+    @Test
+    public void testEncryptSecureMessagingPIN_VSDC_Format42_WithCurrentPIN_MatchesIntegrated() throws Throwable {
+        // Mirrors testTranslatePINGenerateSM_MACImpl6: VSDC + FORMAT42, requires
+        // both currentPIN and UDK-AC. VSDC SKDMethod auto-derives VSDC padding.
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmc,
+                accountNoA, accountNoA_CSN, atc01, null);
+        EMVDerivedKey<SecureDESKey> udkAc = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EncryptedPIN oldPin = new EncryptedPIN("33BADC0F07C6FB29",
+                SMAdapter.FORMAT01, accountNoA);
+
+        EncryptedPIN result = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT42,
+                PaddingMethod.VSDC, oldPin, udkAc.key());
+
+        EncryptedPIN expected = new EncryptedPIN("74253653C81CE99140C47C0F7C572473",
+                SMAdapter.FORMAT42, accountNoA);
+        assertArrayEquals(expected.getPINBlock(), result.getPINBlock());
+        assertEquals(SMAdapter.FORMAT42, result.getPINBlockFormat());
+    }
+
+    @Test
+    public void testEncryptSecureMessagingPIN_NullPaddingDefaultsToMCHIP() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmc,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        EncryptedPIN withNull = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                null, null, null);
+        EncryptedPIN withMCHIP = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                PaddingMethod.MCHIP, null, null);
+
+        assertArrayEquals(withMCHIP.getPINBlock(), withNull.getPINBlock());
+    }
+
+    @Test
+    public void testEncryptSecureMessagingPIN_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmc,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        EncryptedPIN a = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                PaddingMethod.MCHIP, null, null);
+        EncryptedPIN b = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                PaddingMethod.MCHIP, null, null);
+
+        assertArrayEquals(a.getPINBlock(), b.getPINBlock());
+    }
+
 }

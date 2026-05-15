@@ -1311,6 +1311,20 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
+    protected EncryptedPIN encryptSecureMessagingPINImpl(SecureDESKey sessionKey,
+            EncryptedPIN newPIN, SecureDESKey kd1, byte destinationPINBlockFormat,
+            PaddingMethod paddingMethod, EncryptedPIN currentPIN, SecureDESKey udkAc)
+            throws SMException {
+        if (paddingMethod == null)
+            paddingMethod = PaddingMethod.MCHIP;
+        Key clearSk  = decryptFromLMK(sessionKey);
+        Key clearKd1 = decryptFromLMK(kd1);
+        Key clearUdk = (udkAc == null) ? null : decryptFromLMK(udkAc);
+        return translatePINExt(currentPIN, newPIN, clearKd1, clearSk,
+                destinationPINBlockFormat, clearUdk, paddingMethod);
+    }
+
+    @Override
     protected Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MACImpl(
             MKDMethod mkdm, SKDMethod skdm, PaddingMethod padm, SecureDESKey imksmi
            ,String accountNo, String accntSeqNo, byte[] atc, byte[] arqc
