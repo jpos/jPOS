@@ -844,27 +844,6 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     /**
-     * Compute the 3-byte Key Check Value of a clear DES / Triple-DES key.
-     * <p>
-     * The KCV is the high-order three bytes of encrypting an 8-byte all-zero
-     * block with the supplied key — the standard "short" check value used
-     * across the payments industry to identify which clear key a wrapped key
-     * represents. No equivalent helper existed in {@code JCESecurityModule}
-     * before; this is introduced as foundation plumbing for the EMV
-     * key-derivation APIs (see {@link org.jpos.security.EMVDerivedKey}).
-     * <p>
-     * An AES variant (16-byte zero input) is intentionally not provided
-     * here; it can be added when AES Issuer Master Keys land in jPOS.
-     *
-     * @param key clear DES or Triple-DES key
-     * @return the 3-byte Key Check Value
-     * @throws JCEHandlerException on cryptographic failure
-     */
-    protected byte[] calculateKCV(Key key) throws JCEHandlerException {
-        return Arrays.copyOfRange(jceHandler.encryptData(new byte[8], key), 0, 3);
-    }
-
-    /**
      * Calculates a 4-digit PVV using the IBM 3624 algorithm.
      *
      * @param pinUnderLmk PIN block encrypted under the LMK

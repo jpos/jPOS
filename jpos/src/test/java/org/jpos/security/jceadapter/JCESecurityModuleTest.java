@@ -2036,12 +2036,12 @@ public class JCESecurityModuleTest {
     }
 
     @Test
-    public void testCalculateKCV_3DES_StandardAlgorithm() throws Throwable {
+    public void testCalculateKeyCheckValue_3DES_StandardAlgorithm() throws Throwable {
         byte[] clearKey = ISOUtil.hex2byte("0123456789ABCDEFFEDCBA9876543210");
         java.security.Key key = jcesecmod.jceHandler
                 .formDESKey(SMAdapter.LENGTH_DES3_2KEY, clearKey);
 
-        byte[] kcv = jcesecmod.calculateKCV(key);
+        byte[] kcv = jcesecmod.calculateKeyCheckValue(key);
 
         assertEquals(3, kcv.length);
 
