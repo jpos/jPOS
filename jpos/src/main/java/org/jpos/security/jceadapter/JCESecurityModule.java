@@ -658,7 +658,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @param d da to be padded
      * @return padded data
      */
-    private byte[] paddingISO9797Method2(byte[] d) {
+    protected byte[] paddingISO9797Method2(byte[] d) {
         //Padding - first byte 0x80 rest 0x00
         byte[] t = new byte[d.length - d.length%8 + 8];
         System.arraycopy(d, 0, t, 0, d.length);
@@ -675,7 +675,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return 8 byte of mac value
      * @throws JCEHandlerException
      */
-    private byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws JCEHandlerException {
+    protected byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws JCEHandlerException {
         Key kl = jceHandler.formDESKey(SMAdapter.LENGTH_DES
                             ,Arrays.copyOfRange(key.getEncoded(), 0, 8));
         Key kr = jceHandler.formDESKey(SMAdapter.LENGTH_DES
@@ -1301,6 +1301,13 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
             throw new SMException("Session Key Derivation "+skdm+" not supported");
         }
         return calculateMACISO9797Alg3(smi, data);
+    }
+
+    @Override
+    protected byte[] generateSM_MACImpl(SecureDESKey sessionKey, byte[] data) throws SMException {
+        Key clearSk = decryptFromLMK(sessionKey);
+        byte[] padded = paddingISO9797Method2(data);
+        return calculateMACISO9797Alg3(clearSk, padded);
     }
 
     @Override

@@ -301,4 +301,38 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
                                                     T imk, String pan, String psn,
                                                     byte[] atc, byte[] arqc)
             throws SMException;
+
+    /**
+     * Generate a Secure Messaging MAC directly from a supplied session key.
+     * <p>
+     * This is an overload of
+     * {@link SMAdapter#generateSM_MAC(MKDMethod, SKDMethod, Object, String, String, byte[], byte[], byte[])}
+     * that skips the IMK + PAN/PSN derivation. The caller passes the
+     * SK-SMI directly — typically the output of
+     * {@link #deriveSecureMessagingSessionKey(MKDMethod, SKDMethod, Object, String, String, byte[], byte[])}
+     * with an IMK-SMI — closing the loop on the SM-MAC derivation chain:
+     * <pre>
+     *   EMVDerivedKey&lt;T&gt; skSmi = deriveSecureMessagingSessionKey(
+     *           mkdm, skdm, imkSmi, pan, psn, atc, arqc);
+     *   byte[]           mac   = generateSM_MAC(skSmi.key(), data);
+     * </pre>
+     * <p>
+     * The implementation applies ISO/IEC 9797-1 padding method 2 (append
+     * {@code 0x80} then {@code 0x00} pad to the next 8-byte boundary) and
+     * computes the ISO/IEC 9797-1 MAC algorithm 3 (Triple-DES retail MAC).
+     * Both match the padding+MAC used internally by the master-key-based
+     * {@code generateSM_MAC} for VSDC, MCHIP, and EMV_CSKD, so the returned
+     * 8 bytes are bit-identical to what the integrated method would produce
+     * given the same inputs and derivation.
+     * <p>
+     * Callers requiring alternative padding (e.g. Visa, CCD, or M/Chip
+     * SM-MAC padding variants) should pre-pad the input themselves; this
+     * method does not provide a padding-method selector.
+     *
+     * @param sessionKey the SK-SMI, wrapped per the adapter's convention
+     * @param data the data to MAC (pre-padding)
+     * @return the 8-byte Secure Messaging MAC
+     * @throws SMException on security module error
+     */
+    byte[] generateSM_MAC(T sessionKey, byte[] data) throws SMException;
 }

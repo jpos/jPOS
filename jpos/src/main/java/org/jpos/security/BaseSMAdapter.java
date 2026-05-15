@@ -1334,6 +1334,26 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public byte[] generateSM_MAC(T sessionKey, byte[] data) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "session key", sessionKey));
+        cmdParameters.add(new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate Secure Messaging MAC (direct)", cmdParameters));
+        try {
+            byte[] mac = generateSM_MACImpl(sessionKey, data);
+            evt.addMessage(new SimpleMsg("result", "Generated MAC", mac != null ? ISOUtil.hexString(mac) : ""));
+            return mac;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
            ,SKDMethod skdm, PaddingMethod padm, T imksmi
            ,String accountNo, String acctSeqNo, byte[] atc, byte[] arqc
@@ -2426,6 +2446,18 @@ public class BaseSMAdapter<T>
     protected byte[] generateSM_MACImpl(MKDMethod mkdm, SKDMethod skdm
             ,T imksmi, String accountNo, String acctSeqNo
             ,byte[] atc, byte[] arqc, byte[] data) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Direct SM-MAC generation from a supplied session key.
+     * @param sessionKey the SK-SMI
+     * @param data data to MAC
+     * @return generated 8-byte MAC
+     * @throws SMException on security module error
+     */
+    protected byte[] generateSM_MACImpl(T sessionKey, byte[] data) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

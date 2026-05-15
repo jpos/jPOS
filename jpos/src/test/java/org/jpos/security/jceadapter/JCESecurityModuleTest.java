@@ -2429,4 +2429,77 @@ public class JCESecurityModuleTest {
         });
     }
 
+    @Test
+    public void testGenerateSM_MACDirect_MCHIP_LongData() throws Throwable {
+        // Derive SK-SMI via PR 7 with MCHIP + arqc01
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        byte[] data = ISOUtil.hex2byte("1122334455667788");
+        byte[] apdu = ISOUtil.concat(apdu01, atc01);
+        apdu = ISOUtil.concat(apdu, arqc01);
+        apdu = ISOUtil.concat(apdu, data);
+
+        byte[] mac = jcesecmod.generateSM_MAC(skSmi.key(), apdu);
+        assertArrayEquals(ISOUtil.hex2byte("217CF53EA0E7C327"), mac);
+    }
+
+    @Test
+    public void testGenerateSM_MACDirect_MCHIP_ShortData() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        byte[] data = ISOUtil.hex2byte("11");
+        byte[] apdu = ISOUtil.concat(apdu01, atc01);
+        apdu = ISOUtil.concat(apdu, arqc01);
+        apdu = ISOUtil.concat(apdu, data);
+
+        byte[] mac = jcesecmod.generateSM_MAC(skSmi.key(), apdu);
+        assertArrayEquals(ISOUtil.hex2byte("5E14A5A5C4B98C0C"), mac);
+    }
+
+    @Test
+    public void testGenerateSM_MACDirect_VSDC_LongData() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmi,
+                accountNoA, accountNoA_CSN, atc01, null);
+
+        byte[] data = ISOUtil.hex2byte("1122334455667788");
+        byte[] apdu = ISOUtil.concat(apdu01, atc01);
+        apdu = ISOUtil.concat(apdu, arqc01);
+        apdu = ISOUtil.concat(apdu, data);
+
+        byte[] mac = jcesecmod.generateSM_MAC(skSmi.key(), apdu);
+        assertArrayEquals(ISOUtil.hex2byte("E218CC0B7FEC6876"), mac);
+    }
+
+    @Test
+    public void testGenerateSM_MACDirect_VSDC_ShortData() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmi,
+                accountNoA, accountNoA_CSN, atc01, null);
+
+        byte[] data = ISOUtil.hex2byte("11");
+        byte[] apdu = ISOUtil.concat(apdu01, atc01);
+        apdu = ISOUtil.concat(apdu, arqc01);
+        apdu = ISOUtil.concat(apdu, data);
+
+        byte[] mac = jcesecmod.generateSM_MAC(skSmi.key(), apdu);
+        assertArrayEquals(ISOUtil.hex2byte("C1F2C04136BD48E6"), mac);
+    }
+
+    @Test
+    public void testGenerateSM_MACDirect_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        byte[] data = ISOUtil.hex2byte("1122334455667788");
+        byte[] a = jcesecmod.generateSM_MAC(skSmi.key(), data);
+        byte[] b = jcesecmod.generateSM_MAC(skSmi.key(), data);
+        assertArrayEquals(a, b);
+        assertEquals(8, a.length);
+    }
+
 }
