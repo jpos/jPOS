@@ -197,4 +197,56 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
     EMVDerivedKey<T> deriveEMVSessionKey(SKDMethod skdm, T iccMk,
                                          byte[] atc, byte[] upn)
             throws SMException;
+
+    /**
+     * Generate an Authorisation Response Cryptogram (ARPC) directly from a
+     * supplied key.
+     * <p>
+     * This is an overload of
+     * {@link SMAdapter#generateARPC(MKDMethod, SKDMethod, Object, String, String, byte[], byte[], byte[], ARPCMethod, byte[], byte[])}
+     * that skips the IMK + PAN/PSN derivation. The caller passes in the key
+     * under which the ARPC is to be computed.
+     * <p>
+     * <b>Which key to pass</b> depends on the SKDMethod the card uses:
+     * <ul>
+     *   <li>{@link SKDMethod#VSDC} and {@link SKDMethod#MCHIP} — no
+     *       ARPC-session-key derivation in EMV; pass the <i>ICC Master Key</i>
+     *       directly (the output of
+     *       {@link #deriveICCMasterKey(MKDMethod, Object, String, String)}).
+     *   <li>{@link SKDMethod#EMV_CSKD} — pass the AC session key (the output of
+     *       {@link #deriveEMVSessionKey(SKDMethod, Object, byte[], byte[])}
+     *       with {@code EMV_CSKD}).
+     * </ul>
+     * Example for EMV_CSKD:
+     * <pre>
+     *   EMVDerivedKey&lt;T&gt; iccMk   = deriveICCMasterKey(mkdm, imk, pan, psn);
+     *   EMVDerivedKey&lt;T&gt; session = deriveEMVSessionKey(SKDMethod.EMV_CSKD,
+     *                                                   iccMk.key(), atc, null);
+     *   byte[]           arpc    = generateARPC(session.key(), arqc,
+     *                                           arpcMethod, arc, propAuthData);
+     * </pre>
+     * <p>
+     * <b>Constraint relaxation:</b> unlike the master-key-based overload, this
+     * direct method does <i>not</i> enforce SKDMethod/ARPCMethod compatibility
+     * (which the master-key variant enforces via {@code constraintARPCM},
+     * rejecting METHOD_2 for VSDC and MCHIP). The caller takes responsibility
+     * for choosing combinations the card will accept.
+     *
+     * @param key the key under which the ARPC is computed (see "Which key
+     *        to pass" above), wrapped per the adapter's convention
+     * @param arqc the Application Request Cryptogram, 8 bytes
+     * @param arpcMethod ARPC calculation method
+     * @param arc the Authorisation Response Code, 2 bytes for
+     *        {@link ARPCMethod#METHOD_1}; for {@link ARPCMethod#METHOD_2}
+     *        this is the 4-byte Card Status Update (CSU)
+     * @param propAuthData Proprietary Authentication Data, up to 8 bytes.
+     *        Used only for {@link ARPCMethod#METHOD_2}; ignored otherwise
+     *        and may be {@code null}.
+     * @return 8-byte ARPC for {@link ARPCMethod#METHOD_1}, 4-byte ARPC for
+     *         {@link ARPCMethod#METHOD_2}
+     * @throws SMException on security module error
+     */
+    byte[] generateARPC(T key, byte[] arqc, ARPCMethod arpcMethod,
+                        byte[] arc, byte[] propAuthData)
+            throws SMException;
 }

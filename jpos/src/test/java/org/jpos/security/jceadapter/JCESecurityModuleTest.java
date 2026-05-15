@@ -2226,4 +2226,95 @@ public class JCESecurityModuleTest {
         });
     }
 
+    @Test
+    public void testGenerateARPCDirect_VSDC_M1() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        byte[] arqc = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] arc  = ISOUtil.hex2byte("3030");
+        byte[] expectedArpc = ISOUtil.hex2byte("98DE7C7B3D80A831");
+        // VSDC: ARPC computed with the ICC MK directly (no session derivation)
+        byte[] result = jcesecmod.generateARPC(iccMk.key(), arqc,
+                ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(expectedArpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_MCHIP_M1() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        byte[] arqc = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] arc  = ISOUtil.hex2byte("0012");
+        byte[] expectedArpc = ISOUtil.hex2byte("5B5B712F9A644774");
+        // MCHIP: ARPC computed with the ICC MK directly (no ARPC-session derivation)
+        byte[] result = jcesecmod.generateARPC(iccMk.key(), arqc,
+                ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(expectedArpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_CSKD_M1() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        byte[] arqc = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] arc  = ISOUtil.hex2byte("0012");
+        byte[] expectedArpc = ISOUtil.hex2byte("01BAE8DE6A0DE9E0");
+        byte[] result = jcesecmod.generateARPC(session.key(), arqc,
+                ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(expectedArpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_CSKD_M2() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        byte[] arqc = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] csu  = ISOUtil.hex2byte("00120000");
+        byte[] expectedArpc = ISOUtil.hex2byte("B4C698B6");
+        byte[] result = jcesecmod.generateARPC(session.key(), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(expectedArpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_VSDC_M2_Succeeds_NoConstraint() throws Throwable {
+        // The master-key-based generateARPC rejects VSDC + METHOD_2 via
+        // constraintARPCM (see testGenerateARPCImpl_VSDC_M2). The direct
+        // overload deliberately drops that constraint — the math runs and
+        // returns a 4-byte ARPC. This test pins that behaviour and verifies
+        // the result is self-consistent with calculateARPC on the same key.
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        byte[] arqc = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] csu  = ISOUtil.hex2byte("00120000");
+        byte[] result = jcesecmod.generateARPC(iccMk.key(), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertEquals(4, result.length);
+        byte[] expected = jcesecmod.calculateARPC(
+                jcesecmod.decryptFromLMK(iccMk.key()), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_MCHIP_M2_Succeeds_NoConstraint() throws Throwable {
+        // MCHIP + METHOD_2 also rejected by the master-key path; allowed
+        // here. Self-consistency check.
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        byte[] arqc = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] csu  = ISOUtil.hex2byte("00120000");
+        byte[] result = jcesecmod.generateARPC(iccMk.key(), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertEquals(4, result.length);
+        byte[] expected = jcesecmod.calculateARPC(
+                jcesecmod.decryptFromLMK(iccMk.key()), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(expected, result);
+    }
+
 }

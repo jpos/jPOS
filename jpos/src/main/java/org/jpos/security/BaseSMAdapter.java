@@ -1215,6 +1215,32 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public byte[] generateARPC(T key, byte[] arqc, ARPCMethod arpcMethod,
+            byte[] arc, byte[] propAuthData) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "key", key));
+        cmdParameters.add(new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)));
+        cmdParameters.add(new SimpleMsg("parameter", "arpc gen. method", arpcMethod));
+        cmdParameters.add(new SimpleMsg("parameter", "auth. rc", arc == null ? "" : ISOUtil.hexString(arc)));
+        cmdParameters.add(new SimpleMsg("parameter", "prop auth. data",
+                propAuthData == null ? "" : ISOUtil.hexString(propAuthData))
+        );
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate ARPC (direct)", cmdParameters));
+        try {
+            byte[] result = generateARPCImpl(key, arqc, arpcMethod, arc, propAuthData);
+            evt.addMessage(new SimpleMsg("result", "Generated ARPC", result == null ? "" : ISOUtil.hexString(result)));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public byte[] verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, T imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,byte[] txnData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
@@ -2294,6 +2320,23 @@ public class BaseSMAdapter<T>
             ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc
             ,byte[] upn, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Direct ARPC generation from a supplied key.
+     * @param key the key under which the ARPC is computed (ICC MK for VSDC
+     *        and MCHIP; AC session key for EMV_CSKD)
+     * @param arqc application request cryptogram
+     * @param arpcMethod ARPC generation method
+     * @param arc authorization response code (or CSU for METHOD_2)
+     * @param propAuthData proprietary authentication data; may be {@code null}
+     * @return calculated ARPC
+     * @throws SMException on security module error
+     */
+    protected byte[] generateARPCImpl(T key, byte[] arqc, ARPCMethod arpcMethod,
+            byte[] arc, byte[] propAuthData) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
