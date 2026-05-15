@@ -160,4 +160,41 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
     EMVDerivedKey<T> deriveICCMasterKey(MKDMethod mkdm, T imk,
                                         String pan, String psn)
             throws SMException;
+
+    /**
+     * Derive an EMV Application Cryptogram session key from an ICC Master
+     * Key and the per-transaction diversifiers.
+     * <p>
+     * The result wraps the session key in whatever representation the
+     * underlying security module uses for {@link SecureKey}. The derived
+     * key inherits the ICC Master Key's {@code keyType} and {@code keyLength}.
+     * <p>
+     * Per-{@code skdm} input usage:
+     * <ul>
+     *   <li>{@link SKDMethod#VSDC} — VSDC has no session-key derivation; the
+     *       application cryptogram is MAC'd with the ICC Master Key directly.
+     *       For API uniformity this method returns the ICC Master Key
+     *       rewrapped (same bytes, same KCV). {@code atc} and {@code upn}
+     *       are ignored.
+     *   <li>{@link SKDMethod#MCHIP} — uses both {@code atc} (2 bytes) and
+     *       {@code upn} (4 bytes) as diversifiers; both must be supplied.
+     *   <li>{@link SKDMethod#EMV_CSKD} — uses {@code atc} (2 bytes) only;
+     *       {@code upn} may be {@code null}.
+     * </ul>
+     *
+     * @param skdm Session Key Derivation Method
+     * @param iccMk the ICC Master Key, typically the output of
+     *        {@link #deriveICCMasterKey}
+     * @param atc Application Transaction Counter (2 bytes). Ignored for
+     *        {@link SKDMethod#VSDC}.
+     * @param upn Unpredictable Number (4 bytes). Used only for
+     *        {@link SKDMethod#MCHIP}; ignored otherwise and may be {@code null}.
+     * @return the derived session key paired with its 3-byte Key Check Value
+     * @throws SMException on security module error or if {@code skdm} is not
+     *         supported (e.g. {@link SKDMethod#AEPIS_V40} or
+     *         {@link SKDMethod#EMV2000_SKM})
+     */
+    EMVDerivedKey<T> deriveEMVSessionKey(SKDMethod skdm, T iccMk,
+                                         byte[] atc, byte[] upn)
+            throws SMException;
 }

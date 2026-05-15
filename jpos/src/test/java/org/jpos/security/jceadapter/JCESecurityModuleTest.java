@@ -2131,4 +2131,99 @@ public class JCESecurityModuleTest {
         });
     }
 
+    @Test
+    public void testDeriveEMVSessionKey_VSDC_ReturnsICCMasterKeyUnchanged() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.VSDC, iccMk.key(), etd.getATC(), null);
+        // VSDC has no session-key derivation; session key == ICC MK
+        assertArrayEquals(iccMk.kcv(), session.kcv());
+        assertArrayEquals(iccMk.key().getKeyBytes(), session.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_EMV_CSKD_MatchesInternalDerivation() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+
+        // Independent computation via the existing internal path
+        java.security.Key clearIcc = jcesecmod.decryptFromLMK(iccMk.key());
+        java.security.Key expectedClearSk = jcesecmod.deriveCommonSK_AC(clearIcc, etd.getATC());
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_MCHIP_MatchesInternalDerivation() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+
+        // Independent computation via the existing internal path
+        java.security.Key clearIcc = jcesecmod.decryptFromLMK(iccMk.key());
+        java.security.Key expectedClearSk = jcesecmod.deriveSK_MK(
+                clearIcc, etd.getATC(), etd.getUPN());
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.MCHIP, iccMk.key(), etd.getATC(), etd.getUPN());
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> a = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        EMVDerivedKey<SecureDESKey> b = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        assertArrayEquals(a.kcv(), b.kcv());
+        assertArrayEquals(a.key().getKeyBytes(), b.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_PreservesICCKeyTypeAndLength() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        assertEquals(iccMk.key().getKeyType(), session.key().getKeyType());
+        assertEquals(iccMk.key().getKeyLength(), session.key().getKeyLength());
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_KCVIsThreeBytes() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.MCHIP, iccMk.key(), etd.getATC(), etd.getUPN());
+        assertNotNull(session.kcv());
+        assertEquals(3, session.kcv().length);
+        assertArrayEquals(session.kcv(), session.key().getKeyCheckValue());
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_RejectsUnsupportedSKD() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertThrows(SMException.class, () -> {
+            jcesecmod.deriveEMVSessionKey(
+                    SKDMethod.AEPIS_V40, iccMk.key(), etd.getATC(), null);
+        });
+    }
+
 }

@@ -1011,7 +1011,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return derived 16-bytes Session Key with adjusted DES parity.
      * @throws JCEHandlerException
      */
-    private Key deriveCommonSK_AC(Key mkac, byte[] atc) throws JCEHandlerException {
+    protected Key deriveCommonSK_AC(Key mkac, byte[] atc) throws JCEHandlerException {
 
         byte[] r = new byte[8];
         System.arraycopy(atc, atc.length-2, r, 0, 2);
@@ -1031,7 +1031,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return derived 16-bytes Session Key with adjusted DES parity
      * @throws JCEHandlerException
      */
-    private Key deriveSK_MK(Key mkac, byte[] atc, byte[] upn) throws JCEHandlerException {
+    protected Key deriveSK_MK(Key mkac, byte[] atc, byte[] upn) throws JCEHandlerException {
 
         byte[] r = new byte[8];
         System.arraycopy(atc, atc.length-2, r, 0, 2);
@@ -1119,6 +1119,29 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         byte[] panpsn = formatPANPSN(pan, psn, mkdm);
         Key clearIcc = deriveICCMasterKey(decryptFromLMK(imk), panpsn);
         SecureDESKey wrapped = encryptToLMK(imk.getKeyLength(), imk.getKeyType(), clearIcc);
+        return new EMVDerivedKey<>(wrapped, wrapped.getKeyCheckValue());
+    }
+
+    @Override
+    protected EMVDerivedKey<SecureDESKey> deriveEMVSessionKeyImpl(SKDMethod skdm,
+            SecureDESKey iccMk, byte[] atc, byte[] upn) throws SMException {
+        Key clearIcc = decryptFromLMK(iccMk);
+        Key clearSk;
+        switch (skdm) {
+            case VSDC:
+                clearSk = clearIcc;
+                break;
+            case MCHIP:
+                clearSk = deriveSK_MK(clearIcc, atc, upn);
+                break;
+            case EMV_CSKD:
+                clearSk = deriveCommonSK_AC(clearIcc, atc);
+                break;
+            default:
+                throw new SMException(
+                        "Session Key Derivation " + skdm + " not supported");
+        }
+        SecureDESKey wrapped = encryptToLMK(iccMk.getKeyLength(), iccMk.getKeyType(), clearSk);
         return new EMVDerivedKey<>(wrapped, wrapped.getKeyCheckValue());
     }
 

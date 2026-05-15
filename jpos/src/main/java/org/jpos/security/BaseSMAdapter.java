@@ -1157,6 +1157,29 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public EMVDerivedKey<T> deriveEMVSessionKey(SKDMethod skdm, T iccMk,
+            byte[] atc, byte[] upn) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+        cmdParameters.add(new SimpleMsg("parameter", "icc-mk", iccMk));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Derive EMV Session Key", cmdParameters));
+        try {
+            EMVDerivedKey<T> result = deriveEMVSessionKeyImpl(skdm, iccMk, atc, upn);
+            evt.addMessage(new SimpleMsg("result", "Session Key", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public byte[] generateARPC(MKDMethod mkdm, SKDMethod skdm, T imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
@@ -2234,6 +2257,20 @@ public class BaseSMAdapter<T>
      */
     protected EMVDerivedKey<T> deriveICCMasterKeyImpl(MKDMethod mkdm, T imk,
             String pan, String psn) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param skdm session-key derivation method
+     * @param iccMk ICC Master Key
+     * @param atc application transaction counter
+     * @param upn unpredictable number; may be {@code null} when unused
+     * @return derived session key paired with its KCV
+     * @throws SMException on security module error
+     */
+    protected EMVDerivedKey<T> deriveEMVSessionKeyImpl(SKDMethod skdm, T iccMk,
+            byte[] atc, byte[] upn) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
