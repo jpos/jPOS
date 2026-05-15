@@ -35,6 +35,7 @@ import org.jpos.core.SubConfiguration;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.ARPCMethod;
 import org.jpos.security.CipherMode;
+import org.jpos.security.EMVDerivedKey;
 import org.jpos.security.EncryptedPIN;
 import org.jpos.security.KeyScheme;
 import org.jpos.security.MKDMethod;
@@ -2048,6 +2049,86 @@ public class JCESecurityModuleTest {
         byte[] expected = java.util.Arrays.copyOfRange(
                 jcesecmod.jceHandler.encryptData(new byte[8], key), 0, 3);
         assertArrayEquals(expected, kcv);
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_OptionA_MatchesInternalDerivation() throws Throwable {
+        // accountNoA = "1234567890123456" (16 digits), psn = "00"
+        // formatPANPSNOptionA: preparePANPSN("1234567890123456", "00") = hex2byte("123456789012345600")
+        // = 9 bytes, then last 8 bytes = "3456789012345600"
+        byte[] expectedPanpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearIMK = jcesecmod.decryptFromLMK(imkac);
+        java.security.Key expectedClearIcc = jcesecmod.deriveICCMasterKey(clearIMK, expectedPanpsn);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearIcc);
+
+        EMVDerivedKey<SecureDESKey> result = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        java.security.Key actualClearIcc = jcesecmod.decryptFromLMK(result.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearIcc);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_PreservesIMKMetadata() throws Throwable {
+        EMVDerivedKey<SecureDESKey> result = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertEquals(imkac.getKeyType(), result.key().getKeyType());
+        assertEquals(imkac.getKeyLength(), result.key().getKeyLength());
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_KCVIsThreeBytes() throws Throwable {
+        EMVDerivedKey<SecureDESKey> result = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertNotNull(result.kcv());
+        assertEquals(3, result.kcv().length);
+        assertArrayEquals(result.kcv(), result.key().getKeyCheckValue());
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> a = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> b = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertArrayEquals(a.kcv(), b.kcv());
+        assertArrayEquals(a.key().getKeyBytes(), b.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_NullMKDMDefaultsToOptionA() throws Throwable {
+        EMVDerivedKey<SecureDESKey> withNull = jcesecmod.deriveICCMasterKey(
+                null, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> withOptionA = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertArrayEquals(withNull.kcv(), withOptionA.kcv());
+        assertArrayEquals(withNull.key().getKeyBytes(), withOptionA.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_OptionB_LongPAN_StructurallyValid() throws Throwable {
+        String longPan = "1234567890123456789"; // 19 digits — triggers OPTION_B SHA-1 path
+        EMVDerivedKey<SecureDESKey> result = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_B, imkac, longPan, "00");
+        assertNotNull(result.key());
+        assertEquals(SMAdapter.LENGTH_DES3_2KEY, result.key().getKeyLength());
+        assertEquals(3, result.kcv().length);
+
+        // OPTION_B with a long PAN should produce a different ICC MK than OPTION_A
+        // with the (short) accountNoA — basic sanity that the path actually ran.
+        EMVDerivedKey<SecureDESKey> optionA = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertFalse(java.util.Arrays.equals(result.kcv(), optionA.kcv()));
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_NullPAN_Throws() throws Throwable {
+        assertThrows(Exception.class, () -> {
+            jcesecmod.deriveICCMasterKey(MKDMethod.OPTION_A, imkac, null, accountNoA_CSN);
+        });
     }
 
 }

@@ -35,6 +35,9 @@ package org.jpos.security;
  *       ARQC/TC/AAC accepted by {@link SMAdapter#verifyARQC}.
  * </ul>
  * <p>
+ * Some methods also return key-derivation results via
+ * {@link EMVDerivedKey}; see e.g. {@link #deriveICCMasterKey}.
+ * <p>
  * Implementations that cannot perform a given operation should leave the
  * default {@link BaseSMAdapter} implementation in place, which throws
  * {@link SMException}.
@@ -125,5 +128,36 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
     byte[] generateApplicationCryptogram(MKDMethod mkdm, SKDMethod skdm, T imkac,
                         String accountNo, String acctSeqNo, byte[] atc,
                         byte[] upn, byte[] txnData)
+            throws SMException;
+
+    /**
+     * Derive an ICC Master Key from an Issuer Master Key (IMK) and the
+     * cardholder's PAN / PAN Sequence Number.
+     * <p>
+     * The result wraps the derived ICC Master Key in whatever representation
+     * the underlying security module uses for {@link SecureKey} (the JCE
+     * adapter wraps it as a {@link SecureDESKey} under the LMK; a future
+     * ANSI X9.143 / TR-31 HSM adapter would wrap it as a key block). The
+     * derived key shares the IMK's usage family — the JCE adapter preserves
+     * the IMK's {@code keyType} and {@code keyLength} on the derived
+     * {@link SecureDESKey}.
+     * <p>
+     * The derivation follows EMV v4.2 Book 2, Annex A1.4. For {@code mkdm}
+     * equals {@link MKDMethod#OPTION_B} on a PAN longer than 16 digits, the
+     * Option B (SHA-1 decimalised) path is used; otherwise Option A is used.
+     * This matches the formatting used internally by
+     * {@link SMAdapter#verifyARQC}.
+     *
+     * @param mkdm ICC Master Key Derivation Method. If {@code null},
+     *        {@link MKDMethod#OPTION_A} is used.
+     * @param imk the issuer master key, wrapped per the adapter's convention
+     * @param pan account number including BIN and check digit
+     * @param psn PAN Sequence Number, 2 decimal digits; if {@code null} or
+     *        empty, treated as {@code "00"}
+     * @return the derived ICC Master Key paired with its 3-byte Key Check Value
+     * @throws SMException on security module error
+     */
+    EMVDerivedKey<T> deriveICCMasterKey(MKDMethod mkdm, T imk,
+                                        String pan, String psn)
             throws SMException;
 }

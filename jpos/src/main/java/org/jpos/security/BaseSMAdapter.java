@@ -1134,6 +1134,29 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public EMVDerivedKey<T> deriveICCMasterKey(MKDMethod mkdm, T imk,
+            String pan, String psn) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "imk", imk));
+        cmdParameters.add(new SimpleMsg("parameter", "pan", pan));
+        cmdParameters.add(new SimpleMsg("parameter", "psn", psn));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Derive ICC Master Key", cmdParameters));
+        try {
+            EMVDerivedKey<T> result = deriveICCMasterKeyImpl(mkdm, imk, pan, psn);
+            evt.addMessage(new SimpleMsg("result", "ICC Master Key", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public byte[] generateARPC(MKDMethod mkdm, SKDMethod skdm, T imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
@@ -2197,6 +2220,20 @@ public class BaseSMAdapter<T>
     protected byte[] generateApplicationCryptogramImpl(MKDMethod mkdm, SKDMethod skdm, T imkac
             ,String accountNo, String acctSeqNo, byte[] atc, byte[] upn, byte[] txnData)
             throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm master-key derivation method
+     * @param imk issuer master key
+     * @param pan account number
+     * @param psn PAN sequence number
+     * @return derived ICC master key paired with its KCV
+     * @throws SMException on security module error
+     */
+    protected EMVDerivedKey<T> deriveICCMasterKeyImpl(MKDMethod mkdm, T imk,
+            String pan, String psn) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

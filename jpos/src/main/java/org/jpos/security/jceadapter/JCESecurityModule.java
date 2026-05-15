@@ -1112,6 +1112,17 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
+    protected EMVDerivedKey<SecureDESKey> deriveICCMasterKeyImpl(MKDMethod mkdm,
+            SecureDESKey imk, String pan, String psn) throws SMException {
+        if (mkdm == null)
+            mkdm = MKDMethod.OPTION_A;
+        byte[] panpsn = formatPANPSN(pan, psn, mkdm);
+        Key clearIcc = deriveICCMasterKey(decryptFromLMK(imk), panpsn);
+        SecureDESKey wrapped = encryptToLMK(imk.getKeyLength(), imk.getKeyType(), clearIcc);
+        return new EMVDerivedKey<>(wrapped, wrapped.getKeyCheckValue());
+    }
+
+    @Override
     public byte[] generateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accountNo, String accntSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)

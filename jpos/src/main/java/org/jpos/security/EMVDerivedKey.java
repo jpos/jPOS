@@ -40,12 +40,16 @@ import org.jpos.iso.ISOUtil;
  * overrides below compare and render it by content rather than by array
  * identity.
  *
- * @param <T> the SecureKey implementation type carried by the underlying
- *            security module
+ * @param <T> the {@link SecureKey} implementation type carried by the
+ *            underlying security module. By convention {@code T} is always
+ *            a {@code SecureKey} subtype (matching {@code SMAdapter}'s
+ *            usage), though the bound is left unconstrained to stay
+ *            compatible with the rest of the {@code org.jpos.security}
+ *            public API surface.
  * @param key the derived key, wrapped per the adapter's convention
  * @param kcv the Key Check Value, normally 3 bytes
  */
-public record EMVDerivedKey<T extends SecureKey>(T key, byte[] kcv) {
+public record EMVDerivedKey<T>(T key, byte[] kcv) {
 
     @Override
     public boolean equals(Object o) {
