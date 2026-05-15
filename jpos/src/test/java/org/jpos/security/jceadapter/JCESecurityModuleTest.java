@@ -2317,4 +2317,116 @@ public class JCESecurityModuleTest {
         assertArrayEquals(expected, result);
     }
 
+    @Test
+    public void testDeriveSecureMessagingSessionKey_VSDC_SMI_MatchesInternalDerivation() throws Throwable {
+        // OPTION_A panpsn for accountNoA + "00" = last 8 bytes of hex("123456789012345600")
+        byte[] panpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearImk  = jcesecmod.decryptFromLMK(imksmi);
+        java.security.Key clearMksmi = jcesecmod.deriveICCMasterKey(clearImk, panpsn);
+        java.security.Key expectedClearSk = jcesecmod.deriveSK_VISA(clearMksmi, atc01);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmi,
+                accountNoA, accountNoA_CSN, atc01, null);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_MCHIP_SMI_MatchesInternalDerivation() throws Throwable {
+        byte[] panpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearImk  = jcesecmod.decryptFromLMK(imksmi);
+        java.security.Key clearMksmi = jcesecmod.deriveICCMasterKey(clearImk, panpsn);
+        java.security.Key expectedClearSk = jcesecmod.deriveCommonSK_SM(clearMksmi, arqc01);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_CSKD_SMI_MatchesInternalDerivation() throws Throwable {
+        // MCHIP and EMV_CSKD share the same SM derivation algorithm (deriveCommonSK_SM)
+        byte[] panpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearImk  = jcesecmod.decryptFromLMK(imksmi);
+        java.security.Key clearMksmi = jcesecmod.deriveICCMasterKey(clearImk, panpsn);
+        java.security.Key expectedClearSk = jcesecmod.deriveCommonSK_SM(clearMksmi, arqc01);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.EMV_CSKD, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_VSDC_SMC_MatchesInternalDerivation() throws Throwable {
+        // Same algorithm as SMI, but starting from IMK-SMC; result inherits SMC keyType.
+        byte[] panpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearImk  = jcesecmod.decryptFromLMK(imksmc);
+        java.security.Key clearMksmc = jcesecmod.deriveICCMasterKey(clearImk, panpsn);
+        java.security.Key expectedClearSk = jcesecmod.deriveSK_VISA(clearMksmc, atc01);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmc,
+                accountNoA, accountNoA_CSN, atc01, null);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+        // Family carries through: SMC IMK -> SMC session key
+        assertEquals(imksmc.getKeyType(), session.key().getKeyType());
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> a = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        EMVDerivedKey<SecureDESKey> b = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        assertArrayEquals(a.kcv(), b.kcv());
+        assertArrayEquals(a.key().getKeyBytes(), b.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_PreservesIMKMetadata() throws Throwable {
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        assertEquals(imksmi.getKeyType(), session.key().getKeyType());
+        assertEquals(imksmi.getKeyLength(), session.key().getKeyLength());
+        assertEquals(3, session.kcv().length);
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_RejectsUnsupportedSKD() throws Throwable {
+        assertThrows(SMException.class, () -> {
+            jcesecmod.deriveSecureMessagingSessionKey(
+                    MKDMethod.OPTION_A, SKDMethod.AEPIS_V40, imksmi,
+                    accountNoA, accountNoA_CSN, atc01, arqc01);
+        });
+    }
+
 }

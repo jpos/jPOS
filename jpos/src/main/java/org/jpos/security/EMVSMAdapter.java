@@ -249,4 +249,56 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
     byte[] generateARPC(T key, byte[] arqc, ARPCMethod arpcMethod,
                         byte[] arc, byte[] propAuthData)
             throws SMException;
+
+    /**
+     * Derive an EMV Secure Messaging session key from a Secure Messaging
+     * Issuer Master Key (IMK-SMI or IMK-SMC), the cardholder PAN/PSN, and
+     * the per-session diversifier.
+     * <p>
+     * The same algorithm computes both the integrity key (SK-SMI) and the
+     * confidentiality key (SK-SMC); only the input IMK differs. Pass
+     * {@code imk-smi} to get SK-SMI for MACing issuer scripts, or
+     * {@code imk-smc} to get SK-SMC for PIN-block encryption. The derived
+     * key inherits the IMK's {@code keyType} and {@code keyLength}, so the
+     * usage family carries through to the returned {@link SecureKey}.
+     * <p>
+     * Per-{@code skdm} input usage:
+     * <ul>
+     *   <li>{@link SKDMethod#VSDC} — uses {@code atc} as a 2-byte
+     *       diversifier; {@code arqc} is ignored and may be {@code null}.
+     *   <li>{@link SKDMethod#MCHIP} and {@link SKDMethod#EMV_CSKD} — use
+     *       {@code arqc} as an 8-byte diversifier (typically the ARQC
+     *       itself for the first script, then {@code ARQC + n} for
+     *       subsequent scripts); {@code atc} is ignored and may be
+     *       {@code null}.
+     * </ul>
+     * <p>
+     * <b>Note on dispatch:</b> SM session-key derivation is <i>not</i> the
+     * same algorithm as AC session-key derivation. In particular, MCHIP
+     * uses {@code deriveSK_MK(atc, upn)} for AC (see
+     * {@link #deriveEMVSessionKey}) but {@code deriveCommonSK_SM(arqc)}
+     * for SM. Use the right method for the right purpose.
+     *
+     * @param mkdm ICC Master Key Derivation Method. If {@code null},
+     *        {@link MKDMethod#OPTION_A} is used.
+     * @param skdm Session Key Derivation Method
+     * @param imk the SM Issuer Master Key — pass IMK-SMI for SK-SMI or
+     *        IMK-SMC for SK-SMC
+     * @param pan account number including BIN and check digit
+     * @param psn PAN Sequence Number, 2 decimal digits; if {@code null} or
+     *        empty, treated as {@code "00"}
+     * @param atc Application Transaction Counter (2 bytes). Used only for
+     *        {@link SKDMethod#VSDC}.
+     * @param arqc the per-session diversifier (8 bytes). Used only for
+     *        {@link SKDMethod#MCHIP} and {@link SKDMethod#EMV_CSKD}.
+     * @return the derived SM session key paired with its 3-byte KCV
+     * @throws SMException on security module error or if {@code skdm} is
+     *         not supported
+     * @see SMAdapter#generateSM_MAC
+     * @see SMAdapter#translatePINGenerateSM_MAC
+     */
+    EMVDerivedKey<T> deriveSecureMessagingSessionKey(MKDMethod mkdm, SKDMethod skdm,
+                                                    T imk, String pan, String psn,
+                                                    byte[] atc, byte[] arqc)
+            throws SMException;
 }

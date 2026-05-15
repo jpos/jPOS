@@ -959,7 +959,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return derived 16-bytes Session Key with adjusted DES parity
      * @throws JCEHandlerException
      */
-    private Key deriveSK_VISA(Key mkac, byte[] atc) throws JCEHandlerException {
+    protected Key deriveSK_VISA(Key mkac, byte[] atc) throws JCEHandlerException {
 
         byte[] skl = new byte[8];
         System.arraycopy(atc, atc.length-2, skl, 6, 2);
@@ -988,7 +988,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return derived 16-bytes Session Key with adjusted DES parity
      * @throws JCEHandlerException
      */
-    private Key deriveCommonSK_SM(Key mksm, byte[] rand) throws JCEHandlerException {
+    protected Key deriveCommonSK_SM(Key mksm, byte[] rand) throws JCEHandlerException {
       byte[] rl = Arrays.copyOf(rand,8);
       rl[2] = (byte)0xf0;
       byte[] skl = jceHandler.encryptData(rl, mksm);
@@ -1180,6 +1180,31 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
             ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException {
         return calculateARPC(decryptFromLMK(key), arqc, arpcMethod, arc, propAuthData);
+    }
+
+    @Override
+    protected EMVDerivedKey<SecureDESKey> deriveSecureMessagingSessionKeyImpl(
+            MKDMethod mkdm, SKDMethod skdm, SecureDESKey imk,
+            String pan, String psn, byte[] atc, byte[] arqc) throws SMException {
+        if (mkdm == null)
+            mkdm = MKDMethod.OPTION_A;
+        byte[] panpsn = formatPANPSN(pan, psn, mkdm);
+        Key clearMk = deriveICCMasterKey(decryptFromLMK(imk), panpsn);
+        Key clearSk;
+        switch (skdm) {
+            case VSDC:
+                clearSk = deriveSK_VISA(clearMk, atc);
+                break;
+            case MCHIP:
+            case EMV_CSKD:
+                clearSk = deriveCommonSK_SM(clearMk, arqc);
+                break;
+            default:
+                throw new SMException(
+                        "Session Key Derivation " + skdm + " not supported");
+        }
+        SecureDESKey wrapped = encryptToLMK(imk.getKeyLength(), imk.getKeyType(), clearSk);
+        return new EMVDerivedKey<>(wrapped, wrapped.getKeyCheckValue());
     }
 
     @Override
