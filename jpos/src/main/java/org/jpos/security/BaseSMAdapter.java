@@ -52,7 +52,7 @@ import java.util.Map;
  * @param <T> the SecureKey implementation type
  */
 public class BaseSMAdapter<T>
-        implements SMAdapter<T>, Configurable, LogSource {
+        implements EMVSMAdapter<T>, Configurable, LogSource {
     /** Logger for this security module adapter. */
     protected Logger logger = null;
     /** Log realm for this security module adapter. */
@@ -1018,6 +1018,62 @@ public class BaseSMAdapter<T>
       } finally {
         logEvent(evt);
       }
+    }
+
+    @Override
+    public String generateCVC3(T imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm)
+                     throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "imk-cvc3", imkcvc3 == null ? "" : imkcvc3));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        cmdParameters.add(new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)));
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate CVC3", cmdParameters));
+        try {
+            String r = generateCVC3Impl(imkcvc3, accountNo, acctSeqNo, atc, upn, data, mkdm);
+            evt.addMessage(new SimpleMsg("result", "cvc3", r));
+            return r;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public String generatedCVV(String accountNo, T imkac, String expDate,
+                     String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+
+        if (accountNo == null || accountNo.trim().length() == 0)
+            throw new IllegalArgumentException("Account number not set.");
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac == null ? "" : imkac));
+        cmdParameters.add(new SimpleMsg("parameter", "Exp date", expDate));
+        cmdParameters.add(new SimpleMsg("parameter", "Service code", serviceCode));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate dCVV", cmdParameters));
+        try {
+            String r = generatedCVVImpl(accountNo, imkac, expDate, serviceCode, atc, mkdm);
+            evt.addMessage(new SimpleMsg("result", "dCVV", r));
+            return r;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
     }
 
     @Override
@@ -2038,6 +2094,41 @@ public class BaseSMAdapter<T>
      */
     protected boolean verifyCVC3Impl(T imkcvc3, String accountNo, String acctSeqNo,
                      byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
+                     throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param imkcvc3 issuer master key for CVC3
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
+     * @param atc application transaction counter
+     * @param upn unpredictable number
+     * @param data input data
+     * @param mkdm master-key derivation method
+     * @return the 5-digit CVC3
+     * @throws SMException on security module error
+     */
+    protected String generateCVC3Impl(T imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm)
+                     throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo card account number
+     * @param imkac issuer master key for application cryptograms
+     * @param expDate card expiration date as {@code yyMM}
+     * @param serviceCode card service code
+     * @param atc application transaction counter
+     * @param mkdm master-key derivation method
+     * @return the dCVV
+     * @throws SMException on security module error
+     */
+    protected String generatedCVVImpl(String accountNo, T imkac, String expDate,
+                     String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }

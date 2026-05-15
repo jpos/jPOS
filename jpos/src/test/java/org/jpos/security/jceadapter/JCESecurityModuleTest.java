@@ -1060,6 +1060,126 @@ public class JCESecurityModuleTest {
     }
 
     @Test
+    public void testGeneratedCVV_OptionA_KnownVector() throws Throwable {
+        String accountNo = "1234567890123456";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        String result = jcesecmod.generatedCVV(accountNo, imkac, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A);
+        assertEquals("422", result);
+    }
+
+    @Test
+    public void testGeneratedCVV_OptionA_RoundTrip() throws Throwable {
+        String accountNo = "1234567890123456";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        String generated = jcesecmod.generatedCVV(accountNo, imkac, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A);
+        assertTrue(jcesecmod.verifydCVV(accountNo, imkac, generated, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A));
+    }
+
+    @Test
+    public void testGeneratedCVV_OptionB_KnownVector() throws Throwable {
+        String accountNo = "123456789012";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        String result = jcesecmod.generatedCVV(accountNo, imkac, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_B);
+        assertEquals("824", result);
+    }
+
+    @Test
+    public void testGeneratedCVV_OptionB_RoundTrip() throws Throwable {
+        String accountNo = "1234567890123456789";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        String generated = jcesecmod.generatedCVV(accountNo, imkac, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_B);
+        assertTrue(jcesecmod.verifydCVV(accountNo, imkac, generated, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_B));
+    }
+
+    @Test
+    public void testGeneratedCVV_RejectsEmptyAccountNo() throws Throwable {
+        String accountNo = "";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        assertThrows(IllegalArgumentException.class, () -> {
+            jcesecmod.generatedCVV(accountNo, imkac, expDate
+              ,serviceCode, atc, MKDMethod.OPTION_A);
+        });
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionA_KnownVector() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("1234567890123456D12012061000110000000FFFFFFFFFFF");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String result = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_A);
+        assertEquals("45423", result);
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionA_IVCVC3() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] ivcvc3 = ISOUtil.hex2byte("CD76");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String result = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, ivcvc3, MKDMethod.OPTION_A);
+        assertEquals("39464", result);
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionA_RoundTrip() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("1234567890123456D12012061000110000000F");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String generated = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_A);
+        assertTrue(jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_A, generated));
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionB_KnownVector() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("1234567890123456D12012061000110000000F");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String result = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_B);
+        assertEquals("03518", result);
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionB_RoundTrip() throws Throwable {
+        String accountNo = "123456789012345";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("123456789012345D12012061000110000000");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String generated = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_B);
+        assertTrue(jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_B, generated));
+    }
+
+    @Test
     public void testGenerateARPCImpl_VSDC_M1() throws Throwable {
         byte[] arqc   = ISOUtil.hex2byte("26C8A1042D1CAF3E");
         byte[] arc    = ISOUtil.hex2byte("3030");

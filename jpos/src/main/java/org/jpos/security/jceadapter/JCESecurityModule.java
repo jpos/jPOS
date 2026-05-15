@@ -582,6 +582,13 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return res.equals(dcvv);
     }
 
+    @Override
+    protected String generatedCVVImpl(String accountNo, SecureDESKey imkac,
+                     String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+        return calculatedCVV(accountNo, imkac, expDate, serviceCode, atc, mkdm);
+    }
+
     /**
      * Computes the contactless CVC3 from the issuer master key, ATC, UPN, and track data.
      *
@@ -630,6 +637,13 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         //get some last digits
         calcCVC3 = calcCVC3.substring(5-cvc3.length());
         return calcCVC3.equals(cvc3);
+    }
+
+    @Override
+    protected String generateCVC3Impl(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm)
+                     throws SMException {
+        return calculateCVC3(imkcvc3, accountNo, acctSeqNo, atc, upn, data, mkdm);
     }
 
     private byte[] calculateIVCVC3(Key mkcvc3, byte[] data)
