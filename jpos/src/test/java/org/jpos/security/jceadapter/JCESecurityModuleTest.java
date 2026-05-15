@@ -2035,4 +2035,19 @@ public class JCESecurityModuleTest {
         verify(listener, times(1)).log(any(LogEvent.class));
     }
 
+    @Test
+    public void testCalculateKCV_3DES_StandardAlgorithm() throws Throwable {
+        byte[] clearKey = ISOUtil.hex2byte("0123456789ABCDEFFEDCBA9876543210");
+        java.security.Key key = jcesecmod.jceHandler
+                .formDESKey(SMAdapter.LENGTH_DES3_2KEY, clearKey);
+
+        byte[] kcv = jcesecmod.calculateKCV(key);
+
+        assertEquals(3, kcv.length);
+
+        byte[] expected = java.util.Arrays.copyOfRange(
+                jcesecmod.jceHandler.encryptData(new byte[8], key), 0, 3);
+        assertArrayEquals(expected, kcv);
+    }
+
 }
