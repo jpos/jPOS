@@ -1588,6 +1588,62 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
+    protected byte[] verifySDAImpl(EMVIssuerPublicKey issuer,
+            byte[] ssad, byte[] sad) throws SMException {
+
+        if (issuer == null || issuer.modulus() == null || issuer.exponent() == null)
+            throw new SMException("Issuer Public Key is missing modulus or exponent");
+        if (ssad == null)
+            throw new SMException("Signed Static Application Data (EMV tag 0x93) is required");
+
+        int ni = issuer.modulus().length;
+        if (ssad.length != ni)
+            throw new SMException("SSAD length (" + ssad.length
+                    + ") must equal Issuer modulus length (" + ni + ")");
+        if (ni < 26)
+            throw new SMException("Issuer modulus too small for SSAD (need at least 26 bytes, got " + ni + ")");
+
+        // 1. RSA recovery
+        BigInteger n = new BigInteger(1, issuer.modulus());
+        BigInteger e = new BigInteger(1, issuer.exponent());
+        byte[] recovered = bigIntegerToFixedLengthBytes(
+                new BigInteger(1, ssad).modPow(e, n), ni);
+
+        // 2-5. Header / format / trailer / hash algo
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x"
+                + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x03,
+                "Invalid signed data format: expected 0x03 (Signed Static Application Data) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[ni - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[ni - 1] & 0xff));
+        require(recovered[2] == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", recovered[2] & 0xff) + ")");
+
+        // 6. Pad pattern check: bytes 5..ni-21 must all be 0xBB
+        for (int i = 5; i < ni - 21; i++) {
+            if (recovered[i] != (byte) 0xBB)
+                throw new SMException("Invalid SSAD pad pattern at offset " + i
+                        + ": expected 0xBB but got 0x" + String.format("%02X", recovered[i] & 0xff));
+        }
+
+        // 7. Hash validation
+        byte[] hashInCert = Arrays.copyOfRange(recovered, ni - 21, ni - 1);
+        byte[] hashInput  = Arrays.copyOfRange(recovered, 1, ni - 21);
+        if (sad != null && sad.length > 0)
+            hashInput = ISOUtil.concat(hashInput, sad);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "SSAD hash validation failed");
+
+        // Return the 2-byte Data Authentication Code
+        return Arrays.copyOfRange(recovered, 3, 5);
+    }
+
+    @Override
     protected Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MACImpl(
             MKDMethod mkdm, SKDMethod skdm, PaddingMethod padm, SecureDESKey imksmi
            ,String accountNo, String accntSeqNo, byte[] atc, byte[] arqc

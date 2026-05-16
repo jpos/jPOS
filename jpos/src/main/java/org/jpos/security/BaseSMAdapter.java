@@ -1415,6 +1415,31 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public byte[] verifySDA(EMVIssuerPublicKey issuerPublicKey,
+            byte[] signedStaticApplicationData,
+            byte[] staticApplicationData) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "issuer public key", issuerPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "ssad",
+                signedStaticApplicationData == null ? "" : ISOUtil.hexString(signedStaticApplicationData)));
+        cmdParameters.add(new SimpleMsg("parameter", "static app data length",
+                staticApplicationData == null ? "0" : Integer.toString(staticApplicationData.length)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Verify SDA", cmdParameters));
+        try {
+            byte[] dac = verifySDAImpl(issuerPublicKey, signedStaticApplicationData, staticApplicationData);
+            evt.addMessage(new SimpleMsg("result", "DAC", dac == null ? "" : ISOUtil.hexString(dac)));
+            return dac;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public EMVICCPublicKey recoverICCPublicKey(EMVIssuerPublicKey issuerPublicKey,
             byte[] iccPublicKeyCertificate, byte[] iccPublicKeyRemainder,
             byte[] iccPublicKeyExponent, byte[] staticApplicationData,
@@ -2645,6 +2670,21 @@ public class BaseSMAdapter<T>
             byte[] iccPublicKeyExponent,
             byte[] staticApplicationData,
             String pan) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Verify Signed Static Application Data (SSAD, EMV tag 0x93).
+     * @param issuerPublicKey the recovered issuer public key
+     * @param signedStaticApplicationData EMV tag 0x93 contents
+     * @param staticApplicationData SAD bytes assembled per EMV §10.3
+     * @return the 2-byte Data Authentication Code (DAC)
+     * @throws SMException on RSA recovery or EMV validation failure
+     */
+    protected byte[] verifySDAImpl(EMVIssuerPublicKey issuerPublicKey,
+            byte[] signedStaticApplicationData,
+            byte[] staticApplicationData) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

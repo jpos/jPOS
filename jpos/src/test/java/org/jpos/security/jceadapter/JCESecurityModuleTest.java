@@ -3048,4 +3048,156 @@ public class JCESecurityModuleTest {
                 "expected 'application pan' in error: " + ex.getMessage());
     }
 
+    // ----------------------------------------------------------------------
+    // PR 11 — Verify Signed Static Application Data (EMV 4.4 Book 2 §5.4)
+    // ----------------------------------------------------------------------
+    //
+    // Reuses PR 9's CA + Issuer keypair fixture. Builds SSAD by signing
+    // (format-prefix || hash-alg || DAC || pad-pattern || SAD)'s hash with
+    // the issuer private exponent, then recovers via verifySDA.
+
+    private static final byte[] PR11_DAC = ISOUtil.hex2byte("1234");
+    private static byte[] pr11HappySSAD;
+
+    @BeforeAll
+    public static void setUpPR11Fixtures() throws Exception {
+        // Build the canonical "happy" SSAD signed by the issuer. The issuer
+        // keypair (pr10IssuerD, pr9IssuerN) was captured during the PR 9
+        // fixture setup; PR 11 just consumes it.
+        pr11HappySSAD = buildSSAD(PR11_DAC, (byte) 0x01, (byte) 0x03,
+                (byte) 0xBB, PR10_SAD);
+    }
+
+    private static byte[] buildSSAD(byte[] dac, byte hashAlg, byte format,
+            byte padByte, byte[] sad) throws Exception {
+        int ni = PR9_NI;
+        byte[] payload = new byte[ni];
+        payload[0] = (byte) 0x6A;
+        payload[1] = format;
+        payload[2] = hashAlg;
+        System.arraycopy(dac, 0, payload, 3, 2);
+        // Pad pattern: bytes 5..ni-21 = padByte
+        for (int i = 5; i < ni - 21; i++) payload[i] = padByte;
+        // Hash over payload[1..ni-21) || sad
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        sha.update(payload, 1, ni - 22);
+        if (sad != null && sad.length > 0) sha.update(sad);
+        System.arraycopy(sha.digest(), 0, payload, ni - 21, 20);
+        payload[ni - 1] = (byte) 0xBC;
+        return signWithIssuer(payload);
+    }
+
+    private static byte[] mutateAndSignSSAD(byte[] signedSSAD, java.util.function.Consumer<byte[]> mutator) {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signedSSAD);
+        byte[] payload = bigIntToFixed(sig.modPow(pr10IssuerE, pr9IssuerN), signedSSAD.length);
+        mutator.accept(payload);
+        return signWithIssuer(payload);
+    }
+
+    @Test
+    public void testVerifySDA_HappyPath() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+
+        byte[] dac = jcesecmod.verifySDA(issuer, pr11HappySSAD, PR10_SAD);
+        assertArrayEquals(PR11_DAC, dac);
+        assertEquals(2, dac.length);
+    }
+
+    @Test
+    public void testVerifySDA_BadHeader_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[0] = (byte) 0x6B);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("header"),
+                "expected 'header' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_BadFormat_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        // 0x03 → 0x02 (issuer cert format used by mistake)
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[1] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("signed data format"),
+                "expected 'signed data format' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_BadTrailer_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[PR9_NI - 1] = (byte) 0xBD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("trailer"),
+                "expected 'trailer' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_UnsupportedHashAlgo_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[2] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash algorithm"),
+                "expected 'hash algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_BadPadding_Throws() throws Throwable {
+        // Build SSAD with pad byte 0xBC instead of 0xBB. Hash is consistent
+        // with the cert (signed correctly); only the structural pad-pattern
+        // check rejects.
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] badPadding = buildSSAD(PR11_DAC, (byte) 0x01, (byte) 0x03,
+                (byte) 0xBC, PR10_SAD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, badPadding, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_BadHash_Throws() throws Throwable {
+        // Flip a bit in the embedded hash (bytes ni-21..ni-2).
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[PR9_NI - 10] ^= 0x01);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_SADCorruption_Throws() throws Throwable {
+        // Pass a different SAD at verify time than was used at signing.
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] wrongSad = ISOUtil.hex2byte("DEADBEEFCAFEBABE");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, pr11HappySSAD, wrongSad));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_WrongLength_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        // Truncate the SSAD by one byte; should fail the length check.
+        byte[] tooShort = java.util.Arrays.copyOfRange(pr11HappySSAD, 0, pr11HappySSAD.length - 1);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, tooShort, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("length"),
+                "expected 'length' in error: " + ex.getMessage());
+    }
+
 }

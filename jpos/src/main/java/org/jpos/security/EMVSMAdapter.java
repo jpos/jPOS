@@ -526,4 +526,55 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
             byte[] iccPublicKeyExponent,
             byte[] staticApplicationData,
             String pan) throws SMException;
+
+    /**
+     * Verify EMV Signed Static Application Data (SSAD, tag {@code 0x93})
+     * per EMV 4.4 Book 2 §5.4 and return the Data Authentication Code
+     * (DAC) the issuer embedded in the signed payload.
+     * <p>
+     * The natural caller flow chains this with PR 9's
+     * {@link #recoverIssuerPublicKey(EMVCAPublicKey, byte[], byte[], byte[], String)}:
+     * <pre>
+     *   EMVIssuerPublicKey issuer = recoverIssuerPublicKey(ca, issuerCert,
+     *           issuerRemainder, issuerExp, pan);
+     *   byte[]             dac    = verifySDA(issuer, ssad, staticApplicationData);
+     *   // store dac in EMV tag 0x9F45 for subsequent transaction data
+     * </pre>
+     * <p>
+     * The implementation performs RSA recovery {@code ssad^e mod n}
+     * under the supplied issuer public key and validates the recovered
+     * structure: header {@code 0x6A}, signed-data-format {@code 0x03}
+     * (distinct from {@code 0x02} for issuer certificates and
+     * {@code 0x04} for ICC certificates), trailer {@code 0xBC}, hash
+     * algorithm indicator, mandatory {@code 0xBB} pad pattern, and a
+     * SHA-1 hash over (signed-data-format + hash-alg + DAC + pad-pattern)
+     * concatenated with the supplied Static Application Data.
+     * <p>
+     * <b>Pad pattern check is mandatory.</b> EMV §5.4 lists this under
+     * structural verification guidance; this adapter treats any
+     * deviation from {@code 0xBB} as a hard failure rather than hiding a
+     * card conformance defect. Callers needing lenient behavior should
+     * pre-process the SSAD.
+     * <p>
+     * <b>Caller assembles SAD.</b> Per EMV Book 3 §10.3, terminals
+     * concatenate the records identified by the AFL plus (optionally)
+     * the Static Data Authentication Tag List. That assembly is
+     * application policy, outside this method's scope — the verify
+     * method consumes whatever bytes the caller passes.
+     *
+     * @param issuerPublicKey the recovered Issuer Public Key (typically
+     *        the output of {@link #recoverIssuerPublicKey})
+     * @param signedStaticApplicationData EMV tag {@code 0x93} contents;
+     *        length must equal the issuer modulus length
+     * @param staticApplicationData the SAD bytes assembled per EMV
+     *        Book 3 §10.3 — same bytes the issuer hashed when signing
+     * @return the 2-byte Data Authentication Code (to be stored in EMV
+     *         tag {@code 0x9F45})
+     * @throws SMException on RSA recovery failure or any EMV
+     *         validation failure
+     */
+    byte[] verifySDA(
+            EMVIssuerPublicKey issuerPublicKey,
+            byte[] signedStaticApplicationData,
+            byte[] staticApplicationData) throws SMException;
 }
