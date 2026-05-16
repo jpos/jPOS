@@ -1588,6 +1588,72 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
+    protected byte[] verifyDDAImpl(EMVICCPublicKey icc,
+            byte[] sdad, byte[] ddolData) throws SMException {
+
+        if (icc == null || icc.modulus() == null || icc.exponent() == null)
+            throw new SMException("ICC Public Key is missing modulus or exponent");
+        if (sdad == null)
+            throw new SMException("Signed Dynamic Application Data (EMV tag 0x9F4B) is required");
+
+        int nic = icc.modulus().length;
+        if (sdad.length != nic)
+            throw new SMException("SDAD length (" + sdad.length
+                    + ") must equal ICC modulus length (" + nic + ")");
+        if (nic < 26)
+            throw new SMException("ICC modulus too small for SDAD (need at least 26 bytes, got " + nic + ")");
+
+        // 1. RSA recovery
+        BigInteger n = new BigInteger(1, icc.modulus());
+        BigInteger e = new BigInteger(1, icc.exponent());
+        byte[] recovered = bigIntegerToFixedLengthBytes(
+                new BigInteger(1, sdad).modPow(e, n), nic);
+
+        // 2-5. Header / format / trailer / hash algo
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x"
+                + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x05,
+                "Invalid signed data format: expected 0x05 (Signed Dynamic Application Data) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[nic - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[nic - 1] & 0xff));
+        require(recovered[2] == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", recovered[2] & 0xff) + ")");
+
+        // 6. ICC Dynamic Data Length sanity
+        int ldd = recovered[3] & 0xff;
+        require(ldd >= 1 && ldd <= nic - 26,
+                "Invalid ICC Dynamic Data Length: " + ldd + " (must fit inside " + (nic - 25) + " bytes)");
+
+        // 7. ICC Dynamic Number Length sanity (EMV §6.5.2: 2..8)
+        int ldn = recovered[4] & 0xff;
+        require(ldn >= 2 && ldn <= 8,
+                "Invalid ICC Dynamic Number Length: " + ldn + " (must be 2..8 per EMV 4.4 Book 2 §6.5.2)");
+
+        // 8. Pad pattern: bytes (4 + ldd) .. (nic - 21) must all be 0xBB
+        for (int i = 4 + ldd; i < nic - 21; i++) {
+            if (recovered[i] != (byte) 0xBB)
+                throw new SMException("Invalid SDAD pad pattern at offset " + i
+                        + ": expected 0xBB but got 0x" + String.format("%02X", recovered[i] & 0xff));
+        }
+
+        // 9. Hash validation: SHA-1(recovered[1..nic-21) || DDOL)
+        byte[] hashInCert = Arrays.copyOfRange(recovered, nic - 21, nic - 1);
+        byte[] hashInput  = Arrays.copyOfRange(recovered, 1, nic - 21);
+        if (ddolData != null && ddolData.length > 0)
+            hashInput = ISOUtil.concat(hashInput, ddolData);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "SDAD hash validation failed");
+
+        // Return ICC Dynamic Number = recovered[5 .. 5+ldn)
+        return Arrays.copyOfRange(recovered, 5, 5 + ldn);
+    }
+
+    @Override
     protected byte[] verifySDAImpl(EMVIssuerPublicKey issuer,
             byte[] ssad, byte[] sad) throws SMException {
 

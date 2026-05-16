@@ -577,4 +577,53 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
             EMVIssuerPublicKey issuerPublicKey,
             byte[] signedStaticApplicationData,
             byte[] staticApplicationData) throws SMException;
+
+    /**
+     * Verify EMV Signed Dynamic Application Data (SDAD, tag {@code 0x9F4B})
+     * returned by the card from INTERNAL AUTHENTICATE, per EMV 4.4 Book 2
+     * §6.5, and return the ICC Dynamic Number the card signed inside it.
+     * <p>
+     * DDA proves the card holds the ICC private key — a stronger signal
+     * than SDA (which only proves the issuer signed static records). The
+     * natural caller flow chains all three offline-auth recovery steps:
+     * <pre>
+     *   EMVIssuerPublicKey issuer = recoverIssuerPublicKey(ca, issuerCert,
+     *           issuerRemainder, issuerExp, pan);
+     *   EMVICCPublicKey    icc    = recoverICCPublicKey(issuer, iccCert,
+     *           iccRemainder, iccExp, staticApplicationData, pan);
+     *   byte[]             dyn    = verifyDDA(icc, sdad, ddolData);
+     * </pre>
+     * <p>
+     * The implementation performs RSA recovery {@code sdad^e mod n} under
+     * the ICC public key and validates the recovered structure:
+     * header {@code 0x6A}, signed-data-format {@code 0x05} (distinct from
+     * {@code 0x03} for SSAD), trailer {@code 0xBC}, hash algorithm
+     * indicator, LDD and LDN sanity (the latter must fall in
+     * {@code [2, 8]} per EMV §6.5.2), mandatory {@code 0xBB} pad pattern,
+     * and a SHA-1 hash over the recovered payload (minus header / hash /
+     * trailer) concatenated with the supplied DDOL bytes.
+     * <p>
+     * <b>Pad pattern check is mandatory</b> — same rationale as
+     * {@link #verifySDA}.
+     * <p>
+     * <b>Caller is responsible for DDOL assembly.</b> Per EMV §10.4, the
+     * terminal builds DDOL by substituting its data elements into the
+     * card-supplied DDOL template (tag {@code 0x9F49}). That assembly is
+     * application policy, outside this method's scope — the verify
+     * method consumes whatever bytes the caller passes.
+     *
+     * @param iccPublicKey the recovered ICC Public Key (typically the
+     *        output of {@link #recoverICCPublicKey})
+     * @param signedDynamicApplicationData EMV tag {@code 0x9F4B} contents;
+     *        length must equal the ICC modulus length
+     * @param ddolData the DDOL bytes the terminal sent to INTERNAL
+     *        AUTHENTICATE — same bytes the card hashed when signing
+     * @return the ICC Dynamic Number (variable length, 2 to 8 bytes)
+     * @throws SMException on RSA recovery failure or any EMV validation
+     *         failure
+     */
+    byte[] verifyDDA(
+            EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] ddolData) throws SMException;
 }

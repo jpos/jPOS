@@ -1415,6 +1415,33 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public byte[] verifyDDA(EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] ddolData) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "icc public key", iccPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "sdad",
+                signedDynamicApplicationData == null ? "" : ISOUtil.hexString(signedDynamicApplicationData)));
+        cmdParameters.add(new SimpleMsg("parameter", "ddol data",
+                ddolData == null ? "" : ISOUtil.hexString(ddolData)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Verify DDA", cmdParameters));
+        try {
+            byte[] iccDynamicNumber = verifyDDAImpl(iccPublicKey,
+                    signedDynamicApplicationData, ddolData);
+            evt.addMessage(new SimpleMsg("result", "ICC Dynamic Number",
+                    iccDynamicNumber == null ? "" : ISOUtil.hexString(iccDynamicNumber)));
+            return iccDynamicNumber;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public byte[] verifySDA(EMVIssuerPublicKey issuerPublicKey,
             byte[] signedStaticApplicationData,
             byte[] staticApplicationData) throws SMException {
@@ -2685,6 +2712,21 @@ public class BaseSMAdapter<T>
     protected byte[] verifySDAImpl(EMVIssuerPublicKey issuerPublicKey,
             byte[] signedStaticApplicationData,
             byte[] staticApplicationData) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Verify Signed Dynamic Application Data (SDAD, EMV tag 0x9F4B).
+     * @param iccPublicKey the recovered ICC public key
+     * @param signedDynamicApplicationData EMV tag 0x9F4B contents
+     * @param ddolData the DDOL bytes the terminal sent to INTERNAL AUTHENTICATE
+     * @return the ICC Dynamic Number
+     * @throws SMException on RSA recovery or EMV validation failure
+     */
+    protected byte[] verifyDDAImpl(EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] ddolData) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

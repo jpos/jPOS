@@ -2858,6 +2858,10 @@ public class JCESecurityModuleTest {
         java.security.KeyPair iccKp = kpg.generateKeyPair();
         java.math.BigInteger iccN = ((java.security.interfaces.RSAPublicKey) iccKp.getPublic()).getModulus();
         java.math.BigInteger iccE = ((java.security.interfaces.RSAPublicKey) iccKp.getPublic()).getPublicExponent();
+        // Capture ICC private + public exponents for PR 12 SDAD signing
+        pr12IccD = ((java.security.interfaces.RSAPrivateKey) iccKp.getPrivate()).getPrivateExponent();
+        pr12IccE = iccE;
+        pr12IccN = iccN;
 
         pr10IccModulus = bigIntToFixed(iccN, 64);
         pr10IccExp     = trimLeadingZeros(iccE.toByteArray());
@@ -2869,6 +2873,10 @@ public class JCESecurityModuleTest {
         int nic = pr10IccModulus.length;      // 64
         int iccInCert = Math.min(nic, PR9_NI - 42);  // min(64, 54) = 54
         pr10HappyRemainder = java.util.Arrays.copyOfRange(pr10IccModulus, iccInCert, nic);
+
+        // PR 12 follows here so JUnit 5's non-deterministic @BeforeAll
+        // ordering can't observe a null pr12IccD when buildSDAD runs.
+        setUpPR12Fixtures();
     }
 
     private static byte[] buildICCPayload(byte[] appPan, byte[] expDate, byte[] serial,
@@ -3196,6 +3204,169 @@ public class JCESecurityModuleTest {
         byte[] tooShort = java.util.Arrays.copyOfRange(pr11HappySSAD, 0, pr11HappySSAD.length - 1);
         SMException ex = assertThrows(SMException.class, () ->
                 jcesecmod.verifySDA(issuer, tooShort, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("length"),
+                "expected 'length' in error: " + ex.getMessage());
+    }
+
+    // ----------------------------------------------------------------------
+    // PR 12 — Verify Signed Dynamic Application Data (EMV 4.4 Book 2 §6.5)
+    // ----------------------------------------------------------------------
+    //
+    // Chains PR 9 → PR 10 → PR 12: recover Issuer PK, recover ICC PK, sign
+    // an SDAD with the ICC private key, recover via verifyDDA.
+
+    private static final byte[] PR12_DDOL = ISOUtil.hex2byte("9F37049988776655");
+    private static final byte[] PR12_ICC_DYNAMIC_NUMBER = ISOUtil.hex2byte("12345678");
+
+    private static java.math.BigInteger pr12IccD;
+    private static java.math.BigInteger pr12IccE;
+    private static java.math.BigInteger pr12IccN;
+    private static byte[] pr12HappySDAD;
+
+    // Called from setUpPR10Fixtures (NOT a separate @BeforeAll method) to
+    // guarantee setUpPR9Fixtures and setUpPR10Fixtures have run first;
+    // JUnit 5 does not order multiple @BeforeAll methods deterministically.
+    private static void setUpPR12Fixtures() throws Exception {
+        // Builds the canonical "happy" SDAD signed with the ICC private key
+        // (pr12IccD captured during setUpPR10Fixtures).
+        pr12HappySDAD = buildSDAD(PR12_ICC_DYNAMIC_NUMBER, (byte) 0x01,
+                (byte) 0x05, (byte) 0xBB, PR12_DDOL);
+    }
+
+    private static byte[] buildSDAD(byte[] iccDynamicNumber, byte hashAlg, byte format,
+            byte padByte, byte[] ddol) throws Exception {
+        int nic = pr10IccModulus.length;      // 64
+        int ldn = iccDynamicNumber.length;
+        int ldd = 1 + ldn;                    // LDN byte + dynamic number bytes
+        byte[] payload = new byte[nic];
+        payload[0] = (byte) 0x6A;
+        payload[1] = format;
+        payload[2] = hashAlg;
+        payload[3] = (byte) ldd;
+        payload[4] = (byte) ldn;
+        System.arraycopy(iccDynamicNumber, 0, payload, 5, ldn);
+        for (int i = 4 + ldd; i < nic - 21; i++) payload[i] = padByte;
+        // Hash over payload[1..nic-21) || ddol
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        sha.update(payload, 1, nic - 22);
+        if (ddol != null && ddol.length > 0) sha.update(ddol);
+        System.arraycopy(sha.digest(), 0, payload, nic - 21, 20);
+        payload[nic - 1] = (byte) 0xBC;
+        return signWithICC(payload);
+    }
+
+    private static byte[] signWithICC(byte[] payload) {
+        java.math.BigInteger m = new java.math.BigInteger(1, payload);
+        java.math.BigInteger s = m.modPow(pr12IccD, pr12IccN);
+        return bigIntToFixed(s, payload.length);
+    }
+
+    private static byte[] mutateAndSignSDAD(byte[] signedSDAD, java.util.function.Consumer<byte[]> mutator) {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signedSDAD);
+        byte[] payload = bigIntToFixed(sig.modPow(pr12IccE, pr12IccN), signedSDAD.length);
+        mutator.accept(payload);
+        return signWithICC(payload);
+    }
+
+    private static EMVICCPublicKey recoverICCForPR12() throws Exception {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        return jcesecmod.recoverICCPublicKey(issuer, pr10HappyCert, pr10HappyRemainder,
+                pr10IccExp, PR10_SAD, PR10_APP_PAN_STR);
+    }
+
+    @Test
+    public void testVerifyDDA_HappyPath() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] dyn = jcesecmod.verifyDDA(icc, pr12HappySDAD, PR12_DDOL);
+        assertArrayEquals(PR12_ICC_DYNAMIC_NUMBER, dyn);
+        assertEquals(4, dyn.length);
+    }
+
+    @Test
+    public void testVerifyDDA_BadHeader_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD, p -> p[0] = (byte) 0x6B);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("header"),
+                "expected 'header' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadFormat_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        // 0x05 → 0x03 (SSAD format used by mistake)
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD, p -> p[1] = (byte) 0x03);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("signed data format"),
+                "expected 'signed data format' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadTrailer_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD,
+                p -> p[pr10IccModulus.length - 1] = (byte) 0xBD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("trailer"),
+                "expected 'trailer' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_UnsupportedHashAlgo_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD, p -> p[2] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash algorithm"),
+                "expected 'hash algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadPadding_Throws() throws Throwable {
+        // Build SDAD with pad byte 0xBC instead of 0xBB. Hash signed
+        // consistently with the corrupt pad — structural check rejects.
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] badPadding = buildSDAD(PR12_ICC_DYNAMIC_NUMBER, (byte) 0x01,
+                (byte) 0x05, (byte) 0xBC, PR12_DDOL);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, badPadding, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadHash_Throws() throws Throwable {
+        // Flip a bit in the embedded hash (bytes nic-21..nic-2).
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD,
+                p -> p[pr10IccModulus.length - 10] ^= 0x01);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_DDOLCorruption_Throws() throws Throwable {
+        // Pass a different DDOL at verify than was used at signing.
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] wrongDDOL = ISOUtil.hex2byte("DEADBEEFCAFEBABE");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, pr12HappySDAD, wrongDDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_WrongLength_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] tooShort = java.util.Arrays.copyOfRange(pr12HappySDAD, 0, pr12HappySDAD.length - 1);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, tooShort, PR12_DDOL));
         assertTrue(ex.getMessage().toLowerCase().contains("length"),
                 "expected 'length' in error: " + ex.getMessage());
     }
