@@ -1588,6 +1588,91 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
+    protected EMVCDAResult verifyCDAImpl(EMVICCPublicKey icc,
+            byte[] sdad, byte[] un, byte[] ac, byte[] transactionData) throws SMException {
+
+        if (icc == null || icc.modulus() == null || icc.exponent() == null)
+            throw new SMException("ICC Public Key is missing modulus or exponent");
+        if (sdad == null)
+            throw new SMException("Signed Dynamic Application Data (EMV tag 0x9F4B) is required");
+        if (un == null || un.length != 4)
+            throw new SMException("Unpredictable Number must be 4 bytes");
+        if (ac == null || ac.length != 8)
+            throw new SMException("Application Cryptogram must be 8 bytes");
+
+        int nic = icc.modulus().length;
+        if (sdad.length != nic)
+            throw new SMException("SDAD length (" + sdad.length
+                    + ") must equal ICC modulus length (" + nic + ")");
+        if (nic < 26)
+            throw new SMException("ICC modulus too small for CDA SDAD (need at least 26 bytes, got " + nic + ")");
+
+        // 1. RSA recovery
+        BigInteger n = new BigInteger(1, icc.modulus());
+        BigInteger e = new BigInteger(1, icc.exponent());
+        byte[] recovered = bigIntegerToFixedLengthBytes(
+                new BigInteger(1, sdad).modPow(e, n), nic);
+
+        // 2-5. Header / format / trailer / hash algo
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x"
+                + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x05,
+                "Invalid signed data format: expected 0x05 (Signed Dynamic Application Data) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[nic - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[nic - 1] & 0xff));
+        require(recovered[2] == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", recovered[2] & 0xff) + ")");
+
+        // 6-7. CDA structural sanity
+        int ldd = recovered[3] & 0xff;
+        int ldn = recovered[4] & 0xff;
+        require(ldn >= 2 && ldn <= 8,
+                "Invalid ICC Dynamic Number Length: " + ldn + " (must be 2..8 per EMV §6.5.2)");
+        require(ldd == ldn + 30,
+                "Invalid CDA ICC Dynamic Data Length: " + ldd
+                + " (must be LDN + 30 = " + (ldn + 30) + " per EMV §6.6.2)");
+
+        // 8. CDA dynamic data must fit before the 20-byte hash and trailer
+        require(4 + ldd <= nic - 21,
+                "CDA dynamic data does not fit in cert: 4 + " + ldd + " > " + (nic - 21));
+
+        // 9. Pad pattern: bytes (4 + ldd) .. (nic - 21) must all be 0xBB
+        for (int i = 4 + ldd; i < nic - 21; i++) {
+            if (recovered[i] != (byte) 0xBB)
+                throw new SMException("Invalid CDA pad pattern at offset " + i
+                        + ": expected 0xBB but got 0x" + String.format("%02X", recovered[i] & 0xff));
+        }
+
+        // 10. Hash validation: SHA-1(recovered[1..nic-21) || UN)
+        byte[] hashInCert = Arrays.copyOfRange(recovered, nic - 21, nic - 1);
+        byte[] hashInput  = Arrays.copyOfRange(recovered, 1, nic - 21);
+        hashInput = ISOUtil.concat(hashInput, un);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "CDA SDAD hash validation failed");
+
+        // 11. AC binding: SDAD-embedded AC must equal supplied AC
+        byte cid = recovered[5 + ldn];
+        byte[] acInSDAD = Arrays.copyOfRange(recovered, 5 + ldn + 1, 5 + ldn + 9);
+        require(Arrays.equals(acInSDAD, ac),
+                "CDA Application Cryptogram binding failed: SDAD-embedded AC does not match supplied AC");
+
+        // 12. Transaction Data Hash binding
+        byte[] txnHashInSDAD = Arrays.copyOfRange(recovered, 5 + ldn + 9, 5 + ldn + 29);
+        byte[] computedTxnHash = SHA1_MESSAGE_DIGEST.digest(
+                transactionData == null ? new byte[0] : transactionData);
+        require(Arrays.equals(txnHashInSDAD, computedTxnHash),
+                "CDA Transaction Data Hash binding failed");
+
+        byte[] iccDyn = Arrays.copyOfRange(recovered, 5, 5 + ldn);
+        return new EMVCDAResult(iccDyn, cid);
+    }
+
+    @Override
     protected byte[] verifyDDAImpl(EMVICCPublicKey icc,
             byte[] sdad, byte[] ddolData) throws SMException {
 

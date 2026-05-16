@@ -1415,6 +1415,39 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public EMVCDAResult verifyCDA(EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] unpredictableNumber,
+            byte[] applicationCryptogram,
+            byte[] transactionData) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "icc public key", iccPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "sdad",
+                signedDynamicApplicationData == null ? "" : ISOUtil.hexString(signedDynamicApplicationData)));
+        cmdParameters.add(new SimpleMsg("parameter", "unpredictable number",
+                unpredictableNumber == null ? "" : ISOUtil.hexString(unpredictableNumber)));
+        cmdParameters.add(new SimpleMsg("parameter", "application cryptogram",
+                applicationCryptogram == null ? "" : ISOUtil.hexString(applicationCryptogram)));
+        cmdParameters.add(new SimpleMsg("parameter", "transaction data length",
+                transactionData == null ? "0" : Integer.toString(transactionData.length)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Verify CDA", cmdParameters));
+        try {
+            EMVCDAResult result = verifyCDAImpl(iccPublicKey,
+                    signedDynamicApplicationData, unpredictableNumber,
+                    applicationCryptogram, transactionData);
+            evt.addMessage(new SimpleMsg("result", "CDA outcome", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public byte[] verifyDDA(EMVICCPublicKey iccPublicKey,
             byte[] signedDynamicApplicationData,
             byte[] ddolData) throws SMException {
@@ -2727,6 +2760,25 @@ public class BaseSMAdapter<T>
     protected byte[] verifyDDAImpl(EMVICCPublicKey iccPublicKey,
             byte[] signedDynamicApplicationData,
             byte[] ddolData) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Verify Combined DDA + AC (CDA) per EMV 4.4 Book 2 §6.6.
+     * @param iccPublicKey the recovered ICC public key
+     * @param signedDynamicApplicationData EMV tag 0x9F4B contents
+     * @param unpredictableNumber terminal UN (4 bytes)
+     * @param applicationCryptogram AC from tag 0x9F26 (8 bytes)
+     * @param transactionData bytes hashed for the transaction-data-hash field
+     * @return the CDA outcome (ICC Dynamic Number + CID)
+     * @throws SMException on RSA recovery, EMV validation, or binding failure
+     */
+    protected EMVCDAResult verifyCDAImpl(EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] unpredictableNumber,
+            byte[] applicationCryptogram,
+            byte[] transactionData) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

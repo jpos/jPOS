@@ -36,6 +36,7 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.security.ARPCMethod;
 import org.jpos.security.CipherMode;
 import org.jpos.security.EMVCAPublicKey;
+import org.jpos.security.EMVCDAResult;
 import org.jpos.security.EMVDerivedKey;
 import org.jpos.security.EMVICCPublicKey;
 import org.jpos.security.EMVIssuerPublicKey;
@@ -3231,6 +3232,9 @@ public class JCESecurityModuleTest {
         // (pr12IccD captured during setUpPR10Fixtures).
         pr12HappySDAD = buildSDAD(PR12_ICC_DYNAMIC_NUMBER, (byte) 0x01,
                 (byte) 0x05, (byte) 0xBB, PR12_DDOL);
+
+        // Continue into PR 13 setup while we hold all dependencies.
+        setUpPR13Fixtures();
     }
 
     private static byte[] buildSDAD(byte[] iccDynamicNumber, byte hashAlg, byte format,
@@ -3367,6 +3371,188 @@ public class JCESecurityModuleTest {
         byte[] tooShort = java.util.Arrays.copyOfRange(pr12HappySDAD, 0, pr12HappySDAD.length - 1);
         SMException ex = assertThrows(SMException.class, () ->
                 jcesecmod.verifyDDA(icc, tooShort, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("length"),
+                "expected 'length' in error: " + ex.getMessage());
+    }
+
+    // ----------------------------------------------------------------------
+    // PR 13 — Verify CDA (Combined DDA + AC, EMV 4.4 Book 2 §6.6)
+    // ----------------------------------------------------------------------
+    //
+    // CDA SDAD shares EMV tag 0x9F4B with DDA SDAD (PR 12) but the inner
+    // ICC Dynamic Data block carries LDN + ICC Dynamic Number + CID + AC +
+    // SHA-1(transactionData), giving LDD = LDN + 30. The signature input
+    // is recovered[1..nic-21) || UN (the terminal's Unpredictable Number).
+
+    private static final byte[] PR13_UN  = ISOUtil.hex2byte("9988AABB");
+    private static final byte[] PR13_AC  = ISOUtil.hex2byte("ABCDEF0123456789");
+    private static final byte   PR13_CID = (byte) 0x40;
+    private static final byte[] PR13_TRANSACTION_DATA = ISOUtil.hex2byte(
+            "9F02060000000010009F0306000000000000");
+    private static final byte[] PR13_ICC_DYNAMIC_NUMBER = ISOUtil.hex2byte("DEADBEEF");
+
+    private static byte[] pr13HappyCDASDAD;
+
+    // Called from setUpPR12Fixtures (NOT a separate @BeforeAll method) for
+    // the same reason as setUpPR10/12: deterministic ordering of fixtures
+    // with cross-dependencies.
+    private static void setUpPR13Fixtures() throws Exception {
+        pr13HappyCDASDAD = buildCDASDAD(PR13_ICC_DYNAMIC_NUMBER, PR13_CID,
+                PR13_AC, PR13_TRANSACTION_DATA, (byte) 0xBB, (byte) 0x01, (byte) 0x05);
+    }
+
+    private static byte[] buildCDASDAD(byte[] iccDynamicNumber, byte cid,
+            byte[] ac, byte[] transactionData, byte padByte,
+            byte hashAlg, byte format) throws Exception {
+        int nic = pr10IccModulus.length;          // 64
+        int ldn = iccDynamicNumber.length;        // 4
+        int ldd = ldn + 30;                       // 34 for LDN=4
+        byte[] payload = new byte[nic];
+        payload[0] = (byte) 0x6A;
+        payload[1] = format;
+        payload[2] = hashAlg;
+        payload[3] = (byte) ldd;
+        payload[4] = (byte) ldn;
+        System.arraycopy(iccDynamicNumber, 0, payload, 5, ldn);
+        payload[5 + ldn] = cid;
+        System.arraycopy(ac, 0, payload, 5 + ldn + 1, 8);
+        // Transaction Data Hash
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        byte[] txnHash = sha.digest(transactionData == null ? new byte[0] : transactionData);
+        System.arraycopy(txnHash, 0, payload, 5 + ldn + 9, 20);
+        for (int i = 4 + ldd; i < nic - 21; i++) payload[i] = padByte;
+        // Outer hash: payload[1..nic-21) || UN
+        sha.reset();
+        sha.update(payload, 1, nic - 22);
+        sha.update(PR13_UN);
+        System.arraycopy(sha.digest(), 0, payload, nic - 21, 20);
+        payload[nic - 1] = (byte) 0xBC;
+        return signWithICC(payload);
+    }
+
+    private static byte[] mutateAndSignCDASDAD(byte[] signed, java.util.function.Consumer<byte[]> mutator) {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signed);
+        byte[] payload = bigIntToFixed(sig.modPow(pr12IccE, pr12IccN), signed.length);
+        mutator.accept(payload);
+        return signWithICC(payload);
+    }
+
+    @Test
+    public void testVerifyCDA_HappyPath() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        EMVCDAResult result = jcesecmod.verifyCDA(icc, pr13HappyCDASDAD,
+                PR13_UN, PR13_AC, PR13_TRANSACTION_DATA);
+        assertArrayEquals(PR13_ICC_DYNAMIC_NUMBER, result.iccDynamicNumber());
+        assertEquals(PR13_CID, result.cid());
+    }
+
+    @Test
+    public void testVerifyCDA_BadHeader_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD, p -> p[0] = (byte) 0x6B);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("header"),
+                "expected 'header' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_BadFormat_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD, p -> p[1] = (byte) 0x03);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("signed data format"),
+                "expected 'signed data format' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_BadTrailer_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD,
+                p -> p[pr10IccModulus.length - 1] = (byte) 0xBD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("trailer"),
+                "expected 'trailer' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_UnsupportedHashAlgo_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD, p -> p[2] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash algorithm"),
+                "expected 'hash algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_BadPadding_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] badPad = buildCDASDAD(PR13_ICC_DYNAMIC_NUMBER, PR13_CID,
+                PR13_AC, PR13_TRANSACTION_DATA, (byte) 0xBC, (byte) 0x01, (byte) 0x05);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, badPad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_BadHash_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD,
+                p -> p[pr10IccModulus.length - 10] ^= 0x01);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_ACMismatch_Throws() throws Throwable {
+        // Unique to CDA — the AC embedded in the SDAD does not match the
+        // supplied AC. This catches a malicious card that signs one AC
+        // and returns a different one out-of-band.
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] differentAC = ISOUtil.hex2byte("FFEEDDCCBBAA9988");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, pr13HappyCDASDAD, PR13_UN,
+                        differentAC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("application cryptogram"),
+                "expected 'application cryptogram' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_TransactionDataMismatch_Throws() throws Throwable {
+        // Unique to CDA — the transaction data hash embedded in the SDAD
+        // does not match SHA-1 of supplied transaction data.
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] differentTxn = ISOUtil.hex2byte("9F0206000000099999");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, pr13HappyCDASDAD, PR13_UN, PR13_AC, differentTxn));
+        assertTrue(ex.getMessage().toLowerCase().contains("transaction data hash"),
+                "expected 'transaction data hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_UNCorruption_Throws() throws Throwable {
+        // UN is in the outer hash input; mismatching it surfaces as a
+        // hash failure (analogous to PR 12's DDOLCorruption case).
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] wrongUN = ISOUtil.hex2byte("00000000");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, pr13HappyCDASDAD, wrongUN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_WrongLength_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] tooShort = java.util.Arrays.copyOfRange(pr13HappyCDASDAD, 0, pr13HappyCDASDAD.length - 1);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, tooShort, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
         assertTrue(ex.getMessage().toLowerCase().contains("length"),
                 "expected 'length' in error: " + ex.getMessage());
     }

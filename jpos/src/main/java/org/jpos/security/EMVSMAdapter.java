@@ -626,4 +626,71 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
             EMVICCPublicKey iccPublicKey,
             byte[] signedDynamicApplicationData,
             byte[] ddolData) throws SMException;
+
+    /**
+     * Verify a Combined DDA + AC (CDA) signature per EMV 4.4 Book 2 §6.6,
+     * cross-checking the Application Cryptogram and the terminal-side
+     * transaction data hash the card bound to its signature.
+     * <p>
+     * CDA is strictly stronger than {@link #verifyDDA}: it proves not
+     * only that the card holds the ICC private key, but that the card's
+     * cryptogram and transaction context are cryptographically bound to
+     * the dynamic signature. The natural caller flow is:
+     * <pre>
+     *   EMVIssuerPublicKey issuer = recoverIssuerPublicKey(...);
+     *   EMVICCPublicKey    icc    = recoverICCPublicKey(issuer, ...);
+     *   EMVCDAResult       cda    = verifyCDA(icc, sdad, unpredictableNumber,
+     *                                         applicationCryptogram, transactionData);
+     *   // cda.iccDynamicNumber() carries the card's nonce
+     *   // cda.cid() routes the transaction outcome
+     * </pre>
+     * <p>
+     * The implementation performs the same structural and hash
+     * validation as {@link #verifyDDA} (header {@code 0x6A},
+     * signed-data-format {@code 0x05}, trailer {@code 0xBC}, hash
+     * algorithm indicator, LDN sanity, mandatory {@code 0xBB} pad
+     * pattern, SHA-1 hash over the recovered payload concatenated with
+     * the supplied Unpredictable Number) plus two cross-bindings
+     * unique to CDA:
+     * <ul>
+     *   <li><b>AC binding</b> — the 8-byte AC embedded inside the SDAD
+     *       must equal the supplied {@code applicationCryptogram}.
+     *       Catches a malicious card that signs one AC but returns
+     *       another out-of-band.
+     *   <li><b>Transaction Data Hash binding</b> — the 20-byte hash
+     *       embedded inside the SDAD must equal
+     *       {@code SHA-1(transactionData)}. Catches a card that signed
+     *       a different transaction context than what the terminal sent.
+     * </ul>
+     * <p>
+     * The CDA SDAD shares EMV tag {@code 0x9F4B} with DDA SDAD; the two
+     * are distinguished by the LDD field — CDA mandates
+     * {@code LDD == LDN + 30} (LDN + Cryptogram Information Data + AC +
+     * Transaction Data Hash), DDA is just {@code LDN + 1}.
+     *
+     * @param iccPublicKey the recovered ICC Public Key
+     * @param signedDynamicApplicationData EMV tag {@code 0x9F4B} contents;
+     *        length must equal the ICC modulus length
+     * @param unpredictableNumber the terminal's Unpredictable Number
+     *        (EMV tag {@code 0x9F37}, 4 bytes) — same value sent to
+     *        the card and hashed by the card when signing
+     * @param applicationCryptogram the AC returned by the card in tag
+     *        {@code 0x9F26}, 8 bytes; cross-checked against the AC
+     *        embedded inside the SDAD
+     * @param transactionData the bytes the terminal hashed for the
+     *        Transaction Data Hash field (typically PDOL || CDOL
+     *        || optional additional data); SHA-1 of these is
+     *        cross-checked against the SDAD-embedded hash
+     * @return an {@link EMVCDAResult} carrying the ICC Dynamic Number
+     *         and the Cryptogram Information Data byte
+     * @throws SMException on RSA recovery failure, any structural or
+     *         hash validation failure, AC binding mismatch, or
+     *         Transaction Data Hash binding mismatch
+     */
+    EMVCDAResult verifyCDA(
+            EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] unpredictableNumber,
+            byte[] applicationCryptogram,
+            byte[] transactionData) throws SMException;
 }
