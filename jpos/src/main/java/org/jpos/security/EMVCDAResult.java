@@ -42,6 +42,15 @@ import org.jpos.iso.ISOUtil;
  */
 public record EMVCDAResult(byte[] iccDynamicNumber, byte cid) {
 
+    public EMVCDAResult {
+        iccDynamicNumber = copy(iccDynamicNumber);
+    }
+
+    @Override
+    public byte[] iccDynamicNumber() {
+        return copy(iccDynamicNumber);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -63,5 +72,9 @@ public record EMVCDAResult(byte[] iccDynamicNumber, byte cid) {
                 + (iccDynamicNumber == null ? "" : ISOUtil.hexString(iccDynamicNumber))
                 + ", cid=" + String.format("%02X", cid & 0xff)
                 + "]";
+    }
+
+    private static byte[] copy(byte[] bytes) {
+        return bytes == null ? null : bytes.clone();
     }
 }

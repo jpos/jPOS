@@ -2666,6 +2666,13 @@ public class JCESecurityModuleTest {
 
     private static byte[] buildPayload(byte[] issuerId, byte[] expDate, byte[] serial,
             byte hashAlg, byte pkAlg, byte[] issuerModulus, byte[] issuerExp) throws Exception {
+        return buildPayload(issuerId, expDate, serial, hashAlg, pkAlg,
+                issuerModulus, issuerExp, (byte) 0xBB);
+    }
+
+    private static byte[] buildPayload(byte[] issuerId, byte[] expDate, byte[] serial,
+            byte hashAlg, byte pkAlg, byte[] issuerModulus, byte[] issuerExp,
+            byte padByte) throws Exception {
         int nca = PR9_NCA;
         int ni  = issuerModulus.length;
         int ipkInCert = Math.min(ni, nca - 36);
@@ -2681,7 +2688,7 @@ public class JCESecurityModuleTest {
         payload[14] = (byte) issuerExp.length;
         System.arraycopy(issuerModulus, 0, payload, 15, ipkInCert);
         // 0xBB padding for ni < nca - 36 (not exercised in happy fixture, but support it)
-        for (int i = 15 + ipkInCert; i < nca - 21; i++) payload[i] = (byte) 0xBB;
+        for (int i = 15 + ipkInCert; i < nca - 21; i++) payload[i] = padByte;
         // SHA-1 over payload[1..nca-22] || remainder || exponent
         java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
         sha.update(payload, 1, nca - 22);
@@ -2786,6 +2793,19 @@ public class JCESecurityModuleTest {
     }
 
     @Test
+    public void testRecoverIssuerPublicKey_BadPadding_Throws() throws Throwable {
+        byte[] shortIssuerModulus = java.util.Arrays.copyOf(pr9IssuerModulus, 80);
+        byte[] payload = buildPayload(PR9_ISSUER_ID, PR9_EXP_FUTURE, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, shortIssuerModulus, pr9IssuerExp, (byte) 0xBC);
+        byte[] badPaddingCert = signWithCA(payload);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, badPaddingCert, null,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
     public void testRecoverIssuerPublicKey_UnsupportedHashAlgo_Throws() throws Throwable {
         byte[] bad = mutateAndSign(pr9HappyCert, p -> p[11] = (byte) 0x02);
         SMException ex = assertThrows(SMException.class, () ->
@@ -2883,6 +2903,13 @@ public class JCESecurityModuleTest {
     private static byte[] buildICCPayload(byte[] appPan, byte[] expDate, byte[] serial,
             byte hashAlg, byte pkAlg, byte[] iccModulus, byte[] iccExp,
             byte[] sad) throws Exception {
+        return buildICCPayload(appPan, expDate, serial, hashAlg, pkAlg,
+                iccModulus, iccExp, sad, (byte) 0xBB);
+    }
+
+    private static byte[] buildICCPayload(byte[] appPan, byte[] expDate, byte[] serial,
+            byte hashAlg, byte pkAlg, byte[] iccModulus, byte[] iccExp,
+            byte[] sad, byte padByte) throws Exception {
         int ni  = PR9_NI;
         int nic = iccModulus.length;
         int iccInCert = Math.min(nic, ni - 42);
@@ -2897,7 +2924,7 @@ public class JCESecurityModuleTest {
         payload[19] = (byte) nic;
         payload[20] = (byte) iccExp.length;
         System.arraycopy(iccModulus, 0, payload, 21, iccInCert);
-        for (int i = 21 + iccInCert; i < ni - 21; i++) payload[i] = (byte) 0xBB;
+        for (int i = 21 + iccInCert; i < ni - 21; i++) payload[i] = padByte;
         // SHA-1 over payload[1..ni-22] || remainder || iccExp || sad
         java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
         sha.update(payload, 1, ni - 22);
@@ -3003,6 +3030,22 @@ public class JCESecurityModuleTest {
                         PR10_SAD, PR10_APP_PAN_STR));
         assertTrue(ex.getMessage().toLowerCase().contains("hash"),
                 "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_BadPadding_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] shortIccModulus = java.util.Arrays.copyOf(pr10IccModulus, 48);
+        byte[] payload = buildICCPayload(PR10_APP_PAN_BCD, PR9_EXP_FUTURE, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, shortIccModulus, pr10IccExp,
+                PR10_SAD, (byte) 0xBC);
+        byte[] badPaddingCert = signWithIssuer(payload);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, badPaddingCert, null,
+                        pr10IccExp, PR10_SAD, PR10_APP_PAN_STR));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
     }
 
     @Test
@@ -3272,6 +3315,18 @@ public class JCESecurityModuleTest {
         return signWithICC(payload);
     }
 
+    private static byte[] mutateRehashAndSignSDAD(byte[] signedSDAD,
+            java.util.function.Consumer<byte[]> mutator, byte[] ddol) throws Exception {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signedSDAD);
+        byte[] payload = bigIntToFixed(sig.modPow(pr12IccE, pr12IccN), signedSDAD.length);
+        mutator.accept(payload);
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        sha.update(payload, 1, payload.length - 22);
+        if (ddol != null && ddol.length > 0) sha.update(ddol);
+        System.arraycopy(sha.digest(), 0, payload, payload.length - 21, 20);
+        return signWithICC(payload);
+    }
+
     private static EMVICCPublicKey recoverICCForPR12() throws Exception {
         EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
                 pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
@@ -3340,6 +3395,17 @@ public class JCESecurityModuleTest {
                 jcesecmod.verifyDDA(icc, badPadding, PR12_DDOL));
         assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
                 "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadDynamicDataLength_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateRehashAndSignSDAD(pr12HappySDAD,
+                p -> p[3] = (byte) ((p[4] & 0xff) + 2), PR12_DDOL);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("dynamic data length"),
+                "expected 'dynamic data length' in error: " + ex.getMessage());
     }
 
     @Test

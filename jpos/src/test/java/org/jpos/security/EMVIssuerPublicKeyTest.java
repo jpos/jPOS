@@ -18,10 +18,10 @@
 
 package org.jpos.security;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jpos.iso.ISOUtil;
@@ -49,13 +49,40 @@ public class EMVIssuerPublicKeyTest {
         byte[] exponent = ISOUtil.hex2byte("03");
         EMVIssuerPublicKey k = new EMVIssuerPublicKey(
                 issuerId, expDate, serial, modulus, exponent, (byte) 0x01, (byte) 0x01);
-        assertSame(issuerId, k.issuerIdentifier());
-        assertSame(expDate,  k.expirationDate());
-        assertSame(serial,   k.serialNumber());
-        assertSame(modulus,  k.modulus());
-        assertSame(exponent, k.exponent());
+        assertArrayEquals(issuerId, k.issuerIdentifier());
+        assertArrayEquals(expDate,  k.expirationDate());
+        assertArrayEquals(serial,   k.serialNumber());
+        assertArrayEquals(modulus,  k.modulus());
+        assertArrayEquals(exponent, k.exponent());
         assertEquals((byte) 0x01, k.hashAlgorithmIndicator());
         assertEquals((byte) 0x01, k.publicKeyAlgorithmIndicator());
+    }
+
+    @Test
+    public void testDefensiveCopiesArrayComponents() {
+        byte[] issuerId = ISOUtil.hex2byte("1234FFFF");
+        byte[] expDate  = ISOUtil.hex2byte("1231");
+        byte[] serial   = ISOUtil.hex2byte("ABCDEF");
+        byte[] modulus  = ISOUtil.hex2byte("BCDEF012345678901122334455667788");
+        byte[] exponent = ISOUtil.hex2byte("03");
+        EMVIssuerPublicKey k = new EMVIssuerPublicKey(
+                issuerId, expDate, serial, modulus, exponent, (byte) 0x01, (byte) 0x01);
+        issuerId[0] = 0x00;
+        expDate[0] = 0x00;
+        serial[0] = 0x00;
+        modulus[0] = 0x00;
+        exponent[0] = 0x00;
+        k.issuerIdentifier()[1] = 0x00;
+        k.expirationDate()[1] = 0x00;
+        k.serialNumber()[1] = 0x00;
+        k.modulus()[1] = 0x00;
+        k.exponent()[0] = 0x00;
+
+        assertArrayEquals(ISOUtil.hex2byte("1234FFFF"), k.issuerIdentifier());
+        assertArrayEquals(ISOUtil.hex2byte("1231"), k.expirationDate());
+        assertArrayEquals(ISOUtil.hex2byte("ABCDEF"), k.serialNumber());
+        assertArrayEquals(ISOUtil.hex2byte("BCDEF012345678901122334455667788"), k.modulus());
+        assertArrayEquals(ISOUtil.hex2byte("03"), k.exponent());
     }
 
     @Test

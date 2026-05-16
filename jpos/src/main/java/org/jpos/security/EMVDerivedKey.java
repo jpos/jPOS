@@ -51,6 +51,15 @@ import org.jpos.iso.ISOUtil;
  */
 public record EMVDerivedKey<T>(T key, byte[] kcv) {
 
+    public EMVDerivedKey {
+        kcv = copy(kcv);
+    }
+
+    @Override
+    public byte[] kcv() {
+        return copy(kcv);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,5 +77,9 @@ public record EMVDerivedKey<T>(T key, byte[] kcv) {
         return "EMVDerivedKey[key=" + key
                 + ", kcv=" + (kcv == null ? "" : ISOUtil.hexString(kcv))
                 + "]";
+    }
+
+    private static byte[] copy(byte[] bytes) {
+        return bytes == null ? null : bytes.clone();
     }
 }

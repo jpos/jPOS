@@ -57,6 +57,39 @@ public record EMVICCPublicKey(byte[] applicationPan, byte[] expirationDate,
                               byte[] exponent, byte hashAlgorithmIndicator,
                               byte publicKeyAlgorithmIndicator) {
 
+    public EMVICCPublicKey {
+        applicationPan = copy(applicationPan);
+        expirationDate = copy(expirationDate);
+        serialNumber = copy(serialNumber);
+        modulus = copy(modulus);
+        exponent = copy(exponent);
+    }
+
+    @Override
+    public byte[] applicationPan() {
+        return copy(applicationPan);
+    }
+
+    @Override
+    public byte[] expirationDate() {
+        return copy(expirationDate);
+    }
+
+    @Override
+    public byte[] serialNumber() {
+        return copy(serialNumber);
+    }
+
+    @Override
+    public byte[] modulus() {
+        return copy(modulus);
+    }
+
+    @Override
+    public byte[] exponent() {
+        return copy(exponent);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -93,5 +126,9 @@ public record EMVICCPublicKey(byte[] applicationPan, byte[] expirationDate,
                 + ", hashAlg=" + String.format("%02X", hashAlgorithmIndicator & 0xff)
                 + ", pkAlg=" + String.format("%02X", publicKeyAlgorithmIndicator & 0xff)
                 + "]";
+    }
+
+    private static byte[] copy(byte[] bytes) {
+        return bytes == null ? null : bytes.clone();
     }
 }

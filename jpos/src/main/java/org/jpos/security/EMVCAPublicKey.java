@@ -51,6 +51,27 @@ public record EMVCAPublicKey(byte[] rid, byte index, byte[] modulus,
                              byte[] exponent, byte hashAlgorithmIndicator,
                              byte publicKeyAlgorithmIndicator) {
 
+    public EMVCAPublicKey {
+        rid = copy(rid);
+        modulus = copy(modulus);
+        exponent = copy(exponent);
+    }
+
+    @Override
+    public byte[] rid() {
+        return copy(rid);
+    }
+
+    @Override
+    public byte[] modulus() {
+        return copy(modulus);
+    }
+
+    @Override
+    public byte[] exponent() {
+        return copy(exponent);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,5 +104,9 @@ public record EMVCAPublicKey(byte[] rid, byte index, byte[] modulus,
                 + ", hashAlg=" + String.format("%02X", hashAlgorithmIndicator & 0xff)
                 + ", pkAlg=" + String.format("%02X", publicKeyAlgorithmIndicator & 0xff)
                 + "]";
+    }
+
+    private static byte[] copy(byte[] bytes) {
+        return bytes == null ? null : bytes.clone();
     }
 }

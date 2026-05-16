@@ -18,6 +18,7 @@
 
 package org.jpos.security;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -41,7 +42,17 @@ public class EMVDerivedKeyTest {
         byte[] kcv = ISOUtil.hex2byte("ABCDEF");
         EMVDerivedKey<SecureDESKey> d = new EMVDerivedKey<>(key, kcv);
         assertSame(key, d.key());
-        assertSame(kcv, d.kcv());
+        assertArrayEquals(kcv, d.kcv());
+    }
+
+    @Test
+    public void testDefensiveCopiesKcv() {
+        byte[] kcv = ISOUtil.hex2byte("ABCDEF");
+        EMVDerivedKey<SecureDESKey> d = new EMVDerivedKey<>(newKey(), kcv);
+        kcv[0] = 0x00;
+        d.kcv()[1] = 0x00;
+
+        assertArrayEquals(ISOUtil.hex2byte("ABCDEF"), d.kcv());
     }
 
     @Test

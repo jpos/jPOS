@@ -1385,6 +1385,8 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         require(issuerPublicKeyExponent.length == ipkExpLen,
                 "Issuer Public Key exponent length mismatch: declared " + ipkExpLen
                 + " but supplied " + issuerPublicKeyExponent.length);
+        requirePadPattern(recovered, 15 + ipkInCert, nca - 21,
+                "Issuer Public Key Certificate");
 
         // 8. Hash validation: SHA-1(recovered[1..nca-22] || remainder || exponent)
         byte[] hashInCert = Arrays.copyOfRange(recovered, nca - 21, nca - 1);
@@ -1438,6 +1440,16 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
 
     private static void require(boolean condition, String msg) throws SMException {
         if (!condition) throw new SMException(msg);
+    }
+
+    private static void requirePadPattern(byte[] data, int from, int to, String label)
+            throws SMException {
+        for (int i = from; i < to; i++) {
+            if (data[i] != (byte) 0xBB)
+                throw new SMException("Invalid " + label + " pad pattern at offset " + i
+                        + ": expected 0xBB but got 0x"
+                        + String.format("%02X", data[i] & 0xff));
+        }
     }
 
     private static void requireExpirationFuture(byte[] mmyy) throws SMException {
@@ -1538,6 +1550,8 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         require(iccPublicKeyExponent.length == iccExpLen,
                 "ICC Public Key exponent length mismatch: declared " + iccExpLen
                 + " but supplied " + iccPublicKeyExponent.length);
+        requirePadPattern(recovered, 21 + iccInCert, ni - 21,
+                "ICC Public Key Certificate");
 
         // 8. Hash validation — input includes Static Application Data
         byte[] hashInCert = Arrays.copyOfRange(recovered, ni - 21, ni - 1);
@@ -1717,6 +1731,9 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         int ldn = recovered[4] & 0xff;
         require(ldn >= 2 && ldn <= 8,
                 "Invalid ICC Dynamic Number Length: " + ldn + " (must be 2..8 per EMV 4.4 Book 2 §6.5.2)");
+        require(ldd == ldn + 1,
+                "Invalid DDA ICC Dynamic Data Length: " + ldd
+                + " (must be LDN + 1 = " + (ldn + 1) + " per EMV 4.4 Book 2 §6.5.2)");
 
         // 8. Pad pattern: bytes (4 + ldd) .. (nic - 21) must all be 0xBB
         for (int i = 4 + ldd; i < nic - 21; i++) {

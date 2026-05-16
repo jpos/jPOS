@@ -18,10 +18,10 @@
 
 package org.jpos.security;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jpos.iso.ISOUtil;
@@ -46,12 +46,31 @@ public class EMVCAPublicKeyTest {
         byte[] exponent = ISOUtil.hex2byte("03");
         EMVCAPublicKey k = new EMVCAPublicKey(rid, (byte) 0x07, modulus, exponent,
                 (byte) 0x01, (byte) 0x01);
-        assertSame(rid, k.rid());
+        assertArrayEquals(rid, k.rid());
         assertEquals((byte) 0x07, k.index());
-        assertSame(modulus, k.modulus());
-        assertSame(exponent, k.exponent());
+        assertArrayEquals(modulus, k.modulus());
+        assertArrayEquals(exponent, k.exponent());
         assertEquals((byte) 0x01, k.hashAlgorithmIndicator());
         assertEquals((byte) 0x01, k.publicKeyAlgorithmIndicator());
+    }
+
+    @Test
+    public void testDefensiveCopiesArrayComponents() {
+        byte[] rid = ISOUtil.hex2byte("A000000003");
+        byte[] modulus = ISOUtil.hex2byte("BCDEF012345678901122334455667788");
+        byte[] exponent = ISOUtil.hex2byte("03");
+        EMVCAPublicKey k = new EMVCAPublicKey(rid, (byte) 0x07, modulus, exponent,
+                (byte) 0x01, (byte) 0x01);
+        rid[0] = 0x00;
+        modulus[0] = 0x00;
+        exponent[0] = 0x00;
+        k.rid()[1] = 0x00;
+        k.modulus()[1] = 0x00;
+        k.exponent()[0] = 0x00;
+
+        assertArrayEquals(ISOUtil.hex2byte("A000000003"), k.rid());
+        assertArrayEquals(ISOUtil.hex2byte("BCDEF012345678901122334455667788"), k.modulus());
+        assertArrayEquals(ISOUtil.hex2byte("03"), k.exponent());
     }
 
     @Test

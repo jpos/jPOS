@@ -18,10 +18,10 @@
 
 package org.jpos.security;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jpos.iso.ISOUtil;
@@ -37,8 +37,18 @@ public class EMVCDAResultTest {
     public void testAccessorsReturnComponents() {
         byte[] dyn = ISOUtil.hex2byte("12345678");
         EMVCDAResult r = new EMVCDAResult(dyn, (byte) 0x40);
-        assertSame(dyn, r.iccDynamicNumber());
+        assertArrayEquals(dyn, r.iccDynamicNumber());
         assertEquals((byte) 0x40, r.cid());
+    }
+
+    @Test
+    public void testDefensiveCopiesDynamicNumber() {
+        byte[] dyn = ISOUtil.hex2byte("12345678");
+        EMVCDAResult r = new EMVCDAResult(dyn, (byte) 0x40);
+        dyn[0] = 0x00;
+        r.iccDynamicNumber()[1] = 0x00;
+
+        assertArrayEquals(ISOUtil.hex2byte("12345678"), r.iccDynamicNumber());
     }
 
     @Test
