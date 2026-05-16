@@ -460,4 +460,70 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
             byte[] issuerPublicKeyRemainder,
             byte[] issuerPublicKeyExponent,
             String pan) throws SMException;
+
+    /**
+     * Recover an ICC Public Key from an EMV ICC Public Key Certificate
+     * signed by the issuer, per EMV 4.4 Book 2 §6.4.
+     * <p>
+     * The certificate, remainder, exponent, and static application data
+     * inputs correspond to EMV tags {@code 0x9F46} (ICC Public Key
+     * Certificate), {@code 0x9F48} (ICC Public Key Remainder, optional),
+     * {@code 0x9F47} (ICC Public Key Exponent), and the Static Application
+     * Data assembled by the terminal per EMV Book 3 §10.3.
+     * <p>
+     * The natural caller flow is to chain this with
+     * {@link #recoverIssuerPublicKey(EMVCAPublicKey, byte[], byte[], byte[], String)}:
+     * <pre>
+     *   EMVIssuerPublicKey issuer = recoverIssuerPublicKey(ca, issuerCert,
+     *           issuerRemainder, issuerExp, pan);
+     *   EMVICCPublicKey    icc    = recoverICCPublicKey(issuer, iccCert,
+     *           iccRemainder, iccExp, staticApplicationData, pan);
+     * </pre>
+     * <p>
+     * The implementation performs RSA recovery {@code cert^e mod n} under
+     * the supplied <i>issuer</i> public key and validates every field EMV
+     * mandates: recovered data header {@code 0x6A}, certificate format
+     * {@code 0x04} (note: differs from the issuer cert format {@code 0x02}),
+     * trailer {@code 0xBC}, hash algorithm indicator, public key algorithm
+     * indicator, length consistency, SHA-1 hash over the cert payload +
+     * remainder + exponent <b>+ Static Application Data</b>, certificate
+     * expiration date against the current system clock, and (when {@code pan}
+     * is non-null) Application PAN match.
+     * <p>
+     * The SAD inclusion in the hash input is the key semantic difference
+     * vs. issuer certificate recovery — it's how the issuer cryptographically
+     * commits the ICC public key to a specific set of card records. Passing
+     * a different SAD at recovery time than was used at certificate creation
+     * causes the hash validation step to fail.
+     * <p>
+     * Every validation is a hard failure (see
+     * {@link #recoverIssuerPublicKey} for the same model). The JCE adapter
+     * currently supports hash algorithm indicator {@code 0x01} (SHA-1) and
+     * public key algorithm indicator {@code 0x01} (RSA) only.
+     *
+     * @param issuerPublicKey the recovered Issuer Public Key, typically
+     *        the output of {@link #recoverIssuerPublicKey}
+     * @param iccPublicKeyCertificate EMV tag {@code 0x9F46} contents;
+     *        length must equal the issuer modulus length in bytes
+     * @param iccPublicKeyRemainder EMV tag {@code 0x9F48} contents, or
+     *        {@code null} / empty when the ICC modulus fits entirely
+     *        inside the certificate
+     * @param iccPublicKeyExponent EMV tag {@code 0x9F47} contents
+     * @param staticApplicationData the data assembled per EMV Book 3
+     *        §10.3 (records read from the AFL, optionally followed by the
+     *        Static Data Authentication Tag List); included in the SHA-1
+     *        hash validation
+     * @param pan the cardholder PAN; if {@code null} or empty, the
+     *        Application PAN check is skipped
+     * @return the recovered ICC Public Key
+     * @throws SMException on RSA recovery failure or any EMV validation
+     *         failure
+     */
+    EMVICCPublicKey recoverICCPublicKey(
+            EMVIssuerPublicKey issuerPublicKey,
+            byte[] iccPublicKeyCertificate,
+            byte[] iccPublicKeyRemainder,
+            byte[] iccPublicKeyExponent,
+            byte[] staticApplicationData,
+            String pan) throws SMException;
 }

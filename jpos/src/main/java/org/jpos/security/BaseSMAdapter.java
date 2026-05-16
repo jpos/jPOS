@@ -1415,6 +1415,40 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public EMVICCPublicKey recoverICCPublicKey(EMVIssuerPublicKey issuerPublicKey,
+            byte[] iccPublicKeyCertificate, byte[] iccPublicKeyRemainder,
+            byte[] iccPublicKeyExponent, byte[] staticApplicationData,
+            String pan) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "issuer public key", issuerPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "icc pk cert",
+                iccPublicKeyCertificate == null ? "" : ISOUtil.hexString(iccPublicKeyCertificate)));
+        cmdParameters.add(new SimpleMsg("parameter", "icc pk remainder",
+                iccPublicKeyRemainder == null ? "" : ISOUtil.hexString(iccPublicKeyRemainder)));
+        cmdParameters.add(new SimpleMsg("parameter", "icc pk exponent",
+                iccPublicKeyExponent == null ? "" : ISOUtil.hexString(iccPublicKeyExponent)));
+        cmdParameters.add(new SimpleMsg("parameter", "static app data length",
+                staticApplicationData == null ? "0" : Integer.toString(staticApplicationData.length)));
+        cmdParameters.add(new SimpleMsg("parameter", "pan", pan));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Recover ICC Public Key", cmdParameters));
+        try {
+            EMVICCPublicKey result = recoverICCPublicKeyImpl(
+                    issuerPublicKey, iccPublicKeyCertificate,
+                    iccPublicKeyRemainder, iccPublicKeyExponent,
+                    staticApplicationData, pan);
+            evt.addMessage(new SimpleMsg("result", "ICC Public Key", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
            ,SKDMethod skdm, PaddingMethod padm, T imksmi
            ,String accountNo, String acctSeqNo, byte[] atc, byte[] arqc
@@ -2587,6 +2621,29 @@ public class BaseSMAdapter<T>
             byte[] issuerPublicKeyCertificate,
             byte[] issuerPublicKeyRemainder,
             byte[] issuerPublicKeyExponent,
+            String pan) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Recover an ICC Public Key from an issuer-signed ICC Public Key Certificate.
+     * @param issuerPublicKey the recovered issuer public key
+     * @param iccPublicKeyCertificate EMV tag 0x9F46 contents
+     * @param iccPublicKeyRemainder EMV tag 0x9F48 contents (may be {@code null})
+     * @param iccPublicKeyExponent EMV tag 0x9F47 contents
+     * @param staticApplicationData data assembled from the AFL, included in
+     *        the SHA-1 hash validation
+     * @param pan cardholder PAN; {@code null} skips the PAN check
+     * @return the recovered ICC Public Key
+     * @throws SMException on RSA recovery or EMV validation failure
+     */
+    protected EMVICCPublicKey recoverICCPublicKeyImpl(
+            EMVIssuerPublicKey issuerPublicKey,
+            byte[] iccPublicKeyCertificate,
+            byte[] iccPublicKeyRemainder,
+            byte[] iccPublicKeyExponent,
+            byte[] staticApplicationData,
             String pan) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }

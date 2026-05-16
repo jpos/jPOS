@@ -1478,6 +1478,116 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
+    protected EMVICCPublicKey recoverICCPublicKeyImpl(
+            EMVIssuerPublicKey issuer,
+            byte[] iccPublicKeyCertificate,
+            byte[] iccPublicKeyRemainder,
+            byte[] iccPublicKeyExponent,
+            byte[] staticApplicationData,
+            String pan) throws SMException {
+
+        if (issuer == null || issuer.modulus() == null || issuer.exponent() == null)
+            throw new SMException("Issuer Public Key is missing modulus or exponent");
+        if (iccPublicKeyCertificate == null)
+            throw new SMException("ICC Public Key Certificate (EMV tag 0x9F46) is required");
+        if (iccPublicKeyExponent == null || iccPublicKeyExponent.length == 0)
+            throw new SMException("ICC Public Key Exponent (EMV tag 0x9F47) is required");
+
+        int ni = issuer.modulus().length;
+        if (iccPublicKeyCertificate.length != ni)
+            throw new SMException("ICC Public Key Certificate length (" + iccPublicKeyCertificate.length
+                    + ") must equal Issuer modulus length (" + ni + ")");
+        if (ni < 42)
+            throw new SMException("Issuer modulus too small for an EMV ICC certificate (need at least 42 bytes, got " + ni + ")");
+
+        // 1. RSA recovery under the issuer public key
+        BigInteger n = new BigInteger(1, issuer.modulus());
+        BigInteger e = new BigInteger(1, issuer.exponent());
+        BigInteger c = new BigInteger(1, iccPublicKeyCertificate);
+        byte[] recovered = bigIntegerToFixedLengthBytes(c.modPow(e, n), ni);
+
+        // 2-4. Header / format / trailer
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x"
+                + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x04,
+                "Invalid certificate format: expected 0x04 (ICC Public Key Certificate) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[ni - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[ni - 1] & 0xff));
+
+        // 5-6. Algorithm indicators (note offsets differ from PR 9: PAN is 10 bytes here)
+        byte hashInd = recovered[17];
+        byte pkInd   = recovered[18];
+        require(hashInd == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", hashInd & 0xff) + ")");
+        require(pkInd == (byte) 0x01,
+                "Unsupported public key algorithm indicator: only RSA (0x01) is currently supported (got 0x"
+                + String.format("%02X", pkInd & 0xff) + ")");
+
+        // 7. Length consistency
+        int nic       = recovered[19] & 0xff;
+        int iccExpLen = recovered[20] & 0xff;
+        int iccInCert = Math.min(nic, ni - 42);
+        int remainderLen = iccPublicKeyRemainder == null ? 0 : iccPublicKeyRemainder.length;
+        require(iccInCert + remainderLen == nic,
+                "ICC Public Key length mismatch: in-cert " + iccInCert
+                + " + remainder " + remainderLen + " != declared NIC " + nic);
+        require(iccPublicKeyExponent.length == iccExpLen,
+                "ICC Public Key exponent length mismatch: declared " + iccExpLen
+                + " but supplied " + iccPublicKeyExponent.length);
+
+        // 8. Hash validation — input includes Static Application Data
+        byte[] hashInCert = Arrays.copyOfRange(recovered, ni - 21, ni - 1);
+        byte[] hashInput = Arrays.copyOfRange(recovered, 1, ni - 21);
+        if (remainderLen > 0)
+            hashInput = ISOUtil.concat(hashInput, iccPublicKeyRemainder);
+        hashInput = ISOUtil.concat(hashInput, iccPublicKeyExponent);
+        if (staticApplicationData != null && staticApplicationData.length > 0)
+            hashInput = ISOUtil.concat(hashInput, staticApplicationData);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "ICC Public Key Certificate hash validation failed");
+
+        // 9. Expiration date
+        byte[] expDate = Arrays.copyOfRange(recovered, 12, 14);
+        requireExpirationFuture(expDate);
+
+        // 10. Application PAN check (10 BCD bytes, F-padded)
+        byte[] certPan = Arrays.copyOfRange(recovered, 2, 12);
+        if (pan != null && !pan.isEmpty())
+            requirePanMatches(certPan, pan);
+
+        // Reconstruct full ICC public key modulus
+        byte[] modulus;
+        if (remainderLen == 0) {
+            modulus = Arrays.copyOfRange(recovered, 21, 21 + nic);
+        } else {
+            modulus = ISOUtil.concat(
+                    Arrays.copyOfRange(recovered, 21, 21 + iccInCert),
+                    iccPublicKeyRemainder);
+        }
+
+        return new EMVICCPublicKey(
+                certPan, expDate,
+                Arrays.copyOfRange(recovered, 14, 17),
+                modulus, iccPublicKeyExponent, hashInd, pkInd);
+    }
+
+    private static void requirePanMatches(byte[] certPan, String pan) throws SMException {
+        if (certPan == null || certPan.length != 10)
+            throw new SMException("Application PAN in ICC certificate must be 10 bytes");
+        // 10 bytes = 20 nibbles; strip trailing F-padding to recover the digit string.
+        String certHex = ISOUtil.hexString(certPan).toUpperCase();
+        String certDigits = certHex.replaceFirst("F+$", "");
+        if (!pan.equals(certDigits))
+            throw new SMException("Application PAN in ICC certificate ("
+                    + certDigits + ") does not match supplied PAN (" + pan + ")");
+    }
+
+    @Override
     protected Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MACImpl(
             MKDMethod mkdm, SKDMethod skdm, PaddingMethod padm, SecureDESKey imksmi
            ,String accountNo, String accntSeqNo, byte[] atc, byte[] arqc
