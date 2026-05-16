@@ -406,4 +406,58 @@ public interface EMVSMAdapter<T> extends SMAdapter<T> {
     EncryptedPIN encryptSecureMessagingPIN(T sessionKey, EncryptedPIN newPIN,
             T kd1, byte destinationPINBlockFormat, PaddingMethod paddingMethod,
             EncryptedPIN currentPIN, T udkAc) throws SMException;
+
+    /**
+     * Recover an Issuer Public Key from an EMV Issuer Public Key Certificate
+     * signed by a Certification Authority, per EMV 4.4 Book 2 §6.
+     * <p>
+     * The certificate, remainder, and exponent inputs correspond to EMV
+     * tags {@code 0x90} (Issuer Public Key Certificate), {@code 0x92}
+     * (Issuer Public Key Remainder, optional) and {@code 0x9F32} (Issuer
+     * Public Key Exponent) respectively, as read from the card.
+     * <p>
+     * The implementation performs RSA recovery {@code cert^e mod n} under
+     * the supplied CA public key and validates every field EMV mandates:
+     * recovered data header {@code 0x6A}, certificate format {@code 0x02},
+     * trailer {@code 0xBC}, hash algorithm indicator, public key algorithm
+     * indicator, length consistency, SHA-1 hash over the cert payload +
+     * remainder + exponent, certificate expiration date against the
+     * current system clock, and (when {@code pan} is non-null) issuer
+     * identifier match with the leftmost PAN digits.
+     * <p>
+     * <b>Every validation is a hard failure</b>: any inconsistency throws
+     * {@link SMException} with a message naming the failed step, and no
+     * partial result is returned. Callers who need lenient behavior
+     * (e.g. recovering keys from expired certs for forensics) should
+     * pre-process inputs rather than catching exceptions.
+     * <p>
+     * <b>Algorithm support</b>: the JCE adapter currently implements only
+     * hash algorithm indicator {@code 0x01} (SHA-1) and public key
+     * algorithm indicator {@code 0x01} (RSA). Other indicators raise
+     * {@link SMException}; support can be extended when EMV consumers
+     * need SHA-256 variants.
+     *
+     * @param caPublicKey the CA public key, identified per scheme by its
+     *        RID + index
+     * @param issuerPublicKeyCertificate EMV tag {@code 0x90} contents;
+     *        length must equal the CA modulus length in bytes
+     * @param issuerPublicKeyRemainder EMV tag {@code 0x92} contents, or
+     *        {@code null} / empty when the issuer modulus fits entirely
+     *        inside the certificate
+     * @param issuerPublicKeyExponent EMV tag {@code 0x9F32} contents
+     * @param pan the cardholder PAN, used to verify the issuer identifier
+     *        embedded in the certificate; if {@code null} or empty, the
+     *        issuer-identifier check is skipped (useful for diagnostic
+     *        recovery without a card context)
+     * @return the recovered Issuer Public Key
+     * @throws SMException on RSA recovery failure or any EMV validation
+     *         failure (header, format, trailer, lengths, hash, expiration,
+     *         issuer identifier, unsupported algorithm indicator)
+     */
+    EMVIssuerPublicKey recoverIssuerPublicKey(
+            EMVCAPublicKey caPublicKey,
+            byte[] issuerPublicKeyCertificate,
+            byte[] issuerPublicKeyRemainder,
+            byte[] issuerPublicKeyExponent,
+            String pan) throws SMException;
 }

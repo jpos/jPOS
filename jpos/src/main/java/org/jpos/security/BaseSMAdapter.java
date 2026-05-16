@@ -1385,6 +1385,36 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public EMVIssuerPublicKey recoverIssuerPublicKey(EMVCAPublicKey caPublicKey,
+            byte[] issuerPublicKeyCertificate, byte[] issuerPublicKeyRemainder,
+            byte[] issuerPublicKeyExponent, String pan) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "ca public key", caPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "issuer pk cert",
+                issuerPublicKeyCertificate == null ? "" : ISOUtil.hexString(issuerPublicKeyCertificate)));
+        cmdParameters.add(new SimpleMsg("parameter", "issuer pk remainder",
+                issuerPublicKeyRemainder == null ? "" : ISOUtil.hexString(issuerPublicKeyRemainder)));
+        cmdParameters.add(new SimpleMsg("parameter", "issuer pk exponent",
+                issuerPublicKeyExponent == null ? "" : ISOUtil.hexString(issuerPublicKeyExponent)));
+        cmdParameters.add(new SimpleMsg("parameter", "pan", pan));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Recover Issuer Public Key", cmdParameters));
+        try {
+            EMVIssuerPublicKey result = recoverIssuerPublicKeyImpl(
+                    caPublicKey, issuerPublicKeyCertificate,
+                    issuerPublicKeyRemainder, issuerPublicKeyExponent, pan);
+            evt.addMessage(new SimpleMsg("result", "Issuer Public Key", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
            ,SKDMethod skdm, PaddingMethod padm, T imksmi
            ,String accountNo, String acctSeqNo, byte[] atc, byte[] arqc
@@ -2538,6 +2568,26 @@ public class BaseSMAdapter<T>
             EncryptedPIN newPIN, T kd1, byte destinationPINBlockFormat,
             PaddingMethod paddingMethod, EncryptedPIN currentPIN, T udkAc)
             throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Recover an Issuer Public Key from a CA-signed Issuer Public Key Certificate.
+     * @param caPublicKey the CA public key
+     * @param issuerPublicKeyCertificate EMV tag 0x90 contents
+     * @param issuerPublicKeyRemainder EMV tag 0x92 contents (may be {@code null})
+     * @param issuerPublicKeyExponent EMV tag 0x9F32 contents
+     * @param pan cardholder PAN; {@code null} skips the issuer-identifier check
+     * @return the recovered Issuer Public Key
+     * @throws SMException on RSA recovery or EMV validation failure
+     */
+    protected EMVIssuerPublicKey recoverIssuerPublicKeyImpl(
+            EMVCAPublicKey caPublicKey,
+            byte[] issuerPublicKeyCertificate,
+            byte[] issuerPublicKeyRemainder,
+            byte[] issuerPublicKeyExponent,
+            String pan) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
