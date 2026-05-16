@@ -35,7 +35,9 @@ import org.jpos.core.SubConfiguration;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.ARPCMethod;
 import org.jpos.security.CipherMode;
+import org.jpos.security.EMVCAPublicKey;
 import org.jpos.security.EMVDerivedKey;
+import org.jpos.security.EMVIssuerPublicKey;
 import org.jpos.security.EncryptedPIN;
 import org.jpos.security.KeyScheme;
 import org.jpos.security.MKDMethod;
@@ -2590,6 +2592,230 @@ public class JCESecurityModuleTest {
                 PaddingMethod.MCHIP, null, null);
 
         assertArrayEquals(a.getPINBlock(), b.getPINBlock());
+    }
+
+    // ----------------------------------------------------------------------
+    // PR 9 — Recover Issuer Public Key (EMV 4.4 Book 2 §6)
+    // ----------------------------------------------------------------------
+    //
+    // Test strategy: hand-construct a synthetic CA+issuer RSA setup, build
+    // an Issuer Public Key Certificate by signing a known payload with the
+    // CA private key, then recover with the new public method. Tests use a
+    // mutator helper to corrupt one byte/field at a time for negative cases.
+
+    private static final int    PR9_NCA   = 128;          // 1024-bit CA modulus
+    private static final int    PR9_NI    = 96;           //  768-bit issuer modulus
+    private static final String PR9_PAN   = "12345678901234";
+    private static final byte[] PR9_ISSUER_ID  = ISOUtil.hex2byte("12345678");
+    private static final byte[] PR9_EXP_FUTURE = ISOUtil.hex2byte("1231");   // Dec 2031
+    private static final byte[] PR9_EXP_PAST   = ISOUtil.hex2byte("0101");   // Jan 2001
+    private static final byte[] PR9_SERIAL     = ISOUtil.hex2byte("000001");
+
+    private static java.math.BigInteger pr9CaN, pr9CaE, pr9CaD;
+    private static java.math.BigInteger pr9IssuerN;
+    private static byte[] pr9CaModulus, pr9CaExponent;
+    private static byte[] pr9IssuerExp;
+    private static byte[] pr9IssuerModulus;
+    private static EMVCAPublicKey pr9CaPublicKey;
+    private static byte[] pr9HappyCert;
+    private static byte[] pr9HappyRemainder;
+
+    @BeforeAll
+    public static void setUpPR9Fixtures() throws Exception {
+        java.security.KeyPairGenerator kpg = java.security.KeyPairGenerator.getInstance("RSA");
+
+        // CA keypair (1024 bits)
+        kpg.initialize(1024);
+        java.security.KeyPair caKp = kpg.generateKeyPair();
+        pr9CaN = ((java.security.interfaces.RSAPublicKey)  caKp.getPublic()).getModulus();
+        pr9CaE = ((java.security.interfaces.RSAPublicKey)  caKp.getPublic()).getPublicExponent();
+        pr9CaD = ((java.security.interfaces.RSAPrivateKey) caKp.getPrivate()).getPrivateExponent();
+
+        // Issuer keypair (768 bits → 96-byte modulus, exceeds NCA-36=92, so remainder present)
+        kpg.initialize(768);
+        java.security.KeyPair issuerKp = kpg.generateKeyPair();
+        pr9IssuerN = ((java.security.interfaces.RSAPublicKey) issuerKp.getPublic()).getModulus();
+        java.math.BigInteger issuerE = ((java.security.interfaces.RSAPublicKey) issuerKp.getPublic()).getPublicExponent();
+
+        pr9CaModulus  = bigIntToFixed(pr9CaN, PR9_NCA);
+        pr9CaExponent = trimLeadingZeros(pr9CaE.toByteArray());
+        pr9IssuerModulus = bigIntToFixed(pr9IssuerN, PR9_NI);
+        pr9IssuerExp     = trimLeadingZeros(issuerE.toByteArray());
+
+        pr9CaPublicKey = new EMVCAPublicKey(
+                ISOUtil.hex2byte("A000000003"), (byte) 0x07,
+                pr9CaModulus, pr9CaExponent,
+                (byte) 0x01, (byte) 0x01);
+
+        // Build and sign the canonical "happy" cert.
+        byte[] payload = buildPayload(PR9_ISSUER_ID, PR9_EXP_FUTURE, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, pr9IssuerModulus, pr9IssuerExp);
+        pr9HappyCert = signWithCA(payload);
+        pr9HappyRemainder = java.util.Arrays.copyOfRange(pr9IssuerModulus, PR9_NCA - 36, PR9_NI);
+    }
+
+    private static byte[] buildPayload(byte[] issuerId, byte[] expDate, byte[] serial,
+            byte hashAlg, byte pkAlg, byte[] issuerModulus, byte[] issuerExp) throws Exception {
+        int nca = PR9_NCA;
+        int ni  = issuerModulus.length;
+        int ipkInCert = Math.min(ni, nca - 36);
+        byte[] payload = new byte[nca];
+        payload[0] = (byte) 0x6A;
+        payload[1] = (byte) 0x02;
+        System.arraycopy(issuerId, 0, payload, 2, 4);
+        System.arraycopy(expDate,  0, payload, 6, 2);
+        System.arraycopy(serial,   0, payload, 8, 3);
+        payload[11] = hashAlg;
+        payload[12] = pkAlg;
+        payload[13] = (byte) ni;
+        payload[14] = (byte) issuerExp.length;
+        System.arraycopy(issuerModulus, 0, payload, 15, ipkInCert);
+        // 0xBB padding for ni < nca - 36 (not exercised in happy fixture, but support it)
+        for (int i = 15 + ipkInCert; i < nca - 21; i++) payload[i] = (byte) 0xBB;
+        // SHA-1 over payload[1..nca-22] || remainder || exponent
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        sha.update(payload, 1, nca - 22);
+        if (ni > ipkInCert)
+            sha.update(issuerModulus, ipkInCert, ni - ipkInCert);
+        sha.update(issuerExp);
+        System.arraycopy(sha.digest(), 0, payload, nca - 21, 20);
+        payload[nca - 1] = (byte) 0xBC;
+        return payload;
+    }
+
+    private static byte[] signWithCA(byte[] payload) {
+        java.math.BigInteger m = new java.math.BigInteger(1, payload);
+        java.math.BigInteger s = m.modPow(pr9CaD, pr9CaN);
+        return bigIntToFixed(s, payload.length);
+    }
+
+    /** Decrypt the happy-cert payload, apply the mutator, re-sign. */
+    private static byte[] mutateAndSign(byte[] signedCert, java.util.function.Consumer<byte[]> mutator) {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signedCert);
+        byte[] payload = bigIntToFixed(sig.modPow(pr9CaE, pr9CaN), signedCert.length);
+        mutator.accept(payload);
+        return signWithCA(payload);
+    }
+
+    private static byte[] bigIntToFixed(java.math.BigInteger value, int length) {
+        byte[] raw = value.toByteArray();
+        if (raw.length == length) return raw;
+        byte[] out = new byte[length];
+        if (raw.length > length)
+            System.arraycopy(raw, raw.length - length, out, 0, length);
+        else
+            System.arraycopy(raw, 0, out, length - raw.length, raw.length);
+        return out;
+    }
+
+    private static byte[] trimLeadingZeros(byte[] raw) {
+        int s = 0;
+        while (s < raw.length - 1 && raw[s] == 0) s++;
+        return java.util.Arrays.copyOfRange(raw, s, raw.length);
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_HappyPath() throws Throwable {
+        EMVIssuerPublicKey result = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        assertArrayEquals(PR9_ISSUER_ID,  result.issuerIdentifier());
+        assertArrayEquals(PR9_EXP_FUTURE, result.expirationDate());
+        assertArrayEquals(PR9_SERIAL,     result.serialNumber());
+        assertArrayEquals(pr9IssuerModulus, result.modulus());
+        assertArrayEquals(pr9IssuerExp,   result.exponent());
+        assertEquals((byte) 0x01, result.hashAlgorithmIndicator());
+        assertEquals((byte) 0x01, result.publicKeyAlgorithmIndicator());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_NullPAN_SkipsIssuerIdCheck() throws Throwable {
+        EMVIssuerPublicKey result = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, null);
+        assertArrayEquals(PR9_ISSUER_ID, result.issuerIdentifier());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_BadHeader_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[0] = (byte) 0x6B);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("header"),
+                "expected 'header' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_BadFormat_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[1] = (byte) 0x03);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("certificate format"),
+                "expected 'certificate format' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_BadTrailer_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[PR9_NCA - 1] = (byte) 0xBD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("trailer"),
+                "expected 'trailer' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_BadHash_Throws() throws Throwable {
+        // Flip one bit inside the embedded hash (bytes nca-21..nca-2).
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[PR9_NCA - 10] ^= 0x01);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_UnsupportedHashAlgo_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[11] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash algorithm"),
+                "expected 'hash algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_UnsupportedPKAlgo_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[12] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("public key algorithm"),
+                "expected 'public key algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_ExpiredDate_Throws() throws Throwable {
+        // Build a cert with expDate in January 2001 (long-expired) and sign it.
+        byte[] payload = buildPayload(PR9_ISSUER_ID, PR9_EXP_PAST, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, pr9IssuerModulus, pr9IssuerExp);
+        byte[] expiredCert = signWithCA(payload);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, expiredCert, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("expired"),
+                "expected 'expired' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_IssuerIdMismatch_Throws() throws Throwable {
+        // Happy cert is fine; just pass a PAN that doesn't match issuer ID 12345678.
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder,
+                        pr9IssuerExp, "99990000123456"));
+        assertTrue(ex.getMessage().toLowerCase().contains("issuer identifier"),
+                "expected 'issuer identifier' in error: " + ex.getMessage());
     }
 
 }

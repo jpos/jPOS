@@ -38,8 +38,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.*;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1322,6 +1324,157 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         Key clearUdk = (udkAc == null) ? null : decryptFromLMK(udkAc);
         return translatePINExt(currentPIN, newPIN, clearKd1, clearSk,
                 destinationPINBlockFormat, clearUdk, paddingMethod);
+    }
+
+    @Override
+    protected EMVIssuerPublicKey recoverIssuerPublicKeyImpl(
+            EMVCAPublicKey caPublicKey,
+            byte[] issuerPublicKeyCertificate,
+            byte[] issuerPublicKeyRemainder,
+            byte[] issuerPublicKeyExponent,
+            String pan) throws SMException {
+
+        if (caPublicKey == null || caPublicKey.modulus() == null || caPublicKey.exponent() == null)
+            throw new SMException("CA public key is missing modulus or exponent");
+        if (issuerPublicKeyCertificate == null)
+            throw new SMException("Issuer Public Key Certificate (EMV tag 0x90) is required");
+        if (issuerPublicKeyExponent == null || issuerPublicKeyExponent.length == 0)
+            throw new SMException("Issuer Public Key Exponent (EMV tag 0x9F32) is required");
+
+        int nca = caPublicKey.modulus().length;
+        if (issuerPublicKeyCertificate.length != nca)
+            throw new SMException("Issuer Public Key Certificate length (" + issuerPublicKeyCertificate.length
+                    + ") must equal CA modulus length (" + nca + ")");
+        if (nca < 36)
+            throw new SMException("CA modulus too small for an EMV issuer certificate (need at least 36 bytes, got " + nca + ")");
+
+        // 1. RSA recovery: cert^e mod n
+        BigInteger n = new BigInteger(1, caPublicKey.modulus());
+        BigInteger e = new BigInteger(1, caPublicKey.exponent());
+        BigInteger c = new BigInteger(1, issuerPublicKeyCertificate);
+        byte[] recovered = bigIntegerToFixedLengthBytes(c.modPow(e, n), nca);
+
+        // 2-4. Header / format / trailer
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x" + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x02,
+                "Invalid certificate format: expected 0x02 (Issuer Public Key Certificate) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[nca - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[nca - 1] & 0xff));
+
+        // 5-6. Algorithm indicators
+        byte hashInd = recovered[11];
+        byte pkInd   = recovered[12];
+        require(hashInd == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", hashInd & 0xff) + ")");
+        require(pkInd == (byte) 0x01,
+                "Unsupported public key algorithm indicator: only RSA (0x01) is currently supported (got 0x"
+                + String.format("%02X", pkInd & 0xff) + ")");
+
+        // 7. Length consistency
+        int ni        = recovered[13] & 0xff;
+        int ipkExpLen = recovered[14] & 0xff;
+        int ipkInCert = Math.min(ni, nca - 36);
+        int remainderLen = issuerPublicKeyRemainder == null ? 0 : issuerPublicKeyRemainder.length;
+        require(ipkInCert + remainderLen == ni,
+                "Issuer Public Key length mismatch: in-cert " + ipkInCert
+                + " + remainder " + remainderLen + " != declared NI " + ni);
+        require(issuerPublicKeyExponent.length == ipkExpLen,
+                "Issuer Public Key exponent length mismatch: declared " + ipkExpLen
+                + " but supplied " + issuerPublicKeyExponent.length);
+
+        // 8. Hash validation: SHA-1(recovered[1..nca-22] || remainder || exponent)
+        byte[] hashInCert = Arrays.copyOfRange(recovered, nca - 21, nca - 1);
+        byte[] hashInput = Arrays.copyOfRange(recovered, 1, nca - 21);
+        if (remainderLen > 0)
+            hashInput = ISOUtil.concat(hashInput, issuerPublicKeyRemainder);
+        hashInput = ISOUtil.concat(hashInput, issuerPublicKeyExponent);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "Issuer Public Key Certificate hash validation failed");
+
+        // 9. Expiration date (MMYY BCD)
+        byte[] expDate = Arrays.copyOfRange(recovered, 6, 8);
+        requireExpirationFuture(expDate);
+
+        // 10. Issuer identifier check (skipped when pan is null/empty)
+        byte[] issuerId = Arrays.copyOfRange(recovered, 2, 6);
+        if (pan != null && !pan.isEmpty())
+            requireIssuerIdMatches(issuerId, pan);
+
+        // Reconstruct full issuer public key modulus (leftmost || remainder)
+        byte[] modulus;
+        if (remainderLen == 0) {
+            modulus = Arrays.copyOfRange(recovered, 15, 15 + ni);
+        } else {
+            modulus = ISOUtil.concat(
+                    Arrays.copyOfRange(recovered, 15, 15 + ipkInCert),
+                    issuerPublicKeyRemainder);
+        }
+
+        return new EMVIssuerPublicKey(
+                issuerId, expDate,
+                Arrays.copyOfRange(recovered, 8, 11),
+                modulus, issuerPublicKeyExponent, hashInd, pkInd);
+    }
+
+    private static byte[] bigIntegerToFixedLengthBytes(BigInteger value, int length) {
+        byte[] raw = value.toByteArray();
+        if (raw.length == length) return raw;
+        byte[] out = new byte[length];
+        if (raw.length > length) {
+            // BigInteger.toByteArray() prepends a 0x00 sign byte for positive
+            // numbers whose high bit is set; strip leading bytes.
+            System.arraycopy(raw, raw.length - length, out, 0, length);
+        } else {
+            // Left-pad with zeros to reach the declared length.
+            System.arraycopy(raw, 0, out, length - raw.length, raw.length);
+        }
+        return out;
+    }
+
+    private static void require(boolean condition, String msg) throws SMException {
+        if (!condition) throw new SMException(msg);
+    }
+
+    private static void requireExpirationFuture(byte[] mmyy) throws SMException {
+        if (mmyy == null || mmyy.length != 2)
+            throw new SMException("Expiration date must be 2 bytes (MMYY BCD)");
+        String hex = ISOUtil.hexString(mmyy);
+        int month, year;
+        try {
+            month = Integer.parseInt(hex.substring(0, 2));
+            year  = Integer.parseInt(hex.substring(2, 4));
+        } catch (NumberFormatException e) {
+            throw new SMException("Expiration date is not valid BCD: " + hex);
+        }
+        if (month < 1 || month > 12)
+            throw new SMException("Invalid expiration month in certificate: " + month + " (date " + hex + ")");
+        LocalDate now = LocalDate.now();
+        int nowYY = now.getYear() % 100;
+        int nowMM = now.getMonthValue();
+        // Compare YY then MM. Assumes 2-digit year is in the current century;
+        // EMV CA certs in practice are issued post-2010 so this holds for the
+        // foreseeable future.
+        int certKey = year * 100 + month;
+        int nowKey  = nowYY * 100 + nowMM;
+        if (certKey < nowKey)
+            throw new SMException("Issuer Public Key Certificate has expired (MM/YY: "
+                    + String.format("%02d", month) + "/" + String.format("%02d", year) + ")");
+    }
+
+    private static void requireIssuerIdMatches(byte[] issuerId, String pan) throws SMException {
+        if (issuerId == null || issuerId.length != 4)
+            throw new SMException("Issuer Identifier must be 4 bytes");
+        // 4 bytes = 8 hex nibbles; strip trailing F-padding to recover the BIN digits.
+        String idHex = ISOUtil.hexString(issuerId).toUpperCase();
+        String idDigits = idHex.replaceFirst("F+$", "");
+        if (!pan.startsWith(idDigits))
+            throw new SMException("Issuer Identifier in certificate ("
+                    + idHex + ") does not match PAN prefix");
     }
 
     @Override
