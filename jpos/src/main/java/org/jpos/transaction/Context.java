@@ -23,6 +23,9 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jpos.iso.ISOUtil;
+import org.jpos.log.AuditLogEvent;
+import org.jpos.log.AuditLogEventConvertible;
+import org.jpos.log.evt.ContextEvt;
 import org.jpos.util.*;
 import org.jpos.rc.Result;
 
@@ -37,7 +40,7 @@ import java.util.stream.Stream;
 import static org.jpos.transaction.ContextConstants.*;
 
 /** Transaction context carrying typed key-value pairs that flow through participant pipelines. */
-public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
+public class Context implements Externalizable, Loggeable, Cloneable, Pausable, AuditLogEventConvertible {
     @Serial
     private static final long serialVersionUID = 2604524947983441462L;
     private transient Map<Object,Object> map; // transient map
@@ -286,6 +289,60 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable {
         p.println (indent + "<context>");
         dumpMap (p, inner);
         p.println (indent + "</context>");
+    }
+    /**
+     * Returns a structured snapshot of this Context for typed log writers
+     * (e.g. {@code JsonlLogWriter}). Values are converted as follows:
+     *
+     * <ul>
+     *   <li>{@link AuditLogEventConvertible} → nested {@link AuditLogEvent}
+     *       (so a {@code PROFILER} entry becomes a structured
+     *       {@link ContextEvt} payload, not a text blob)</li>
+     *   <li>{@code byte[]} → hexadecimal string</li>
+     *   <li>{@link Loggeable} → its {@code dump()} string</li>
+     *   <li>everything else → the original value (passed to the serializer)</li>
+     * </ul>
+     *
+     * <p>Entries whose key starts with {@code "."} or {@code "*"} are skipped,
+     * mirroring {@link #dumpEntry}.</p>
+     *
+     * @return a {@link ContextEvt} reflecting the current transient entries
+     */
+    @Override
+    public AuditLogEvent toAuditEvent() {
+        Map<String, Object> out = new LinkedHashMap<>();
+        getMapClone().forEach((k, v) -> {
+            String key = getKeyName(k);
+            if (key.startsWith(".") || key.startsWith("*"))
+                return;
+            out.put(key, convertEntry(v));
+        });
+        return new ContextEvt(out);
+    }
+
+    private static Object convertEntry(Object v) {
+        if (v == null)
+            return null;
+        if (v instanceof AuditLogEventConvertible c)
+            return c.toAuditEvent();
+        if (v instanceof byte[] b)
+            return ISOUtil.hexString(b);
+        if (v instanceof short[] s)
+            return Arrays.toString(s);
+        if (v instanceof int[] i)
+            return Arrays.toString(i);
+        if (v instanceof long[] l)
+            return Arrays.toString(l);
+        if (v instanceof Object[] o)
+            return Arrays.toString(o);
+        if (v instanceof Loggeable l) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try (PrintStream ps = new PrintStream(baos)) {
+                l.dump(ps, "");
+            }
+            return baos.toString().trim();
+        }
+        return v;
     }
     /**
      * Retrieves a persistent value by key, waiting up to {@code timeout} milliseconds.

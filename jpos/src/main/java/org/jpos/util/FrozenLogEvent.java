@@ -35,10 +35,16 @@ public class FrozenLogEvent extends LogEvent implements Serializable {
     }
     /**
      * Creates a FrozenLogEvent by capturing the current dump of the given LogEvent.
+     * The payload entries are copied so structured writers (e.g. {@link JsonlLogWriter})
+     * can walk them; the pre-rendered string is used by legacy {@code dump()}-based
+     * writers to avoid concurrent traversal of the original payload.
      * @param evt the LogEvent to freeze
      */
     public FrozenLogEvent (LogEvent evt) {
-        super(evt.getSource(), evt.getTag(), evt.getRealm());
+        super(evt.getSource(), evt.getTag());
+        synchronized (evt.getPayLoad()) {
+            getPayLoad().addAll(evt.getPayLoad());
+        }
         frozen = evt.toString();
     }
     @Override

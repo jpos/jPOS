@@ -19,6 +19,9 @@
 package org.jpos.util;
 
 import org.jpos.iso.ISOUtil;
+import org.jpos.log.AuditLogEvent;
+import org.jpos.log.AuditLogEventConvertible;
+import org.jpos.log.evt.ProfilerEvt;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ import java.util.List;
  * @author David D. Bergert
  * @version $Id$
  */
-public class Profiler implements Loggeable {
+public class Profiler implements Loggeable, AuditLogEventConvertible {
     long start, partial;
     LinkedHashMap<String, Entry> events;
     /** Conversion factor from nanoseconds to milliseconds. */
@@ -131,6 +134,17 @@ public class Profiler implements Loggeable {
     /** Removes the "end" checkpoint so profiling can continue. */
     public synchronized void reenable() {
         events.remove("end");
+    }
+    /**
+     * Returns a structured snapshot for use by JSON / typed log writers.
+     * Mirrors {@link #dump} by auto-closing the trace with an {@code end}
+     * checkpoint when one isn't present.
+     *
+     * @return a {@link ProfilerEvt} reflecting the current trace
+     */
+    @Override
+    public AuditLogEvent toAuditEvent() {
+        return ProfilerEvt.of(this);
     }
     /** A single timed checkpoint entry recorded by the Profiler. */
     public static class Entry  {

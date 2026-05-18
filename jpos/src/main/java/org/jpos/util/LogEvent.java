@@ -22,8 +22,11 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jpos.jfr.LogEventDump;
+import org.jpos.log.AuditLogEvent;
+import org.jpos.log.AuditLogEventConvertible;
 import org.jpos.log.LogRenderer;
 import org.jpos.log.LogRendererRegistry;
+import org.jpos.log.evt.LogEventEvt;
 import org.jpos.log.evt.SysInfo;
 import org.jpos.log.render.txt.SysInfoTxtLogRenderer;
 
@@ -41,7 +44,7 @@ import java.util.*;
  * A single structured log event that carries a tag, realm, payload items, and optionally a {@link Throwable}.
  * @author @apr
  */
-public class LogEvent {
+public class LogEvent implements AuditLogEventConvertible {
     private LogSource source;
     private String tag;
     private final List<Object> payLoad;
@@ -406,6 +409,39 @@ public class LogEvent {
      */
     public List<Object> getPayLoad() {
         return payLoad;
+    }
+    /**
+     * Returns a structured snapshot for JSON / typed log writers. Each payload
+     * entry is rendered to text — {@link Loggeable} values via {@code dump()},
+     * everything else via {@link Object#toString()}.
+     *
+     * @return a {@link LogEventEvt} reflecting this event's tag and messages
+     */
+    @Override
+    public AuditLogEvent toAuditEvent() {
+        List<String> messages;
+        synchronized (payLoad) {
+            messages = payLoad.stream()
+                .map(LogEvent::renderMessage)
+                .toList();
+        }
+        return new LogEventEvt(tag, messages);
+    }
+
+    private static String renderMessage(Object obj) {
+        if (obj == null)
+            return "null";
+        if (obj instanceof Loggeable l) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try (PrintStream ps = new PrintStream(baos)) {
+                l.dump(ps, "");
+            }
+            return baos.toString().trim();
+        }
+        if (obj instanceof LogEvent le) {
+            return le.toString().trim();
+        }
+        return obj.toString();
     }
     /**
      * Renders this event to a string with the given indent prefix.

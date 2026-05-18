@@ -29,6 +29,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.jpos.log.AuditLogEvent;
+import org.jpos.log.AuditLogEventConvertible;
 import org.jpos.log.AuditLogEventRegistry;
 import org.jpos.log.evt.LogEvt;
 import org.jpos.log.evt.LogMessage;
@@ -123,6 +124,7 @@ public class JsonlLogWriter extends BaseLogEventWriter implements Configurable {
         return switch (obj) {
             case AuditLogEvent ale -> ale;
             case ISOMsg m -> new LogMessage(protectAndDump(m));
+            case AuditLogEventConvertible c -> c.toAuditEvent();
             case Throwable t -> new ThrowableAuditLogEvent(t);
             default -> new LogMessage(dump(obj));
         };

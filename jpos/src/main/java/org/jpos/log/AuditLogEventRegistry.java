@@ -21,12 +21,15 @@ package org.jpos.log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import org.jpos.log.evt.Connect;
+import org.jpos.log.evt.ContextEvt;
 import org.jpos.log.evt.Deploy;
 import org.jpos.log.evt.DeployActivity;
 import org.jpos.log.evt.Disconnect;
 import org.jpos.log.evt.License;
 import org.jpos.log.evt.Listen;
+import org.jpos.log.evt.LogEventEvt;
 import org.jpos.log.evt.LogMessage;
+import org.jpos.log.evt.ProfilerEvt;
 import org.jpos.log.evt.SessionEnd;
 import org.jpos.log.evt.SessionStart;
 import org.jpos.log.evt.Shutdown;
@@ -78,7 +81,10 @@ public final class AuditLogEventRegistry {
       new AuditLogEventType("listen", Listen.class),
       new AuditLogEventType("session-start", SessionStart.class),
       new AuditLogEventType("session-end", SessionEnd.class),
-      new AuditLogEventType("txn", Txn.class)
+      new AuditLogEventType("txn", Txn.class),
+      new AuditLogEventType("profiler", ProfilerEvt.class),
+      new AuditLogEventType("context", ContextEvt.class),
+      new AuditLogEventType("logevt", LogEventEvt.class)
     );
 
     private static volatile Map<String, AuditLogEventType> types;

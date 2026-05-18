@@ -165,6 +165,52 @@ public class JsonlLogWriterTest {
     }
 
     @Test
+    void nestedLogEventRendersAsStructuredBlock() throws Exception {
+        LogEvent inner = new LogEvent("info");
+        inner.addMessage("alpha");
+        inner.addMessage("beta");
+
+        LogEvent outer = new LogEvent("commit");
+        outer.addMessage(inner);
+        writer.write(outer);
+
+        JsonNode entry = objectMapper.readTree(baos.toString().trim()).get("payload").get(0);
+        assertEquals("logevt", entry.get("t").asText());
+        assertEquals("info",   entry.get("tag").asText());
+        JsonNode messages = entry.get("messages");
+        assertEquals(2, messages.size());
+        assertEquals("alpha", messages.get(0).asText());
+        assertEquals("beta",  messages.get(1).asText());
+    }
+
+    @Test
+    void profilerRendersAsStructuredEvent() throws Exception {
+        Profiler prof = new Profiler();
+        prof.checkPoint("step-a");
+        prof.checkPoint("step-b");
+
+        LogEvent ev = new LogEvent("commit");
+        ev.addMessage(prof);
+        writer.write(ev);
+
+        JsonNode node = objectMapper.readTree(baos.toString().trim());
+        JsonNode entry = node.get("payload").get(0);
+        assertEquals("profiler", entry.get("t").asText(), "profiler entries should use the 'profiler' type id");
+        assertTrue(entry.has("elapsed_ns"), "profiler should expose elapsed_ns");
+        JsonNode checkpoints = entry.get("checkpoints");
+        assertNotNull(checkpoints);
+        // step-a, step-b, end (auto-added)
+        assertEquals(3, checkpoints.size());
+        // each checkpoint is [name, duration_ns, total_ns]
+        JsonNode first = checkpoints.get(0);
+        assertEquals(3, first.size(), "checkpoint should be a 3-tuple");
+        assertEquals("step-a", first.get(0).asText());
+        assertTrue(first.get(1).isNumber(), "duration_ns should be numeric");
+        assertTrue(first.get(2).isNumber(), "total_ns should be numeric");
+        assertEquals("end", checkpoints.get(2).get(0).asText());
+    }
+
+    @Test
     void nullEventIsNoOp() {
         writer.write(null);
         assertEquals(0, baos.size());
