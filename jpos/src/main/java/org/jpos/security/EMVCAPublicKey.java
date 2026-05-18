@@ -51,22 +51,40 @@ public record EMVCAPublicKey(byte[] rid, byte index, byte[] modulus,
                              byte[] exponent, byte hashAlgorithmIndicator,
                              byte publicKeyAlgorithmIndicator) {
 
+    /**
+     * Creates an EMV CA public key and defensively copies array components.
+     */
     public EMVCAPublicKey {
         rid = copy(rid);
         modulus = copy(modulus);
         exponent = copy(exponent);
     }
 
+    /**
+     * Returns a defensive copy of the RID.
+     *
+     * @return the Registered Application Provider Identifier
+     */
     @Override
     public byte[] rid() {
         return copy(rid);
     }
 
+    /**
+     * Returns a defensive copy of the RSA modulus.
+     *
+     * @return the RSA modulus
+     */
     @Override
     public byte[] modulus() {
         return copy(modulus);
     }
 
+    /**
+     * Returns a defensive copy of the RSA public exponent.
+     *
+     * @return the RSA public exponent
+     */
     @Override
     public byte[] exponent() {
         return copy(exponent);

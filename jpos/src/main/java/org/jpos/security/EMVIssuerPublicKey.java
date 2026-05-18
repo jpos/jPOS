@@ -56,6 +56,9 @@ public record EMVIssuerPublicKey(byte[] issuerIdentifier, byte[] expirationDate,
                                  byte[] exponent, byte hashAlgorithmIndicator,
                                  byte publicKeyAlgorithmIndicator) {
 
+    /**
+     * Creates an EMV issuer public key and defensively copies array components.
+     */
     public EMVIssuerPublicKey {
         issuerIdentifier = copy(issuerIdentifier);
         expirationDate = copy(expirationDate);
@@ -64,26 +67,51 @@ public record EMVIssuerPublicKey(byte[] issuerIdentifier, byte[] expirationDate,
         exponent = copy(exponent);
     }
 
+    /**
+     * Returns a defensive copy of the issuer identifier.
+     *
+     * @return the issuer identifier
+     */
     @Override
     public byte[] issuerIdentifier() {
         return copy(issuerIdentifier);
     }
 
+    /**
+     * Returns a defensive copy of the certificate expiration date.
+     *
+     * @return the expiration date
+     */
     @Override
     public byte[] expirationDate() {
         return copy(expirationDate);
     }
 
+    /**
+     * Returns a defensive copy of the certificate serial number.
+     *
+     * @return the serial number
+     */
     @Override
     public byte[] serialNumber() {
         return copy(serialNumber);
     }
 
+    /**
+     * Returns a defensive copy of the RSA modulus.
+     *
+     * @return the RSA modulus
+     */
     @Override
     public byte[] modulus() {
         return copy(modulus);
     }
 
+    /**
+     * Returns a defensive copy of the RSA public exponent.
+     *
+     * @return the RSA public exponent
+     */
     @Override
     public byte[] exponent() {
         return copy(exponent);

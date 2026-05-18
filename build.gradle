@@ -43,7 +43,7 @@ subprojects {
         'https://oss.sonatype.org/content/repositories/snapshots/' :
         'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
     configurations.implementation.transitive = true
-    javadoc.failOnError = false
+    javadoc.failOnError = true
 
     java {
        sourceCompatibility = JavaVersion.VERSION_25
@@ -183,7 +183,14 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
     destinationDir = new File(buildDir, 'docs/javadoc')
     classpath = files(subprojects.collect {project ->
         project.sourceSets.main.compileClasspath})
-    failOnError = false
+    failOnError = true
+    configure(options) {
+        tags(
+            'apiNote:a:API Note:',
+            'implSpec:a:Implementation Requirements:',
+            'implNote:a:Implementation Note:'
+        )
+    }
 }
 
 
