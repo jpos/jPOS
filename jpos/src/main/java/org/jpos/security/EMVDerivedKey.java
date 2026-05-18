@@ -51,10 +51,18 @@ import org.jpos.iso.ISOUtil;
  */
 public record EMVDerivedKey<T>(T key, byte[] kcv) {
 
+    /**
+     * Creates a derived-key result and defensively copies array components.
+     */
     public EMVDerivedKey {
         kcv = copy(kcv);
     }
 
+    /**
+     * Returns a defensive copy of the Key Check Value.
+     *
+     * @return the Key Check Value
+     */
     @Override
     public byte[] kcv() {
         return copy(kcv);

@@ -675,7 +675,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @param key DES double length key
      * @param d data to calculate MAC on it
      * @return 8 byte of mac value
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException if the MAC key cannot be formed or used
      */
     protected byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws JCEHandlerException {
         Key kl = jceHandler.formDESKey(SMAdapter.LENGTH_DES
@@ -959,7 +959,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @param mkac unique ICC Master Key for Application Cryptogams or Secure Messaging
      * @param atc ICC generated Application Transaction Counter as diversification value
      * @return derived 16-bytes Session Key with adjusted DES parity
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException if the session key cannot be derived
      */
     protected Key deriveSK_VISA(Key mkac, byte[] atc) throws JCEHandlerException {
 
@@ -988,7 +988,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @param mksm unique ICC Master Key for Secure Messaging
      * @param rand Application Cryptogram as diversification value
      * @return derived 16-bytes Session Key with adjusted DES parity
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException if the session key cannot be derived
      */
     protected Key deriveCommonSK_SM(Key mksm, byte[] rand) throws JCEHandlerException {
       byte[] rl = Arrays.copyOf(rand,8);
@@ -1011,7 +1011,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @param mkac unique ICC Master Key for Application Cryptogams.
      * @param atc ICC generated Application Transaction Counter as diversification value.
      * @return derived 16-bytes Session Key with adjusted DES parity.
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException if the session key cannot be derived
      */
     protected Key deriveCommonSK_AC(Key mkac, byte[] atc) throws JCEHandlerException {
 
@@ -1024,14 +1024,14 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     /**
      * MasterCard Proprietary Session Key Derivation (SKD) method.
      * <p>
-     * Described in M/Chip 4 version 1.1 Security & Key Management manual
+     * Described in M/Chip 4 version 1.1 Security &amp; Key Management manual
      * paragraph 7 ICC Session Key Derivation.
      *
      * @param mkac unique ICC Master Key for Application Cryptogams
      * @param atc ICC generated Application Transaction Counter as diversification value
      * @param upn terminal generated random as diversification value
      * @return derived 16-bytes Session Key with adjusted DES parity
-     * @throws JCEHandlerException
+     * @throws JCEHandlerException if the session key cannot be derived
      */
     protected Key deriveSK_MK(Key mkac, byte[] atc, byte[] upn) throws JCEHandlerException {
 

@@ -57,6 +57,9 @@ public record EMVICCPublicKey(byte[] applicationPan, byte[] expirationDate,
                               byte[] exponent, byte hashAlgorithmIndicator,
                               byte publicKeyAlgorithmIndicator) {
 
+    /**
+     * Creates an EMV ICC public key and defensively copies array components.
+     */
     public EMVICCPublicKey {
         applicationPan = copy(applicationPan);
         expirationDate = copy(expirationDate);
@@ -65,26 +68,51 @@ public record EMVICCPublicKey(byte[] applicationPan, byte[] expirationDate,
         exponent = copy(exponent);
     }
 
+    /**
+     * Returns a defensive copy of the application PAN.
+     *
+     * @return the application PAN
+     */
     @Override
     public byte[] applicationPan() {
         return copy(applicationPan);
     }
 
+    /**
+     * Returns a defensive copy of the certificate expiration date.
+     *
+     * @return the expiration date
+     */
     @Override
     public byte[] expirationDate() {
         return copy(expirationDate);
     }
 
+    /**
+     * Returns a defensive copy of the certificate serial number.
+     *
+     * @return the serial number
+     */
     @Override
     public byte[] serialNumber() {
         return copy(serialNumber);
     }
 
+    /**
+     * Returns a defensive copy of the RSA modulus.
+     *
+     * @return the RSA modulus
+     */
     @Override
     public byte[] modulus() {
         return copy(modulus);
     }
 
+    /**
+     * Returns a defensive copy of the RSA public exponent.
+     *
+     * @return the RSA public exponent
+     */
     @Override
     public byte[] exponent() {
         return copy(exponent);

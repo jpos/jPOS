@@ -42,10 +42,18 @@ import org.jpos.iso.ISOUtil;
  */
 public record EMVCDAResult(byte[] iccDynamicNumber, byte cid) {
 
+    /**
+     * Creates a CDA result and defensively copies array components.
+     */
     public EMVCDAResult {
         iccDynamicNumber = copy(iccDynamicNumber);
     }
 
+    /**
+     * Returns a defensive copy of the ICC dynamic number.
+     *
+     * @return the ICC dynamic number
+     */
     @Override
     public byte[] iccDynamicNumber() {
         return copy(iccDynamicNumber);
