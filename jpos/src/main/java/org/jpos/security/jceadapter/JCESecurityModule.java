@@ -38,8 +38,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.*;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -582,6 +584,13 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return res.equals(dcvv);
     }
 
+    @Override
+    protected String generatedCVVImpl(String accountNo, SecureDESKey imkac,
+                     String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+        return calculatedCVV(accountNo, imkac, expDate, serviceCode, atc, mkdm);
+    }
+
     /**
      * Computes the contactless CVC3 from the issuer master key, ATC, UPN, and track data.
      *
@@ -632,6 +641,13 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         return calcCVC3.equals(cvc3);
     }
 
+    @Override
+    protected String generateCVC3Impl(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm)
+                     throws SMException {
+        return calculateCVC3(imkcvc3, accountNo, acctSeqNo, atc, upn, data, mkdm);
+    }
+
     private byte[] calculateIVCVC3(Key mkcvc3, byte[] data)
             throws JCEHandlerException {
         byte[] paddedData = paddingISO9797Method2(data);
@@ -644,7 +660,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @param d da to be padded
      * @return padded data
      */
-    private byte[] paddingISO9797Method2(byte[] d) {
+    protected byte[] paddingISO9797Method2(byte[] d) {
         //Padding - first byte 0x80 rest 0x00
         byte[] t = new byte[d.length - d.length%8 + 8];
         System.arraycopy(d, 0, t, 0, d.length);
@@ -661,7 +677,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return 8 byte of mac value
      * @throws JCEHandlerException
      */
-    private byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws JCEHandlerException {
+    protected byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws JCEHandlerException {
         Key kl = jceHandler.formDESKey(SMAdapter.LENGTH_DES
                             ,Arrays.copyOfRange(key.getEncoded(), 0, 8));
         Key kr = jceHandler.formDESKey(SMAdapter.LENGTH_DES
@@ -945,7 +961,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return derived 16-bytes Session Key with adjusted DES parity
      * @throws JCEHandlerException
      */
-    private Key deriveSK_VISA(Key mkac, byte[] atc) throws JCEHandlerException {
+    protected Key deriveSK_VISA(Key mkac, byte[] atc) throws JCEHandlerException {
 
         byte[] skl = new byte[8];
         System.arraycopy(atc, atc.length-2, skl, 6, 2);
@@ -974,7 +990,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return derived 16-bytes Session Key with adjusted DES parity
      * @throws JCEHandlerException
      */
-    private Key deriveCommonSK_SM(Key mksm, byte[] rand) throws JCEHandlerException {
+    protected Key deriveCommonSK_SM(Key mksm, byte[] rand) throws JCEHandlerException {
       byte[] rl = Arrays.copyOf(rand,8);
       rl[2] = (byte)0xf0;
       byte[] skl = jceHandler.encryptData(rl, mksm);
@@ -997,7 +1013,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return derived 16-bytes Session Key with adjusted DES parity.
      * @throws JCEHandlerException
      */
-    private Key deriveCommonSK_AC(Key mkac, byte[] atc) throws JCEHandlerException {
+    protected Key deriveCommonSK_AC(Key mkac, byte[] atc) throws JCEHandlerException {
 
         byte[] r = new byte[8];
         System.arraycopy(atc, atc.length-2, r, 0, 2);
@@ -1017,7 +1033,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * @return derived 16-bytes Session Key with adjusted DES parity
      * @throws JCEHandlerException
      */
-    private Key deriveSK_MK(Key mkac, byte[] atc, byte[] upn) throws JCEHandlerException {
+    protected Key deriveSK_MK(Key mkac, byte[] atc, byte[] upn) throws JCEHandlerException {
 
         byte[] r = new byte[8];
         System.arraycopy(atc, atc.length-2, r, 0, 2);
@@ -1091,6 +1107,47 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
+    protected byte[] generateApplicationCryptogramImpl(MKDMethod mkdm, SKDMethod skdm,
+            SecureDESKey imkac, String accountNo, String accntSeqNo, byte[] atc,
+            byte[] upn, byte[] txnData) throws SMException {
+        return calculateARQC(mkdm, skdm, imkac, accountNo, accntSeqNo, atc, upn, txnData);
+    }
+
+    @Override
+    protected EMVDerivedKey<SecureDESKey> deriveICCMasterKeyImpl(MKDMethod mkdm,
+            SecureDESKey imk, String pan, String psn) throws SMException {
+        if (mkdm == null)
+            mkdm = MKDMethod.OPTION_A;
+        byte[] panpsn = formatPANPSN(pan, psn, mkdm);
+        Key clearIcc = deriveICCMasterKey(decryptFromLMK(imk), panpsn);
+        SecureDESKey wrapped = encryptToLMK(imk.getKeyLength(), imk.getKeyType(), clearIcc);
+        return new EMVDerivedKey<>(wrapped, wrapped.getKeyCheckValue());
+    }
+
+    @Override
+    protected EMVDerivedKey<SecureDESKey> deriveEMVSessionKeyImpl(SKDMethod skdm,
+            SecureDESKey iccMk, byte[] atc, byte[] upn) throws SMException {
+        Key clearIcc = decryptFromLMK(iccMk);
+        Key clearSk;
+        switch (skdm) {
+            case VSDC:
+                clearSk = clearIcc;
+                break;
+            case MCHIP:
+                clearSk = deriveSK_MK(clearIcc, atc, upn);
+                break;
+            case EMV_CSKD:
+                clearSk = deriveCommonSK_AC(clearIcc, atc);
+                break;
+            default:
+                throw new SMException(
+                        "Session Key Derivation " + skdm + " not supported");
+        }
+        SecureDESKey wrapped = encryptToLMK(iccMk.getKeyLength(), iccMk.getKeyType(), clearSk);
+        return new EMVDerivedKey<>(wrapped, wrapped.getKeyCheckValue());
+    }
+
+    @Override
     public byte[] generateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accountNo, String accntSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
@@ -1118,6 +1175,38 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         }
 
         return calculateARPC(skarpc, arqc, arpcMethod, arc, propAuthData);
+    }
+
+    @Override
+    protected byte[] generateARPCImpl(SecureDESKey key, byte[] arqc,
+            ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException {
+        return calculateARPC(decryptFromLMK(key), arqc, arpcMethod, arc, propAuthData);
+    }
+
+    @Override
+    protected EMVDerivedKey<SecureDESKey> deriveSecureMessagingSessionKeyImpl(
+            MKDMethod mkdm, SKDMethod skdm, SecureDESKey imk,
+            String pan, String psn, byte[] atc, byte[] arqc) throws SMException {
+        if (mkdm == null)
+            mkdm = MKDMethod.OPTION_A;
+        byte[] panpsn = formatPANPSN(pan, psn, mkdm);
+        Key clearMk = deriveICCMasterKey(decryptFromLMK(imk), panpsn);
+        Key clearSk;
+        switch (skdm) {
+            case VSDC:
+                clearSk = deriveSK_VISA(clearMk, atc);
+                break;
+            case MCHIP:
+            case EMV_CSKD:
+                clearSk = deriveCommonSK_SM(clearMk, arqc);
+                break;
+            default:
+                throw new SMException(
+                        "Session Key Derivation " + skdm + " not supported");
+        }
+        SecureDESKey wrapped = encryptToLMK(imk.getKeyLength(), imk.getKeyType(), clearSk);
+        return new EMVDerivedKey<>(wrapped, wrapped.getKeyCheckValue());
     }
 
     @Override
@@ -1214,6 +1303,512 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
             throw new SMException("Session Key Derivation "+skdm+" not supported");
         }
         return calculateMACISO9797Alg3(smi, data);
+    }
+
+    @Override
+    protected byte[] generateSM_MACImpl(SecureDESKey sessionKey, byte[] data) throws SMException {
+        Key clearSk = decryptFromLMK(sessionKey);
+        byte[] padded = paddingISO9797Method2(data);
+        return calculateMACISO9797Alg3(clearSk, padded);
+    }
+
+    @Override
+    protected EncryptedPIN encryptSecureMessagingPINImpl(SecureDESKey sessionKey,
+            EncryptedPIN newPIN, SecureDESKey kd1, byte destinationPINBlockFormat,
+            PaddingMethod paddingMethod, EncryptedPIN currentPIN, SecureDESKey udkAc)
+            throws SMException {
+        if (paddingMethod == null)
+            paddingMethod = PaddingMethod.MCHIP;
+        Key clearSk  = decryptFromLMK(sessionKey);
+        Key clearKd1 = decryptFromLMK(kd1);
+        Key clearUdk = (udkAc == null) ? null : decryptFromLMK(udkAc);
+        return translatePINExt(currentPIN, newPIN, clearKd1, clearSk,
+                destinationPINBlockFormat, clearUdk, paddingMethod);
+    }
+
+    @Override
+    protected EMVIssuerPublicKey recoverIssuerPublicKeyImpl(
+            EMVCAPublicKey caPublicKey,
+            byte[] issuerPublicKeyCertificate,
+            byte[] issuerPublicKeyRemainder,
+            byte[] issuerPublicKeyExponent,
+            String pan) throws SMException {
+
+        if (caPublicKey == null || caPublicKey.modulus() == null || caPublicKey.exponent() == null)
+            throw new SMException("CA public key is missing modulus or exponent");
+        if (issuerPublicKeyCertificate == null)
+            throw new SMException("Issuer Public Key Certificate (EMV tag 0x90) is required");
+        if (issuerPublicKeyExponent == null || issuerPublicKeyExponent.length == 0)
+            throw new SMException("Issuer Public Key Exponent (EMV tag 0x9F32) is required");
+
+        int nca = caPublicKey.modulus().length;
+        if (issuerPublicKeyCertificate.length != nca)
+            throw new SMException("Issuer Public Key Certificate length (" + issuerPublicKeyCertificate.length
+                    + ") must equal CA modulus length (" + nca + ")");
+        if (nca < 36)
+            throw new SMException("CA modulus too small for an EMV issuer certificate (need at least 36 bytes, got " + nca + ")");
+
+        // 1. RSA recovery: cert^e mod n
+        BigInteger n = new BigInteger(1, caPublicKey.modulus());
+        BigInteger e = new BigInteger(1, caPublicKey.exponent());
+        BigInteger c = new BigInteger(1, issuerPublicKeyCertificate);
+        byte[] recovered = bigIntegerToFixedLengthBytes(c.modPow(e, n), nca);
+
+        // 2-4. Header / format / trailer
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x" + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x02,
+                "Invalid certificate format: expected 0x02 (Issuer Public Key Certificate) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[nca - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[nca - 1] & 0xff));
+
+        // 5-6. Algorithm indicators
+        byte hashInd = recovered[11];
+        byte pkInd   = recovered[12];
+        require(hashInd == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", hashInd & 0xff) + ")");
+        require(pkInd == (byte) 0x01,
+                "Unsupported public key algorithm indicator: only RSA (0x01) is currently supported (got 0x"
+                + String.format("%02X", pkInd & 0xff) + ")");
+
+        // 7. Length consistency
+        int ni        = recovered[13] & 0xff;
+        int ipkExpLen = recovered[14] & 0xff;
+        int ipkInCert = Math.min(ni, nca - 36);
+        int remainderLen = issuerPublicKeyRemainder == null ? 0 : issuerPublicKeyRemainder.length;
+        require(ipkInCert + remainderLen == ni,
+                "Issuer Public Key length mismatch: in-cert " + ipkInCert
+                + " + remainder " + remainderLen + " != declared NI " + ni);
+        require(issuerPublicKeyExponent.length == ipkExpLen,
+                "Issuer Public Key exponent length mismatch: declared " + ipkExpLen
+                + " but supplied " + issuerPublicKeyExponent.length);
+        requirePadPattern(recovered, 15 + ipkInCert, nca - 21,
+                "Issuer Public Key Certificate");
+
+        // 8. Hash validation: SHA-1(recovered[1..nca-22] || remainder || exponent)
+        byte[] hashInCert = Arrays.copyOfRange(recovered, nca - 21, nca - 1);
+        byte[] hashInput = Arrays.copyOfRange(recovered, 1, nca - 21);
+        if (remainderLen > 0)
+            hashInput = ISOUtil.concat(hashInput, issuerPublicKeyRemainder);
+        hashInput = ISOUtil.concat(hashInput, issuerPublicKeyExponent);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "Issuer Public Key Certificate hash validation failed");
+
+        // 9. Expiration date (MMYY BCD)
+        byte[] expDate = Arrays.copyOfRange(recovered, 6, 8);
+        requireExpirationFuture(expDate);
+
+        // 10. Issuer identifier check (skipped when pan is null/empty)
+        byte[] issuerId = Arrays.copyOfRange(recovered, 2, 6);
+        if (pan != null && !pan.isEmpty())
+            requireIssuerIdMatches(issuerId, pan);
+
+        // Reconstruct full issuer public key modulus (leftmost || remainder)
+        byte[] modulus;
+        if (remainderLen == 0) {
+            modulus = Arrays.copyOfRange(recovered, 15, 15 + ni);
+        } else {
+            modulus = ISOUtil.concat(
+                    Arrays.copyOfRange(recovered, 15, 15 + ipkInCert),
+                    issuerPublicKeyRemainder);
+        }
+
+        return new EMVIssuerPublicKey(
+                issuerId, expDate,
+                Arrays.copyOfRange(recovered, 8, 11),
+                modulus, issuerPublicKeyExponent, hashInd, pkInd);
+    }
+
+    private static byte[] bigIntegerToFixedLengthBytes(BigInteger value, int length) {
+        byte[] raw = value.toByteArray();
+        if (raw.length == length) return raw;
+        byte[] out = new byte[length];
+        if (raw.length > length) {
+            // BigInteger.toByteArray() prepends a 0x00 sign byte for positive
+            // numbers whose high bit is set; strip leading bytes.
+            System.arraycopy(raw, raw.length - length, out, 0, length);
+        } else {
+            // Left-pad with zeros to reach the declared length.
+            System.arraycopy(raw, 0, out, length - raw.length, raw.length);
+        }
+        return out;
+    }
+
+    private static void require(boolean condition, String msg) throws SMException {
+        if (!condition) throw new SMException(msg);
+    }
+
+    private static void requirePadPattern(byte[] data, int from, int to, String label)
+            throws SMException {
+        for (int i = from; i < to; i++) {
+            if (data[i] != (byte) 0xBB)
+                throw new SMException("Invalid " + label + " pad pattern at offset " + i
+                        + ": expected 0xBB but got 0x"
+                        + String.format("%02X", data[i] & 0xff));
+        }
+    }
+
+    private static void requireExpirationFuture(byte[] mmyy) throws SMException {
+        if (mmyy == null || mmyy.length != 2)
+            throw new SMException("Expiration date must be 2 bytes (MMYY BCD)");
+        String hex = ISOUtil.hexString(mmyy);
+        int month, year;
+        try {
+            month = Integer.parseInt(hex.substring(0, 2));
+            year  = Integer.parseInt(hex.substring(2, 4));
+        } catch (NumberFormatException e) {
+            throw new SMException("Expiration date is not valid BCD: " + hex);
+        }
+        if (month < 1 || month > 12)
+            throw new SMException("Invalid expiration month in certificate: " + month + " (date " + hex + ")");
+        LocalDate now = LocalDate.now();
+        int nowYY = now.getYear() % 100;
+        int nowMM = now.getMonthValue();
+        // Compare YY then MM. Assumes 2-digit year is in the current century;
+        // EMV CA certs in practice are issued post-2010 so this holds for the
+        // foreseeable future.
+        int certKey = year * 100 + month;
+        int nowKey  = nowYY * 100 + nowMM;
+        if (certKey < nowKey)
+            throw new SMException("Issuer Public Key Certificate has expired (MM/YY: "
+                    + String.format("%02d", month) + "/" + String.format("%02d", year) + ")");
+    }
+
+    private static void requireIssuerIdMatches(byte[] issuerId, String pan) throws SMException {
+        if (issuerId == null || issuerId.length != 4)
+            throw new SMException("Issuer Identifier must be 4 bytes");
+        // 4 bytes = 8 hex nibbles; strip trailing F-padding to recover the BIN digits.
+        String idHex = ISOUtil.hexString(issuerId).toUpperCase();
+        String idDigits = idHex.replaceFirst("F+$", "");
+        if (!pan.startsWith(idDigits))
+            throw new SMException("Issuer Identifier in certificate ("
+                    + idHex + ") does not match PAN prefix");
+    }
+
+    @Override
+    protected EMVICCPublicKey recoverICCPublicKeyImpl(
+            EMVIssuerPublicKey issuer,
+            byte[] iccPublicKeyCertificate,
+            byte[] iccPublicKeyRemainder,
+            byte[] iccPublicKeyExponent,
+            byte[] staticApplicationData,
+            String pan) throws SMException {
+
+        if (issuer == null || issuer.modulus() == null || issuer.exponent() == null)
+            throw new SMException("Issuer Public Key is missing modulus or exponent");
+        if (iccPublicKeyCertificate == null)
+            throw new SMException("ICC Public Key Certificate (EMV tag 0x9F46) is required");
+        if (iccPublicKeyExponent == null || iccPublicKeyExponent.length == 0)
+            throw new SMException("ICC Public Key Exponent (EMV tag 0x9F47) is required");
+
+        int ni = issuer.modulus().length;
+        if (iccPublicKeyCertificate.length != ni)
+            throw new SMException("ICC Public Key Certificate length (" + iccPublicKeyCertificate.length
+                    + ") must equal Issuer modulus length (" + ni + ")");
+        if (ni < 42)
+            throw new SMException("Issuer modulus too small for an EMV ICC certificate (need at least 42 bytes, got " + ni + ")");
+
+        // 1. RSA recovery under the issuer public key
+        BigInteger n = new BigInteger(1, issuer.modulus());
+        BigInteger e = new BigInteger(1, issuer.exponent());
+        BigInteger c = new BigInteger(1, iccPublicKeyCertificate);
+        byte[] recovered = bigIntegerToFixedLengthBytes(c.modPow(e, n), ni);
+
+        // 2-4. Header / format / trailer
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x"
+                + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x04,
+                "Invalid certificate format: expected 0x04 (ICC Public Key Certificate) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[ni - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[ni - 1] & 0xff));
+
+        // 5-6. Algorithm indicators (note offsets differ from PR 9: PAN is 10 bytes here)
+        byte hashInd = recovered[17];
+        byte pkInd   = recovered[18];
+        require(hashInd == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", hashInd & 0xff) + ")");
+        require(pkInd == (byte) 0x01,
+                "Unsupported public key algorithm indicator: only RSA (0x01) is currently supported (got 0x"
+                + String.format("%02X", pkInd & 0xff) + ")");
+
+        // 7. Length consistency
+        int nic       = recovered[19] & 0xff;
+        int iccExpLen = recovered[20] & 0xff;
+        int iccInCert = Math.min(nic, ni - 42);
+        int remainderLen = iccPublicKeyRemainder == null ? 0 : iccPublicKeyRemainder.length;
+        require(iccInCert + remainderLen == nic,
+                "ICC Public Key length mismatch: in-cert " + iccInCert
+                + " + remainder " + remainderLen + " != declared NIC " + nic);
+        require(iccPublicKeyExponent.length == iccExpLen,
+                "ICC Public Key exponent length mismatch: declared " + iccExpLen
+                + " but supplied " + iccPublicKeyExponent.length);
+        requirePadPattern(recovered, 21 + iccInCert, ni - 21,
+                "ICC Public Key Certificate");
+
+        // 8. Hash validation — input includes Static Application Data
+        byte[] hashInCert = Arrays.copyOfRange(recovered, ni - 21, ni - 1);
+        byte[] hashInput = Arrays.copyOfRange(recovered, 1, ni - 21);
+        if (remainderLen > 0)
+            hashInput = ISOUtil.concat(hashInput, iccPublicKeyRemainder);
+        hashInput = ISOUtil.concat(hashInput, iccPublicKeyExponent);
+        if (staticApplicationData != null && staticApplicationData.length > 0)
+            hashInput = ISOUtil.concat(hashInput, staticApplicationData);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "ICC Public Key Certificate hash validation failed");
+
+        // 9. Expiration date
+        byte[] expDate = Arrays.copyOfRange(recovered, 12, 14);
+        requireExpirationFuture(expDate);
+
+        // 10. Application PAN check (10 BCD bytes, F-padded)
+        byte[] certPan = Arrays.copyOfRange(recovered, 2, 12);
+        if (pan != null && !pan.isEmpty())
+            requirePanMatches(certPan, pan);
+
+        // Reconstruct full ICC public key modulus
+        byte[] modulus;
+        if (remainderLen == 0) {
+            modulus = Arrays.copyOfRange(recovered, 21, 21 + nic);
+        } else {
+            modulus = ISOUtil.concat(
+                    Arrays.copyOfRange(recovered, 21, 21 + iccInCert),
+                    iccPublicKeyRemainder);
+        }
+
+        return new EMVICCPublicKey(
+                certPan, expDate,
+                Arrays.copyOfRange(recovered, 14, 17),
+                modulus, iccPublicKeyExponent, hashInd, pkInd);
+    }
+
+    private static void requirePanMatches(byte[] certPan, String pan) throws SMException {
+        if (certPan == null || certPan.length != 10)
+            throw new SMException("Application PAN in ICC certificate must be 10 bytes");
+        // 10 bytes = 20 nibbles; strip trailing F-padding to recover the digit string.
+        String certHex = ISOUtil.hexString(certPan).toUpperCase();
+        String certDigits = certHex.replaceFirst("F+$", "");
+        if (!pan.equals(certDigits))
+            throw new SMException("Application PAN in ICC certificate ("
+                    + certDigits + ") does not match supplied PAN (" + pan + ")");
+    }
+
+    @Override
+    protected EMVCDAResult verifyCDAImpl(EMVICCPublicKey icc,
+            byte[] sdad, byte[] un, byte[] ac, byte[] transactionData) throws SMException {
+
+        if (icc == null || icc.modulus() == null || icc.exponent() == null)
+            throw new SMException("ICC Public Key is missing modulus or exponent");
+        if (sdad == null)
+            throw new SMException("Signed Dynamic Application Data (EMV tag 0x9F4B) is required");
+        if (un == null || un.length != 4)
+            throw new SMException("Unpredictable Number must be 4 bytes");
+        if (ac == null || ac.length != 8)
+            throw new SMException("Application Cryptogram must be 8 bytes");
+
+        int nic = icc.modulus().length;
+        if (sdad.length != nic)
+            throw new SMException("SDAD length (" + sdad.length
+                    + ") must equal ICC modulus length (" + nic + ")");
+        if (nic < 26)
+            throw new SMException("ICC modulus too small for CDA SDAD (need at least 26 bytes, got " + nic + ")");
+
+        // 1. RSA recovery
+        BigInteger n = new BigInteger(1, icc.modulus());
+        BigInteger e = new BigInteger(1, icc.exponent());
+        byte[] recovered = bigIntegerToFixedLengthBytes(
+                new BigInteger(1, sdad).modPow(e, n), nic);
+
+        // 2-5. Header / format / trailer / hash algo
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x"
+                + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x05,
+                "Invalid signed data format: expected 0x05 (Signed Dynamic Application Data) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[nic - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[nic - 1] & 0xff));
+        require(recovered[2] == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", recovered[2] & 0xff) + ")");
+
+        // 6-7. CDA structural sanity
+        int ldd = recovered[3] & 0xff;
+        int ldn = recovered[4] & 0xff;
+        require(ldn >= 2 && ldn <= 8,
+                "Invalid ICC Dynamic Number Length: " + ldn + " (must be 2..8 per EMV §6.5.2)");
+        require(ldd == ldn + 30,
+                "Invalid CDA ICC Dynamic Data Length: " + ldd
+                + " (must be LDN + 30 = " + (ldn + 30) + " per EMV §6.6.2)");
+
+        // 8. CDA dynamic data must fit before the 20-byte hash and trailer
+        require(4 + ldd <= nic - 21,
+                "CDA dynamic data does not fit in cert: 4 + " + ldd + " > " + (nic - 21));
+
+        // 9. Pad pattern: bytes (4 + ldd) .. (nic - 21) must all be 0xBB
+        for (int i = 4 + ldd; i < nic - 21; i++) {
+            if (recovered[i] != (byte) 0xBB)
+                throw new SMException("Invalid CDA pad pattern at offset " + i
+                        + ": expected 0xBB but got 0x" + String.format("%02X", recovered[i] & 0xff));
+        }
+
+        // 10. Hash validation: SHA-1(recovered[1..nic-21) || UN)
+        byte[] hashInCert = Arrays.copyOfRange(recovered, nic - 21, nic - 1);
+        byte[] hashInput  = Arrays.copyOfRange(recovered, 1, nic - 21);
+        hashInput = ISOUtil.concat(hashInput, un);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "CDA SDAD hash validation failed");
+
+        // 11. AC binding: SDAD-embedded AC must equal supplied AC
+        byte cid = recovered[5 + ldn];
+        byte[] acInSDAD = Arrays.copyOfRange(recovered, 5 + ldn + 1, 5 + ldn + 9);
+        require(Arrays.equals(acInSDAD, ac),
+                "CDA Application Cryptogram binding failed: SDAD-embedded AC does not match supplied AC");
+
+        // 12. Transaction Data Hash binding
+        byte[] txnHashInSDAD = Arrays.copyOfRange(recovered, 5 + ldn + 9, 5 + ldn + 29);
+        byte[] computedTxnHash = SHA1_MESSAGE_DIGEST.digest(
+                transactionData == null ? new byte[0] : transactionData);
+        require(Arrays.equals(txnHashInSDAD, computedTxnHash),
+                "CDA Transaction Data Hash binding failed");
+
+        byte[] iccDyn = Arrays.copyOfRange(recovered, 5, 5 + ldn);
+        return new EMVCDAResult(iccDyn, cid);
+    }
+
+    @Override
+    protected byte[] verifyDDAImpl(EMVICCPublicKey icc,
+            byte[] sdad, byte[] ddolData) throws SMException {
+
+        if (icc == null || icc.modulus() == null || icc.exponent() == null)
+            throw new SMException("ICC Public Key is missing modulus or exponent");
+        if (sdad == null)
+            throw new SMException("Signed Dynamic Application Data (EMV tag 0x9F4B) is required");
+
+        int nic = icc.modulus().length;
+        if (sdad.length != nic)
+            throw new SMException("SDAD length (" + sdad.length
+                    + ") must equal ICC modulus length (" + nic + ")");
+        if (nic < 26)
+            throw new SMException("ICC modulus too small for SDAD (need at least 26 bytes, got " + nic + ")");
+
+        // 1. RSA recovery
+        BigInteger n = new BigInteger(1, icc.modulus());
+        BigInteger e = new BigInteger(1, icc.exponent());
+        byte[] recovered = bigIntegerToFixedLengthBytes(
+                new BigInteger(1, sdad).modPow(e, n), nic);
+
+        // 2-5. Header / format / trailer / hash algo
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x"
+                + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x05,
+                "Invalid signed data format: expected 0x05 (Signed Dynamic Application Data) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[nic - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[nic - 1] & 0xff));
+        require(recovered[2] == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", recovered[2] & 0xff) + ")");
+
+        // 6. ICC Dynamic Data Length sanity
+        int ldd = recovered[3] & 0xff;
+        require(ldd >= 1 && ldd <= nic - 26,
+                "Invalid ICC Dynamic Data Length: " + ldd + " (must fit inside " + (nic - 25) + " bytes)");
+
+        // 7. ICC Dynamic Number Length sanity (EMV §6.5.2: 2..8)
+        int ldn = recovered[4] & 0xff;
+        require(ldn >= 2 && ldn <= 8,
+                "Invalid ICC Dynamic Number Length: " + ldn + " (must be 2..8 per EMV 4.4 Book 2 §6.5.2)");
+        require(ldd == ldn + 1,
+                "Invalid DDA ICC Dynamic Data Length: " + ldd
+                + " (must be LDN + 1 = " + (ldn + 1) + " per EMV 4.4 Book 2 §6.5.2)");
+
+        // 8. Pad pattern: bytes (4 + ldd) .. (nic - 21) must all be 0xBB
+        for (int i = 4 + ldd; i < nic - 21; i++) {
+            if (recovered[i] != (byte) 0xBB)
+                throw new SMException("Invalid SDAD pad pattern at offset " + i
+                        + ": expected 0xBB but got 0x" + String.format("%02X", recovered[i] & 0xff));
+        }
+
+        // 9. Hash validation: SHA-1(recovered[1..nic-21) || DDOL)
+        byte[] hashInCert = Arrays.copyOfRange(recovered, nic - 21, nic - 1);
+        byte[] hashInput  = Arrays.copyOfRange(recovered, 1, nic - 21);
+        if (ddolData != null && ddolData.length > 0)
+            hashInput = ISOUtil.concat(hashInput, ddolData);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "SDAD hash validation failed");
+
+        // Return ICC Dynamic Number = recovered[5 .. 5+ldn)
+        return Arrays.copyOfRange(recovered, 5, 5 + ldn);
+    }
+
+    @Override
+    protected byte[] verifySDAImpl(EMVIssuerPublicKey issuer,
+            byte[] ssad, byte[] sad) throws SMException {
+
+        if (issuer == null || issuer.modulus() == null || issuer.exponent() == null)
+            throw new SMException("Issuer Public Key is missing modulus or exponent");
+        if (ssad == null)
+            throw new SMException("Signed Static Application Data (EMV tag 0x93) is required");
+
+        int ni = issuer.modulus().length;
+        if (ssad.length != ni)
+            throw new SMException("SSAD length (" + ssad.length
+                    + ") must equal Issuer modulus length (" + ni + ")");
+        if (ni < 26)
+            throw new SMException("Issuer modulus too small for SSAD (need at least 26 bytes, got " + ni + ")");
+
+        // 1. RSA recovery
+        BigInteger n = new BigInteger(1, issuer.modulus());
+        BigInteger e = new BigInteger(1, issuer.exponent());
+        byte[] recovered = bigIntegerToFixedLengthBytes(
+                new BigInteger(1, ssad).modPow(e, n), ni);
+
+        // 2-5. Header / format / trailer / hash algo
+        require(recovered[0] == (byte) 0x6A,
+                "Invalid recovered data header: expected 0x6A but got 0x"
+                + String.format("%02X", recovered[0] & 0xff));
+        require(recovered[1] == (byte) 0x03,
+                "Invalid signed data format: expected 0x03 (Signed Static Application Data) but got 0x"
+                + String.format("%02X", recovered[1] & 0xff));
+        require(recovered[ni - 1] == (byte) 0xBC,
+                "Invalid recovered data trailer: expected 0xBC but got 0x"
+                + String.format("%02X", recovered[ni - 1] & 0xff));
+        require(recovered[2] == (byte) 0x01,
+                "Unsupported hash algorithm indicator: only SHA-1 (0x01) is currently supported (got 0x"
+                + String.format("%02X", recovered[2] & 0xff) + ")");
+
+        // 6. Pad pattern check: bytes 5..ni-21 must all be 0xBB
+        for (int i = 5; i < ni - 21; i++) {
+            if (recovered[i] != (byte) 0xBB)
+                throw new SMException("Invalid SSAD pad pattern at offset " + i
+                        + ": expected 0xBB but got 0x" + String.format("%02X", recovered[i] & 0xff));
+        }
+
+        // 7. Hash validation
+        byte[] hashInCert = Arrays.copyOfRange(recovered, ni - 21, ni - 1);
+        byte[] hashInput  = Arrays.copyOfRange(recovered, 1, ni - 21);
+        if (sad != null && sad.length > 0)
+            hashInput = ISOUtil.concat(hashInput, sad);
+        byte[] computedHash = SHA1_MESSAGE_DIGEST.digest(hashInput);
+        require(Arrays.equals(hashInCert, computedHash),
+                "SSAD hash validation failed");
+
+        // Return the 2-byte Data Authentication Code
+        return Arrays.copyOfRange(recovered, 3, 5);
     }
 
     @Override

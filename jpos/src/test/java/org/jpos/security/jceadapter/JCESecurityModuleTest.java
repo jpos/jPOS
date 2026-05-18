@@ -35,6 +35,11 @@ import org.jpos.core.SubConfiguration;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.ARPCMethod;
 import org.jpos.security.CipherMode;
+import org.jpos.security.EMVCAPublicKey;
+import org.jpos.security.EMVCDAResult;
+import org.jpos.security.EMVDerivedKey;
+import org.jpos.security.EMVICCPublicKey;
+import org.jpos.security.EMVIssuerPublicKey;
 import org.jpos.security.EncryptedPIN;
 import org.jpos.security.KeyScheme;
 import org.jpos.security.MKDMethod;
@@ -1060,6 +1065,126 @@ public class JCESecurityModuleTest {
     }
 
     @Test
+    public void testGeneratedCVV_OptionA_KnownVector() throws Throwable {
+        String accountNo = "1234567890123456";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        String result = jcesecmod.generatedCVV(accountNo, imkac, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A);
+        assertEquals("422", result);
+    }
+
+    @Test
+    public void testGeneratedCVV_OptionA_RoundTrip() throws Throwable {
+        String accountNo = "1234567890123456";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        String generated = jcesecmod.generatedCVV(accountNo, imkac, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A);
+        assertTrue(jcesecmod.verifydCVV(accountNo, imkac, generated, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A));
+    }
+
+    @Test
+    public void testGeneratedCVV_OptionB_KnownVector() throws Throwable {
+        String accountNo = "123456789012";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        String result = jcesecmod.generatedCVV(accountNo, imkac, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_B);
+        assertEquals("824", result);
+    }
+
+    @Test
+    public void testGeneratedCVV_OptionB_RoundTrip() throws Throwable {
+        String accountNo = "1234567890123456789";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        String generated = jcesecmod.generatedCVV(accountNo, imkac, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_B);
+        assertTrue(jcesecmod.verifydCVV(accountNo, imkac, generated, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_B));
+    }
+
+    @Test
+    public void testGeneratedCVV_RejectsEmptyAccountNo() throws Throwable {
+        String accountNo = "";
+        String expDate = "1310";
+        String serviceCode = "226";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        assertThrows(IllegalArgumentException.class, () -> {
+            jcesecmod.generatedCVV(accountNo, imkac, expDate
+              ,serviceCode, atc, MKDMethod.OPTION_A);
+        });
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionA_KnownVector() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("1234567890123456D12012061000110000000FFFFFFFFFFF");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String result = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_A);
+        assertEquals("45423", result);
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionA_IVCVC3() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] ivcvc3 = ISOUtil.hex2byte("CD76");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String result = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, ivcvc3, MKDMethod.OPTION_A);
+        assertEquals("39464", result);
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionA_RoundTrip() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("1234567890123456D12012061000110000000F");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String generated = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_A);
+        assertTrue(jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_A, generated));
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionB_KnownVector() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("1234567890123456D12012061000110000000F");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String result = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_B);
+        assertEquals("03518", result);
+    }
+
+    @Test
+    public void testGenerateCVC3_OptionB_RoundTrip() throws Throwable {
+        String accountNo = "123456789012345";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("123456789012345D12012061000110000000");
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        String generated = jcesecmod.generateCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_B);
+        assertTrue(jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_B, generated));
+    }
+
+    @Test
     public void testGenerateARPCImpl_VSDC_M1() throws Throwable {
         byte[] arqc   = ISOUtil.hex2byte("26C8A1042D1CAF3E");
         byte[] arc    = ISOUtil.hex2byte("3030");
@@ -1193,6 +1318,88 @@ public class JCESecurityModuleTest {
                         ,etd.getATC(), null, etd.getDataPad80()
         );
         assertTrue(result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_VSDC_P00() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_VSDC_P80() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("2263CD868F3E0234");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataPad80()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_MCHIP_P00() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("9FFD1D52AE0EC0F3");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), etd.getUPN(), etd.getDataNoPad()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_MCHIP_P80() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), etd.getUPN(), etd.getDataPad80()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_CSKD_P00() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("36DBEE15F36B1E7F");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_CSKD_P80() throws Throwable {
+        byte[] expected = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] result = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataPad80()
+        );
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_VSDC_P00_RoundTrip() throws Throwable {
+        byte[] generated = jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        );
+        assertTrue(jcesecmod.verifyARQC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, generated
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        ));
+    }
+
+    @Test
+    public void testGenerateApplicationCryptogram_RejectsUnsupportedSKD() throws Throwable {
+        assertThrows(SMException.class, () -> {
+            jcesecmod.generateApplicationCryptogram(MKDMethod.OPTION_A, SKDMethod.AEPIS_V40
+                            ,imkac, accountNoA, accountNoA_CSN
+                            ,etd.getATC(), null, etd.getDataNoPad()
+            );
+        });
     }
 
     @Test //OK
@@ -1831,6 +2038,1589 @@ public class JCESecurityModuleTest {
         module.generateKey((short) 128, "ZPK");
 
         verify(listener, times(1)).log(any(LogEvent.class));
+    }
+
+    @Test
+    public void testCalculateKeyCheckValue_3DES_StandardAlgorithm() throws Throwable {
+        byte[] clearKey = ISOUtil.hex2byte("0123456789ABCDEFFEDCBA9876543210");
+        java.security.Key key = jcesecmod.jceHandler
+                .formDESKey(SMAdapter.LENGTH_DES3_2KEY, clearKey);
+
+        byte[] kcv = jcesecmod.calculateKeyCheckValue(key);
+
+        assertEquals(3, kcv.length);
+
+        byte[] expected = java.util.Arrays.copyOfRange(
+                jcesecmod.jceHandler.encryptData(new byte[8], key), 0, 3);
+        assertArrayEquals(expected, kcv);
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_OptionA_MatchesInternalDerivation() throws Throwable {
+        // accountNoA = "1234567890123456" (16 digits), psn = "00"
+        // formatPANPSNOptionA: preparePANPSN("1234567890123456", "00") = hex2byte("123456789012345600")
+        // = 9 bytes, then last 8 bytes = "3456789012345600"
+        byte[] expectedPanpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearIMK = jcesecmod.decryptFromLMK(imkac);
+        java.security.Key expectedClearIcc = jcesecmod.deriveICCMasterKey(clearIMK, expectedPanpsn);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearIcc);
+
+        EMVDerivedKey<SecureDESKey> result = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        java.security.Key actualClearIcc = jcesecmod.decryptFromLMK(result.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearIcc);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_PreservesIMKMetadata() throws Throwable {
+        EMVDerivedKey<SecureDESKey> result = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertEquals(imkac.getKeyType(), result.key().getKeyType());
+        assertEquals(imkac.getKeyLength(), result.key().getKeyLength());
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_KCVIsThreeBytes() throws Throwable {
+        EMVDerivedKey<SecureDESKey> result = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertNotNull(result.kcv());
+        assertEquals(3, result.kcv().length);
+        assertArrayEquals(result.kcv(), result.key().getKeyCheckValue());
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> a = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> b = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertArrayEquals(a.kcv(), b.kcv());
+        assertArrayEquals(a.key().getKeyBytes(), b.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_NullMKDMDefaultsToOptionA() throws Throwable {
+        EMVDerivedKey<SecureDESKey> withNull = jcesecmod.deriveICCMasterKey(
+                null, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> withOptionA = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertArrayEquals(withNull.kcv(), withOptionA.kcv());
+        assertArrayEquals(withNull.key().getKeyBytes(), withOptionA.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_OptionB_LongPAN_StructurallyValid() throws Throwable {
+        String longPan = "1234567890123456789"; // 19 digits — triggers OPTION_B SHA-1 path
+        EMVDerivedKey<SecureDESKey> result = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_B, imkac, longPan, "00");
+        assertNotNull(result.key());
+        assertEquals(SMAdapter.LENGTH_DES3_2KEY, result.key().getKeyLength());
+        assertEquals(3, result.kcv().length);
+
+        // OPTION_B with a long PAN should produce a different ICC MK than OPTION_A
+        // with the (short) accountNoA — basic sanity that the path actually ran.
+        EMVDerivedKey<SecureDESKey> optionA = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertFalse(java.util.Arrays.equals(result.kcv(), optionA.kcv()));
+    }
+
+    @Test
+    public void testDeriveICCMasterKey_NullPAN_Throws() throws Throwable {
+        assertThrows(Exception.class, () -> {
+            jcesecmod.deriveICCMasterKey(MKDMethod.OPTION_A, imkac, null, accountNoA_CSN);
+        });
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_VSDC_ReturnsICCMasterKeyUnchanged() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.VSDC, iccMk.key(), etd.getATC(), null);
+        // VSDC has no session-key derivation; session key == ICC MK
+        assertArrayEquals(iccMk.kcv(), session.kcv());
+        assertArrayEquals(iccMk.key().getKeyBytes(), session.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_EMV_CSKD_MatchesInternalDerivation() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+
+        // Independent computation via the existing internal path
+        java.security.Key clearIcc = jcesecmod.decryptFromLMK(iccMk.key());
+        java.security.Key expectedClearSk = jcesecmod.deriveCommonSK_AC(clearIcc, etd.getATC());
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_MCHIP_MatchesInternalDerivation() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+
+        // Independent computation via the existing internal path
+        java.security.Key clearIcc = jcesecmod.decryptFromLMK(iccMk.key());
+        java.security.Key expectedClearSk = jcesecmod.deriveSK_MK(
+                clearIcc, etd.getATC(), etd.getUPN());
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.MCHIP, iccMk.key(), etd.getATC(), etd.getUPN());
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> a = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        EMVDerivedKey<SecureDESKey> b = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        assertArrayEquals(a.kcv(), b.kcv());
+        assertArrayEquals(a.key().getKeyBytes(), b.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_PreservesICCKeyTypeAndLength() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        assertEquals(iccMk.key().getKeyType(), session.key().getKeyType());
+        assertEquals(iccMk.key().getKeyLength(), session.key().getKeyLength());
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_KCVIsThreeBytes() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.MCHIP, iccMk.key(), etd.getATC(), etd.getUPN());
+        assertNotNull(session.kcv());
+        assertEquals(3, session.kcv().length);
+        assertArrayEquals(session.kcv(), session.key().getKeyCheckValue());
+    }
+
+    @Test
+    public void testDeriveEMVSessionKey_RejectsUnsupportedSKD() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        assertThrows(SMException.class, () -> {
+            jcesecmod.deriveEMVSessionKey(
+                    SKDMethod.AEPIS_V40, iccMk.key(), etd.getATC(), null);
+        });
+    }
+
+    @Test
+    public void testGenerateARPCDirect_VSDC_M1() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        byte[] arqc = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] arc  = ISOUtil.hex2byte("3030");
+        byte[] expectedArpc = ISOUtil.hex2byte("98DE7C7B3D80A831");
+        // VSDC: ARPC computed with the ICC MK directly (no session derivation)
+        byte[] result = jcesecmod.generateARPC(iccMk.key(), arqc,
+                ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(expectedArpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_MCHIP_M1() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        byte[] arqc = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] arc  = ISOUtil.hex2byte("0012");
+        byte[] expectedArpc = ISOUtil.hex2byte("5B5B712F9A644774");
+        // MCHIP: ARPC computed with the ICC MK directly (no ARPC-session derivation)
+        byte[] result = jcesecmod.generateARPC(iccMk.key(), arqc,
+                ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(expectedArpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_CSKD_M1() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        byte[] arqc = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] arc  = ISOUtil.hex2byte("0012");
+        byte[] expectedArpc = ISOUtil.hex2byte("01BAE8DE6A0DE9E0");
+        byte[] result = jcesecmod.generateARPC(session.key(), arqc,
+                ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(expectedArpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_CSKD_M2() throws Throwable {
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveEMVSessionKey(
+                SKDMethod.EMV_CSKD, iccMk.key(), etd.getATC(), null);
+        byte[] arqc = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] csu  = ISOUtil.hex2byte("00120000");
+        byte[] expectedArpc = ISOUtil.hex2byte("B4C698B6");
+        byte[] result = jcesecmod.generateARPC(session.key(), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(expectedArpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_VSDC_M2_Succeeds_NoConstraint() throws Throwable {
+        // The master-key-based generateARPC rejects VSDC + METHOD_2 via
+        // constraintARPCM (see testGenerateARPCImpl_VSDC_M2). The direct
+        // overload deliberately drops that constraint — the math runs and
+        // returns a 4-byte ARPC. This test pins that behaviour and verifies
+        // the result is self-consistent with calculateARPC on the same key.
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        byte[] arqc = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] csu  = ISOUtil.hex2byte("00120000");
+        byte[] result = jcesecmod.generateARPC(iccMk.key(), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertEquals(4, result.length);
+        byte[] expected = jcesecmod.calculateARPC(
+                jcesecmod.decryptFromLMK(iccMk.key()), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testGenerateARPCDirect_MCHIP_M2_Succeeds_NoConstraint() throws Throwable {
+        // MCHIP + METHOD_2 also rejected by the master-key path; allowed
+        // here. Self-consistency check.
+        EMVDerivedKey<SecureDESKey> iccMk = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        byte[] arqc = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] csu  = ISOUtil.hex2byte("00120000");
+        byte[] result = jcesecmod.generateARPC(iccMk.key(), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertEquals(4, result.length);
+        byte[] expected = jcesecmod.calculateARPC(
+                jcesecmod.decryptFromLMK(iccMk.key()), arqc,
+                ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_VSDC_SMI_MatchesInternalDerivation() throws Throwable {
+        // OPTION_A panpsn for accountNoA + "00" = last 8 bytes of hex("123456789012345600")
+        byte[] panpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearImk  = jcesecmod.decryptFromLMK(imksmi);
+        java.security.Key clearMksmi = jcesecmod.deriveICCMasterKey(clearImk, panpsn);
+        java.security.Key expectedClearSk = jcesecmod.deriveSK_VISA(clearMksmi, atc01);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmi,
+                accountNoA, accountNoA_CSN, atc01, null);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_MCHIP_SMI_MatchesInternalDerivation() throws Throwable {
+        byte[] panpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearImk  = jcesecmod.decryptFromLMK(imksmi);
+        java.security.Key clearMksmi = jcesecmod.deriveICCMasterKey(clearImk, panpsn);
+        java.security.Key expectedClearSk = jcesecmod.deriveCommonSK_SM(clearMksmi, arqc01);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_CSKD_SMI_MatchesInternalDerivation() throws Throwable {
+        // MCHIP and EMV_CSKD share the same SM derivation algorithm (deriveCommonSK_SM)
+        byte[] panpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearImk  = jcesecmod.decryptFromLMK(imksmi);
+        java.security.Key clearMksmi = jcesecmod.deriveICCMasterKey(clearImk, panpsn);
+        java.security.Key expectedClearSk = jcesecmod.deriveCommonSK_SM(clearMksmi, arqc01);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.EMV_CSKD, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_VSDC_SMC_MatchesInternalDerivation() throws Throwable {
+        // Same algorithm as SMI, but starting from IMK-SMC; result inherits SMC keyType.
+        byte[] panpsn = ISOUtil.hex2byte("3456789012345600");
+        java.security.Key clearImk  = jcesecmod.decryptFromLMK(imksmc);
+        java.security.Key clearMksmc = jcesecmod.deriveICCMasterKey(clearImk, panpsn);
+        java.security.Key expectedClearSk = jcesecmod.deriveSK_VISA(clearMksmc, atc01);
+        byte[] expectedBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, expectedClearSk);
+
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmc,
+                accountNoA, accountNoA_CSN, atc01, null);
+        java.security.Key actualClearSk = jcesecmod.decryptFromLMK(session.key());
+        byte[] actualBytes = jcesecmod.jceHandler
+                .extractDESKeyMaterial(SMAdapter.LENGTH_DES3_2KEY, actualClearSk);
+
+        assertArrayEquals(expectedBytes, actualBytes);
+        // Family carries through: SMC IMK -> SMC session key
+        assertEquals(imksmc.getKeyType(), session.key().getKeyType());
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> a = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        EMVDerivedKey<SecureDESKey> b = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        assertArrayEquals(a.kcv(), b.kcv());
+        assertArrayEquals(a.key().getKeyBytes(), b.key().getKeyBytes());
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_PreservesIMKMetadata() throws Throwable {
+        EMVDerivedKey<SecureDESKey> session = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        assertEquals(imksmi.getKeyType(), session.key().getKeyType());
+        assertEquals(imksmi.getKeyLength(), session.key().getKeyLength());
+        assertEquals(3, session.kcv().length);
+    }
+
+    @Test
+    public void testDeriveSecureMessagingSessionKey_RejectsUnsupportedSKD() throws Throwable {
+        assertThrows(SMException.class, () -> {
+            jcesecmod.deriveSecureMessagingSessionKey(
+                    MKDMethod.OPTION_A, SKDMethod.AEPIS_V40, imksmi,
+                    accountNoA, accountNoA_CSN, atc01, arqc01);
+        });
+    }
+
+    @Test
+    public void testGenerateSM_MACDirect_MCHIP_LongData() throws Throwable {
+        // Derive SK-SMI via PR 7 with MCHIP + arqc01
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        byte[] data = ISOUtil.hex2byte("1122334455667788");
+        byte[] apdu = ISOUtil.concat(apdu01, atc01);
+        apdu = ISOUtil.concat(apdu, arqc01);
+        apdu = ISOUtil.concat(apdu, data);
+
+        byte[] mac = jcesecmod.generateSM_MAC(skSmi.key(), apdu);
+        assertArrayEquals(ISOUtil.hex2byte("217CF53EA0E7C327"), mac);
+    }
+
+    @Test
+    public void testGenerateSM_MACDirect_MCHIP_ShortData() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        byte[] data = ISOUtil.hex2byte("11");
+        byte[] apdu = ISOUtil.concat(apdu01, atc01);
+        apdu = ISOUtil.concat(apdu, arqc01);
+        apdu = ISOUtil.concat(apdu, data);
+
+        byte[] mac = jcesecmod.generateSM_MAC(skSmi.key(), apdu);
+        assertArrayEquals(ISOUtil.hex2byte("5E14A5A5C4B98C0C"), mac);
+    }
+
+    @Test
+    public void testGenerateSM_MACDirect_VSDC_LongData() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmi,
+                accountNoA, accountNoA_CSN, atc01, null);
+
+        byte[] data = ISOUtil.hex2byte("1122334455667788");
+        byte[] apdu = ISOUtil.concat(apdu01, atc01);
+        apdu = ISOUtil.concat(apdu, arqc01);
+        apdu = ISOUtil.concat(apdu, data);
+
+        byte[] mac = jcesecmod.generateSM_MAC(skSmi.key(), apdu);
+        assertArrayEquals(ISOUtil.hex2byte("E218CC0B7FEC6876"), mac);
+    }
+
+    @Test
+    public void testGenerateSM_MACDirect_VSDC_ShortData() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmi,
+                accountNoA, accountNoA_CSN, atc01, null);
+
+        byte[] data = ISOUtil.hex2byte("11");
+        byte[] apdu = ISOUtil.concat(apdu01, atc01);
+        apdu = ISOUtil.concat(apdu, arqc01);
+        apdu = ISOUtil.concat(apdu, data);
+
+        byte[] mac = jcesecmod.generateSM_MAC(skSmi.key(), apdu);
+        assertArrayEquals(ISOUtil.hex2byte("C1F2C04136BD48E6"), mac);
+    }
+
+    @Test
+    public void testGenerateSM_MACDirect_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmi = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmi,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        byte[] data = ISOUtil.hex2byte("1122334455667788");
+        byte[] a = jcesecmod.generateSM_MAC(skSmi.key(), data);
+        byte[] b = jcesecmod.generateSM_MAC(skSmi.key(), data);
+        assertArrayEquals(a, b);
+        assertEquals(8, a.length);
+    }
+
+    @Test
+    public void testEncryptSecureMessagingPIN_MCHIP_Format34_MatchesIntegrated() throws Throwable {
+        // Mirrors testTranslatePINGenerateSM_MACImpl1: MCHIP + FORMAT34, no UDK, no current PIN.
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmc,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        EncryptedPIN result = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                PaddingMethod.MCHIP, null, null);
+
+        EncryptedPIN expected = new EncryptedPIN("F473D25D9B478970", SMAdapter.FORMAT34, accountNoA);
+        assertArrayEquals(expected.getPINBlock(), result.getPINBlock());
+        assertEquals(SMAdapter.FORMAT34, result.getPINBlockFormat());
+    }
+
+    @Test
+    public void testEncryptSecureMessagingPIN_CSKD_Format41_MatchesIntegrated() throws Throwable {
+        // Mirrors testTranslatePINGenerateSM_MACImpl2: EMV_CSKD + FORMAT41,
+        // CCD padding (the SKDMethod auto-derive); requires UDK-AC.
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.EMV_CSKD, imksmc,
+                accountNoA, accountNoA_CSN, null, arqc01);
+        EMVDerivedKey<SecureDESKey> udkAc = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+
+        EncryptedPIN result = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT41,
+                PaddingMethod.CCD, null, udkAc.key());
+
+        EncryptedPIN expected = new EncryptedPIN("E60663E4B11CDB2DE4667CC9433384B4",
+                SMAdapter.FORMAT41, accountNoA);
+        assertArrayEquals(expected.getPINBlock(), result.getPINBlock());
+        assertEquals(SMAdapter.FORMAT41, result.getPINBlockFormat());
+    }
+
+    @Test
+    public void testEncryptSecureMessagingPIN_VSDC_Format42_WithCurrentPIN_MatchesIntegrated() throws Throwable {
+        // Mirrors testTranslatePINGenerateSM_MACImpl6: VSDC + FORMAT42, requires
+        // both currentPIN and UDK-AC. VSDC SKDMethod auto-derives VSDC padding.
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.VSDC, imksmc,
+                accountNoA, accountNoA_CSN, atc01, null);
+        EMVDerivedKey<SecureDESKey> udkAc = jcesecmod.deriveICCMasterKey(
+                MKDMethod.OPTION_A, imkac, accountNoA, accountNoA_CSN);
+        EncryptedPIN oldPin = new EncryptedPIN("33BADC0F07C6FB29",
+                SMAdapter.FORMAT01, accountNoA);
+
+        EncryptedPIN result = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT42,
+                PaddingMethod.VSDC, oldPin, udkAc.key());
+
+        EncryptedPIN expected = new EncryptedPIN("74253653C81CE99140C47C0F7C572473",
+                SMAdapter.FORMAT42, accountNoA);
+        assertArrayEquals(expected.getPINBlock(), result.getPINBlock());
+        assertEquals(SMAdapter.FORMAT42, result.getPINBlockFormat());
+    }
+
+    @Test
+    public void testEncryptSecureMessagingPIN_NullPaddingDefaultsToMCHIP() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmc,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        EncryptedPIN withNull = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                null, null, null);
+        EncryptedPIN withMCHIP = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                PaddingMethod.MCHIP, null, null);
+
+        assertArrayEquals(withMCHIP.getPINBlock(), withNull.getPINBlock());
+    }
+
+    @Test
+    public void testEncryptSecureMessagingPIN_Deterministic() throws Throwable {
+        EMVDerivedKey<SecureDESKey> skSmc = jcesecmod.deriveSecureMessagingSessionKey(
+                MKDMethod.OPTION_A, SKDMethod.MCHIP, imksmc,
+                accountNoA, accountNoA_CSN, null, arqc01);
+
+        EncryptedPIN a = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                PaddingMethod.MCHIP, null, null);
+        EncryptedPIN b = jcesecmod.encryptSecureMessagingPIN(
+                skSmc.key(), pinUnderZPK, zpk, SMAdapter.FORMAT34,
+                PaddingMethod.MCHIP, null, null);
+
+        assertArrayEquals(a.getPINBlock(), b.getPINBlock());
+    }
+
+    // ----------------------------------------------------------------------
+    // PR 9 — Recover Issuer Public Key (EMV 4.4 Book 2 §6)
+    // ----------------------------------------------------------------------
+    //
+    // Test strategy: hand-construct a synthetic CA+issuer RSA setup, build
+    // an Issuer Public Key Certificate by signing a known payload with the
+    // CA private key, then recover with the new public method. Tests use a
+    // mutator helper to corrupt one byte/field at a time for negative cases.
+
+    private static final int    PR9_NCA   = 128;          // 1024-bit CA modulus
+    private static final int    PR9_NI    = 96;           //  768-bit issuer modulus
+    private static final String PR9_PAN   = "12345678901234";
+    private static final byte[] PR9_ISSUER_ID  = ISOUtil.hex2byte("12345678");
+    private static final byte[] PR9_EXP_FUTURE = ISOUtil.hex2byte("1231");   // Dec 2031
+    private static final byte[] PR9_EXP_PAST   = ISOUtil.hex2byte("0101");   // Jan 2001
+    private static final byte[] PR9_SERIAL     = ISOUtil.hex2byte("000001");
+
+    private static java.math.BigInteger pr9CaN, pr9CaE, pr9CaD;
+    private static java.math.BigInteger pr9IssuerN;
+    private static byte[] pr9CaModulus, pr9CaExponent;
+    private static byte[] pr9IssuerExp;
+    private static byte[] pr9IssuerModulus;
+    private static EMVCAPublicKey pr9CaPublicKey;
+    private static byte[] pr9HappyCert;
+    private static byte[] pr9HappyRemainder;
+
+    @BeforeAll
+    public static void setUpPR9Fixtures() throws Exception {
+        java.security.KeyPairGenerator kpg = java.security.KeyPairGenerator.getInstance("RSA");
+
+        // CA keypair (1024 bits)
+        kpg.initialize(1024);
+        java.security.KeyPair caKp = kpg.generateKeyPair();
+        pr9CaN = ((java.security.interfaces.RSAPublicKey)  caKp.getPublic()).getModulus();
+        pr9CaE = ((java.security.interfaces.RSAPublicKey)  caKp.getPublic()).getPublicExponent();
+        pr9CaD = ((java.security.interfaces.RSAPrivateKey) caKp.getPrivate()).getPrivateExponent();
+
+        // Issuer keypair (768 bits → 96-byte modulus, exceeds NCA-36=92, so remainder present)
+        kpg.initialize(768);
+        java.security.KeyPair issuerKp = kpg.generateKeyPair();
+        pr9IssuerN = ((java.security.interfaces.RSAPublicKey) issuerKp.getPublic()).getModulus();
+        java.math.BigInteger issuerE = ((java.security.interfaces.RSAPublicKey) issuerKp.getPublic()).getPublicExponent();
+        // Capture issuer's public + private exponents for PR 10's ICC cert signing
+        pr10IssuerE = issuerE;
+        pr10IssuerD = ((java.security.interfaces.RSAPrivateKey) issuerKp.getPrivate()).getPrivateExponent();
+
+        pr9CaModulus  = bigIntToFixed(pr9CaN, PR9_NCA);
+        pr9CaExponent = trimLeadingZeros(pr9CaE.toByteArray());
+        pr9IssuerModulus = bigIntToFixed(pr9IssuerN, PR9_NI);
+        pr9IssuerExp     = trimLeadingZeros(issuerE.toByteArray());
+
+        pr9CaPublicKey = new EMVCAPublicKey(
+                ISOUtil.hex2byte("A000000003"), (byte) 0x07,
+                pr9CaModulus, pr9CaExponent,
+                (byte) 0x01, (byte) 0x01);
+
+        // Build and sign the canonical "happy" cert.
+        byte[] payload = buildPayload(PR9_ISSUER_ID, PR9_EXP_FUTURE, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, pr9IssuerModulus, pr9IssuerExp);
+        pr9HappyCert = signWithCA(payload);
+        pr9HappyRemainder = java.util.Arrays.copyOfRange(pr9IssuerModulus, PR9_NCA - 36, PR9_NI);
+
+        // PR 10 fixtures continue here so JUnit 5's non-deterministic
+        // @BeforeAll ordering can't leave pr10IssuerD null when
+        // signWithIssuer runs.
+        setUpPR10Fixtures(kpg);
+    }
+
+    private static byte[] buildPayload(byte[] issuerId, byte[] expDate, byte[] serial,
+            byte hashAlg, byte pkAlg, byte[] issuerModulus, byte[] issuerExp) throws Exception {
+        return buildPayload(issuerId, expDate, serial, hashAlg, pkAlg,
+                issuerModulus, issuerExp, (byte) 0xBB);
+    }
+
+    private static byte[] buildPayload(byte[] issuerId, byte[] expDate, byte[] serial,
+            byte hashAlg, byte pkAlg, byte[] issuerModulus, byte[] issuerExp,
+            byte padByte) throws Exception {
+        int nca = PR9_NCA;
+        int ni  = issuerModulus.length;
+        int ipkInCert = Math.min(ni, nca - 36);
+        byte[] payload = new byte[nca];
+        payload[0] = (byte) 0x6A;
+        payload[1] = (byte) 0x02;
+        System.arraycopy(issuerId, 0, payload, 2, 4);
+        System.arraycopy(expDate,  0, payload, 6, 2);
+        System.arraycopy(serial,   0, payload, 8, 3);
+        payload[11] = hashAlg;
+        payload[12] = pkAlg;
+        payload[13] = (byte) ni;
+        payload[14] = (byte) issuerExp.length;
+        System.arraycopy(issuerModulus, 0, payload, 15, ipkInCert);
+        // 0xBB padding for ni < nca - 36 (not exercised in happy fixture, but support it)
+        for (int i = 15 + ipkInCert; i < nca - 21; i++) payload[i] = padByte;
+        // SHA-1 over payload[1..nca-22] || remainder || exponent
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        sha.update(payload, 1, nca - 22);
+        if (ni > ipkInCert)
+            sha.update(issuerModulus, ipkInCert, ni - ipkInCert);
+        sha.update(issuerExp);
+        System.arraycopy(sha.digest(), 0, payload, nca - 21, 20);
+        payload[nca - 1] = (byte) 0xBC;
+        return payload;
+    }
+
+    private static byte[] signWithCA(byte[] payload) {
+        java.math.BigInteger m = new java.math.BigInteger(1, payload);
+        java.math.BigInteger s = m.modPow(pr9CaD, pr9CaN);
+        return bigIntToFixed(s, payload.length);
+    }
+
+    /** Decrypt the happy-cert payload, apply the mutator, re-sign. */
+    private static byte[] mutateAndSign(byte[] signedCert, java.util.function.Consumer<byte[]> mutator) {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signedCert);
+        byte[] payload = bigIntToFixed(sig.modPow(pr9CaE, pr9CaN), signedCert.length);
+        mutator.accept(payload);
+        return signWithCA(payload);
+    }
+
+    private static byte[] bigIntToFixed(java.math.BigInteger value, int length) {
+        byte[] raw = value.toByteArray();
+        if (raw.length == length) return raw;
+        byte[] out = new byte[length];
+        if (raw.length > length)
+            System.arraycopy(raw, raw.length - length, out, 0, length);
+        else
+            System.arraycopy(raw, 0, out, length - raw.length, raw.length);
+        return out;
+    }
+
+    private static byte[] trimLeadingZeros(byte[] raw) {
+        int s = 0;
+        while (s < raw.length - 1 && raw[s] == 0) s++;
+        return java.util.Arrays.copyOfRange(raw, s, raw.length);
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_HappyPath() throws Throwable {
+        EMVIssuerPublicKey result = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        assertArrayEquals(PR9_ISSUER_ID,  result.issuerIdentifier());
+        assertArrayEquals(PR9_EXP_FUTURE, result.expirationDate());
+        assertArrayEquals(PR9_SERIAL,     result.serialNumber());
+        assertArrayEquals(pr9IssuerModulus, result.modulus());
+        assertArrayEquals(pr9IssuerExp,   result.exponent());
+        assertEquals((byte) 0x01, result.hashAlgorithmIndicator());
+        assertEquals((byte) 0x01, result.publicKeyAlgorithmIndicator());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_NullPAN_SkipsIssuerIdCheck() throws Throwable {
+        EMVIssuerPublicKey result = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, null);
+        assertArrayEquals(PR9_ISSUER_ID, result.issuerIdentifier());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_BadHeader_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[0] = (byte) 0x6B);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("header"),
+                "expected 'header' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_BadFormat_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[1] = (byte) 0x03);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("certificate format"),
+                "expected 'certificate format' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_BadTrailer_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[PR9_NCA - 1] = (byte) 0xBD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("trailer"),
+                "expected 'trailer' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_BadHash_Throws() throws Throwable {
+        // Flip one bit inside the embedded hash (bytes nca-21..nca-2).
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[PR9_NCA - 10] ^= 0x01);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_BadPadding_Throws() throws Throwable {
+        byte[] shortIssuerModulus = java.util.Arrays.copyOf(pr9IssuerModulus, 80);
+        byte[] payload = buildPayload(PR9_ISSUER_ID, PR9_EXP_FUTURE, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, shortIssuerModulus, pr9IssuerExp, (byte) 0xBC);
+        byte[] badPaddingCert = signWithCA(payload);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, badPaddingCert, null,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_UnsupportedHashAlgo_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[11] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash algorithm"),
+                "expected 'hash algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_UnsupportedPKAlgo_Throws() throws Throwable {
+        byte[] bad = mutateAndSign(pr9HappyCert, p -> p[12] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, bad, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("public key algorithm"),
+                "expected 'public key algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_ExpiredDate_Throws() throws Throwable {
+        // Build a cert with expDate in January 2001 (long-expired) and sign it.
+        byte[] payload = buildPayload(PR9_ISSUER_ID, PR9_EXP_PAST, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, pr9IssuerModulus, pr9IssuerExp);
+        byte[] expiredCert = signWithCA(payload);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, expiredCert, pr9HappyRemainder,
+                        pr9IssuerExp, PR9_PAN));
+        assertTrue(ex.getMessage().toLowerCase().contains("expired"),
+                "expected 'expired' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverIssuerPublicKey_IssuerIdMismatch_Throws() throws Throwable {
+        // Happy cert is fine; just pass a PAN that doesn't match issuer ID 12345678.
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverIssuerPublicKey(pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder,
+                        pr9IssuerExp, "99990000123456"));
+        assertTrue(ex.getMessage().toLowerCase().contains("issuer identifier"),
+                "expected 'issuer identifier' in error: " + ex.getMessage());
+    }
+
+    // ----------------------------------------------------------------------
+    // PR 10 — Recover ICC Public Key (EMV 4.4 Book 2 §6.4)
+    // ----------------------------------------------------------------------
+    //
+    // Builds on the PR 9 CA + Issuer keypair fixture, adds a 512-bit ICC
+    // keypair, constructs an ICC PK certificate signed with the issuer
+    // private exponent, and recovers it via the full PR 9 → PR 10 chain.
+
+    private static final byte[] PR10_APP_PAN_BCD = ISOUtil.hex2byte("12345678901234FFFFFF");
+    private static final String PR10_APP_PAN_STR = "12345678901234";
+    private static final byte[] PR10_SAD = ISOUtil.hex2byte(
+            "70819F36020001821C90DEADBEEF1234ABCDEFFEDCBA0987654321");
+
+    private static java.math.BigInteger pr10IssuerD;
+    private static byte[] pr10IccModulus;
+    private static byte[] pr10IccExp;
+    private static byte[] pr10HappyCert;
+    private static byte[] pr10HappyRemainder;  // empty for 512-bit ICC inside 768-bit issuer
+
+    // Called from setUpPR9Fixtures (NOT a separate @BeforeAll method) to
+    // guarantee setUpPR9Fixtures runs first; JUnit 5 does not order
+    // multiple @BeforeAll methods deterministically.
+    private static void setUpPR10Fixtures(java.security.KeyPairGenerator kpg) throws Exception {
+        // ICC keypair: 512 bits → 64-byte modulus. NI = issuer modulus length
+        // = 96 bytes, NI - 42 = 54 bytes "leftmost slot". A 512-bit (64-byte)
+        // ICC modulus exceeds 54, so remainder = 64 - 54 = 10 bytes —
+        // exercising the remainder path of the recovery routine.
+        kpg.initialize(512);
+        java.security.KeyPair iccKp = kpg.generateKeyPair();
+        java.math.BigInteger iccN = ((java.security.interfaces.RSAPublicKey) iccKp.getPublic()).getModulus();
+        java.math.BigInteger iccE = ((java.security.interfaces.RSAPublicKey) iccKp.getPublic()).getPublicExponent();
+        // Capture ICC private + public exponents for PR 12 SDAD signing
+        pr12IccD = ((java.security.interfaces.RSAPrivateKey) iccKp.getPrivate()).getPrivateExponent();
+        pr12IccE = iccE;
+        pr12IccN = iccN;
+
+        pr10IccModulus = bigIntToFixed(iccN, 64);
+        pr10IccExp     = trimLeadingZeros(iccE.toByteArray());
+
+        byte[] payload = buildICCPayload(PR10_APP_PAN_BCD, PR9_EXP_FUTURE, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, pr10IccModulus, pr10IccExp, PR10_SAD);
+        pr10HappyCert = signWithIssuer(payload);
+
+        int nic = pr10IccModulus.length;      // 64
+        int iccInCert = Math.min(nic, PR9_NI - 42);  // min(64, 54) = 54
+        pr10HappyRemainder = java.util.Arrays.copyOfRange(pr10IccModulus, iccInCert, nic);
+
+        // PR 12 follows here so JUnit 5's non-deterministic @BeforeAll
+        // ordering can't observe a null pr12IccD when buildSDAD runs.
+        setUpPR12Fixtures();
+    }
+
+    private static byte[] buildICCPayload(byte[] appPan, byte[] expDate, byte[] serial,
+            byte hashAlg, byte pkAlg, byte[] iccModulus, byte[] iccExp,
+            byte[] sad) throws Exception {
+        return buildICCPayload(appPan, expDate, serial, hashAlg, pkAlg,
+                iccModulus, iccExp, sad, (byte) 0xBB);
+    }
+
+    private static byte[] buildICCPayload(byte[] appPan, byte[] expDate, byte[] serial,
+            byte hashAlg, byte pkAlg, byte[] iccModulus, byte[] iccExp,
+            byte[] sad, byte padByte) throws Exception {
+        int ni  = PR9_NI;
+        int nic = iccModulus.length;
+        int iccInCert = Math.min(nic, ni - 42);
+        byte[] payload = new byte[ni];
+        payload[0] = (byte) 0x6A;
+        payload[1] = (byte) 0x04;
+        System.arraycopy(appPan,  0, payload, 2,  10);
+        System.arraycopy(expDate, 0, payload, 12, 2);
+        System.arraycopy(serial,  0, payload, 14, 3);
+        payload[17] = hashAlg;
+        payload[18] = pkAlg;
+        payload[19] = (byte) nic;
+        payload[20] = (byte) iccExp.length;
+        System.arraycopy(iccModulus, 0, payload, 21, iccInCert);
+        for (int i = 21 + iccInCert; i < ni - 21; i++) payload[i] = padByte;
+        // SHA-1 over payload[1..ni-22] || remainder || iccExp || sad
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        sha.update(payload, 1, ni - 22);
+        if (nic > iccInCert)
+            sha.update(iccModulus, iccInCert, nic - iccInCert);
+        sha.update(iccExp);
+        if (sad != null && sad.length > 0) sha.update(sad);
+        System.arraycopy(sha.digest(), 0, payload, ni - 21, 20);
+        payload[ni - 1] = (byte) 0xBC;
+        return payload;
+    }
+
+    private static byte[] signWithIssuer(byte[] payload) {
+        java.math.BigInteger m = new java.math.BigInteger(1, payload);
+        java.math.BigInteger s = m.modPow(pr10IssuerD, pr9IssuerN);
+        return bigIntToFixed(s, payload.length);
+    }
+
+    private static byte[] mutateAndSignICC(byte[] signedCert, java.util.function.Consumer<byte[]> mutator) {
+        // Decrypt under issuer public exponent, mutate, re-sign with issuer private exponent.
+        java.math.BigInteger sig = new java.math.BigInteger(1, signedCert);
+        byte[] payload = bigIntToFixed(sig.modPow(pr10IssuerE, pr9IssuerN), signedCert.length);
+        mutator.accept(payload);
+        return signWithIssuer(payload);
+    }
+
+    // Captured at PR 10 init so mutateAndSignICC can decrypt + re-sign.
+    private static java.math.BigInteger pr10IssuerE;
+
+    @Test
+    public void testRecoverICCPublicKey_HappyPath() throws Throwable {
+        // Chain: recover issuer first via PR 9, then recover ICC via PR 10.
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+
+        EMVICCPublicKey result = jcesecmod.recoverICCPublicKey(
+                issuer, pr10HappyCert, pr10HappyRemainder, pr10IccExp,
+                PR10_SAD, PR10_APP_PAN_STR);
+
+        assertArrayEquals(PR10_APP_PAN_BCD, result.applicationPan());
+        assertArrayEquals(PR9_EXP_FUTURE,   result.expirationDate());
+        assertArrayEquals(PR9_SERIAL,       result.serialNumber());
+        assertArrayEquals(pr10IccModulus,   result.modulus());
+        assertArrayEquals(pr10IccExp,       result.exponent());
+        assertEquals((byte) 0x01, result.hashAlgorithmIndicator());
+        assertEquals((byte) 0x01, result.publicKeyAlgorithmIndicator());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_NullPAN_SkipsPanCheck() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        EMVICCPublicKey result = jcesecmod.recoverICCPublicKey(
+                issuer, pr10HappyCert, pr10HappyRemainder, pr10IccExp, PR10_SAD, null);
+        assertArrayEquals(PR10_APP_PAN_BCD, result.applicationPan());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_BadHeader_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignICC(pr10HappyCert, p -> p[0] = (byte) 0x6B);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, bad, pr10HappyRemainder, pr10IccExp,
+                        PR10_SAD, PR10_APP_PAN_STR));
+        assertTrue(ex.getMessage().toLowerCase().contains("header"),
+                "expected 'header' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_BadFormat_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        // 0x04 → 0x02 (issuer cert format used by mistake)
+        byte[] bad = mutateAndSignICC(pr10HappyCert, p -> p[1] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, bad, pr10HappyRemainder, pr10IccExp,
+                        PR10_SAD, PR10_APP_PAN_STR));
+        assertTrue(ex.getMessage().toLowerCase().contains("certificate format"),
+                "expected 'certificate format' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_BadTrailer_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignICC(pr10HappyCert, p -> p[PR9_NI - 1] = (byte) 0xBD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, bad, pr10HappyRemainder, pr10IccExp,
+                        PR10_SAD, PR10_APP_PAN_STR));
+        assertTrue(ex.getMessage().toLowerCase().contains("trailer"),
+                "expected 'trailer' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_BadHash_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        // Flip a bit in the embedded hash (bytes ni-21..ni-2).
+        byte[] bad = mutateAndSignICC(pr10HappyCert, p -> p[PR9_NI - 10] ^= 0x01);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, bad, pr10HappyRemainder, pr10IccExp,
+                        PR10_SAD, PR10_APP_PAN_STR));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_BadPadding_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] shortIccModulus = java.util.Arrays.copyOf(pr10IccModulus, 48);
+        byte[] payload = buildICCPayload(PR10_APP_PAN_BCD, PR9_EXP_FUTURE, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, shortIccModulus, pr10IccExp,
+                PR10_SAD, (byte) 0xBC);
+        byte[] badPaddingCert = signWithIssuer(payload);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, badPaddingCert, null,
+                        pr10IccExp, PR10_SAD, PR10_APP_PAN_STR));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_SADCorruption_Throws() throws Throwable {
+        // Pass a different SAD at recovery time than was used at cert build
+        // time. The cert is otherwise valid; only the SAD-in-hash-input
+        // changes. This is unique to ICC PK recovery (vs Issuer PK).
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] wrongSad = ISOUtil.hex2byte("DEADBEEFCAFEBABE");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, pr10HappyCert, pr10HappyRemainder,
+                        pr10IccExp, wrongSad, PR10_APP_PAN_STR));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_UnsupportedHashAlgo_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignICC(pr10HappyCert, p -> p[17] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, bad, pr10HappyRemainder, pr10IccExp,
+                        PR10_SAD, PR10_APP_PAN_STR));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash algorithm"),
+                "expected 'hash algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_ExpiredDate_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] payload = buildICCPayload(PR10_APP_PAN_BCD, PR9_EXP_PAST, PR9_SERIAL,
+                (byte) 0x01, (byte) 0x01, pr10IccModulus, pr10IccExp, PR10_SAD);
+        byte[] expiredCert = signWithIssuer(payload);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, expiredCert, pr10HappyRemainder,
+                        pr10IccExp, PR10_SAD, PR10_APP_PAN_STR));
+        assertTrue(ex.getMessage().toLowerCase().contains("expired"),
+                "expected 'expired' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testRecoverICCPublicKey_PanMismatch_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.recoverICCPublicKey(issuer, pr10HappyCert, pr10HappyRemainder,
+                        pr10IccExp, PR10_SAD, "99999999999999"));
+        assertTrue(ex.getMessage().toLowerCase().contains("application pan"),
+                "expected 'application pan' in error: " + ex.getMessage());
+    }
+
+    // ----------------------------------------------------------------------
+    // PR 11 — Verify Signed Static Application Data (EMV 4.4 Book 2 §5.4)
+    // ----------------------------------------------------------------------
+    //
+    // Reuses PR 9's CA + Issuer keypair fixture. Builds SSAD by signing
+    // (format-prefix || hash-alg || DAC || pad-pattern || SAD)'s hash with
+    // the issuer private exponent, then recovers via verifySDA.
+
+    private static final byte[] PR11_DAC = ISOUtil.hex2byte("1234");
+    private static byte[] pr11HappySSAD;
+
+    @BeforeAll
+    public static void setUpPR11Fixtures() throws Exception {
+        // Build the canonical "happy" SSAD signed by the issuer. The issuer
+        // keypair (pr10IssuerD, pr9IssuerN) was captured during the PR 9
+        // fixture setup; PR 11 just consumes it.
+        pr11HappySSAD = buildSSAD(PR11_DAC, (byte) 0x01, (byte) 0x03,
+                (byte) 0xBB, PR10_SAD);
+    }
+
+    private static byte[] buildSSAD(byte[] dac, byte hashAlg, byte format,
+            byte padByte, byte[] sad) throws Exception {
+        int ni = PR9_NI;
+        byte[] payload = new byte[ni];
+        payload[0] = (byte) 0x6A;
+        payload[1] = format;
+        payload[2] = hashAlg;
+        System.arraycopy(dac, 0, payload, 3, 2);
+        // Pad pattern: bytes 5..ni-21 = padByte
+        for (int i = 5; i < ni - 21; i++) payload[i] = padByte;
+        // Hash over payload[1..ni-21) || sad
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        sha.update(payload, 1, ni - 22);
+        if (sad != null && sad.length > 0) sha.update(sad);
+        System.arraycopy(sha.digest(), 0, payload, ni - 21, 20);
+        payload[ni - 1] = (byte) 0xBC;
+        return signWithIssuer(payload);
+    }
+
+    private static byte[] mutateAndSignSSAD(byte[] signedSSAD, java.util.function.Consumer<byte[]> mutator) {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signedSSAD);
+        byte[] payload = bigIntToFixed(sig.modPow(pr10IssuerE, pr9IssuerN), signedSSAD.length);
+        mutator.accept(payload);
+        return signWithIssuer(payload);
+    }
+
+    @Test
+    public void testVerifySDA_HappyPath() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+
+        byte[] dac = jcesecmod.verifySDA(issuer, pr11HappySSAD, PR10_SAD);
+        assertArrayEquals(PR11_DAC, dac);
+        assertEquals(2, dac.length);
+    }
+
+    @Test
+    public void testVerifySDA_BadHeader_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[0] = (byte) 0x6B);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("header"),
+                "expected 'header' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_BadFormat_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        // 0x03 → 0x02 (issuer cert format used by mistake)
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[1] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("signed data format"),
+                "expected 'signed data format' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_BadTrailer_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[PR9_NI - 1] = (byte) 0xBD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("trailer"),
+                "expected 'trailer' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_UnsupportedHashAlgo_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[2] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash algorithm"),
+                "expected 'hash algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_BadPadding_Throws() throws Throwable {
+        // Build SSAD with pad byte 0xBC instead of 0xBB. Hash is consistent
+        // with the cert (signed correctly); only the structural pad-pattern
+        // check rejects.
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] badPadding = buildSSAD(PR11_DAC, (byte) 0x01, (byte) 0x03,
+                (byte) 0xBC, PR10_SAD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, badPadding, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_BadHash_Throws() throws Throwable {
+        // Flip a bit in the embedded hash (bytes ni-21..ni-2).
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] bad = mutateAndSignSSAD(pr11HappySSAD, p -> p[PR9_NI - 10] ^= 0x01);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, bad, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_SADCorruption_Throws() throws Throwable {
+        // Pass a different SAD at verify time than was used at signing.
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        byte[] wrongSad = ISOUtil.hex2byte("DEADBEEFCAFEBABE");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, pr11HappySSAD, wrongSad));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifySDA_WrongLength_Throws() throws Throwable {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        // Truncate the SSAD by one byte; should fail the length check.
+        byte[] tooShort = java.util.Arrays.copyOfRange(pr11HappySSAD, 0, pr11HappySSAD.length - 1);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifySDA(issuer, tooShort, PR10_SAD));
+        assertTrue(ex.getMessage().toLowerCase().contains("length"),
+                "expected 'length' in error: " + ex.getMessage());
+    }
+
+    // ----------------------------------------------------------------------
+    // PR 12 — Verify Signed Dynamic Application Data (EMV 4.4 Book 2 §6.5)
+    // ----------------------------------------------------------------------
+    //
+    // Chains PR 9 → PR 10 → PR 12: recover Issuer PK, recover ICC PK, sign
+    // an SDAD with the ICC private key, recover via verifyDDA.
+
+    private static final byte[] PR12_DDOL = ISOUtil.hex2byte("9F37049988776655");
+    private static final byte[] PR12_ICC_DYNAMIC_NUMBER = ISOUtil.hex2byte("12345678");
+
+    private static java.math.BigInteger pr12IccD;
+    private static java.math.BigInteger pr12IccE;
+    private static java.math.BigInteger pr12IccN;
+    private static byte[] pr12HappySDAD;
+
+    // Called from setUpPR10Fixtures (NOT a separate @BeforeAll method) to
+    // guarantee setUpPR9Fixtures and setUpPR10Fixtures have run first;
+    // JUnit 5 does not order multiple @BeforeAll methods deterministically.
+    private static void setUpPR12Fixtures() throws Exception {
+        // Builds the canonical "happy" SDAD signed with the ICC private key
+        // (pr12IccD captured during setUpPR10Fixtures).
+        pr12HappySDAD = buildSDAD(PR12_ICC_DYNAMIC_NUMBER, (byte) 0x01,
+                (byte) 0x05, (byte) 0xBB, PR12_DDOL);
+
+        // Continue into PR 13 setup while we hold all dependencies.
+        setUpPR13Fixtures();
+    }
+
+    private static byte[] buildSDAD(byte[] iccDynamicNumber, byte hashAlg, byte format,
+            byte padByte, byte[] ddol) throws Exception {
+        int nic = pr10IccModulus.length;      // 64
+        int ldn = iccDynamicNumber.length;
+        int ldd = 1 + ldn;                    // LDN byte + dynamic number bytes
+        byte[] payload = new byte[nic];
+        payload[0] = (byte) 0x6A;
+        payload[1] = format;
+        payload[2] = hashAlg;
+        payload[3] = (byte) ldd;
+        payload[4] = (byte) ldn;
+        System.arraycopy(iccDynamicNumber, 0, payload, 5, ldn);
+        for (int i = 4 + ldd; i < nic - 21; i++) payload[i] = padByte;
+        // Hash over payload[1..nic-21) || ddol
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        sha.update(payload, 1, nic - 22);
+        if (ddol != null && ddol.length > 0) sha.update(ddol);
+        System.arraycopy(sha.digest(), 0, payload, nic - 21, 20);
+        payload[nic - 1] = (byte) 0xBC;
+        return signWithICC(payload);
+    }
+
+    private static byte[] signWithICC(byte[] payload) {
+        java.math.BigInteger m = new java.math.BigInteger(1, payload);
+        java.math.BigInteger s = m.modPow(pr12IccD, pr12IccN);
+        return bigIntToFixed(s, payload.length);
+    }
+
+    private static byte[] mutateAndSignSDAD(byte[] signedSDAD, java.util.function.Consumer<byte[]> mutator) {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signedSDAD);
+        byte[] payload = bigIntToFixed(sig.modPow(pr12IccE, pr12IccN), signedSDAD.length);
+        mutator.accept(payload);
+        return signWithICC(payload);
+    }
+
+    private static byte[] mutateRehashAndSignSDAD(byte[] signedSDAD,
+            java.util.function.Consumer<byte[]> mutator, byte[] ddol) throws Exception {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signedSDAD);
+        byte[] payload = bigIntToFixed(sig.modPow(pr12IccE, pr12IccN), signedSDAD.length);
+        mutator.accept(payload);
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        sha.update(payload, 1, payload.length - 22);
+        if (ddol != null && ddol.length > 0) sha.update(ddol);
+        System.arraycopy(sha.digest(), 0, payload, payload.length - 21, 20);
+        return signWithICC(payload);
+    }
+
+    private static EMVICCPublicKey recoverICCForPR12() throws Exception {
+        EMVIssuerPublicKey issuer = jcesecmod.recoverIssuerPublicKey(
+                pr9CaPublicKey, pr9HappyCert, pr9HappyRemainder, pr9IssuerExp, PR9_PAN);
+        return jcesecmod.recoverICCPublicKey(issuer, pr10HappyCert, pr10HappyRemainder,
+                pr10IccExp, PR10_SAD, PR10_APP_PAN_STR);
+    }
+
+    @Test
+    public void testVerifyDDA_HappyPath() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] dyn = jcesecmod.verifyDDA(icc, pr12HappySDAD, PR12_DDOL);
+        assertArrayEquals(PR12_ICC_DYNAMIC_NUMBER, dyn);
+        assertEquals(4, dyn.length);
+    }
+
+    @Test
+    public void testVerifyDDA_BadHeader_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD, p -> p[0] = (byte) 0x6B);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("header"),
+                "expected 'header' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadFormat_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        // 0x05 → 0x03 (SSAD format used by mistake)
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD, p -> p[1] = (byte) 0x03);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("signed data format"),
+                "expected 'signed data format' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadTrailer_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD,
+                p -> p[pr10IccModulus.length - 1] = (byte) 0xBD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("trailer"),
+                "expected 'trailer' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_UnsupportedHashAlgo_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD, p -> p[2] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash algorithm"),
+                "expected 'hash algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadPadding_Throws() throws Throwable {
+        // Build SDAD with pad byte 0xBC instead of 0xBB. Hash signed
+        // consistently with the corrupt pad — structural check rejects.
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] badPadding = buildSDAD(PR12_ICC_DYNAMIC_NUMBER, (byte) 0x01,
+                (byte) 0x05, (byte) 0xBC, PR12_DDOL);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, badPadding, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadDynamicDataLength_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateRehashAndSignSDAD(pr12HappySDAD,
+                p -> p[3] = (byte) ((p[4] & 0xff) + 2), PR12_DDOL);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("dynamic data length"),
+                "expected 'dynamic data length' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_BadHash_Throws() throws Throwable {
+        // Flip a bit in the embedded hash (bytes nic-21..nic-2).
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignSDAD(pr12HappySDAD,
+                p -> p[pr10IccModulus.length - 10] ^= 0x01);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, bad, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_DDOLCorruption_Throws() throws Throwable {
+        // Pass a different DDOL at verify than was used at signing.
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] wrongDDOL = ISOUtil.hex2byte("DEADBEEFCAFEBABE");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, pr12HappySDAD, wrongDDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyDDA_WrongLength_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] tooShort = java.util.Arrays.copyOfRange(pr12HappySDAD, 0, pr12HappySDAD.length - 1);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyDDA(icc, tooShort, PR12_DDOL));
+        assertTrue(ex.getMessage().toLowerCase().contains("length"),
+                "expected 'length' in error: " + ex.getMessage());
+    }
+
+    // ----------------------------------------------------------------------
+    // PR 13 — Verify CDA (Combined DDA + AC, EMV 4.4 Book 2 §6.6)
+    // ----------------------------------------------------------------------
+    //
+    // CDA SDAD shares EMV tag 0x9F4B with DDA SDAD (PR 12) but the inner
+    // ICC Dynamic Data block carries LDN + ICC Dynamic Number + CID + AC +
+    // SHA-1(transactionData), giving LDD = LDN + 30. The signature input
+    // is recovered[1..nic-21) || UN (the terminal's Unpredictable Number).
+
+    private static final byte[] PR13_UN  = ISOUtil.hex2byte("9988AABB");
+    private static final byte[] PR13_AC  = ISOUtil.hex2byte("ABCDEF0123456789");
+    private static final byte   PR13_CID = (byte) 0x40;
+    private static final byte[] PR13_TRANSACTION_DATA = ISOUtil.hex2byte(
+            "9F02060000000010009F0306000000000000");
+    private static final byte[] PR13_ICC_DYNAMIC_NUMBER = ISOUtil.hex2byte("DEADBEEF");
+
+    private static byte[] pr13HappyCDASDAD;
+
+    // Called from setUpPR12Fixtures (NOT a separate @BeforeAll method) for
+    // the same reason as setUpPR10/12: deterministic ordering of fixtures
+    // with cross-dependencies.
+    private static void setUpPR13Fixtures() throws Exception {
+        pr13HappyCDASDAD = buildCDASDAD(PR13_ICC_DYNAMIC_NUMBER, PR13_CID,
+                PR13_AC, PR13_TRANSACTION_DATA, (byte) 0xBB, (byte) 0x01, (byte) 0x05);
+    }
+
+    private static byte[] buildCDASDAD(byte[] iccDynamicNumber, byte cid,
+            byte[] ac, byte[] transactionData, byte padByte,
+            byte hashAlg, byte format) throws Exception {
+        int nic = pr10IccModulus.length;          // 64
+        int ldn = iccDynamicNumber.length;        // 4
+        int ldd = ldn + 30;                       // 34 for LDN=4
+        byte[] payload = new byte[nic];
+        payload[0] = (byte) 0x6A;
+        payload[1] = format;
+        payload[2] = hashAlg;
+        payload[3] = (byte) ldd;
+        payload[4] = (byte) ldn;
+        System.arraycopy(iccDynamicNumber, 0, payload, 5, ldn);
+        payload[5 + ldn] = cid;
+        System.arraycopy(ac, 0, payload, 5 + ldn + 1, 8);
+        // Transaction Data Hash
+        java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
+        byte[] txnHash = sha.digest(transactionData == null ? new byte[0] : transactionData);
+        System.arraycopy(txnHash, 0, payload, 5 + ldn + 9, 20);
+        for (int i = 4 + ldd; i < nic - 21; i++) payload[i] = padByte;
+        // Outer hash: payload[1..nic-21) || UN
+        sha.reset();
+        sha.update(payload, 1, nic - 22);
+        sha.update(PR13_UN);
+        System.arraycopy(sha.digest(), 0, payload, nic - 21, 20);
+        payload[nic - 1] = (byte) 0xBC;
+        return signWithICC(payload);
+    }
+
+    private static byte[] mutateAndSignCDASDAD(byte[] signed, java.util.function.Consumer<byte[]> mutator) {
+        java.math.BigInteger sig = new java.math.BigInteger(1, signed);
+        byte[] payload = bigIntToFixed(sig.modPow(pr12IccE, pr12IccN), signed.length);
+        mutator.accept(payload);
+        return signWithICC(payload);
+    }
+
+    @Test
+    public void testVerifyCDA_HappyPath() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        EMVCDAResult result = jcesecmod.verifyCDA(icc, pr13HappyCDASDAD,
+                PR13_UN, PR13_AC, PR13_TRANSACTION_DATA);
+        assertArrayEquals(PR13_ICC_DYNAMIC_NUMBER, result.iccDynamicNumber());
+        assertEquals(PR13_CID, result.cid());
+    }
+
+    @Test
+    public void testVerifyCDA_BadHeader_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD, p -> p[0] = (byte) 0x6B);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("header"),
+                "expected 'header' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_BadFormat_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD, p -> p[1] = (byte) 0x03);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("signed data format"),
+                "expected 'signed data format' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_BadTrailer_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD,
+                p -> p[pr10IccModulus.length - 1] = (byte) 0xBD);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("trailer"),
+                "expected 'trailer' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_UnsupportedHashAlgo_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD, p -> p[2] = (byte) 0x02);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash algorithm"),
+                "expected 'hash algorithm' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_BadPadding_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] badPad = buildCDASDAD(PR13_ICC_DYNAMIC_NUMBER, PR13_CID,
+                PR13_AC, PR13_TRANSACTION_DATA, (byte) 0xBC, (byte) 0x01, (byte) 0x05);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, badPad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("pad pattern"),
+                "expected 'pad pattern' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_BadHash_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] bad = mutateAndSignCDASDAD(pr13HappyCDASDAD,
+                p -> p[pr10IccModulus.length - 10] ^= 0x01);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, bad, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_ACMismatch_Throws() throws Throwable {
+        // Unique to CDA — the AC embedded in the SDAD does not match the
+        // supplied AC. This catches a malicious card that signs one AC
+        // and returns a different one out-of-band.
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] differentAC = ISOUtil.hex2byte("FFEEDDCCBBAA9988");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, pr13HappyCDASDAD, PR13_UN,
+                        differentAC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("application cryptogram"),
+                "expected 'application cryptogram' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_TransactionDataMismatch_Throws() throws Throwable {
+        // Unique to CDA — the transaction data hash embedded in the SDAD
+        // does not match SHA-1 of supplied transaction data.
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] differentTxn = ISOUtil.hex2byte("9F0206000000099999");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, pr13HappyCDASDAD, PR13_UN, PR13_AC, differentTxn));
+        assertTrue(ex.getMessage().toLowerCase().contains("transaction data hash"),
+                "expected 'transaction data hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_UNCorruption_Throws() throws Throwable {
+        // UN is in the outer hash input; mismatching it surfaces as a
+        // hash failure (analogous to PR 12's DDOLCorruption case).
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] wrongUN = ISOUtil.hex2byte("00000000");
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, pr13HappyCDASDAD, wrongUN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("hash"),
+                "expected 'hash' in error: " + ex.getMessage());
+    }
+
+    @Test
+    public void testVerifyCDA_WrongLength_Throws() throws Throwable {
+        EMVICCPublicKey icc = recoverICCForPR12();
+        byte[] tooShort = java.util.Arrays.copyOfRange(pr13HappyCDASDAD, 0, pr13HappyCDASDAD.length - 1);
+        SMException ex = assertThrows(SMException.class, () ->
+                jcesecmod.verifyCDA(icc, tooShort, PR13_UN, PR13_AC, PR13_TRANSACTION_DATA));
+        assertTrue(ex.getMessage().toLowerCase().contains("length"),
+                "expected 'length' in error: " + ex.getMessage());
     }
 
 }

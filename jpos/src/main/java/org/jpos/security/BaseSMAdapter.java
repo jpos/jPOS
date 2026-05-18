@@ -52,7 +52,7 @@ import java.util.Map;
  * @param <T> the SecureKey implementation type
  */
 public class BaseSMAdapter<T>
-        implements SMAdapter<T>, Configurable, LogSource {
+        implements EMVSMAdapter<T>, Configurable, LogSource {
     /** Logger for this security module adapter. */
     protected Logger logger = null;
     /** Log realm for this security module adapter. */
@@ -1021,6 +1021,62 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public String generateCVC3(T imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm)
+                     throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "imk-cvc3", imkcvc3 == null ? "" : imkcvc3));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        cmdParameters.add(new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)));
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate CVC3", cmdParameters));
+        try {
+            String r = generateCVC3Impl(imkcvc3, accountNo, acctSeqNo, atc, upn, data, mkdm);
+            evt.addMessage(new SimpleMsg("result", "cvc3", r));
+            return r;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public String generatedCVV(String accountNo, T imkac, String expDate,
+                     String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+
+        if (accountNo == null || accountNo.trim().length() == 0)
+            throw new IllegalArgumentException("Account number not set.");
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac == null ? "" : imkac));
+        cmdParameters.add(new SimpleMsg("parameter", "Exp date", expDate));
+        cmdParameters.add(new SimpleMsg("parameter", "Service code", serviceCode));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate dCVV", cmdParameters));
+        try {
+            String r = generatedCVVImpl(accountNo, imkac, expDate, serviceCode, atc, mkdm);
+            evt.addMessage(new SimpleMsg("result", "dCVV", r));
+            return r;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
     public boolean verifyARQC(MKDMethod mkdm, SKDMethod skdm, T imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc
             ,byte[] upn, byte[] txnData) throws SMException {
@@ -1047,6 +1103,107 @@ public class BaseSMAdapter<T>
       } finally {
         logEvent(evt);
       }
+    }
+
+    @Override
+    public byte[] generateApplicationCryptogram(MKDMethod mkdm, SKDMethod skdm, T imkac
+            ,String accountNo, String acctSeqNo, byte[] atc, byte[] upn, byte[] txnData)
+            throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        cmdParameters.add(new SimpleMsg("parameter", "txn data", txnData == null ? "" : ISOUtil.hexString(txnData)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate Application Cryptogram", cmdParameters));
+        try {
+            byte[] result = generateApplicationCryptogramImpl(mkdm, skdm, imkac, accountNo, acctSeqNo, atc, upn, txnData);
+            evt.addMessage(new SimpleMsg("result", "Application Cryptogram", result == null ? "" : ISOUtil.hexString(result)));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public EMVDerivedKey<T> deriveICCMasterKey(MKDMethod mkdm, T imk,
+            String pan, String psn) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "imk", imk));
+        cmdParameters.add(new SimpleMsg("parameter", "pan", pan));
+        cmdParameters.add(new SimpleMsg("parameter", "psn", psn));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Derive ICC Master Key", cmdParameters));
+        try {
+            EMVDerivedKey<T> result = deriveICCMasterKeyImpl(mkdm, imk, pan, psn);
+            evt.addMessage(new SimpleMsg("result", "ICC Master Key", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public EMVDerivedKey<T> deriveEMVSessionKey(SKDMethod skdm, T iccMk,
+            byte[] atc, byte[] upn) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+        cmdParameters.add(new SimpleMsg("parameter", "icc-mk", iccMk));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Derive EMV Session Key", cmdParameters));
+        try {
+            EMVDerivedKey<T> result = deriveEMVSessionKeyImpl(skdm, iccMk, atc, upn);
+            evt.addMessage(new SimpleMsg("result", "Session Key", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public EMVDerivedKey<T> deriveSecureMessagingSessionKey(MKDMethod mkdm, SKDMethod skdm,
+            T imk, String pan, String psn, byte[] atc, byte[] arqc) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+        cmdParameters.add(new SimpleMsg("parameter", "imk", imk));
+        cmdParameters.add(new SimpleMsg("parameter", "pan", pan));
+        cmdParameters.add(new SimpleMsg("parameter", "psn", psn));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Derive Secure Messaging Session Key", cmdParameters));
+        try {
+            EMVDerivedKey<T> result = deriveSecureMessagingSessionKeyImpl(
+                    mkdm, skdm, imk, pan, psn, atc, arqc);
+            evt.addMessage(new SimpleMsg("result", "SM Session Key", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
     }
 
     @Override
@@ -1082,6 +1239,32 @@ public class BaseSMAdapter<T>
       } finally {
         logEvent(evt);
       }
+    }
+
+    @Override
+    public byte[] generateARPC(T key, byte[] arqc, ARPCMethod arpcMethod,
+            byte[] arc, byte[] propAuthData) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "key", key));
+        cmdParameters.add(new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)));
+        cmdParameters.add(new SimpleMsg("parameter", "arpc gen. method", arpcMethod));
+        cmdParameters.add(new SimpleMsg("parameter", "auth. rc", arc == null ? "" : ISOUtil.hexString(arc)));
+        cmdParameters.add(new SimpleMsg("parameter", "prop auth. data",
+                propAuthData == null ? "" : ISOUtil.hexString(propAuthData))
+        );
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate ARPC (direct)", cmdParameters));
+        try {
+            byte[] result = generateARPCImpl(key, arqc, arpcMethod, arc, propAuthData);
+            evt.addMessage(new SimpleMsg("result", "Generated ARPC", result == null ? "" : ISOUtil.hexString(result)));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
     }
 
     @Override
@@ -1148,6 +1331,206 @@ public class BaseSMAdapter<T>
       } finally {
         logEvent(evt);
       }
+    }
+
+    @Override
+    public byte[] generateSM_MAC(T sessionKey, byte[] data) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "session key", sessionKey));
+        cmdParameters.add(new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate Secure Messaging MAC (direct)", cmdParameters));
+        try {
+            byte[] mac = generateSM_MACImpl(sessionKey, data);
+            evt.addMessage(new SimpleMsg("result", "Generated MAC", mac != null ? ISOUtil.hexString(mac) : ""));
+            return mac;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public EncryptedPIN encryptSecureMessagingPIN(T sessionKey, EncryptedPIN newPIN,
+            T kd1, byte destinationPINBlockFormat, PaddingMethod paddingMethod,
+            EncryptedPIN currentPIN, T udkAc) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "session key", sessionKey));
+        cmdParameters.add(new SimpleMsg("parameter", "new pin", newPIN));
+        cmdParameters.add(new SimpleMsg("parameter", "kd1", kd1));
+        cmdParameters.add(new SimpleMsg("parameter", "dest pin block format",
+                String.format("%02X", destinationPINBlockFormat & 0xff)));
+        cmdParameters.add(new SimpleMsg("parameter", "padding method", paddingMethod));
+        cmdParameters.add(new SimpleMsg("parameter", "current pin",
+                currentPIN == null ? "" : currentPIN));
+        cmdParameters.add(new SimpleMsg("parameter", "udk-ac", udkAc == null ? "" : udkAc));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Encrypt Secure Messaging PIN", cmdParameters));
+        try {
+            EncryptedPIN result = encryptSecureMessagingPINImpl(
+                    sessionKey, newPIN, kd1, destinationPINBlockFormat,
+                    paddingMethod, currentPIN, udkAc);
+            evt.addMessage(new SimpleMsg("result", "Encrypted PIN", result == null ? "" : result));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public EMVIssuerPublicKey recoverIssuerPublicKey(EMVCAPublicKey caPublicKey,
+            byte[] issuerPublicKeyCertificate, byte[] issuerPublicKeyRemainder,
+            byte[] issuerPublicKeyExponent, String pan) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "ca public key", caPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "issuer pk cert",
+                issuerPublicKeyCertificate == null ? "" : ISOUtil.hexString(issuerPublicKeyCertificate)));
+        cmdParameters.add(new SimpleMsg("parameter", "issuer pk remainder",
+                issuerPublicKeyRemainder == null ? "" : ISOUtil.hexString(issuerPublicKeyRemainder)));
+        cmdParameters.add(new SimpleMsg("parameter", "issuer pk exponent",
+                issuerPublicKeyExponent == null ? "" : ISOUtil.hexString(issuerPublicKeyExponent)));
+        cmdParameters.add(new SimpleMsg("parameter", "pan", pan));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Recover Issuer Public Key", cmdParameters));
+        try {
+            EMVIssuerPublicKey result = recoverIssuerPublicKeyImpl(
+                    caPublicKey, issuerPublicKeyCertificate,
+                    issuerPublicKeyRemainder, issuerPublicKeyExponent, pan);
+            evt.addMessage(new SimpleMsg("result", "Issuer Public Key", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public EMVCDAResult verifyCDA(EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] unpredictableNumber,
+            byte[] applicationCryptogram,
+            byte[] transactionData) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "icc public key", iccPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "sdad",
+                signedDynamicApplicationData == null ? "" : ISOUtil.hexString(signedDynamicApplicationData)));
+        cmdParameters.add(new SimpleMsg("parameter", "unpredictable number",
+                unpredictableNumber == null ? "" : ISOUtil.hexString(unpredictableNumber)));
+        cmdParameters.add(new SimpleMsg("parameter", "application cryptogram",
+                applicationCryptogram == null ? "" : ISOUtil.hexString(applicationCryptogram)));
+        cmdParameters.add(new SimpleMsg("parameter", "transaction data length",
+                transactionData == null ? "0" : Integer.toString(transactionData.length)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Verify CDA", cmdParameters));
+        try {
+            EMVCDAResult result = verifyCDAImpl(iccPublicKey,
+                    signedDynamicApplicationData, unpredictableNumber,
+                    applicationCryptogram, transactionData);
+            evt.addMessage(new SimpleMsg("result", "CDA outcome", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public byte[] verifyDDA(EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] ddolData) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "icc public key", iccPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "sdad",
+                signedDynamicApplicationData == null ? "" : ISOUtil.hexString(signedDynamicApplicationData)));
+        cmdParameters.add(new SimpleMsg("parameter", "ddol data",
+                ddolData == null ? "" : ISOUtil.hexString(ddolData)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Verify DDA", cmdParameters));
+        try {
+            byte[] iccDynamicNumber = verifyDDAImpl(iccPublicKey,
+                    signedDynamicApplicationData, ddolData);
+            evt.addMessage(new SimpleMsg("result", "ICC Dynamic Number",
+                    iccDynamicNumber == null ? "" : ISOUtil.hexString(iccDynamicNumber)));
+            return iccDynamicNumber;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public byte[] verifySDA(EMVIssuerPublicKey issuerPublicKey,
+            byte[] signedStaticApplicationData,
+            byte[] staticApplicationData) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "issuer public key", issuerPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "ssad",
+                signedStaticApplicationData == null ? "" : ISOUtil.hexString(signedStaticApplicationData)));
+        cmdParameters.add(new SimpleMsg("parameter", "static app data length",
+                staticApplicationData == null ? "0" : Integer.toString(staticApplicationData.length)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Verify SDA", cmdParameters));
+        try {
+            byte[] dac = verifySDAImpl(issuerPublicKey, signedStaticApplicationData, staticApplicationData);
+            evt.addMessage(new SimpleMsg("result", "DAC", dac == null ? "" : ISOUtil.hexString(dac)));
+            return dac;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
+    }
+
+    @Override
+    public EMVICCPublicKey recoverICCPublicKey(EMVIssuerPublicKey issuerPublicKey,
+            byte[] iccPublicKeyCertificate, byte[] iccPublicKeyRemainder,
+            byte[] iccPublicKeyExponent, byte[] staticApplicationData,
+            String pan) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "issuer public key", issuerPublicKey));
+        cmdParameters.add(new SimpleMsg("parameter", "icc pk cert",
+                iccPublicKeyCertificate == null ? "" : ISOUtil.hexString(iccPublicKeyCertificate)));
+        cmdParameters.add(new SimpleMsg("parameter", "icc pk remainder",
+                iccPublicKeyRemainder == null ? "" : ISOUtil.hexString(iccPublicKeyRemainder)));
+        cmdParameters.add(new SimpleMsg("parameter", "icc pk exponent",
+                iccPublicKeyExponent == null ? "" : ISOUtil.hexString(iccPublicKeyExponent)));
+        cmdParameters.add(new SimpleMsg("parameter", "static app data length",
+                staticApplicationData == null ? "0" : Integer.toString(staticApplicationData.length)));
+        cmdParameters.add(new SimpleMsg("parameter", "pan", pan));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Recover ICC Public Key", cmdParameters));
+        try {
+            EMVICCPublicKey result = recoverICCPublicKeyImpl(
+                    issuerPublicKey, iccPublicKeyCertificate,
+                    iccPublicKeyRemainder, iccPublicKeyExponent,
+                    staticApplicationData, pan);
+            evt.addMessage(new SimpleMsg("result", "ICC Public Key", result == null ? "" : result.toString()));
+            return result;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            logEvent(evt);
+        }
     }
 
     @Override
@@ -2044,6 +2427,41 @@ public class BaseSMAdapter<T>
 
     /**
      * Your SMAdapter should override this method if it has this functionality
+     * @param imkcvc3 issuer master key for CVC3
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
+     * @param atc application transaction counter
+     * @param upn unpredictable number
+     * @param data input data
+     * @param mkdm master-key derivation method
+     * @return the 5-digit CVC3
+     * @throws SMException on security module error
+     */
+    protected String generateCVC3Impl(T imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm)
+                     throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo card account number
+     * @param imkac issuer master key for application cryptograms
+     * @param expDate card expiration date as {@code yyMM}
+     * @param serviceCode card service code
+     * @param atc application transaction counter
+     * @param mkdm master-key derivation method
+     * @return the dCVV
+     * @throws SMException on security module error
+     */
+    protected String generatedCVVImpl(String accountNo, T imkac, String expDate,
+                     String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
      * @param mkdm master-key derivation method
      * @param skdm session-key derivation method
      * @param imkac issuer master key for application cryptograms
@@ -2069,6 +2487,70 @@ public class BaseSMAdapter<T>
      * @param imkac issuer master key for application cryptograms
      * @param accountNo card account number
      * @param acctSeqNo PAN sequence number
+     * @param atc application transaction counter
+     * @param upn unpredictable number
+     * @param txnData transaction data
+     * @return calculated 8-byte Application Cryptogram (ARQC/TC/AAC)
+     * @throws SMException on security module error
+     */
+    protected byte[] generateApplicationCryptogramImpl(MKDMethod mkdm, SKDMethod skdm, T imkac
+            ,String accountNo, String acctSeqNo, byte[] atc, byte[] upn, byte[] txnData)
+            throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm master-key derivation method
+     * @param imk issuer master key
+     * @param pan account number
+     * @param psn PAN sequence number
+     * @return derived ICC master key paired with its KCV
+     * @throws SMException on security module error
+     */
+    protected EMVDerivedKey<T> deriveICCMasterKeyImpl(MKDMethod mkdm, T imk,
+            String pan, String psn) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param skdm session-key derivation method
+     * @param iccMk ICC Master Key
+     * @param atc application transaction counter
+     * @param upn unpredictable number; may be {@code null} when unused
+     * @return derived session key paired with its KCV
+     * @throws SMException on security module error
+     */
+    protected EMVDerivedKey<T> deriveEMVSessionKeyImpl(SKDMethod skdm, T iccMk,
+            byte[] atc, byte[] upn) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm master-key derivation method
+     * @param skdm session-key derivation method
+     * @param imk Secure Messaging Issuer Master Key (IMK-SMI or IMK-SMC)
+     * @param pan account number
+     * @param psn PAN sequence number
+     * @param atc application transaction counter (VSDC diversifier)
+     * @param arqc the per-session diversifier (MCHIP / EMV_CSKD)
+     * @return derived SM session key paired with its KCV
+     * @throws SMException on security module error
+     */
+    protected EMVDerivedKey<T> deriveSecureMessagingSessionKeyImpl(MKDMethod mkdm, SKDMethod skdm,
+            T imk, String pan, String psn, byte[] atc, byte[] arqc) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm master-key derivation method
+     * @param skdm session-key derivation method
+     * @param imkac issuer master key for application cryptograms
+     * @param accountNo card account number
+     * @param acctSeqNo PAN sequence number
      * @param arqc application request cryptogram
      * @param atc application transaction counter
      * @param upn unpredictable number
@@ -2082,6 +2564,23 @@ public class BaseSMAdapter<T>
             ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc
             ,byte[] upn, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Direct ARPC generation from a supplied key.
+     * @param key the key under which the ARPC is computed (ICC MK for VSDC
+     *        and MCHIP; AC session key for EMV_CSKD)
+     * @param arqc application request cryptogram
+     * @param arpcMethod ARPC generation method
+     * @param arc authorization response code (or CSU for METHOD_2)
+     * @param propAuthData proprietary authentication data; may be {@code null}
+     * @return calculated ARPC
+     * @throws SMException on security module error
+     */
+    protected byte[] generateARPCImpl(T key, byte[] arqc, ARPCMethod arpcMethod,
+            byte[] arc, byte[] propAuthData) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
@@ -2131,6 +2630,18 @@ public class BaseSMAdapter<T>
     }
 
     /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Direct SM-MAC generation from a supplied session key.
+     * @param sessionKey the SK-SMI
+     * @param data data to MAC
+     * @return generated 8-byte MAC
+     * @throws SMException on security module error
+     */
+    protected byte[] generateSM_MACImpl(T sessionKey, byte[] data) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
      * Your SMAdapter should override this method if it has this functionality
      * @param mkdm master-key derivation method
      * @param skdm session-key derivation method
@@ -2156,6 +2667,118 @@ public class BaseSMAdapter<T>
            ,byte[] data, EncryptedPIN currentPIN, EncryptedPIN newPIN
            ,T kd1, T imksmc, T imkac
            ,byte destinationPINBlockFormat) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Direct SM PIN encryption from a supplied SM session encryption key.
+     * @param sessionKey the SM session encryption key (SK-SMC)
+     * @param newPIN the PIN currently wrapped under kd1
+     * @param kd1 the key currently wrapping newPIN
+     * @param destinationPINBlockFormat the target PIN block format
+     * @param paddingMethod SM padding method; {@code null} defaults to MCHIP
+     * @param currentPIN current PIN (required for FORMAT42); may be {@code null}
+     * @param udkAc ICC AC Master Key (required for FORMAT41/42); may be {@code null}
+     * @return the PIN re-encrypted under sessionKey in destinationPINBlockFormat
+     * @throws SMException on security module error
+     */
+    protected EncryptedPIN encryptSecureMessagingPINImpl(T sessionKey,
+            EncryptedPIN newPIN, T kd1, byte destinationPINBlockFormat,
+            PaddingMethod paddingMethod, EncryptedPIN currentPIN, T udkAc)
+            throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Recover an Issuer Public Key from a CA-signed Issuer Public Key Certificate.
+     * @param caPublicKey the CA public key
+     * @param issuerPublicKeyCertificate EMV tag 0x90 contents
+     * @param issuerPublicKeyRemainder EMV tag 0x92 contents (may be {@code null})
+     * @param issuerPublicKeyExponent EMV tag 0x9F32 contents
+     * @param pan cardholder PAN; {@code null} skips the issuer-identifier check
+     * @return the recovered Issuer Public Key
+     * @throws SMException on RSA recovery or EMV validation failure
+     */
+    protected EMVIssuerPublicKey recoverIssuerPublicKeyImpl(
+            EMVCAPublicKey caPublicKey,
+            byte[] issuerPublicKeyCertificate,
+            byte[] issuerPublicKeyRemainder,
+            byte[] issuerPublicKeyExponent,
+            String pan) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Recover an ICC Public Key from an issuer-signed ICC Public Key Certificate.
+     * @param issuerPublicKey the recovered issuer public key
+     * @param iccPublicKeyCertificate EMV tag 0x9F46 contents
+     * @param iccPublicKeyRemainder EMV tag 0x9F48 contents (may be {@code null})
+     * @param iccPublicKeyExponent EMV tag 0x9F47 contents
+     * @param staticApplicationData data assembled from the AFL, included in
+     *        the SHA-1 hash validation
+     * @param pan cardholder PAN; {@code null} skips the PAN check
+     * @return the recovered ICC Public Key
+     * @throws SMException on RSA recovery or EMV validation failure
+     */
+    protected EMVICCPublicKey recoverICCPublicKeyImpl(
+            EMVIssuerPublicKey issuerPublicKey,
+            byte[] iccPublicKeyCertificate,
+            byte[] iccPublicKeyRemainder,
+            byte[] iccPublicKeyExponent,
+            byte[] staticApplicationData,
+            String pan) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Verify Signed Static Application Data (SSAD, EMV tag 0x93).
+     * @param issuerPublicKey the recovered issuer public key
+     * @param signedStaticApplicationData EMV tag 0x93 contents
+     * @param staticApplicationData SAD bytes assembled per EMV §10.3
+     * @return the 2-byte Data Authentication Code (DAC)
+     * @throws SMException on RSA recovery or EMV validation failure
+     */
+    protected byte[] verifySDAImpl(EMVIssuerPublicKey issuerPublicKey,
+            byte[] signedStaticApplicationData,
+            byte[] staticApplicationData) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Verify Signed Dynamic Application Data (SDAD, EMV tag 0x9F4B).
+     * @param iccPublicKey the recovered ICC public key
+     * @param signedDynamicApplicationData EMV tag 0x9F4B contents
+     * @param ddolData the DDOL bytes the terminal sent to INTERNAL AUTHENTICATE
+     * @return the ICC Dynamic Number
+     * @throws SMException on RSA recovery or EMV validation failure
+     */
+    protected byte[] verifyDDAImpl(EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] ddolData) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     * Verify Combined DDA + AC (CDA) per EMV 4.4 Book 2 §6.6.
+     * @param iccPublicKey the recovered ICC public key
+     * @param signedDynamicApplicationData EMV tag 0x9F4B contents
+     * @param unpredictableNumber terminal UN (4 bytes)
+     * @param applicationCryptogram AC from tag 0x9F26 (8 bytes)
+     * @param transactionData bytes hashed for the transaction-data-hash field
+     * @return the CDA outcome (ICC Dynamic Number + CID)
+     * @throws SMException on RSA recovery, EMV validation, or binding failure
+     */
+    protected EMVCDAResult verifyCDAImpl(EMVICCPublicKey iccPublicKey,
+            byte[] signedDynamicApplicationData,
+            byte[] unpredictableNumber,
+            byte[] applicationCryptogram,
+            byte[] transactionData) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
