@@ -37,6 +37,7 @@ import org.jpos.log.evt.Start;
 import org.jpos.log.evt.Stop;
 import org.jpos.log.evt.SysInfo;
 import org.jpos.log.evt.ThrowableAuditLogEvent;
+import org.jpos.log.evt.TraceEvt;
 import org.jpos.log.evt.Txn;
 import org.jpos.log.evt.UnDeploy;
 import org.jpos.log.evt.Warning;
@@ -84,7 +85,8 @@ public final class AuditLogEventRegistry {
       new AuditLogEventType("txn", Txn.class),
       new AuditLogEventType("profiler", ProfilerEvt.class),
       new AuditLogEventType("context", ContextEvt.class),
-      new AuditLogEventType("logevt", LogEventEvt.class)
+      new AuditLogEventType("logevt", LogEventEvt.class),
+      new AuditLogEventType("trace", TraceEvt.class)
     );
 
     private static volatile Map<String, AuditLogEventType> types;

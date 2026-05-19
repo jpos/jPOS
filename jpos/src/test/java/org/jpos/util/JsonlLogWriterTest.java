@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.ISOMsg;
+import org.jpos.transaction.TransactionManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -208,6 +209,56 @@ public class JsonlLogWriterTest {
         assertTrue(first.get(1).isNumber(), "duration_ns should be numeric");
         assertTrue(first.get(2).isNumber(), "total_ns should be numeric");
         assertEquals("end", checkpoints.get(2).get(0).asText());
+    }
+
+    @Test
+    void participantTracesRenderAsStructuredEvents() throws Exception {
+        LogEvent ev = new LogEvent("commit");
+        ev.addMessage(TransactionManager.Trace.of("prepare", "PartA"));
+        ev.addMessage(TransactionManager.Trace.of("prepare", "PartB", "READONLY NO_JOIN"));
+        ev.addMessage(TransactionManager.Trace.of("commit", "PartA"));
+        writer.write(ev);
+
+        JsonNode payload = objectMapper.readTree(baos.toString().trim()).get("payload");
+        assertEquals(3, payload.size());
+        for (JsonNode entry : payload) {
+            assertEquals("trace", entry.get("t").asText(),
+                "every Trace.of(...) message should serialise as a TraceEvt, got " + entry);
+        }
+        assertEquals("prepare", payload.get(0).get("phase").asText());
+        assertEquals("PartA",   payload.get(0).get("name").asText());
+        // info is empty — JsonInclude.NON_EMPTY should drop it
+        assertNull(payload.get(0).get("info"));
+
+        assertEquals("prepare", payload.get(1).get("phase").asText());
+        assertEquals("PartB",   payload.get(1).get("name").asText());
+        assertEquals("READONLY NO_JOIN", payload.get(1).get("info").asText());
+
+        assertEquals("commit", payload.get(2).get("phase").asText());
+        assertEquals("PartA",  payload.get(2).get("name").asText());
+    }
+
+    @Test
+    void contextWithOpaqueValueDoesNotFailSerialization() throws Exception {
+        org.jpos.transaction.Context ctx = new org.jpos.transaction.Context();
+        ctx.put("STR", "hello");
+        // anonymous Object: Jackson cannot serialize this without
+        // FAIL_ON_EMPTY_BEANS disabled — toString() fallback in
+        // Context.convertEntry is what makes this safe.
+        ctx.put("OPAQUE", new Object() {
+            @Override public String toString() { return "opaque-value"; }
+        });
+
+        LogEvent ev = new LogEvent("commit");
+        ev.addMessage(ctx);
+        writer.write(ev);
+
+        String line = baos.toString().trim();
+        assertFalse(line.startsWith("{\"error\":"), "should not have fallen into error branch: " + line);
+        JsonNode entry = objectMapper.readTree(line).get("payload").get(0);
+        assertEquals("context", entry.get("t").asText());
+        assertEquals("hello", entry.get("entries").get("STR").asText());
+        assertEquals("opaque-value", entry.get("entries").get("OPAQUE").asText());
     }
 
     @Test

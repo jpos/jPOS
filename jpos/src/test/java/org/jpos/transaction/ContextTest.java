@@ -34,11 +34,20 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.ConcurrentModificationException;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jpos.log.AuditLogEvent;
+import org.jpos.log.AuditLogEventRegistry;
+import org.jpos.log.evt.ContextEvt;
 import org.jpos.util.LogEvent;
+import org.jpos.util.Profiler;
 import org.jpos.util.Serializer;
 import org.junit.jupiter.api.Test;
 
@@ -403,5 +412,62 @@ public class ContextTest {
         ctx1.put ("B", "BCD");
         ctx.merge(ctx1);
         assertTrue (ctx.hasKeys("A", "B"));
+    }
+
+    @Test
+    public void toAuditEventRoundTripsOpaqueValue() throws Exception {
+        Context ctx = new Context();
+        ctx.put("STR", "hello");
+        ctx.put("NUM", 42);
+        // anonymous Object: no Jackson serializer, would trigger
+        // FAIL_ON_EMPTY_BEANS without the toString() fallback.
+        Object opaque = new Object() {
+            @Override public String toString() { return "opaque-value"; }
+        };
+        ctx.put("OPAQUE", opaque);
+
+        ObjectMapper mapper = AuditLogEventRegistry.register(new ObjectMapper());
+        AuditLogEvent evt = ctx.toAuditEvent();
+        String json = mapper.writeValueAsString(evt);
+
+        JsonNode node = mapper.readTree(json);
+        assertEquals("context", node.get("t").asText());
+        JsonNode entries = node.get("entries");
+        assertEquals("hello", entries.get("STR").asText());
+        assertEquals(42, entries.get("NUM").asInt());
+        assertEquals("opaque-value", entries.get("OPAQUE").asText());
+    }
+
+    @Test
+    public void toAuditEventConvertsNestedMapAndCollection() throws Exception {
+        Context ctx = new Context();
+        Map<String,Object> nested = new LinkedHashMap<>();
+        nested.put("k", "v");
+        nested.put("opaque", new Object() {
+            @Override public String toString() { return "inner"; }
+        });
+        ctx.put("M", nested);
+        ctx.put("L", List.of("a", "b"));
+
+        ObjectMapper mapper = AuditLogEventRegistry.register(new ObjectMapper());
+        String json = mapper.writeValueAsString(ctx.toAuditEvent());
+        JsonNode entries = mapper.readTree(json).get("entries");
+        assertEquals("v", entries.get("M").get("k").asText());
+        assertEquals("inner", entries.get("M").get("opaque").asText());
+        assertEquals("a", entries.get("L").get(0).asText());
+        assertEquals("b", entries.get("L").get(1).asText());
+    }
+
+    @Test
+    public void toAuditEventExpandsAuditLogEventConvertible() {
+        Context ctx = new Context();
+        Profiler prof = new Profiler();
+        prof.checkPoint("step-a");
+        ctx.put("PROFILER", prof);
+
+        ContextEvt evt = (ContextEvt) ctx.toAuditEvent();
+        Object converted = evt.entries().get("PROFILER");
+        assertTrue(converted instanceof AuditLogEvent,
+            "Profiler should expand to nested AuditLogEvent (got " + converted + ")");
     }
 }

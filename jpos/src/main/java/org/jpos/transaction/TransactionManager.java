@@ -802,7 +802,7 @@ public class TransactionManager
                         metrics.record(getName(p) + "-selector", c.lap());
                 }
                 if (evt != null) {
-                    evt.addMessage ("       selector: '" + groupName +"'");
+                    evt.addMessage (Trace.of("selector", groupName, ""));
                 }
                 if (groupName != null) {
                     StringTokenizer st = new StringTokenizer (groupName, " ,");
@@ -1460,7 +1460,12 @@ public class TransactionManager
      * @param message free-form message, typically the participant short name
      * @param info    optional trailing info, rendered after the message
      */
-    public record Trace (String phase, String message, String info) {
+    public record Trace (String phase, String message, String info)
+            implements org.jpos.log.AuditLogEventConvertible {
+        @Override
+        public org.jpos.log.AuditLogEvent toAuditEvent() {
+            return new org.jpos.log.evt.TraceEvt(phase, message, info);
+        }
         @Override
         public String toString() {
             return "%15s: %s%s".formatted(phase, message, info);

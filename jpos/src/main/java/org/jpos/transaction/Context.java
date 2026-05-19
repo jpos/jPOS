@@ -342,7 +342,27 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable, 
             }
             return baos.toString().trim();
         }
-        return v;
+        if (v instanceof Map<?, ?> m) {
+            Map<String, Object> out = new LinkedHashMap<>();
+            m.forEach((mk, mv) -> out.put(String.valueOf(mk), convertEntry(mv)));
+            return out;
+        }
+        if (v instanceof Collection<?> col) {
+            List<Object> out = new ArrayList<>(col.size());
+            for (Object e : col)
+                out.add(convertEntry(e));
+            return out;
+        }
+        if (v instanceof String || v instanceof Number ||
+            v instanceof Boolean || v instanceof Character ||
+            v instanceof Enum<?>) {
+            return v;
+        }
+        // Anything else (Netty FullHttpRequest, JPA proxy, third-party
+        // infra types, …) — render with toString() so the JSON writer
+        // never falls over on an opaque type, but the log pipeline still
+        // gets a human-readable value.
+        return v.toString();
     }
     /**
      * Retrieves a persistent value by key, waiting up to {@code timeout} milliseconds.
