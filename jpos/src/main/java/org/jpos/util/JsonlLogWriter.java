@@ -26,6 +26,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.jpos.log.AuditLogEvent;
@@ -50,8 +51,8 @@ import java.util.*;
  *
  * <p>Configuration properties (same convention as {@link ProtectedLogListener}):</p>
  * <ul>
- *   <li>{@code protect} — space-separated field numbers to mask via {@link ISOUtil#protect(String)} (default: {@code "2"})</li>
- *   <li>{@code wipe} — space-separated field numbers to replace with [WIPED] (default: {@code "35 45 48 52 55"})</li>
+ *   <li>{@code protect} — space-separated field paths to mask via {@link ISOUtil#protect(String)} (default: {@code "2"})</li>
+ *   <li>{@code wipe} — space-separated field paths to replace with [WIPED] (default: {@code "35 45 48 52 55"})</li>
  * </ul>
  *
  * <p>Output is suitable for {@code jq}, Filebeat, and Elasticsearch ingestion.</p>
@@ -66,8 +67,8 @@ public class JsonlLogWriter extends BaseLogEventWriter implements Configurable {
 
     private ObjectMapper mapper;
     private String host;
-    private Set<Integer> protectFields = Set.of(2);
-    private Set<Integer> wipeFields = Set.of(35, 45, 48, 52, 55);
+    private Set<String> protectFields = Set.of("2");
+    private Set<String> wipeFields = Set.of("35", "45", "48", "52", "55");
 
     /** Default constructor. */
     public JsonlLogWriter() {
@@ -83,11 +84,11 @@ public class JsonlLogWriter extends BaseLogEventWriter implements Configurable {
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         String protect = cfg.get("protect", null);
         if (protect != null) {
-            protectFields = toIntSet(protect);
+            protectFields = toFieldPathSet(protect);
         }
         String wipe = cfg.get("wipe", null);
         if (wipe != null) {
-            wipeFields = toIntSet(wipe);
+            wipeFields = toFieldPathSet(wipe);
         }
         initMapper();
     }
@@ -144,13 +145,10 @@ public class JsonlLogWriter extends BaseLogEventWriter implements Configurable {
 
     private String protectAndDump(ISOMsg original) {
         ISOMsg m = (ISOMsg) original.clone();
-        for (int field : protectFields) {
-            String v = m.getString(field);
-            if (v != null) {
-                m.set(field, ISOUtil.protect(v));
-            }
+        for (String field : protectFields) {
+            protectField(m, field);
         }
-        for (int field : wipeFields) {
+        for (String field : wipeFields) {
             if (m.hasField(field)) {
                 m.set(field, WIPED);
             }
@@ -168,6 +166,19 @@ public class JsonlLogWriter extends BaseLogEventWriter implements Configurable {
         return obj.toString();
     }
 
+    private void protectField(ISOMsg m, String field) {
+        try {
+            Object v = m.getValue(field);
+            if (v instanceof String s) {
+                m.set(field, ISOUtil.protect(s));
+            } else if (v != null) {
+                m.set(field, WIPED);
+            }
+        } catch (ISOException ignored) {
+            // Match ProtectedLogListener behavior: invalid or absent paths are ignored.
+        }
+    }
+
     private void initMapper() {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -179,13 +190,27 @@ public class JsonlLogWriter extends BaseLogEventWriter implements Configurable {
         AuditLogEventRegistry.register(mapper);
     }
 
-    private static Set<Integer> toIntSet(String spaceSeparated) {
+    private static Set<String> toFieldPathSet(String spaceSeparated) throws ConfigurationException {
         if (spaceSeparated == null || spaceSeparated.isBlank())
             return Set.of();
-        Set<Integer> result = new HashSet<>();
+        Set<String> result = new HashSet<>();
         for (String token : spaceSeparated.trim().split("\\s+")) {
-            result.add(Integer.parseInt(token));
+            validateFieldPath(token);
+            result.add(token);
         }
         return Collections.unmodifiableSet(result);
+    }
+
+    private static void validateFieldPath(String fieldPath) throws ConfigurationException {
+        for (String token : fieldPath.split("\\.", -1)) {
+            if (token.isEmpty()) {
+                throw new ConfigurationException("Invalid ISO field path: " + fieldPath);
+            }
+            try {
+                Integer.parseInt(token);
+            } catch (NumberFormatException e) {
+                throw new ConfigurationException("Invalid ISO field path: " + fieldPath, e);
+            }
+        }
     }
 }

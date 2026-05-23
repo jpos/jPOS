@@ -143,6 +143,47 @@ public class JsonlLogWriterTest {
     }
 
     @Test
+    void protectsNestedFieldPath() throws Exception {
+        Properties props = new Properties();
+        props.setProperty("protect", "123.1");
+        props.setProperty("wipe", "");
+        writer.setConfiguration(new SimpleConfiguration(props));
+
+        ISOMsg m = new ISOMsg();
+        m.setMTI("0200");
+        m.set("123.1", "4111111111111111");
+
+        LogEvent ev = new LogEvent("send");
+        ev.addMessage(m);
+        writer.write(ev);
+
+        String output = baos.toString().trim();
+        assertFalse(output.contains("4111111111111111"), "nested PAN must not appear in cleartext");
+        assertTrue(output.contains("411111"), "nested BIN should be preserved");
+        assertTrue(output.contains("1111"), "nested last 4 should be preserved");
+    }
+
+    @Test
+    void wipesNestedFieldPath() throws Exception {
+        Properties props = new Properties();
+        props.setProperty("protect", "");
+        props.setProperty("wipe", "112.3.1");
+        writer.setConfiguration(new SimpleConfiguration(props));
+
+        ISOMsg m = new ISOMsg();
+        m.setMTI("0200");
+        m.set("112.3.1", "secret nested value");
+
+        LogEvent ev = new LogEvent("send");
+        ev.addMessage(m);
+        writer.write(ev);
+
+        String output = baos.toString().trim();
+        assertFalse(output.contains("secret nested value"), "nested field must be wiped");
+        assertTrue(output.contains("[WIPED]"), "nested wiped fields should show [WIPED]");
+    }
+
+    @Test
     void includesRealmInTags() throws Exception {
         Log source = new Log();
         source.setRealm("channel/send");
