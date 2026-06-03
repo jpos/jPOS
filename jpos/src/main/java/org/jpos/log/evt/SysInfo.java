@@ -53,6 +53,7 @@ import java.util.UUID;
  * @param usableSpace        deploy-directory usable space, formatted human-readable
  * @param version            jPOS version string
  * @param revision           jPOS source revision (branch / commit)
+ * @param node               active jPOS node number
  * @param classPath          effective classpath, expanded against the launcher
  *                           manifest when applicable
  * @param classPathHash      hex SHA-1 of {@code classPath} for change-tracking
@@ -75,7 +76,7 @@ import java.util.UUID;
  */
 @JsonPropertyOrder({
   "osName", "osVersion", "javaVersion", "javaVendor", "aes", "host", "userName", "cwd", "watch-service", "environment",
-  "args", "encoding", "zone-info", "processName", "freeSpace", "usableSpace", "version", "revision", "class-path", "class-path-hash", "instance",
+  "args", "encoding", "zone-info", "processName", "freeSpace", "usableSpace", "version", "revision", "node", "class-path", "class-path-hash", "instance",
   "uptime", "loadAverage", "processors", "drift", "maxMemory", "totalMemory", "freeMemory", "inUseMemory",
   "gcTotalCnt", "gcTotalTime", "threadCount", "threadPeak", "nameRegistrar"
 })
@@ -98,6 +99,7 @@ public record SysInfo (
   @JsonProperty("usable-space") String usableSpace,
   String version,
   String revision,
+  int node,
   @JsonProperty("class-path") String classPath,
   @JsonProperty("class-path-hash") String classPathHash,
   UUID instance,
