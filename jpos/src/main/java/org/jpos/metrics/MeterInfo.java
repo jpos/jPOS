@@ -34,8 +34,16 @@ public enum MeterInfo {
 
     /** Active inbound connections accepted by ISOServer. */
     ISOSERVER_CONNECTION_COUNT("jpos.server.connections", "Incoming active connections"),
+    /** Total inbound connections accepted by ISOServer. */
+    ISOSERVER_ACCEPTS("jpos.server.accepts", "Accepted incoming connections"),
+    /** Total inbound connections disconnected from ISOServer. */
+    ISOSERVER_DISCONNECTS("jpos.server.disconnects", "Disconnected incoming connections"),
     /** Active outbound connections opened by ISOChannel. */
     ISOCHANNEL_CONNECTION_COUNT("jpos.channel.connections", "Outgoing active connections"),
+    /** Total outbound connections opened by ISOChannel. */
+    ISOCHANNEL_CONNECTS("jpos.channel.connects", "Opened outgoing connections"),
+    /** Total outbound connections disconnected by ISOChannel. */
+    ISOCHANNEL_DISCONNECTS("jpos.channel.disconnects", "Disconnected outgoing connections"),
 
     /** Outbound ISO message counter, tagged {@code direction=out}. */
     ISOMSG_OUT("jpos.isomsg", "Transmitted messages", Tags.of ("direction", "out")),

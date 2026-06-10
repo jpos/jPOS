@@ -125,6 +125,7 @@ public abstract class BaseChannel extends Observable
     private int nextHostPort = 0;
     private boolean roundRobin = false;
     private boolean debugIsoError = true;
+    private boolean logConnections = false;
 
     private ISOMsgMetrics isoMsgMetrics;
 
@@ -477,6 +478,7 @@ public abstract class BaseChannel extends Observable
         ChannelEvent jfr = new ChannelEvent.Connect();
         jfr.begin();
         LogEvent evt = new LogEvent (this, "connect").withTraceId(uuid);
+        boolean logEvent = logConnections;
         try {
             socket = newSocket (hosts, ports, evt);
             if (getHost() != null)
@@ -490,9 +492,11 @@ public abstract class BaseChannel extends Observable
             jfr = new ChannelEvent.ConnectionException(jfr.getDetail());
             jfr.begin();
             jfr.append (e.getMessage());
+            logEvent = true;
             throw e;
         } finally {
-            Logger.log (evt);
+            if (logEvent)
+                Logger.log (evt);
             jfr.commit();
         }
     }
@@ -897,6 +901,7 @@ public abstract class BaseChannel extends Observable
         byte[] b=null;
         byte[] header=null;
         LogEvent evt = new LogEvent (this, "receive").withTraceId(getSocketUUID());
+        boolean logEvent = true;
         ISOMsg m = createMsg ();  // call createMsg instead of createISOMsg for backward compatibility
 
         m.setSource (this);
@@ -963,10 +968,13 @@ public abstract class BaseChannel extends Observable
             }
             throw e;
         } catch (IOException e) {
-            evt.addMessage (
-              new Disconnect(socket.getInetAddress().getHostAddress(), socket.getPort(), socket.getLocalPort(),
-                "%s (%s)".formatted(Caller.shortClassName(e.getClass().getName()), Caller.info()), e.getMessage())
-            );
+            logEvent = logConnections || !isRoutineDisconnect(e);
+            if (logEvent) {
+                evt.addMessage (
+                  new Disconnect(socket.getInetAddress().getHostAddress(), socket.getPort(), socket.getLocalPort(),
+                    "%s (%s)".formatted(Caller.shortClassName(e.getClass().getName()), Caller.info()), e.getMessage())
+                );
+            }
             closeSocket();
             throw e;
         } catch (Exception e) {
@@ -975,7 +983,8 @@ public abstract class BaseChannel extends Observable
             evt.addMessage (e);
             throw new IOException ("unexpected exception", e);
         } finally {
-            Logger.log (evt);
+            if (logEvent)
+                Logger.log (evt);
         }
         jfr.setDetail(m.toString());
         jfr.commit();
@@ -1270,6 +1279,7 @@ public abstract class BaseChannel extends Observable
         expectKeepAlive = cfg.getBoolean ("expect-keep-alive", false);
         roundRobin = cfg.getBoolean ("round-robin", false);
         debugIsoError = cfg.getBoolean ("debug-iso-error", true);
+        logConnections = cfg.getBoolean ("log-connections", false);
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
         try {
@@ -1326,6 +1336,23 @@ public abstract class BaseChannel extends Observable
      */
     public boolean isOverrideHeader () {
         return overrideHeader;
+    }
+    /**
+     * Controls whether routine connection lifecycle events are logged.
+     * @param logConnections if true, log successful connects and normal disconnects
+     */
+    public void setLogConnections (boolean logConnections) {
+        this.logConnections = logConnections;
+    }
+    /**
+     * Returns whether routine connection lifecycle events are logged.
+     * @return true if routine connection lifecycle logging is enabled
+     */
+    public boolean isLogConnections () {
+        return logConnections;
+    }
+    private boolean isRoutineDisconnect(IOException e) {
+        return e instanceof EOFException || e instanceof SocketException;
     }
     /**
      * Retrieves a channel instance by name from the NameRegistrar.
