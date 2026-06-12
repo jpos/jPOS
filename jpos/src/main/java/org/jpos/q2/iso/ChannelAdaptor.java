@@ -547,10 +547,11 @@ public class ChannelAdaptor
             try {
                 SpaceUtil.wipe(sp, ready);
                 channel.disconnect();
-                if (disconnectsCounter != null)
-                    disconnectsCounter.increment();
             } catch (Exception e) {
                 getLog().warn("disconnect", e);
+            } finally {
+                if (disconnectsCounter != null && !channel.isConnected())
+                    disconnectsCounter.increment();
             }
         }
     }
