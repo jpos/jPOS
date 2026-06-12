@@ -69,6 +69,7 @@ public class QServer
     private Gauge connectionsGauge;
     private Counter acceptsCounter;
     private Counter disconnectsCounter;
+    private ISOServerEventListener metricsEventListener;
     private static final String CHANNEL_NAME_REGEXP = " (?=\\d+ \\S+:\\S+)";
 
     /** Default constructor. */
@@ -405,12 +406,13 @@ public class QServer
             );
         acceptsCounter = MeterFactory.counter(registry, MeterInfo.ISOSERVER_ACCEPTS, tags);
         disconnectsCounter = MeterFactory.counter(registry, MeterInfo.ISOSERVER_DISCONNECTS, tags);
-        server.addServerEventListener(event -> {
+        metricsEventListener = event -> {
             if (event instanceof ISOServerAcceptEvent && acceptsCounter != null)
                 acceptsCounter.increment();
             else if (event instanceof ISOServerClientDisconnectEvent && disconnectsCounter != null)
                 disconnectsCounter.increment();
-        });
+        };
+        server.addServerEventListener(metricsEventListener);
 
         if (channel instanceof ISOMsgMetrics.Source ms) {
             ISOMsgMetrics mtr = ms.getISOMsgMetrics();
@@ -423,7 +425,14 @@ public class QServer
 
     private void removeMeters() {
         var registry = getServer().getMeterRegistry();
+        if (metricsEventListener != null) {
+            server.removeServerEventListener(metricsEventListener);
+            metricsEventListener = null;
+        }
         MeterFactory.remove(registry, connectionsGauge, acceptsCounter, disconnectsCounter);
+        connectionsGauge = null;
+        acceptsCounter = null;
+        disconnectsCounter = null;
 
         if (channel instanceof ISOMsgMetrics.Source ms) {
             ISOMsgMetrics mtr = ms.getISOMsgMetrics();
