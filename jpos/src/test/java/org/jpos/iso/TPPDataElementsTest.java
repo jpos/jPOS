@@ -46,4 +46,25 @@ public class TPPDataElementsTest {
         assertEquals(m.getString("113.70"), "2222");
         assertEquals(m.getString("113.71"), "1111");
     }
+
+    @Test
+    public void testExtendedAuthorizationIndicator() throws ISOException {
+        assertExtendedAuthorizationIndicator("jar:packager/cmf.xml");
+        assertExtendedAuthorizationIndicator("jar:packager/cmfv3.xml");
+    }
+
+    private void assertExtendedAuthorizationIndicator(String packagerResource) throws ISOException {
+        ISOPackager p = new GenericPackager(packagerResource);
+        ISOMsg m = new ISOMsg("2100");
+        m.setPackager(p);
+        m.set("113.34", "Y");
+
+        byte[] packed = m.pack();
+
+        ISOMsg unpacked = new ISOMsg();
+        unpacked.setPackager(p);
+        unpacked.unpack(packed);
+
+        assertEquals("Y", unpacked.getString("113.34"));
+    }
 }
