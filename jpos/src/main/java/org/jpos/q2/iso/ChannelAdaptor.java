@@ -18,6 +18,7 @@
 
 package org.jpos.q2.iso;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.BaseUnits;
@@ -84,6 +85,8 @@ public class ChannelAdaptor
     private ScheduledExecutorService scheduledExecutor;
 
     private Gauge connectionsGauge;
+    private Counter connectsCounter;
+    private Counter disconnectsCounter;
 
     @Config("soft-stop") private long softStop;
 
@@ -524,10 +527,13 @@ public class ChannelAdaptor
             } catch (IOException ignored) {
                 // channel.connect already logs - no need for more warnings
             }
-            if (!channel.isConnected ())
+            if (!channel.isConnected ()) {
                 ISOUtil.sleep (delay);
-            else
+            } else {
                 connects++;
+                if (connectsCounter != null)
+                    connectsCounter.increment();
+            }
         }
         if (running() && sp.rdp (ready) == null)
             sp.out (ready, new Date());
@@ -543,6 +549,9 @@ public class ChannelAdaptor
                 channel.disconnect();
             } catch (Exception e) {
                 getLog().warn("disconnect", e);
+            } finally {
+                if (disconnectsCounter != null && !channel.isConnected())
+                    disconnectsCounter.increment();
             }
         }
     }
@@ -649,6 +658,8 @@ public class ChannelAdaptor
               BaseUnits.SESSIONS,
               () -> isConnected() ? 1 : 0
             );
+        connectsCounter = MeterFactory.counter(registry, MeterInfo.ISOCHANNEL_CONNECTS, tags);
+        disconnectsCounter = MeterFactory.counter(registry, MeterInfo.ISOCHANNEL_DISCONNECTS, tags);
 
         if (channel instanceof ISOMsgMetrics.Source ms) {
             ISOMsgMetrics mtr = ms.getISOMsgMetrics();
@@ -661,7 +672,7 @@ public class ChannelAdaptor
 
     private void removeMeters() {
         var registry = getServer().getMeterRegistry();
-        registry.remove(connectionsGauge);
+        MeterFactory.remove(registry, connectionsGauge, connectsCounter, disconnectsCounter);
 
         if (channel instanceof ISOMsgMetrics.Source ms) {
             ISOMsgMetrics mtr = ms.getISOMsgMetrics();
