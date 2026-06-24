@@ -125,7 +125,7 @@ public abstract class BaseChannel extends Observable
     private int nextHostPort = 0;
     private boolean roundRobin = false;
     private boolean debugIsoError = true;
-    private boolean logConnections = false;
+    private boolean logConnections = true;
 
     private ISOMsgMetrics isoMsgMetrics;
 
@@ -1279,7 +1279,7 @@ public abstract class BaseChannel extends Observable
         expectKeepAlive = cfg.getBoolean ("expect-keep-alive", false);
         roundRobin = cfg.getBoolean ("round-robin", false);
         debugIsoError = cfg.getBoolean ("debug-iso-error", true);
-        logConnections = cfg.getBoolean ("log-connections", false);
+        logConnections = cfg.getBoolean ("log-connections", true);
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
         try {

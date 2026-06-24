@@ -304,7 +304,6 @@ public class BaseChannelTest {
             BaseChannel rawChannel = new RawChannel();
             rawChannel.setLogger(logger, "comm/channel");
             rawChannel.setHost("127.0.0.1", serverSocket.getLocalPort());
-            rawChannel.setLogConnections(true);
             rawChannel.connect();
             try (Socket peer = accepted.get()) {
                 assertEquals("comm/channel", rawChannel.getRealm(), "rawChannel.getRealm()");
@@ -323,7 +322,7 @@ public class BaseChannelTest {
     }
 
     @Test
-    public void testConnectDoesNotLogByDefault() throws Throwable {
+    public void testConnectDoesNotLogWhenDisabled() throws Throwable {
         List<LogEvent> events = new ArrayList<>();
         Logger logger = new Logger();
         logger.setName("test-connect-default-logger");
@@ -338,6 +337,7 @@ public class BaseChannelTest {
             BaseChannel rawChannel = new RawChannel();
             rawChannel.setLogger(logger, "comm/channel");
             rawChannel.setHost("127.0.0.1", serverSocket.getLocalPort());
+            rawChannel.setLogConnections(false);
             rawChannel.connect();
             try (Socket peer = accepted.get()) {
                 assertFalse(events.stream().anyMatch(ev -> "connect".equals(ev.getTag())), "connect log event");
@@ -715,22 +715,22 @@ public class BaseChannelTest {
     }
 
     @Test
-    public void testLogConnectionsDefaultsToFalse() throws Throwable {
+    public void testLogConnectionsDefaultsToTrue() throws Throwable {
         BaseChannel channel = new PADChannel();
         channel.setConfiguration(new SimpleConfiguration());
 
-        assertFalse(channel.isLogConnections(), "channel.isLogConnections()");
+        assertTrue(channel.isLogConnections(), "channel.isLogConnections()");
     }
 
     @Test
-    public void testSetConfigurationEnablesLogConnections() throws Throwable {
+    public void testSetConfigurationDisablesLogConnections() throws Throwable {
         SimpleConfiguration cfg = new SimpleConfiguration();
-        cfg.put("log-connections", "true");
+        cfg.put("log-connections", "false");
         BaseChannel channel = new PADChannel();
 
         channel.setConfiguration(cfg);
 
-        assertTrue(channel.isLogConnections(), "channel.isLogConnections()");
+        assertFalse(channel.isLogConnections(), "channel.isLogConnections()");
     }
 
     @Test
