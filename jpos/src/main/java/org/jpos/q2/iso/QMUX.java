@@ -36,8 +36,7 @@ import org.jpos.util.Metrics;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * A Q2-managed multiplexer that routes ISO messages between channels and listeners.
@@ -157,7 +156,7 @@ public class QMUX
     public static MUX getMUX (String name)
         throws NameRegistrar.NotFoundException
     {
-        return (MUX) NameRegistrar.get ("mux."+name);
+        return NameRegistrar.get ("mux."+name);
     }
 
     /**
@@ -572,6 +571,32 @@ public class QMUX
             return false;
         }
         return running();
+    }
+
+    @Override
+    public boolean isConnected(long timeout) {
+        if (isConnected()) return true;
+        if (timeout <= 0) return isConnected();
+        if (ready == null || ready.length == 0) return running();
+
+        CompletableFuture<Boolean> result = new CompletableFuture<>();
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (String r : ready) {
+                executor.execute(() -> {
+                    if (sp.rd(r, timeout) != null)
+                        result.complete(true);
+                });
+            }
+            try {
+                return result.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException | TimeoutException _) {
+            } finally {
+                executor.shutdownNow();
+            }
+        }
+        return false;
     }
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());

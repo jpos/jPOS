@@ -140,14 +140,6 @@ public class QueryHost implements TransactionParticipant, Configurable {
      * @return {@code true} if connectivity checks are disabled or the MUX reports connected
      */
     protected boolean isConnected (MUX mux) {
-        if (!checkConnected || mux.isConnected())
-            return true;
-        long timeout = System.currentTimeMillis() + waitTimeout;
-        while (System.currentTimeMillis() < timeout) {
-            if (mux.isConnected())
-                return true;
-            ISOUtil.sleep (500);
-        }
-        return false;
+        return !checkConnected || mux.isConnected(waitTimeout);
     }
 }
