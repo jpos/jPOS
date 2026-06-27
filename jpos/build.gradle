@@ -1,5 +1,5 @@
 plugins {
-   id "org.gradlex.extra-java-module-info" version "1.14"
+   id "org.gradlex.extra-java-module-info" version "1.14.2"
    id "org.owasp.dependencycheck" version "12.2.2"
    id 'org.cyclonedx.bom' version '3.2.4'
    // id 'checkstyle'
@@ -302,4 +302,3 @@ tasks.withType(JavaCompile) {
 tasks.withType(Test) {
   jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
-
