@@ -89,6 +89,7 @@ public class TransactionManager
     public static final Integer COMMITTING = 1;
     /** State marker indicating a transaction has reached its terminal state. */
     public static final Integer DONE       = 2;
+    private static final String ENUM_KEY_PREFIX = "enum:";
     /** Group name used when no explicit group is configured. */
     public static final String  DEFAULT_GROUP = "";
     /** Hard ceiling on participants traversed per transaction (loop prevention). */
@@ -954,9 +955,9 @@ public class TransactionManager
                 participantShortName,
                 getLong (e, "timeout", 0L),
                 getLong (e, "max-time", globalMaxTime),
-                getSet(e.getChild("requires")),
-                getSet(e.getChild("provides")),
-                getSet(e.getChild("optional")),
+                getSet(e.getChild("requires"), participant.getClass().getClassLoader()),
+                getSet(e.getChild("provides"), participant.getClass().getClassLoader()),
+                getSet(e.getChild("optional"), participant.getClass().getClassLoader()),
                 getOrCreateTimers(participant)
               )
             );
@@ -1426,18 +1427,18 @@ public class TransactionManager
      * @param name     short name used in trace messages and timer tags
      * @param timeout  per-transaction soft timeout in milliseconds
      * @param maxTime  hard ceiling in milliseconds (overrides {@code timeout} when smaller)
-     * @param requires names this participant requires from a prior {@code provides}
-     * @param provides names this participant exports for downstream {@code requires}
-     * @param optional names this participant may consume but does not require
+     * @param requires keys this participant requires from a prior {@code provides}
+     * @param provides keys this participant exports for downstream {@code requires}
+     * @param optional keys this participant may consume but does not require
      * @param timers   per-phase Micrometer timers
      */
     private record ParticipantParams (
       String name,
       long timeout,
       long maxTime,
-      Set<String> requires,
-      Set<String> provides,
-      Set<String> optional,
+      Set<Object> requires,
+      Set<Object> provides,
+      Set<Object> optional,
       Timers timers
     )
     {
@@ -1493,8 +1494,35 @@ public class TransactionManager
         }
     }
 
-    private Set<String> getSet (Element e) {
-        return e != null ? new HashSet<>(Arrays.asList(ISOUtil.commaDecode(e.getTextTrim()))) : Collections.emptySet();
+    private Set<Object> getSet (Element e, ClassLoader loader) throws ClassNotFoundException {
+        if (e == null) {
+            return Collections.emptySet();
+        }
+        Set<Object> set = new HashSet<>();
+        for (String s : ISOUtil.commaDecode(e.getTextTrim())) {
+            set.add(parseContextKey(s, loader));
+        }
+        return set;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Object parseContextKey (String key, ClassLoader loader) throws ClassNotFoundException {
+        String value = key.strip();
+        if (!value.startsWith(ENUM_KEY_PREFIX)) {
+            return value;
+        }
+        String enumName = value.substring(ENUM_KEY_PREFIX.length()).strip();
+        int separator = enumName.lastIndexOf('.');
+        if (separator <= 0 || separator == enumName.length() - 1) {
+            throw new IllegalArgumentException("Invalid enum context key: " + value);
+        }
+        String className = enumName.substring(0, separator);
+        String constantName = enumName.substring(separator + 1);
+        Class<?> enumClass = Class.forName(className, true, loader);
+        if (!Enum.class.isAssignableFrom(enumClass)) {
+            throw new IllegalArgumentException("Context key class is not an enum: " + className);
+        }
+        return Enum.valueOf((Class<? extends Enum>) enumClass.asSubclass(Enum.class), constantName);
     }
 
     private int prepareOrAbort (TransactionParticipant p, long id, Serializable context, ParticipantParams pp, TriFunction<TransactionParticipant, Long, Serializable, Integer> preparationFunction) {
@@ -1507,7 +1535,7 @@ public class TransactionManager
             } else {
                 Context c = ctx.clone(pp.requires.toArray(), pp.optional.toArray());
                 action = preparationFunction.apply(p, id, c);
-                if (!pp.requires.contains(LOGEVT.toString())) {
+                if (!pp.requires.contains(LOGEVT) && !pp.requires.contains(LOGEVT.toString())) {
                     // if we are not inheriting parent's log event and there's a log event
                     // in the childs context, copy it.
                     LogEvent evt = c.get(LOGEVT.toString());

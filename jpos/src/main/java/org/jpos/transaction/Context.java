@@ -149,7 +149,10 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable, 
               if (key == null) {
                   return m.containsKey(null);  // Explicit null check
               }
-              String s = (key instanceof String a ? a : key.toString()).strip();
+              if (!(key instanceof String s)) {
+                  return m.containsKey(key) || m.containsKey(key.toString().strip());
+              }
+              s = s.strip();
               if (s.contains("|")) {
                   return Arrays.stream(s.split("\\|"))
                     .map(String::strip)
@@ -192,7 +195,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable, 
                       keyPresent = m.containsKey(s);
                   }
               } else {
-                  keyPresent = m.containsKey(key);
+                  keyPresent = m.containsKey(key) || m.containsKey(key.toString().strip());
               }
 
               if (!keyPresent) {
@@ -477,10 +480,8 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable, 
                     .map(String::strip)
                     .map(str -> (Object) str);  // Split strings into keys
               } else {
-                  String s = obj.toString().strip();  // Convert non-String to String
-                  return Arrays.stream(s.split("\\|"))
-                    .map(String::strip)
-                    .map(str -> (Object) str);
+                  Object fallback = obj.toString().strip();
+                  return Stream.of(obj, fallback);
               }
           })
           .filter(m::containsKey)  // Check if the key exists in the map

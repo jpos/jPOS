@@ -23,6 +23,7 @@ import org.jdom2.Element;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QFactory;
 import org.jpos.util.Caller;
+import org.jpos.util.Chronometer;
 import org.jpos.util.Log;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -93,9 +95,41 @@ public class TransactionManagerLoggingTest {
         assertEquals(Caller.shortClassName(FailingParticipant.class.getName()), event.getTags().get("participant"));
     }
 
+    @Test
+    void participantContractsSupportEnumContextKeys() throws Exception {
+        Element e = new Element("participant");
+        e.setAttribute("class", EnumContractParticipant.class.getName());
+        e.addContent(new Element("requires")
+          .setText("enum:org.jpos.transaction.TransactionManagerLoggingTest$EnumKey.REQUEST,STRING_REQUEST"));
+        e.addContent(new Element("optional")
+          .setText("enum:org.jpos.transaction.TransactionManagerLoggingTest$EnumKey.SOURCE"));
+        e.addContent(new Element("provides")
+          .setText("enum:org.jpos.transaction.TransactionManagerLoggingTest$EnumKey.RESPONSE,STRING_RESPONSE"));
+        when(factory.newInstance(EnumContractParticipant.class.getName())).thenReturn(new EnumContractParticipant());
+
+        TransactionParticipant participant = tm.createParticipant(e);
+        Context ctx = new Context();
+        ctx.put(EnumKey.REQUEST, "request");
+        ctx.put(EnumKey.SOURCE, "source");
+        ctx.put("STRING_REQUEST", "string-request");
+        ctx.put("UNPUBLISHED", "unpublished");
+
+        int result = tm.invokePrepareWithContracts(participant, 11L, ctx);
+
+        assertEquals(TransactionConstants.PREPARED, result);
+        assertEquals("response", ctx.get(EnumKey.RESPONSE));
+        assertEquals("string-response", ctx.get("STRING_RESPONSE"));
+        assertNull(ctx.get("LOCAL_ONLY"));
+    }
+
     static class TestTransactionManager extends TransactionManager {
         int invokePrepare(TransactionParticipant participant, long id, Serializable context) {
             return prepare(participant, id, context);
+        }
+
+        int invokePrepareWithContracts(TransactionParticipant participant, long id, Serializable context) {
+            return prepare(0, id, context, new ArrayList<>(), List.of(participant).iterator(),
+              false, null, null, new Chronometer());
         }
     }
 
@@ -115,5 +149,34 @@ public class TransactionManagerLoggingTest {
         @Override
         public void abort(long id, Serializable context) {
         }
+    }
+
+    public static class EnumContractParticipant implements TransactionParticipant {
+        @Override
+        public int prepare(long id, Serializable context) {
+            Context ctx = (Context) context;
+            if (!ctx.hasKey(EnumKey.REQUEST)
+              || !ctx.hasKey(EnumKey.SOURCE)
+              || !ctx.hasKey("STRING_REQUEST")
+              || ctx.hasKey("UNPUBLISHED")) {
+                return ABORTED;
+            }
+            ctx.put(EnumKey.RESPONSE, "response");
+            ctx.put("STRING_RESPONSE", "string-response");
+            ctx.put("LOCAL_ONLY", "local-only");
+            return PREPARED | READONLY | NO_JOIN;
+        }
+
+        @Override
+        public void commit(long id, Serializable context) {
+        }
+
+        @Override
+        public void abort(long id, Serializable context) {
+        }
+    }
+
+    enum EnumKey {
+        REQUEST, SOURCE, RESPONSE
     }
 }
