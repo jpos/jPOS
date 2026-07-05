@@ -387,6 +387,11 @@ public class ContextTest {
 
         assertFalse (ctx.clone("A", "B").hasKey("C"));
         assertTrue(ctx.clone("A", "B", "C").hasPersistedKey("C"));
+
+        ctx.put(ContextConstants.REQUEST, "REQ");
+        Context enumClone = ctx.clone(ContextConstants.REQUEST);
+        assertEquals("REQ", enumClone.get(ContextConstants.REQUEST));
+        assertFalse(enumClone.hasKey(ContextConstants.REQUEST.toString()));
     }
 
     @Test
@@ -402,6 +407,10 @@ public class ContextTest {
         assertTrue (ctx.hasKeys(" A ", "B | C"));
         assertEquals ("C", ctx.keysNotPresent("A", "B", "C"));
         assertEquals ("C,D,E|F", ctx.keysNotPresent("A", "B", "C", "D", "E|F"));
+        ctx.put(ContextConstants.REQUEST, "REQ");
+        assertTrue(ctx.hasKeys(ContextConstants.REQUEST));
+        assertEquals("", ctx.keysNotPresent(ContextConstants.REQUEST));
+        assertEquals("RESPONSE", ctx.keysNotPresent(ContextConstants.RESPONSE));
     }
 
     @Test

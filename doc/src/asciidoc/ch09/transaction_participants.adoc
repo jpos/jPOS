@@ -11,6 +11,18 @@ either be 'yes/no/true/false` or a list of environment names (i.e.: `prod, stagi
 
 In addition as of jPOS 3.0.0, it supports the `timeout` and `max-time` attributes and
 global 'max-time' property.
+
+Participants can also declare Context contracts with `requires`, `optional`,
+and `provides` child elements. Bare entries are treated as String keys. Enum
+keys can be declared explicitly with `enum:` followed by the fully qualified
+enum constant, for example:
+
+[source,xml]
+----
+<requires>enum:org.example.ContextKeys.REQUEST,TRACE_ID</requires>
+<optional>enum:org.example.ContextKeys.SESSION</optional>
+<provides>enum:org.example.ContextKeys.RESPONSE</provides>
+----
 =====
 
 include::participants/switch.adoc[]
@@ -20,4 +32,3 @@ include::participants/query_host.adoc[]
 include::participants/send_response.adoc[]
 include::participants/jsparticipant.adoc[]
 include::participants/pause.adoc[]
-
