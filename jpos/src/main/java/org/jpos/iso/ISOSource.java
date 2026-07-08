@@ -43,7 +43,7 @@ public interface ISOSource {
     boolean isConnected();
 
     /**
-     * If this ISOSource is connected, this returns true right away. Otherwise, it waits the specified timeout for connection. 
+     * If this ISOSource is connected, this returns true right away. Otherwise, it waits the specified timeout for connection.
      *
      * @param timeout the time to wait for a connection, in ms
      * @return If the ISOSource connected during the specified timeout

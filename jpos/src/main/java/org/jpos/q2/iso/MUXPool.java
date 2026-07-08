@@ -22,7 +22,6 @@ import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
@@ -294,7 +293,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     @Override
     public boolean isConnected(long timeout) {
         if (isConnected()) return true;
-        if (timeout <= 0) return isConnected();
+        if (timeout <= 0) return false;
 
         CompletableFuture<Boolean> result = new CompletableFuture<>();
         try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
@@ -333,34 +332,32 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     private boolean isUsable(MUX mux, long timeout, ExecutorService executor) {
         if (!checkEnabled || !(mux instanceof QMUX qmux)) return mux.isConnected(timeout);
 
+        long start = System.nanoTime();
+        long timeoutNanos = TimeUnit.MILLISECONDS.toNanos(timeout);
         long remaining = timeout;
-        long end = System.nanoTime() + timeout * 1_000_000L;
         String enabledKey = qmux.getName() + ".enabled";
-        while (remaining > 0 && ! Thread.currentThread().isInterrupted()) { //Honor interruption
+
+        while (remaining > 0 && !Thread.currentThread().isInterrupted()) { //Honor interruption
             final long wait = remaining;
-            Future<Boolean> muxConnected = executor.submit(() -> mux.isConnected(wait));
-            Future<Boolean> enabled = executor.submit(() -> {
+            CompletableFuture<Boolean> conn = CompletableFuture.supplyAsync(() -> mux.isConnected(wait), executor);
+            CompletableFuture<Boolean> enab = CompletableFuture.supplyAsync(() -> {
                 Object ready = sp.rd(enabledKey, wait);
                 String[] readyNames = qmux.getReadyIndicatorNames();
                 if (readyNames != null && readyNames.length == 1) {
                     // check that 'mux.enabled' entry has the same content as 'ready'
-                    if (ready == sp.rdp (readyNames[0])) {
-                        return true;
-                    } else { // relax for some time and retry
-                        ISOUtil.sleep(Math.clamp((end - System.nanoTime()) / 1_000_000L, 0L, 100L)); 
-                        return ready == sp.rdp (readyNames[0]);
-                    }
+                    if (ready == sp.rdp (readyNames[0])) return true;
+                    // relax for some time and retry
+                    ISOUtil.sleep(Math.clamp(wait, 0L, 100L));
+                    return ready == sp.rdp (readyNames[0]);
                 }
                 return ready != null;
-            });
+            }, executor);
 
             try {
-                if (muxConnected.get(remaining, TimeUnit.MILLISECONDS) 
-                        && enabled.get(remaining, TimeUnit.MILLISECONDS) 
-                        && isUsable(mux)
-                ) return true;
+                // Parallel wait for both signals within the current window
+                CompletableFuture.allOf(conn, enab).get(wait, TimeUnit.MILLISECONDS);
+                if (conn.join() && enab.join() && isUsable(mux)) return true;
                 // if both conditions don't meet at the same time, try another round, provided there is time.
-                remaining = (end - System.nanoTime()) / 1_000_000L;
             } catch (ExecutionException | TimeoutException _) {
                 // Last non-blocking check before failing
                 return isUsable(mux);
@@ -368,8 +365,9 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 Thread.currentThread().interrupt();
                 return isUsable(mux);
             }
+            remaining = (timeoutNanos - (System.nanoTime() - start)) / 1_000_000L;
         }
-        return false;
+        return isUsable(mux);
     }
 
     private String[] toStringArray (String s) {

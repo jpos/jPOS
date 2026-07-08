@@ -512,10 +512,20 @@ public class QMUX
         return running();
     }
 
+    /**
+     * If this QMUX is connected, this returns true right away. Otherwise, it waits the specified
+     * timeout for one of the configured {@code <ready>} indicators to appear in the space.
+     *
+     * <p>If no {@code <ready>} indicators are configured, there is nothing concrete to wait for,
+     * so this degrades to a non-blocking {@link #running()} check, mirroring {@link #isConnected()}.
+     *
+     * @param timeout the time to wait for a connection, in ms
+     * @return If the QMUX connected during the specified timeout
+     */
     @Override
     public boolean isConnected(long timeout) {
         if (isConnected()) return true;
-        if (timeout <= 0) return isConnected();
+        if (timeout <= 0) return false;
         if (ready == null || ready.length == 0) return running();
 
         CompletableFuture<Boolean> result = new CompletableFuture<>();

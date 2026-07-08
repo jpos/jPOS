@@ -30,7 +30,6 @@ import org.jdom2.Element;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.MUX;
 import org.jpos.space.Space;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class MUXPoolTest {
@@ -154,7 +153,7 @@ public class MUXPoolTest {
     }
 
     /**
-     * Test isConnected(timeout) with checkEnabled=true where the QMUX is 
+     * Test isConnected(timeout) with checkEnabled=true where the QMUX is
      * connected, and the enabled indicator in space matches the ready indicator.
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -265,7 +264,7 @@ public class MUXPoolTest {
         Object enabled = new Object();
         when(sp.rd("qmux1.enabled", 500L)).thenReturn(enabled);
         when(sp.rdp("qmux1.enabled")).thenReturn(enabled);
-        
+
         // Never connects
         when(qmux.isConnected(anyLong())).thenReturn(false);
         when(qmux.isConnected()).thenReturn(false);

@@ -431,5 +431,25 @@ public class QMUXTest {
             qmux.destroyService();
         }
     }
-}
 
+    @Test
+    public void testIsConnectedWithTimeoutAndNoReadyIndicators() throws Exception {
+        QMUX qmux = new QMUX();
+        qmux.setName("test-no-ready");
+        qmux.setServer(new Q2());
+        qmux.setConfiguration(new SimpleConfiguration());
+        qmux.setPersist(createPersist("tspace:testspace-no-ready", null));
+        qmux.initService();
+        qmux.startService();
+        try {
+            long start = System.currentTimeMillis();
+            // With no <ready> indicators there's nothing to wait for, so this should
+            // degrade to a non-blocking running() check instead of waiting out the timeout.
+            assertEquals(qmux.running(), qmux.isConnected(1000));
+            assertTrue(System.currentTimeMillis() - start < 500, "Should not block waiting when nothing to wait for");
+        } finally {
+            qmux.stopService();
+            qmux.destroyService();
+        }
+    }
+}
