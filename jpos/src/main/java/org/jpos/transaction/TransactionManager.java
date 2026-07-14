@@ -96,6 +96,7 @@ public class TransactionManager
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
     /** Default maximum time, in milliseconds, that a session waits for input. */
     public static final long    MAX_WAIT = 15000L;
+    private static final ZoneId LOCAL_ZONE_ID = ZoneId.systemDefault();
     /** Configured group-name to participant-list mapping. */
     protected Map<String,List<TransactionParticipant>> groups;
     private Set<Destroyable> destroyables = new HashSet<>();
@@ -1329,10 +1330,12 @@ public class TransactionManager
         }
     }
     private void setThreadName (long id, String method, TransactionParticipant p) {
-        Thread.currentThread().setName(
-            String.format("%s:%d %s %s %s", getName(), id, method, p.getClass().getName(),
-                LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
-        );
+        StringBuilder sb = new StringBuilder(64);
+        sb.append(getName()).append(':').append(id).append(' ')
+          .append(method).append(' ')
+          .append(p.getClass().getName()).append(' ')
+          .append(LocalDateTime.now(LOCAL_ZONE_ID));
+        Thread.currentThread().setName(sb.toString());
     }
     private void setThreadLocal (long id, Serializable context) {
         tlId.set(id);
