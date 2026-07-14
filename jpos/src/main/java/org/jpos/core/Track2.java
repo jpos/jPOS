@@ -235,11 +235,12 @@ public class Track2 {
         {
             if (s == null)
                 throw new InvalidCardException ("null track2 data");
-            if (s.length() > 37)
+            String normalized = normalize(s);
+            if (normalized.length() > 37)
                 throw new InvalidCardException("track2 too long");
 
             track = s;
-            Matcher matcher = pattern.matcher(s);
+            Matcher matcher = pattern.matcher(normalized);
             int cnt = matcher.groupCount();
             if (matcher.find() && cnt >= 1) {
                 pan = matcher.group(1);
@@ -255,6 +256,16 @@ public class Track2 {
                 throw new InvalidCardException ("invalid track2");
             }
             return this;
+        }
+
+        /** Normalize raw magstripe Track 2 delimiters to the ISO DE35 form. */
+        private static String normalize(String track) {
+            String normalized = track.trim();
+            if (normalized.startsWith(";"))
+                normalized = normalized.substring(1);
+            if (normalized.endsWith("?"))
+                normalized = normalized.substring(0, normalized.length() - 1);
+            return normalized.replace('d', 'D');
         }
 
         /**

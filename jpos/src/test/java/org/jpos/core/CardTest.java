@@ -45,6 +45,19 @@ public class CardTest  {
     }
 
     @Test
+    public void testCardNormalizesRawTrack2FromIsoMessage() throws Throwable {
+        ISOMsg m = new ISOMsg("0100");
+        m.set(35, ";4111111111111111d40111234561234567890?");
+
+        Card card = Card.builder().isomsg(m).build();
+
+        assertEquals("4111111111111111", card.getPan(), "pan");
+        assertEquals("4011", card.getExp(), "exp");
+        assertEquals("123", card.getServiceCode(), "serviceCode");
+        assertTrue(card.hasTrack2(), "track2");
+    }
+
+    @Test
     public void testShortTrack2() throws Throwable {
         Track2 t2 = Track2.builder()
                 .track("4111111111111111=").build();
