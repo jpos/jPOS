@@ -19,7 +19,7 @@ hdrhistogram = "2.2.2"
 yaml = "2.6"
 micrometercore = "1.17.0"
 micrometerprometheus = "1.17.0"
-jackson = '2.22.0'
+jackson = '2.22.1'
 jdbm = '1.0'
 
 [libraries]
