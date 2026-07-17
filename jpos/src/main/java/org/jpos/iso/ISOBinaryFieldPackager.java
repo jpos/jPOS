@@ -92,19 +92,19 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager implements GenericP
     }
 
     /**
-     * Supports the {@code inclusive="true"} GenericPackager attribute for
-     * one- and two-byte binary length prefixes.
+     * Supports the {@code inclusive="true"} GenericPackager attribute, which
+     * makes a binary length prefix self-inclusive (the encoded length counts
+     * the prefix bytes themselves). Requires the field to use a binary length
+     * prefix, e.g. {@code IFB_LLHBINARY} or {@code IFB_LLLHBINARY}.
      */
     @Override
-    public void setGenericPackagerParams(Attributes atts) {
+    public void setGenericPackagerParams(Attributes atts) throws ISOException {
         if (!Boolean.parseBoolean(atts.getValue("inclusive")))
             return;
-        if (prefixer == BinaryPrefixer.B)
-            prefixer = SelfInclusiveBinaryPrefixer.B;
-        else if (prefixer == BinaryPrefixer.BB)
-            prefixer = SelfInclusiveBinaryPrefixer.BB;
-        else
-            throw new IllegalArgumentException("The inclusive attribute requires a binary length prefix");
+        if (!(prefixer instanceof BinaryPrefixer))
+            throw new ISOException(
+                "the inclusive attribute requires a binary length prefix (e.g. IFB_LLHBINARY or IFB_LLLHBINARY)");
+        prefixer = SelfInclusiveBinaryPrefixer.of((BinaryPrefixer) prefixer);
     }
 
     public int getMaxPackedLength()

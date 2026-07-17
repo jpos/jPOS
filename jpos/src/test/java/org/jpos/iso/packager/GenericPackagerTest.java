@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -43,6 +44,8 @@ import org.jpos.iso.IFA_BITMAP;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOBinaryField;
 import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
@@ -69,6 +72,50 @@ public class GenericPackagerTest {
         ISOBinaryField unpacked = new ISOBinaryField(126);
         assertEquals(3, fieldPackager.unpack(unpacked, packed, 0));
         assertArrayEquals(new byte[] { 0x12, 0x34 }, (byte[]) unpacked.getValue());
+    }
+
+    @Test
+    public void testInclusiveIsoFieldPackagerWithSubfields() throws Exception {
+        // Mirrors Visa Base I field 126.18: a self-inclusive 1-byte length prefix
+        // wrapping a subfield packager. The length byte counts itself, so
+        // 5 + 5 value bytes are encoded as 0x0B (=11) and the subfields survive.
+        String xml = "<!DOCTYPE isopackager PUBLIC \"-//jPOS/jPOS Generic Packager DTD 1.0//EN\" \"http://jpos.org/dtd/generic-packager-1.0.dtd\">"
+            + "<isopackager>"
+            + "<isofieldpackager id=\"48\" length=\"10\" name=\"Sub\""
+            + " class=\"org.jpos.iso.IFB_LLHBINARY\" inclusive=\"true\""
+            + " emitBitmap=\"false\" firstField=\"1\""
+            + " packager=\"org.jpos.iso.packager.GenericSubFieldPackager\">"
+            + "<isofield id=\"1\" length=\"5\" name=\"Id\" class=\"org.jpos.iso.IFE_CHAR\"/>"
+            + "<isofield id=\"2\" length=\"5\" name=\"Reserved\" class=\"org.jpos.iso.IFB_BINARY\"/>"
+            + "</isofieldpackager>"
+            + "</isopackager>";
+        GenericPackager packager = new GenericPackager(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+        ISOFieldPackager fieldPackager = packager.getFieldPackager(48);
+
+        ISOMsg sub = new ISOMsg(48);
+        sub.set(1, "VCIND");
+        sub.set(2, ISOUtil.hex2byte("F1F1F1F1F1"));
+
+        byte[] packed = fieldPackager.pack(sub);
+        assertEquals(11, packed.length);
+        assertEquals(0x0B, packed[0] & 0xFF);
+
+        ISOMsg out = new ISOMsg(48);
+        assertEquals(11, fieldPackager.unpack(out, packed, 0));
+        assertEquals("VCIND", out.getString(1));
+        assertArrayEquals(ISOUtil.hex2byte("F1F1F1F1F1"), out.getBytes(2));
+    }
+
+    @Test
+    public void testInclusiveRejectsNonBinaryPrefix() {
+        // IFB_BINARY has no binary length prefix (NullPrefixer); inclusive="true"
+        // must be rejected rather than silently ignored.
+        String xml = "<!DOCTYPE isopackager PUBLIC \"-//jPOS/jPOS Generic Packager DTD 1.0//EN\" \"http://jpos.org/dtd/generic-packager-1.0.dtd\">"
+            + "<isopackager>"
+            + "<isofield id=\"48\" length=\"10\" name=\"Fixed\" class=\"org.jpos.iso.IFB_BINARY\" inclusive=\"true\"/>"
+            + "</isopackager>";
+        ByteArrayInputStream in = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
+        assertThrows(ISOException.class, () -> new GenericPackager(in));
     }
 
     @Test
