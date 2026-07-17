@@ -19,6 +19,7 @@
 <!ATTLIST isofield token  CDATA        #IMPLIED>
 <!ATTLIST isofield pad    (true|false) #IMPLIED>
 <!ATTLIST isofield trim (true|false) #IMPLIED>
+<!ATTLIST isofield inclusive (true|false) #IMPLIED>
 
 <!-- isofieldpackager -->
 <!ELEMENT isofieldpackager (isofield*,isofieldpackager*)*>
@@ -39,3 +40,4 @@
 <!ATTLIST isofieldpackager tagSize       CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager lenSize       CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager swapTagAndLen (true|false) #IMPLIED>
+<!ATTLIST isofieldpackager inclusive (true|false) #IMPLIED>
