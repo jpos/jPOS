@@ -34,6 +34,22 @@ public class SelfInclusiveBinaryPrefixer implements Prefixer {
         this.prefixer = prefixer;
     }
 
+    /**
+     * Returns a self-inclusive prefixer wrapping the given binary prefixer,
+     * reusing the {@link #B} and {@link #BB} singletons for the common one- and
+     * two-byte cases.
+     *
+     * @param prefixer the underlying binary length prefixer
+     * @return a self-inclusive view over {@code prefixer}
+     */
+    public static SelfInclusiveBinaryPrefixer of(BinaryPrefixer prefixer) {
+        if (prefixer == BinaryPrefixer.B)
+            return B;
+        if (prefixer == BinaryPrefixer.BB)
+            return BB;
+        return new SelfInclusiveBinaryPrefixer(prefixer);
+    }
+
     @Override
     public void encodeLength(int length, byte[] b) throws ISOException {
         int inclusiveLength = length + getPackedLength();
@@ -56,6 +72,7 @@ public class SelfInclusiveBinaryPrefixer implements Prefixer {
     }
 
     private int maxLength() {
-        return getPackedLength() == 1 ? 0xFF : 0xFFFF;
+        int n = getPackedLength();
+        return n >= 4 ? Integer.MAX_VALUE : (1 << (8 * n)) - 1;
     }
 }

@@ -18,6 +18,7 @@
 
 package org.jpos.iso.packager;
 
+import org.jpos.iso.ISOException;
 import org.xml.sax.Attributes;
 
 /** Interface defining configuration parameters for generic packagers. */
@@ -25,6 +26,7 @@ public interface GenericPackagerParams {
     /**
      * Applies packager configuration from the SAX attributes of the packager XML element.
      * @param atts the SAX attributes from the packager element
+     * @throws ISOException if the supplied attributes are invalid for this packager
      */
-    void setGenericPackagerParams(Attributes atts);
+    void setGenericPackagerParams(Attributes atts) throws ISOException;
 }
