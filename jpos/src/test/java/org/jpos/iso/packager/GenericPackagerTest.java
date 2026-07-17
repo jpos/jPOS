@@ -18,6 +18,7 @@
 
 package org.jpos.iso.packager;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -30,6 +31,7 @@ import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.EmptyStackException;
 
 import org.jpos.core.Configuration;
@@ -39,6 +41,7 @@ import org.jpos.core.SubConfiguration;
 import org.jpos.iso.IFA_AMOUNT;
 import org.jpos.iso.IFA_BITMAP;
 import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOBinaryField;
 import org.jpos.iso.ISOFieldPackager;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -50,6 +53,23 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.LocatorImpl;
 
 public class GenericPackagerTest {
+
+    @Test
+    public void testInclusiveBinaryField() throws Exception {
+        String xml = "<!DOCTYPE isopackager PUBLIC \"-//jPOS/jPOS Generic Packager DTD 1.0//EN\" \"http://jpos.org/dtd/generic-packager-1.0.dtd\">"
+            + "<isopackager>"
+            + "<isofield id=\"126\" length=\"10\" name=\"Private\" class=\"org.jpos.iso.IFB_LLHBINARY\" inclusive=\"true\"/>"
+            + "</isopackager>";
+        GenericPackager packager = new GenericPackager(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+
+        ISOFieldPackager fieldPackager = packager.getFieldPackager(126);
+        byte[] packed = fieldPackager.pack(new ISOBinaryField(126, new byte[] { 0x12, 0x34 }));
+        assertEquals(3, packed[0] & 0xFF);
+
+        ISOBinaryField unpacked = new ISOBinaryField(126);
+        assertEquals(3, fieldPackager.unpack(unpacked, packed, 0));
+        assertArrayEquals(new byte[] { 0x12, 0x34 }, (byte[]) unpacked.getValue());
+    }
 
     @Test
     public void testConstructor() throws Throwable {

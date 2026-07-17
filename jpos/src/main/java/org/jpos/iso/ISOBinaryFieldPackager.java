@@ -18,6 +18,9 @@
 
 package org.jpos.iso;
 
+import org.jpos.iso.packager.GenericPackagerParams;
+import org.xml.sax.Attributes;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,7 +29,7 @@ import java.io.InputStream;
  * @author joconnor
  * @version $Revision$ $Date$
  */
-public class ISOBinaryFieldPackager extends ISOFieldPackager
+public class ISOBinaryFieldPackager extends ISOFieldPackager implements GenericPackagerParams
 {
     private BinaryInterpreter interpreter;
     private Prefixer prefixer;
@@ -86,6 +89,22 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager
     public void setPrefixer(Prefixer prefixer)
     {
         this.prefixer = prefixer;
+    }
+
+    /**
+     * Supports the {@code inclusive="true"} GenericPackager attribute for
+     * one- and two-byte binary length prefixes.
+     */
+    @Override
+    public void setGenericPackagerParams(Attributes atts) {
+        if (!Boolean.parseBoolean(atts.getValue("inclusive")))
+            return;
+        if (prefixer == BinaryPrefixer.B)
+            prefixer = SelfInclusiveBinaryPrefixer.B;
+        else if (prefixer == BinaryPrefixer.BB)
+            prefixer = SelfInclusiveBinaryPrefixer.BB;
+        else
+            throw new IllegalArgumentException("The inclusive attribute requires a binary length prefix");
     }
 
     public int getMaxPackedLength()

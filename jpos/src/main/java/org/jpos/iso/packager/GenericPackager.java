@@ -481,6 +481,8 @@ public class GenericPackager
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
                     f.setTrim(Boolean.parseBoolean(trim));
+                    if (f instanceof GenericPackagerParams)
+                        ((GenericPackagerParams)f).setGenericPackagerParams(atts);
                     // Modified for using TaggedFieldPackager
                     if( f instanceof TaggedFieldPackager){
                       ((TaggedFieldPackager)f).setToken( token );
