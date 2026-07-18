@@ -529,21 +529,21 @@ public class EnvironmentTest {
           Environment.get("$verb{price=$50}-${ut.b}"));
     }
     @Test
-    public void unknownPrefixAbortsExpansion_entireStringReturnedUnchanged() {
+    public void unknownPrefixIsLiteral_siblingsStillExpand() {
         System.setProperty("ut.a", "A");
         System.setProperty("ut.b", "B");
-        assertEquals("${ut.a}-$foo{x}-${ut.b}",
+        assertEquals("A-$foo{x}-B",
           Environment.get("${ut.a}-$foo{x}-${ut.b}"),
-          "Unknown prefix should abort expansion (legacy behavior)");
+          "Unknown prefix is literal text; known tokens around it must still expand");
     }
 
     @Test
-    public void unknownPrefixStillAbortsEvenIfInlineVerbatimIsPresent() {
+    public void unknownPrefixIsLiteral_withInlineVerbatimPresent() {
         System.setProperty("ut.a", "A");
         System.setProperty("ut.b", "B");
-        assertEquals("$verb{ok}-${ut.a}-$foo{x}-${ut.b}",
+        assertEquals("ok-A-$foo{x}-B",
           Environment.get("$verb{ok}-${ut.a}-$foo{x}-${ut.b}"),
-          "Unknown prefix should abort the whole evaluation, even if other parts could expand");
+          "Unknown prefix is literal text; verbatim and known tokens must still be processed");
     }
 
     @Test
@@ -632,7 +632,7 @@ public class EnvironmentTest {
     }
 
     @Test
-    public void unknownPrefixInsideDefault_abortsEntireEvaluation() {
+    public void unknownPrefixInsideDefault_isPreservedAsLiteral() {
         System.clearProperty("ut.a");
         assertEquals("$foo{x}",
           Environment.get("${ut.a:$foo{x}}"));
@@ -691,4 +691,52 @@ public class EnvironmentTest {
         assertNull(Environment.get("${not.present}", null));
     }
 
+    // --- issue #734: literal '$' must survive resolution ---
+
+    @Test
+    public void bareDollar_isLiteral() {
+        assertEquals("^(.+)\\.csv$", Environment.get("^(.+)\\.csv$", "DEF"));
+        assertEquals("price$", Environment.get("price$", "DEF"));
+        assertEquals("pri$ce", Environment.get("pri$ce", "DEF"));
+        assertEquals("$", Environment.get("$", "DEF"));
+        assertEquals("$50", Environment.get("$50", "DEF"));
+    }
+
+    @Test
+    public void bareDollar_isLiteralThroughSimpleConfiguration() {
+        Properties props = new Properties();
+        props.put("regex", "^(.+)\\.csv$");
+        props.put("price", "price$");
+        SimpleConfiguration cfg = new SimpleConfiguration(props);
+        assertEquals("^(.+)\\.csv$", cfg.get("regex"));
+        assertEquals("price$", cfg.get("price"));
+    }
+
+    @Test
+    public void unknownPrefix_isLiteralNotDefault() {
+        assertEquals("$foo{bar}", Environment.get("$foo{bar}", "DEF"),
+          "Unknown prefix is literal text, not an unresolved token");
+    }
+
+    @Test
+    public void unresolvedPrefixedTokens_fallBackToDefault() {
+        System.clearProperty("ut.missing");
+        assertEquals("DEF", Environment.get("$sys{ut.missing}", "DEF"));
+        assertEquals("DEF", Environment.get("$cfg{ut.missing}", "DEF"));
+        assertEquals("DEF", Environment.get("$env{UT_MISSING_734}", "DEF"));
+    }
+
+    @Test
+    public void unresolvedTokenInMixedText_fallsBackToDefault() {
+        System.clearProperty("ut.host");
+        assertEquals("DEF", Environment.get("jdbc://${ut.host}:5432/db", "DEF"),
+          "A partially resolvable value must not be silently half-expanded");
+    }
+
+    @Test
+    public void literalDollarNextToResolvedToken() {
+        System.setProperty("ut.amount", "100");
+        assertEquals("$100", Environment.get("$${ut.amount}", "DEF"));
+        assertEquals("100$", Environment.get("${ut.amount}$", "DEF"));
+    }
 }
