@@ -29,36 +29,96 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
- * Manages environment-specific configuration for jPOS applications.
+ * Manages environment-specific configuration for jPOS applications and provides
+ * the property-expansion language used throughout jPOS configuration.
  *
- * <p>Environment provides property resolution with support for:
+ * <p>Configuration is loaded from the directory named by the {@code jpos.envdir}
+ * system property (default {@code "cfg"}), from a file named by {@code jpos.env}
+ * (default {@code "default"}), trying {@code .yml} first and falling back to
+ * {@code .cfg}.
+ *
+ * <h2>Expression syntax</h2>
+ *
+ * <p>A value may contain any number of tokens; surrounding text is preserved.
+ * The recognized tokens are:
  * <ul>
- *     <li>YAML ({@code .yml}) and properties ({@code .cfg}) configuration files</li>
- *     <li>Property expressions: {@code ${property.name}}</li>
- *     <li>Default values: {@code ${property.name:default}}</li>
- *     <li>Equality tests: {@code ${property.name=expected}}</li>
- *     <li>Boolean negation: {@code ${!property.name}}</li>
- *     <li>Prefix-specific lookups:
- *         <ul>
- *             <li>{@code $env{VAR}} - OS environment variable only</li>
- *             <li>{@code $sys{prop}} - Java system property only</li>
- *             <li>{@code $cfg{prop}} - Configuration file only</li>
- *             <li>{@code $verb{text}} - Verbatim (no expansion)</li>
- *         </ul>
- *     </li>
- *     <li>Nested expressions: {@code ${outer:${inner:default}}}</li>
+ *     <li>{@code ${prop}} — default (priority) lookup, see below</li>
+ *     <li>{@code $cfg{prop}} — configuration file ({@code .yml}/{@code .cfg}) only</li>
+ *     <li>{@code $sys{prop}} — Java system property only</li>
+ *     <li>{@code $env{prop}} — OS environment variable only</li>
+ *     <li>{@code $verb{text}} — verbatim payload, never expanded (see below)</li>
  * </ul>
  *
- * <p>The default property resolution order (for {@code ${prop}}) is:
+ * <p>For the prefix-less {@code ${prop}} form the value is resolved in priority
+ * order, the first non-null source winning:
  * <ol>
- *     <li>OS environment variable ({@code prop})</li>
- *     <li>OS environment variable ({@code PROP} with dots replaced by underscores)</li>
- *     <li>Java system property</li>
- *     <li>Configuration file property</li>
+ *     <li>OS environment variable {@code prop}</li>
+ *     <li>OS environment variable {@code prop} with dots replaced by underscores
+ *         and upper-cased (e.g. {@code db.host} &rarr; {@code DB_HOST})</li>
+ *     <li>Java system property {@code prop}</li>
+ *     <li>configuration file property {@code prop}</li>
  * </ol>
  *
- * <p>Configuration is loaded from the directory specified by {@code jpos.envdir}
- * (default: "cfg") with the filename from {@code jpos.env} (default: "default").
+ * <h2>Defaults, equality, negation, verbatim</h2>
+ * <ul>
+ *     <li><b>Default</b> — {@code ${prop:default}} yields {@code default} when
+ *         {@code prop} is unresolved. The default is itself expanded <i>after</i>
+ *         it is selected, so it may contain nested tokens
+ *         ({@code ${a:${b:fallback}}}). {@code ${prop:}} yields the empty string
+ *         when {@code prop} is unresolved.</li>
+ *     <li><b>Equality</b> — {@code ${prop=value}} evaluates to the string
+ *         {@code "true"} or {@code "false"}. The right-hand side may itself be a
+ *         token and is dereferenced before the comparison
+ *         ({@code ${lhs=${rhs}}}). An unset left-hand side yields {@code "false"}.</li>
+ *     <li><b>Negation</b> — {@code ${!prop}} negates boolean-ish values
+ *         ({@code true}/{@code false}/{@code yes}/{@code no}, case-insensitive);
+ *         any other value is returned unchanged. A negated <i>unresolved</i>
+ *         property yields {@code "true"}. A value selected as a {@code :} default
+ *         is never negated.</li>
+ *     <li><b>Verbatim</b> — {@code $verb{text}} returns {@code text} exactly as
+ *         written, with no expansion, and stays literal across every expansion
+ *         pass (so {@code $verb{${x}}} yields the literal {@code ${x}}). A
+ *         {@code $verb{...}} that spans the entire input returns the payload only.</li>
+ * </ul>
+ *
+ * <h2>Literal text — when {@code $} is <i>not</i> an expression</h2>
+ *
+ * <p>A {@code $} introduces an expression only when it forms a well-formed token
+ * with one of the known prefixes above (or no prefix, i.e. {@code ${...}}).
+ * Anything else is plain literal text and passes through untouched:
+ * <ul>
+ *     <li>a bare {@code $} — regex anchors ({@code ^(.+)\.csv$}), currency
+ *         ({@code price$}, {@code $50}), a lone {@code $}</li>
+ *     <li>a {@code $} followed by text without braces ({@code $ut.a})</li>
+ *     <li>malformed or unterminated tokens ({@code X ${ut.a})</li>
+ *     <li>tokens with an <i>unknown</i> prefix ({@code $foo{x}}) — the unknown
+ *         token stays literal while known tokens elsewhere in the same string
+ *         still expand</li>
+ * </ul>
+ *
+ * <h2>Unresolved values</h2>
+ *
+ * <p>A value that contains a well-formed known-prefix token which cannot be
+ * resolved and carries no default is considered <b>unresolved</b>:
+ * {@link #getProperty(String)} returns {@code null} for it. This lets a caller's
+ * own default take over ({@link #getProperty(String,String)},
+ * {@link #get(String,String)}, and {@code SimpleConfiguration.get}, which passes
+ * {@code ""} as the default). The rule applies to mixed text too:
+ * {@code jdbc://${db.host}:5432/db} with {@code db.host} unset returns
+ * {@code null} rather than a half-expanded string — use {@code ${db.host:}} to
+ * opt in to empty-on-missing. A pure literal (no known-prefix tokens at all) is
+ * never null; it is returned as-is.
+ *
+ * <h2>Examples</h2>
+ * <pre>{@code
+ *   ${db.host}                 -> value of env DB_HOST / sys db.host / cfg db.host, else null
+ *   ${db.port:5432}            -> configured port, or "5432"
+ *   ${db.host:}                -> configured host, or "" (never null)
+ *   ${logging=on}              -> "true" if logging resolves to "on", else "false"
+ *   ${!feature.enabled}        -> negated boolean, or "true" if unresolved
+ *   $sys{user.home}            -> Java system property only
+ *   $verb{literal ${notExpanded}} -> "literal ${notExpanded}"
+ * }</pre>
  *
  * @see EnvironmentProvider
  */
@@ -189,11 +249,14 @@ public class Environment implements Loggeable {
     }
 
     /**
-     * Resolves a property expression with a default fallback.
+     * Expands {@code p} via {@link #getProperty(String)} and substitutes
+     * {@code def} when the result is {@code null} (i.e. when {@code p} holds an
+     * unresolved known-prefix token with no default). A pure literal or a fully
+     * resolved value is returned as-is; {@code def} never overrides it.
      *
-     * @param p the property expression to resolve
-     * @param def the default value to return if the property resolves to null
-     * @return the resolved value, or {@code def} if null
+     * @param p the expression or literal value to expand
+     * @param def the default returned when {@code p} is unresolved
+     * @return the expanded value, or {@code def} if unresolved
      * @see #getProperty(String)
      */
     public String getProperty (String p, String def) {
@@ -212,21 +275,29 @@ public class Environment implements Loggeable {
     }
 
     /**
-     * If property name has the pattern <code>${propname}</code>, this method will
+     * Expands the property expressions contained in {@code s} following the rules
+     * documented at the {@linkplain Environment class level} (token forms,
+     * resolution priority, defaults, equality, negation and verbatim).
      *
+     * <p>The return contract is:
      * <ul>
-     *     <li>Attempt to get it from an operating system environment variable called 'propname'</li>
-     *     <li>If not present, it will try to pick it from the Java system.property</li>
-     *     <li>If not present either, it will try the target environment (either <code>.yml</code> or <code>.cfg</code></li>
-     *     <li>Otherwise it returns null</li>
+     *     <li>if {@code s} contains no {@code $}, or only literal {@code $}
+     *         (bare {@code $}, unknown prefixes such as {@code $foo{x}}, or
+     *         malformed/unterminated tokens), it is returned unchanged;</li>
+     *     <li>if every known-prefix token resolves (or supplies a default), the
+     *         fully expanded string is returned;</li>
+     *     <li>if — and only if — the value still contains a well-formed
+     *         known-prefix token that cannot be resolved and has no default,
+     *         {@code null} is returned, so a caller-supplied default can apply.
+     *         This holds even for mixed literal/token text; use {@code ${prop:}}
+     *         to get an empty string instead of {@code null}.</li>
      * </ul>
      *
-     * The special pattern <code>$env{propname}</code> would just try to pick it from the OS environment.
-     * <code>$sys{propname}</code> will just try to get it from a System.property and
-     * <code>$verb{propname}</code> will return a verbatim copy of the value.
-     *
-     * @param s property name
-     * @return property value
+     * @param s the expression or literal value to expand; may be {@code null}
+     * @return the expanded value, {@code s} itself if it is a pure literal, or
+     *         {@code null} if it holds an unresolved known-prefix token
+     *         ({@code null} in, {@code null} out)
+     * @see #getProperty(String, String)
      */
     public String getProperty (String s) {
         if (s == null)
@@ -261,9 +332,29 @@ public class Environment implements Loggeable {
                 break;
             r = next;
         }
-        r = unescapeVerbatimDollars(r);
-        // If no expansion happened (result equals input), return null so caller's default can be used
-        return r.equals(s) ? null : r;
+        // A well-formed known-prefix token still present after expansion means it
+        // couldn't be resolved (no value, no default): signal 'unresolved' so the
+        // caller's default applies. Everything else (bare '$', unknown prefixes,
+        // malformed tokens) is literal text and is returned as-is.
+        if (containsUnresolvedToken(r))
+            return null;
+        return unescapeVerbatimDollars(r);
+    }
+
+    /**
+     * Returns true if {@code s} contains a well-formed {@code $prefix{...}} token
+     * with a known prefix. Called after expansion stabilizes, such a token can only
+     * be one that failed to resolve.
+     */
+    private boolean containsUnresolvedToken(String s) {
+        int i = s.indexOf('$');
+        while (i >= 0) {
+            Token t = parseToken(s, i);
+            if (t != null && isKnownPrefix(t.prefix()))
+                return true;
+            i = s.indexOf('$', i + 1);
+        }
+        return false;
     }
 
     /**
@@ -296,18 +387,14 @@ public class Environment implements Loggeable {
                 // If no closing brace found, fall through and treat '$' as literal (via parseToken failure path).
             }
             Token t = parseToken(in, i);
-            if (t == null) {
-                // Not a valid token; treat '$' as literal.
+            if (t == null || !isKnownPrefix(t.prefix())) {
+                // Not a valid token (or unknown prefix); treat '$' as literal.
                 out.append('$');
                 i++;
                 continue;
             }
 
             String replacement = evaluateToken(t, in.substring(t.start(), t.endExclusive()));
-            if (replacement == null) {
-                return in;
-            }
-
             out.append(replacement);
             i = t.endExclusive();
             changed = true;
@@ -324,9 +411,6 @@ public class Environment implements Loggeable {
     }
 
     private String evaluateToken(Token t, String originalTokenText) {
-        if (!isKnownPrefix(t.prefix())) {
-            return null; // expandOnce() will return the original input unchanged.
-        }
         boolean negated = t.negated();
         String defValueLiteral = null;
 
@@ -351,12 +435,12 @@ public class Environment implements Loggeable {
             return resolved;
         }
         // Undefined/unresolved and no default.
-        // If negated and unresolved => "true", otherwise token removal is NOT desired
+        // If negated and unresolved => "true", otherwise leave the token in place;
+        // getProperty() detects the leftover token and signals 'unresolved' (null).
         if (negated) {
             return "true";
         }
-        // prefixed lookups resolve to empty when missing.
-        return t.prefix().isEmpty() ? originalTokenText : "";
+        return originalTokenText;
     }
 
     private String resolveByPrefix(String prefix, String prop) {

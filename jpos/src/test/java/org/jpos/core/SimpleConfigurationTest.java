@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 import org.jpos.util.Serializer;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unchecked")
@@ -517,18 +516,19 @@ public class SimpleConfigurationTest {
     public void testInvalidProperty() {
         SimpleConfiguration cfg = new SimpleConfiguration();
         cfg.put("host", "$invalid{jpos.url}");
-        // Unknown prefix expressions can't be expanded, so the default ("") is used
-        assertEquals("", cfg.get("host"));
-        // But with an explicit default, that default is returned
-        assertEquals("default", cfg.get("host", "default"));
+        // Unknown prefixes are not expressions; the value is literal text
+        assertEquals("$invalid{jpos.url}", cfg.get("host"));
+        assertEquals("$invalid{jpos.url}", cfg.get("host", "default"));
     }
 
     @Test
-    @Disabled // regexp failing
     public void testInvalidNested() {
         SimpleConfiguration cfg = new SimpleConfiguration();
         cfg.put("invalid", "$invalid{${nested}}");
-        assertEquals("$invalid{${nested}}", cfg.get("invalid"));
+        // '$invalid{' is literal, but '${nested}' is a well-formed token that can't
+        // be resolved, so the whole value is unresolved and the default applies
+        assertEquals("", cfg.get("invalid"));
+        assertEquals("default", cfg.get("invalid", "default"));
     }
 
     @Test
