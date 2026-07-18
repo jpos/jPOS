@@ -90,7 +90,7 @@ import java.util.stream.Collectors;
  *     <li>a bare {@code $} — regex anchors ({@code ^(.+)\.csv$}), currency
  *         ({@code price$}, {@code $50}), a lone {@code $}</li>
  *     <li>a {@code $} followed by text without braces ({@code $ut.a})</li>
- *     <li>malformed or unterminated tokens ({@code X ${ut.a})</li>
+ *     <li>malformed or unterminated tokens (<code>X ${ut.a</code>)</li>
  *     <li>tokens with an <i>unknown</i> prefix ({@code $foo{x}}) — the unknown
  *         token stays literal while known tokens elsewhere in the same string
  *         still expand</li>
