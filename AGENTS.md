@@ -73,19 +73,25 @@ Do not copy from:
 
 If third-party material is reused, a human must verify license compatibility and attribution before submission.
 
-### 6. Be transparent about meaningful AI assistance
+### 6. AI attribution requires user approval
 
-Meaningful AI assistance should be disclosed in the commit message, pull request description, or both.
+AI attribution is **optional** and is included only if explicitly requested or approved by the user.
 
-Recommended format:
+AI agents **must not** add attribution to commit messages, pull request descriptions, comments, or other project artifacts on their own initiative. If an agent believes attribution would be appropriate, it must first ask the user for permission.
 
-`Assisted-by: TOOL_OR_AGENT:MODEL`
+When requested by the user, the recommended format is:
+
+```
+Assisted-by: TOOL_OR_AGENT:MODEL
+```
 
 Example:
 
-`Assisted-by: OpenClaw:gpt-5.4`
+```
+Assisted-by: OpenClaw:gpt-5.7-mars
+```
 
-This is for transparency. It does not transfer authorship or responsibility.
+The attribution is provided solely for transparency. It does not transfer authorship, ownership, or responsibility.
 
 ## Practical rules
 
