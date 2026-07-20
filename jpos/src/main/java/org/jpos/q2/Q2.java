@@ -387,7 +387,7 @@ public class Q2 implements FileFilter, Runnable {
                 } catch (InterruptedException | IllegalAccessError ignored) {
                     // NOPMD
                 } catch (Throwable t) {
-                    log.error("start", t.getMessage());
+                    log.error("start", t);
                     relax();
                 }
             }
