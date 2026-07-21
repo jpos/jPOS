@@ -27,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 import org.hamcrest.Description;
@@ -38,6 +40,8 @@ import org.jpos.iso.channel.XMLChannel;
 import org.jpos.iso.packager.XMLPackager;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogListener;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +54,29 @@ public class SslChannelIntegrationTest {
 
     private static final int PORT = 4000;
 
+    private static Path keyStore;
     private Logger logger;
+
+    @BeforeAll
+    static void createKeyStore() throws Exception {
+        keyStore = Files.createTempFile("jpos-ssl-", ".jks");
+        Files.delete(keyStore);
+        String keytoolCommand = System.getProperty("os.name").startsWith("Windows") ? "keytool.exe" : "keytool";
+        Process keytool = new ProcessBuilder(
+            Path.of(System.getProperty("java.home"), "bin", keytoolCommand).toString(),
+            "-genkeypair", "-alias", "selfsigned", "-keyalg", "RSA",
+            "-dname", "CN=unused.example.com", "-ext", "SAN=dns:*.visa.com",
+            "-validity", "365", "-keystore", keyStore.toString(), "-storetype", "JKS",
+            "-storepass", "password", "-keypass", "password", "-noprompt"
+        ).inheritIO().start();
+        if (keytool.waitFor() != 0)
+            throw new IOException("Unable to create SSL test keystore");
+    }
+
+    @AfterAll
+    static void removeKeyStore() throws IOException {
+        Files.deleteIfExists(keyStore);
+    }
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -59,7 +85,7 @@ public class SslChannelIntegrationTest {
     }
 
     @Test
-    public void serverSideDisconnect() throws Exception {
+    public void serverAuthenticationSupportsWildcardCertificates() throws Exception {
         ISOServer isoServer = newIsoServer();
         new Thread(isoServer).start();
 
@@ -108,30 +134,9 @@ public class SslChannelIntegrationTest {
         return isoServer;
     }
 
-// keystore.jks created using the following command in a shell:
-//
-//    [user@hostname]$ keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass password
-//    What is your first and last name?
-//      [Unknown]:  localhost
-//    What is the name of your organizational unit?
-//      [Unknown]:  Dummy
-//    What is the name of your organization?
-//      [Unknown]:  Dummy
-//    What is the name of your City or Locality?
-//      [Unknown]:  Somewhere
-//    What is the name of your State or Province?
-//      [Unknown]:  Somewhere
-//    What is the two-letter country code for this unit?
-//      [Unknown]:  AU
-//    Is CN=localhost, OU=Dummy, O=Dummy, L=Somewhere, ST=Somewhere, C=AU correct?
-//      [no]:  yes
-//
-//    Enter key password for <selfsigned>
-//    	(RETURN if same as keystore password):
-
     private Configuration serverConfiguration() {
         Properties props = new Properties();
-        props.put("keystore", "src/test/resources/keystore.jks");
+        props.put("keystore", keyStore.toString());
         props.put("storepassword", "password");
         props.put("keypassword", "password");
         // props.put("addEnabledCipherSuite", "SSL_RSA_WITH_3DES_EDE_CBC_SHA");
@@ -140,8 +145,9 @@ public class SslChannelIntegrationTest {
 
     private Configuration clientConfiguration() {
         Properties props = new Properties();
-        props.put("keystore", "src/test/resources/keystore.jks");
-        props.put("serverauth", "false");
+        props.put("keystore", keyStore.toString());
+        props.put("serverauth", "true");
+        props.put("servername", "gateway.visa.com");
         props.put("storepassword", "password");
         props.put("keypassword", "password");
         // props.put("addEnabledCipherSuite", "SSL_RSA_WITH_3DES_EDE_CBC_SHA");
