@@ -81,3 +81,11 @@ want to enable. If these properties are not configured, all protocols and cipher
 available to the JVM will be enabled, something you probably don't want.
 ====
 
+[TIP]
+====
+Set `serverauth` to `true` on an outbound channel to validate both the server
+certificate chain and its DNS identity.  jPOS uses JSSE HTTPS endpoint
+identification, including standard certificate SAN and wildcard handling.  The
+optional `servername` property overrides the DNS name to verify, for example
+when the network endpoint is reached through an alias.
+====

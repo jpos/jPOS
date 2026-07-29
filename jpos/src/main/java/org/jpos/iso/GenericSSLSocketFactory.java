@@ -23,21 +23,12 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.SimpleLogSource;
 
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 import javax.net.ssl.*;
-import javax.security.auth.x500.X500Principal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
@@ -101,9 +92,9 @@ public class GenericSSLSocketFactory
     }
 
     /**
-     * Sets the Common Name (CN) used to verify the peer certificate.
+     * Sets the server name used to identify the peer certificate.
      *
-     * @param serverName expected Common Name (CN) of the peer certificate
+     * @param serverName expected DNS name of the peer certificate
      */
     public void setServerName(String serverName){
         this.serverName=serverName;
@@ -119,9 +110,9 @@ public class GenericSSLSocketFactory
     }
 
     /**
-     * Toggles whether outbound sockets validate the server certificate chain.
+     * Toggles whether outbound sockets validate the server certificate chain and hostname.
      *
-     * @param serverAuthNeeded validate the server certificate chain on outbound sockets
+     * @param serverAuthNeeded validate the server certificate chain and hostname on outbound sockets
      */
     public void setServerAuthNeeded(boolean serverAuthNeeded){
         this.serverAuthNeeded=serverAuthNeeded;
@@ -246,85 +237,14 @@ public class GenericSSLSocketFactory
         throws IOException, ISOException
     {
         if(socketFactory==null) socketFactory=createSocketFactory();
-        SSLSocket s = (SSLSocket) socketFactory.createSocket(host,port);
-        verifyHostname(s);
+        String peerHost = serverAuthNeeded && serverName != null && !serverName.isEmpty() ? serverName : host;
+        SSLSocket s = (SSLSocket) socketFactory.createSocket(new Socket(host, port), peerHost, port, true);
+        if (serverAuthNeeded) {
+            SSLParameters parameters = s.getSSLParameters();
+            parameters.setEndpointIdentificationAlgorithm("HTTPS");
+            s.setSSLParameters(parameters);
+        }
         return s;
-    }
-
-    /**
-     * Verify that serverName and CN equals.
-     *
-     * <pre>
-     * Origin:      jakarta-commons/httpclient
-     * File:        StrictSSLProtocolSocketFactory.java
-     * Revision:    1.5
-     * License:     Apache-2.0
-     * </pre>
-     *
-     * @param socket a SSLSocket value
-     * @exception SSLPeerUnverifiedException  If there are problems obtaining
-     * the server certificates from the SSL session, or the server host name 
-     * does not match with the "Common Name" in the server certificates 
-     * SubjectDN.
-     * @exception UnknownHostException  If we are not able to resolve
-     * the SSL sessions returned server host name. 
-     */
-    private void verifyHostname(SSLSocket socket)
-        throws SSLPeerUnverifiedException, UnknownHostException
-    {
-        if (!serverAuthNeeded) {
-            return; 
-        }
-
-        SSLSession session = socket.getSession();
-
-        if (serverName==null || serverName.length()==0) {
-            serverName = session.getPeerHost();
-            try {
-                InetAddress addr = InetAddress.getByName(serverName);
-            } catch (UnknownHostException uhe) {
-                throw new UnknownHostException("Could not resolve SSL " +
-                                               "server name " + serverName);
-            }
-        }
-
-
-        Certificate[] certs = session.getPeerCertificates();
-        if (certs==null || certs.length==0)
-            throw new SSLPeerUnverifiedException("No server certificates found");
-
-        if (!(certs[0] instanceof X509Certificate cert))
-            throw new SSLPeerUnverifiedException("Server certificate is not X.509");
-
-        String cn = getCN(cert);
-        if (!serverName.equalsIgnoreCase(cn)) {
-            throw new SSLPeerUnverifiedException("Invalid SSL server name. "+
-                    "Expected '" + serverName +
-                    "', got '" + cn + "'");
-        }
-    }
-
-    /**
-     * Extracts the Common Name (CN) from an X.509 certificate's subject DN
-     * using the standard {@link X500Principal} and {@link LdapName} APIs,
-     * which correctly handle quoting and escaping per RFC 2253.
-     *
-     * @param cert  an X.509 certificate
-     * @return the value of the "Common Name" field, or null if not present.
-     */
-    private String getCN(X509Certificate cert) throws SSLPeerUnverifiedException {
-        try {
-            X500Principal principal = cert.getSubjectX500Principal();
-            LdapName ln = new LdapName(principal.getName(X500Principal.RFC2253));
-            for (Rdn rdn : ln.getRdns()) {
-                if ("CN".equalsIgnoreCase(rdn.getType())) {
-                    return rdn.getValue().toString();
-                }
-            }
-            return null;
-        } catch (InvalidNameException e) {
-            throw new SSLPeerUnverifiedException("Invalid subject DN: " + e.getMessage());
-        }
     }
 
     /**
@@ -359,9 +279,9 @@ public class GenericSSLSocketFactory
     }
 
     /**
-     * Returns the configured peer certificate Common Name.
+     * Returns the configured peer certificate DNS name.
      *
-     * @return expected Common Name (CN) of the peer certificate
+     * @return expected DNS name of the peer certificate
      */
     public String getServerName() {
         return serverName;
