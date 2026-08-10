@@ -18,8 +18,8 @@
 
 package org.jpos.core;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * SubConfiguration objects lets childs objects access attributes
@@ -136,11 +136,9 @@ public class SubConfiguration implements Configuration {
     }
     @Override
     public Set<String> keySet() {
-        Set<String> keys = new HashSet<String>();
-        for (String k : cfg.keySet())
-            if (k.startsWith(prefix))
-                keys.add(k);
-
-        return keys;
+        return cfg.keySet().stream()
+          .filter(k -> k.startsWith(prefix))
+          .map(k -> k.substring(prefix.length()))
+          .collect(Collectors.toSet());
     }
 }

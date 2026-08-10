@@ -20,6 +20,7 @@ package org.jpos.transaction.participant;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
+import org.jpos.core.SubConfiguration;
 import org.jpos.transaction.Context;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -175,6 +176,17 @@ public class SwitchTest {
 
         System.setProperty(GROUP_PROPERTY, "updated-group");
         assertEquals("updated-group", select("100.30"));
+    }
+
+    @Test
+    public void testPrefixModeWorksWithSubConfiguration() {
+        Configuration parent = new SimpleConfiguration();
+        parent.put("switch.mode", "prefix");
+        parent.put("switch.100", "generic");
+        parent.put("switch.unknown", UNKNOWN_GROUP);
+        selector.setConfiguration(new SubConfiguration(parent, "switch."));
+
+        assertEquals("generic", select("100.30"));
     }
 
     @Test
