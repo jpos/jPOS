@@ -40,12 +40,12 @@ public class Switch implements Configurable, GroupSelector {
     private static final String PREFIX_MODE = "prefix";
     private static final Set<String> SELECTOR_PROPERTIES = Set.of("mode", "txnname", "unknown");
 
-    /** Creates the selector; configuration is supplied via {@link #setConfiguration(Configuration)}. */
     private Configuration cfg;
     private String txnNameEntry;
     private boolean prefixMode;
     private List<String> sortedRoutingKeys = List.of();   // kept sorted from longest to shortest
 
+    /** Creates the selector; configuration is supplied via {@link #setConfiguration(Configuration)}. */
     public Switch() {}
 
     public String select (long id, Serializable ser) {
@@ -79,6 +79,18 @@ public class Switch implements Configurable, GroupSelector {
         return PREPARED | READONLY | NO_JOIN;
     }
 
+    /**
+     * Configures the selector. Recognized properties:
+     * <ul>
+     *   <li>{@code txnname} - context key holding the transaction name (default `TXNNAME` from {@link
+     *       org.jpos.transaction.ContextConstants#TXNNAME}).</li>
+     *   <li>{@code mode} - {@code strict} (default) for exact match only, or {@code prefix}
+     *       to fall back to the longest configured key that prefixes the transaction name.</li>
+     *   <li>{@code unknown} - group(s) returned when no match is found.</li>
+     *   <li>any other key - transaction name (or prefix, in {@code prefix} mode) mapped to
+     *       the group(s) to select for it.</li>
+     * </ul>
+     */
     public void setConfiguration (Configuration cfg) {
         this.cfg = cfg;
         txnNameEntry = cfg.get("txnname", TXNNAME.toString());
