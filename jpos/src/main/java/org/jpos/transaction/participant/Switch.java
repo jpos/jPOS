@@ -40,12 +40,12 @@ public class Switch implements Configurable, GroupSelector {
     private static final String PREFIX_MODE = "prefix";
     private static final Set<String> SELECTOR_PROPERTIES = Set.of("mode", "txnname", "unknown");
 
-    /** Creates the selector; configuration is supplied via {@link #setConfiguration(Configuration)}. */
     private Configuration cfg;
     private String txnNameEntry;
     private boolean prefixMode;
     private List<String> sortedRoutingKeys = List.of();   // kept sorted from longest to shortest
 
+    /** Creates the selector; configuration is supplied via {@link #setConfiguration(Configuration)}. */
     public Switch() {}
 
     public String select (long id, Serializable ser) {
