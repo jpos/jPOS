@@ -32,7 +32,7 @@ import static org.jpos.transaction.ContextConstants.TXNNAME;
  * {@link GroupSelector} that picks the next participant group based on the
  * transaction name stored in the context (default key {@link
  * org.jpos.transaction.ContextConstants#TXNNAME}).
- * When configured with {@code mode=prefix}, the tradicional exact match is attempted
+ * When configured with {@code mode=prefix}, the traditional exact match is attempted
  * first, followed by the longest configured key that prefixes the transaction name.
  */
 @SuppressWarnings("unused")
