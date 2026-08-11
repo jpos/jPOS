@@ -19,6 +19,9 @@
 package org.jpos.transaction.participant;
 
 import java.io.Serializable;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.transaction.Context;
@@ -29,30 +32,61 @@ import static org.jpos.transaction.ContextConstants.TXNNAME;
  * {@link GroupSelector} that picks the next participant group based on the
  * transaction name stored in the context (default key {@link
  * org.jpos.transaction.ContextConstants#TXNNAME}).
+ * When configured with {@code mode=prefix}, the traditional exact match is attempted
+ * first, followed by the longest configured key that prefixes the transaction name.
  */
 @SuppressWarnings("unused")
 public class Switch implements Configurable, GroupSelector {
+    private static final String PREFIX_MODE = "prefix";
+    private static final Set<String> SELECTOR_PROPERTIES = Set.of("mode", "txnname", "unknown");
+
     /** Creates the selector; configuration is supplied via {@link #setConfiguration(Configuration)}. */
-    public Switch() {}
     private Configuration cfg;
     private String txnNameEntry;
+    private boolean prefixMode;
+    private List<String> sortedRoutingKeys = List.of();   // kept sorted from longest to shortest
+
+    public Switch() {}
+
     public String select (long id, Serializable ser) {
-        Context ctx = (Context) ser;
+        Context ctx   = (Context) ser;
         String type   = ctx.getString (txnNameEntry);
         String groups = null;
-        if (type != null)
+
+        if (type != null) {
             groups = cfg.get (type, null);
+
+            if (groups == null && prefixMode) {
+                String matchedKey = sortedRoutingKeys.stream()
+                  .filter(type::startsWith)
+                  .findFirst()
+                  .orElse(null);
+
+                if (matchedKey != null) {
+                    groups = cfg.get (matchedKey, null);
+                }
+            }
+        }
+
         if (groups == null)
             groups = cfg.get ("unknown", "");
         ctx.log ("SWITCH " + type + " (" + groups + ")");
 
         return groups;
     }
+
     public int prepare (long id, Serializable o) {
         return PREPARED | READONLY | NO_JOIN;
     }
+
     public void setConfiguration (Configuration cfg) {
         this.cfg = cfg;
         txnNameEntry = cfg.get("txnname", TXNNAME.toString());
+        prefixMode = PREFIX_MODE.equals(cfg.get("mode", "strict"));
+        if (prefixMode)
+            sortedRoutingKeys = cfg.keySet().stream()
+              .filter(key -> !SELECTOR_PROPERTIES.contains(key))
+              .sorted(Comparator.comparingInt(String::length).reversed())
+              .toList();
     }
 }

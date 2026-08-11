@@ -9,8 +9,13 @@ value to return a set of groups picked from a standard `Configuration`.
 |========================================================================
 |Property  | Description                                 | Default Value
 |txnname   | Context entry to use as key                 | `TXNNAME` 
+|mode      | Match mode (`strict` or `prefix`)           | `strict`
 |unknown   | Set of groups to be used on not found       | ""
 |========================================================================
+
+In `prefix` mode, the selector first tries an exact match. If none is found,
+it uses the longest configured key that is a prefix of the context value. This
+gives more-specific routes priority over generic fallback routes.
 
 Here is a sample configuration taken from jCard:
 
@@ -19,6 +24,7 @@ Here is a sample configuration taken from jCard:
 
  <participant class="org.jpos.transaction.participant.Switch" 
       logger="Q2" realm="Switch">
+  <property name="mode" value="prefix" />
   <property name="100.30" 
            value="balanceinquiry prepareresponse logit close sendresponse" />
   <property name="100.30.182" 
@@ -39,4 +45,3 @@ Here is a sample configuration taken from jCard:
 
 A previous participant puts in the context under the key `TXNNAME` data taken from
 the request ISOMsg (i.e. MTI, processing code, function code).
-

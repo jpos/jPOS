@@ -27,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 public class SubConfigurationTest {
@@ -43,6 +45,18 @@ public class SubConfigurationTest {
         SubConfiguration subConfiguration = new SubConfiguration(cfg, "testSubConfigurationPrefix");
         assertSame(cfg, subConfiguration.cfg, "subConfiguration.cfg");
         assertEquals("testSubConfigurationPrefix", subConfiguration.prefix, "subConfiguration.prefix");
+    }
+
+    @Test
+    public void testKeySetUsesSubConfigurationNamespace() {
+        Configuration cfg = new SimpleConfiguration();
+        cfg.put("switch.mode", "prefix");
+        cfg.put("switch.100", "generic");
+        cfg.put("other", "ignored");
+
+        SubConfiguration subConfiguration = new SubConfiguration(cfg, "switch.");
+
+        assertEquals(Set.of("mode", "100"), subConfiguration.keySet());
     }
 
     @Test
