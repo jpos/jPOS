@@ -290,8 +290,8 @@ tasks.register('viewTests', OpenBrowserTask) {
 }
 
 test {
-  minHeapSize = "4G" 
-  maxHeapSize = "8G"
+  minHeapSize = "512M"
+  maxHeapSize = "2G"
   maxParallelForks = 4 // easy with the parallel execution as some time sensitive tests may fail on small hardware
 }
 
