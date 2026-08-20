@@ -67,4 +67,32 @@ public class TPPDataElementsTest {
 
         assertEquals("Y", unpacked.getString("113.34"));
     }
+
+    @Test
+    public void testCryptoCardIndicator() throws ISOException {
+        assertPackUnpackPreservesFieldValue("jar:packager/cmf.xml", "113.72", "C");
+        assertPackUnpackPreservesFieldValue("jar:packager/cmfv3.xml", "113.72", "C");
+    }
+
+    @Test
+    public void testAgeVerificationData() throws ISOException {
+        String value = "00100321D00200318D"; // two TLV records: tag 001, len 003, value 21D; tag 002, len 003, value 18D
+        assertPackUnpackPreservesFieldValue("jar:packager/cmf.xml", "113.73", value);
+        assertPackUnpackPreservesFieldValue("jar:packager/cmfv3.xml", "113.73", value);
+    }
+
+    private void assertPackUnpackPreservesFieldValue(String packagerResource, String fieldPath, String value) throws ISOException {
+        ISOPackager p = new GenericPackager(packagerResource);
+        ISOMsg m = new ISOMsg("2100");
+        m.setPackager(p);
+        m.set(fieldPath, value);
+
+        byte[] packed = m.pack();
+
+        ISOMsg unpacked = new ISOMsg();
+        unpacked.setPackager(p);
+        unpacked.unpack(packed);
+
+        assertEquals(value, unpacked.getString(fieldPath));
+    }
 }
