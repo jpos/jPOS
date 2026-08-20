@@ -1098,6 +1098,16 @@
           length="19"
           name="Transaction GroupID"
           class="org.jpos.iso.IFB_NUMERIC" />
+      <isofield
+          id="72"
+          length="1"
+          name="Crypto Card Indicator"
+          class="org.jpos.iso.IF_CHAR" />
+      <isofield
+          id="73"
+          length="999"
+          name="Age Verification Data"
+          class="org.jpos.iso.IFB_LLLCHAR" />
   </isofieldpackager>
   <isofield
       id="114"
