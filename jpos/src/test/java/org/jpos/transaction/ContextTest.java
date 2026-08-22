@@ -46,12 +46,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jpos.log.AuditLogEvent;
 import org.jpos.log.AuditLogEventRegistry;
 import org.jpos.log.evt.ContextEvt;
+import org.jpos.util.Inhibit;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Profiler;
 import org.jpos.util.Serializer;
 import org.junit.jupiter.api.Test;
 
 public class ContextTest {
+    private enum HiddenKey implements Inhibit {
+        SECRET
+    }
 
     @Test
     public void testCheckPoint() throws Throwable {
@@ -478,5 +482,23 @@ public class ContextTest {
         Object converted = evt.entries().get("PROFILER");
         assertTrue(converted instanceof AuditLogEvent,
             "Profiler should expand to nested AuditLogEvent (got " + converted + ")");
+    }
+
+    @Test
+    public void inhibitsSensitiveContextKeysFromLogs() {
+        Context ctx = new Context();
+        ctx.setTrace(true);
+        ctx.put(HiddenKey.SECRET, "do-not-log");
+        ctx.put("visible", "safe");
+        assertEquals("do-not-log", ctx.get(HiddenKey.SECRET));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ctx.dump(new PrintStream(out), "");
+        ctx.getProfiler().dump(new PrintStream(out), "");
+        String rendered = out.toString();
+
+        assertFalse(rendered.contains("do-not-log"));
+        assertTrue(rendered.contains("safe"));
+        assertFalse(((ContextEvt) ctx.toAuditEvent()).entries().containsValue("do-not-log"));
     }
 }
