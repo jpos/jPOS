@@ -60,7 +60,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable, 
      * @param value the value to store
      */
     public void put (Object key, Object value) {
-        if (trace) {
+        if (trace && !(key instanceof Inhibit)) {
             getProfiler().checkPoint(
                 String.format("%s='%s' [%s]", getKeyName(key), value, Caller.info(1))
             );
@@ -77,7 +77,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable, 
      * @param persist true to also store in the persistent map
      */
     public void put (Object key, Object value, boolean persist) {
-        if (trace) {
+        if (trace && !(key instanceof Inhibit)) {
             getProfiler().checkPoint(
                 String.format("%s(P)='%s' [%s]", getKeyName(key), value, Caller.info(1))
             );
@@ -316,7 +316,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable, 
         Map<String, Object> out = new LinkedHashMap<>();
         getMapClone().forEach((k, v) -> {
             String key = getKeyName(k);
-            if (key.startsWith(".") || key.startsWith("*"))
+            if (k instanceof Inhibit || key.startsWith(".") || key.startsWith("*"))
                 return;
             out.put(key, convertEntry(v));
         });
@@ -571,7 +571,7 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable, 
      */
     protected void dumpEntry (PrintStream p, String indent, Map.Entry<Object,Object> entry) {
         String key = getKeyName(entry.getKey());
-        if (key.startsWith(".") || key.startsWith("*"))
+        if (entry.getKey() instanceof Inhibit || key.startsWith(".") || key.startsWith("*"))
             return; // see jPOS-63
 
         p.printf("%s%s%s: ", indent, key, pmap != null && pmap.containsKey(key) ? "(P)" : "");
