@@ -196,9 +196,26 @@ class GitRevisionTask extends DefaultTask
     boolean gotHead
 
     @InputFile @Optional
+    File commonDirFile
+
+    @InputFile @Optional
     File getRefFile() {
-        File rf = new File(gitHead.parent,gitHead.text.replace('ref: ', '').trim())
-        return rf.exists() ? rf : gitHead
+        if (gitHead == null)
+            return null
+
+        String head = gitHead.getText('UTF-8').trim()
+        if (!head.startsWith('ref: '))
+            return null
+
+        File gitDir = gitHead.parentFile
+        File commonDir = gitDir
+        if (commonDirFile != null) {
+            File pointedCommonDir = new File(commonDirFile.getText('UTF-8').trim())
+            commonDir = (pointedCommonDir.isAbsolute() ? pointedCommonDir :
+              new File(gitDir, pointedCommonDir.path)).canonicalFile
+        }
+        File rf = new File(commonDir, head.substring('ref: '.length()).trim())
+        return rf.isFile() ? rf : null
     }
 
     @OutputFile
@@ -210,7 +227,7 @@ class GitRevisionTask extends DefaultTask
         Properties props=new Properties()
         if (gotHead) {
             File ref=getRefFile()
-            if (ref != null && ref.exists()) {
+            if (ref != null) {
                 props.put("branch",ref.getName())
                 props.put("revision",ref.text.substring(0,7))
             } else {
@@ -243,10 +260,23 @@ class BuildTimestampTask extends DefaultTask {
 }
 
 task createRevisionPropertyFile(type: GitRevisionTask) {
-    gitHead = "$rootDir/.git/HEAD" as File
-    gotHead = gitHead.exists()
-    if (!gotHead)
-        gitHead = null;
+    File dotGit = "$rootDir/.git" as File
+    File gitDir = dotGit.isDirectory() ? dotGit : null
+    if (gitDir == null && dotGit.isFile()) {
+        String pointer = dotGit.getText('UTF-8').trim()
+        if (pointer.startsWith('gitdir:')) {
+            File pointedGitDir = new File(pointer.substring('gitdir:'.length()).trim())
+            gitDir = (pointedGitDir.isAbsolute() ? pointedGitDir :
+              new File(dotGit.parentFile, pointedGitDir.path)).canonicalFile
+        }
+    }
+
+    File head = gitDir != null ? new File(gitDir, 'HEAD') : null
+    gitHead = head != null && head.isFile() ? head : null
+    gotHead = gitHead != null
+
+    File commonDir = gitDir != null ? new File(gitDir, 'commondir') : null
+    commonDirFile = commonDir != null && commonDir.isFile() ? commonDir : null
     outputFile = "$sourceSets.main.output.resourcesDir/org/jpos/q2/revision.properties" as File
 }
 
