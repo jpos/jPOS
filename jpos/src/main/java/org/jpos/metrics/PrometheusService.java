@@ -27,6 +27,7 @@ import org.jpos.q2.QBeanSupport;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 
 /**
  * QBean that exposes the Q2 Prometheus meter registry over an embedded HTTP
@@ -49,20 +50,20 @@ public class PrometheusService extends QBeanSupport {
             final var registry =  getServer().getPrometheusMeterRegistry();
             server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext(path, httpExchange -> {
-                String response = registry.scrape();
                 httpExchange.getResponseHeaders().add("Content-Type", "text/plain; version=0.0.4");
-                httpExchange.sendResponseHeaders(200, response.getBytes().length);
+                httpExchange.sendResponseHeaders(200, 0);
                 try (OutputStream os = httpExchange.getResponseBody()) {
-                    os.write(response.getBytes());
+                    registry.scrape(os);
                 }
             });
             if (statusPath != null) {
                 server.createContext(statusPath, httpExchange -> {
-                    String response = getServer().running() ? "running\n" : "stopping\n";
+                    byte[] response = (getServer().running() ? "running\n" : "stopping\n")
+                      .getBytes(StandardCharsets.UTF_8);
                     httpExchange.getResponseHeaders().add("Content-Type", "text/plain");
-                    httpExchange.sendResponseHeaders(200, response.getBytes().length);
+                    httpExchange.sendResponseHeaders(200, response.length);
                     try (OutputStream os = httpExchange.getResponseBody()) {
-                        os.write(response.getBytes());
+                        os.write(response);
                     }
                 });
             }

@@ -30,14 +30,18 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
+import java.time.Duration;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
+import io.micrometer.core.instrument.Tags;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jpos.core.Environment;
+import org.jpos.metrics.MeterFactory;
+import org.jpos.metrics.MeterInfo;
 import org.jpos.q2.qbean.SystemMonitor;
 import org.jpos.util.Log;
 import org.jpos.util.Realm;
@@ -93,6 +97,19 @@ public class Q2Test {
     public void testConstructor() throws Throwable {
         assertEquals("deploy", m_q2.getDeployDir().getName(), "m_q2.getDeployDir().getName()");
         assertSame(m_args, m_q2.getCommandLineArgs(), "m_q2.getCommandLineArgs()");
+    }
+
+    @Test
+    public void testTMOperationHistogramUsesOnlyServiceLevelObjectives() {
+        var timer = MeterFactory.timer(
+          m_q2.getMeterRegistry(), MeterInfo.TM_OPERATION, Tags.of("test", "q2-histogram")
+        );
+        timer.record(Duration.ofMillis(50));
+
+        long buckets = m_q2.getPrometheusMeterRegistry().scrape().lines()
+          .filter(line -> line.startsWith("jpos_tm_op_seconds_bucket{") && line.contains("test=\"q2-histogram\""))
+          .count();
+        assertEquals(7, buckets, "six configured SLO buckets plus +Inf");
     }
 
     @Test
