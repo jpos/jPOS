@@ -31,6 +31,7 @@ import static org.mockito.Mockito.mock;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.UUID;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
@@ -101,15 +102,21 @@ public class Q2Test {
 
     @Test
     public void testTMOperationHistogramUsesOnlyServiceLevelObjectives() {
+        String testId = UUID.randomUUID().toString();
+        var registry = m_q2.getMeterRegistry();
         var timer = MeterFactory.timer(
-          m_q2.getMeterRegistry(), MeterInfo.TM_OPERATION, Tags.of("test", "q2-histogram")
+          registry, MeterInfo.TM_OPERATION, Tags.of("test", testId)
         );
-        timer.record(Duration.ofMillis(50));
+        try {
+            timer.record(Duration.ofMillis(50));
 
-        long buckets = m_q2.getPrometheusMeterRegistry().scrape().lines()
-          .filter(line -> line.startsWith("jpos_tm_op_seconds_bucket{") && line.contains("test=\"q2-histogram\""))
-          .count();
-        assertEquals(7, buckets, "six configured SLO buckets plus +Inf");
+            long buckets = m_q2.getPrometheusMeterRegistry().scrape().lines()
+              .filter(line -> line.startsWith("jpos_tm_op_seconds_bucket{") && line.contains("test=\"" + testId + "\""))
+              .count();
+            assertEquals(7, buckets, "six configured SLO buckets plus +Inf");
+        } finally {
+            registry.remove(timer);
+        }
     }
 
     @Test
