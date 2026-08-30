@@ -1678,6 +1678,8 @@ public class Q2 implements FileFilter, Runnable {
         try {
             if (!disableJFR) {
                 recording = new Recording(Configuration.getConfiguration("default"));
+                recording.setMaxSize(250L * 1024 * 1024);
+                recording.setMaxAge(Duration.ofHours(4));
                 recording.start();
             }
         } catch (IOException | ParseException e) {
@@ -1700,7 +1702,9 @@ public class Q2 implements FileFilter, Runnable {
             @Override
             public DistributionStatisticConfig configure(Meter.Id id, DistributionStatisticConfig config) {
                 if (id.getName().equals(MeterInfo.TM_OPERATION.id())) {
-                    return DistributionStatisticConfig.builder().serviceLevelObjectives(
+                    return DistributionStatisticConfig.builder()
+                      .percentilesHistogram(false)
+                      .serviceLevelObjectives(
                         Duration.ofMillis(10).toNanos(),
                         Duration.ofMillis(100).toNanos(),
                         Duration.ofMillis(500).toNanos(),
