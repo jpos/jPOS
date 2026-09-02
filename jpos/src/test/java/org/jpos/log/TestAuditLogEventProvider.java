@@ -18,18 +18,31 @@
 
 package org.jpos.log;
 
+import org.jpos.util.Kind;
+
 import java.util.List;
 
 /**
- * Provider used by the {@code AuditLogEventRegistry} tests to verify
- * {@link java.util.ServiceLoader} discovery of external types.
+ * Provider used by the {@code AuditLogEventRegistry} and {@code Kind} tests
+ * to verify {@link java.util.ServiceLoader} discovery of external types and kinds.
  */
 public class TestAuditLogEventProvider implements AuditLogEventProvider {
+
+    public static final String CUSTOM_KIND = "custom-kind";
+    public static final String UNTYPED_KIND = "custom-untyped";
 
     public record CustomEvent(String value) implements AuditLogEvent { }
 
     @Override
     public List<AuditLogEventType> types() {
-        return List.of(new AuditLogEventType("custom-test", CustomEvent.class));
+        return List.of(new AuditLogEventType("custom-test", CustomEvent.class, CUSTOM_KIND));
+    }
+
+    @Override
+    public List<Kind.Def> kinds() {
+        return List.of(
+          new Kind.Def(CUSTOM_KIND, Kind.Family.TELEMETRY),
+          new Kind.Def(UNTYPED_KIND, "custom-family")
+        );
     }
 }
