@@ -54,6 +54,7 @@ import org.jpos.metrics.MeterInfo;
 import org.jpos.metrics.PrometheusService;
 import org.jpos.q2.install.ModuleUtils;
 import org.jpos.security.SystemSeed;
+import org.jpos.util.Kind;
 import org.jpos.util.Log;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -719,7 +720,7 @@ public class Q2 implements FileFilter, Runnable {
 
     private void undeploy (File f) {
         QEntry qentry = dirMap.get (f);
-        LogEvent evt = getDeployLog().createInfo().withTraceId(getInstanceId());
+        LogEvent evt = getDeployLog().createLogEvent(Kind.DEPLOY).withTraceId(getInstanceId());
         try {
             if (evt != null)
                 evt.addMessage (new UnDeploy(f.getCanonicalPath()));
@@ -754,7 +755,7 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     private boolean deploy (File f) {
-        LogEvent evt = getDeployLog().createInfo().withTraceId(getInstanceId());
+        LogEvent evt = getDeployLog().createLogEvent(Kind.DEPLOY).withTraceId(getInstanceId());
         boolean enabled;
         try {
             QEntry qentry = dirMap.get (f);
@@ -1580,7 +1581,7 @@ public class Q2 implements FileFilter, Runnable {
     private boolean waitForChanges (WatchService service) throws InterruptedException {
         WatchKey key = service.poll (SCAN_INTERVAL, TimeUnit.MILLISECONDS);
         if (key != null) {
-            LogEvent evt = getDeployLog().createInfo().withTraceId(getInstanceId());
+            LogEvent evt = getDeployLog().createLogEvent(Kind.DEPLOY).withTraceId(getInstanceId());
             for (WatchEvent<?> ev : key.pollEvents()) {
                 if (ev.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                     evt.addMessage(new DeployActivity(DeployActivity.Action.CREATE, String.format ("%s/%s", deployDir.getName(), ev.context())));
@@ -1743,7 +1744,7 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     private void audit (AuditLogEvent sal) {
-        Logger.log(getLog().createInfo(sal).withTraceId(getInstanceId()));
+        Logger.log(getLog().createEvent(sal).withTraceId(getInstanceId()));
     }
 
     private Start auditStart() {

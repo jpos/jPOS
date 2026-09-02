@@ -477,7 +477,7 @@ public abstract class BaseChannel extends Observable
     public void connect () throws IOException {
         ChannelEvent jfr = new ChannelEvent.Connect();
         jfr.begin();
-        LogEvent evt = new LogEvent (this, "connect").withTraceId(uuid);
+        LogEvent evt = new LogEvent (this, Kind.ISO_SESSION).withTraceId(uuid);
         boolean logEvent = logConnections;
         try {
             socket = newSocket (hosts, ports, evt);
@@ -1008,7 +1008,7 @@ public abstract class BaseChannel extends Observable
     public void disconnect () throws IOException {
         var jfr = new ChannelEvent.Disconnect();
         jfr.begin();
-        LogEvent evt = new LogEvent (this, "disconnect");
+        LogEvent evt = new LogEvent (this, Kind.ISO_SESSION);
         if (socket != null) {
             String detail = socket.getRemoteSocketAddress().toString();
             jfr.setDetail(detail);

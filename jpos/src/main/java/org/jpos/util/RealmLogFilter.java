@@ -95,7 +95,7 @@ public class RealmLogFilter implements LogListener, XmlConfigurable, Configurabl
         } else {
             realmsMissed.add(realm);
             if (dumpInterval > 0 && System.currentTimeMillis() - lastDump > dumpInterval) {
-                LogEvent evt = new LogEvent("ignored-realms");
+                LogEvent evt = new LogEvent(Kind.CONFIG);
                 evt.addMessage(realmsMissed);
                 realmsMissed = new HashSet<>();
                 lastDump = System.currentTimeMillis();

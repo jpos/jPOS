@@ -26,6 +26,7 @@ import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.*;
+import org.jpos.util.Kind;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleMsg;
@@ -1886,7 +1887,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      */
     @Override
     protected byte[] generateCBC_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
-        LogEvent evt = new LogEvent(this, "jce-provider-cbc-mac");
+        LogEvent evt = new LogEvent(this, Kind.JCE_PROVIDER);
         try {
           return generateMACImpl(data,kd,cfg.get("cbc-mac","ISO9797ALG3MACWITHISO7816-4PADDING"),evt);
         } catch (Exception e) {
@@ -1906,7 +1907,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      */
     @Override
     protected byte[] generateEDE_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
-        LogEvent evt = new LogEvent(this, "jce-provider-ede-mac");
+        LogEvent evt = new LogEvent(this, Kind.JCE_PROVIDER);
         try {
           return generateMACImpl(data,kd,cfg.get("ede-mac","DESEDEMAC"),evt);
         } catch (Exception e) {

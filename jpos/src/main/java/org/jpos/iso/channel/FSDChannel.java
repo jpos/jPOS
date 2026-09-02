@@ -24,6 +24,7 @@ import org.jpos.iso.FSDISOMsg;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.util.FSDMsg;
+import org.jpos.util.Kind;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
@@ -67,7 +68,7 @@ public class FSDChannel extends NACChannel {
     @Override
     protected int getMessageLength() throws IOException, ISOException {
         int len = super.getMessageLength();
-        LogEvent evt = new LogEvent (this, "fsd-channel-debug");
+        LogEvent evt = new LogEvent (this, Kind.DEBUG);
         evt.addMessage ("received message length: " + len);
         Logger.log (evt);
         return len;

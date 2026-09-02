@@ -19,6 +19,7 @@
 package org.jpos.iso.channel;
 
 import org.jpos.iso.*;
+import org.jpos.util.Kind;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.core.Configuration;
@@ -93,7 +94,7 @@ public class NCCChannel extends BaseChannel {
             );
         } 
         catch (ISOException e) {
-            Logger.log (new LogEvent (this, "send-message-length", e));
+            Logger.log (new LogEvent (this, Kind.DEBUG, e));
         }
     }
     protected int getMessageLength() throws IOException, ISOException {

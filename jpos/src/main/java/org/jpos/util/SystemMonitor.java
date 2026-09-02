@@ -97,7 +97,7 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
 
     public void run() {
         while (!shutdown) {
-            Logger.log (new LogEvent (this, "SystemMonitor", this));
+            Logger.log (new LogEvent (this, Kind.STATUS, this));
             try {
                 long expected = System.currentTimeMillis() + sleepTime;
                 Thread.sleep (sleepTime);

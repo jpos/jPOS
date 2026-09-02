@@ -406,7 +406,7 @@ public class DirPoll extends SimpleLogSource
                 }
             } catch (InterruptedException e) {
             } catch (Throwable e) {
-                Logger.log (new LogEvent (this, "dirpoll", e));
+                Logger.log (new LogEvent (this, Log.ERROR, e));
                 try {
                     synchronized (shutdownMonitor) {
                         if (!shutdown && pollInterval > 0L) {
