@@ -18,6 +18,8 @@
 
 package org.jpos.util;
 
+import org.jpos.log.AuditLogEvent;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,18 +39,18 @@ public class Log implements LogSource {
     /** Default tags applied to every {@link LogEvent} created by this {@code Log}. */
     protected final Map<String,String> defaultTags = Collections.synchronizedMap(new LinkedHashMap<>());
 
-    /** Level constant for trace events. */
-    public static final String TRACE   = "trace";
-    /** Level constant for debug events. */
-    public static final String DEBUG   = "debug";
-    /** Level constant for informational events. */
-    public static final String INFO    = "info";
-    /** Level constant for warning events. */
-    public static final String WARN    = "warn";
-    /** Level constant for error events. */
-    public static final String ERROR   = "error";
-    /** Level constant for fatal events. */
-    public static final String FATAL   = "fatal";
+    /** Level constant for trace events; same value as {@link Kind#TRACE}. */
+    public static final String TRACE   = Kind.TRACE;
+    /** Level constant for debug events; same value as {@link Kind#DEBUG}. */
+    public static final String DEBUG   = Kind.DEBUG;
+    /** Level constant for informational events; same value as {@link Kind#INFO}. */
+    public static final String INFO    = Kind.INFO;
+    /** Level constant for warning events; same value as {@link Kind#WARN}. */
+    public static final String WARN    = Kind.WARN;
+    /** Level constant for error events; same value as {@link Kind#ERROR}. */
+    public static final String ERROR   = Kind.ERROR;
+    /** Level constant for fatal events; same value as {@link Kind#FATAL}. */
+    public static final String FATAL   = Kind.FATAL;
 
     /** Default constructor. */
     public Log () {
@@ -287,23 +289,42 @@ public class Log implements LogSource {
         Logger.log (evt);
     }
     /**
-     * Creates a new {@link LogEvent} at the given level decorated with this {@code Log}'s default tags.
+     * Creates a new {@link LogEvent} of the given kind decorated with this {@code Log}'s default tags.
      *
-     * @param level event level (one of the {@code TRACE}/{@code DEBUG}/{@code INFO}/{@code WARN}/{@code ERROR}/{@code FATAL} constants)
+     * <p>The kind is the event's tag: what happened. Prefer a {@link Kind}
+     * constant (the {@code TRACE}/{@code DEBUG}/{@code INFO}/{@code WARN}/{@code ERROR}/{@code FATAL}
+     * level constants are kinds too) or a kind registered by a module. Ad-hoc
+     * kinds should be dot-namespaced, e.g. {@code jcard.pin-change}.</p>
+     *
+     * @param level event kind
      * @return a new event ready to be populated and logged
+     * @see Kind
      */
     public LogEvent createLogEvent (String level) {
         return applyDefaultTags(new LogEvent (this, level));
     }
     /**
-     * Creates a new {@link LogEvent} at the given level with an initial payload.
+     * Creates a new {@link LogEvent} of the given kind with an initial payload.
      *
-     * @param level event level
+     * @param level event kind (see {@link #createLogEvent(String)})
      * @param detail initial event payload
      * @return a new event ready to be populated and logged
      */
     public LogEvent createLogEvent (String level, Object detail) {
         return applyDefaultTags(new LogEvent (this, level, detail));
+    }
+    /**
+     * Creates a new {@link LogEvent} whose kind is implied by the payload's
+     * registered {@link org.jpos.log.AuditLogEventType}, decorated with this
+     * {@code Log}'s default tags. Falls back to {@link Kind#INFO} when the
+     * type is unknown or implies no kind.
+     *
+     * @param detail typed event payload
+     * @return a new event ready to be populated and logged
+     * @see Kind#kindOf(AuditLogEvent)
+     */
+    public LogEvent createEvent (AuditLogEvent detail) {
+        return applyDefaultTags(new LogEvent (this, detail));
     }
     /**
      * Creates an empty trace-level event.

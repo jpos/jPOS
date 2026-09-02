@@ -41,6 +41,7 @@ import org.jpos.log.evt.TraceEvt;
 import org.jpos.log.evt.Txn;
 import org.jpos.log.evt.UnDeploy;
 import org.jpos.log.evt.Warning;
+import org.jpos.util.Kind;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -66,30 +67,33 @@ import java.util.ServiceLoader;
  */
 public final class AuditLogEventRegistry {
     private static final List<AuditLogEventType> BUILTINS = List.of(
-      new AuditLogEventType("warn", Warning.class),
-      new AuditLogEventType("start", Start.class),
-      new AuditLogEventType("stop", Stop.class),
-      new AuditLogEventType("deploy", Deploy.class),
-      new AuditLogEventType("undeploy", UnDeploy.class),
-      new AuditLogEventType("msg", LogMessage.class),
-      new AuditLogEventType("shutdown", Shutdown.class),
-      new AuditLogEventType("deploy-activity", DeployActivity.class),
-      new AuditLogEventType("throwable", ThrowableAuditLogEvent.class),
-      new AuditLogEventType("license", License.class),
-      new AuditLogEventType("sysinfo", SysInfo.class),
-      new AuditLogEventType("connect", Connect.class),
-      new AuditLogEventType("disconnect", Disconnect.class),
-      new AuditLogEventType("listen", Listen.class),
-      new AuditLogEventType("session-start", SessionStart.class),
-      new AuditLogEventType("session-end", SessionEnd.class),
-      new AuditLogEventType("txn", Txn.class),
+      new AuditLogEventType("warn", Warning.class, Kind.WARN),
+      new AuditLogEventType("start", Start.class, Kind.LIFECYCLE),
+      new AuditLogEventType("stop", Stop.class, Kind.LIFECYCLE),
+      new AuditLogEventType("deploy", Deploy.class, Kind.DEPLOY),
+      new AuditLogEventType("undeploy", UnDeploy.class, Kind.DEPLOY),
+      new AuditLogEventType("msg", LogMessage.class, Kind.INFO),
+      new AuditLogEventType("shutdown", Shutdown.class, Kind.LIFECYCLE),
+      new AuditLogEventType("deploy-activity", DeployActivity.class, Kind.DEPLOY),
+      new AuditLogEventType("throwable", ThrowableAuditLogEvent.class, Kind.ERROR),
+      new AuditLogEventType("license", License.class, Kind.LIFECYCLE),
+      new AuditLogEventType("sysinfo", SysInfo.class, Kind.STATUS),
+      new AuditLogEventType("connect", Connect.class, Kind.ISO_SESSION),
+      new AuditLogEventType("disconnect", Disconnect.class, Kind.ISO_SESSION),
+      new AuditLogEventType("listen", Listen.class, Kind.ISO_SESSION),
+      new AuditLogEventType("session-start", SessionStart.class, Kind.ISO_SESSION),
+      new AuditLogEventType("session-end", SessionEnd.class, Kind.ISO_SESSION),
+      new AuditLogEventType("txn", Txn.class, Kind.TXN),
+      // secondary payloads: ride along inside another event, imply no kind
       new AuditLogEventType("profiler", ProfilerEvt.class),
       new AuditLogEventType("context", ContextEvt.class),
-      new AuditLogEventType("logevt", LogEventEvt.class),
+      new AuditLogEventType("logevt", LogEventEvt.class, Kind.INFO),
       new AuditLogEventType("trace", TraceEvt.class)
     );
 
-    private static volatile Map<String, AuditLogEventType> types;
+    private record Snapshot(Map<String, AuditLogEventType> byName, Map<Class<?>, AuditLogEventType> byClass) { }
+
+    private static volatile Snapshot snapshot;
 
     private AuditLogEventRegistry() { }
 
@@ -99,7 +103,27 @@ public final class AuditLogEventRegistry {
      * @return all known type mappings, built-ins first, then ServiceLoader-discovered.
      */
     public static Collection<AuditLogEventType> types() {
-        return load().values();
+        return load().byName().values();
+    }
+
+    /**
+     * Looks up a registered type by its discriminator id.
+     *
+     * @param name the {@code t} value
+     * @return the type, or {@code null} when unknown
+     */
+    public static AuditLogEventType typeOf(String name) {
+        return name == null ? null : load().byName().get(name);
+    }
+
+    /**
+     * Looks up a registered type by its implementation class.
+     *
+     * @param clazz the {@link AuditLogEvent} implementation
+     * @return the type, or {@code null} when unknown
+     */
+    public static AuditLogEventType typeOf(Class<?> clazz) {
+        return clazz == null ? null : load().byClass().get(clazz);
     }
 
     /**
@@ -113,7 +137,7 @@ public final class AuditLogEventRegistry {
      * @return the same mapper for chaining
      */
     public static <M extends ObjectMapper> M register(M mapper) {
-        for (AuditLogEventType t : load().values()) {
+        for (AuditLogEventType t : types()) {
             mapper.registerSubtypes(new NamedType(t.clazz(), t.name()));
         }
         return mapper;
@@ -125,17 +149,17 @@ public final class AuditLogEventRegistry {
      * fixed for the lifetime of the JVM.
      */
     static synchronized void reload() {
-        types = null;
+        snapshot = null;
         load();
     }
 
-    private static Map<String, AuditLogEventType> load() {
-        Map<String, AuditLogEventType> snapshot = types;
-        if (snapshot != null)
-            return snapshot;
+    private static Snapshot load() {
+        Snapshot s = snapshot;
+        if (s != null)
+            return s;
         synchronized (AuditLogEventRegistry.class) {
-            if (types != null)
-                return types;
+            if (snapshot != null)
+                return snapshot;
             Map<String, AuditLogEventType> map = new LinkedHashMap<>();
             for (AuditLogEventType t : BUILTINS)
                 map.put(t.name(), t);
@@ -154,8 +178,11 @@ public final class AuditLogEventRegistry {
                     map.put(t.name(), t);
                 }
             }
-            types = Collections.unmodifiableMap(map);
-            return types;
+            Map<Class<?>, AuditLogEventType> byClass = new LinkedHashMap<>();
+            for (AuditLogEventType t : map.values())
+                byClass.put(t.clazz(), t);
+            snapshot = new Snapshot(Collections.unmodifiableMap(map), Collections.unmodifiableMap(byClass));
+            return snapshot;
         }
     }
 }

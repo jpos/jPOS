@@ -18,10 +18,14 @@
 
 package org.jpos.log;
 
+import org.jpos.util.Kind;
+
 import java.util.Collection;
+import java.util.List;
 
 /**
- * SPI for contributing additional {@link AuditLogEvent} implementations.
+ * SPI for contributing additional {@link AuditLogEvent} implementations and
+ * {@link Kind} registrations.
  *
  * <p>External modules register their event classes by declaring an implementation in
  * {@code META-INF/services/org.jpos.log.AuditLogEventProvider}; the
@@ -43,4 +47,19 @@ public interface AuditLogEventProvider {
      * @return the type mappings contributed by this provider; must not be {@code null}.
      */
     Collection<AuditLogEventType> types();
+
+    /**
+     * Returns the kinds contributed by this provider that have no typed
+     * payload of their own. Kinds implied by {@link #types()} need not be
+     * listed here unless they are new; a kind implied by a type must be
+     * registered by core or by some provider's {@code kinds()}.
+     *
+     * <p>Registering a kind already known with a different family is an
+     * error. Prefer an existing kind, and an existing family, over new ones.</p>
+     *
+     * @return kind definitions; never {@code null}
+     */
+    default Collection<Kind.Def> kinds() {
+        return List.of();
+    }
 }

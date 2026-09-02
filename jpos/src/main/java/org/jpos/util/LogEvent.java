@@ -58,7 +58,14 @@ public class LogEvent implements AuditLogEventConvertible {
     /**
      * Constructs an empty event with the given tag.
      *
-     * @param tag log tag (level/event name)
+     * <p>The tag is the event's <em>kind</em>: what happened. Prefer a
+     * {@link Kind} constant or a kind registered by a module through
+     * {@link org.jpos.log.AuditLogEventProvider}; ad-hoc kinds should be
+     * dot-namespaced ({@code jcard.pin-change}). Nothing in core rewrites
+     * or rejects a tag.</p>
+     *
+     * @param tag event kind
+     * @see Kind
      */
     public LogEvent (String tag) {
         super();
@@ -74,7 +81,7 @@ public class LogEvent implements AuditLogEventConvertible {
     /**
      * Constructs an event with the given tag and an initial payload entry.
      *
-     * @param tag log tag (level/event name)
+     * @param tag event kind (see {@link #LogEvent(String)})
      * @param msg initial payload entry
      */
     public LogEvent (String tag, Object msg) {
@@ -85,7 +92,7 @@ public class LogEvent implements AuditLogEventConvertible {
      * Constructs an event tied to a {@link LogSource}.
      *
      * @param source source whose logger and realm govern this event
-     * @param tag log tag (level/event name)
+     * @param tag event kind (see {@link #LogEvent(String)})
      */
     public LogEvent (LogSource source, String tag) {
         this (tag);
@@ -96,7 +103,7 @@ public class LogEvent implements AuditLogEventConvertible {
      * Constructs an event tied to a {@link LogSource} with an initial payload entry.
      *
      * @param source source whose logger and realm govern this event
-     * @param tag log tag (level/event name)
+     * @param tag event kind (see {@link #LogEvent(String)})
      * @param msg initial payload entry
      */
     public LogEvent (LogSource source, String tag, Object msg) {
@@ -104,6 +111,18 @@ public class LogEvent implements AuditLogEventConvertible {
         this.source  = source;
         honorSourceLogger = true;
         addMessage(msg);
+    }
+    /**
+     * Constructs an event tied to a {@link LogSource} whose kind is implied by
+     * the payload's registered {@link org.jpos.log.AuditLogEventType}.
+     * Falls back to {@link Kind#INFO} when the type is unknown or implies no kind.
+     *
+     * @param source source whose logger and realm govern this event
+     * @param evt typed payload
+     * @see Kind#kindOf(AuditLogEvent)
+     */
+    public LogEvent (LogSource source, AuditLogEvent evt) {
+        this (source, Kind.kindOf(evt), evt);
     }
     /**
      * Returns the log tag.

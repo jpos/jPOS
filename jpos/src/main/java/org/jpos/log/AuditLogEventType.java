@@ -18,31 +18,54 @@
 
 package org.jpos.log;
 
+import org.jpos.util.Kind;
+
 import java.util.Objects;
 
 /**
- * Pairs a stable type id with the {@link AuditLogEvent} implementation it identifies.
+ * Pairs a stable type id with the {@link AuditLogEvent} implementation it identifies,
+ * and optionally with the {@link Kind} the type implies.
  *
  * <p>Used by {@link AuditLogEventProvider} implementations and by
  * {@link AuditLogEventRegistry} to register Jackson subtype mappings.</p>
  *
+ * <p>When {@code kind} is set, events created through
+ * {@link org.jpos.util.Log#createEvent(AuditLogEvent)} carry it as their tag.
+ * The kind must be registered (by core or by a provider's
+ * {@link AuditLogEventProvider#kinds()}). Leave it {@code null} for secondary
+ * payloads that ride along inside another event.</p>
+ *
  * @param name  stable type id used as the JSON/XML discriminator value (e.g. {@code "warn"})
  * @param clazz the {@link AuditLogEvent} implementation
+ * @param kind  the kind this type implies, or {@code null}
  *
  * @since 3.0.0
  */
-public record AuditLogEventType(String name, Class<? extends AuditLogEvent> clazz) {
+public record AuditLogEventType(String name, Class<? extends AuditLogEvent> clazz, String kind) {
     /**
      * Validates the record components: {@code name} must be non-null and
-     * non-blank, and {@code clazz} must be non-null.
+     * non-blank, {@code clazz} must be non-null, and {@code kind}, when
+     * present, must be well-formed.
      *
      * @throws NullPointerException     if {@code name} or {@code clazz} is {@code null}
-     * @throws IllegalArgumentException if {@code name} is blank
+     * @throws IllegalArgumentException if {@code name} is blank or {@code kind} is malformed
      */
     public AuditLogEventType {
         Objects.requireNonNull(name, "name");
         Objects.requireNonNull(clazz, "clazz");
         if (name.isBlank())
             throw new IllegalArgumentException("name must not be blank");
+        if (kind != null && !Kind.isValid(kind))
+            throw new IllegalArgumentException("invalid kind '" + kind + "' for type '" + name + "'");
+    }
+
+    /**
+     * Creates a type that implies no kind.
+     *
+     * @param name  stable type id
+     * @param clazz the {@link AuditLogEvent} implementation
+     */
+    public AuditLogEventType(String name, Class<? extends AuditLogEvent> clazz) {
+        this(name, clazz, null);
     }
 }
