@@ -19,6 +19,7 @@
 package org.jpos.iso.channel;
 
 import org.jpos.iso.*;
+import org.jpos.util.Kind;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
@@ -97,7 +98,7 @@ public class BASE24TCPChannel extends BaseChannel {
     protected int getMessageLength() throws IOException, ISOException {
         int l = 0;
         byte[] b = new byte[2];
-        Logger.log (new LogEvent (this, "get-message-length"));
+        Logger.log (new LogEvent (this, Kind.DEBUG, "get-message-length"));
         while (l == 0) {
             serverIn.readFully(b,0,2);
             l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
@@ -106,14 +107,14 @@ public class BASE24TCPChannel extends BaseChannel {
                 serverOut.flush();
             }
         }
-        Logger.log (new LogEvent (this, "got-message-length", Integer.toString(l)));
+        Logger.log (new LogEvent (this, Kind.DEBUG, "got-message-length " + l));
         return l - 1;   // trailler length
     }
     protected void getMessageTrailler() throws IOException {
-        Logger.log (new LogEvent (this, "get-message-trailler"));
+        Logger.log (new LogEvent (this, Kind.DEBUG, "get-message-trailler"));
         byte[] b = new byte[1];
         serverIn.readFully(b,0,1);
-        Logger.log (new LogEvent (this, "got-message-trailler", ISOUtil.hexString(b)));
+        Logger.log (new LogEvent (this, Kind.DEBUG, "got-message-trailler " + ISOUtil.hexString(b)));
     }
 }
 

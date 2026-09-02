@@ -186,6 +186,7 @@ public class ISOServerTest {
                   .findFirst()
                   .orElseThrow();
                 assertEquals("comm/server", sessionEvent.getRealm(), "sessionEvent.getRealm()");
+                assertEquals(org.jpos.util.Kind.ISO_SESSION, sessionEvent.getTag(), "sessionEvent.getTag()");
                 assertTrue(sessionEvent.getTags().containsKey("session"), "sessionEvent.getTags().containsKey(session)");
                 assertTrue(sessionEvent.getTags().containsKey("endpoint"), "sessionEvent.getTags().containsKey(endpoint)");
             }

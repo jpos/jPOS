@@ -97,7 +97,7 @@ public class SimpleLogSource implements LogSource {
      * @param detail the warning text
      */
     public void warning (String detail) {
-        Logger.log (new LogEvent (this, "warning", detail));
+        Logger.log (new LogEvent (this, Log.WARN, detail));
     }
     /**
      * Logs a warning message with an attached object.
@@ -105,7 +105,7 @@ public class SimpleLogSource implements LogSource {
      * @param obj the object to attach
      */
     public void warning (String detail, Object obj) {
-        LogEvent evt = new LogEvent (this, "warning", detail);
+        LogEvent evt = new LogEvent (this, Log.WARN, detail);
         evt.addMessage (obj);
         Logger.log (evt);
     }

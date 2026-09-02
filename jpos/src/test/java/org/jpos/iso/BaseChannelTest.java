@@ -71,6 +71,7 @@ import org.jpos.iso.packager.ISO93BPackager;
 import org.jpos.iso.packager.ISOBaseValidatingPackager;
 import org.jpos.iso.packager.PostPackager;
 import org.jpos.iso.packager.XMLPackager;
+import org.jpos.util.Kind;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
@@ -308,7 +309,7 @@ public class BaseChannelTest {
             try (Socket peer = accepted.get()) {
                 assertEquals("comm/channel", rawChannel.getRealm(), "rawChannel.getRealm()");
                 LogEvent connect = events.stream()
-                  .filter(ev -> "connect".equals(ev.getTag()))
+                  .filter(ev -> Kind.ISO_SESSION.equals(ev.getTag()))
                   .findFirst()
                   .orElseThrow();
                 assertEquals("comm/channel", connect.getRealm(), "connect.getRealm()");
@@ -340,7 +341,7 @@ public class BaseChannelTest {
             rawChannel.setLogConnections(false);
             rawChannel.connect();
             try (Socket peer = accepted.get()) {
-                assertFalse(events.stream().anyMatch(ev -> "connect".equals(ev.getTag())), "connect log event");
+                assertFalse(events.stream().anyMatch(ev -> Kind.ISO_SESSION.equals(ev.getTag())), "connect log event");
                 rawChannel.disconnect();
             } finally {
                 executor.shutdownNow();

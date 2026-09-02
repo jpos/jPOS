@@ -23,6 +23,7 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOUtil;
+import org.jpos.util.Kind;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
@@ -138,7 +139,7 @@ public class SimpleKeyFile
                 evt.addMessage(secureKey);
         } catch (Exception e) {
             if (evt == null) // this is an exception, we want to log it, even if we don't have an assigned logger
-                evt = new LogEvent(this, "get-key-error", alias);
+                evt = new LogEvent(this, Kind.ERROR, alias);
             evt.addMessage(e);
             throw  e instanceof SecureKeyStoreException ? (SecureKeyStoreException) e : new SecureKeyStoreException(e);
         } finally {

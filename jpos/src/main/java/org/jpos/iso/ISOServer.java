@@ -264,7 +264,7 @@ public class ISOServer extends Observable
             }
         } catch (IOException e) {
             fireEvent(new ISOServerShutdownEvent(this));
-            Logger.log (new LogEvent (this, "shutdown", e));
+            Logger.log (new LogEvent (this, Kind.ERROR, e));
         }
     }
     private void shutdownChannels () {
@@ -278,7 +278,7 @@ public class ISOServer extends Observable
                     c.disconnect ();
                     fireEvent(new ISOServerClientDisconnectEvent(this, c));
                 } catch (IOException e) {
-                    Logger.log (new LogEvent (this, "shutdown", e));
+                    Logger.log (new LogEvent (this, Kind.ERROR, e));
                 }
             }
         }
@@ -362,10 +362,10 @@ public class ISOServer extends Observable
                         }
                     }
                 } catch (ISOFilter.VetoException e) {
-                    Logger.log(createSessionEvent("VetoException", sessionUUID, endpoint).add(e.getMessage()));
+                    Logger.log(createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e.getMessage()));
                 } catch (ISOException e) {
                     if (ignoreISOExceptions) {
-                        Logger.log(createSessionEvent("ISOException", sessionUUID, endpoint).add(e.getMessage()));
+                        Logger.log(createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e.getMessage()));
                     } else {
                         throw e;
                     }
@@ -374,18 +374,18 @@ public class ISOServer extends Observable
                  // Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
             } catch (SocketException e) {
                  if (!shutdown)
-                     Logger.log (createSessionEvent("session-warning", sessionUUID, endpoint).add(e));
+                     Logger.log (createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e));
             } catch (InterruptedIOException e) {
                 // nothing to log
             } catch (Throwable e) {
-                Logger.log (createSessionEvent("session-error", sessionUUID, endpoint).add(e));
+                Logger.log (createSessionEvent(Kind.SESSION_ERROR, sessionUUID, endpoint).add(e));
             }
 
             try {
                 channel.disconnect();
                 fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
             } catch (IOException ex) {
-                Logger.log (createSessionEvent("session-error", sessionUUID, endpoint).add(ex));
+                Logger.log (createSessionEvent(Kind.SESSION_ERROR, sessionUUID, endpoint).add(ex));
                 fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
             }
             Logger.log(createSessionEvent(sessionUUID, endpoint)
@@ -406,7 +406,7 @@ public class ISOServer extends Observable
         }
 
         private LogEvent createSessionEvent(UUID sessionUUID, String endpoint) {
-            LogEvent evt = new LogEvent().withSource(this).withTraceId(sessionUUID);
+            LogEvent evt = new LogEvent(Kind.ISO_SESSION).withSource(this).withTraceId(sessionUUID);
             evt.withTag("session", sessionUUID.toString());
             if (endpoint != null)
                 evt.withTag("endpoint", endpoint);
@@ -866,7 +866,7 @@ public class ISOServer extends Observable
     }
 
     private void log (AuditLogEvent log) {
-        Logger.log(new LogEvent()
+        Logger.log(new LogEvent(Kind.kindOf(log))
           .withSource(this)
           .withTraceId(uuid)
           .add(log)

@@ -292,7 +292,11 @@ public final class Kind {
         return kind != null && load().containsKey(kind);
     }
 
-    /** @return immutable snapshot of every registered kind */
+    /**
+     * Every registered kind.
+     *
+     * @return immutable snapshot of every registered kind
+     */
     public static Set<String> registered() {
         return load().keySet();
     }

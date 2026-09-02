@@ -25,6 +25,7 @@ import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
+import org.jpos.util.Kind;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
@@ -66,7 +67,7 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
         lock.lock();
         try {
             current = null;
-            LogEvent evt = new LogEvent (this, "connect");
+            LogEvent evt = new LogEvent (this, Kind.ISO_SESSION);
             evt.addMessage ("pool-size=" + Integer.toString (pool.size()));
             for (int i=0; i<pool.size(); i++) {
                 try {
@@ -96,7 +97,7 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
         lock.lock();
         try {
             current = null;
-            LogEvent evt = new LogEvent (this, "disconnect");
+            LogEvent evt = new LogEvent (this, Kind.ISO_SESSION);
             for (Object aPool : pool) {
                 try {
                     ISOChannel c = (ISOChannel) aPool;
