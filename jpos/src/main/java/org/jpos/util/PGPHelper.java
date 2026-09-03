@@ -110,7 +110,7 @@ public class PGPHelper {
                     }
                     out.write((byte) ch);
                 }
-                sig.update(out.toByteArray());
+                sig.update(canonicalizeClearText(out.toByteArray()));
                 verify = sig.verify();
             }
         }
@@ -135,6 +135,28 @@ public class PGPHelper {
             out.write((byte) ch);
         }
         return out.toString(StandardCharsets.UTF_8.name());
+    }
+
+    private static byte[] canonicalizeClearText(byte[] text) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream(text.length);
+        int start = 0;
+        for (int i = 0; i <= text.length; i++) {
+            if (i == text.length || text[i] == '\n') {
+                int end = i;
+                boolean cr = end > start && text[end - 1] == '\r';
+                if (cr)
+                    end--;
+                while (end > start && (text[end - 1] == ' ' || text[end - 1] == '\t'))
+                    end--;
+                out.write(text, start, end - start);
+                if (cr)
+                    out.write('\r');
+                if (i < text.length)
+                    out.write('\n');
+                start = i + 1;
+            }
+        }
+        return out.toByteArray();
     }
 
     private static PGPPublicKey readPublicKey(InputStream in, String id)
@@ -252,10 +274,11 @@ public class PGPHelper {
                         }
                         out.write((byte) ch);
                     }
-                    sig.update(out.toByteArray());
+                    byte[] clearText = canonicalizeClearText(out.toByteArray());
+                    sig.update(clearText);
                     if (sig.verify()) {
                         rc &= 0x7FFFF;
-                        ByteArrayInputStream bais = new ByteArrayInputStream(out.toByteArray());
+                        ByteArrayInputStream bais = new ByteArrayInputStream(clearText);
                         BufferedReader reader = new BufferedReader(new InputStreamReader(bais, StandardCharsets.UTF_8));
                         String s;
                         Pattern p1 = Pattern.compile("\\s(valid through:)\\s(\\d\\d\\d\\d-\\d\\d-\\d\\d)?", Pattern.CASE_INSENSITIVE);

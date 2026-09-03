@@ -64,6 +64,32 @@ public class PGPHelperTest {
     }
 
     @Test
+    public void testGetVerifiedLicenseTextIgnoresTrailingWhitespace() throws Exception {
+        String previousLicensee = System.getProperty("LICENSEE");
+        Path license = Path.of("src/main/resources/LICENSEE.asc");
+        Path modifiedLicense = Files.createTempFile("licensee", ".asc");
+        Files.writeString(
+          modifiedLicense,
+          Files.readString(license, StandardCharsets.UTF_8)
+            .replace("jPOS Community Edition, licensed under GNU AGPL v3.0.",
+              "jPOS Community Edition, licensed under GNU AGPL v3.0. \t"),
+          StandardCharsets.UTF_8
+        );
+
+        try {
+            System.setProperty("LICENSEE", modifiedLicense.toString());
+            assertTrue(PGPHelper.checkSignature());
+            assertNotNull(PGPHelper.getVerifiedLicenseText());
+        } finally {
+            if (previousLicensee != null)
+                System.setProperty("LICENSEE", previousLicensee);
+            else
+                System.clearProperty("LICENSEE");
+            Files.deleteIfExists(modifiedLicense);
+        }
+    }
+
+    @Test
     public void testEncryptDecrypt() throws Exception {
         String s = "The quick brown fox jumps over the lazy dog 0123456789";
         byte[] cypertext = PGPHelper.encrypt(
