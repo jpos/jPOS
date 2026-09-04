@@ -58,7 +58,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
 
     @Override
     public byte[] pack (ISOComponent c) throws ISOException {
-        LogEvent evt = new LogEvent (this, "pack");
+        LogEvent evt = withField (new LogEvent (this, "pack"), c);
         try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             Map tab = c.getChildren();
 
@@ -104,7 +104,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
     @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException
     {
-        LogEvent evt = logger != null ? new LogEvent (this, "unpack") : null;
+        LogEvent evt = logger != null ? withField (new LogEvent (this, "unpack"), m) : null;
         int consumed = 0;
         ISOComponent c = null;
 
@@ -145,7 +145,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
                 if (fld[i] instanceof ISOMsgFieldPackager) {
                     Object o = ((ISOMsgFieldPackager)fld[i]).getISOMsgPackager();
                     if (o instanceof LogSource) {
-                        ((LogSource)o).setLogger (logger, realm + "-fld-" + i);
+                        ((LogSource)o).setLogger (logger, realm);
                     }
                 }
             }

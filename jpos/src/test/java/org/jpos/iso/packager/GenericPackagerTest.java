@@ -36,6 +36,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.EmptyStackException;
 
 import org.jpos.core.Configuration;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+import java.util.ArrayList;
+import java.util.List;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
@@ -598,5 +602,51 @@ public class GenericPackagerTest {
             assertNull(genericSubFieldPackager.getLogger(), "(GenericSubFieldPackager) genericSubFieldPackager.getLogger()");
             assertNull(genericSubFieldPackager.getRealm(), "(GenericSubFieldPackager) genericSubFieldPackager.getRealm()");
         }
+    }
+
+    @Test
+    public void testNestedPackagerKeepsParentRealmAndTagsField() throws Exception {
+        String xml = "<!DOCTYPE isopackager PUBLIC \"-//jPOS/jPOS Generic Packager DTD 1.0//EN\" \"http://jpos.org/dtd/generic-packager-1.0.dtd\">"
+            + "<isopackager>"
+            + "<isofield id=\"0\" length=\"4\" name=\"MTI\" class=\"org.jpos.iso.IFA_NUMERIC\"/>"
+            + "<isofield id=\"1\" length=\"16\" name=\"BITMAP\" class=\"org.jpos.iso.IFA_BITMAP\"/>"
+            + "<isofieldpackager id=\"48\" length=\"10\" name=\"Sub\""
+            + " class=\"org.jpos.iso.IFB_LLHBINARY\" inclusive=\"true\""
+            + " emitBitmap=\"false\" firstField=\"1\""
+            + " packager=\"org.jpos.iso.packager.GenericSubFieldPackager\">"
+            + "<isofield id=\"1\" length=\"5\" name=\"Id\" class=\"org.jpos.iso.IFE_CHAR\"/>"
+            + "<isofield id=\"2\" length=\"5\" name=\"Reserved\" class=\"org.jpos.iso.IFB_BINARY\"/>"
+            + "</isofieldpackager>"
+            + "</isopackager>";
+        GenericPackager packager = new GenericPackager(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+        List<LogEvent> events = new ArrayList<>();
+        Logger logger = new Logger();
+        logger.addListener(ev -> { events.add(ev); return ev; });
+        packager.setLogger(logger, "test-packager");
+
+        ISOMsg sub = new ISOMsg(48);
+        sub.set(1, "VCIND");
+        sub.set(2, ISOUtil.hex2byte("F1F1F1F1F1"));
+        ISOMsg m = new ISOMsg("0800");
+        m.set(sub);
+        m.setPackager(packager);
+        byte[] packed = m.pack();
+
+        assertEquals(2, events.size(), "inner and outer pack events");
+        LogEvent inner = events.get(0);
+        LogEvent outer = events.get(1);
+        assertEquals("test-packager", inner.getRealm(), "nested packager keeps the parent realm");
+        assertEquals("48", inner.getTags().get("field"));
+        assertEquals("test-packager", outer.getRealm());
+        assertNull(outer.getTags().get("field"));
+
+        events.clear();
+        ISOMsg in = new ISOMsg();
+        in.setPackager(packager);
+        in.unpack(packed);
+        assertEquals(2, events.size(), "inner and outer unpack events");
+        assertEquals("48", events.get(0).getTags().get("field"));
+        assertEquals("test-packager", events.get(0).getRealm());
+        assertNull(events.get(1).getTags().get("field"));
     }
 }

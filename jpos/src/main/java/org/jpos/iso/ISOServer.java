@@ -88,8 +88,6 @@ public class ISOServer extends Observable
     protected Logger logger;
     /** The realm string for this server. */
     protected String realm;
-    /** The realm string for channel sessions. */
-    protected String realmChannel;
     /** Optional factory for creating server sockets. */
     protected ISOServerSocketFactory socketFactory = null;
 
@@ -615,7 +613,6 @@ public class ISOServer extends Observable
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
-        this.realmChannel = realm + ".channel";
     }
     @Override
     public String getRealm () {

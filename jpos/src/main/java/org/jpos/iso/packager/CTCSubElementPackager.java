@@ -63,7 +63,7 @@ public class CTCSubElementPackager extends ISOBaseValidatingPackager {
     }
 
     public int unpack ( ISOComponent m, byte[] b ) throws ISOException {
-        LogEvent evt = new LogEvent ( this, "unpack" );
+        LogEvent evt = withField (new LogEvent (this, "unpack"), m);
         int consumed = 0;
         for ( int i=0; consumed < b.length ; i++ ) {
             ISOComponent c = fld[i].createComponent( i );

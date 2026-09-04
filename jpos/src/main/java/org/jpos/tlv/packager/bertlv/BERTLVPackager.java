@@ -120,7 +120,7 @@ public abstract class BERTLVPackager extends GenericPackager {
      */
     public byte[] pack(ISOComponent m, boolean nested, int startIdx, int endIdx)
             throws ISOException {
-        LogEvent evt = new LogEvent(this, "pack");
+        LogEvent evt = withField (new LogEvent (this, "pack"), m);
         try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             ISOComponent c;
             Map fields = m.getChildren();
@@ -244,7 +244,7 @@ public abstract class BERTLVPackager extends GenericPackager {
      * @throws ISOException on unpacking error
      */
     public int unpack(ISOComponent m, byte[] b, boolean nested) throws ISOException {
-        LogEvent evt = new LogEvent(this, "unpack");
+        LogEvent evt = withField (new LogEvent (this, "unpack"), m);
         try {
             if (m.getComposite() == null)
                 throw new ISOException("Can't call packager on non Composite");

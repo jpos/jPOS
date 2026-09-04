@@ -296,9 +296,10 @@ public class QBeanSupport
     private void syncLogConfiguration() {
         if (log == null)
             return;
-        log.setRealm(resolveRealm());
+        String realm = resolveRealm();
+        log.setRealm(realm);
         log.removeDefaultTag("component");
-        if (configuredRealm == null && defaultRealm() != null && name != null)
+        if (name != null && !name.equals(realm))
             log.setDefaultTag("component", name);
     }
 

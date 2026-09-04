@@ -96,7 +96,7 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
         if (!(m instanceof ISODatasetField)) {
             throw new ISOException("Can't call dataset packager on " + (m != null ? m.getClass().getName() : "null"));
         }
-        LogEvent evt = new LogEvent(this, "pack");
+        LogEvent evt = withField (new LogEvent (this, "pack"), m);
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(128)) {
             ISODatasetField field = (ISODatasetField) m;
             for (Dataset dataset : field.getDatasets()) {
@@ -141,7 +141,7 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
         if (!(m instanceof ISODatasetField)) {
             throw new ISOException("Can't call dataset packager on " + (m != null ? m.getClass().getName() : "null"));
         }
-        LogEvent evt = new LogEvent(this, "unpack");
+        LogEvent evt = withField (new LogEvent (this, "unpack"), m);
         try {
             ISODatasetField field = (ISODatasetField) m;
             int consumed = 0;

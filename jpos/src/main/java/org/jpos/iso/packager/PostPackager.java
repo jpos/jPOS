@@ -259,6 +259,6 @@ public class PostPackager extends ISOBasePackager {
      */
     public void setLogger (Logger logger, String realm) {
         super.setLogger (logger, realm);
-        p127.setLogger (logger, realm + ".PostPrivatePackager");
+        p127.setLogger (logger, realm);
     }
 }

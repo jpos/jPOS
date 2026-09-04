@@ -100,6 +100,19 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     }
 
     /**
+     * Tags a pack/unpack event with the field number when the component is a
+     * nested message, so nested packagers keep the configured realm.
+     *
+     * @param evt the event, may be {@code null} when logging is off
+     * @param m the component being packed or unpacked
+     * @return {@code evt}, tagged with {@code field} when {@code m} is a nested message
+     */
+    protected static LogEvent withField (LogEvent evt, ISOComponent m) {
+        if (evt != null && m instanceof ISOMsg msg && msg.getFieldNumber() >= 0)
+            evt.withTag ("field", Integer.toString (msg.getFieldNumber()));
+        return evt;
+    }
+    /**
      * pack method that works in conjunction with {@link #unpack(ISOComponent, byte[])}.
      * <p>
      * Handles a tertiary bitmap possibly appearing in Data Element {@code thirdBitmapField}.<br>
@@ -113,7 +126,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     {
         LogEvent evt = null;
         if (logger != null)
-            evt = new LogEvent (this, "pack");
+            evt = withField (new LogEvent (this, "pack"), m);
 
         try {
             if (m.getComposite() != m)
@@ -248,7 +261,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      */
     @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException {
-        LogEvent evt = logger != null ? new LogEvent (this, "unpack") : null;
+        LogEvent evt = logger != null ? withField (new LogEvent (this, "unpack"), m) : null;
         int consumed = 0;
 
         try {
@@ -373,7 +386,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     public void unpack (ISOComponent m, InputStream in)
         throws IOException, ISOException
     {
-        LogEvent evt = logger != null ? new LogEvent (this, "unpack") : null;
+        LogEvent evt = logger != null ? withField (new LogEvent (this, "unpack"), m) : null;
         try {
             if (m.getComposite() != m)
                 throw new ISOException ("Can't call packager on non Composite");
