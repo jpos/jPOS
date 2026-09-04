@@ -18,13 +18,29 @@
 
 package org.jpos.log.evt;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.jpos.log.AuditLogEvent;
+
+import java.time.Duration;
 
 /**
  * Audit event recorded when a server session terminates.
  *
+ * <p>Field names mirror {@link Connect} and {@link Disconnect} so viewers can
+ * render channel and server sessions with one template.</p>
+ *
  * @param connections active connection count after this session ended
  * @param permits     remaining session permits
- * @param info        free-form description of the closing session
+ * @param host        remote address, or {@code null} when the channel exposes no socket
+ * @param remotePort  remote port
+ * @param localPort   local port the session was accepted on
+ * @param duration    session length, from accept to close
  */
-public record SessionEnd(int connections, int permits, String info) implements AuditLogEvent { }
+public record SessionEnd(
+  int connections,
+  int permits,
+  @JsonInclude(JsonInclude.Include.NON_NULL) String host,
+  int remotePort,
+  int localPort,
+  Duration duration
+) implements AuditLogEvent { }

@@ -85,7 +85,7 @@ public class KindTest {
         assertEquals(Kind.LIFECYCLE, Kind.kindOf("license"));
         assertEquals(Kind.DEPLOY, Kind.kindOf("undeploy"));
         assertEquals(Kind.ERROR, Kind.kindOf("throwable"));
-        assertEquals(Kind.ISO_SESSION, Kind.kindOf(new SessionStart(1, 10, "x")));
+        assertEquals(Kind.ISO_SESSION, Kind.kindOf(new SessionStart(1, 10, "127.0.0.1", 4321, 8000)));
     }
 
     @Test
@@ -163,11 +163,11 @@ public class KindTest {
     @Test
     void createEventUsesTheImpliedKindAndDefaultStaysInfo() {
         Log log = new Log(new Logger(), "test");
-        LogEvent evt = log.createEvent(new SessionStart(1, 10, "x"));
+        LogEvent evt = log.createEvent(new SessionStart(1, 10, "127.0.0.1", 4321, 8000));
         assertEquals(Kind.ISO_SESSION, evt.getTag());
         assertEquals(1, evt.getPayLoad().size());
         assertEquals(Kind.INFO, log.createEvent(new ProfilerEvt(0L, List.of())).getTag());
         assertEquals(Kind.INFO, new LogEvent().getTag());
-        assertEquals(Kind.ISO_SESSION, new LogEvent(log, new SessionStart(1, 10, "x")).getTag());
+        assertEquals(Kind.ISO_SESSION, new LogEvent(log, new SessionStart(1, 10, "127.0.0.1", 4321, 8000)).getTag());
     }
 }

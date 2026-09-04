@@ -189,6 +189,21 @@ public class ISOServerTest {
                 assertEquals(org.jpos.util.Kind.ISO_SESSION, sessionEvent.getTag(), "sessionEvent.getTag()");
                 assertTrue(sessionEvent.getTags().containsKey("session"), "sessionEvent.getTags().containsKey(session)");
                 assertTrue(sessionEvent.getTags().containsKey("endpoint"), "sessionEvent.getTags().containsKey(endpoint)");
+                org.jpos.log.evt.SessionStart start = sessionEvent.getPayLoad().stream()
+                  .filter(p -> p instanceof org.jpos.log.evt.SessionStart)
+                  .map(p -> (org.jpos.log.evt.SessionStart) p)
+                  .findFirst().orElseThrow();
+                assertEquals("127.0.0.1", start.host(), "start.host()");
+                assertEquals(port, start.localPort(), "start.localPort()");
+                assertTrue(start.remotePort() > 0, "start.remotePort()");
+                org.jpos.log.evt.SessionEnd end = events.stream()
+                  .flatMap(ev -> ev.getPayLoad().stream())
+                  .filter(p -> p instanceof org.jpos.log.evt.SessionEnd)
+                  .map(p -> (org.jpos.log.evt.SessionEnd) p)
+                  .findFirst().orElseThrow();
+                assertEquals(start.remotePort(), end.remotePort(), "end.remotePort()");
+                assertEquals(port, end.localPort(), "end.localPort()");
+                assertTrue(end.duration() != null && !end.duration().isNegative(), "end.duration()");
             }
         } finally {
             server.shutdown();
