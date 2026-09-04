@@ -23,6 +23,7 @@ import org.jpos.iso.packager.XMLPackager;
 import org.jpos.util.Loggeable;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
@@ -55,6 +56,10 @@ public class ISOMsg extends ISOComponent
     protected byte[] trailer;
     /** Field number of this message when nested inside another ISOMsg. */
     protected int fieldNumber = -1;
+    /** Explicitly asserted trace id; transient, never packed. See {@link #getTraceId()}. */
+    private transient String claimedTraceId;
+    /** Fields, besides the MTI class, that identify one wire exchange. */
+    private static volatile int[] traceIdFields = { 3, 7, 11, 12, 41, 42 };
     /** Constant indicating an incoming message direction. */
     public static final int INCOMING = 1;
     /** Constant indicating an outgoing message direction. */
@@ -1066,6 +1071,83 @@ public class ISOMsg extends ISOComponent
             throw new ISOException ("can't setMTI on inner message");
         set (new ISOField (0, mti));
     }
+    /**
+     * Sets the fields used by {@link #naturalTraceId()} in addition to the
+     * MTI class. System-wide; defaults to 3, 7, 11, 12, 41 and 42: fields a
+     * response echoes unchanged from its request. Fields the server may mint
+     * (37, 32) are deliberately excluded; 7 and 12 keep a terminal that wraps
+     * its STAN from linking to old exchanges.
+     *
+     * @param fields field numbers
+     */
+    public static void setTraceIdFields (int... fields) {
+        traceIdFields = fields.clone();
+    }
+
+    /**
+     * Trace id derived from message content: the first two MTI digits plus
+     * the {@link #setTraceIdFields(int...) trace id fields} present, trimmed.
+     * A request and its response yield the same value, so one wire exchange
+     * shares one id with no carrier on the wire.
+     *
+     * @return a 32-hex id, or {@code null} when none of the key fields is present
+     */
+    public String naturalTraceId () {
+        StringBuilder sb = new StringBuilder();
+        String mti = getString (0);
+        if (mti != null && mti.length() >= 2)
+            sb.append (mti, 0, 2);
+        boolean hasKey = false;
+        for (int f : traceIdFields) {
+            String v = getString (f);
+            if (v != null && !(v = v.trim()).isEmpty()) {
+                sb.append ('.').append (v);
+                hasKey = true;
+            }
+        }
+        return hasKey
+          ? UUID.nameUUIDFromBytes (sb.toString().getBytes (StandardCharsets.UTF_8)).toString().replace ("-", "")
+          : null;
+    }
+
+    /**
+     * Asserts a trace id on this message, for example the id of the request a
+     * response belongs to. The claim is transient: copied by {@link #clone()},
+     * never packed. Channel events report it as {@code trace-claimed} when it
+     * differs from the {@link #naturalTraceId() natural} id.
+     *
+     * @param traceId the claimed id, or {@code null} to clear
+     */
+    public void setTraceId (String traceId) {
+        this.claimedTraceId = traceId;
+    }
+
+    /**
+     * The id asserted through {@link #setTraceId(String)}.
+     *
+     * @return the claimed id, or {@code null}
+     */
+    public String getClaimedTraceId () {
+        return claimedTraceId;
+    }
+
+    /**
+     * Effective trace id of the wire exchange this message belongs to: the
+     * {@link #naturalTraceId() natural} id when computable, else the
+     * {@link #getClaimedTraceId() claimed} id, else a random id minted once
+     * and kept as the claim.
+     *
+     * @return a 32-hex trace id, never {@code null}
+     */
+    public String getTraceId () {
+        String natural = naturalTraceId();
+        if (natural != null)
+            return natural;
+        if (claimedTraceId == null)
+            claimedTraceId = UUID.randomUUID().toString().replace ("-", "");
+        return claimedTraceId;
+    }
+
     /**
      * moves a field (renumber)
      * @param oldFieldNumber old field number

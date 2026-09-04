@@ -392,4 +392,55 @@ public class ISOMsgTest {
         assertFalse(msg.isNetworkManagement());
         assertTrue(msg.isFeeCollection());
     }
+    @Test
+    public void testNaturalTraceIdIsSharedByRequestAndResponse() throws Exception {
+        ISOMsg req = new ISOMsg("0200");
+        req.set(7, "0904120000");
+        req.set(11, "000123");
+        req.set(41, "TERM0001 ");
+        req.set(42, "MERCHANT0000001");
+        req.set(4, "000000001000");
+        ISOMsg rsp = new ISOMsg("0210");
+        rsp.set(7, "0904120000");
+        rsp.set(11, "000123");
+        rsp.set(39, "00");
+        rsp.set(41, "TERM0001");
+        rsp.set(42, "MERCHANT0000001");
+        assertNotNull(req.naturalTraceId());
+        assertEquals(32, req.naturalTraceId().length());
+        assertEquals(req.naturalTraceId(), rsp.naturalTraceId(), "response shares the request's natural id");
+        assertEquals(req.getTraceId(), rsp.getTraceId());
+        assertNull(req.getClaimedTraceId(), "no claim when the natural id exists");
+
+        ISOMsg other = (ISOMsg) req.clone();
+        other.set(11, "000124");
+        assertNotEquals(req.naturalTraceId(), other.naturalTraceId(), "different STAN, different id");
+    }
+
+    @Test
+    public void testClaimedTraceIdIsCopiedByCloneAndDoesNotOverrideNatural() throws Exception {
+        ISOMsg m = new ISOMsg("0200");
+        m.set(11, "000123");
+        m.set(41, "TERM0001");
+        m.setTraceId("0123456789abcdef0123456789abcdef");
+        assertEquals("0123456789abcdef0123456789abcdef", m.getClaimedTraceId());
+        assertEquals(m.naturalTraceId(), m.getTraceId(), "natural id wins over the claim");
+        ISOMsg c = (ISOMsg) m.clone();
+        assertEquals("0123456789abcdef0123456789abcdef", c.getClaimedTraceId());
+        m.setTraceId(null);
+        assertNull(m.getClaimedTraceId());
+    }
+
+    @Test
+    public void testMessageWithoutKeyFieldsGetsAStableMintedId() throws Exception {
+        ISOMsg m = new ISOMsg("0800");
+        m.set(70, "301");
+        assertNull(m.naturalTraceId());
+        String first = m.getTraceId();
+        assertNotNull(first);
+        assertEquals(32, first.length());
+        assertEquals(first, m.getTraceId(), "minted once");
+        assertEquals(first, m.getClaimedTraceId(), "kept as the claim");
+        assertEquals(first, ((ISOMsg) m.clone()).getTraceId());
+    }
 }

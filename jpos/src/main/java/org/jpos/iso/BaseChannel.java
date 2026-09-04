@@ -743,7 +743,7 @@ public abstract class BaseChannel extends Observable
     {
         ChannelEvent jfr = new ChannelEvent.Send();
         jfr.begin();
-        LogEvent evt = new LogEvent (this, "send").withTraceId(getSocketUUID());
+        LogEvent evt = new LogEvent (this, "send").withTraceId(getSocketUUID()).withTag("session", getSocketUUID().toString());
         try {
             if (!isConnected())
                 throw new IOException ("unconnected ISOChannel");
@@ -751,6 +751,7 @@ public abstract class BaseChannel extends Observable
             ISOPackager p = getDynamicPackager(m);
             m.setPackager (p);
             m = applyOutgoingFilters (m, evt);
+            stampTraceId (evt, m);
             evt.addMessage (m);
             applyTags (evt, m);
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
@@ -900,7 +901,7 @@ public abstract class BaseChannel extends Observable
 
         byte[] b=null;
         byte[] header=null;
-        LogEvent evt = new LogEvent (this, "receive").withTraceId(getSocketUUID());
+        LogEvent evt = new LogEvent (this, "receive").withTraceId(getSocketUUID()).withTag("session", getSocketUUID().toString());
         boolean logEvent = true;
         ISOMsg m = createMsg ();  // call createMsg instead of createISOMsg for backward compatibility
 
@@ -951,6 +952,7 @@ public abstract class BaseChannel extends Observable
             evt.addMessage (m);
             applyTags (evt, m);
             m = applyIncomingFilters (m, header, b, evt);
+            stampTraceId (evt, m);
             m.setDirection(ISOMsg.INCOMING);
             cnt[RX]++;
             incrementMsgInCounter(m);
@@ -1195,6 +1197,20 @@ public abstract class BaseChannel extends Observable
         throws VetoException
     {
         return applyIncomingFilters (m, null, null, evt);
+    }
+    /**
+     * Stamps a send/receive event with the message's effective trace id, and
+     * with {@code trace-claimed} when the message carries a claim that differs.
+     *
+     * @param evt the channel event
+     * @param m the message
+     */
+    private static void stampTraceId (LogEvent evt, ISOMsg m) {
+        String traceId = m.getTraceId();
+        evt.withTraceId (traceId);
+        String claimed = m.getClaimedTraceId();
+        if (claimed != null && !claimed.equals (traceId))
+            evt.withTag ("trace-claimed", claimed);
     }
     /**
      * Applies all registered incoming filters with the raw message header and image.

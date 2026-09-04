@@ -21,6 +21,7 @@ package org.jpos.iso;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -204,6 +205,74 @@ public class ISOServerTest {
                 assertEquals(start.remotePort(), end.remotePort(), "end.remotePort()");
                 assertEquals(port, end.localPort(), "end.localPort()");
                 assertTrue(end.duration() != null && !end.duration().isNegative(), "end.duration()");
+            }
+        } finally {
+            server.shutdown();
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
+    public void testChannelEventsCarryTheExchangeTraceIdAndSessionTag() throws Exception {
+        List<org.jpos.util.LogEvent> events = new ArrayList<>();
+        Logger logger = new Logger();
+        logger.setName("test-trace-logger");
+        logger.addListener(ev -> {
+            synchronized (events) {
+                events.add(ev);
+            }
+            return ev;
+        });
+
+        int port;
+        try (java.net.ServerSocket probe = new java.net.ServerSocket(0)) {
+            port = probe.getLocalPort();
+        }
+
+        CSChannel serverChannel = new CSChannel();
+        serverChannel.setPackager(new ISO87BPackager());
+        serverChannel.setLogger(logger, "comm/server");
+        ISOServer server = new ISOServer(port, serverChannel, 5);
+        server.setLogger(logger, "comm/server");
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("backlog", "10");
+        server.setConfiguration(cfg);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(server);
+        CSChannel client = new CSChannel("127.0.0.1", port, new ISO87BPackager());
+        client.setLogger(logger, "comm/client");
+        ISOMsg m = new ISOMsg("0800");
+        m.set(7, "0904120000");
+        m.set(11, "000321");
+        m.set(41, "TERM0001");
+        m.set(42, "MERCHANT0000001");
+        m.set(70, "301");
+        String expected = m.getTraceId();
+        try {
+            ISOUtil.sleep(250L);
+            client.connect();
+            client.send(m);
+            ISOUtil.sleep(250L);
+            client.disconnect();
+
+            long deadline = System.currentTimeMillis() + 5000L;
+            while (System.currentTimeMillis() < deadline) {
+                synchronized (events) {
+                    if (events.stream().anyMatch(ev -> "receive".equals(ev.getTag())))
+                        break;
+                }
+                ISOUtil.sleep(100L);
+            }
+            synchronized (events) {
+                org.jpos.util.LogEvent send = events.stream().filter(ev -> "send".equals(ev.getTag())).findFirst().orElseThrow();
+                org.jpos.util.LogEvent receive = events.stream().filter(ev -> "receive".equals(ev.getTag())).findFirst().orElseThrow();
+                assertEquals(expected, send.getTags().get("trace-id"), "send trace-id");
+                assertEquals(expected, receive.getTags().get("trace-id"), "receive trace-id");
+                assertTrue(send.getTags().containsKey("session"), "send session tag");
+                assertTrue(receive.getTags().containsKey("session"), "receive session tag");
+                assertFalse(send.getTags().containsKey("trace-claimed"), "no claim on send");
+                assertFalse(receive.getTags().containsKey("trace-claimed"), "no claim on receive");
             }
         } finally {
             server.shutdown();
