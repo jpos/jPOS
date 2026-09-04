@@ -91,6 +91,11 @@ public class SendResponse implements AbortParticipant, Configurable {
                     ((SpaceSource)src).init(isp, timeout);
                 if (src.isConnected() && resp != null) {
                     headerStrategy.handleHeader(m, resp);
+                    if (resp.getClaimedTraceId() == null) {
+                        Object traceId = ctx.get (TRACE_ID.toString());
+                        if (traceId != null)
+                            resp.setTraceId (traceId.toString());
+                    }
                     src.send(resp);
                 }
             }

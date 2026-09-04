@@ -79,7 +79,9 @@ public enum ContextConstants {
     /** Routing destination chosen for the transaction. */
     DESTINATION,
     /** Panic flag indicating the transaction must abort immediately. */
-    PANIC;
+    PANIC,
+    /** Effective trace id of the wire exchange being processed; see {@link org.jpos.iso.ISOMsg#getTraceId()}. */
+    TRACE_ID;
 
     private final String name;
 

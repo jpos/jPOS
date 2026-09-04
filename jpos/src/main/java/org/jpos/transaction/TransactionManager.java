@@ -309,7 +309,7 @@ public class TransactionManager
             iter = getParticipants (DEFAULT_GROUP).iterator();
             evt = new LogEvent()
               .withSource(log)
-              .withTraceId(getTraceId(id));
+              .withTraceId(getTraceId(id, context));
             evt.addMessage(txn);
             evt.addMessage(context);
             prof = new Profiler();
@@ -1613,6 +1613,14 @@ public class TransactionManager
         return m;
     }
 
+    private String getTraceId (long transactionId, Serializable context) {
+        if (context instanceof Context ctx) {
+            Object t = ctx.get (ContextConstants.TRACE_ID.toString());
+            if (t != null)
+                return t.toString();
+        }
+        return getTraceId (transactionId).toString().replace ("-", "");
+    }
     private UUID getTraceId (long transactionId) {
         return new UUID(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() ^ transactionId);
     }

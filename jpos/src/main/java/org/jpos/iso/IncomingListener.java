@@ -78,6 +78,7 @@ public class IncomingListener extends Log implements ISORequestListener, Configu
         ctx.put (timestamp, new Date(), remote);
         ctx.put (source, src, remote);
         ctx.put (request, m, remote);
+        ctx.put (ContextConstants.TRACE_ID.toString(), m.getTraceId(), remote);
         if (additionalContextEntries != null) {
             additionalContextEntries.entrySet().forEach(
                 e -> ctx.put(e.getKey(), e.getValue(), remote)
