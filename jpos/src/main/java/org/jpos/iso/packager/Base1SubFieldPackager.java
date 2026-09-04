@@ -70,7 +70,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
 
     public int unpack (ISOComponent m, byte[] b) throws ISOException 
     {
-        LogEvent evt = new LogEvent (this, "unpack");
+        LogEvent evt = withField (new LogEvent (this, "unpack"), m);
         try 
         {
             if (m.getComposite() != m) 
@@ -122,7 +122,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
      */
     @Override
     public byte[] pack (ISOComponent m) throws ISOException {
-        LogEvent evt = new LogEvent (this, "pack");
+        LogEvent evt = withField (new LogEvent (this, "pack"), m);
         try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100))
         {
             ISOComponent c;

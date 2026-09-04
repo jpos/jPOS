@@ -243,7 +243,7 @@ public class GenericPackager
                 if (fld[i] instanceof ISOMsgFieldPackager) {
                     Object o = ((ISOMsgFieldPackager)fld[i]).getISOMsgPackager();
                     if (o instanceof LogSource) {
-                        ((LogSource)o).setLogger (logger, realm + "-fld-" + i);
+                        ((LogSource)o).setLogger (logger, realm);
                     }
                 }
             }
@@ -544,7 +544,7 @@ public class GenericPackager
 
                 Integer fno = (Integer) fieldStack.pop();
 
-                msgPackager.setLogger (getLogger(), getRealm() + "-fld-" + fno);
+                msgPackager.setLogger (getLogger(), getRealm());
 
                 ISOFieldPackager mfp;
                 if (msgPackager instanceof ISODatasetPackager) {

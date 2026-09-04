@@ -76,7 +76,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager
 
     @Override
     public int unpack(ISOComponent m, byte[] b) throws ISOException {
-        LogEvent evt = new LogEvent(this, "unpack");
+        LogEvent evt = withField (new LogEvent (this, "unpack"), m);
         try {
             if (m.getComposite() != m)
                 throw new ISOException("Can't call packager on non Composite");
@@ -134,7 +134,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager
      */
     @Override
     public byte[] pack(ISOComponent m) throws ISOException {
-        LogEvent evt = new LogEvent(this, "pack");
+        LogEvent evt = withField (new LogEvent (this, "pack"), m);
         try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             ISOComponent c;
             byte[] b;

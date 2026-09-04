@@ -34,12 +34,12 @@ public class QBeanSupportTest {
     }
 
     @Test
-    void explicitRealmWinsOverDefaultRealmAndRemovesDefaultComponentTag() {
+    void explicitRealmWinsOverDefaultRealmAndKeepsComponentTag() {
         TestQBean bean = new TestQBean();
         bean.setName("mux-alpha");
         bean.setRealm("custom/realm");
         assertEquals("custom/realm", bean.getLog().getRealm(), "bean.getLog().getRealm()");
-        assertFalse(bean.getLog().createInfo().getTags().containsKey("component"));
+        assertEquals("mux-alpha", bean.getLog().createInfo().getTags().get("component"));
     }
 
     @Test
@@ -48,6 +48,8 @@ public class QBeanSupportTest {
         bean.setName("legacy-bean");
         bean.setLogger("Q2");
         assertEquals("legacy-bean", bean.getLog().getRealm(), "bean.getLog().getRealm()");
+        assertFalse(bean.getLog().createInfo().getTags().containsKey("component"),
+          "component would duplicate the realm");
     }
 
     static class TestQBean extends QBeanSupport {
