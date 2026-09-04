@@ -99,8 +99,6 @@ public class TransactionManager
     /** Configured group-name to participant-list mapping. */
     protected Map<String,List<TransactionParticipant>> groups;
     private Set<Destroyable> destroyables = new HashSet<>();
-    private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<>();
-    private static final ThreadLocal<Long> tlId = new ThreadLocal<>();
     private Metrics metrics;
     private Map<TransactionParticipant,ParticipantParams> params = new HashMap<>();
     private long globalMaxTime;
@@ -298,7 +296,6 @@ public class TransactionManager
 
         tme.begin();
         try {
-            setThreadLocal(id, context);
             if (hasStatusListeners)
                 notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
 
@@ -347,7 +344,6 @@ public class TransactionManager
             else
                 evt.addMessage (t);
         } finally {
-            removeThreadLocal();
             if (hasStatusListeners) {
                 notifyStatusListeners (
                   session,
@@ -1291,31 +1287,6 @@ public class TransactionManager
     public int getMaxSessions() {
         return maxSessions;
     }
-    /**
-     * Returns the current thread's transaction context as a raw {@link Serializable}.
-     *
-     * @return the thread-local context, or {@code null} when no transaction is in progress
-     */
-    public static Serializable getSerializable() {
-        return tlContext.get();
-    }
-    /**
-     * Returns the current thread's transaction context, narrowed to the caller's expected type.
-     *
-     * @param <T> caller-supplied context type
-     * @return the thread-local context, or {@code null} when no transaction is in progress
-     */
-    public static <T extends Serializable> T getContext() {
-        return (T) tlContext.get();
-    }
-    /**
-     * Returns the current thread's transaction id, when one is in progress.
-     *
-     * @return the thread-local transaction id, or {@code null}
-     */
-    public static Long getId() {
-        return tlId.get();
-    }
 
 
     private void notifyStatusListeners
@@ -1333,14 +1304,6 @@ public class TransactionManager
             String.format("%s:%d %s %s %s", getName(), id, method, p.getClass().getName(),
                 LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
         );
-    }
-    private void setThreadLocal (long id, Serializable context) {
-        tlId.set(id);
-        tlContext.set(context);
-    }
-    private void removeThreadLocal() {
-        tlId.remove();
-        tlContext.remove();
     }
 
     private String getName(TransactionParticipant p) {
