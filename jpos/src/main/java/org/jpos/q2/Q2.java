@@ -411,7 +411,8 @@ public class Q2 implements FileFilter, Runnable {
                 log.error (e);
             else
                 e.printStackTrace();
-            System.exit (1);
+            if (exit)
+                System.exit (1);
         } finally {
             stopJFR();
         }
