@@ -31,6 +31,7 @@ import java.net.BindException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
@@ -334,15 +335,20 @@ public class ISOServer extends Observable
             setChanged ();
             notifyObservers ();
             UUID sessionUUID = uuid;
-            String sessionInfo = "";
             String endpoint = null;
+            String host = null;
+            int remotePort = 0;
+            int localPort = 0;
+            Instant start = Instant.now();
             if (channel instanceof BaseChannel baseChannel) {
                 Socket socket = baseChannel.getSocket ();
-                sessionInfo = socket.toString();
+                host = socket.getInetAddress().getHostAddress();
+                remotePort = socket.getPort();
+                localPort = socket.getLocalPort();
                 sessionUUID = getSocketUUID(socket);
                 endpoint = baseChannel.toEndpoint(socket);
                 LogEvent ev = createSessionEvent(sessionUUID, endpoint)
-                  .add(new SessionStart(getActiveConnections(), permitsCount, sessionInfo)
+                  .add(new SessionStart(getActiveConnections(), permitsCount, host, remotePort, localPort)
                 );
                 if (!checkPermission (socket, ev))
                     return;
@@ -387,7 +393,7 @@ public class ISOServer extends Observable
                 fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel));
             }
             Logger.log(createSessionEvent(sessionUUID, endpoint)
-              .add(new SessionEnd(getActiveConnections(), permitsCount, sessionInfo)
+              .add(new SessionEnd(getActiveConnections(), permitsCount, host, remotePort, localPort, Duration.between(start, Instant.now()))
               )
             );
         }
