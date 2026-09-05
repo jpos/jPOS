@@ -107,6 +107,24 @@ And +LogEvent+:
 link:http://jpos.org/doc/javadoc/org/jpos/util/LogEvent.html[jPOS's javadoc] 
 or source code for a full description) 
 
+The +tag+ is the event's _kind_: what happened. Kinds are registered in
++org.jpos.util.Kind+, which publishes the ones jPOS core emits (+info+, +warn+,
++error+, +send+, +receive+, +iso-session+, +lifecycle+, +deploy+, +s-m-operation+
+and so on), each mapped to a severity _family_ (+fail+, +warn+, +transport+,
++telemetry+, +security+, +neutral+, ...). Log consumers group and colour events
+by family and enumerate kinds in facets, so prefer a +Kind+ constant over a
+literal, and prefer an existing kind plus a typed +AuditLogEvent+ payload over a
+new kind. Modules register their own kinds through +AuditLogEventProvider+; an
+ad-hoc kind that is not registered anywhere should be dot-namespaced
+(+jcard.pin-change+) so consumers can collapse it by prefix. Nothing in core
+rewrites or rejects a tag.
+
+The +realm+ is the functional domain (+comm/channel+, +txn+, +q2/deploy+, see
++org.jpos.util.Realm+); it is configured once and never composed from other
+strings. Instance identity goes in the +component+ tag, and every channel and
+transaction event carries a +trace-id+ tag identifying the wire exchange it
+belongs to (see +ISOMsg.getTraceId()+).
+
 Here is a simple way to create a Logger: 
 
 [source,java]

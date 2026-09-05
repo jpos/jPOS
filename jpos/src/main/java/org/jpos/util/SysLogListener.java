@@ -32,11 +32,17 @@ import java.util.Iterator;
  * SysLog Listener
  * see www.ietf.org/rfc/rfc3164.txt
  *
+ * <p>Only events whose kind (the {@link LogEvent} tag, see {@link Kind}) is
+ * listed in {@code tags} are forwarded; each kind may set its own facility
+ * and severity. Note that core emits {@code iso-session}, {@code lifecycle}
+ * and {@code deploy} for session, Q2 lifecycle and deploy events, not
+ * {@code info}.</p>
+ *
  * <pre>
  * &lt;log-listener class="org.jpos.util.SysLogListener"&gt;
  *    &lt;property name="facility" value="21" /&gt;
  *    &lt;property name="severity" value="5" /&gt;
- *    &lt;property name="tags" value="audit, syslog" /&gt;
+ *    &lt;property name="tags" value="error, warn, lifecycle, deploy, iso-session, audit" /&gt;
  *    &lt;property name="prefix" value="[jPOS]" /&gt;
  *
  *    &lt;property name="syslog.facility" value="21" /&gt;

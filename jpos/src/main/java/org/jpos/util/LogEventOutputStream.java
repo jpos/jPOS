@@ -67,7 +67,7 @@ public class LogEventOutputStream extends OutputStream implements LogSource, Run
             try {
                 lock.acquire();
                 if (evt == null) {
-                    evt = new LogEvent(this, "");
+                    evt = new LogEvent(this, Kind.INFO);
                     logService.schedule(this, delay, TimeUnit.MILLISECONDS);
                 }
                 evt.addMessage(baos.toString());
