@@ -115,6 +115,48 @@ public class QueryHostTest implements TransactionConstants, MUX {
         assertEquals(8877, queryHost.resolveTimeout(ctx));
     }
 
+    @Test
+    public void testClaimsContextTraceIdOnOutboundRequest() throws Exception {
+        Context ctx = new Context();
+        cfg.put("continuations", "no");
+        queryHost.setConfiguration(cfg);
+        ISOMsg request = createDummyRequest();
+        ctx.put(ContextConstants.REQUEST.toString(), request);
+        ctx.put(ContextConstants.DESTINATION.toString(), "TEST");
+        ctx.put(ContextConstants.TRACE_ID.toString(), "0123456789abcdef0123456789abcdef");
+        assertNull(request.getClaimedTraceId());
+        queryHost.prepare(1L, ctx);
+        assertEquals("0123456789abcdef0123456789abcdef", request.getClaimedTraceId(), "claim set from the Context");
+        ISOMsg response = ctx.get(ContextConstants.RESPONSE.toString(), 1000);
+        assertEquals("0123456789abcdef0123456789abcdef", response.getClaimedTraceId(), "clone carries the claim");
+    }
+
+    @Test
+    public void testExistingClaimIsLeftAlone() throws Exception {
+        Context ctx = new Context();
+        cfg.put("continuations", "no");
+        queryHost.setConfiguration(cfg);
+        ISOMsg request = createDummyRequest();
+        request.setTraceId("ffffffffffffffffffffffffffffffff");
+        ctx.put(ContextConstants.REQUEST.toString(), request);
+        ctx.put(ContextConstants.DESTINATION.toString(), "TEST");
+        ctx.put(ContextConstants.TRACE_ID.toString(), "0123456789abcdef0123456789abcdef");
+        queryHost.prepare(1L, ctx);
+        assertEquals("ffffffffffffffffffffffffffffffff", request.getClaimedTraceId());
+    }
+
+    @Test
+    public void testNoTraceIdInContextLeavesRequestUntouched() throws Exception {
+        Context ctx = new Context();
+        cfg.put("continuations", "no");
+        queryHost.setConfiguration(cfg);
+        ISOMsg request = createDummyRequest();
+        ctx.put(ContextConstants.REQUEST.toString(), request);
+        ctx.put(ContextConstants.DESTINATION.toString(), "TEST");
+        queryHost.prepare(1L, ctx);
+        assertNull(request.getClaimedTraceId());
+    }
+
     @Override
     public ISOMsg request(ISOMsg m, long timeout) throws ISOException {
         ISOMsg r = (ISOMsg) m.clone();
