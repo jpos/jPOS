@@ -78,6 +78,11 @@ public class QueryHost implements TransactionParticipant, Configurable {
         ISOMsg m = ctx.get (requestName);
         if (m == null)
             return result.fail(CMF.INVALID_REQUEST, Caller.info(), "'%s' is null", requestName).FAIL();
+        if (m.getClaimedTraceId() == null) {
+            Object traceId = ctx.get (ContextConstants.TRACE_ID.toString());
+            if (traceId != null)
+                m.setTraceId (traceId.toString()); // links the outbound leg to this transaction
+        }
 
         Chronometer chronometer = new Chronometer();
         if (isConnected(mux)) {
