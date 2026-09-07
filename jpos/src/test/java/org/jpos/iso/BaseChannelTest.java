@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
@@ -785,6 +786,71 @@ public class BaseChannelTest {
             }
             assertNull(((ASCIIChannel) aSCIIChannel).serverIn, "(ASCIIChannel) aSCIIChannel.serverIn");
         }
+    }
+
+    @Test
+    public void testReceivePreservesReadFailureAfterConcurrentClose() throws Exception {
+        IOException failure = new IOException("fixture read failure");
+        BaseChannel channel = new RawChannel(new ISO87APackager(), new byte[0]) {
+            @Override
+            protected int getMessageLength() throws IOException {
+                // Reproduce the close/read interleaving deterministically.
+                closeSocket();
+                throw failure;
+            }
+        };
+        List<LogEvent> events = new ArrayList<>();
+        Logger logger = new Logger();
+        logger.addListener(event -> { events.add(event); return event; });
+        channel.setLogger(logger, "receive-race");
+
+        try (ServerSocket listener = new ServerSocket(0, 1, InetAddress.getLoopbackAddress());
+             Socket client = new Socket(listener.getInetAddress(), listener.getLocalPort());
+             Socket peer = listener.accept()) {
+            channel.connect(peer);
+            assertSame(failure, assertThrows(IOException.class, channel::receive));
+            assertNull(channel.getSocket());
+            assertEquals(1, events.size());
+            var disconnect = (org.jpos.log.evt.Disconnect) events.getFirst().getPayLoad().getFirst();
+            assertEquals(client.getLocalPort(), disconnect.remotePort());
+            assertEquals(listener.getLocalPort(), disconnect.localPort());
+            assertEquals(failure.getMessage(), disconnect.message());
+        }
+    }
+
+    @Test
+    public void testConcurrentRoutineCloseStillHonorsDisabledConnectionLogging() throws Exception {
+        IOException failure = new java.io.EOFException("fixture EOF");
+        BaseChannel channel = new RawChannel(new ISO87APackager(), new byte[0]) {
+            @Override
+            protected int getMessageLength() throws IOException {
+                closeSocket();
+                throw failure;
+            }
+        };
+        SimpleConfiguration configuration = new SimpleConfiguration();
+        configuration.put("log-connections", "false");
+        channel.setConfiguration(configuration);
+        List<LogEvent> events = new ArrayList<>();
+        Logger logger = new Logger();
+        logger.addListener(event -> { events.add(event); return event; });
+        channel.setLogger(logger, "receive-race-quiet");
+
+        try (ServerSocket listener = new ServerSocket(0, 1, InetAddress.getLoopbackAddress());
+             Socket client = new Socket(listener.getInetAddress(), listener.getLocalPort());
+             Socket peer = listener.accept()) {
+            channel.connect(peer);
+            assertSame(failure, assertThrows(IOException.class, channel::receive));
+            assertTrue(events.isEmpty());
+            assertNull(channel.getSocket());
+        }
+    }
+
+    @Test
+    public void testReceiveWithoutSocketPreservesUnconnectedFailure() throws Exception {
+        BaseChannel channel = new RawChannel(new ISO87APackager(), new byte[0]);
+        IOException failure = assertThrows(IOException.class, channel::receive);
+        assertEquals("unconnected ISOChannel", failure.getMessage());
     }
 
     @Test

@@ -899,6 +899,12 @@ public abstract class BaseChannel extends Observable
         var jfr = new ChannelEvent.Receive();
         jfr.begin();
 
+        // closeSocket clears the channel field before the blocked read unwinds.
+        // Keep this receive's peer available for disconnect diagnostics.
+        final Socket receiveSocket;
+        synchronized (this) {
+            receiveSocket = socket;
+        }
         byte[] b=null;
         byte[] header=null;
         LogEvent evt = new LogEvent (this, "receive").withTraceId(getSocketUUID()).withTag("session", getSocketUUID().toString());
@@ -972,10 +978,14 @@ public abstract class BaseChannel extends Observable
         } catch (IOException e) {
             logEvent = logConnections || !isRoutineDisconnect(e);
             if (logEvent) {
-                evt.addMessage (
-                  new Disconnect(socket.getInetAddress().getHostAddress(), socket.getPort(), socket.getLocalPort(),
-                    "%s (%s)".formatted(Caller.shortClassName(e.getClass().getName()), Caller.info()), e.getMessage())
-                );
+                if (receiveSocket != null && receiveSocket.getInetAddress() != null) {
+                    evt.addMessage (
+                      new Disconnect(receiveSocket.getInetAddress().getHostAddress(), receiveSocket.getPort(), receiveSocket.getLocalPort(),
+                        "%s (%s)".formatted(Caller.shortClassName(e.getClass().getName()), Caller.info()), e.getMessage())
+                    );
+                } else {
+                    evt.addMessage(e);
+                }
             }
             closeSocket();
             throw e;
