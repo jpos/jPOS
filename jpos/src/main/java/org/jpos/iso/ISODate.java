@@ -203,24 +203,57 @@ public class ISODate {
         if (YY != 0) {
             cal.set (Calendar.YEAR, YY);
             return cal.getTime();
-        } 
+        }
         else {
-            Date thisYear = cal.getTime();
-            cal.set (Calendar.YEAR, cal.get (Calendar.YEAR)-1);
-            Date previousYear = cal.getTime();
-            cal.set (Calendar.YEAR, cal.get (Calendar.YEAR)+2);
-            Date nextYear = cal.getTime();
-            if (Math.abs (now.getTime() - previousYear.getTime()) <
-                Math.abs (now.getTime() - thisYear.getTime())) 
-            {
+            int currentYear = cal.get (Calendar.YEAR);
+            Date previousYear = buildDate (cal, currentYear-1, MM, DD);
+            Date thisYear     = buildDate (cal, currentYear,   MM, DD);
+            Date nextYear     = buildDate (cal, currentYear+1, MM, DD);
+
+            long previousDiff = diff (cal, now, previousYear, currentYear-1, MM, DD);
+            long thisDiff     = diff (cal, now, thisYear,     currentYear,   MM, DD);
+            long nextDiff     = diff (cal, now, nextYear,     currentYear+1, MM, DD);
+
+            if (previousDiff < thisDiff) {
                 thisYear = previousYear;
-            } else if (Math.abs (now.getTime() - thisYear.getTime()) >
-                       Math.abs (now.getTime() - nextYear.getTime()))
-            {
+                thisDiff = previousDiff;
+            }
+            if (thisDiff > nextDiff) {
                 thisYear = nextYear;
             }
             return thisYear;
         }
+    }
+
+    /**
+     * Builds a Date for year/month/day on the given Calendar, re-asserting
+     * YEAR/MONTH/DATE (the only fields a Feb 29th rollover can touch) so
+     * one candidate's rollover can't leak into the next one computed on
+     * the same reused Calendar; HOUR_OF_DAY/MINUTE/SECOND/MILLISECOND are
+     * set once by the caller and untouched by a date-only rollover.
+     */
+    private static Date buildDate (Calendar cal, int year, int month, int day) {
+        cal.set (Calendar.MONTH, month);
+        cal.set (Calendar.DATE, day);
+        cal.set (Calendar.YEAR, year);
+        return cal.getTime();
+    }
+
+    /**
+     * Distance from now to candidate, penalized if day doesn't actually
+     * exist in month/year (e.g. Feb 29th outside a leap year), so a
+     * genuine date is preferred over one that only exists via rollover;
+     * the penalty cancels out of the comparison when every candidate is
+     * equally invalid, falling back to the plain rollover distance.
+     */
+    private static long diff (Calendar cal, Date now, Date candidate, int year, int month, int day) {
+        long diff = Math.abs (now.getTime() - candidate.getTime());
+        cal.set (Calendar.YEAR, year);
+        cal.set (Calendar.MONTH, month);
+        if (day > cal.getActualMaximum(Calendar.DATE)) {
+            diff += Long.MAX_VALUE / 2;   // Big penalty, but low enough to avoid overflow
+        }
+        return diff;
     }
 
     /**

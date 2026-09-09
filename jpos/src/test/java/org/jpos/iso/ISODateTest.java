@@ -192,4 +192,31 @@ public class ISODateTest {
         assertEquals ("202306", ISODate.formatDate(ISODate.parseISODate("230601000000"), "yyyyMM"));
         assertEquals ("210106", ISODate.formatDate(ISODate.parseISODate("010601000000", future.getTime()), "yyyyMM"));
     }
+
+    @Test
+    void testParseISODateFeb29PrefersPreviousLeapYear() {
+        Calendar now = new GregorianCalendar();
+        now.clear();
+        now.set(2025, Calendar.JANUARY, 10, 9, 0, 0);
+        Date result = ISODate.parseISODate("0229090000", now.getTimeInMillis());
+        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2024-02-29"));
+    }
+
+    @Test
+    void testParseISODateFeb29InLeapYearDoesNotRollToNextYear() {
+        Calendar now = new GregorianCalendar();
+        now.clear();
+        now.set(2024, Calendar.OCTOBER, 15, 12, 0, 0);
+        Date result = ISODate.parseISODate("0229120000", now.getTimeInMillis());
+        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2024-02-29"));
+    }
+
+    @Test
+    void testParseISODateFeb29WithNoLeapYearNearbyRollsToMarch1st() {
+        Calendar now = new GregorianCalendar();
+        now.clear();
+        now.set(2026, Calendar.JUNE, 15, 12, 0, 0);
+        Date result = ISODate.parseISODate("0229120000", now.getTimeInMillis());
+        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2026-03-01"));
+    }
 }
