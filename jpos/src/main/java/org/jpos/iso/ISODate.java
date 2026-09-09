@@ -21,6 +21,7 @@ package org.jpos.iso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.Year;
 import java.util.*;
 
 /**
@@ -206,13 +207,13 @@ public class ISODate {
         }
         else {
             int currentYear = cal.get (Calendar.YEAR);
-            Date previousYear = buildDate (cal, currentYear-1, MM, DD);
-            Date thisYear     = buildDate (cal, currentYear,   MM, DD);
-            Date nextYear     = buildDate (cal, currentYear+1, MM, DD);
+            Date previousYear = buildDate (cal, currentYear-1, MM, DD, hh, mm, ss);
+            Date thisYear     = buildDate (cal, currentYear,   MM, DD, hh, mm, ss);
+            Date nextYear     = buildDate (cal, currentYear+1, MM, DD, hh, mm, ss);
 
-            long previousDiff = diff (cal, now, previousYear, currentYear-1, MM, DD);
-            long thisDiff     = diff (cal, now, thisYear,     currentYear,   MM, DD);
-            long nextDiff     = diff (cal, now, nextYear,     currentYear+1, MM, DD);
+            long previousDiff = diff (now, previousYear, currentYear-1, MM, DD);
+            long thisDiff     = diff (now, thisYear,     currentYear,   MM, DD);
+            long nextDiff     = diff (now, nextYear,     currentYear+1, MM, DD);
 
             if (previousDiff < thisDiff) {
                 thisYear = previousYear;
@@ -226,17 +227,27 @@ public class ISODate {
     }
 
     /**
-     * Builds a Date for year/month/day on the given Calendar, re-asserting
-     * YEAR/MONTH/DATE (the only fields a Feb 29th rollover can touch) so
-     * one candidate's rollover can't leak into the next one computed on
-     * the same reused Calendar; HOUR_OF_DAY/MINUTE/SECOND/MILLISECOND are
-     * set once by the caller and untouched by a date-only rollover.
+     * Builds a Date for year/month/day/hh/mm/ss on the given Calendar,
+     * clearing it first so every field (including e.g. HOUR_OF_DAY, which
+     * a DST-gap normalization can also rewrite, not just YEAR/MONTH/DATE)
+     * starts fresh for each candidate -- otherwise one candidate's
+     * normalization could leak into the next one computed on the same
+     * reused Calendar.
      */
-    private static Date buildDate (Calendar cal, int year, int month, int day) {
-        cal.set (Calendar.MONTH, month);
-        cal.set (Calendar.DATE, day);
-        cal.set (Calendar.YEAR, year);
+    private static Date buildDate (Calendar cal, int year, int month, int day, int hh, int mm, int ss) {
+        cal.clear();
+        cal.set (year, month, day, hh, mm, ss);
         return cal.getTime();
+    }
+
+    private static final int[] DAYS_IN_MONTH = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    /** @return true if day is a real day of month/year (Gregorian leap rule for February) */
+    private static boolean isValidDay (int year, int month, int day) {
+        if (month < Calendar.JANUARY || month > Calendar.DECEMBER)
+            return false;
+        int max = month == Calendar.FEBRUARY && Year.isLeap (year) ? 29 : DAYS_IN_MONTH[month];
+        return day >= 1 && day <= max;
     }
 
     /**
@@ -244,15 +255,14 @@ public class ISODate {
      * exist in month/year (e.g. Feb 29th outside a leap year), so a
      * genuine date is preferred over one that only exists via rollover;
      * the penalty cancels out of the comparison when every candidate is
-     * equally invalid, falling back to the plain rollover distance.
+     * equally invalid, falling back to the plain rollover distance. Day
+     * validity is computed independently of any Calendar, so it can't be
+     * skewed by state left behind by a candidate's normalization.
      */
-    private static long diff (Calendar cal, Date now, Date candidate, int year, int month, int day) {
+    private static long diff (Date now, Date candidate, int year, int month, int day) {
         long diff = Math.abs (now.getTime() - candidate.getTime());
-        cal.set (Calendar.YEAR, year);
-        cal.set (Calendar.MONTH, month);
-        if (day > cal.getActualMaximum(Calendar.DATE)) {
+        if (!isValidDay (year, month, day))
             diff += Long.MAX_VALUE / 2;   // Big penalty, but low enough to avoid overflow
-        }
         return diff;
     }
 

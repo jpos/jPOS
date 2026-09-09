@@ -213,10 +213,67 @@ public class ISODateTest {
 
     @Test
     void testParseISODateFeb29WithNoLeapYearNearbyRollsToMarch1st() {
+        // 2025/2026/2027 are all non-leap, so none of the three candidate
+        // years has a genuine Feb 29th; for backward compatibility this
+        // keeps returning a Date the old way (rollover to March 1st in the
+        // nearest candidate year) instead of returning null.
         Calendar now = new GregorianCalendar();
         now.clear();
         now.set(2026, Calendar.JUNE, 15, 12, 0, 0);
         Date result = ISODate.parseISODate("0229120000", now.getTimeInMillis());
         assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2026-03-01"));
+    }
+
+    @Test
+    void testParseISODateFeb29PrefersNextLeapYear() {
+        Calendar now = new GregorianCalendar();
+        now.clear();
+        now.set(2027, Calendar.DECEMBER, 20, 12, 0, 0);
+        Date result = ISODate.parseISODate("0229120000", now.getTimeInMillis());
+        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2028-02-29"));
+    }
+
+    @Test
+    void testParseISODateDoesNotLeakDstGapIntoOtherCandidates() {
+        TimeZone newYork = TimeZone.getTimeZone("America/New_York");
+        Calendar now = new GregorianCalendar(newYork);
+        now.clear();
+        // 2026-03-09 12:00 local; the previous-year candidate (2025-03-09) falls
+        // in the US DST spring-forward gap, where 02:30 local time doesn't exist.
+        now.set(2026, Calendar.MARCH, 9, 12, 0, 0);
+        Date result = ISODate.parseISODate("0309023000", now.getTimeInMillis(), newYork);
+
+        Calendar expected = new GregorianCalendar(newYork);
+        expected.clear();
+        expected.set(2026, Calendar.MARCH, 9, 2, 30, 0);
+        assertThat(result, is(expected.getTime()));
+    }
+
+    @Test
+    void testParseISODateWithMonthTooSmallDoesNotThrow() {
+        // Month "00" is not a real month in any candidate year, so -- same
+        // reasoning as the no-leap-year-nearby case above -- this falls back
+        // to the old lenient-rollover behavior (month index -1 rolls back
+        // into December of the previous year) for backward compatibility,
+        // rather than throwing or returning null.
+        Calendar now = new GregorianCalendar();
+        now.clear();
+        now.set(2025, Calendar.JUNE, 15, 12, 0, 0);
+        Date result = ISODate.parseISODate("0001010000", now.getTimeInMillis());
+        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2024-12-01"));
+    }
+
+    @Test
+    void testParseISODateWithMonthTooLargeDoesNotThrow() {
+        // Month "13" is not a real month in any candidate year either, so
+        // this falls back to the same old lenient-rollover behavior (month
+        // index 12 rolls forward into January of the next year) instead of
+        // throwing -- isValidDay() must reject out-of-range months rather
+        // than index DAYS_IN_MONTH with them directly.
+        Calendar now = new GregorianCalendar();
+        now.clear();
+        now.set(2025, Calendar.JUNE, 15, 12, 0, 0);
+        Date result = ISODate.parseISODate("1301010000", now.getTimeInMillis());
+        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2026-01-01"));
     }
 }
