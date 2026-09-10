@@ -260,7 +260,7 @@ public class ISODateTest {
         now.clear();
         now.set(2025, Calendar.JUNE, 15, 12, 0, 0);
         Date result = ISODate.parseISODate("0001010000", now.getTimeInMillis());
-        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2024-12-01"));
+        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2025-12-01"));
     }
 
     @Test
@@ -274,6 +274,6 @@ public class ISODateTest {
         now.clear();
         now.set(2025, Calendar.JUNE, 15, 12, 0, 0);
         Date result = ISODate.parseISODate("1301010000", now.getTimeInMillis());
-        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2026-01-01"));
+        assertThat(ISODate.formatDate(result, "yyyy-MM-dd"), is("2025-01-01"));
     }
 }

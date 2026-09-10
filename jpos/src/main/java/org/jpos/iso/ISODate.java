@@ -21,7 +21,7 @@ package org.jpos.iso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.Year;
+import java.time.YearMonth;
 import java.util.*;
 
 /**
@@ -175,45 +175,40 @@ public class ISODate {
     public static Date parseISODate (String d, long currentTime, TimeZone timeZone) {
         int YY = 0;
 
-        Calendar cal = new GregorianCalendar();
-        cal.setTimeZone(timeZone);
-        Date now = new Date(currentTime);
-        cal.setTime (now);
-
         if (d.length() == 14) {
             YY = Integer.parseInt(d.substring (0, 4));
             d = d.substring (4);
         }
         else if (d.length() == 12) {
-            YY = calculateNearestFullYear(Integer.parseInt(d.substring(0, 2)), cal);
+            Calendar now = new GregorianCalendar(timeZone);
+            now.setTimeInMillis (currentTime);
+            YY = calculateNearestFullYear(Integer.parseInt(d.substring(0, 2)), now);
             d = d.substring (2);
-        } 
+        }
         int MM = Integer.parseInt(d.substring (0, 2))-1;
         int DD = Integer.parseInt(d.substring (2, 4));
         int hh = Integer.parseInt(d.substring (4, 6));
         int mm = Integer.parseInt(d.substring (6, 8));
         int ss = Integer.parseInt(d.substring (8,10));
-        
-        cal.set (Calendar.MONTH, MM);
-        cal.set (Calendar.DATE, DD);
-        cal.set (Calendar.HOUR_OF_DAY, hh);
-        cal.set (Calendar.MINUTE, mm);
-        cal.set (Calendar.SECOND, ss);
-        cal.set (Calendar.MILLISECOND, 0);
 
         if (YY != 0) {
-            cal.set (Calendar.YEAR, YY);
+            Calendar cal = new GregorianCalendar(timeZone);
+            cal.clear();
+            cal.set (YY, MM, DD, hh, mm, ss);
             return cal.getTime();
         }
         else {
+            Calendar cal = new GregorianCalendar(timeZone);
+            cal.setTimeInMillis (currentTime);
             int currentYear = cal.get (Calendar.YEAR);
-            Date previousYear = buildDate (cal, currentYear-1, MM, DD, hh, mm, ss);
-            Date thisYear     = buildDate (cal, currentYear,   MM, DD, hh, mm, ss);
-            Date nextYear     = buildDate (cal, currentYear+1, MM, DD, hh, mm, ss);
 
-            long previousDiff = diff (now, previousYear, currentYear-1, MM, DD);
-            long thisDiff     = diff (now, thisYear,     currentYear,   MM, DD);
-            long nextDiff     = diff (now, nextYear,     currentYear+1, MM, DD);
+            long previousYear = toEpochMillis (cal, currentYear-1, MM, DD, hh, mm, ss);
+            long thisYear     = toEpochMillis (cal, currentYear,   MM, DD, hh, mm, ss);
+            long nextYear     = toEpochMillis (cal, currentYear+1, MM, DD, hh, mm, ss);
+
+            long previousDiff = diff (currentTime, previousYear, currentYear-1, MM, DD);
+            long thisDiff     = diff (currentTime, thisYear,     currentYear,   MM, DD);
+            long nextDiff     = diff (currentTime, nextYear,     currentYear+1, MM, DD);
 
             if (previousDiff < thisDiff) {
                 thisYear = previousYear;
@@ -222,32 +217,29 @@ public class ISODate {
             if (thisDiff > nextDiff) {
                 thisYear = nextYear;
             }
-            return thisYear;
+            return new Date (thisYear);
         }
     }
 
     /**
-     * Builds a Date for year/month/day/hh/mm/ss on the given Calendar,
-     * clearing it first so every field (including e.g. HOUR_OF_DAY, which
-     * a DST-gap normalization can also rewrite, not just YEAR/MONTH/DATE)
-     * starts fresh for each candidate -- otherwise one candidate's
-     * normalization could leak into the next one computed on the same
-     * reused Calendar.
+     * Calculates the epoch millis for year/month/day/hh/mm/ss on the given
+     * Calendar, clearing it first so every field (including e.g.
+     * HOUR_OF_DAY, which a DST-gap normalization can also rewrite, not
+     * just YEAR/MONTH/DATE) starts fresh for each candidate -- otherwise
+     * one candidate's normalization could leak into the next one computed
+     * on the same reused Calendar.
      */
-    private static Date buildDate (Calendar cal, int year, int month, int day, int hh, int mm, int ss) {
+    private static long toEpochMillis (Calendar cal, int year, int month, int day, int hh, int mm, int ss) {
         cal.clear();
         cal.set (year, month, day, hh, mm, ss);
-        return cal.getTime();
+        return cal.getTimeInMillis();
     }
 
-    private static final int[] DAYS_IN_MONTH = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-    /** @return true if day is a real day of month/year (Gregorian leap rule for February) */
+    /** @return true if day is a real day of month/year */
     private static boolean isValidDay (int year, int month, int day) {
         if (month < Calendar.JANUARY || month > Calendar.DECEMBER)
             return false;
-        int max = month == Calendar.FEBRUARY && Year.isLeap (year) ? 29 : DAYS_IN_MONTH[month];
-        return day >= 1 && day <= max;
+        return day >= 1 && day <= YearMonth.of (year, month + 1).lengthOfMonth();
     }
 
     /**
@@ -259,8 +251,8 @@ public class ISODate {
      * validity is computed independently of any Calendar, so it can't be
      * skewed by state left behind by a candidate's normalization.
      */
-    private static long diff (Date now, Date candidate, int year, int month, int day) {
-        long diff = Math.abs (now.getTime() - candidate.getTime());
+    private static long diff (long now, long candidate, int year, int month, int day) {
+        long diff = Math.abs (now - candidate);
         if (!isValidDay (year, month, day))
             diff += Long.MAX_VALUE / 2;   // Big penalty, but low enough to avoid overflow
         return diff;
