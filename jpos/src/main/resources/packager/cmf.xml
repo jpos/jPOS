@@ -763,11 +763,6 @@
       name="Reserved for ISO use"
       pad="false"
       class="org.jpos.iso.IFB_LLLLBINARY"/>
-  <isofield id="96"
-      length="9999"
-      name="Reserved for ISO use"
-      pad="false"
-      class="org.jpos.iso.IFB_LLLLBINARY"/>
   <isofield id="92"
       length="9999"
       name="Reserved for ISO use"
