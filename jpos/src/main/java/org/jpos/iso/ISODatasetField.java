@@ -51,33 +51,58 @@ public class ISODatasetField extends ISOComponent {
 
     /**
      * Appends a dataset to this field.
+     * <p>
+     * Synchronizes on {@code datasets} to prevent concurrent modification while
+     * {@link #dump(PrintStream, String)} iterates the collection under the same lock.
      *
      * @param dataset dataset to add
      */
     public void addDataset(Dataset dataset) {
-        datasets.add(dataset);
+        synchronized (datasets) {
+            datasets.add(dataset);
+        }
     }
 
     /**
      * Removes a dataset instance from this field.
+     * <p>
+     * Synchronizes on {@code datasets} for the same reason as {@link #addDataset(Dataset)}.
      *
      * @param dataset dataset to remove
      */
     public void removeDataset(Dataset dataset) {
-        datasets.remove(dataset);
+        synchronized (datasets) {
+            datasets.remove(dataset);
+        }
     }
 
     /**
      * Indicates whether this field still contains datasets.
+     * <p>
+     * Synchronizes on {@code datasets} to ensure a consistent view — without the lock,
+     * a thread could read {@code isEmpty()} between another thread's {@code remove()}
+     * and a concurrent {@link #dump(PrintStream, String)} snapshot.
      *
      * @return {@code true} when at least one dataset is present
      */
     public boolean hasDatasets() {
-        return !datasets.isEmpty();
+        synchronized (datasets) {
+            return !datasets.isEmpty();
+        }
     }
 
     /**
      * Returns all datasets in insertion order.
+     * <p>
+     * The returned list is unmodifiable but reflects the current state of the internal
+     * ArrayList at the time of the call — concurrent mutations during iteration may
+     * throw {@code ConcurrentModificationException}. Use this method only from a single
+     * thread or when external synchronization covers both read and write access.
+     * <p>
+     * The Dataset objects contained in this list are live references, not copies.
+     * Modifying a dataset after retrieval (e.g. adding/removing elements) while other
+     * threads may be reading it can result in inconsistent views. Callers must ensure
+     * external synchronization if datasets are mutated concurrently.
      *
      * @return immutable list of datasets
      */
@@ -87,37 +112,65 @@ public class ISODatasetField extends ISOComponent {
 
     /**
      * Returns all datasets that match the supplied identifier.
+     * <p>
+     * Iterates under the {@code datasets} lock to ensure a consistent snapshot during
+     * matching, preventing {@code ConcurrentModificationException} when called concurrently
+     * with {@link #addDataset(Dataset)} or {@link #removeDataset(Dataset)}.
+     * <p>
+     * The Dataset objects contained in this list are live references, not copies.
+     * Modifying a dataset after retrieval (e.g. adding/removing elements) while other
+     * threads may be reading it can result in inconsistent views. Callers must ensure
+     * external synchronization if datasets are mutated concurrently.
+     * <p>
+     * Returns {@link Collections#emptyList()} when no matches are found, avoiding an
+     * unnecessary allocation for the common zero-match case.
      *
      * @param identifier dataset identifier
      * @return immutable list of matching datasets
      */
     public List<Dataset> getDatasets(int identifier) {
-        List<Dataset> matches = new ArrayList<>();
-        for (Dataset dataset : datasets) {
-            if (dataset.getIdentifier() == identifier) {
-                matches.add(dataset);
+        synchronized (datasets) {
+            List<Dataset> matches = new ArrayList<>();
+            for (Dataset dataset : datasets) {
+                if (dataset.getIdentifier() == identifier) {
+                    matches.add(dataset);
+                }
             }
+            return matches.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(matches);
         }
-        return Collections.unmodifiableList(matches);
     }
 
     /**
      * Returns the first dataset that matches the supplied identifier.
+     * <p>
+     * Iterates under the {@code datasets} lock to prevent concurrent modification while
+     * traversing the list.
+     * <p>
+     * The returned Dataset is a live reference, not a copy. Modifying it after retrieval
+     * (e.g. adding/removing elements) while other threads may be reading it can result in
+     * inconsistent views. Callers must ensure external synchronization if the dataset is
+     * mutated concurrently with reads from other threads (e.g., during dump or iteration).
      *
      * @param identifier dataset identifier
      * @return matching dataset or {@code null}
      */
     public Dataset getDataset(int identifier) {
-        for (Dataset dataset : datasets) {
-            if (dataset.getIdentifier() == identifier) {
-                return dataset;
+        synchronized (datasets) {
+            for (Dataset dataset : datasets) {
+                if (dataset.getIdentifier() == identifier) {
+                    return dataset;
+                }
             }
+            return null;
         }
-        return null;
     }
 
     /**
      * Returns the component stored under the given dataset and element identifiers.
+     * <p>
+     * The returned ISOComponent is a live reference from within the dataset, not a copy.
+     * Modifying it while other threads may be reading it can result in inconsistent views.
+     * Callers must ensure external synchronization if components are mutated concurrently.
      *
      * @param datasetId dataset identifier
      * @param elementId element identifier
@@ -134,6 +187,9 @@ public class ISODatasetField extends ISOComponent {
 
     /**
      * Returns the logical value stored under the given dataset and element identifiers.
+     * <p>
+     * Equivalent to calling {@link #get(int, int)} and then {@link ISOComponent#getValue()}.
+     * See {@link #get(int, int)} for thread-safety details on live component references.
      *
      * @param datasetId dataset identifier
      * @param elementId element identifier
@@ -147,6 +203,9 @@ public class ISODatasetField extends ISOComponent {
 
     /**
      * Returns the bytes stored under the given dataset and element identifiers.
+     * <p>
+     * Equivalent to calling {@link #get(int, int)} and then {@link ISOComponent#getBytes()}.
+     * See {@link #get(int, int)} for thread-safety details on live component references.
      *
      * @param datasetId dataset identifier
      * @param elementId element identifier
@@ -180,6 +239,10 @@ public class ISODatasetField extends ISOComponent {
 
     /**
      * Returns the datasets carried by this field.
+     * <p>
+     * Equivalent to {@link #getDatasets()}. See that method's javadoc for details on thread-safety:
+     * the returned list contains live Dataset references, not copies. Callers must ensure external
+     * synchronization if datasets are mutated concurrently with reads from other threads.
      *
      * @return dataset list
      */
@@ -222,24 +285,30 @@ public class ISODatasetField extends ISOComponent {
 
     /**
      * Replaces the datasets held by this field.
+     * <p>
+     * Synchronizes on {@code datasets} to ensure the clear-and-replace sequence is atomic
+     * relative to concurrent reads in {@link #dump(PrintStream, String)}, {@link #getDataset(int)},
+     * and other methods that iterate or read from the list.
      *
      * @param obj either a {@link Dataset} or a {@link java.util.List} of datasets
      * @throws ISOException when the supplied value type is unsupported
      */
     @Override
     public void setValue(Object obj) throws ISOException {
-        datasets.clear();
-        if (obj instanceof Dataset) {
-            datasets.add((Dataset) obj);
-        } else if (obj instanceof List<?>) {
-            for (Object item : (List<?>) obj) {
-                if (!(item instanceof Dataset)) {
-                    throw new ISOException("Invalid dataset list entry " + item);
+        synchronized (datasets) {
+            datasets.clear();
+            if (obj instanceof Dataset) {
+                datasets.add((Dataset) obj);
+            } else if (obj instanceof List<?>) {
+                for (Object item : (List<?>) obj) {
+                    if (!(item instanceof Dataset)) {
+                        throw new ISOException("Invalid dataset list entry " + item);
+                    }
+                    datasets.add((Dataset) item);
                 }
-                datasets.add((Dataset) item);
+            } else if (obj != null) {
+                throw new ISOException("Unsupported dataset field value " + obj.getClass().getName());
             }
-        } else if (obj != null) {
-            throw new ISOException("Unsupported dataset field value " + obj.getClass().getName());
         }
     }
 
@@ -287,7 +356,11 @@ public class ISODatasetField extends ISOComponent {
     public void dump(PrintStream p, String indent) {
         p.println(indent + "<" + XMLPackager.ISOFIELD_TAG + " " + XMLPackager.ID_ATTR + "=\"" + fieldNumber + "\" type=\"dataset\">");
         String innerIndent = indent + "  ";
-        for (Dataset dataset : datasets) {
+        List<Dataset> snapshot;
+        synchronized (datasets) {
+            snapshot = new ArrayList<>(datasets);
+        }
+        for (Dataset dataset : snapshot) {
             p.println(innerIndent + "<dataset id=\"" + String.format("%02X", dataset.getIdentifier()) + "\" format=\"" + dataset.getFormat() + "\">");
             String datasetIndent = innerIndent + "  ";
             for (DatasetElement element : dataset.getElements()) {

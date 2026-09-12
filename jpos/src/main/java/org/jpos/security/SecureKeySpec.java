@@ -24,7 +24,9 @@ import java.io.PrintStream;
 import org.jpos.util.Loggeable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.jpos.iso.ISOUtil;
@@ -511,7 +513,11 @@ public class SecureKeySpec
         if (!optionalHeaders.isEmpty()) {
             p.println(inner + "<optional-header>");
             String inner2 = inner + "  ";
-            for (Entry<String, String> ent : optionalHeaders.entrySet())
+            List<Entry<String, String>> snapshot;
+            synchronized (optionalHeaders) {
+                snapshot = new ArrayList<>(optionalHeaders.entrySet());
+            }
+            for (Entry<String, String> ent : snapshot)
                 p.println(inner2 + "<entry id=\""+ ent.getKey() + "\" value=\""+ ent.getValue()+ "\"/>");
             p.println(inner + "</optional-header>");
         }
