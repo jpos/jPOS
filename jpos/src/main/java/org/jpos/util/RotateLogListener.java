@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardCopyOption;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -148,8 +150,12 @@ public class RotateLogListener extends SimpleLogListener
                         // logName.i, dropping whatever occupied the last slot. Note that
                         // ATOMIC_MOVE makes every other option a no-op per Files.move's
                         // contract - REPLACE_EXISTING is kept only to document the intent.
-                        Files.move(source, dest, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-                    } catch (IOException ignored) { }
+                        moveFile(source, dest);
+                    } catch (NoSuchFileException e) {
+                        // Missing archive slots are normal; a missing destination directory is not.
+                        if (!Files.notExists(source, LinkOption.NOFOLLOW_LINKS))
+                            throw e;
+                    }
                 }
             };
         }
@@ -219,7 +225,17 @@ public class RotateLogListener extends SimpleLogListener
             super.close();
             setPrintStream(null);
         }
-        rotationAlgo.rotate();
+        try {
+            rotationAlgo.rotate();
+        } catch (IOException e) {
+            // Preserve the rotation failure while making a best effort to resume logging.
+            try {
+                openLogFile();
+            } catch (IOException reopenFailure) {
+                e.addSuppressed(reopenFailure);
+            }
+            throw e;
+        }
         openLogFile();
     }
 
@@ -290,7 +306,8 @@ public class RotateLogListener extends SimpleLogListener
                 logDebug ("time exceeded - log rotated");
                 logRotate();
             } catch (Exception e) {
-                logDebug(e.getMessage());
+                e.printStackTrace(System.err);
+                logDebug(e.toString());
             }
         }
     }
@@ -306,6 +323,11 @@ public class RotateLogListener extends SimpleLogListener
         }
     }
 
+    // Package-private seam for deterministic filesystem-failure tests.
+    void moveFile(Path source, Path destination) throws IOException {
+        Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+    }
+
     @FunctionalInterface
     interface ScheduleTimer {
         void schedule() throws ConfigurationException;
@@ -313,7 +335,7 @@ public class RotateLogListener extends SimpleLogListener
 
     @FunctionalInterface
     interface RotationAlgo {
-        void rotate();
+        void rotate() throws IOException;
     }
 
     private void runPostConfiguration() throws ConfigurationException {
