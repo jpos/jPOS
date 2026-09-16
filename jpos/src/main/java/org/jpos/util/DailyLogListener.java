@@ -26,7 +26,6 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -155,33 +154,38 @@ public class DailyLogListener extends RotateLogListener{
             int i=0;
             Path source = Path.of(logName);
             Path dest = Path.of(newName + compressedSuffix);
-            boolean moved = false;
             for (;;) {
                 try {
-                    // ATOMIC_MOVE maps to rename(2) on POSIX, which silently replaces an
-                    // existing destination, so it never reports a name clash and cannot be
-                    // used to find a free sequence number. Reserve the name atomically with
-                    // createFile (O_CREAT|O_EXCL) instead, then move onto the reservation.
-                    Files.createFile(dest);
-                    Files.move(source, dest, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-                    moved = true;
+                    // Claim a unique name before replacing it. Atomic move alone may clobber
+                    // an existing archive. This reservation is not a single atomic publication:
+                    // readers may briefly see an empty file, and a crash may leave it behind.
+                    reserveFile(dest);
                     break;
                 } catch (FileAlreadyExistsException e) {
                     dest = Path.of(newName + "." + ++i + compressedSuffix);
-                } catch (IOException e) {
-                    // the move failed after the name was reserved - don't leave a stray placeholder
-                    try {
-                        Files.deleteIfExists(dest);
-                    } catch (IOException ignored) { }
-                    break;
                 }
             }
+            try {
+                moveFile(source, dest);
+            } catch (IOException e) {
+                // Only this attempt's successful reservation may be cleaned up.
+                try {
+                    Files.deleteIfExists(dest);
+                } catch (IOException cleanupFailure) {
+                    e.addSuppressed(cleanupFailure);
+                }
+                throw e;
+            }
             setLastDate(getDateFmt().format(new Date()));
-            if (moved)
-                compress(dest.toFile());
+            compress(dest.toFile());
         };
 
         super.setConfiguration(cfg);
+    }
+
+    // Package-private seam for deterministic reservation-failure tests.
+    void reserveFile(Path destination) throws IOException {
+        Files.createFile(destination);
     }
 
     /**
@@ -413,12 +417,21 @@ public class DailyLogListener extends RotateLogListener{
      */
     protected OutputStream getCompressedOutputStream(File f) throws IOException{
         OutputStream os = new BufferedOutputStream(new FileOutputStream(f));
-        if (getCompressionFormat() == ZIP) {
-            ZipOutputStream ret = new ZipOutputStream(os);
-            ret.putNextEntry(new ZipEntry(logName));
-            return ret;
-        } else { 
-            return new GZIPOutputStream(os);
+        try {
+            if (getCompressionFormat() == ZIP) {
+                ZipOutputStream ret = new ZipOutputStream(os);
+                ret.putNextEntry(new ZipEntry(logName));
+                return ret;
+            } else {
+                return new GZIPOutputStream(os);
+            }
+        } catch (IOException | RuntimeException e) {
+            try {
+                os.close();
+            } catch (IOException closeFailure) {
+                e.addSuppressed(closeFailure);
+            }
+            throw e;
         }
     }
     /**
@@ -443,6 +456,7 @@ public class DailyLogListener extends RotateLogListener{
         ps.println(msg);
         e.printStackTrace(ps);
         ps.close();
+        System.err.print(os.toString());
         logDebug(os.toString());
         
     }
@@ -460,40 +474,32 @@ public class DailyLogListener extends RotateLogListener{
         }
 
         public void run() {
-            OutputStream os = null;
-            InputStream is = null;
-            File tmp = null;
+            Path tmp = null;
             try {
-                tmp = File.createTempFile(f.getName(), ".tmp", f.getParentFile());
-                os = getCompressedOutputStream(tmp);
-                is = new BufferedInputStream(new FileInputStream(f));
-                byte[] buff = new byte[getCompressionBufferSize()];
-                int read;
-                do {
-                    read = is.read(buff);
-                    if ( read > 0 )
-                        os.write(buff,0,read);
-                } while (read > 0);
-                
-            } catch (Throwable ex) {
+                tmp = Files.createTempFile(f.toPath().toAbsolutePath().getParent(), f.getName(), ".tmp");
+                // Close the input and finish/close the compressor before publication. The
+                // outer resource close also runs if a custom finish hook fails.
+                try (OutputStream os = getCompressedOutputStream(tmp.toFile());
+                     InputStream is = new BufferedInputStream(new FileInputStream(f))) {
+                    byte[] buff = new byte[getCompressionBufferSize()];
+                    int read;
+                    while ((read = is.read(buff)) != -1)
+                        os.write(buff, 0, read);
+                    closeCompressedOutputStream(os);
+                }
+                // No delete-first or non-atomic fallback: on failure keep the raw archive.
+                moveFile(tmp, f.toPath());
+            } catch (Exception ex) {
                 logDebugEx("error compressing file " + f, ex);
             } finally {
-                try {
-                    if (is!=null)
-                        is.close();
-                    if (os != null)
-                        closeCompressedOutputStream(os);
-                    if (f != null){
-                        f.delete();
-                        if (tmp!=null)
-                            tmp.renameTo(f);
+                if (tmp != null) {
+                    try {
+                        Files.deleteIfExists(tmp);
+                    } catch (IOException ex) {
+                        logDebugEx("error deleting compression temporary file " + tmp, ex);
                     }
-                } catch (Throwable ex) {
-                    logDebugEx("error closing files", ex);
                 }
-                
             }
-            
         }
         
     }
@@ -536,7 +542,7 @@ public class DailyLogListener extends RotateLogListener{
      * @param compressionBufferSize New value of property compressionBufferSize.
      */
     public void setCompressionBufferSize(int compressionBufferSize) {
-        this.compressionBufferSize = compressionBufferSize >= 0 ?
+        this.compressionBufferSize = compressionBufferSize > 0 ?
             compressionBufferSize : DEF_BUFFER_SIZE;
     }
 

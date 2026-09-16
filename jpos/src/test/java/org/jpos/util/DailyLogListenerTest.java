@@ -228,7 +228,7 @@ public class DailyLogListenerTest {
     public void testSetCompressionBufferSize2() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setCompressionBufferSize(0);
-        assertEquals(0, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
+        assertEquals(131072, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
     }
 
     @Test

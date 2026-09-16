@@ -56,6 +56,12 @@ The rotation procedure goes by renaming each copy by increasing its suffix, and 
 The `RotateLogListener` tracks the window, it is not based in the file modification timestamp, so if the application restarts, the time rests and the rotation procedure does not happen until the window time passes since then. Unless of course `rotate-on-startup` is set to `true` and in that case it rotates immediately.
 =====
 
+Numbered rotation intentionally replaces the oldest retained archive. Missing archive
+slots are skipped, but any other move failure stops the sequence: continuing could
+replace an archive that failed to advance. The listener attempts to reopen the active
+log in append mode before reporting the error. Earlier successful moves are not rolled
+back; the complete sequence is not atomic.
+
 === DailyLogListener
 
 Rotates the log files daily or ata a given rudimentary schedule, with the ability of compressing old logs. It also extends `RotateLogListener`, so it shares some of its properties, and some other have slightly different meaning.
@@ -103,6 +109,23 @@ and the formats are HH:mm:ss and yyyy-MM-dd respectively. The later only makes s
     - `$` must end with the suffix.
 +
 It only deletes files in the same directory as the base log file.
+
+Daily rotation reserves each archive name before moving the active log onto it.
+Only name-reservation collisions advance the sequence number. Failed reservations
+never trigger destination cleanup; failed moves clean up only the newly reserved
+placeholder. This assumes one owner of the active log and cooperative writers of
+archive names. It is not an atomic create-and-publish operation: a reader can see an
+empty reservation, and a crash can leave one behind.
+
+Compression writes a temporary file in the archive directory, finishes and closes it,
+then atomically replaces the raw archive. If compression or publication fails, the
+raw archive is retained (even though its name may have a compressed suffix), and the
+temporary output is removed where possible. There is no non-atomic fallback when
+atomic replacement is unsupported; the error is reported for operator attention.
+Non-positive compression buffer sizes use the default 128 KB buffer.
+Errors from scheduled rotation and compression are reported to standard error as
+well as the active log when available. A manual `logRotate()` reports rotation errors
+as `IOException`. Configured age-based retention still applies to retained archives.
 
 [[ProtectedLogListener]]
 === ProtectedLogListener
