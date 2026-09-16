@@ -155,18 +155,30 @@ public class DailyLogListener extends RotateLogListener{
             int i=0;
             Path source = Path.of(logName);
             Path dest = Path.of(newName + compressedSuffix);
+            boolean moved = false;
             for (;;) {
                 try {
-                    Files.move(source, dest, StandardCopyOption.ATOMIC_MOVE);
+                    // ATOMIC_MOVE maps to rename(2) on POSIX, which silently replaces an
+                    // existing destination, so it never reports a name clash and cannot be
+                    // used to find a free sequence number. Reserve the name atomically with
+                    // createFile (O_CREAT|O_EXCL) instead, then move onto the reservation.
+                    Files.createFile(dest);
+                    Files.move(source, dest, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+                    moved = true;
                     break;
                 } catch (FileAlreadyExistsException e) {
                     dest = Path.of(newName + "." + ++i + compressedSuffix);
                 } catch (IOException e) {
+                    // the move failed after the name was reserved - don't leave a stray placeholder
+                    try {
+                        Files.deleteIfExists(dest);
+                    } catch (IOException ignored) { }
                     break;
                 }
             }
             setLastDate(getDateFmt().format(new Date()));
-            compress(dest.toFile());
+            if (moved)
+                compress(dest.toFile());
         };
 
         super.setConfiguration(cfg);

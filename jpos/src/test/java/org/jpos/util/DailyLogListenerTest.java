@@ -457,6 +457,39 @@ public class DailyLogListenerTest {
 		assertFalse(Files.exists(archiveFile), "Archive file should not exist");
 	}
 
+    @Test
+    public void testRepeatedRotationsInSameWindowDoNotOverwriteArchives() throws Exception {
+        // ATOMIC_MOVE maps to rename(2) on POSIX, which silently replaces the destination.
+        // Rotating more than once within the same date window must still keep every archive.
+        String logFileName = "NoClobberTestLog";
+        DailyLogListener listener = new DailyLogListener();
+        Properties configuration = new Properties();
+        configuration.setProperty("prefix", logRotationTestDirectory.getDirectory().toAbsolutePath() + "/" + logFileName);
+        configuration.setProperty("date-format", ".yyyy-MM-dd");
+        configuration.setProperty("compression-format", "none");
+        configuration.setProperty("maxsize", "1000000");
+        logRotationTestDirectory.allowNewFileCreation();
+        listener.setConfiguration(new SimpleConfiguration(configuration));
+        listener.setConfiguration((Element) null);
+
+        listener.log(new LogEvent("Message 1"));
+        listener.logRotate();
+        listener.log(new LogEvent("Message 2"));
+        listener.logRotate();
+        listener.log(new LogEvent("Message 3"));
+        listener.logRotate();
+        listener.destroy();
+
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String base = logFileName + "." + date;
+        assertTrue(getStringFromFile(logRotationTestDirectory.getFile(base + ".log")).contains("Message 1"),
+                "first archive should still hold the first message");
+        assertTrue(getStringFromFile(logRotationTestDirectory.getFile(base + ".1.log")).contains("Message 2"),
+                "second rotation should be archived alongside the first, not over it");
+        assertTrue(getStringFromFile(logRotationTestDirectory.getFile(base + ".2.log")).contains("Message 3"),
+                "third rotation should be archived alongside the earlier two");
+    }
+
     private DailyLogListener createCompressingDailyLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException, IOException {
         DailyLogListener listener = new DailyLogListener();
         Properties configuration = new Properties();

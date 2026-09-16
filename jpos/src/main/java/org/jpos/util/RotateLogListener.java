@@ -144,6 +144,10 @@ public class RotateLogListener extends SimpleLogListener
                     Path dest = Path.of(logName + "." + i);
                     Path source = Path.of(logName + (--i > 0 ? "." + i : ""));
                     try {
+                        // clobbering dest is intended here: this shifts logName.(i-1) into
+                        // logName.i, dropping whatever occupied the last slot. Note that
+                        // ATOMIC_MOVE makes every other option a no-op per Files.move's
+                        // contract - REPLACE_EXISTING is kept only to document the intent.
                         Files.move(source, dest, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
                     } catch (IOException ignored) { }
                 }
