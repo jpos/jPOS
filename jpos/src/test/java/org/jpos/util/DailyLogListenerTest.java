@@ -120,7 +120,7 @@ public class DailyLogListenerTest {
     @Test
     public void testConstructor() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
-        assertEquals(131072, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
+        assertEquals(0x20000, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
         assertNotNull(dailyLogListener.p, "dailyLogListener.p");
         assertEquals("", dailyLogListener.getCompressedSuffix(), "dailyLogListener.getCompressedSuffix()");
         assertEquals(".log", dailyLogListener.getSuffix(), "dailyLogListener.getSuffix()");
@@ -214,7 +214,7 @@ public class DailyLogListenerTest {
     public void testSetCompressionBufferSize() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setCompressionBufferSize(-1);
-        assertEquals(131072, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
+        assertEquals(0x20000, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
     }
 
     @Test
@@ -228,7 +228,7 @@ public class DailyLogListenerTest {
     public void testSetCompressionBufferSize2() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setCompressionBufferSize(0);
-        assertEquals(131072, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
+        assertEquals(0x20000, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
     }
 
     @Test
@@ -252,7 +252,7 @@ public class DailyLogListenerTest {
                 assertEquals("Cannot invoke \"org.jpos.core.Configuration.getLong(String, long)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
             }
             assertNull(dailyLogListener.rotate, "dailyLogListener.rotate");
-            assertEquals(131072, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
+            assertEquals(0x20000, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
             assertNotNull(dailyLogListener.p, "dailyLogListener.p");
             assertNull(dailyLogListener.getPrefix(), "dailyLogListener.getPrefix()");
             assertEquals(".log", dailyLogListener.getSuffix(), "dailyLogListener.getSuffix()");
