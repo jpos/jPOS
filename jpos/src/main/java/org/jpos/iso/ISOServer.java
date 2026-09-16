@@ -365,6 +365,9 @@ public class ISOServer extends Observable
                             break;
                         }
                     }
+                    // A listener may intentionally close the connection after processing a message.
+                    if (!channel.isConnected())
+                        break;
                 } catch (ISOFilter.VetoException e) {
                     Logger.log(createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e.getMessage()));
                 } catch (ISOException e) {
