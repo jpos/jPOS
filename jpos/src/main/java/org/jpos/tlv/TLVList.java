@@ -216,7 +216,9 @@ public class TLVList implements Serializable, Loggeable {
     public void append(TLVMsg tlv) throws NullPointerException {
         Objects.requireNonNull(tlv, "TLV message cannot be null");
 
-        tags.add(tlv);
+        synchronized (tags) {
+            tags.add(tlv);
+        }
     }
 
     /**
@@ -250,7 +252,9 @@ public class TLVList implements Serializable, Loggeable {
      * @param index number
      */
     public void deleteByIndex(int index) {
-        tags.remove(index);
+        synchronized (tags) {
+            tags.remove(index);
+        }
     }
 
     /**
@@ -258,12 +262,14 @@ public class TLVList implements Serializable, Loggeable {
      * @param tag id
      */
     public void deleteByTag(int tag) {
-        List<TLVMsg> t = new ArrayList<>();
-        for (TLVMsg tlv2 : tags) {
-            if (tlv2.getTag() == tag)
-                t.add(tlv2);
+        synchronized (tags) {
+            List<TLVMsg> t = new ArrayList<>();
+            for (TLVMsg tlv2 : tags) {
+                if (tlv2.getTag() == tag)
+                    t.add(tlv2);
+            }
+            tags.removeAll(t);
         }
-        tags.removeAll(t);
     }
 
     /**
@@ -536,7 +542,11 @@ public class TLVList implements Serializable, Loggeable {
     public void dump(PrintStream p, String indent) {
         String inner = indent + "   ";
         p.println(indent + "<tlvlist>");
-        for (TLVMsg msg : getTags())
+        List<TLVMsg> snapshot;
+        synchronized (tags) {
+            snapshot = new ArrayList<>(tags);
+        }
+        for (TLVMsg msg : snapshot)
             msg.dump(p, inner);
         p.println(indent + "</tlvlist>");
     }
