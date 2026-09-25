@@ -27,11 +27,13 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -652,10 +654,12 @@ public class FSDMsg implements Loggeable, Cloneable {
      * @param value the field value, or null to remove
      */
     public void set (String name, String value) {
-        if (value != null)
-            fields.put (name, value);
-        else
-            fields.remove (name);
+        synchronized (fields) {
+            if (value != null)
+                fields.put (name, value);
+            else
+                fields.remove (name);
+        }
     }
     /**
      * Sets the binary header bytes for this message.
@@ -894,7 +898,11 @@ public class FSDMsg implements Loggeable, Cloneable {
         if (header != null) {
             append (p, "header", getHexHeader(), inner);
         }
-        for (String f :fields.keySet())
+        List<String> snapshot;
+        synchronized (fields) {
+            snapshot = new ArrayList<>(fields.keySet());
+        }
+        for (String f : snapshot)
             append (p, f, fields.get (f), inner);
         p.println (indent + "</fsdmsg>");
     }
