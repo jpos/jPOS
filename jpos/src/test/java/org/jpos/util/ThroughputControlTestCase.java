@@ -18,6 +18,7 @@
 
 package org.jpos.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -126,6 +127,14 @@ public class ThroughputControlTestCase {
           elapsed > 4000L && elapsed < 5000L,
           "10 transactions should take about four seconds but took " + elapsed
         );
+    }
+
+
+    @Test
+    void pollIntervalScalesWithPeriod() {
+        assertEquals(50L, ThroughputControl.pollInterval(200), "floor");
+        assertEquals(100L, ThroughputControl.pollInterval(1000), "10 percent");
+        assertEquals(500L, ThroughputControl.pollInterval(10000), "ceiling");
     }
 }
 

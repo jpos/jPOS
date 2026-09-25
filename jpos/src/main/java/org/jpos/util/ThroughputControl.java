@@ -21,8 +21,8 @@ package org.jpos.util;
 import java.time.Instant;
 
 /**
- * ThroughputControl limits the throughput 
- * of a process to a maximum number of transactions in 
+ * ThroughputControl limits the throughput
+ * of a process to a maximum number of transactions in
  * a given period of time.
  *
  * As an example, the following code will cap the transaction count
@@ -56,6 +56,9 @@ public class ThroughputControl {
         this (new int[] { maxTransactions },
               new int[] { periodInMillis });
     }
+
+
+
     /**
      * Constructs a throttle with multiple parallel rate-limit windows.
      *
@@ -73,16 +76,28 @@ public class ThroughputControl {
         for (int i=0; i<l; i++) {
             this.max[i]    = maxTransactions[i];
             this.period[i] = periodInMillis[i];
-            this.sleep[i]  = Math.min(Math.max (periodInMillis[i]/10, 500L),50L);
+            this.sleep[i]  = pollInterval(periodInMillis[i]);
             this.start[i]  = Instant.now().toEpochMilli();
         }
     }
 
+
+
+    /**
+     * Polling interval used while a thread waits for the window to refill:
+     * 10% of the period, clamped to the [50, 500] ms range.
+     */
+    static long pollInterval(int periodInMillis) {
+        return Math.clamp(periodInMillis / 10, 50L, 500L);
+    }
+
+
+
     /**
      * This method should be called on every transaction.
-     * It will pause the thread for a while when the threshold is reached 
+     * It will pause the thread for a while when the threshold is reached
      * in order to control the process throughput.
-     * 
+     *
      * @return Returns sleep time in milliseconds when threshold is reached. Otherwise, zero.
      */
     public long control() {
@@ -95,8 +110,8 @@ public class ThroughputControl {
             do {
                 if (cnt[i] > max[i]) {
                     delayed = true;
-                    try { 
-                        Thread.sleep (sleep[i]); 
+                    try {
+                        Thread.sleep (sleep[i]);
                     } catch (InterruptedException e) { }
                 }
                 synchronized (this) {
