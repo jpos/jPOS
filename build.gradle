@@ -180,10 +180,15 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
 }
 
 
+tasks.matching { it.name == "initializeSonatypeStagingRepository" }.configureEach {
+  dependsOn ":jpos:check"
+}
+
 tasks.register("releaseJpos") {
   group = "release"
-  description = "Initialize Sonatype staging, publish :jpos, then close+release."
+  description = "Check :jpos, initialize Sonatype staging, publish, then close+release."
   dependsOn(
+    ":jpos:check",
     "initializeSonatypeStagingRepository",
     ":jpos:publishAllPublicationsToSonatypeRepository",
     "closeAndReleaseSonatypeStagingRepository"
