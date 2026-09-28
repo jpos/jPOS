@@ -19,8 +19,10 @@
 package org.jpos.security;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.jpos.iso.ISOUtil;
@@ -280,9 +282,13 @@ public class SecureKeyBlock extends SecureKey {
             p.println(inner2 + "<reserved>" + reserved + "</reserved>");
         p.println(inner + "</header>");
 
-        if (!optionalHeaders.isEmpty()) {
+        List<Entry<String, String>> snapshot;
+        synchronized (this) {
+            snapshot = new ArrayList<>(optionalHeaders.entrySet());
+        }
+        if (!snapshot.isEmpty()) {
             p.println(inner + "<optional-header>");
-            for (Entry<String, String> ent : optionalHeaders.entrySet())
+            for (Entry<String, String> ent : snapshot)
                 p.println(inner2 + "<entry id=\""+ ent.getKey() + "\" value=\""+ ent.getValue()+ "\"/>");
             p.println(inner + "</optional-header>");
         }
