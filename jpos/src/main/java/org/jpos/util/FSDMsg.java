@@ -802,6 +802,7 @@ public class FSDMsg implements Loggeable, Cloneable {
         throws JDOMException, IOException {
         if (basePath == null)
             throw new NullPointerException("basePath can not be null");
+        validateSchemaSuffix(suffix);
         StringBuilder sb = new StringBuilder (basePath);
         sb.append (prefix);
         prefix = sb.toString(); // little hack, we'll reuse later with defSuffix
@@ -834,7 +835,7 @@ public class FSDMsg implements Loggeable, Cloneable {
      */
     protected Element loadSchema(String uri, boolean throwex)
         throws JDOMException, IOException {
-        SAXBuilder builder = new SAXBuilder();
+        SAXBuilder builder = createSAXBuilder();
         if (uri.startsWith("jar:") && uri.length()>4) {
             InputStream is = schemaResouceInputStream(uri.substring(4));
             if (is == null && throwex)
@@ -853,6 +854,26 @@ public class FSDMsg implements Loggeable, Cloneable {
                 throw ex;
             return null;
         }
+    }
+
+    private void validateSchemaSuffix(String suffix) throws IOException {
+        if (suffix.contains(".."))
+            throw new IOException("Invalid schema suffix");
+        for (int i = 0; i < suffix.length(); i++) {
+            char c = suffix.charAt(i);
+            if (c == '/' || c == '\\' || c == '%' || c == '?' || c == '#' || c == ':' ||
+                Character.isISOControl(c))
+                throw new IOException("Invalid schema suffix");
+        }
+    }
+
+    private SAXBuilder createSAXBuilder() {
+        SAXBuilder builder = new SAXBuilder();
+        builder.setFeature("http://xml.org/sax/features/validation", false);
+        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        return builder;
     }
 
     /**
