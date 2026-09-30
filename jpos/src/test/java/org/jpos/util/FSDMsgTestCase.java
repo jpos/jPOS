@@ -19,16 +19,22 @@
 package org.jpos.util;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+import org.jdom2.JDOMException;
 import org.jpos.iso.FSDISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.util.Arrays;
 
@@ -39,6 +45,9 @@ public class FSDMsgTestCase {
     FSDMsg imsg;
 
     FSDMsg omsg;
+
+    @TempDir
+    Path tempDir;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -239,6 +248,30 @@ public class FSDMsgTestCase {
           fsdm.pack();
           fail("FileNotFoundException expected");
         } catch (FileNotFoundException ex) {}
+    }
+
+    @Test
+    public void testRejectsUnsafeSchemaSuffixes() throws Exception {
+        Path schemaDir = Files.createDirectory(tempDir.resolve("schemas"));
+        Files.writeString(schemaDir.resolve("base.xml"),
+          "<schema><field id='key' type='A' length='40' separator='FS' key='true'/></schema>");
+
+        for (String key : Arrays.asList("../pwn", "..\\pwn", "%2e%2e%2fpwn", "../pwn#")) {
+            FSDMsg msg = new FSDMsg(schemaDir.toUri().toString());
+            assertThrows(IOException.class, () -> msg.unpack((key + FSDMsg.FS).getBytes()));
+        }
+    }
+
+    @Test
+    public void testRejectsSchemaDoctype() throws Exception {
+        Path secret = tempDir.resolve("secret.txt");
+        Files.writeString(secret, "secret");
+        Files.writeString(tempDir.resolve("base.xml"),
+          "<!DOCTYPE schema [<!ENTITY xxe SYSTEM '" + secret.toUri() + "'>]>" +
+          "<schema><field id='field' type='K' length='6'>&xxe;</field></schema>");
+
+        FSDMsg msg = new FSDMsg(tempDir.toUri().toString());
+        assertThrows(JDOMException.class, msg::pack);
     }
 
     @Test
