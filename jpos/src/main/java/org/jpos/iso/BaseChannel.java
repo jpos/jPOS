@@ -938,7 +938,13 @@ public abstract class BaseChannel extends Observable
                         // ignore message header (TPDU)
                         // Note header length is not necessarily equal to hLen (see VAPChannel)
                         header = readHeader(hLen);
-                        len -= header.length;
+                        int bodyLength = len - header.length;
+                        if (bodyLength < 0) {
+                            throw new ISOException(
+                                "receive length " + len + " is shorter than header length " + header.length
+                            );
+                        }
+                        len = bodyLength;
                     }
                     b = new byte[len];
                     getMessage (b, 0, len);

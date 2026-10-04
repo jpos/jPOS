@@ -31,7 +31,9 @@ import static org.apache.commons.lang3.JavaVersion.JAVA_10;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -91,6 +93,37 @@ public class BaseChannelTest {
     ISOFilter filter;
     @Mock
     ISOClientSocketFactory socketFactory;
+
+    private static class DeclaredLengthChannel extends BaseChannel {
+        private final int declaredLength;
+        private byte[] unpacked;
+
+        DeclaredLengthChannel(int declaredLength, int headerLength, byte[] input) {
+            this.declaredLength = declaredLength;
+            setHeader(new byte[headerLength]);
+            serverIn = new DataInputStream(new ByteArrayInputStream(input));
+        }
+
+        @Override
+        public boolean isConnected() {
+            return true;
+        }
+
+        @Override
+        protected ISOMsg createMsg() {
+            return new ISOMsg();
+        }
+
+        @Override
+        protected int getMessageLength() {
+            return declaredLength;
+        }
+
+        @Override
+        protected void unpack(ISOMsg m, byte[] b) {
+            unpacked = b.clone();
+        }
+    }
 
     @Test
     public void testAcceptThrowsNullPointerException() throws Throwable {
@@ -851,6 +884,36 @@ public class BaseChannelTest {
         BaseChannel channel = new RawChannel(new ISO87APackager(), new byte[0]);
         IOException failure = assertThrows(IOException.class, channel::receive);
         assertEquals("unconnected ISOChannel", failure.getMessage());
+    }
+
+    @Test
+    public void testReceiveRejectsLengthShorterThanHeader() {
+        DeclaredLengthChannel channel = new DeclaredLengthChannel(1, 2, new byte[] { 0x11, 0x22 });
+
+        ISOException failure = assertThrows(ISOException.class, channel::receive);
+
+        assertEquals("receive length 1 is shorter than header length 2", failure.getMessage());
+        assertNull(channel.unpacked);
+    }
+
+    @Test
+    public void testReceiveAcceptsHeaderOnlyFrame() throws Exception {
+        DeclaredLengthChannel channel = new DeclaredLengthChannel(2, 2, new byte[] { 0x11, 0x22 });
+
+        ISOMsg message = channel.receive();
+
+        assertEquals("1122", ISOUtil.hexString(message.getHeader()));
+        assertNull(channel.unpacked);
+    }
+
+    @Test
+    public void testReceiveAcceptsFrameOneByteLongerThanHeader() throws Exception {
+        DeclaredLengthChannel channel = new DeclaredLengthChannel(3, 2, new byte[] { 0x11, 0x22, 0x33 });
+
+        ISOMsg message = channel.receive();
+
+        assertEquals("1122", ISOUtil.hexString(message.getHeader()));
+        assertEquals("33", ISOUtil.hexString(channel.unpacked));
     }
 
     @Test
