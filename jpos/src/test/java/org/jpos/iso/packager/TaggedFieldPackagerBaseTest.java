@@ -21,8 +21,10 @@ package org.jpos.iso.packager;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOException;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
@@ -34,11 +36,27 @@ import org.apache.commons.lang3.StringUtils;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.BeforeAll;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  *
  */
 public class TaggedFieldPackagerBaseTest {
+
+    private static class ReflectionProbe {
+        private static int initialized;
+        private static int constructed;
+    }
+
+    public static class InvalidTagMapper {
+        static {
+            ReflectionProbe.initialized++;
+        }
+
+        public InvalidTagMapper() {
+            ReflectionProbe.constructed++;
+        }
+    }
 
     private static final Path PACKAGERS_LOCATION = FileSystems
             .getDefault()
@@ -91,6 +109,17 @@ public class TaggedFieldPackagerBaseTest {
     private static final String REPR_MESSAGE4    = MESSAGE_MTI1 + toString(MESSAGE_BITMAP1) + MESSAGE_VALUE4;
 
     private static ISOPackager packager;
+
+    @Test
+    public void testTagMapperIsValidatedBeforeInitialization() throws ISOException {
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "tagMapper", "tagMapper", "CDATA", InvalidTagMapper.class.getName());
+
+        GenericTaggedFieldsPackager taggedPackager = new GenericTaggedFieldsPackager();
+        assertThrows(ClassCastException.class, () -> taggedPackager.setGenericPackagerParams(atts));
+        assertEquals(0, ReflectionProbe.initialized);
+        assertEquals(0, ReflectionProbe.constructed);
+    }
 
     @BeforeAll
     static void beforeClass() throws Throwable {

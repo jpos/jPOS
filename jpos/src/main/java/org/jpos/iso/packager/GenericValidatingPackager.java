@@ -264,9 +264,8 @@ These can be changes using attributes on the isopackager node */
                     String name = atts.getValue("name");
                     String size = atts.getValue("length");
                     String pad  = atts.getValue("pad");
-                    Class c = Class.forName(type);
                     ISOFieldPackager f;
-                    f = (ISOFieldPackager) c.newInstance();
+                    f = newInstance(type, ISOFieldPackager.class);
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
@@ -280,8 +279,7 @@ These can be changes using attributes on the isopackager node */
                     String breakOnError = atts.getValue( "break-on-error" );
                     String minLen = atts.getValue( "minlen" );
                     String maxLen = atts.getValue( "maxlen" );
-                    Class c = Class.forName( type );
-                    ISOFieldValidator v = (ISOFieldValidator)c.newInstance();
+                    ISOFieldValidator v = newInstance(type, ISOFieldValidator.class);
                     if ( breakOnError != null ) v.setBreakOnError(Boolean.valueOf(breakOnError));
                     if ( minLen != null ) v.setMinLength( Integer.parseInt( minLen ) );
                     if ( maxLen != null ) v.setMaxLength( Integer.parseInt( maxLen ) );
@@ -298,8 +296,7 @@ These can be changes using attributes on the isopackager node */
                 if ( localName.equals( "isovalidator" ) ){
                     String type = atts.getValue( "class" );
                     String breakOnError = atts.getValue( "break-on-error" );
-                    Class c = Class.forName( type );
-                    ISOBaseValidator v = (ISOBaseValidator)c.newInstance();
+                    ISOBaseValidator v = newInstance(type, ISOBaseValidator.class);
                     if ( breakOnError != null ) v.setBreakOnError(Boolean.valueOf(breakOnError));
                     /** insert validator on stack waiting for properties **/
                     validatorStack.push( v );
@@ -322,13 +319,13 @@ onto the stack.
                     String packager = atts.getValue("packager");
                     fieldStack.push(Integer.valueOf(id));
                     ISOFieldPackager f;
-                    f = (ISOFieldPackager) Class.forName(type).newInstance();
+                    f = newInstance(type, ISOFieldPackager.class);
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
                     fieldStack.push(f);
                     ISOBasePackager p;
-                    p = (ISOBasePackager) Class.forName(packager).newInstance();
+                    p = newInstance(packager, ISOBasePackager.class);
                     if (p instanceof GenericValidatingPackager){
                         GenericValidatingPackager gp = (GenericValidatingPackager) p;
                         gp.setGenericPackagerParams (atts);
@@ -336,7 +333,7 @@ onto the stack.
                     fieldStack.push(p);
                     String validator = atts.getValue( "validator" );
                     ISOBaseValidatingPackager v;
-                    v = (ISOBaseValidatingPackager) Class.forName(validator).newInstance();
+                    v = newInstance(validator, ISOBaseValidatingPackager.class);
                     validatorStack.push( v );
                     Map m = new TreeMap();
                     m.put(VALIDATOR_INDEX, new ArrayList() );
@@ -346,6 +343,12 @@ onto the stack.
             } catch (Exception ex){
                 throw new SAXException(ex);
             }
+        }
+
+        private <T> T newInstance(String className, Class<T> expectedType)
+                throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+            return Class.forName(className, false, GenericValidatingPackager.class.getClassLoader())
+                    .asSubclass(expectedType).newInstance();
         }
 
         /**

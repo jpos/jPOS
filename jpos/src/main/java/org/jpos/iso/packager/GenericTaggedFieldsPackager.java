@@ -219,7 +219,9 @@ public class GenericTaggedFieldsPackager extends GenericPackager
     public void setGenericPackagerParams(Attributes atts) {
         super.setGenericPackagerParams(atts);
         try {
-            Class<? extends TagMapper> clazz = Class.forName(atts.getValue("tagMapper")).asSubclass(TagMapper.class);
+            Class<? extends TagMapper> clazz = Class.forName(
+                    atts.getValue("tagMapper"), false, GenericTaggedFieldsPackager.class.getClassLoader()
+            ).asSubclass(TagMapper.class);
             tagMapper = clazz.newInstance();
             fieldId = Integer.parseInt(atts.getValue("id"));
 
@@ -270,5 +272,4 @@ public class GenericTaggedFieldsPackager extends GenericPackager
     }
 
 }
-
 

@@ -451,8 +451,7 @@ public class GenericPackager
 
                     fieldStack.push(Integer.valueOf(id));
 
-                    ISOFieldPackager f;
-                    f = (ISOFieldPackager) Class.forName(type).newInstance();
+                    ISOFieldPackager f = instantiate(type, null, ISOFieldPackager.class);
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
@@ -465,7 +464,7 @@ public class GenericPackager
                     }
                     fieldStack.push(f);
 
-                    ISOBasePackager p = (ISOBasePackager) instantiate(packager, params);
+                    ISOBasePackager p = instantiate(packager, params, ISOBasePackager.class);
                     if (p instanceof GenericPackagerParams)
                         ((GenericPackagerParams)p).setGenericPackagerParams (atts);
                     fieldStack.push(p);
@@ -474,9 +473,7 @@ public class GenericPackager
                 }
                 else if (localName.equals("isofield"))
                 {
-                    Class c = Class.forName(type);
-                    ISOFieldPackager f;
-                    f = (ISOFieldPackager) instantiate(type, params);
+                    ISOFieldPackager f = instantiate(type, params, ISOFieldPackager.class);
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
@@ -587,20 +584,19 @@ public class GenericPackager
      * @param clazz class name
      * @param params If not null <code>constructor(String)</code> has to exist in packager implementation.
      *
+     * @param expectedType required type of the configured class
      * @return newly created object
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private Object instantiate (String clazz, String params)
+    private <T> T instantiate (String clazz, String params, Class<T> expectedType)
       throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
-        Object obj;
+        Class<? extends T> type = Class.forName(clazz, false, GenericPackager.class.getClassLoader())
+          .asSubclass(expectedType);
         if (params != null)
-            obj = Class.forName(clazz).getConstructor(String.class).newInstance(params);
-        else
-            obj = Class.forName(clazz).newInstance();
-
-        return obj;
+            return type.getConstructor(String.class).newInstance(params);
+        return type.getDeclaredConstructor().newInstance();
     }
 }

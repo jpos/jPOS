@@ -106,7 +106,17 @@ public class CLICommandInterface {
 
     private Object getCommand(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        return cl.loadClass(className).newInstance();
+        Class<?> commandClass = Class.forName(className, false, cl);
+        if (CLICommand.class.isAssignableFrom(commandClass)) {
+            return commandClass.asSubclass(CLICommand.class).newInstance();
+        }
+        if (Command.class.isAssignableFrom(commandClass)) {
+            return commandClass.asSubclass(Command.class).newInstance();
+        }
+        if (CLISubSystem.class.isAssignableFrom(commandClass)) {
+            return commandClass.asSubclass(CLISubSystem.class).newInstance();
+        }
+        throw new ClassCastException(className + " is not a CLI command");
     }
 
     /**

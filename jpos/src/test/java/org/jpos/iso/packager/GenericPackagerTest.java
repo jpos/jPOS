@@ -20,6 +20,7 @@ package org.jpos.iso.packager;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -60,6 +61,60 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.LocatorImpl;
 
 public class GenericPackagerTest {
+    private static boolean wrongFieldTypeInitialized;
+    private static boolean wrongFieldTypeConstructed;
+    private static boolean wrongPackagerTypeInitialized;
+    private static boolean wrongPackagerTypeConstructed;
+
+    public static class WrongFieldType {
+        static {
+            wrongFieldTypeInitialized = true;
+        }
+
+        public WrongFieldType() {
+            wrongFieldTypeConstructed = true;
+        }
+    }
+
+    public static class WrongPackagerType {
+        static {
+            wrongPackagerTypeInitialized = true;
+        }
+
+        public WrongPackagerType() {
+            wrongPackagerTypeConstructed = true;
+        }
+    }
+
+    @Test
+    public void testRejectsWrongFieldTypeBeforeInitialization() {
+        String type = GenericPackagerTest.class.getName() + "$WrongFieldType";
+        String xml = "<!DOCTYPE isopackager PUBLIC \"-//jPOS/jPOS Generic Packager DTD 1.0//EN\" \"http://jpos.org/dtd/generic-packager-1.0.dtd\">"
+            + "<isopackager>"
+            + "<isofield id=\"2\" length=\"10\" name=\"Invalid\" class=\"" + type + "\"/>"
+            + "</isopackager>";
+
+        assertThrows(ISOException.class,
+          () -> new GenericPackager(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))));
+        assertFalse(wrongFieldTypeInitialized);
+        assertFalse(wrongFieldTypeConstructed);
+    }
+
+    @Test
+    public void testRejectsWrongNestedPackagerTypeBeforeInitialization() {
+        String type = GenericPackagerTest.class.getName() + "$WrongPackagerType";
+        String xml = "<!DOCTYPE isopackager PUBLIC \"-//jPOS/jPOS Generic Packager DTD 1.0//EN\" \"http://jpos.org/dtd/generic-packager-1.0.dtd\">"
+            + "<isopackager>"
+            + "<isofieldpackager id=\"48\" length=\"10\" name=\"Invalid\""
+            + " class=\"org.jpos.iso.IFB_LLHBINARY\" packager=\"" + type + "\">"
+            + "</isofieldpackager>"
+            + "</isopackager>";
+
+        assertThrows(ISOException.class,
+          () -> new GenericPackager(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))));
+        assertFalse(wrongPackagerTypeInitialized);
+        assertFalse(wrongPackagerTypeConstructed);
+    }
 
     @Test
     public void testInclusiveBinaryField() throws Exception {

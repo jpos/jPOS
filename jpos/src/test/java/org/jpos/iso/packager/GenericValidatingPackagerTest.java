@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -59,6 +60,37 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.LocatorImpl;
 
 public class GenericValidatingPackagerTest {
+    private static class ReflectionProbe {
+        private static int initialized;
+        private static int constructed;
+    }
+
+    public static class InvalidConfiguredClass {
+        static {
+            ReflectionProbe.initialized++;
+        }
+
+        public InvalidConfiguredClass() {
+            ReflectionProbe.constructed++;
+        }
+    }
+
+    @Test
+    public void testConfiguredClassIsValidatedBeforeInitialization() throws Exception {
+        GenericValidatingPackager.GenericValidatorContentHandler handler =
+                new GenericValidatingPackager().new GenericValidatorContentHandler();
+        AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute("", "class", "class", "CDATA", InvalidConfiguredClass.class.getName());
+        atts.addAttribute("", "id", "id", "CDATA", "2");
+        atts.addAttribute("", "name", "name", "CDATA", "invalid");
+        atts.addAttribute("", "length", "length", "CDATA", "1");
+
+        handler.startDocument();
+        assertThrows(SAXException.class, () -> handler.startElement("", "isofield", "isofield", atts));
+        assertEquals(0, ReflectionProbe.initialized);
+        assertEquals(0, ReflectionProbe.constructed);
+    }
+
     @Test
     public void testConstructor() throws Throwable {
         GenericValidatingPackager genericValidatingPackager = new GenericValidatingPackager();

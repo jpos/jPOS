@@ -100,17 +100,14 @@ public abstract class PackagerWrapper
         this.cfg = cfg;
         String packagerName = cfg.get ("inner-packager");
         try {
-            Class p = Class.forName(packagerName);
-            setPackager ((ISOPackager) p.newInstance());
+            Class<? extends ISOPackager> p = Class.forName(
+              packagerName, false, PackagerWrapper.class.getClassLoader()
+            ).asSubclass(ISOPackager.class);
+            setPackager (p.getDeclaredConstructor().newInstance());
             if (standardPackager instanceof Configurable)
                 ((Configurable)standardPackager).setConfiguration (cfg);
-        } catch (ClassNotFoundException e) {
-            throw new ConfigurationException ("Invalid inner-packager", e);
-        } catch (InstantiationException e) {
-            throw new ConfigurationException ("Invalid inner-packager", e);
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException | ClassCastException e) {
             throw new ConfigurationException ("Invalid inner-packager", e);
         }
     }
 }
-
