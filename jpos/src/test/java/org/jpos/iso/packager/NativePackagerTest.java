@@ -20,14 +20,24 @@ package org.jpos.iso.packager;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class NativePackagerTest {
     ISOMsg m;
-    ISOPackager p;
+    NativePackager p;
     static final byte[] PACKED = ISOUtil.hex2byte("ACED0005778100FFFF460000000430383030460003000630303030303046000B000630303030303146002900083239313130303031420037000455AA11224D00007F460002000A54657374203132372E32460003000A54657374203132372E33460004000A54657374203132372E344D000005460001000C54657374203132372E352E31454545");
 
     @BeforeEach
@@ -66,5 +76,140 @@ public class NativePackagerTest {
         assertEquals("Test 127.4", m1.getString("127.4"));
         assertEquals("Test 127.5.1", m1.getString("127.5.1"));
     }
-}
 
+    @Test
+    public void testExactByteLimit() throws Exception {
+        p.setConfiguration(configuration("deserialization-max-bytes", PACKED.length));
+
+        ISOMsg result = unpack(PACKED);
+
+        assertEquals("0800", result.getMTI());
+    }
+
+    @Test
+    public void testByteLimitRejectsOneByteOver() throws Exception {
+        p.setConfiguration(configuration("deserialization-max-bytes", PACKED.length - 1L));
+
+        assertThrows(ISOException.class, () -> unpack(PACKED));
+    }
+
+    @Test
+    public void testOversizedByteArrayIsRejectedBeforeStreamParsing() throws Exception {
+        p.setConfiguration(configuration("deserialization-max-bytes", 4));
+
+        ISOException exception = assertThrows(
+            ISOException.class,
+            () -> p.unpack(new ISOMsg(), new byte[5])
+        );
+
+        assertTrue(exception.getMessage().contains("maximum stream bytes"));
+    }
+
+    @Test
+    public void testExactInputStreamLimitPreservesFollowingFrame() throws Exception {
+        p.setConfiguration(configuration("deserialization-max-bytes", PACKED.length));
+        byte[] frames = new byte[PACKED.length * 2];
+        System.arraycopy(PACKED, 0, frames, 0, PACKED.length);
+        System.arraycopy(PACKED, 0, frames, PACKED.length, PACKED.length);
+        ByteArrayInputStream in = new ByteArrayInputStream(frames);
+
+        ISOMsg first = new ISOMsg();
+        p.unpack(first, in);
+        assertEquals(PACKED.length, in.available());
+
+        ISOMsg second = new ISOMsg();
+        p.unpack(second, in);
+        assertEquals(0, in.available());
+        assertEquals("0800", first.getMTI());
+        assertEquals("0800", second.getMTI());
+    }
+
+    @Test
+    public void testConfiguredDepthLimit() throws Exception {
+        byte[] packed = packObject(new Object[] { new Object[0] });
+        p.setConfiguration(configuration("deserialization-max-depth", 1));
+
+        assertThrows(ISOException.class, () -> p.unpack(new ObjectPayloadISOMsg(), packed));
+    }
+
+    @Test
+    public void testConfiguredReferenceLimit() throws Exception {
+        byte[] packed = packObject(new Object[] { new SerializableValue() });
+        p.setConfiguration(configuration("deserialization-max-references", 1));
+
+        assertThrows(ISOException.class, () -> p.unpack(new ObjectPayloadISOMsg(), packed));
+    }
+
+    @Test
+    public void testConfiguredArrayLengthLimit() throws Exception {
+        byte[] packed = packObject(new int[2]);
+        p.setConfiguration(configuration("deserialization-max-array-length", 1));
+
+        assertThrows(ISOException.class, () -> p.unpack(new ObjectPayloadISOMsg(), packed));
+    }
+
+    @Test
+    public void testConfiguredLimitsMustBePositive() {
+        String[] properties = {
+            "deserialization-max-depth",
+            "deserialization-max-references",
+            "deserialization-max-array-length",
+            "deserialization-max-bytes"
+        };
+        for (String property : properties) {
+            assertThrows(ConfigurationException.class, () -> p.setConfiguration(configuration(property, 0)));
+            assertThrows(ConfigurationException.class, () -> p.setConfiguration(configuration(property, -1)));
+        }
+    }
+
+    @Test
+    public void testConfiguredLimitsMustBeNumeric() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("deserialization-max-depth", "invalid");
+
+        assertThrows(ConfigurationException.class, () -> p.setConfiguration(cfg));
+    }
+
+    private ISOMsg unpack(byte[] image) throws ISOException {
+        ISOMsg result = new ISOMsg();
+        result.setPackager(p);
+        result.unpack(image);
+        return result;
+    }
+
+    private byte[] packObject(Object value) throws ISOException {
+        ObjectPayloadISOMsg message = new ObjectPayloadISOMsg(value);
+        message.setPackager(p);
+        return message.pack();
+    }
+
+    private SimpleConfiguration configuration(String name, long value) {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put(name, Long.toString(value));
+        return cfg;
+    }
+
+    private static class ObjectPayloadISOMsg extends ISOMsg {
+        private Object value;
+
+        private ObjectPayloadISOMsg() { }
+
+        private ObjectPayloadISOMsg(Object value) {
+            this.value = value;
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(value);
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            value = in.readObject();
+        }
+    }
+
+    private static class SerializableValue implements Serializable {
+        private static final long serialVersionUID = 1L;
+    }
+}

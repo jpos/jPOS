@@ -43,6 +43,7 @@ import static org.jpos.transaction.ContextConstants.*;
 public class Context implements Externalizable, Loggeable, Cloneable, Pausable, AuditLogEventConvertible {
     @Serial
     private static final long serialVersionUID = 2604524947983441462L;
+    private static final int MAX_EXTERNALIZED_ENTRIES = 10_000;
     private transient Map<Object,Object> map; // transient map
     private Map<Object,Object> pmap;          // persistent (serializable) map
     private transient boolean trace = false;
@@ -404,15 +405,19 @@ public class Context implements Externalizable, Loggeable, Cloneable, Pausable, 
         throws IOException, ClassNotFoundException
     {
         in.readByte();  // ignore version for now
-        getMap();       // force creation of map
-        getPMap();      // and pmap
         int size = in.readInt();
+        if (size < 0)
+            throw new InvalidObjectException("Negative entry count in serialized Context");
+        if (size > MAX_EXTERNALIZED_ENTRIES)
+            throw new InvalidObjectException("Too many entries in serialized Context");
+        Map<Object,Object> entries = new LinkedHashMap<>();
         for (int i=0; i<size; i++) {
             String k = (String) in.readObject();
             Object v = in.readObject();
-            map.put (k, v);
-            pmap.put (k, v);
+            entries.put (k, v);
         }
+        getMap().putAll(entries);
+        getPMap().putAll(entries);
     }
 
     /**

@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Log;
 import org.jpos.util.Loggeable;
+import org.jpos.util.Serializer;
 
 /**
  * BerkeleyDB Jave Edition based persistent space implementation
@@ -80,8 +81,11 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
     public static final long DEFAULT_TXN_TIMEOUT = 30*1000L;
     /** Default lock timeout in milliseconds. */
     public static final long DEFAULT_LOCK_TIMEOUT = 120*1000L;
+    private static final Serializer.DeserializationLimits DEFAULT_SERIAL_LIMITS =
+        new Serializer.DeserializationLimits(32, 500_000, 8_388_608, 64L * 1024 * 1024);
     /** Future handle for the scheduled GC task. */
     private Future gcTask;
+    private final Serializer.DeserializationLimits serialLimits;
 
     /** Registry mapping space names to their JESpace instances. */
     static final Map<String,Space> spaceRegistrar = 
@@ -101,6 +105,12 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
             StoreConfig storeConfig = new StoreConfig();
             String[] p = ISOUtil.commaDecode(params);
             String path = p[0];
+            serialLimits = new Serializer.DeserializationLimits(
+                getPositiveParam("serial.max-depth", p, DEFAULT_SERIAL_LIMITS.maxDepth()),
+                getPositiveParam("serial.max-references", p, DEFAULT_SERIAL_LIMITS.maxReferences()),
+                getPositiveParam("serial.max-array-length", p, DEFAULT_SERIAL_LIMITS.maxArrayLength()),
+                getPositiveParam("serial.max-bytes", p, DEFAULT_SERIAL_LIMITS.maxStreamBytes())
+            );
             envConfig.setAllowCreate (true);
             envConfig.setTransactional(true);
             envConfig.setLockTimeout(getParam("lock.timeout", p, DEFAULT_LOCK_TIMEOUT), TimeUnit.MILLISECONDS);
@@ -387,7 +397,8 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
             cursor = sIndex.subIndex(key.toString()).entities(txn, null);
             for (Ref ref : cursor) {
                 if (ref.isActive()) {
-                    if (tmpl != null && !tmpl.equals (ref.getValue()))
+                    Object value = ref.getValue(serialLimits);
+                    if (tmpl != null && !tmpl.equals (value))
                         continue;
                     if (remove) {
                         cursor.delete();
@@ -396,7 +407,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
                     }
                     cursor.close(); cursor = null;
                     txn.commit(); txn = null;
-                    return ref.getValue();
+                    return value;
                 }
                 else {
                     cursor.delete();
@@ -594,7 +605,11 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
          * @return the stored value
          */
         public Object getValue () {
-            return deserialize(value);
+            return deserialize(value, DEFAULT_SERIAL_LIMITS);
+        }
+
+        private Object getValue (Serializer.DeserializationLimits limits) {
+            return deserialize(value, limits);
         }
 
         /**
@@ -635,15 +650,14 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
             }
             return obj;
         }
-        private Object deserialize (Object obj) {
+        private Object deserialize (Object obj, Serializer.DeserializationLimits limits) {
             Class cls = obj.getClass();
             if (isPersistent (cls))
                 return obj;
 
-            ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) obj);
             try {
-                ObjectInputStream is = org.jpos.util.Serializer.createSafeObjectInputStream(bais);
-                return is.readObject();
+                // Berkeley JE has already materialized this byte[]; this limits Java deserialization.
+                return Serializer.deserializeWithLimits((byte[]) obj, limits);
             } catch (Exception e) {
                 throw new SpaceError (e);
             }
@@ -704,6 +718,21 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
                 if (pos >=0 && s.length() > pos)
                     return Long.valueOf(s.substring(pos+1).trim());
             }
+        }
+        return defaultValue;
+    }
+
+    private long getPositiveParam (String name, String[] params, long defaultValue) {
+        for (String s : params) {
+            int pos = s.indexOf('=');
+            if (pos >= 0 && name.equals(s.substring(0, pos).trim())) {
+                long value = Long.parseLong(s.substring(pos + 1).trim());
+                if (value <= 0)
+                    throw new IllegalArgumentException(name + " must be positive");
+                return value;
+            }
+            if (name.equals(s.trim()))
+                throw new IllegalArgumentException(name + " must have a positive value");
         }
         return defaultValue;
     }

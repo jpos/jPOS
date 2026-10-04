@@ -29,8 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.ConcurrentModificationException;
@@ -245,6 +249,52 @@ public class ContextTest {
     }
 
     @Test
+    public void testReadExternalRejectsNegativeEntryCount() throws Exception {
+        Context context = new Context();
+        try (ObjectInputStream in = externalizedContextInput(-1, 0)) {
+            InvalidObjectException exception = assertThrows(InvalidObjectException.class,
+              () -> context.readExternal(in));
+            assertEquals("Negative entry count in serialized Context", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void testReadExternalRejectsExcessiveEntryCountBeforeReadingEntries() throws Exception {
+        Context context = new Context();
+        try (ObjectInputStream in = externalizedContextInput(10_001, 0)) {
+            InvalidObjectException exception = assertThrows(InvalidObjectException.class,
+              () -> context.readExternal(in));
+            assertEquals("Too many entries in serialized Context", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void testReadExternalAcceptsMaximumEntryCount() throws Exception {
+        Context context = new Context();
+        try (ObjectInputStream in = externalizedContextInput(10_000, 10_000)) {
+            context.readExternal(in);
+        }
+        assertEquals("value", context.get("key"));
+        assertTrue(context.hasPersistedKey("key"));
+    }
+
+    @Test
+    public void testReadExternalDoesNotModifyContextOnTruncatedInput() throws Exception {
+        Context context = new Context();
+        context.put("persistent", "old", true);
+        context.put("transient", "old");
+        Map<Object,Object> original = context.getMapClone();
+
+        try (ObjectInputStream in = externalizedContextInput(2, 1)) {
+            assertThrows(EOFException.class, () -> context.readExternal(in));
+        }
+
+        assertEquals(original, context.getMapClone());
+        assertTrue(context.hasPersistedKey("persistent"));
+        assertFalse(context.hasPersistedKey("key"));
+    }
+
+    @Test
     public void testRemove() throws Throwable {
         Context context = new Context();
         context.getProfiler();
@@ -278,6 +328,19 @@ public class ContextTest {
                 assertEquals("Cannot invoke \"java.io.ObjectOutput.writeByte(int)\" because \"out\" is null", ex.getMessage(), "ex.getMessage()");
             }
         }
+    }
+
+    private ObjectInputStream externalizedContextInput(int size, int entries) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+            out.writeByte(0);
+            out.writeInt(size);
+            for (int i = 0; i < entries; i++) {
+                out.writeObject("key");
+                out.writeObject("value");
+            }
+        }
+        return new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()));
     }
 
     @Test

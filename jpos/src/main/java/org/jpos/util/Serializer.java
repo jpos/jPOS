@@ -21,16 +21,44 @@ package org.jpos.util;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * Java-serialization helpers with deserialization filters that reject
- * known gadget-chain classes and enforce a depth limit.
+ * known gadget-chain classes and enforce resource limits.
  */
 public class Serializer {
     /** Utility class; instances carry no state. */
     public Serializer() {}
-    private static final int MAX_DEPTH = 32;
+
+    /** Default limits for data received at a general-purpose deserialization boundary. */
+    public static final DeserializationLimits DEFAULT_LIMITS = new DeserializationLimits(
+        32,
+        100_000,
+        1_000_000,
+        16L * 1024 * 1024
+    );
+
+    /**
+     * Resource limits applied while deserializing an object stream.
+     *
+     * @param maxDepth maximum object graph depth
+     * @param maxReferences maximum number of object references
+     * @param maxArrayLength maximum number of elements in an array
+     * @param maxStreamBytes maximum number of bytes read from the stream
+     */
+    public record DeserializationLimits(
+        long maxDepth,
+        long maxReferences,
+        long maxArrayLength,
+        long maxStreamBytes
+    ) {
+        public DeserializationLimits {
+            if (maxDepth < 0 || maxReferences < 0 || maxArrayLength < 0 || maxStreamBytes < 0)
+                throw new IllegalArgumentException("Deserialization limits must not be negative");
+        }
+    }
 
     private static final Set<String> REJECTED_CLASSES = Set.of(
         "org.apache.commons.collections.functors.InvokerTransformer",
@@ -60,23 +88,6 @@ public class Serializer {
         "javax.management."
     );
 
-    private static final ObjectInputFilter SERIAL_FILTER = filterInfo -> {
-        if (filterInfo.depth() > MAX_DEPTH)
-            return ObjectInputFilter.Status.REJECTED;
-
-        Class<?> clazz = filterInfo.serialClass();
-        if (clazz != null) {
-            String name = clazz.getName();
-            if (REJECTED_CLASSES.contains(name))
-                return ObjectInputFilter.Status.REJECTED;
-            for (String pkg : REJECTED_PACKAGES) {
-                if (name.startsWith(pkg))
-                    return ObjectInputFilter.Status.REJECTED;
-            }
-        }
-        return ObjectInputFilter.Status.UNDECIDED;
-    };
-
     /**
      * Creates an ObjectInputStream with a deserialization filter that rejects
      * known gadget-chain classes and enforces resource limits.
@@ -86,8 +97,38 @@ public class Serializer {
      * @throws IOException if an I/O error occurs
      */
     public static ObjectInputStream createSafeObjectInputStream(InputStream in) throws IOException {
-        ObjectInputStream ois = new ObjectInputStream(in);
-        ois.setObjectInputFilter(SERIAL_FILTER);
+        return createSafeObjectInputStream(in, DEFAULT_LIMITS);
+    }
+
+    /**
+     * Creates an ObjectInputStream with the supplied deserialization limits.
+     *
+     * @param in the underlying input stream
+     * @param limits resource limits to enforce
+     * @return a filtered ObjectInputStream
+     * @throws IOException if an I/O error occurs
+     */
+    public static ObjectInputStream createSafeObjectInputStream(InputStream in, DeserializationLimits limits)
+      throws IOException
+    {
+        ObjectInputStream ois = createObjectInputStream(in, limits);
+        ois.setObjectInputFilter(filterInfo -> {
+            ObjectInputFilter.Status status = checkLimits(filterInfo, limits);
+            if (status == ObjectInputFilter.Status.REJECTED)
+                return status;
+
+            Class<?> clazz = componentType(filterInfo.serialClass());
+            if (clazz != null) {
+                String name = clazz.getName();
+                if (REJECTED_CLASSES.contains(name))
+                    return ObjectInputFilter.Status.REJECTED;
+                for (String pkg : REJECTED_PACKAGES) {
+                    if (name.startsWith(pkg))
+                        return ObjectInputFilter.Status.REJECTED;
+                }
+            }
+            return ObjectInputFilter.Status.UNDECIDED;
+        });
         return ois;
     }
 
@@ -101,23 +142,45 @@ public class Serializer {
      * @throws IOException if an I/O error occurs
      */
     public static ObjectInputStream createAllowListObjectInputStream(InputStream in, String... allowedPackages) throws IOException {
-        ObjectInputStream ois = new ObjectInputStream(in);
-        ois.setObjectInputFilter(filterInfo -> {
-            if (filterInfo.depth() > MAX_DEPTH)
-                return ObjectInputFilter.Status.REJECTED;
+        return createLimitedAllowListObjectInputStream(in, DEFAULT_LIMITS, allowedPackages);
+    }
 
-            Class<?> clazz = filterInfo.serialClass();
+    /**
+     * Creates an ObjectInputStream with an allow-list filter and the supplied
+     * deserialization limits.
+     *
+     * @param in the underlying input stream
+     * @param limits resource limits to enforce
+     * @param allowedPackages package prefixes or exact class names to allow
+     * @return a filtered ObjectInputStream
+     * @throws IOException if an I/O error occurs
+     */
+    public static ObjectInputStream createLimitedAllowListObjectInputStream(
+      InputStream in, DeserializationLimits limits, String... allowedPackages
+    ) throws IOException {
+        Objects.requireNonNull(allowedPackages, "allowedPackages");
+        String[] packages = allowedPackages.clone();
+        for (String pkg : packages)
+            Objects.requireNonNull(pkg, "allowedPackages must not contain null");
+
+        ObjectInputStream ois = createObjectInputStream(in, limits);
+        ois.setObjectInputFilter(filterInfo -> {
+            ObjectInputFilter.Status status = checkLimits(filterInfo, limits);
+            if (status == ObjectInputFilter.Status.REJECTED)
+                return status;
+
+            Class<?> clazz = componentType(filterInfo.serialClass());
             if (clazz == null)
                 return ObjectInputFilter.Status.UNDECIDED;
 
-            if (clazz.isPrimitive() || clazz.isArray())
+            if (clazz.isPrimitive())
                 return ObjectInputFilter.Status.ALLOWED;
 
             String name = clazz.getName();
             if (name.startsWith("java.lang.") || name.startsWith("java.util.") || name.startsWith("java.math."))
                 return ObjectInputFilter.Status.ALLOWED;
 
-            for (String pkg : allowedPackages) {
+            for (String pkg : packages) {
                 if (name.startsWith(pkg))
                     return ObjectInputFilter.Status.ALLOWED;
             }
@@ -148,8 +211,24 @@ public class Serializer {
      * @throws ClassNotFoundException if a referenced class cannot be loaded
      */
     public static Object deserialize (byte[] b) throws IOException, ClassNotFoundException {
+        return deserializeWithLimits(b, DEFAULT_LIMITS);
+    }
+
+    /**
+     * Deserializes the byte array using the supplied resource limits.
+     *
+     * @param b serialized bytes
+     * @param limits resource limits to enforce
+     * @return the deserialized object
+     * @throws IOException if reading fails
+     * @throws ClassNotFoundException if a referenced class cannot be loaded
+     */
+    public static Object deserializeWithLimits (byte[] b, DeserializationLimits limits)
+      throws IOException, ClassNotFoundException
+    {
+        checkInputLength(b, limits);
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
-        ObjectInputStream is = createSafeObjectInputStream(bais);
+        ObjectInputStream is = createSafeObjectInputStream(bais, limits);
         return is.readObject();
     }
     /**
@@ -157,14 +236,32 @@ public class Serializer {
      *
      * @param <T> expected concrete type
      * @param b serialized bytes
-     * @param clazz expected class (used for the unchecked cast)
+     * @param clazz expected class
      * @return the deserialized object
      * @throws IOException if reading fails
      * @throws ClassNotFoundException if a referenced class cannot be loaded
      */
-    @SuppressWarnings("unchecked")
     public static <T> T deserialize (byte[] b, Class<T> clazz) throws IOException, ClassNotFoundException {
-        return (T) deserialize(b);
+        return deserialize(b, clazz, DEFAULT_LIMITS);
+    }
+
+    /**
+     * Deserializes the byte array using the supplied resource limits and casts
+     * the result to {@code T}.
+     *
+     * @param <T> expected concrete type
+     * @param b serialized bytes
+     * @param clazz expected class
+     * @param limits resource limits to enforce
+     * @return the deserialized object
+     * @throws IOException if reading fails
+     * @throws ClassNotFoundException if a referenced class cannot be loaded
+     */
+    public static <T> T deserialize (byte[] b, Class<T> clazz, DeserializationLimits limits)
+      throws IOException, ClassNotFoundException
+    {
+        Objects.requireNonNull(clazz, "clazz");
+        return clazz.cast(deserializeWithLimits(b, limits));
     }
     /**
      * Round-trips an object through serialization and back, useful for deep-cloning.
@@ -213,6 +310,7 @@ public class Serializer {
     public static Map<String,String> deserializeStringMap (byte[] buf)
       throws ClassNotFoundException, IOException
     {
+        checkInputLength(buf, DEFAULT_LIMITS);
         ByteArrayInputStream  bais = new ByteArrayInputStream (buf);
         ObjectInputStream     ois  = createAllowListObjectInputStream(bais);
         Map<String,String> m = new HashMap<>();
@@ -224,5 +322,82 @@ public class Serializer {
             );
         }
         return m;
+    }
+
+    private static ObjectInputStream createObjectInputStream(InputStream in, DeserializationLimits limits)
+      throws IOException
+    {
+        Objects.requireNonNull(in, "in");
+        Objects.requireNonNull(limits, "limits");
+        return new ObjectInputStream(new LimitedInputStream(in, limits.maxStreamBytes()));
+    }
+
+    private static void checkInputLength(byte[] input, DeserializationLimits limits) throws InvalidObjectException {
+        Objects.requireNonNull(input, "input");
+        Objects.requireNonNull(limits, "limits");
+        if (input.length > limits.maxStreamBytes())
+            throw new InvalidObjectException("Serialized input exceeds maximum stream bytes");
+    }
+
+    private static ObjectInputFilter.Status checkLimits(
+      ObjectInputFilter.FilterInfo filterInfo, DeserializationLimits limits
+    ) {
+        if (filterInfo.depth() > limits.maxDepth()
+          || filterInfo.references() > limits.maxReferences()
+          || filterInfo.streamBytes() > limits.maxStreamBytes()
+          || filterInfo.arrayLength() > limits.maxArrayLength())
+            return ObjectInputFilter.Status.REJECTED;
+        return ObjectInputFilter.Status.UNDECIDED;
+    }
+
+    private static Class<?> componentType(Class<?> clazz) {
+        while (clazz != null && clazz.isArray())
+            clazz = clazz.getComponentType();
+        return clazz;
+    }
+
+    /** Stops at the limit without probing for, or consuming, one additional byte. */
+    private static final class LimitedInputStream extends FilterInputStream {
+        private long remaining;
+
+        private LimitedInputStream(InputStream in, long maximumBytes) {
+            super(in);
+            remaining = maximumBytes;
+        }
+
+        @Override
+        public int read() throws IOException {
+            if (remaining == 0)
+                return -1;
+            int value = super.read();
+            if (value >= 0)
+                remaining--;
+            return value;
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            Objects.checkFromIndexSize(off, len, b.length);
+            if (len == 0)
+                return 0;
+            if (remaining == 0)
+                return -1;
+            int count = super.read(b, off, (int) Math.min(len, remaining));
+            if (count > 0)
+                remaining -= count;
+            return count;
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            long count = super.skip(Math.min(n, remaining));
+            remaining -= count;
+            return count;
+        }
+
+        @Override
+        public int available() throws IOException {
+            return (int) Math.min(super.available(), remaining);
+        }
     }
 }

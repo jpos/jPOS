@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jpos.iso.ISOMsg;
@@ -36,6 +37,7 @@ import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -243,6 +245,50 @@ public class JESpaceTestCase {
         m.set(11, "000001");
         ctx.put("ISOMSG", m, true);
         sp.out("CTX", ctx);
-        assertNotNull(sp.in("CTX"), "entry should not be null");
+        Context restored = (Context) sp.in("CTX");
+        assertEquals("ABC", restored.get("P"));
+        assertEquals("000001", ((ISOMsg) restored.get("ISOMSG")).getString(11));
+    }
+
+    @Test
+    public void testConfiguredSerializationByteLimit(@TempDir Path spaceDir) {
+        String name = "serialization-limit";
+        String value = "0123456789".repeat(20);
+        JESpace<String,Object> limited = new JESpace<>(
+            name, ISOUtil.commaEncode(spaceDir.toString(), "serial.max-bytes=64")
+        );
+        try {
+            limited.out("VALUE", value);
+            SpaceError failure = assertThrows(SpaceError.class, () -> limited.rdp("VALUE"));
+            assertTrue(failure.getCause() instanceof InvalidObjectException);
+        } finally {
+            limited.close();
+        }
+
+        JESpace<String,Object> expanded = new JESpace<>(
+            name, ISOUtil.commaEncode(spaceDir.toString(), "serial.max-bytes=1024")
+        );
+        try {
+            assertEquals(value, expanded.rdp("VALUE"));
+        } finally {
+            expanded.close();
+        }
+    }
+
+    @Test
+    public void testRejectsNonPositiveSerializationLimits(@TempDir Path spaceDir) {
+        String[] parameters = {
+            "serial.max-depth=0",
+            "serial.max-references=0",
+            "serial.max-array-length=0",
+            "serial.max-bytes=0"
+        };
+        for (int i = 0; i < parameters.length; i++) {
+            int index = i;
+            String params = ISOUtil.commaEncode(spaceDir.resolve(Integer.toString(i)).toString(), parameters[i]);
+            SpaceError failure = assertThrows(SpaceError.class,
+              () -> new JESpace<>("invalid-serialization-limit-" + index, params));
+            assertTrue(failure.getCause() instanceof IllegalArgumentException);
+        }
     }
 }
