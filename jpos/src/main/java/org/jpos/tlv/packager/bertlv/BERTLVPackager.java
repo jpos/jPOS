@@ -284,6 +284,13 @@ public abstract class BERTLVPackager extends GenericPackager {
                     UnpackResult lengthUnpackResult = unpackLength(b, consumed);
                     consumed = consumed + lengthUnpackResult.consumed;
                     int length = ISOUtil.byte2int(lengthUnpackResult.value);
+                    if (length < 0)
+                        throw new ISOException("Invalid BER-TLV length: " + Integer.toUnsignedString(length));
+                    if (length > tlvDataLength - consumed)
+                        throw new ISOException(
+                            "Truncated BER-TLV value: declared " + length +
+                            " bytes, only " + (tlvDataLength - consumed) + " packed bytes remain"
+                        );
 
                     final ISOComponent tlvSubFieldData;
                     byte[] value = new byte[length];
@@ -498,17 +505,25 @@ public abstract class BERTLVPackager extends GenericPackager {
     }
 
     private int getUninterpretLength(int length, BinaryInterpreter interpreter) {
-        if (length > 0) {
-            int lengthAdjusted = length + length % 2;
-            return (length * lengthAdjusted) / interpreter.getPackedLength(lengthAdjusted);
-        }
-        return 0;
+        return getUninterpretLength(length, interpreter::getPackedLength);
     }
 
     private int getUninterpretLength(int length, Interpreter interpreter) {
+        return getUninterpretLength(length, interpreter::getPackedLength);
+    }
+
+    private int getUninterpretLength(int length, java.util.function.IntUnaryOperator packedLength) {
         if (length > 0) {
-            int lengthAdjusted = length + length % 2;
-            return (length * lengthAdjusted) / interpreter.getPackedLength(lengthAdjusted);
+            long lengthAdjusted = (long) length + length % 2;
+            if (lengthAdjusted > Integer.MAX_VALUE)
+                throw new IllegalArgumentException("Length too large: " + length);
+            int packed = packedLength.applyAsInt((int) lengthAdjusted);
+            if (packed <= 0)
+                throw new IllegalArgumentException("Invalid packed length: " + packed);
+            long result = (long) length * lengthAdjusted / packed;
+            if (result > Integer.MAX_VALUE)
+                throw new IllegalArgumentException("Uninterpreted length too large: " + result);
+            return (int) result;
         }
         return 0;
     }

@@ -25,6 +25,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
@@ -281,6 +283,20 @@ public class XMLPackagerTest {
         assertThat(result.getString(11), is("12345678"));
         assertThat(result.getString(12), is("20110224112759"));
         assertThat(result.getString(24), is(""));
+    }
+
+    @Test
+    public void testRejectsExcessiveIsomsgNesting() throws ISOException {
+        StringBuilder input = new StringBuilder("<isomsg>");
+        for (int i = 0; i < 32; i++)
+            input.append("<isomsg id=\"").append(i).append("\">");
+        input.append("</isomsg>".repeat(33));
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> xMLPackager.unpack(new ISOMsg(), input.toString().getBytes())
+        );
+        assertTrue(e.getMessage().contains("Maximum isomsg nesting depth exceeded"));
     }
 
     @Test

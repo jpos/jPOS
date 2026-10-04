@@ -28,6 +28,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogListener;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -79,6 +80,41 @@ public class BERTLVPackagerTest {
     }
 
     @Test
+    public void testRejectsLengthThatExceedsRemainingInput() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> p.unpack(new ISOMsg(55), ISOUtil.hex2byte("9F34031122"))
+        );
+        assertTrue(e.getMessage().contains("Truncated BER-TLV value"));
+    }
+
+    @Test
+    public void testRejectsMaxIntegerLengthWithoutAllocating() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> p.unpack(new ISOMsg(55), ISOUtil.hex2byte("9F34847FFFFFFF"))
+        );
+        assertTrue(e.getMessage().contains("Truncated BER-TLV value"));
+    }
+
+    @Test
+    public void testUninterpretLengthDoesNotOverflow() throws Exception {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        Method method = BERTLVPackager.class.getDeclaredMethod(
+          "getUninterpretLength", int.class, BinaryInterpreter.class
+        );
+        method.setAccessible(true);
+
+        assertEquals(1 << 30, method.invoke(p, 1 << 30, LiteralBinaryInterpreter.INSTANCE));
+    }
+
+    @Test
     public void bug349() throws ISOException {
         ISOMsg msg = new ISOMsg("0600");
 
@@ -103,4 +139,3 @@ public class BERTLVPackagerTest {
         System.out.println("bin msg: " + out);
     }
 }
-

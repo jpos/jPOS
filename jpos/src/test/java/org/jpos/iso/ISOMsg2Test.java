@@ -28,7 +28,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidClassException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
+import java.io.ObjectInputFilter;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -1168,6 +1171,70 @@ public class ISOMsg2Test {
         Object p = readExternalFormFromBytes(objekt);
         assertEquals(ISOMsg.class, p.getClass());
         assertEquals("0800", ((ISOMsg) p).getMTI());
+    }
+
+    @Test
+    public void testReadPackagerRejectsNonPackagerBeforeConstruction() throws Exception {
+        ConstructibleButNotPackager.constructorCalls = 0;
+        ObjectInputStream in = packagerClassInput(ConstructibleButNotPackager.class);
+
+        assertThrows(InvalidClassException.class, () -> new ISOMsg().readPackager(in));
+        assertEquals(0, ConstructibleButNotPackager.constructorCalls);
+    }
+
+    @Test
+    public void testReadPackagerHonorsObjectInputFilter() throws Exception {
+        FilteredPackager.constructorCalls = 0;
+        ObjectInputStream in = packagerClassInput(FilteredPackager.class);
+        in.setObjectInputFilter(info -> info.serialClass() == FilteredPackager.class
+          ? ObjectInputFilter.Status.REJECTED : ObjectInputFilter.Status.UNDECIDED);
+
+        assertThrows(InvalidClassException.class, () -> new ISOMsg().readPackager(in));
+        assertEquals(0, FilteredPackager.constructorCalls);
+    }
+
+    @Test
+    public void testReadExternalRejectsExcessiveEntries() throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+            out.writeByte(0);
+            out.writeShort(-1);
+            for (int i = 0; i < 10_001; i++) {
+                out.writeByte('D');
+                out.writeByte(0);
+            }
+            out.writeByte('E');
+        }
+
+        try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            assertThrows(InvalidObjectException.class, () -> new ISOMsg().readExternal(in));
+        }
+    }
+
+    private ObjectInputStream packagerClassInput(Class<?> clazz) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+            byte[] name = clazz.getName().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            out.writeShort(name.length);
+            out.write(name);
+        }
+        return new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()));
+    }
+
+    public static class ConstructibleButNotPackager {
+        static int constructorCalls;
+
+        public ConstructibleButNotPackager() {
+            constructorCalls++;
+        }
+    }
+
+    public static class FilteredPackager extends GenericPackager {
+        static int constructorCalls;
+
+        public FilteredPackager() throws ISOException {
+            constructorCalls++;
+        }
     }
 
     @Test

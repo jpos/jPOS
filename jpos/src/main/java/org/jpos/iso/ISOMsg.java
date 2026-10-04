@@ -65,7 +65,16 @@ public class ISOMsg extends ISOComponent
     /** Constant indicating an outgoing message direction. */
     public static final int OUTGOING = 2;
     private static final long serialVersionUID = 4306251831901413975L;
+    private static final int MAX_EXTERNALIZED_ENTRIES = 10_000;
+    private static final int MAX_EXTERNALIZED_DEPTH = 64;
+    private static final int MAX_PACKAGER_CLASS_NAME_LENGTH = 1_024;
+    private static final ThreadLocal<ExternalReadContext> EXTERNAL_READ_CONTEXT = new ThreadLocal<>();
     private WeakReference sourceRef;
+
+    private static class ExternalReadContext {
+        private int entries;
+        private int depth;
+    }
 
     /**
      * Creates an ISOMsg
@@ -1367,7 +1376,7 @@ public class ISOMsg extends ISOComponent
     protected void writePackager(ObjectOutput out) throws IOException {
         out.writeByte('P');
         String pclass = packager.getClass().getName();
-        byte[] b = pclass.getBytes();
+        byte[] b = pclass.getBytes(StandardCharsets.UTF_8);
         out.writeShort(b.length);
         out.write(b);
     }
@@ -1379,17 +1388,46 @@ public class ISOMsg extends ISOComponent
      */
     protected void readPackager(ObjectInput in) throws IOException,
     ClassNotFoundException {
-        byte[] b = new byte[in.readShort()];
+        int classNameLength = in.readShort();
+        if (classNameLength <= 0 || classNameLength > MAX_PACKAGER_CLASS_NAME_LENGTH)
+            throw new InvalidClassException("Invalid ISOPackager class name length: " + classNameLength);
+        byte[] b = new byte[classNameLength];
         in.readFully(b);
         try {
-            Class mypClass = Class.forName(new String(b));
-            ISOPackager myp = (ISOPackager) mypClass.newInstance();
-            setPackager(myp);
-        } catch (Exception e) {
-            setPackager(null);
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            Class<?> packagerClass = Class.forName(
+                new String(b, StandardCharsets.UTF_8), false,
+                loader != null ? loader : ISOMsg.class.getClassLoader()
+            );
+            if (!ISOPackager.class.isAssignableFrom(packagerClass))
+                throw new InvalidClassException(packagerClass.getName(), "Class does not implement ISOPackager");
+            checkObjectInputFilter(in, packagerClass);
+            setPackager((ISOPackager) packagerClass.getDeclaredConstructor().newInstance());
+        } catch (InvalidClassException e) {
+            throw e;
+        } catch (ReflectiveOperationException | LinkageError e) {
+            InvalidClassException ice = new InvalidClassException("Unable to instantiate ISOPackager");
+            ice.initCause(e);
+            throw ice;
         }
+    }
 
-}
+    private void checkObjectInputFilter(ObjectInput in, Class<?> clazz) throws InvalidClassException {
+        if (in instanceof ObjectInputStream objectInputStream) {
+            ObjectInputFilter filter = objectInputStream.getObjectInputFilter();
+            if (filter != null) {
+                ObjectInputFilter.Status status = filter.checkInput(new ObjectInputFilter.FilterInfo() {
+                    public Class<?> serialClass() { return clazz; }
+                    public long arrayLength() { return -1; }
+                    public long depth() { return 1; }
+                    public long references() { return 1; }
+                    public long streamBytes() { return -1; }
+                });
+                if (status == ObjectInputFilter.Status.REJECTED)
+                    throw new InvalidClassException(clazz.getName(), "Rejected by deserialization filter");
+            }
+        }
+    }
     /**
      * Serializes the message direction to the given ObjectOutput.
      * @param out the ObjectOutput to write to
@@ -1444,46 +1482,62 @@ public class ISOMsg extends ISOComponent
     public void readExternal  (ObjectInput in)
         throws IOException, ClassNotFoundException
     {
-        in.readByte();  // ignore version for now
-        fieldNumber = in.readShort();
-        byte fieldType;
-        ISOComponent c;
-        try {
-            while ((fieldType = in.readByte()) != 'E') {
-                c = null;
-                switch (fieldType) {
-                    case 'F':
-                        c = new ISOField ();
-                        break;
-                    case 'A':
-                        c = new ISOAmount ();
-                        break;
-                    case 'B':
-                        c = new ISOBinaryField ();
-                        break;
-                    case 'M':
-                        c = new ISOMsg ();
-                        break;
-                    case 'H':
-                        readHeader (in);
-                        break;
-                    case 'P':
-                        readPackager(in);
-                        break;
-                    case 'D':
-                        readDirection (in);
-                        break;
-                    default:
-                        throw new IOException ("malformed ISOMsg");
-                }
-                if (c != null) {
-                    ((Externalizable)c).readExternal (in);
-                    set (c);
-                }
-            }
+        ExternalReadContext context = EXTERNAL_READ_CONTEXT.get();
+        boolean root = context == null;
+        if (root) {
+            context = new ExternalReadContext();
+            EXTERNAL_READ_CONTEXT.set(context);
         }
-        catch (ISOException e) {
-            throw new IOException (e.getMessage());
+        context.depth++;
+        try {
+            if (context.depth > MAX_EXTERNALIZED_DEPTH)
+                throw new InvalidObjectException("Serialized ISOMsg nesting is too deep");
+            in.readByte();  // ignore version for now
+            fieldNumber = in.readShort();
+            byte fieldType;
+            ISOComponent c;
+            try {
+                while ((fieldType = in.readByte()) != 'E') {
+                    if (++context.entries > MAX_EXTERNALIZED_ENTRIES)
+                        throw new InvalidObjectException("Too many entries in serialized ISOMsg");
+                    c = null;
+                    switch (fieldType) {
+                        case 'F':
+                            c = new ISOField ();
+                            break;
+                        case 'A':
+                            c = new ISOAmount ();
+                            break;
+                        case 'B':
+                            c = new ISOBinaryField ();
+                            break;
+                        case 'M':
+                            c = new ISOMsg ();
+                            break;
+                        case 'H':
+                            readHeader (in);
+                            break;
+                        case 'P':
+                            readPackager(in);
+                            break;
+                        case 'D':
+                            readDirection (in);
+                            break;
+                        default:
+                            throw new IOException ("malformed ISOMsg");
+                    }
+                    if (c != null) {
+                        ((Externalizable)c).readExternal (in);
+                        set (c);
+                    }
+                }
+            } catch (ISOException e) {
+                throw new IOException (e.getMessage());
+            }
+        } finally {
+            context.depth--;
+            if (root)
+                EXTERNAL_READ_CONTEXT.remove();
         }
     }
     /**

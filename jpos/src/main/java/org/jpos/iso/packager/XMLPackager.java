@@ -48,6 +48,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class XMLPackager extends DefaultHandler
                          implements ISOPackager, LogSource
 {
+    private static final int MAX_ISOMSG_NESTING_DEPTH = 32;
     /** Logger used to emit pack/unpack events. */
     protected Logger logger = null;
     /** Logging realm associated with this packager. */
@@ -201,6 +202,8 @@ public class XMLPackager extends DefaultHandler
     {
         try {
             if (name.equals (ISOMSG_TAG)) {
+                if (stk.size() >= MAX_ISOMSG_NESTING_DEPTH)
+                    throw new SAXException("Maximum isomsg nesting depth exceeded");
                 int fieldNumber = parseDecimalId(atts.getValue(ID_ATTR));
                 if (fieldNumber >= 0) {
                     if (stk.empty())
