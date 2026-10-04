@@ -33,6 +33,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -55,6 +57,7 @@ public class XMLPackager extends DefaultHandler
     protected String realm = null;
     private XMLReader reader;
     private Stack stk;
+    private final Map<ISOField, StringBuilder> fieldValues = new IdentityHashMap<>();
     private Lock parserLock = new ReentrantLock();
 
     /** XML element name used for ISO messages. */
@@ -168,6 +171,7 @@ public class XMLPackager extends DefaultHandler
 
             while (!stk.empty())    // purge from possible previous error
                 stk.pop();
+            fieldValues.clear();
 
             reader.parse (in);
             if (stk.empty())
@@ -190,7 +194,11 @@ public class XMLPackager extends DefaultHandler
         } catch (SAXException e) {
             evt.addMessage (e);
             throw new ISOException (e.toString());
+        } catch (RuntimeException e) {
+            evt.addMessage (e);
+            throw new ISOException (e.toString(), e);
         } finally {
+            fieldValues.clear();
             Logger.log (evt);
             parserLock.unlock();
         }
@@ -245,7 +253,10 @@ public class XMLPackager extends DefaultHandler
                     );
                 }
                 else {
-                    ic = new ISOField (fieldNumber, ISOUtil.stripUnicode(value));
+                    String normalizedValue = ISOUtil.stripUnicode(value);
+                    ISOField field = new ISOField (fieldNumber, normalizedValue);
+                    fieldValues.put(field, new StringBuilder(normalizedValue));
+                    ic = field;
                 }
                 m.set (ic);
                 stk.push (ic);
@@ -283,17 +294,9 @@ public class XMLPackager extends DefaultHandler
     public void characters (char ch[], int start, int length) {
         Object obj = stk.peek();
         if (obj instanceof ISOField) {
-            ISOField f = (ISOField) obj;
-            String value = f.getValue() + new String(ch, start, length);
-            try {
-                f.setValue(value);
-            } catch (ISOException e) {
-                try {
-                    f.setValue (e.getMessage());
-                } catch (ISOException ignored) {
-                    // giving up
-                }
-            }
+            StringBuilder value = fieldValues.get(obj);
+            if (value != null)
+                value.append(ch, start, length);
         }
         else if (obj instanceof BaseHeader) {
             BaseHeader bh = (BaseHeader) obj;
@@ -316,7 +319,17 @@ public class XMLPackager extends DefaultHandler
         } else if (DATASET_TAG.equals(name)) {
             stk.pop();
         } else if (ISOFIELD_TAG.equals (name)) {
-            stk.pop();
+            Object field = stk.pop();
+            if (field instanceof ISOField) {
+                StringBuilder value = fieldValues.remove(field);
+                if (value != null) {
+                    try {
+                        ((ISOField) field).setValue(value.toString());
+                    } catch (ISOException e) {
+                        throw new SAXException("ISOException unpacking XML field", e);
+                    }
+                }
+            }
         } else if (HEADER_TAG.equals (name)) {
             BaseHeader h = (BaseHeader) stk.pop();
             ISOMsg m = (ISOMsg) stk.peek ();

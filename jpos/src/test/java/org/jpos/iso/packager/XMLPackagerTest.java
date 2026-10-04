@@ -258,6 +258,43 @@ public class XMLPackagerTest {
     }
 
     @Test
+    public void testUnpackAccumulatesFieldText() throws ISOException {
+        String fieldText = "x".repeat(128 * 1024);
+        String input = "<isomsg><field id=\"1\" value=\"prefix-\">" + fieldText + "</field></isomsg>";
+
+        ISOMsg result = xMLPackager.createISOMsg();
+        xMLPackager.unpack(result, input.getBytes());
+
+        assertEquals("prefix-" + fieldText, result.getString(1));
+    }
+
+    @Test
+    public void testUnpackWrapsStructuralRuntimeExceptions() {
+        ISOException failure = assertThrows(
+          ISOException.class,
+          () -> xMLPackager.unpack(new ISOMsg(), "<field id=\"1\" value=\"orphan\"/>".getBytes())
+        );
+
+        assertTrue(failure.getNested() instanceof EmptyStackException);
+    }
+
+    @Test
+    public void testUnpackDoesNotWrapErrors() throws ISOException {
+        AssertionError fatal = new AssertionError("fatal");
+        XMLPackager packager = new XMLPackager() {
+            @Override
+            public void startElement(String ns, String name, String qName, Attributes atts) {
+                throw fatal;
+            }
+        };
+
+        assertSame(
+          fatal,
+          assertThrows(AssertionError.class, () -> packager.unpack(new ISOMsg(), "<isomsg/>".getBytes()))
+        );
+    }
+
+    @Test
     public void testUnpackStream() throws IOException, ISOException {
         String input = """
                 <isomsg>
