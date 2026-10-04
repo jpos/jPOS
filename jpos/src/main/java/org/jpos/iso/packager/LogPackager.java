@@ -25,6 +25,8 @@ import org.jpos.util.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -45,6 +47,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LogPackager extends DefaultHandler
                          implements ISOPackager, LogSource
 {
+    private static final int MAX_ISOMSG_NESTING_DEPTH = 32;
     /** Logger receiving pack/unpack diagnostic events. */
     protected Logger logger = null;
     /** Logger realm associated with this packager. */
@@ -52,7 +55,9 @@ public class LogPackager extends DefaultHandler
     private ByteArrayOutputStream out;
     private PrintStream p;
     private XMLReader reader = null;
-    private Stack stk;
+    private Stack<ISOMsg> stk;
+    private int isomsgDepth;
+    private boolean rootComplete;
 
     private Lock lock = new ReentrantLock();
 
@@ -82,17 +87,23 @@ public class LogPackager extends DefaultHandler
         super();
         out = new ByteArrayOutputStream();
         p   = new PrintStream(out);
-        stk = new Stack();
+        stk = new Stack<>();
         try {
-            reader = XMLReaderFactory.createXMLReader(
-                System.getProperty( "sax.parser",
-                                    "org.apache.crimson.parser.XMLReaderImpl")
-            );
-            reader.setFeature ("http://xml.org/sax/features/validation",false);
-            reader.setContentHandler(this);
-            reader.setErrorHandler(this);
+            reader = createXMLReader();
+            reader.setFeature("http://xml.org/sax/features/validation", false);
+            reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            try {
+                reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            } catch (SAXNotRecognizedException | SAXNotSupportedException ignored) {
+                // DOCTYPE declarations are rejected, so this additional control is optional.
+            }
+            reader.setEntityResolver((publicId, systemId) -> {
+                throw new SAXException("External entities are not allowed");
+            });
         } catch (Exception e) {
-            throw new ISOException (e.toString());
+            throw new ISOException(e);
         }
     }
     public byte[] pack (ISOComponent c) throws ISOException {
@@ -123,71 +134,45 @@ public class LogPackager extends DefaultHandler
     public int unpack (ISOComponent c, byte[] b)
         throws ISOException
     {
-        LogEvent evt = new LogEvent (this, "unpack");
-        lock.lock();
-        try {
-            if (!(c instanceof ISOMsg))
-                throw new ISOException 
-                    ("Can't call packager on non Composite");
-
-            while (!stk.empty())    // purge from possible previous error
-                stk.pop();
-
-            InputSource src = new InputSource (new ByteArrayInputStream(b));
-            reader.parse (src);
-            if (!stk.empty()) {
-                ISOMsg m = (ISOMsg) c;
-                m.merge ((ISOMsg) stk.pop());
-                if (logger != null)     
-                    evt.addMessage (m);
-            }
-        } catch (ISOException e) {
-            evt.addMessage (e);
-            // throw e;
-        } catch (IOException e) {
-            evt.addMessage (e);
-            // throw new ISOException (e.toString());
-        } catch (SAXException e) {
-            evt.addMessage (e);
-            // throw new ISOException (e.toString());
-        } finally {
-            Logger.log (evt);
-            lock.unlock();
-        }
+        unpack(c, new InputSource(new ByteArrayInputStream(b)));
         return b.length;
     }
 
     public void unpack (ISOComponent c, InputStream in)
         throws ISOException, IOException
     {
+        unpack(c, new InputSource(in));
+    }
+
+    private void unpack (ISOComponent c, InputSource in) throws ISOException {
         LogEvent evt = new LogEvent (this, "unpack");
         lock.lock();
         try {
-            if (!(c instanceof ISOMsg))
-                throw new ISOException 
-                    ("Can't call packager on non Composite");
+            if (!(c instanceof ISOMsg m))
+                throw new ISOException("Can't call packager on non Composite");
 
-            while (!stk.empty())    // purge from possible previous error
-                stk.pop();
+            stk.clear();
+            isomsgDepth = 0;
+            rootComplete = false;
 
-            reader.parse (new InputSource (in));
-            if (!stk.empty()) {
-                ISOMsg m = (ISOMsg) c;
-                m.merge ((ISOMsg) stk.pop());
-                if (logger != null)     
-                    evt.addMessage (m);
-            }
+            reader.parse(in);
+            if (!rootComplete || stk.size() != 1)
+                throw new ISOException("error parsing log message");
+
+            m.merge(stk.pop());
+            if (logger != null)
+                evt.addMessage(m);
         } catch (ISOException e) {
-            evt.addMessage (e);
-            // throw e;
-        } catch (IOException e) {
-            evt.addMessage (e);
-            // throw new ISOException (e.toString());
-        } catch (SAXException e) {
-            evt.addMessage (e);
-            // throw new ISOException (e.toString());
+            evt.addMessage(e);
+            throw e;
+        } catch (IOException | SAXException | RuntimeException e) {
+            evt.addMessage(e);
+            throw new ISOException(e);
         } finally {
-            Logger.log (evt);
+            stk.clear();
+            isomsgDepth = 0;
+            rootComplete = false;
+            Logger.log(evt);
             lock.unlock();
         }
     }
@@ -198,25 +183,41 @@ public class LogPackager extends DefaultHandler
     {
         int fieldNumber = -1;
         try {
+            String elementName = name == null || name.isEmpty() ? qName : name;
+            boolean isMessage = ISOMSG_TAG.equals(elementName);
+            boolean isField = ISOFIELD_TAG.equals(elementName);
             String id       = atts.getValue(ID_ATTR);
-            if (id != null) {
+            if ((isMessage || isField) && id != null) {
                 try {
                     fieldNumber = Integer.parseInt (id);
-                } catch (NumberFormatException ex) { }
+                } catch (NumberFormatException ex) {
+                    throw new SAXException("invalid field id", ex);
+                }
             }
-            if (name.equals (ISOMSG_TAG)) {
-                if (fieldNumber >= 0) {
+            if (isMessage) {
+                if (isomsgDepth >= MAX_ISOMSG_NESTING_DEPTH)
+                    throw new SAXException("Maximum isomsg nesting depth exceeded");
+                if (isomsgDepth == 0) {
+                    if (fieldNumber >= 0)
+                        throw new SAXException("inner without outer");
+                    if (rootComplete || !stk.empty())
+                        throw new SAXException("multiple outer messages");
+                    stk.push(new ISOMsg(0));
+                } else {
+                    if (fieldNumber < 0)
+                        throw new SAXException("inner message without id");
                     if (stk.empty())
-                        throw new SAXException ("inner without outter");
+                        throw new SAXException("inner without outer");
 
                     ISOMsg inner = new ISOMsg(fieldNumber);
-                    ((ISOMsg)stk.peek()).set (inner);
-                    stk.push (inner);
-                } else {
-                    stk.push (new ISOMsg(0));
+                    stk.peek().set(inner);
+                    stk.push(inner);
                 }
-            } else if (name.equals (ISOFIELD_TAG)) {
-                ISOMsg m     = (ISOMsg) stk.peek();
+                isomsgDepth++;
+            } else if (isField) {
+                if (isomsgDepth == 0 || stk.empty())
+                    throw new SAXException("field without isomsg");
+                ISOMsg m     = stk.peek();
                 String value = atts.getValue(VALUE_ATTR);
                 String type  = atts.getValue(TYPE_ATTR);
                 if (id == null || value == null)
@@ -235,19 +236,51 @@ public class LogPackager extends DefaultHandler
                 }
             }
         } catch (ISOException e) {
-            throw new SAXException 
-                ("ISOException unpacking "+fieldNumber);
+            throw new SAXException("ISOException unpacking " + fieldNumber, e);
         }
     }
 
     public void endElement (String ns, String name, String qname) 
         throws SAXException
     {
-        if (name.equals (ISOMSG_TAG)) {
-            ISOMsg m = (ISOMsg) stk.pop();
-            if (stk.empty())
-                stk.push (m); // push outter message
+        String elementName = name == null || name.isEmpty() ? qname : name;
+        if (ISOMSG_TAG.equals(elementName)) {
+            if (isomsgDepth == 0 || stk.empty())
+                throw new SAXException("isomsg close without open");
+            ISOMsg m = stk.pop();
+            isomsgDepth--;
+            if (isomsgDepth == 0) {
+                if (!stk.empty())
+                    throw new SAXException("invalid isomsg structure");
+                stk.push(m); // retain outer message until parsing completes
+                rootComplete = true;
+            }
         }
+    }
+
+    private XMLReader createXMLReader() throws SAXException {
+        String parserClass = System.getProperty("sax.parser");
+        if (parserClass != null && !parserClass.isBlank()) {
+            XMLReader configuredReader = XMLReaderFactory.createXMLReader(parserClass);
+            configuredReader.setContentHandler(this);
+            configuredReader.setErrorHandler(this);
+            return configuredReader;
+        }
+
+        XMLReader xmlReader;
+        try {
+            xmlReader = XMLReaderFactory.createXMLReader();
+        } catch (SAXException e) {
+            xmlReader = XMLReaderFactory.createXMLReader(
+                System.getProperty(
+                    "org.xml.sax.driver",
+                    "org.apache.crimson.parser.XMLReaderImpl"
+                )
+            );
+        }
+        xmlReader.setContentHandler(this);
+        xmlReader.setErrorHandler(this);
+        return xmlReader;
     }
 
     public String getFieldDescription(ISOComponent m, int fldNumber) {
@@ -270,4 +303,3 @@ public class LogPackager extends DefaultHandler
         return new ISOMsg();
     }
 }
-
