@@ -35,8 +35,77 @@ import org.jpos.iso.channel.CSChannel;
 import org.jpos.iso.channel.LogChannel;
 import org.jpos.iso.channel.PostChannel;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Properties;
 
 public class BSHRequestListenerTest {
+
+    @TempDir
+    Path tempDir;
+
+    @Test
+    public void testMtiMacroRejectsParentTraversal() throws Throwable {
+        Path scripts = Files.createDirectory(tempDir.resolve("scripts"));
+        Files.writeString(tempDir.resolve("outside.bsh"), "return true;");
+        Properties props = new Properties();
+        props.setProperty("source", scripts.resolve("$mti.bsh").toString());
+
+        BSHRequestListener listener = new BSHRequestListener();
+        listener.setConfiguration(new SimpleConfiguration(props));
+
+        assertFalse(listener.process(new PostChannel(), new ISOMsg("../outside")));
+    }
+
+    @Test
+    public void testMtiMacroRejectsUnsafePathSelectors() throws Throwable {
+        Path script = tempDir.resolve("outside.bsh");
+        Files.writeString(script, "return true;");
+        Properties props = new Properties();
+        props.setProperty("source", "$mti");
+
+        BSHRequestListener listener = new BSHRequestListener();
+        listener.setConfiguration(new SimpleConfiguration(props));
+
+        String[] unsafeMti = {
+            script.toAbsolutePath().toString(),
+            "nested/outside.bsh",
+            "nested\\outside.bsh",
+            "C:\\outside.bsh",
+            ".",
+            ".."
+        };
+        for (String mti : unsafeMti)
+            assertFalse(listener.process(new PostChannel(), new ISOMsg(mti)), mti);
+    }
+
+    @Test
+    public void testMtiMacroAcceptsValidFilenameComponent() throws Throwable {
+        Path scripts = Files.createDirectory(tempDir.resolve("scripts"));
+        Files.writeString(scripts.resolve("custom-MTI_1.bsh"), "return true;");
+        Properties props = new Properties();
+        props.setProperty("source", scripts.resolve("$mti.bsh").toString());
+
+        BSHRequestListener listener = new BSHRequestListener();
+        listener.setConfiguration(new SimpleConfiguration(props));
+
+        assertTrue(listener.process(new PostChannel(), new ISOMsg("custom-MTI_1")));
+    }
+
+    @Test
+    public void testUnsafeMtiDoesNotBlockFixedScript() throws Throwable {
+        Path script = tempDir.resolve("fixed.bsh");
+        Files.writeString(script, "return true;");
+        Properties props = new Properties();
+        props.setProperty("source", script.toString());
+
+        BSHRequestListener listener = new BSHRequestListener();
+        listener.setConfiguration(new SimpleConfiguration(props));
+
+        assertTrue(listener.process(new PostChannel(), new ISOMsg("../outside")));
+    }
 
     @Test
     public void testConstructor() throws Throwable {

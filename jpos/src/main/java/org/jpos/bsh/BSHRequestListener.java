@@ -84,6 +84,8 @@ public class BSHRequestListener extends Log
                     String script;
 
                     if (idx >= 0) {
+                        if (!isSafeScriptSelector(mti))
+                            throw new IllegalArgumentException("Invalid MTI for BeanShell script selection");
                         // replace $mti with the actual value in script file name
                         script = aBshSource.substring(0, idx) + mti +
                                 aBshSource.substring(idx + MTI_MACRO.length());
@@ -110,5 +112,15 @@ public class BSHRequestListener extends Log
         //if we reached this far none of the sources handled the request.
         return false;
     }
-}
 
+    private boolean isSafeScriptSelector(String mti) {
+        if (mti == null || mti.isEmpty() || ".".equals(mti) || "..".equals(mti))
+            return false;
+        for (int i = 0; i < mti.length(); i++) {
+            char c = mti.charAt(i);
+            if (c == '/' || c == '\\' || c == ':' || Character.isISOControl(c))
+                return false;
+        }
+        return true;
+    }
+}
