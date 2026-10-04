@@ -23,8 +23,13 @@ import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 import org.jpos.core.Configuration;
@@ -32,6 +37,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.util.Logger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class SimpleKeyFileTest {
 
@@ -167,6 +173,56 @@ public class SimpleKeyFileTest {
     }
 
     @Test
+    public void testGetKeyRejectsUnsupportedClassWithoutInitializingOrConstructing(@TempDir Path tempDir)
+            throws Exception {
+        String initializedProperty = "SimpleKeyFileTest.UnsupportedKey.initialized";
+        String constructedProperty = "SimpleKeyFileTest.UnsupportedKey.constructed";
+        System.clearProperty(initializedProperty);
+        System.clearProperty(constructedProperty);
+        Path keyFile = createKeyFile(tempDir, UnsupportedKey.class);
+
+        try {
+            SimpleKeyFile simpleKeyFile = new SimpleKeyFile(keyFile.toString());
+
+            SecureKeyStore.SecureKeyStoreException exception = assertThrows(
+              SecureKeyStore.SecureKeyStoreException.class,
+              () -> simpleKeyFile.getKey("test")
+            );
+
+            assertEquals("Unsupported SecureKey class: " + UnsupportedKey.class.getName(),
+              exception.getMessage());
+            assertNull(System.getProperty(initializedProperty));
+            assertNull(System.getProperty(constructedProperty));
+        } finally {
+            System.clearProperty(initializedProperty);
+            System.clearProperty(constructedProperty);
+        }
+    }
+
+    @Test
+    public void testGetKeyAcceptsLegacySubclassNameWithoutInitializingOrConstructing(@TempDir Path tempDir)
+            throws Exception {
+        String initializedProperty = "SimpleKeyFileTest.LegacySecureDESKey.initialized";
+        String constructedProperty = "SimpleKeyFileTest.LegacySecureDESKey.constructed";
+        System.clearProperty(initializedProperty);
+        System.clearProperty(constructedProperty);
+        Path keyFile = createKeyFile(tempDir, LegacySecureDESKey.class);
+
+        try {
+            SecureKey key = new SimpleKeyFile(keyFile.toString()).getKey("test");
+
+            assertEquals(SecureDESKey.class, key.getClass());
+            assertEquals(64, key.getKeyLength());
+            assertEquals("ZPK", key.getKeyType());
+            assertNull(System.getProperty(initializedProperty));
+            assertNull(System.getProperty(constructedProperty));
+        } finally {
+            System.clearProperty(initializedProperty);
+            System.clearProperty(constructedProperty);
+        }
+    }
+
+    @Test
     public void testSetLogger() throws Throwable {
         Logger logger = Logger.getLogger("testSimpleKeyFileName");
         SimpleKeyFile simpleKeyFile = new SimpleKeyFile();
@@ -211,6 +267,40 @@ public class SimpleKeyFileTest {
                 assertEquals("Cannot invoke \"java.io.File.canWrite()\" because \"this.file\" is null", ex.getNested().getMessage(), "ex.getNested().getMessage()");
             }
             assertNull(simpleKeyFile.file, "simpleKeyFile.file");
+        }
+    }
+
+    private Path createKeyFile(Path tempDir, Class<?> keyClass) throws IOException {
+        Properties properties = new Properties();
+        properties.setProperty("test.class", keyClass.getName());
+        properties.setProperty("test.key", "0011223344556677");
+        properties.setProperty("test.length", "64");
+        properties.setProperty("test.type", "ZPK");
+        properties.setProperty("test.checkvalue", "000000");
+        Path keyFile = tempDir.resolve("keys");
+        try (OutputStream out = Files.newOutputStream(keyFile)) {
+            properties.store(out, "test");
+        }
+        return keyFile;
+    }
+
+    public static class UnsupportedKey {
+        static {
+            System.setProperty("SimpleKeyFileTest.UnsupportedKey.initialized", "true");
+        }
+
+        public UnsupportedKey() {
+            System.setProperty("SimpleKeyFileTest.UnsupportedKey.constructed", "true");
+        }
+    }
+
+    public static class LegacySecureDESKey extends SecureDESKey {
+        static {
+            System.setProperty("SimpleKeyFileTest.LegacySecureDESKey.initialized", "true");
+        }
+
+        public LegacySecureDESKey() {
+            System.setProperty("SimpleKeyFileTest.LegacySecureDESKey.constructed", "true");
         }
     }
 }

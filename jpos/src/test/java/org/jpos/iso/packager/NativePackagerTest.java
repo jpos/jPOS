@@ -24,9 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.jpos.core.ConfigurationException;
@@ -170,6 +172,26 @@ public class NativePackagerTest {
         assertThrows(ConfigurationException.class, () -> p.setConfiguration(cfg));
     }
 
+    @Test
+    public void testPackagerMetadataIsRejectedByDefault() throws Exception {
+        byte[] packed = packWithPackagerMetadata();
+
+        assertThrows(ISOException.class, () -> unpack(packed));
+    }
+
+    @Test
+    public void testPackagerMetadataCompatibilityOptIn() throws Exception {
+        byte[] packed = packWithPackagerMetadata();
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("allow-packager-metadata", "true");
+        p.setConfiguration(cfg);
+
+        ISOMsg result = unpack(packed);
+
+        assertEquals(ISO87APackager.class, result.getPackager().getClass());
+        assertEquals("0800", result.getMTI());
+    }
+
     private ISOMsg unpack(byte[] image) throws ISOException {
         ISOMsg result = new ISOMsg();
         result.setPackager(p);
@@ -181,6 +203,16 @@ public class NativePackagerTest {
         ObjectPayloadISOMsg message = new ObjectPayloadISOMsg(value);
         message.setPackager(p);
         return message.pack();
+    }
+
+    private byte[] packWithPackagerMetadata() throws Exception {
+        ISOMsg message = new ISOMsg("0800");
+        message.setPackager(new ISO87APackager());
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+            message.writeExternal(out);
+        }
+        return bytes.toByteArray();
     }
 
     private SimpleConfiguration configuration(String name, long value) {

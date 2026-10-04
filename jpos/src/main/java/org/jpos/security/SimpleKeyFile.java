@@ -125,11 +125,13 @@ public class SimpleKeyFile
         try {
             load();
             String keyClassName = getProperty(alias, "class");
-            Class c = Class.forName(keyClassName);
-            secureKey = (SecureKey)c.newInstance();
-            if (!(secureKey instanceof SecureDESKey))
+            try {
+                Class.forName(keyClassName, false, SimpleKeyFile.class.getClassLoader())
+                  .asSubclass(SecureDESKey.class);
+            } catch (ClassCastException e) {
                 throw  new SecureKeyStoreException("Unsupported SecureKey class: " +
-                        secureKey.getClass().getName());
+                        keyClassName);
+            }
             byte[] keyBytes = ISOUtil.hex2byte(getProperty(alias, "key"));
             short keyLength = Short.parseShort(getProperty(alias, "length"));
             String keyType = getProperty(alias, "type");

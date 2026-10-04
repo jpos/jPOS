@@ -35,14 +35,17 @@ public class NativePackager implements ISOPackager, Configurable {
         new Serializer.DeserializationLimits(32, 50_000, 1_000_000, 16L * 1024 * 1024);
 
     private Serializer.DeserializationLimits deserializationLimits = DEFAULT_DESERIALIZATION_LIMITS;
+    private boolean allowPackagerMetadata;
 
     /** Default constructor using the standard native deserialization limits. */
     public NativePackager() {}
 
     /**
-     * Configures the resource limits applied while unpacking native messages.
+     * Configures the resource limits and legacy packager-metadata policy applied
+     * while unpacking native messages.
      *
-     * @param cfg configuration containing optional deserialization limit properties
+     * @param cfg configuration containing optional deserialization limits and the
+     *            {@code allow-packager-metadata} compatibility flag (default false)
      * @throws ConfigurationException if a configured limit is not a positive integer
      */
     @Override
@@ -58,6 +61,7 @@ public class NativePackager implements ISOPackager, Configurable {
               || limits.maxArrayLength() == 0 || limits.maxStreamBytes() == 0)
                 throw new IllegalArgumentException("Deserialization limits must be positive");
             deserializationLimits = limits;
+            allowPackagerMetadata = cfg.getBoolean("allow-packager-metadata", false);
         } catch (IllegalArgumentException e) {
             throw new ConfigurationException("Invalid NativePackager deserialization limits", e);
         }
@@ -106,7 +110,7 @@ public class NativePackager implements ISOPackager, Configurable {
                 ObjectInputStream is = Serializer.createLimitedAllowListObjectInputStream(
                     in, deserializationLimits, "org.jpos.iso."
                 );
-                ((Externalizable) m).readExternal(is);
+                ISOMsg.readExternal((Externalizable) m, is, allowPackagerMetadata);
             }
         } catch (Exception e) {
             throw new ISOException (e);

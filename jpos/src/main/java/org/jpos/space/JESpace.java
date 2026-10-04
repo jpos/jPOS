@@ -86,6 +86,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
     /** Future handle for the scheduled GC task. */
     private Future gcTask;
     private final Serializer.DeserializationLimits serialLimits;
+    private final boolean allowPackagerMetadata;
 
     /** Registry mapping space names to their JESpace instances. */
     static final Map<String,Space> spaceRegistrar = 
@@ -111,6 +112,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
                 getPositiveParam("serial.max-array-length", p, DEFAULT_SERIAL_LIMITS.maxArrayLength()),
                 getPositiveParam("serial.max-bytes", p, DEFAULT_SERIAL_LIMITS.maxStreamBytes())
             );
+            allowPackagerMetadata = getBooleanParam("serial.allow-packager-metadata", p, false);
             envConfig.setAllowCreate (true);
             envConfig.setTransactional(true);
             envConfig.setLockTimeout(getParam("lock.timeout", p, DEFAULT_LOCK_TIMEOUT), TimeUnit.MILLISECONDS);
@@ -397,7 +399,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
             cursor = sIndex.subIndex(key.toString()).entities(txn, null);
             for (Ref ref : cursor) {
                 if (ref.isActive()) {
-                    Object value = ref.getValue(serialLimits);
+                    Object value = ref.getValue(serialLimits, allowPackagerMetadata);
                     if (tmpl != null && !tmpl.equals (value))
                         continue;
                     if (remove) {
@@ -605,11 +607,11 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
          * @return the stored value
          */
         public Object getValue () {
-            return deserialize(value, DEFAULT_SERIAL_LIMITS);
+            return deserialize(value, DEFAULT_SERIAL_LIMITS, false);
         }
 
-        private Object getValue (Serializer.DeserializationLimits limits) {
-            return deserialize(value, limits);
+        private Object getValue (Serializer.DeserializationLimits limits, boolean allowPackagerMetadata) {
+            return deserialize(value, limits, allowPackagerMetadata);
         }
 
         /**
@@ -650,14 +652,20 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
             }
             return obj;
         }
-        private Object deserialize (Object obj, Serializer.DeserializationLimits limits) {
+        private Object deserialize (
+          Object obj, Serializer.DeserializationLimits limits, boolean allowPackagerMetadata
+        ) {
             Class cls = obj.getClass();
             if (isPersistent (cls))
                 return obj;
 
             try {
                 // Berkeley JE has already materialized this byte[]; this limits Java deserialization.
-                return Serializer.deserializeWithLimits((byte[]) obj, limits);
+                return allowPackagerMetadata
+                  ? Serializer.deserializeWithLimitsAndAllowList(
+                      (byte[]) obj, limits, "org.jpos.iso.packager."
+                    )
+                  : Serializer.deserializeWithLimits((byte[]) obj, limits);
             } catch (Exception e) {
                 throw new SpaceError (e);
             }
@@ -733,6 +741,23 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, PersistentSpac
             }
             if (name.equals(s.trim()))
                 throw new IllegalArgumentException(name + " must have a positive value");
+        }
+        return defaultValue;
+    }
+
+    private boolean getBooleanParam (String name, String[] params, boolean defaultValue) {
+        for (String s : params) {
+            int pos = s.indexOf('=');
+            if (pos >= 0 && name.equals(s.substring(0, pos).trim())) {
+                String value = s.substring(pos + 1).trim();
+                if ("true".equalsIgnoreCase(value))
+                    return true;
+                if ("false".equalsIgnoreCase(value))
+                    return false;
+                throw new IllegalArgumentException(name + " must be true or false");
+            }
+            if (name.equals(s.trim()))
+                throw new IllegalArgumentException(name + " must have a boolean value");
         }
         return defaultValue;
     }

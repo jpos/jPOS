@@ -74,6 +74,7 @@ public class ISOMsg extends ISOComponent
     private static class ExternalReadContext {
         private int entries;
         private int depth;
+        private Boolean allowPackagerMetadata;
     }
 
     /**
@@ -1393,6 +1394,7 @@ public class ISOMsg extends ISOComponent
             throw new InvalidClassException("Invalid ISOPackager class name length: " + classNameLength);
         byte[] b = new byte[classNameLength];
         in.readFully(b);
+        checkPackagerMetadataPolicy(in);
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             Class<?> packagerClass = Class.forName(
@@ -1401,7 +1403,7 @@ public class ISOMsg extends ISOComponent
             );
             if (!ISOPackager.class.isAssignableFrom(packagerClass))
                 throw new InvalidClassException(packagerClass.getName(), "Class does not implement ISOPackager");
-            checkObjectInputFilter(in, packagerClass);
+            checkPackagerClass(in, packagerClass);
             setPackager((ISOPackager) packagerClass.getDeclaredConstructor().newInstance());
         } catch (InvalidClassException e) {
             throw e;
@@ -1412,7 +1414,17 @@ public class ISOMsg extends ISOComponent
         }
     }
 
-    private void checkObjectInputFilter(ObjectInput in, Class<?> clazz) throws InvalidClassException {
+    private void checkPackagerMetadataPolicy(ObjectInput in) throws InvalidClassException {
+        ExternalReadContext context = EXTERNAL_READ_CONTEXT.get();
+        Boolean allowed = context != null ? context.allowPackagerMetadata : null;
+        if (Boolean.FALSE.equals(allowed))
+            throw new InvalidClassException("ISOPackager metadata deserialization is disabled");
+        if (allowed == null && (!(in instanceof ObjectInputStream objectInputStream)
+          || objectInputStream.getObjectInputFilter() == null))
+            throw new InvalidClassException("ISOPackager metadata deserialization requires an explicit allow filter");
+    }
+
+    private void checkPackagerClass(ObjectInput in, Class<?> clazz) throws InvalidClassException {
         if (in instanceof ObjectInputStream objectInputStream) {
             ObjectInputFilter filter = objectInputStream.getObjectInputFilter();
             if (filter != null) {
@@ -1423,9 +1435,48 @@ public class ISOMsg extends ISOComponent
                     public long references() { return 1; }
                     public long streamBytes() { return -1; }
                 });
-                if (status == ObjectInputFilter.Status.REJECTED)
+                ExternalReadContext context = EXTERNAL_READ_CONTEXT.get();
+                Boolean allowed = context != null ? context.allowPackagerMetadata : null;
+                if (status == ObjectInputFilter.Status.REJECTED
+                  || (allowed == null && status != ObjectInputFilter.Status.ALLOWED))
                     throw new InvalidClassException(clazz.getName(), "Rejected by deserialization filter");
             }
+        }
+    }
+
+    /**
+     * Reads an externalizable value while applying a policy to legacy ISOMsg
+     * packager metadata. This method is intended for deserialization boundaries
+     * that need to opt in explicitly for compatibility with streams containing
+     * {@code P} records.
+     *
+     * @param value the value to read
+     * @param in the input containing the external form
+     * @param allowPackagerMetadata whether legacy packager metadata is allowed
+     * @throws IOException on read error
+     * @throws ClassNotFoundException if a referenced class cannot be found
+     */
+    public static void readExternal(
+      Externalizable value, ObjectInput in, boolean allowPackagerMetadata
+    ) throws IOException, ClassNotFoundException {
+        if (!(value instanceof ISOMsg)) {
+            value.readExternal(in);
+            return;
+        }
+        ExternalReadContext context = EXTERNAL_READ_CONTEXT.get();
+        boolean owner = context == null;
+        if (owner) {
+            context = new ExternalReadContext();
+            EXTERNAL_READ_CONTEXT.set(context);
+        }
+        Boolean previous = context.allowPackagerMetadata;
+        context.allowPackagerMetadata = allowPackagerMetadata;
+        try {
+            value.readExternal(in);
+        } finally {
+            context.allowPackagerMetadata = previous;
+            if (owner)
+                EXTERNAL_READ_CONTEXT.remove();
         }
     }
     /**

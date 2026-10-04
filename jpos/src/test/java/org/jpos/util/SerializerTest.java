@@ -146,6 +146,33 @@ public class SerializerTest {
     }
 
     @Test
+    public void testAllowListDistinguishesExactClassesFromPackagePrefixes() throws Exception {
+        byte[] serialized = Serializer.serialize(new AllowedValueSuffix());
+        Serializer.DeserializationLimits limits = limits(10, 20, 10, serialized.length);
+
+        assertThrows(IOException.class, () -> {
+            try (ObjectInputStream in = Serializer.createLimitedAllowListObjectInputStream(
+              new ByteArrayInputStream(serialized), limits, AllowedValue.class.getName()
+            )) {
+                in.readObject();
+            }
+        });
+        try (ObjectInputStream in = Serializer.createLimitedAllowListObjectInputStream(
+          new ByteArrayInputStream(serialized), limits, SerializerTest.class.getPackageName() + "."
+        )) {
+            assertNotNull(in.readObject());
+        }
+    }
+
+    @Test
+    public void testAllowListRejectsEmptyEntry() {
+        assertThrows(
+          IllegalArgumentException.class,
+          () -> Serializer.createAllowListObjectInputStream(new ByteArrayInputStream(new byte[0]), "")
+        );
+    }
+
+    @Test
     public void testSafeFilterChecksRejectedArrayComponentType() throws Exception {
         byte[] serialized = Serializer.serialize(new javax.management.BadAttributeValueExpException[0]);
 
@@ -184,6 +211,10 @@ public class SerializerTest {
     }
 
     private static class AllowedValue implements Serializable {
+        private static final long serialVersionUID = 1L;
+    }
+
+    private static class AllowedValueSuffix extends AllowedValue {
         private static final long serialVersionUID = 1L;
     }
 

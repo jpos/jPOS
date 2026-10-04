@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.packager.ISO87APackager;
 import org.jpos.transaction.Context;
 import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
@@ -273,6 +274,43 @@ public class JESpaceTestCase {
         } finally {
             expanded.close();
         }
+    }
+
+    @Test
+    public void testPackagerMetadataRequiresExplicitOptIn(@TempDir Path spaceDir) throws Exception {
+        String name = "packager-metadata";
+        ISOMsg message = new ISOMsg("0800");
+        message.setPackager(new ISO87APackager());
+        JESpace<String,Object> restricted = new JESpace<>(name, spaceDir.toString());
+        try {
+            restricted.out("MESSAGE", message);
+            assertThrows(SpaceError.class, () -> restricted.rdp("MESSAGE"));
+        } finally {
+            restricted.close();
+        }
+
+        JESpace<String,Object> compatible = new JESpace<>(
+            name, ISOUtil.commaEncode(spaceDir.toString(), "serial.allow-packager-metadata=true")
+        );
+        try {
+            ISOMsg restored = (ISOMsg) compatible.rdp("MESSAGE");
+            assertEquals("0800", restored.getMTI());
+            assertEquals(ISO87APackager.class, restored.getPackager().getClass());
+        } finally {
+            compatible.close();
+        }
+    }
+
+    @Test
+    public void testRejectsInvalidPackagerMetadataPolicy(@TempDir Path spaceDir) {
+        String params = ISOUtil.commaEncode(
+          spaceDir.toString(), "serial.allow-packager-metadata=perhaps"
+        );
+
+        SpaceError failure = assertThrows(
+          SpaceError.class, () -> new JESpace<>("invalid-packager-policy", params)
+        );
+        assertTrue(failure.getCause() instanceof IllegalArgumentException);
     }
 
     @Test

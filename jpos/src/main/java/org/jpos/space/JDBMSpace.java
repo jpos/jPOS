@@ -36,6 +36,12 @@ import java.util.*;
 
 /**
  * JDBM based persistent space implementation
+ * <p>
+ * JDBM 1.0 uses native Java serialization internally and does not expose a
+ * per-space deserialization filter. The backing files therefore form a trusted
+ * boundary and must not be writable or replaceable by untrusted users. A JVM-wide
+ * {@code jdk.serialFilter} can provide additional defense, but may affect other
+ * serialization users in the same process.
  *
  * @param <K> key type stored in this space
  * @param <V> value type stored in this space

@@ -111,6 +111,24 @@ public class Serializer {
     public static ObjectInputStream createSafeObjectInputStream(InputStream in, DeserializationLimits limits)
       throws IOException
     {
+        return createSafeObjectInputStreamWithAllowList(in, limits);
+    }
+
+    /**
+     * Creates a safe ObjectInputStream that can explicitly allow selected
+     * classes or package prefixes after applying the standard reject list.
+     * Package prefixes must end in a dot; other entries are exact class names.
+     *
+     * @param in the underlying input stream
+     * @param limits resource limits to enforce
+     * @param allowedClasses exact class names or dot-terminated package prefixes
+     * @return a filtered ObjectInputStream
+     * @throws IOException if an I/O error occurs
+     */
+    public static ObjectInputStream createSafeObjectInputStreamWithAllowList(
+      InputStream in, DeserializationLimits limits, String... allowedClasses
+    ) throws IOException {
+        String[] allowed = validateAllowList(allowedClasses);
         ObjectInputStream ois = createObjectInputStream(in, limits);
         ois.setObjectInputFilter(filterInfo -> {
             ObjectInputFilter.Status status = checkLimits(filterInfo, limits);
@@ -126,6 +144,8 @@ public class Serializer {
                     if (name.startsWith(pkg))
                         return ObjectInputFilter.Status.REJECTED;
                 }
+                if (isAllowed(name, allowed))
+                    return ObjectInputFilter.Status.ALLOWED;
             }
             return ObjectInputFilter.Status.UNDECIDED;
         });
@@ -158,10 +178,7 @@ public class Serializer {
     public static ObjectInputStream createLimitedAllowListObjectInputStream(
       InputStream in, DeserializationLimits limits, String... allowedPackages
     ) throws IOException {
-        Objects.requireNonNull(allowedPackages, "allowedPackages");
-        String[] packages = allowedPackages.clone();
-        for (String pkg : packages)
-            Objects.requireNonNull(pkg, "allowedPackages must not contain null");
+        String[] packages = validateAllowList(allowedPackages);
 
         ObjectInputStream ois = createObjectInputStream(in, limits);
         ois.setObjectInputFilter(filterInfo -> {
@@ -180,10 +197,8 @@ public class Serializer {
             if (name.startsWith("java.lang.") || name.startsWith("java.util.") || name.startsWith("java.math."))
                 return ObjectInputFilter.Status.ALLOWED;
 
-            for (String pkg : packages) {
-                if (name.startsWith(pkg))
-                    return ObjectInputFilter.Status.ALLOWED;
-            }
+            if (isAllowed(name, packages))
+                return ObjectInputFilter.Status.ALLOWED;
             return ObjectInputFilter.Status.REJECTED;
         });
         return ois;
@@ -229,6 +244,26 @@ public class Serializer {
         checkInputLength(b, limits);
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
         ObjectInputStream is = createSafeObjectInputStream(bais, limits);
+        return is.readObject();
+    }
+
+    /**
+     * Deserializes a byte array with resource limits and explicit class or
+     * package allowances in addition to the standard safe filter.
+     *
+     * @param b serialized bytes
+     * @param limits resource limits to enforce
+     * @param allowedClasses exact class names or dot-terminated package prefixes
+     * @return the deserialized object
+     * @throws IOException if reading fails
+     * @throws ClassNotFoundException if a referenced class cannot be loaded
+     */
+    public static Object deserializeWithLimitsAndAllowList(
+      byte[] b, DeserializationLimits limits, String... allowedClasses
+    ) throws IOException, ClassNotFoundException {
+        checkInputLength(b, limits);
+        ByteArrayInputStream bais = new ByteArrayInputStream(b);
+        ObjectInputStream is = createSafeObjectInputStreamWithAllowList(bais, limits, allowedClasses);
         return is.readObject();
     }
     /**
@@ -354,6 +389,25 @@ public class Serializer {
         while (clazz != null && clazz.isArray())
             clazz = clazz.getComponentType();
         return clazz;
+    }
+
+    private static String[] validateAllowList(String[] allowedClasses) {
+        Objects.requireNonNull(allowedClasses, "allowedClasses");
+        String[] allowed = allowedClasses.clone();
+        for (String entry : allowed) {
+            Objects.requireNonNull(entry, "allowedClasses must not contain null");
+            if (entry.isEmpty())
+                throw new IllegalArgumentException("allowedClasses must not contain an empty entry");
+        }
+        return allowed;
+    }
+
+    private static boolean isAllowed(String className, String[] allowedClasses) {
+        for (String entry : allowedClasses) {
+            if (entry.endsWith(".") ? className.startsWith(entry) : className.equals(entry))
+                return true;
+        }
+        return false;
     }
 
     /** Stops at the limit without probing for, or consuming, one additional byte. */

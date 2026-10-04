@@ -1177,9 +1177,64 @@ public class ISOMsg2Test {
     public void testReadPackagerRejectsNonPackagerBeforeConstruction() throws Exception {
         ConstructibleButNotPackager.constructorCalls = 0;
         ObjectInputStream in = packagerClassInput(ConstructibleButNotPackager.class);
+        in.setObjectInputFilter(info -> info.serialClass() == ConstructibleButNotPackager.class
+          ? ObjectInputFilter.Status.ALLOWED : ObjectInputFilter.Status.UNDECIDED);
 
         assertThrows(InvalidClassException.class, () -> new ISOMsg().readPackager(in));
         assertEquals(0, ConstructibleButNotPackager.constructorCalls);
+    }
+
+    @Test
+    public void testReadPackagerRequiresExplicitAllowFilter() throws Exception {
+        FilteredPackager.constructorCalls = 0;
+        ObjectInputStream in = packagerClassInput(FilteredPackager.class);
+
+        assertThrows(InvalidClassException.class, () -> new ISOMsg().readPackager(in));
+        assertEquals(0, FilteredPackager.constructorCalls);
+    }
+
+    @Test
+    public void testReadPackagerRejectsUndecidedFilter() throws Exception {
+        FilteredPackager.constructorCalls = 0;
+        ObjectInputStream in = packagerClassInput(FilteredPackager.class);
+        in.setObjectInputFilter(info -> ObjectInputFilter.Status.UNDECIDED);
+
+        assertThrows(InvalidClassException.class, () -> new ISOMsg().readPackager(in));
+        assertEquals(0, FilteredPackager.constructorCalls);
+    }
+
+    @Test
+    public void testReadPackagerAcceptsExplicitAllowFilter() throws Exception {
+        FilteredPackager.constructorCalls = 0;
+        ObjectInputStream in = packagerClassInput(FilteredPackager.class);
+        in.setObjectInputFilter(info -> info.serialClass() == FilteredPackager.class
+          ? ObjectInputFilter.Status.ALLOWED : ObjectInputFilter.Status.UNDECIDED);
+
+        ISOMsg msg = new ISOMsg();
+        msg.readPackager(in);
+
+        assertEquals(1, FilteredPackager.constructorCalls);
+        assertEquals(FilteredPackager.class, msg.getPackager().getClass());
+    }
+
+    @Test
+    public void testSerializedPackagerRequiresExplicitAllowFilter() throws Exception {
+        ISOMsg msg = new ISOMsg("0800");
+        msg.setPackager(new FilteredPackager());
+        byte[] serialized = writeExternalFormToBytes(msg);
+        FilteredPackager.constructorCalls = 0;
+
+        assertThrows(InvalidClassException.class, () -> readExternalFormFromBytes(serialized));
+        assertEquals(0, FilteredPackager.constructorCalls);
+
+        try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(serialized))) {
+            in.setObjectInputFilter(info -> info.serialClass() == FilteredPackager.class
+              ? ObjectInputFilter.Status.ALLOWED : ObjectInputFilter.Status.UNDECIDED);
+            ISOMsg restored = (ISOMsg) in.readObject();
+            assertEquals(FilteredPackager.class, restored.getPackager().getClass());
+            assertEquals("0800", restored.getMTI());
+        }
+        assertEquals(1, FilteredPackager.constructorCalls);
     }
 
     @Test
