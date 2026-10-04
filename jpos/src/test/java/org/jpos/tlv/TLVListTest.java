@@ -656,6 +656,22 @@ public class TLVListTest {
     }
 
     @Test
+    public void testUnpackRejectsLengthLargerThanInteger() {
+        assertThrows(
+          IllegalArgumentException.class,
+          () -> instance.unpack(ISOUtil.hex2byte("5A8480000000"))
+        );
+    }
+
+    @Test
+    public void testUnpackRejectsLengthWithMoreThanFourBytes() {
+        assertThrows(
+          IllegalArgumentException.class,
+          () -> instance.unpack(ISOUtil.hex2byte("5A85FFFFFFFFFF"))
+        );
+    }
+
+    @Test
     public void testUnpackInvalidTagThrowsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> {
             byte[] buf = ISOUtil.hex2byte("007f");

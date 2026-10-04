@@ -460,7 +460,7 @@ public class TLVList implements Serializable, Loggeable {
     protected int getValueLength(ByteBuffer buffer) throws IllegalArgumentException {
         if (lengthSize > 0) {
             byte[] bb = readBytes(buffer, lengthSize);
-            return bytesToInt(bb);
+            return lengthBytesToInt(bb);
         }
 
         byte b = buffer.get();
@@ -469,9 +469,19 @@ public class TLVList implements Serializable, Loggeable {
         if ((b & EXT_LEN_MASK) == 0 || count == 0)
             return count;
 
+        if (count > Integer.BYTES)
+            throw new IllegalArgumentException("BAD TLV FORMAT: encoded length is too large");
+
         //fetch rest of bytes
         byte[] bb = readBytes(buffer, count);
-        return bytesToInt(bb);
+        return lengthBytesToInt(bb);
+    }
+
+    private int lengthBytesToInt(byte[] bytes) {
+        BigInteger length = new BigInteger(1, bytes);
+        if (length.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0)
+            throw new IllegalArgumentException("BAD TLV FORMAT: encoded length is too large");
+        return length.intValue();
     }
 
     private int bytesToInt(byte[] bb){

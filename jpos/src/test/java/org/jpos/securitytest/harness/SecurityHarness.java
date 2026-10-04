@@ -18,6 +18,8 @@
 
 package org.jpos.securitytest.harness;
 
+import org.jpos.iso.ISOUtil;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -60,5 +62,59 @@ public final class SecurityHarness {
             }
         }
         return List.copyOf(mutations);
+    }
+
+    public static void verify(
+      SecurityTarget target, CorpusEntry input, long baseSeed, MutationBudget budget)
+    {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(input, "input");
+        Objects.requireNonNull(budget, "budget");
+
+        long corpusSeed = DeterministicSeeds.derive(baseSeed, target.id(), input.id(), "corpus");
+        verifyCase(target, input, "corpus", baseSeed, corpusSeed, input.bytes(), input.expectation());
+        for (Mutation mutation : mutations(target, input, baseSeed, budget)) {
+            verifyCase(
+              target, input, mutation.id(), baseSeed, mutation.seed(), mutation.bytes(),
+              Expectation.ACCEPT_OR_REJECT
+            );
+        }
+    }
+
+    private static void verifyCase(
+      SecurityTarget target, CorpusEntry input, String caseId, long baseSeed, long caseSeed,
+      byte[] bytes, Expectation expectation)
+    {
+        try {
+            target.consume(bytes);
+        } catch (AssertionError failure) {
+            throw failure(target, input, caseId, baseSeed, caseSeed, bytes, expectation,
+              "unexpected failure", failure);
+        } catch (Error fatal) {
+            throw fatal;
+        } catch (Throwable failure) {
+            boolean expectedRejection = failure instanceof Exception && target.isExpectedRejection(failure);
+            if (expectation != Expectation.ACCEPT && expectedRejection)
+                return;
+            throw failure(target, input, caseId, baseSeed, caseSeed, bytes, expectation,
+              expectedRejection ? "unexpected rejection" : "unexpected failure", failure);
+        }
+        if (expectation == Expectation.REJECT) {
+            throw failure(target, input, caseId, baseSeed, caseSeed, bytes, expectation,
+              "input was accepted", null);
+        }
+    }
+
+    private static AssertionError failure(
+      SecurityTarget target, CorpusEntry input, String caseId, long baseSeed, long caseSeed,
+      byte[] bytes, Expectation expectation, String outcome, Throwable cause)
+    {
+        String message = String.format(
+          "Security case failed [target=%s, corpus=%s, case=%s, baseSeed=0x%016X, " +
+            "caseSeed=0x%016X, expectation=%s, input=%s]: %s",
+          target.id(), input.id(), caseId, baseSeed, caseSeed, expectation,
+          ISOUtil.hexString(bytes), outcome
+        );
+        return cause == null ? new AssertionError(message) : new AssertionError(message, cause);
     }
 }

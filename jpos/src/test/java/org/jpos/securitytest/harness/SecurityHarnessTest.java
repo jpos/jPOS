@@ -22,11 +22,14 @@ import org.jpos.iso.ISOUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SecurityHarnessTest {
     @Test
@@ -84,6 +87,87 @@ public class SecurityHarnessTest {
     public void budgetRejectsInvalidLimits() {
         assertThrows(IllegalArgumentException.class, () -> new MutationBudget(0, 1));
         assertThrows(IllegalArgumentException.class, () -> new MutationBudget(1, -1));
+    }
+
+    @Test
+    public void verifyHonorsCorpusExpectationsAndAllowsMutationsToAcceptOrReject() {
+        AtomicInteger calls = new AtomicInteger();
+        SecurityTarget target = new SecurityTarget() {
+            @Override
+            public String id() {
+                return "parser";
+            }
+
+            @Override
+            public void consume(byte[] input) {
+                calls.incrementAndGet();
+                if (input.length == 1)
+                    throw new IllegalArgumentException("rejected");
+            }
+
+            @Override
+            public boolean isExpectedRejection(Throwable failure) {
+                return failure instanceof IllegalArgumentException;
+            }
+
+            @Override
+            public List<InputMutator> mutators() {
+                return List.of(namedMutator("rejecting", (byte) 1));
+            }
+        };
+
+        SecurityHarness.verify(
+          target, new CorpusEntry("valid", new byte[0], Expectation.ACCEPT),
+          303L, new MutationBudget(2, 8)
+        );
+
+        assertEquals(2, calls.get());
+    }
+
+    @Test
+    public void verifyReportsDeterministicCaseContext() {
+        CorpusEntry entry = new CorpusEntry("invalid", ISOUtil.hex2byte("0102"), Expectation.REJECT);
+        AssertionError failure = assertThrows(
+          AssertionError.class,
+          () -> SecurityHarness.verify(target(List.of()), entry, 303L, new MutationBudget(1, 8))
+        );
+
+        assertTrue(failure.getMessage().contains("target=target"));
+        assertTrue(failure.getMessage().contains("corpus=invalid"));
+        assertTrue(failure.getMessage().contains("case=corpus"));
+        assertTrue(failure.getMessage().contains("baseSeed=0x000000000000012F"));
+        assertTrue(failure.getMessage().contains("caseSeed=0x"));
+        assertTrue(failure.getMessage().contains("input=0102"));
+    }
+
+    @Test
+    public void verifyDoesNotTreatErrorsAsExpectedRejections() {
+        LinkageError expected = new LinkageError("fatal");
+        SecurityTarget target = new SecurityTarget() {
+            @Override
+            public String id() {
+                return "fatal";
+            }
+
+            @Override
+            public void consume(byte[] input) {
+                throw expected;
+            }
+
+            @Override
+            public boolean isExpectedRejection(Throwable failure) {
+                return true;
+            }
+        };
+
+        LinkageError actual = assertThrows(
+          LinkageError.class,
+          () -> SecurityHarness.verify(
+            target, new CorpusEntry("case", new byte[0], Expectation.REJECT),
+            303L, new MutationBudget(1, 8)
+          )
+        );
+        assertSame(expected, actual);
     }
 
     private SecurityTarget target(List<InputMutator> mutators) {
