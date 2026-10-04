@@ -20,7 +20,9 @@ package org.jpos.iso.channel;
 
 import org.jpos.iso.*;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -105,17 +107,44 @@ public class GZIPChannel extends BaseChannel {
         gzip.finish();
         gzip.flush();
     }
-    protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException { 
-    	int total = 0;
-        GZIPInputStream gzip = new GZIPInputStream(serverIn);
-        while (total < len) {
-        	int nread = gzip.read (b, offset, len - total);
-        	if (nread == -1) {
-        		throw new ISOException("End of compressed stream reached before all data was read"); 
-        	}
-        	total += nread;
-        	offset += nread;
+    protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException {
+        int total = 0;
+        try (GZIPInputStream gzip = new GZIPInputStream(new SingleMemberInputStream(serverIn), 1)) {
+            while (total < len) {
+                int nread = gzip.read (b, offset, len - total);
+                if (nread == -1) {
+                    throw new ISOException("End of compressed stream reached before all data was read");
+                }
+                total += nread;
+                offset += nread;
+            }
+            // Reach the end of the member to validate its trailer and exact uncompressed length.
+            if (gzip.read() != -1) {
+                throw new ISOException("Compressed stream contains more data than expected");
+            }
+        }
+    }
+
+    /*
+     * GZIPInputStream uses available() to decide whether to read a concatenated member.
+     * A one-byte inflater buffer and a zero result here keep the next frame prefix unread.
+     */
+    private static class SingleMemberInputStream extends FilterInputStream {
+        SingleMemberInputStream(InputStream in) {
+            super(in);
+            if (in == null) {
+                throw new NullPointerException();
+            }
+        }
+
+        @Override
+        public int available() {
+            return 0;
+        }
+
+        @Override
+        public void close() {
+            // The channel owns the underlying stream.
         }
     }
 }
-

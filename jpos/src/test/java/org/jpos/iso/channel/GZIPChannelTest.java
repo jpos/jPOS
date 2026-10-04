@@ -20,12 +20,23 @@ package org.jpos.iso.channel;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPOutputStream;
 
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.packager.Base1Packager;
@@ -166,6 +177,140 @@ public class GZIPChannelTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull(ex.getMessage(), "ex.getMessage()");
+        }
+    }
+
+    @Test
+    public void testGetMessageReadsCompleteMember() throws Exception {
+        byte[] payload = "hello, gzip".getBytes(StandardCharsets.UTF_8);
+        TestGZIPChannel channel = new TestGZIPChannel();
+        channel.setInput(frame(payload.length, payload));
+
+        int length = channel.getMessageLength();
+        byte[] received = new byte[length];
+        channel.getMessage(received, 0, length);
+
+        assertArrayEquals(payload, received);
+        assertFalse(channel.isInputClosed());
+    }
+
+    @Test
+    public void testGetMessagePreservesNextFrame() throws Exception {
+        byte[] first = "first".getBytes(StandardCharsets.UTF_8);
+        byte[] second = "second".getBytes(StandardCharsets.UTF_8);
+        TestGZIPChannel channel = new TestGZIPChannel();
+        channel.setInput(concat(frame(first.length, first), frame(second.length, second)));
+
+        assertArrayEquals(first, receive(channel));
+        assertArrayEquals(second, receive(channel));
+    }
+
+    @Test
+    public void testGetMessageReadsFragmentedMemberAndTrailer() throws Exception {
+        byte[] payload = "fragmented".getBytes(StandardCharsets.UTF_8);
+        TestGZIPChannel channel = new TestGZIPChannel();
+        channel.setInput(new FragmentedInputStream(new ByteArrayInputStream(frame(payload.length, payload))));
+
+        assertArrayEquals(payload, receive(channel));
+    }
+
+    @Test
+    public void testGetMessageRejectsInvalidCRC() throws Exception {
+        byte[] payload = "crc".getBytes(StandardCharsets.UTF_8);
+        byte[] frame = frame(payload.length, payload);
+        frame[frame.length - 8] ^= 0x01;
+        TestGZIPChannel channel = new TestGZIPChannel();
+        channel.setInput(frame);
+
+        int length = channel.getMessageLength();
+        assertThrows(IOException.class, () -> channel.getMessage(new byte[length], 0, length));
+    }
+
+    @Test
+    public void testGetMessageRejectsAdvertisedLengthSmallerThanPayload() throws Exception {
+        byte[] payload = "three".getBytes(StandardCharsets.UTF_8);
+        TestGZIPChannel channel = new TestGZIPChannel();
+        channel.setInput(frame(payload.length - 1, payload));
+
+        int length = channel.getMessageLength();
+        assertThrows(org.jpos.iso.ISOException.class,
+          () -> channel.getMessage(new byte[length], 0, length));
+    }
+
+    @Test
+    public void testGetMessageRejectsAdvertisedLengthLargerThanPayload() throws Exception {
+        byte[] payload = "three".getBytes(StandardCharsets.UTF_8);
+        TestGZIPChannel channel = new TestGZIPChannel();
+        channel.setInput(frame(payload.length + 1, payload));
+
+        int length = channel.getMessageLength();
+        assertThrows(org.jpos.iso.ISOException.class,
+          () -> channel.getMessage(new byte[length], 0, length));
+    }
+
+    private static byte[] receive(TestGZIPChannel channel) throws Exception {
+        int length = channel.getMessageLength();
+        byte[] message = new byte[length];
+        channel.getMessage(message, 0, length);
+        return message;
+    }
+
+    private static byte[] frame(int advertisedLength, byte[] payload) throws IOException {
+        ByteArrayOutputStream frame = new ByteArrayOutputStream();
+        frame.write(advertisedLength >> 8);
+        frame.write(advertisedLength);
+        try (GZIPOutputStream gzip = new GZIPOutputStream(frame)) {
+            gzip.write(payload);
+        }
+        return frame.toByteArray();
+    }
+
+    private static byte[] concat(byte[] first, byte[] second) throws IOException {
+        ByteArrayOutputStream combined = new ByteArrayOutputStream();
+        combined.write(first);
+        combined.write(second);
+        return combined.toByteArray();
+    }
+
+    private static class TestGZIPChannel extends GZIPChannel {
+        private CloseTrackingInputStream input;
+
+        private void setInput(byte[] bytes) {
+            setInput(new ByteArrayInputStream(bytes));
+        }
+
+        private void setInput(InputStream input) {
+            this.input = new CloseTrackingInputStream(input);
+            serverIn = new DataInputStream(this.input);
+        }
+
+        private boolean isInputClosed() {
+            return input.closed;
+        }
+    }
+
+    private static class CloseTrackingInputStream extends FilterInputStream {
+        private boolean closed;
+
+        CloseTrackingInputStream(InputStream in) {
+            super(in);
+        }
+
+        @Override
+        public void close() throws IOException {
+            closed = true;
+            super.close();
+        }
+    }
+
+    private static class FragmentedInputStream extends FilterInputStream {
+        FragmentedInputStream(InputStream in) {
+            super(in);
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            return super.read(b, off, Math.min(len, 1));
         }
     }
 }
