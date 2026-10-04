@@ -102,6 +102,7 @@ public class TelnetXMLChannel extends BaseChannel {
      */
     protected byte[] streamReceive() throws IOException {
         int sp = 0;
+        int length = 0;
         StringBuilder sb = new StringBuilder();
         while (reader != null) {
             /*
@@ -119,27 +120,55 @@ public class TelnetXMLChannel extends BaseChannel {
 
             // Now the commands are out of the way continue with the xml stream
             // until it closes with </isomsg>.
-            String s = reader.readLine();
+            String s = readLine();
             if (s == null)
                 throw new EOFException();
             int isomsgStart = s.indexOf(isomsgStartTag);
             if (isomsgStart >= 0) {
                 sp++;
-                sb.append(s, isomsgStart, s.length() - isomsgStart);
+                length = append(sb, s, isomsgStart, s.length() - isomsgStart, length);
             } else {
                 int isomsgEnd = s.indexOf(isomsgEndTag);
                 if (isomsgEnd >= 0) {
-                    sb.append(s,0,isomsgEnd + isomsgEndTag.length());
+                    length = append(sb, s, 0, isomsgEnd + isomsgEndTag.length(), length);
                     if (--sp <= 0)
                         break;
                 } else {
                     if (sp > 0)
-                        sb.append(s);
+                        length = append(sb, s, 0, s.length(), length);
                 }
             }
 
         }
         return sb.toString().getBytes();
+    }
+
+    private int append(StringBuilder sb, String s, int start, int end, int length) throws IOException {
+        byte[] encoded = s.substring(start, end).getBytes();
+        if (length > getMaxPacketLength() || encoded.length > getMaxPacketLength() - length)
+            throw new IOException("message too long");
+        sb.append(s, start, end);
+        return length + encoded.length;
+    }
+
+    private String readLine() throws IOException {
+        StringBuilder line = new StringBuilder();
+        while (true) {
+            int c = reader.read();
+            if (c < 0)
+                return line.length() > 0 ? line.toString() : null;
+            if (c == '\n')
+                return line.toString();
+            if (c == '\r') {
+                reader.mark(1);
+                if (reader.read() != '\n')
+                    reader.reset();
+                return line.toString();
+            }
+            if (line.length() >= getMaxPacketLength())
+                throw new IOException("message too long");
+            line.append((char) c);
+        }
     }
 
     protected int getHeaderLength() {

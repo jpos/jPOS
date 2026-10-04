@@ -22,8 +22,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -162,5 +166,34 @@ public class LogChannelTest {
         LogChannel logChannel = new LogChannel("testLogChannelHost", 100, new EuroPackager());
         byte[] result = logChannel.streamReceive();
         assertEquals(0, result.length, "result.length");
+    }
+
+    @Test
+    public void testStreamReceiveAllowsExactMaxPacketLength() throws Exception {
+        LogChannel channel = new LogChannel();
+        String message = "<isomsg></isomsg>";
+        channel.setMaxPacketLength(message.getBytes().length);
+        channel.reader = new BufferedReader(new StringReader(message));
+
+        assertEquals(message, new String(channel.streamReceive()));
+    }
+
+    @Test
+    public void testStreamReceiveRejectsMessageOverMaxPacketLength() {
+        LogChannel channel = new LogChannel();
+        String message = "<isomsg></isomsg>";
+        channel.setMaxPacketLength(message.getBytes().length - 1);
+        channel.reader = new BufferedReader(new StringReader(message));
+
+        assertThrows(IOException.class, channel::streamReceive);
+    }
+
+    @Test
+    public void testStreamReceiveRejectsOverlongLine() {
+        LogChannel channel = new LogChannel();
+        channel.setMaxPacketLength(8);
+        channel.reader = new BufferedReader(new StringReader("x".repeat(9)));
+
+        assertThrows(IOException.class, channel::streamReceive);
     }
 }

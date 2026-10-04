@@ -86,11 +86,12 @@ public class LogChannel extends BaseChannel {
      */
     protected byte[] streamReceive() throws IOException {
         StringBuilder sb = new StringBuilder();
+        int length = 0;
         String realm = null;
         String at= null;
         int inMsg = 0;
         while (reader != null) {
-            String s = reader.readLine();
+            String s = readLine();
             if (s == null)
                 throw new EOFException();
             if ((timestampField > 0 || realmField > 0) && s.contains("<log") && s.contains("at=")) {
@@ -108,20 +109,48 @@ public class LogChannel extends BaseChannel {
             if (s.contains("</isomsg>") && --inMsg == 0) {
                 if (at != null || realm != null && inMsg == 0) {
                     if (realm != null) {
-                        sb.append("  <field id=\"" + realmField + "\" value=\"" + realm + "\" />");
+                        length = append(sb, "  <field id=\"" + realmField + "\" value=\"" + realm + "\" />", length);
                         realm = null;
                     }
                     if (at != null) {
-                        sb.append("  <field id=\"" + timestampField + "\" value=\"" + at + "\" />");
+                        length = append(sb, "  <field id=\"" + timestampField + "\" value=\"" + at + "\" />", length);
                     }
                 }
-                sb.append (s);
+                append(sb, s, length);
                 break;
             }
             if (inMsg > 0)
-                sb.append (s);
+                length = append(sb, s, length);
         }
         return sb.toString().getBytes();
+    }
+
+    private int append(StringBuilder sb, String s, int length) throws IOException {
+        byte[] encoded = s.getBytes();
+        if (length > getMaxPacketLength() || encoded.length > getMaxPacketLength() - length)
+            throw new IOException("message too long");
+        sb.append(s);
+        return length + encoded.length;
+    }
+
+    private String readLine() throws IOException {
+        StringBuilder line = new StringBuilder();
+        while (true) {
+            int c = reader.read();
+            if (c < 0)
+                return line.length() > 0 ? line.toString() : null;
+            if (c == '\n')
+                return line.toString();
+            if (c == '\r') {
+                reader.mark(1);
+                if (reader.read() != '\n')
+                    reader.reset();
+                return line.toString();
+            }
+            if (line.length() >= getMaxPacketLength())
+                throw new IOException("message too long");
+            line.append((char) c);
+        }
     }
     protected int getHeaderLength() { 
         return 0; 

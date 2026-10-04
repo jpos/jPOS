@@ -99,12 +99,16 @@ public class X25Channel extends BaseChannel {
         c = serverIn.read();
         if (c == -1)
             throw new EOFException ("connection closed");
+        if (getMaxPacketLength() < 1)
+            throw new IOException("message too long");
         byte[] b = new byte[1];
         b[0] = (byte) c;
         v.addElement (b);
 
         // Wait for packets until timeout
         while ((c = serverIn.available()) > 0) {
+            if (len > getMaxPacketLength() || c > getMaxPacketLength() - len)
+                throw new IOException("message too long");
             b = new byte[c];
             if (serverIn.read (b) != c)
                 throw new EOFException ("connection closed");

@@ -24,9 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.BufferedReader;
 import java.io.EOFException;
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.Proxy;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -189,5 +193,34 @@ public class XMLChannelTest {
             return;
         }
         fail ("EOFException should have been raised");
+    }
+
+    @Test
+    public void testStreamReceiveAllowsExactMaxPacketLength() throws Exception {
+        XMLChannel channel = new XMLChannel();
+        String message = "<isomsg></isomsg>";
+        channel.setMaxPacketLength(message.getBytes().length);
+        channel.reader = new BufferedReader(new StringReader(message));
+
+        assertEquals(message, new String(channel.streamReceive()));
+    }
+
+    @Test
+    public void testStreamReceiveRejectsMessageOverMaxPacketLength() {
+        XMLChannel channel = new XMLChannel();
+        String message = "<isomsg></isomsg>";
+        channel.setMaxPacketLength(message.getBytes().length - 1);
+        channel.reader = new BufferedReader(new StringReader(message));
+
+        assertThrows(IOException.class, channel::streamReceive);
+    }
+
+    @Test
+    public void testStreamReceiveRejectsOverlongLine() {
+        XMLChannel channel = new XMLChannel();
+        channel.setMaxPacketLength(16);
+        channel.reader = new BufferedReader(new StringReader("<isomsg>" + "x".repeat(9)));
+
+        assertThrows(IOException.class, channel::streamReceive);
     }
 }

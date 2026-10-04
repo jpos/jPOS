@@ -24,8 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketException;
@@ -114,6 +118,30 @@ public class X25ChannelTest {
                 assertEquals("Cannot invoke \"String.getBytes()\" because \"header\" is null", ex.getMessage(), "ex.getMessage()");
             }
             assertNull(x25Channel.header, "x25Channel.header");
+        }
+    }
+
+    @Test
+    public void testStreamReceiveAllowsExactMaxPacketLength() throws Exception {
+        TestX25Channel channel = new TestX25Channel();
+        channel.setMaxPacketLength(4);
+        channel.setInput(new byte[] { 1, 2, 3, 4 });
+
+        assertEquals(4, channel.streamReceive().length);
+    }
+
+    @Test
+    public void testStreamReceiveRejectsMessageOverMaxPacketLength() {
+        TestX25Channel channel = new TestX25Channel();
+        channel.setMaxPacketLength(3);
+        channel.setInput(new byte[] { 1, 2, 3, 4 });
+
+        assertThrows(IOException.class, channel::streamReceive);
+    }
+
+    private static class TestX25Channel extends X25Channel {
+        private void setInput(byte[] input) {
+            serverIn = new DataInputStream(new ByteArrayInputStream(input));
         }
     }
 }

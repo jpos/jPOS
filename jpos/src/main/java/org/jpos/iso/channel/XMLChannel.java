@@ -83,12 +83,17 @@ public class XMLChannel extends BaseChannel {
      */
     protected byte[] streamReceive() throws IOException {
         int sp = 0;
+        int length = 0;
         StringBuilder sb = new StringBuilder();
         while (reader != null) {
-            String s = reader.readLine();
+            String s = readLine();
             if (s == null)
                 throw new EOFException();
+            byte[] encoded = s.getBytes();
+            if (length > getMaxPacketLength() || encoded.length > getMaxPacketLength() - length)
+                throw new IOException("message too long");
             sb.append (s);
+            length += encoded.length;
             if (s.contains("<" + XMLPackager.ISOMSG_TAG))
                 sp++;
             if (s.contains("</" + XMLPackager.ISOMSG_TAG + ">") && --sp <= 0)
@@ -97,6 +102,26 @@ public class XMLChannel extends BaseChannel {
         if (sb.length() == 0)
             throw new EOFException();
         return sb.toString().getBytes();
+    }
+
+    private String readLine() throws IOException {
+        StringBuilder line = new StringBuilder();
+        while (true) {
+            int c = reader.read();
+            if (c < 0)
+                return line.length() > 0 ? line.toString() : null;
+            if (c == '\n')
+                return line.toString();
+            if (c == '\r') {
+                reader.mark(1);
+                if (reader.read() != '\n')
+                    reader.reset();
+                return line.toString();
+            }
+            if (line.length() >= getMaxPacketLength())
+                throw new IOException("message too long");
+            line.append((char) c);
+        }
     }
 
 
