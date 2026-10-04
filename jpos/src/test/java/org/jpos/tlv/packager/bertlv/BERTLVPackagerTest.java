@@ -115,6 +115,45 @@ public class BERTLVPackagerTest {
     }
 
     @Test
+    public void testAcceptsConstructedValueAtMaximumDepth() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+        byte[] encoded = nestedConstructedValue(64);
+
+        assertEquals(encoded.length, p.unpack(new ISOMsg(55), encoded));
+    }
+
+    @Test
+    public void testRejectsConstructedValueBeyondMaximumDepth() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> p.unpack(new ISOMsg(55), nestedConstructedValue(65))
+        );
+        assertTrue(e.getMessage().contains("maximum depth of 64"));
+    }
+
+    @Test
+    public void testPackingAcceptsConstructedValueAtMaximumDepth() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+
+        assertDoesNotThrow(() -> p.pack(nestedConstructedMessage(64), true, 0, 1));
+    }
+
+    @Test
+    public void testPackingRejectsConstructedValueBeyondMaximumDepth() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> p.pack(nestedConstructedMessage(65), true, 0, 1)
+        );
+        assertTrue(e.getMessage().contains("maximum depth of 64"));
+    }
+
+    @Test
     public void bug349() throws ISOException {
         ISOMsg msg = new ISOMsg("0600");
 
@@ -137,5 +176,38 @@ public class BERTLVPackagerTest {
 
         byte[] out = msg.pack();
         System.out.println("bin msg: " + out);
+    }
+
+    private byte[] nestedConstructedValue(int depth) {
+        byte[] encoded = ISOUtil.hex2byte("9400");
+        for (int i = 0; i < depth; i++) {
+            byte[] length = encodeLength(encoded.length);
+            byte[] nested = new byte[1 + length.length + encoded.length];
+            nested[0] = 0x71;
+            System.arraycopy(length, 0, nested, 1, length.length);
+            System.arraycopy(encoded, 0, nested, 1 + length.length, encoded.length);
+            encoded = nested;
+        }
+        return encoded;
+    }
+
+    private byte[] encodeLength(int length) {
+        if (length <= 0x7F)
+            return new byte[] { (byte) length };
+        if (length <= 0xFF)
+            return new byte[] { (byte) 0x81, (byte) length };
+        return new byte[] { (byte) 0x82, (byte) (length >>> 8), (byte) length };
+    }
+
+    private ISOMsg nestedConstructedMessage(int depth) throws ISOException {
+        ISOMsg root = new ISOMsg(55);
+        ISOMsg parent = root;
+        for (int i = 0; i < depth; i++) {
+            ISOMsg child = new ISOMsg(1);
+            parent.set(new ISOTaggedField("71", child));
+            parent = child;
+        }
+        parent.set(new ISOTaggedField("94", new ISOField(1, "")));
+        return root;
     }
 }

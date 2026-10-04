@@ -55,6 +55,7 @@ public abstract class BERTLVPackager extends GenericPackager {
 
     private static final int MAX_LENGTH_BYTES = 5;
     private static final int MAX_TAG_BYTES = 3;
+    private static final int MAX_CONSTRUCTED_DEPTH = 64;
 
     private static final LiteralInterpreter literalInterpreter = LiteralInterpreter.INSTANCE;
     private static final AsciiInterpreter asciiInterpreter = AsciiInterpreter.INSTANCE;
@@ -64,6 +65,8 @@ public abstract class BERTLVPackager extends GenericPackager {
     private final BinaryInterpreter tagInterpreter;
     private final BinaryInterpreter lengthInterpreter;
     private final BinaryInterpreter valueInterpreter;
+    private final ThreadLocal<Integer> packDepth = new ThreadLocal<>();
+    private final ThreadLocal<Integer> unpackDepth = new ThreadLocal<>();
 
 
     /**
@@ -120,6 +123,8 @@ public abstract class BERTLVPackager extends GenericPackager {
      */
     public byte[] pack(ISOComponent m, boolean nested, int startIdx, int endIdx)
             throws ISOException {
+        Integer previousDepth = packDepth.get();
+        packDepth.set(previousDepth == null ? 1 : previousDepth + 1);
         LogEvent evt = withField (new LogEvent (this, "pack"), m);
         try (ByteArrayOutputStream bout = new ByteArrayOutputStream(100)) {
             ISOComponent c;
@@ -170,6 +175,10 @@ public abstract class BERTLVPackager extends GenericPackager {
             evt.addMessage(e);
             throw new ISOException(e);
         } finally {
+            if (previousDepth == null)
+                packDepth.remove();
+            else
+                packDepth.set(previousDepth);
             Logger.log(evt);
         }
     }
@@ -244,6 +253,8 @@ public abstract class BERTLVPackager extends GenericPackager {
      * @throws ISOException on unpacking error
      */
     public int unpack(ISOComponent m, byte[] b, boolean nested) throws ISOException {
+        Integer previousDepth = unpackDepth.get();
+        unpackDepth.set(previousDepth == null ? 1 : previousDepth + 1);
         LogEvent evt = withField (new LogEvent (this, "unpack"), m);
         try {
             if (m.getComposite() == null)
@@ -321,6 +332,10 @@ public abstract class BERTLVPackager extends GenericPackager {
             evt.addMessage(e);
             throw new ISOException(e);
         } finally {
+            if (previousDepth == null)
+                unpackDepth.remove();
+            else
+                unpackDepth.set(previousDepth);
             Logger.log(evt);
         }
     }
@@ -443,6 +458,11 @@ public abstract class BERTLVPackager extends GenericPackager {
             }
         } else {
             if (TLVDataFormat.CONSTRUCTED.equals(dataFormat) || TLVDataFormat.PROPRIETARY.equals(dataFormat)) {
+                Integer depth = packDepth.get();
+                if (depth != null && depth > MAX_CONSTRUCTED_DEPTH)
+                    throw new ISOException(
+                        "BER-TLV constructed value exceeds maximum depth of " + MAX_CONSTRUCTED_DEPTH
+                    );
                 packedValue = pack(c, true, 0, c.getMaxField());
             } else {
                 throw new IllegalArgumentException("Composite ISOComponent should be used only for CONSTRUCTED data type");
@@ -489,6 +509,11 @@ public abstract class BERTLVPackager extends GenericPackager {
                 value = new ISOBinaryField(subFieldNumber, tlvData);
                 break;
             case CONSTRUCTED:
+                Integer depth = unpackDepth.get();
+                if (depth != null && depth > MAX_CONSTRUCTED_DEPTH)
+                    throw new ISOException(
+                        "BER-TLV constructed value exceeds maximum depth of " + MAX_CONSTRUCTED_DEPTH
+                    );
                 value = new ISOMsg(subFieldNumber);
                 unpack(value, tlvData, true);
                 break;
