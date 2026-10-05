@@ -56,6 +56,11 @@ public class IFELPE_LLLCHAR extends ISOFieldPackager {
     public byte[] pack(final ISOComponent c) throws ISOException {
         final String s = (String) c.getValue();
         final int len = s.length();
+        if (len > getLength() || len > 997)
+            throw new ISOException(
+                    "invalid len " + len + " packing IFELPE_LLLCHAR field "
+                            + c.getKey() + " maxlen=" + getLength()
+            );
         final byte[] payload = new byte[len + TAG_HEADER_LENGTH];
         final String tagHeader = ISOUtil.zeropad(Integer.toString(len + TAG_BYTE_LENGTH), LENGTH_BYTE_LENGTH)
                 + ISOUtil.zeropad(c.getKey().toString(), TAG_BYTE_LENGTH);
@@ -66,14 +71,21 @@ public class IFELPE_LLLCHAR extends ISOFieldPackager {
 
     @Override
     public int unpack(final ISOComponent c, final byte[] b, final int offset) throws ISOException {
-        final String asciiResult = ISOUtil.ebcdicToAscii(b, offset, LENGTH_BYTE_LENGTH);
-        final int len = Integer.parseInt(asciiResult) - TAG_BYTE_LENGTH;
         if (!(c instanceof ISOField)) throw new ISOException(c.getClass()
                 .getName()
                 + " is not an ISOField");
-        c.setFieldNumber(Integer.parseInt(ISOUtil.ebcdicToAscii(b, offset + LENGTH_BYTE_LENGTH, TAG_BYTE_LENGTH)));
+
+        checkAvailable(b, offset, TAG_HEADER_LENGTH, "field header");
+        final int inclusiveLength = EbcdicPrefixer.LLL.decodeLength(b, offset);
+        final int fieldNumber = EbcdicPrefixer.LL.decodeLength(b, offset + LENGTH_BYTE_LENGTH);
+        if (inclusiveLength < TAG_BYTE_LENGTH)
+            throw new ISOException("Invalid self-inclusive field length " + inclusiveLength);
+        final int len = inclusiveLength - TAG_BYTE_LENGTH;
+        checkUnpackedLength(len);
+        checkAvailable(b, offset + TAG_HEADER_LENGTH, len, "field value");
+        c.setFieldNumber(fieldNumber);
         c.setValue(ISOUtil.ebcdicToAscii(b, offset + TAG_HEADER_LENGTH, len));
-        return len + 5;
+        return len + TAG_HEADER_LENGTH;
     }
 
     @Override
@@ -83,14 +95,19 @@ public class IFELPE_LLLCHAR extends ISOFieldPackager {
                 .getName()
                 + " is not an ISOField");
 
-        final int len = Integer.parseInt(ISOUtil.ebcdicToAscii(readBytes(in, LENGTH_BYTE_LENGTH))) - TAG_BYTE_LENGTH;
-        final int fieldNumber = Integer.parseInt(ISOUtil.ebcdicToAscii(readBytes(in, TAG_BYTE_LENGTH)));
+        final byte[] header = readBytes(in, TAG_HEADER_LENGTH);
+        final int inclusiveLength = EbcdicPrefixer.LLL.decodeLength(header, 0);
+        final int fieldNumber = EbcdicPrefixer.LL.decodeLength(header, LENGTH_BYTE_LENGTH);
+        if (inclusiveLength < TAG_BYTE_LENGTH)
+            throw new ISOException("Invalid self-inclusive field length " + inclusiveLength);
+        final int len = inclusiveLength - TAG_BYTE_LENGTH;
+        checkUnpackedLength(len);
         c.setFieldNumber(fieldNumber);
-        c.setValue(new String(readBytes(in, len)));
+        c.setValue(ISOUtil.ebcdicToAscii(readBytes(in, len)));
     }
 
     @Override
     public int getMaxPackedLength() {
-        return getLength() + TAG_BYTE_LENGTH;
+        return getLength() + TAG_HEADER_LENGTH;
     }
 }

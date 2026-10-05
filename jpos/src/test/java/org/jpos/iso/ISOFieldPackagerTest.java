@@ -166,18 +166,13 @@ public class ISOFieldPackagerTest {
     }
 
     @Test
-    public void testUnpackThrowsArrayIndexOutOfBoundsException() throws Throwable {
+    public void testUnpackThrowsEOFException() throws Throwable {
         byte[] bytes = new byte[2];
         InputStream in = new ByteArrayInputStream(bytes);
         try {
             new IFEB_LLLNUM().unpack(new ISOMsg("testISOFieldPackagerMti"), in);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("2", ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Index 2 out of bounds for length 2", ex.getMessage(), "ex.getMessage()");
-            }
+            fail("Expected EOFException to be thrown");
+        } catch (EOFException ex) {
             assertEquals(0, in.available(), "(ByteArrayInputStream) in.available()");
         }
     }

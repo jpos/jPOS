@@ -87,17 +87,33 @@ public class IFA_LLBNUM extends ISOFieldPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
+        checkAvailable(b, offset, 2, "length prefix");
         int len = prefixer.decodeLength(b, offset);
+        checkUnpackedDigitLength(len);
+        int packedLen = interpreter.getPackedLength(len);
+        checkAvailable(b, offset + 2, packedLen, "field value");
         c.setValue (interpreter.uninterpret(b, offset + 2, len));
-        return 2 + (++len >> 1);
+        return 2 + packedLen;
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
-        int len = prefixer.decodeLength(readBytes (in, 2), 2);
-        c.setValue (interpreter.uninterpret(readBytes (in, len+2 >> 1), 0, len));
+        int len = prefixer.decodeLength(readBytes(in, 2), 0);
+        checkUnpackedDigitLength(len);
+        int packedLen = interpreter.getPackedLength(len);
+        c.setValue(interpreter.uninterpret(readBytes(in, packedLen), 0, len));
     }
     public int getMaxPackedLength() {
-        return 1 + (getLength()+1 >> 1);
+        return 2 + interpreter.getPackedLength(getLength());
+    }
+
+    private void checkUnpackedDigitLength(int length) throws ISOException {
+        if (length < 0)
+            throw new ISOException("Invalid field length " + length);
+        int maxLength = getLength();
+        if (maxLength < 0)
+            throw new ISOException("Field maximum length is not configured");
+        if (length > (long) maxLength + (maxLength & 1))
+            throw new ISOException("Field length " + length + " too long. Max: " + maxLength);
     }
 }

@@ -82,14 +82,13 @@ public class IFIPM_LLLCHAR extends ISOFieldPackager {
         if (!(c instanceof ISOField))
             throw new ISOException 
                 (c.getClass().getName() + " is not an ISOField");
-        
-        c.setFieldNumber(
-                Integer.parseInt(new String(b, offset, 4))
-        );
-        offset += 4;
-        int len = Integer.parseInt(new String(b, offset, 3));
-        offset += 3;
-        c.setValue (new String (b, offset, len));
+
+        checkAvailable(b, offset, 7, "field header");
+        c.setFieldNumber(AsciiPrefixer.LLLL.decodeLength(b, offset));
+        int len = AsciiPrefixer.LLL.decodeLength(b, offset + 4);
+        checkUnpackedLength(len);
+        checkAvailable(b, offset + 7, len, "field value");
+        c.setValue (new String (b, offset + 7, len));
         return len + 7;
     }
     public void unpack (ISOComponent c, InputStream in) 
@@ -100,8 +99,9 @@ public class IFIPM_LLLCHAR extends ISOFieldPackager {
             throw new ISOException 
                 (c.getClass().getName() + " is not an ISOField");
 
-        int fldno = Integer.parseInt(new String(readBytes (in, 4)));
-        int len   = Integer.parseInt(new String(readBytes (in, 3)));
+        int fldno = AsciiPrefixer.LLLL.decodeLength(readBytes (in, 4), 0);
+        int len   = AsciiPrefixer.LLL.decodeLength(readBytes (in, 3), 0);
+        checkUnpackedLength(len);
         c.setFieldNumber(fldno);
         c.setValue (new String (readBytes (in, len)));
     }

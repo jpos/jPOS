@@ -78,8 +78,11 @@ public class IFA_LLABINARY extends ISOFieldPackager {
         throws ISOException
     {
       //CJH incorrect IFA_LLBINARY unpack 08/07/04
-         
-      int len = Integer.parseInt(new String(b, offset, 2));       
+
+      checkAvailable(b, offset, 2, "length prefix");
+      int len = AsciiPrefixer.LL.decodeLength(b, offset);
+      checkUnpackedLength(len);
+      checkAvailable(b, offset + 2, len * 2, "field value");
       c.setValue (ISOUtil.hex2byte(b, offset + 2, len));
       return len * 2 + 2;
 
@@ -96,8 +99,8 @@ public class IFA_LLABINARY extends ISOFieldPackager {
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
-        int len = Integer.parseInt(new String(readBytes (in, 2)));
-        c.setValue (readBytes (in, len));
+        int len = AsciiPrefixer.LL.decodeLength(readBytes(in, 2), 0);
+        checkUnpackedLength(len);
+        c.setValue(ISOUtil.hex2byte(readBytes(in, len * 2), 0, len));
     }
 }
-

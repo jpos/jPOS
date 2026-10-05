@@ -19,6 +19,7 @@
 package org.jpos.iso;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 
 /**
@@ -67,19 +68,21 @@ public class IFB_LLHFBINARY extends ISOFieldPackager {
     */
     public int unpack (ISOComponent c, byte[] b, int offset) throws ISOException
     {
+        checkAvailable(b, offset, 1, "length prefix");
         int len = b[offset] & 0xFF;
-        byte[] value = new byte[len];
-        System.arraycopy(b, ++offset, value, 0, len);
-        c.setValue (value);
+        checkUnpackedLength(len);
+        checkAvailable(b, offset + 1, getLength(), "fixed field value");
+        c.setValue(Arrays.copyOfRange(b, offset + 1, offset + 1 + len));
         return getLength()+1;
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
-        byte[] b = readBytes (in, 1);
-        int len = b[0] & 0xFF;
-        c.setValue (readBytes (in, len));
-        in.skip (getLength () - len);
+        int len = readBytes(in, 1)[0] & 0xFF;
+        checkUnpackedLength(len);
+        byte[] value = readBytes(in, len);
+        in.skipNBytes(getLength() - len);
+        c.setValue(value);
     }
     public ISOComponent createComponent(int fieldNumber) {
         return new ISOBinaryField (fieldNumber);
@@ -88,4 +91,3 @@ public class IFB_LLHFBINARY extends ISOFieldPackager {
         return getLength() + 1;
     }
 }
-

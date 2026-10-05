@@ -83,16 +83,17 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-        int len = Integer.parseInt(new String(b, offset, 2));
         if (!(c instanceof ISOField))
             throw new ISOException 
                 (c.getClass().getName() + " is not an ISOField");
-
-        c.setFieldNumber(
-                Integer.parseInt(new String(b, offset + 2, 2))
-        );
-        c.setValue (new String (b, offset+4, len-2));
-        return len + 2;
+        int prefixLength = AsciiPrefixer.LL.getPackedLength();
+        checkAvailable(b, offset, prefixLength + 2, "length and tag");
+        int len = AsciiPrefixer.LL.decodeLength(b, offset) - 2;
+        checkUnpackedLength(len);
+        c.setFieldNumber(AsciiPrefixer.LL.decodeLength(b, offset + prefixLength));
+        checkAvailable(b, offset + prefixLength + 2, len, "field value");
+        c.setValue(new String(b, offset + prefixLength + 2, len));
+        return len + prefixLength + 2;
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
@@ -102,13 +103,14 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
             throw new ISOException 
                 (c.getClass().getName() + " is not an ISOField");
 
-        int len   = Integer.parseInt(new String(readBytes (in, 2)));
-        int fldno = Integer.parseInt(new String(readBytes (in, 2)));
+        int len = AsciiPrefixer.LL.decodeLength(readBytes(in, 2), 0) - 2;
+        checkUnpackedLength(len);
+        int fldno = AsciiPrefixer.LL.decodeLength(readBytes(in, 2), 0);
         c.setFieldNumber(fldno);
-        c.setValue (new String (readBytes (in, len-2)));
+        c.setValue(new String(readBytes(in, len)));
     }
 
     public int getMaxPackedLength() {
-        return getLength() + 2;
+        return getLength() + 4;
     }
 }

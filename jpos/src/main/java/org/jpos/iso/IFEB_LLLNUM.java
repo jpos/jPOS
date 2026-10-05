@@ -18,6 +18,9 @@
 
 package org.jpos.iso;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * EBCDIC version of IFB_LLLNUM
  * Uses a 2 EBCDIC byte length field
@@ -104,33 +107,45 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
      */
     public int unpack(ISOComponent c, byte[] b, int offset)
     throws ISOException {
-        boolean pad = false;
-        
-        
-        int len = (b[offset] & 0x0f) * 100 + (b[offset+1] & 0x0f) * 10 + (b[offset+2] & 0x0f);
-        
-        int tempLen = len*2;
-
-        //System.out.println("len "+ len +"len*2 "+tempLen);
-        
-        
-        // odd handling
-        byte testByte = b[offset+3+len-1];
-        
-        if( (testByte | 0xf0)== 0xff) {
-            // odd length
-            tempLen--;
-        }
-        
-        
-        // bcd line
-        //System.out.println("ISOUtil.bcd2str(b, offset+2, len, pad) "+ISOUtil.bcd2str(b, offset+2, tempLen, pad));
-        
-        c.setValue(ISOUtil.bcd2str(b, offset+3, tempLen, pad));
-        
-        //c.setValue(ISOUtil.ebcdicToAscii(b, offset+2, len));
-        
+        int prefixLength = EbcdicPrefixer.LLL.getPackedLength();
+        checkAvailable(b, offset, prefixLength, "length prefix");
+        int len = EbcdicPrefixer.LLL.decodeLength(b, offset);
+        checkPackedLength(len);
+        checkAvailable(b, offset + prefixLength, len, "field value");
+        int digits = getDigitLength(b, offset + prefixLength, len);
+        checkUnpackedLength(digits);
+        c.setValue(ISOUtil.bcd2str(b, offset + prefixLength, digits, false));
         return len+3;
+    }
+
+    @Override
+    public void unpack(ISOComponent c, InputStream in) throws IOException, ISOException {
+        int len = EbcdicPrefixer.LLL.decodeLength(readBytes(in, 3), 0);
+        checkPackedLength(len);
+        byte[] value = readBytes(in, len);
+        int digits = getDigitLength(value, 0, len);
+        checkUnpackedLength(digits);
+        c.setValue(ISOUtil.bcd2str(value, 0, digits, false));
+    }
+
+    private void checkPackedLength(int length) throws ISOException {
+        if (getLength() < 0)
+            throw new ISOException("Field maximum length is not configured");
+        if (length > ((long) getLength() + 1) / 2)
+            throw new ISOException("Packed field length " + length + " too long");
+    }
+
+    private static int getDigitLength(byte[] b, int offset, int length) throws ISOException {
+        if (length == 0)
+            return 0;
+        for (int i = 0; i < length; i++) {
+            int value = b[offset + i] & 0xFF;
+            int high = value >>> 4;
+            int low = value & 0x0F;
+            if (high > 9 || (low > 9 && (i != length - 1 || low != 0x0F)))
+                throw new ISOException("Invalid BCD digit in field value");
+        }
+        return length * 2 - ((b[offset + length - 1] & 0x0F) == 0x0F ? 1 : 0);
     }
     
     public int getMaxPackedLength() {

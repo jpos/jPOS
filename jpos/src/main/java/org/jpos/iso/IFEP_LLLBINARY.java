@@ -29,11 +29,13 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
 
     private static final int TAG_HEADER_LENGTH = 2;
     private final int prefixerPackedLength;
+    private final EbcdicPrefixer embeddedLengthPrefixer;
 
     /** Default constructor. */
     public IFEP_LLLBINARY() {
         super();
         prefixerPackedLength = 3;
+        embeddedLengthPrefixer = new EbcdicPrefixer(prefixerPackedLength);
     }
 
     /**
@@ -45,6 +47,7 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
         super(length, description, LiteralBinaryInterpreter.INSTANCE, EbcdicPrefixer.LLL);
         checkLength(length, 999);
         prefixerPackedLength = EbcdicPrefixer.LLL.getPackedLength();
+        embeddedLengthPrefixer = EbcdicPrefixer.LLL;
     }
 
     /**
@@ -58,6 +61,7 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
         super(length, description, binaryInterpreter, prefixer);
         checkLength(length, 999);
         prefixerPackedLength = prefixer.getPackedLength();
+        embeddedLengthPrefixer = new EbcdicPrefixer(prefixerPackedLength);
     }
 
     @Override
@@ -100,14 +104,14 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-        int len = Integer.parseInt(ISOUtil.ebcdicToAscii(b, offset, prefixerPackedLength)) - TAG_HEADER_LENGTH;
         if (!(c instanceof ISOBinaryField))
             throw new ISOException 
                 (c.getClass().getName() + " is not an ISOBinaryField");
-
-        c.setFieldNumber (
-            Integer.parseInt(ISOUtil.ebcdicToAscii (b, offset+prefixerPackedLength, TAG_HEADER_LENGTH))
-        );
+        checkAvailable(b, offset, prefixerPackedLength + TAG_HEADER_LENGTH, "length and tag");
+        int len = decodeLength(b, offset) - TAG_HEADER_LENGTH;
+        checkUnpackedLength(len);
+        c.setFieldNumber(EbcdicPrefixer.LL.decodeLength(b, offset + prefixerPackedLength));
+        checkAvailable(b, offset + prefixerPackedLength + TAG_HEADER_LENGTH, len, "field value");
         byte[] value = new byte[len];
         System.arraycopy(b, offset + prefixerPackedLength + TAG_HEADER_LENGTH , value, 0, len);
         c.setValue (value);
@@ -117,14 +121,19 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager implements GenericPac
         throws IOException, ISOException
     {
 
-        if (!(c instanceof ISOField))
+        if (!(c instanceof ISOBinaryField))
             throw new ISOException 
-                (c.getClass().getName() + " is not an ISOField");
+                (c.getClass().getName() + " is not an ISOBinaryField");
 
-        int len   = Integer.parseInt(ISOUtil.ebcdicToAscii(readBytes (in, prefixerPackedLength))) - TAG_HEADER_LENGTH;
-        int fldno = Integer.parseInt(ISOUtil.ebcdicToAscii(readBytes (in, TAG_HEADER_LENGTH)));
+        int len = decodeLength(readBytes(in, prefixerPackedLength), 0) - TAG_HEADER_LENGTH;
+        checkUnpackedLength(len);
+        int fldno = EbcdicPrefixer.LL.decodeLength(readBytes(in, TAG_HEADER_LENGTH), 0);
         c.setFieldNumber (fldno);
         c.setValue (readBytes(in, len));
+    }
+
+    private int decodeLength(byte[] b, int offset) throws ISOException {
+        return embeddedLengthPrefixer.decodeLength(b, offset);
     }
     public int getMaxPackedLength() {
         return getLength() + prefixerPackedLength + TAG_HEADER_LENGTH;
