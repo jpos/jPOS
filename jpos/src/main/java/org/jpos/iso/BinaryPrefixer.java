@@ -62,12 +62,15 @@ public class BinaryPrefixer implements Prefixer
     }
 
     @Override
-    public int decodeLength(byte[] b, int offset)
+    public int decodeLength(byte[] b, int offset) throws ISOException
     {
         int len = 0;
         for (int i = 0; i < nBytes; i++)
         {
-            len = 256 * len + (b[offset + i] & 0xFF);
+            int value = b[offset + i] & 0xFF;
+            if (len > (Integer.MAX_VALUE - value) / 256)
+                throw new ISOException("Length prefix exceeds Integer.MAX_VALUE");
+            len = 256 * len + value;
         }
         return len;
     }

@@ -170,19 +170,21 @@ public class ISOStringFieldPackager extends ISOFieldPackager
     {
         try
         {
+            int lenLen = prefixer.getPackedLength();
+            checkAvailable(b, offset, lenLen, "length prefix");
             int len = prefixer.decodeLength(b, offset);
-            if (len == -1) {
+            if (len == -1 && lenLen == 0) {
                 // The prefixer doesn't know how long the field is, so use
                 // maxLength instead
                 len = trim ? Math.min(getLength(),b.length-offset) : getLength();
             }
-            else if (getLength() > 0 && len > getLength())
-                throw new ISOException("Field length " + len + " too long. Max: " + getLength());
+            checkUnpackedLength(len);
 
-            int lenLen = prefixer.getPackedLength();
+            int packedLen = interpreter.getPackedLength(len);
+            checkAvailable(b, offset + lenLen, packedLen, "field value");
             String unpacked = interpreter.uninterpret(b, offset + lenLen, len);
             c.setValue(unpacked);
-            return lenLen + interpreter.getPackedLength(len);
+            return lenLen + packedLen;
         } catch(Exception e)
         {
             throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
@@ -208,10 +210,11 @@ public class ISOStringFieldPackager extends ISOFieldPackager
             } else
             {
                 len = prefixer.decodeLength (readBytes (in, lenLen), 0);
-                if (getLength() > 0 && len > 0 && len > getLength())
-                    throw new ISOException("Field length " + len + " too long. Max: " + getLength());
             }
+            checkUnpackedLength(len);
             int packedLen = interpreter.getPackedLength(len);
+            if (packedLen < 0)
+                throw new ISOException("Invalid packed field length " + packedLen);
             String unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);
             c.setValue(unpacked);
         } catch(ISOException e)

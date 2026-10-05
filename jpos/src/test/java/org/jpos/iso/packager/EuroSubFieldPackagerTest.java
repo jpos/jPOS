@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.iso.IFB_LLLCHAR;
@@ -115,21 +116,13 @@ public class EuroSubFieldPackagerTest {
     }
 
     @Test
-    public void testUnpackThrowsNullPointerException1() throws Throwable {
+    public void testUnpackRejectsUnconfiguredFieldPackager() {
         EuroSubFieldPackager euroSubFieldPackager = new EuroSubFieldPackager();
         ISOFieldPackager[] fld = new ISOFieldPackager[4];
         fld[0] = new IFB_LLLCHAR();
         euroSubFieldPackager.setFieldPackager(fld);
         byte[] b = new byte[3];
-        try {
-            euroSubFieldPackager.unpack(null, b);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.iso.ISOComponent.set(org.jpos.iso.ISOComponent)\" because \"m\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        ISOException ex = assertThrows(ISOException.class, () -> euroSubFieldPackager.unpack(null, b));
+        assertEquals("Field maximum length is not configured", ex.getNested().getMessage());
     }
 }

@@ -217,25 +217,31 @@ public class ISOFormattableStringFieldPackager extends ISOFieldPackager
     public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException {
         try{
             int tagLen = tagPrefixer.getPackedLength();
+            int lenLen = prefixer.getPackedLength();
+            int headerLen = Math.addExact(tagLen, lenLen);
+            checkAvailable(b, offset, headerLen, "field header");
             c.setFieldNumber(tagPrefixer.decodeLength(b, offset + headerFormatter.getTagIndex(prefixer)));
             int len = prefixer.decodeLength(b, offset + headerFormatter.getLengthIndex(tagPrefixer));
-            if (!headerFormatter.isTagFirst()) {
-                len -= tagPrefixer.getPackedLength();
-            }
-            if (len == -1) {
+            if (len == -1 && lenLen == 0) {
                 // The prefixer doesn't know how long the field is, so use
                 // maxLength instead
                 len = getLength();
             }
-            else if (getLength() > 0 && len > getLength()) {
-                throw new ISOException("Field length " + len + " too long. Max: " + getLength());
+            else {
+                if (!headerFormatter.isTagFirst()) {
+                    if (len < tagLen)
+                        throw new ISOException("Invalid self-inclusive field length " + len);
+                    len -= tagLen;
+                }
             }
-            int lenLen = prefixer.getPackedLength();
+            checkUnpackedLength(len);
 
-            String unpacked = interpreter.uninterpret(b, offset + tagPrefixer.getPackedLength() + prefixer.getPackedLength(), len);
+            int packedLen = interpreter.getPackedLength(len);
+            checkAvailable(b, offset + headerLen, packedLen, "field value");
+            String unpacked = interpreter.uninterpret(b, offset + headerLen, len);
 
             c.setValue(padder.unpad(unpacked));
-            return tagLen + lenLen + interpreter.getPackedLength(len);
+            return headerLen + packedLen;
         } catch(Exception e){
             throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
         }
@@ -252,19 +258,24 @@ public class ISOFormattableStringFieldPackager extends ISOFieldPackager
         throws IOException, ISOException {
         try {
             int tagLen = tagPrefixer.getPackedLength();
-            int lenLen = prefixer.getPackedLength() == 0 ? getLength() : prefixer.getPackedLength();
-            int len = -1;
+            int lenLen = prefixer.getPackedLength();
+            int len;
             if (headerFormatter.getTagIndex(prefixer) == 0) {
                 c.setFieldNumber(tagPrefixer.decodeLength(readBytes(in, tagLen), 0));
-                len = prefixer.decodeLength(readBytes(in, lenLen), 0);
+                len = lenLen == 0 ? getLength() : prefixer.decodeLength(readBytes(in, lenLen), 0);
             } else {
-                len = prefixer.decodeLength(readBytes(in, lenLen), 0);
+                len = lenLen == 0 ? getLength() : prefixer.decodeLength(readBytes(in, lenLen), 0);
                 c.setFieldNumber(tagPrefixer.decodeLength(readBytes(in, tagLen), 0));
             }
-            if (getLength() > 0 && len > 0 && len > getLength()) {
-                throw new ISOException("Field length " + len + " too long. Max: " + getLength());
+            if (!headerFormatter.isTagFirst() && lenLen > 0) {
+                if (len < tagLen)
+                    throw new ISOException("Invalid self-inclusive field length " + len);
+                len -= tagLen;
             }
+            checkUnpackedLength(len);
             int packedLen = interpreter.getPackedLength(len);
+            if (packedLen < 0)
+                throw new ISOException("Invalid packed field length " + packedLen);
             String unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);
             c.setValue(padder.unpad(unpacked));
         } catch(ISOException e){

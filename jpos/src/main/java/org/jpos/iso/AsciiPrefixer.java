@@ -98,7 +98,10 @@ public class AsciiPrefixer implements Prefixer
             {
                 throw new ISOException("Invalid character found. Expected digit.");
             }
-            len = len * 10 + d - (byte)'0';
+            int digit = d - (byte) '0';
+            if (len > (Integer.MAX_VALUE - digit) / 10)
+                throw new ISOException("Length prefix exceeds Integer.MAX_VALUE");
+            len = len * 10 + digit;
         }
         return len;
     }

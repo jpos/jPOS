@@ -28,6 +28,8 @@ import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 public class EbcdicPrefixer2Test {
 
     @Test
@@ -47,6 +49,7 @@ public class EbcdicPrefixer2Test {
     public void testDecodeLength1() throws Throwable {
         byte[] bytes = new byte[2];
         bytes[0] = (byte) -14;
+        bytes[1] = (byte) -16;
         int result = EbcdicPrefixer.LL.decodeLength(bytes, 0);
         assertEquals(20, result, "result");
     }
@@ -69,6 +72,7 @@ public class EbcdicPrefixer2Test {
     @Test
     public void testDecodeLengthThrowsArrayIndexOutOfBoundsException1() throws Throwable {
         byte[] b = new byte[50];
+        Arrays.fill(b, (byte) 0xF0);
         try {
             new EbcdicPrefixer(100).decodeLength(b, 0);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");

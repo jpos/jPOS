@@ -76,12 +76,18 @@ public class EbcdicPrefixer implements Prefixer
     }
 
     @Override
-    public int decodeLength(byte[] b, int offset)
+    public int decodeLength(byte[] b, int offset) throws ISOException
     {
         int len = 0;
         for (int i = 0; i < nDigits; i++)
         {
-            len = len * 10 + (b[offset + i] & 0x0F);
+            int value = b[offset + i] & 0xFF;
+            if (value < 0xF0 || value > 0xF9)
+                throw new ISOException("Invalid EBCDIC digit in length prefix");
+            int digit = value - 0xF0;
+            if (len > (Integer.MAX_VALUE - digit) / 10)
+                throw new ISOException("Length prefix exceeds Integer.MAX_VALUE");
+            len = len * 10 + digit;
         }
         return len;
     }

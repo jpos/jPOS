@@ -78,14 +78,21 @@ public class BcdPrefixer implements Prefixer
     }
 
     @Override
-    public int decodeLength(byte[] b, int offset)
+    public int decodeLength(byte[] b, int offset) throws ISOException
     {
-        int len = 0;
+        long len = 0;
         for (int i = 0; i < (nDigits + 1) / 2; i++)
         {
-            len = 100 * len + ((b[offset + i] & 0xF0) >> 4) * 10 + (b[offset + i] & 0x0F);
+            int value = b[offset + i] & 0xFF;
+            int high = value >>> 4;
+            int low = value & 0x0F;
+            if (high > 9 || low > 9 || (i == 0 && (nDigits & 1) != 0 && high != 0))
+                throw new ISOException("Invalid BCD digit in length prefix");
+            len = 100 * len + high * 10 + low;
+            if (len > Integer.MAX_VALUE)
+                throw new ISOException("Length prefix exceeds Integer.MAX_VALUE");
         }
-        return len;
+        return (int) len;
     }
 
     @Override

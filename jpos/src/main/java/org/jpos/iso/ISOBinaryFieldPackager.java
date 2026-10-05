@@ -137,18 +137,20 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager implements GenericP
     {
         try
         {
+            int lenLen = prefixer.getPackedLength();
+            checkAvailable(b, offset, lenLen, "length prefix");
             int len = prefixer.decodeLength(b, offset);
-            if (len == -1) {
+            if (len == -1 && lenLen == 0) {
                 // The prefixer doesn't know how long the field is, so use
                 // maxLength instead
                 len = getLength();
             }
-            else if (getLength() > 0 && len > getLength())
-                throw new ISOException("Field length " + len + " too long. Max: " + getLength());
-            int lenLen = prefixer.getPackedLength();
+            checkUnpackedLength(len);
+            int packedLen = interpreter.getPackedLength(len);
+            checkAvailable(b, offset + lenLen, packedLen, "field value");
             byte[] unpacked = interpreter.uninterpret(b, offset + lenLen, len);
             c.setValue(unpacked);
-            return lenLen + interpreter.getPackedLength(len);
+            return lenLen + packedLen;
         } catch(Exception e)
         {
             throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
@@ -169,10 +171,11 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager implements GenericP
             } else
             {
                 len = prefixer.decodeLength (readBytes (in, lenLen), 0);
-                if (getLength() > 0 && len > 0 && len > getLength())
-                    throw new ISOException("Field length " + len + " too long. Max: " + getLength());
             }
+            checkUnpackedLength(len);
             int packedLen = interpreter.getPackedLength(len);
+            if (packedLen < 0)
+                throw new ISOException("Invalid packed field length " + packedLen);
             byte[] unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);
             c.setValue(unpacked);
         } catch(ISOException e)

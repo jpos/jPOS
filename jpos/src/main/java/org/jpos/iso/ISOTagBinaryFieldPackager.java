@@ -174,19 +174,24 @@ public class ISOTagBinaryFieldPackager extends ISOBinaryFieldPackager
     public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException {
         try{
             int tagLen = tagPrefixer.getPackedLength();
+            checkAvailable(b, offset, tagLen, "tag prefix");
             c.setFieldNumber(tagPrefixer.decodeLength(b, offset));
-            int len = prefixer.decodeLength(b, offset + tagLen);
-            if (len == -1) {
+            int lenLen = prefixer.getPackedLength();
+            int lengthOffset = offset + tagLen;
+            checkAvailable(b, lengthOffset, lenLen, "length prefix");
+            int len = prefixer.decodeLength(b, lengthOffset);
+            if (lenLen == 0 && len == -1) {
                 // The prefixer doesn't know how long the field is, so use
                 // maxLength instead
                 len = getLength();
             }
-            else if (getLength() > 0 && len > getLength())
-                throw new ISOException("Field length " + len + " too long. Max: " + getLength());
-            int lenLen = prefixer.getPackedLength();
-            byte[] unpacked = interpreter.uninterpret(b, offset + tagLen + lenLen, len);
+            checkUnpackedLength(len);
+            int packedLen = interpreter.getPackedLength(len);
+            int valueOffset = lengthOffset + lenLen;
+            checkAvailable(b, valueOffset, packedLen, "field value");
+            byte[] unpacked = interpreter.uninterpret(b, valueOffset, len);
             c.setValue(unpacked);
-            return tagLen + lenLen + interpreter.getPackedLength(len);
+            return tagLen + lenLen + packedLen;
         } catch(Exception e){
             throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
         }
@@ -210,10 +215,11 @@ public class ISOTagBinaryFieldPackager extends ISOBinaryFieldPackager
                 len = getLength();
             else {
                 len = prefixer.decodeLength (readBytes (in, lenLen), 0);
-                if (getLength() > 0 && len > 0 && len > getLength())
-                    throw new ISOException("Field length " + len + " too long. Max: " + getLength());
             }
+            checkUnpackedLength(len);
             int packedLen = interpreter.getPackedLength(len);
+            if (packedLen < 0)
+                throw new ISOException("Invalid packed field length " + packedLen);
             byte[] unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);
             c.setValue(unpacked);
         } catch(ISOException e){
