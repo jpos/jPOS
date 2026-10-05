@@ -65,8 +65,17 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
         LogEvent evt = withField (new LogEvent (this, "unpack"), m);
         int consumed = 0;
         for ( int i=0; consumed < b.length ; i++ ) {
+            if (fld == null || i >= fld.length || fld[i] == null)
+                throw new ISOException("No field packager for field " + i + " with input remaining");
             ISOComponent c = fld[i].createComponent( i );
-            consumed += fld[i].unpack ( c, b, consumed );
+            int unpacked = fld[i].unpack ( c, b, consumed );
+            int remaining = b.length - consumed;
+            if (unpacked <= 0 || unpacked > remaining)
+                throw new ISOException(
+                    "Invalid consumed length " + unpacked + " for field " + i +
+                    " with " + remaining + " bytes remaining"
+                );
+            consumed += unpacked;
             if ( logger != null )       {
                 evt.addMessage ("<unpack fld=\"" + i
                                 +"\" packager=\""

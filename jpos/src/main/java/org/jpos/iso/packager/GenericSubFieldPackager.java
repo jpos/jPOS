@@ -84,7 +84,10 @@ public class GenericSubFieldPackager extends GenericPackager implements ISOSubFi
             int maxField = fld.length;
             if (emitBitMap()) 
             {
-                consumed += getBitMapfieldPackager().unpack(bitmap,b,consumed);
+                int unpacked = getBitMapfieldPackager().unpack(bitmap,b,consumed);
+                if (unpacked < 0 || unpacked > b.length - consumed)
+                    throw new ISOException("Invalid consumed length " + unpacked + " for bitmap");
+                consumed += unpacked;
                 bmap = (BitSet) bitmap.getValue();
                 m.set (bitmap);
                 maxField = bmap.size();
@@ -93,7 +96,10 @@ public class GenericSubFieldPackager extends GenericPackager implements ISOSubFi
             {
                 if ((bmap == null || bmap.get(i)) && i<fld.length && fld[i] != null) {
                     ISOComponent c = fld[i].createComponent(i);
-                    consumed += fld[i].unpack (c, b, consumed);
+                    int unpacked = fld[i].unpack (c, b, consumed);
+                    if (unpacked < 0 || unpacked > b.length - consumed)
+                        throw new ISOException("Invalid consumed length " + unpacked + " for field " + i);
+                    consumed += unpacked;
                     m.set(c);
                 }
             }
@@ -182,5 +188,4 @@ public class GenericSubFieldPackager extends GenericPackager implements ISOSubFi
         }
     }
 }
-
 

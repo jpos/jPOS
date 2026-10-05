@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import static org.apache.commons.lang3.JavaVersion.JAVA_10;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jpos.iso.IFA_AMOUNT;
 import org.jpos.iso.IFA_LCHAR;
@@ -124,21 +124,17 @@ public class CTCSubElementPackagerTest {
     }
 
     @Test
-    public void testUnpackThrowsArrayIndexOutOfBoundsException() throws Throwable {
+    public void testUnpackRejectsInputWithoutConfiguredField() throws Throwable {
         CTCSubElementPackager cTCSubElementPackager = new CTCSubElementPackager();
         ISOFieldPackager[] fld = new ISOFieldPackager[0];
         cTCSubElementPackager.setFieldPackager(fld);
         byte[] b = new byte[1];
-        try {
-            cTCSubElementPackager.unpack(new ISOMsg(), b);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("0", ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Index 0 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+
+        ISOException ex = assertThrows(
+            ISOException.class,
+            () -> cTCSubElementPackager.unpack(new ISOMsg(), b)
+        );
+        assertEquals("No field packager for field 0 with input remaining", ex.getMessage());
     }
 
     @Test
@@ -153,7 +149,7 @@ public class CTCSubElementPackagerTest {
             cTCSubElementPackager.unpack(new ISOVField(new ISOField(100, "testCTCSubElementPackagerv"), null), b);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("Can't add to Leaf", ex.getMessage(), "ex.getMessage()");
+            assertEquals("Invalid consumed length 0 for field 0 with 2 bytes remaining", ex.getMessage(), "ex.getMessage()");
             assertNull(ex.getNested(), "ex.getNested()");
         }
     }
@@ -190,18 +186,13 @@ public class CTCSubElementPackagerTest {
     }
 
     @Test
-    public void testUnpackThrowsNullPointerException() throws Throwable {
+    public void testUnpackRejectsUnconfiguredPackager() throws Throwable {
         byte[] b = new byte[3];
-        try {
-            new CTCSubElementPackager().unpack(new ISOField(100), b);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot load from object array because \"this.fld\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        ISOException ex = assertThrows(
+            ISOException.class,
+            () -> new CTCSubElementPackager().unpack(new ISOField(100), b)
+        );
+        assertEquals("No field packager for field 0 with input remaining", ex.getMessage());
     }
 
     @Test
@@ -219,23 +210,18 @@ public class CTCSubElementPackagerTest {
     }
 
     @Test
-    public void testUnpackThrowsNullPointerException2() throws Throwable {
+    public void testUnpackRejectsZeroConsumption() throws Throwable {
         CTCSubElementPackager cTCSubElementPackager = new CTCSubElementPackager();
         ISOFieldPackager[] fld = new ISOFieldPackager[2];
         fld[0] = new IFA_AMOUNT();
         cTCSubElementPackager.setFieldPackager(fld);
         byte[] b = new byte[3];
         ISOComponent m = new ISOMsg("testCTCSubElementPackagerMti");
-        try {
-            cTCSubElementPackager.unpack(m, b);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.iso.ISOFieldPackager.createComponent(int)\" because \"this.fld[i]\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-        }
+        ISOException ex = assertThrows(
+            ISOException.class,
+            () -> cTCSubElementPackager.unpack(m, b)
+        );
+        assertEquals("Invalid consumed length 0 for field 0 with 3 bytes remaining", ex.getMessage());
     }
 
 }

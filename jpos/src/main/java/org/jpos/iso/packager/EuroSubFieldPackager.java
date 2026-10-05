@@ -118,7 +118,15 @@ public class EuroSubFieldPackager extends ISOBasePackager
                 throw new ISOException("Unsupported sub-field " + i + " unpacking field " + m.getKey());
 
             c = fld[i].createComponent(i);
-            consumed += fld[i].unpack (c, b, consumed);
+            int unpacked = fld[i].unpack (c, b, consumed);
+            int remaining = b.length - consumed;
+            if (unpacked < 0 || unpacked > remaining ||
+                (unpacked == 0 && (i != 0 || c.getValue() != null)))
+                throw new ISOException(
+                    "Invalid consumed length " + unpacked + " for sub-field " + i +
+                    " with " + remaining + " bytes remaining"
+                );
+            consumed += unpacked;
             if (i != 0 || c.getValue() != null) {
                 if (evt != null) {
                     fieldUnpackLogger(evt, i, c, fld[i], logFieldName);
@@ -153,4 +161,3 @@ public class EuroSubFieldPackager extends ISOBasePackager
     }
 
 }
-

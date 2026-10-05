@@ -104,6 +104,119 @@ public class BERTLVPackagerTest {
     }
 
     @Test
+    public void testRejectsTruncatedExtendedTag() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> p.unpack(new ISOMsg(55), ISOUtil.hex2byte("9F"))
+        );
+        assertTrue(e.getMessage().contains("Truncated BER-TLV tag"));
+    }
+
+    @Test
+    public void testRejectsTagLongerThanSupported() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> p.unpack(new ISOMsg(55), ISOUtil.hex2byte("9F8180"))
+        );
+        assertTrue(e.getMessage().contains("tag exceeds 3 bytes"));
+    }
+
+    @Test
+    public void testRejectsTruncatedLongFormLength() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> p.unpack(new ISOMsg(55), ISOUtil.hex2byte("9F3482"))
+        );
+        assertTrue(e.getMessage().contains("Truncated BER-TLV length"));
+    }
+
+    @Test
+    public void testRejectsIndefiniteLength() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> p.unpack(new ISOMsg(55), ISOUtil.hex2byte("9F3480"))
+        );
+        assertTrue(e.getMessage().contains("Indefinite BER-TLV lengths are not supported"));
+    }
+
+    @Test
+    public void testRejectsLengthLongerThanSupported() throws ISOException {
+        BERTLVPackager p = new BERTLVBinaryPackager();
+        p.setFieldPackager(new ISOFieldPackager[]{new IFA_TTLLBINARY()});
+
+        ISOException e = assertThrows(
+          ISOException.class,
+          () -> p.unpack(new ISOMsg(55), ISOUtil.hex2byte("9F3485"))
+        );
+        assertTrue(e.getMessage().contains("length exceeds 4 bytes"));
+    }
+
+    @Test
+    public void testRejectsInvalidConfiguredFirstFieldConsumption() throws ISOException {
+        byte[] data = ISOUtil.hex2byte("009400");
+        for (int reported : new int[] {-1, 0, Integer.MAX_VALUE}) {
+            BERTLVPackager p = new BERTLVBinaryPackager();
+            p.setFieldPackager(new ISOFieldPackager[] {
+              null, new ControlledConsumptionPackager(data.length, reported)
+            });
+            ISOMsg m = new ISOMsg(55);
+
+            ISOException e = assertThrows(ISOException.class, () -> p.unpack(m, data));
+
+            assertTrue(e.getMessage().contains("Configured field 1"));
+            assertFalse(m.hasField(1));
+        }
+    }
+
+    @Test
+    public void testRejectsInvalidConfiguredLastFieldConsumption() throws ISOException {
+        byte[] data = ISOUtil.hex2byte("0102");
+        for (int reported : new int[] {-1, 0, Integer.MAX_VALUE}) {
+            BERTLVPackager p = new BERTLVBinaryPackager();
+            p.setFieldPackager(new ISOFieldPackager[] {
+              null, null, new ControlledConsumptionPackager(data.length, reported)
+            });
+            ISOMsg m = new ISOMsg(55);
+
+            ISOException e = assertThrows(ISOException.class, () -> p.unpack(m, data));
+
+            assertTrue(e.getMessage().contains("Configured field 2"));
+            assertFalse(m.hasField(2));
+        }
+    }
+
+    @Test
+    public void testAcceptsValidConfiguredFieldConsumption() throws ISOException {
+        BERTLVPackager firstPackager = new BERTLVBinaryPackager();
+        firstPackager.setFieldPackager(new ISOFieldPackager[] {
+          null, new ControlledConsumptionPackager(1, 1)
+        });
+        ISOMsg firstMessage = new ISOMsg(55);
+        assertEquals(3, firstPackager.unpack(firstMessage, ISOUtil.hex2byte("009400")));
+        assertEquals("decoded", firstMessage.getString(1));
+
+        BERTLVPackager lastPackager = new BERTLVBinaryPackager();
+        lastPackager.setFieldPackager(new ISOFieldPackager[] {
+          null, null, new ControlledConsumptionPackager(2, 2)
+        });
+        ISOMsg lastMessage = new ISOMsg(55);
+        assertEquals(2, lastPackager.unpack(lastMessage, ISOUtil.hex2byte("0102")));
+        assertEquals("decoded", lastMessage.getString(2));
+    }
+
+    @Test
     public void testUninterpretLengthDoesNotOverflow() throws Exception {
         BERTLVPackager p = new BERTLVBinaryPackager();
         Method method = BERTLVPackager.class.getDeclaredMethod(
@@ -209,5 +322,30 @@ public class BERTLVPackagerTest {
         }
         parent.set(new ISOTaggedField("94", new ISOField(1, "")));
         return root;
+    }
+
+    private static class ControlledConsumptionPackager extends ISOFieldPackager {
+        private final int reportedConsumption;
+
+        private ControlledConsumptionPackager(int length, int reportedConsumption) {
+            super(length, "controlled consumption");
+            this.reportedConsumption = reportedConsumption;
+        }
+
+        @Override
+        public int getMaxPackedLength() {
+            return getLength();
+        }
+
+        @Override
+        public byte[] pack(ISOComponent c) {
+            return new byte[0];
+        }
+
+        @Override
+        public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException {
+            c.setValue("decoded");
+            return reportedConsumption;
+        }
     }
 }

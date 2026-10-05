@@ -272,7 +272,7 @@ public abstract class BERTLVPackager extends GenericPackager {
                 ISOFieldPackager packager = fld[1];
                 if (packager != null) {
                     ISOComponent subField = packager.createComponent(1);
-                    consumed = consumed + packager.unpack(subField, b, consumed);
+                    consumed += unpackConfiguredField(packager, subField, b, consumed, 1);
                     m.set(subField);
                 }
                 subFieldNumber++;
@@ -283,7 +283,9 @@ public abstract class BERTLVPackager extends GenericPackager {
                 if (!nested && fld.length > 1 && (packager = fld[fld.length - 1]) != null &&
                         packager.getLength() == tlvDataLength - consumed) {
                     ISOComponent subField = packager.createComponent(fld.length - 1);
-                    consumed = consumed + packager.unpack(subField, b, consumed);
+                    consumed += unpackConfiguredField(
+                        packager, subField, b, consumed, fld.length - 1
+                    );
                     m.set(subField);
                     subFieldNumber++;
                 } else {
@@ -340,26 +342,45 @@ public abstract class BERTLVPackager extends GenericPackager {
         }
     }
 
-    private UnpackResult unpackTag(final byte[] tlvData, final int offset) {
-        byte[] tlvBytesHex =
-                tagInterpreter.uninterpret(
-                        tlvData,
-                        offset,
-                        tlvData.length >= offset + MAX_TAG_BYTES
-                                ? MAX_TAG_BYTES : tlvData.length - offset);
-        int index = 0;
+    private int unpackConfiguredField(ISOFieldPackager packager, ISOComponent subField,
+                                      byte[] data, int offset, int fieldNumber) throws ISOException {
+        if (offset < 0 || offset > data.length)
+            throw new ISOException("Invalid offset for configured field " + fieldNumber + ": " + offset);
+        int remaining = data.length - offset;
+        int fieldConsumed = packager.unpack(subField, data, offset);
+        if (fieldConsumed <= 0)
+            throw new ISOException(
+                "Configured field " + fieldNumber + " made no progress: " + fieldConsumed
+            );
+        if (fieldConsumed > remaining)
+            throw new ISOException(
+                "Configured field " + fieldNumber + " consumed " + fieldConsumed +
+                " bytes, only " + remaining + " packed bytes remain"
+            );
+        return fieldConsumed;
+    }
+
+    private UnpackResult unpackTag(final byte[] tlvData, final int offset) throws ISOException {
+        byte[] tlvBytesHex = uninterpretPrefix(
+            tagInterpreter, tlvData, offset, MAX_TAG_BYTES, "BER-TLV tag"
+        );
         final byte[] tagBytes;
-        byte tagByte = tlvBytesHex[index];
+        byte tagByte = tlvBytesHex[0];
         int tagLength = 1;
         if ((tagByte & 0x1F) == 0x1F) {
-            tagLength++;
-            tagByte = tlvBytesHex[index + 1];
-            while (/* tagLength < MAX_TAG_BYTES && */(tagByte & 0x80) == 0x80) {
+            while (true) {
+                if (tagLength >= tlvBytesHex.length) {
+                    if (tagLength >= MAX_TAG_BYTES)
+                        throw new ISOException("BER-TLV tag exceeds " + MAX_TAG_BYTES + " bytes");
+                    throw new ISOException("Truncated BER-TLV tag");
+                }
+                tagByte = tlvBytesHex[tagLength];
                 tagLength++;
-                tagByte = tlvBytesHex[index + tagLength - 1];
+                if ((tagByte & 0x80) == 0)
+                    break;
             }
             tagBytes = new byte[tagLength];
-            System.arraycopy(tlvBytesHex, index, tagBytes, 0, tagBytes.length);
+            System.arraycopy(tlvBytesHex, 0, tagBytes, 0, tagBytes.length);
         } else {
             tagBytes = new byte[]{tagByte};
         }
@@ -370,20 +391,25 @@ public abstract class BERTLVPackager extends GenericPackager {
      * @param offset start offset
      * @return UnpackResult containing length bytes and consumed size
      */
-    private UnpackResult unpackLength(final byte[] tlvData, final int offset) {
-        byte[] tlvBytesHex =
-                lengthInterpreter.uninterpret(
-                        tlvData,
-                        offset,
-                        tlvData.length >= offset + MAX_LENGTH_BYTES
-                                ? MAX_LENGTH_BYTES : tlvData.length - offset);
+    private UnpackResult unpackLength(final byte[] tlvData, final int offset) throws ISOException {
+        byte[] tlvBytesHex = uninterpretPrefix(
+            lengthInterpreter, tlvData, offset, MAX_LENGTH_BYTES, "BER-TLV length"
+        );
         final byte length = tlvBytesHex[0];
         final int lengthLength;
         final byte[] lengthBytes;
         if ((length & 0x80) == 0x80) {
             //Long Form
             int lengthOctetsCount = length & 0x7F;
+            if (lengthOctetsCount == 0)
+                throw new ISOException("Indefinite BER-TLV lengths are not supported");
+            if (lengthOctetsCount >= MAX_LENGTH_BYTES)
+                throw new ISOException(
+                    "BER-TLV length exceeds " + (MAX_LENGTH_BYTES - 1) + " bytes"
+                );
             lengthLength = lengthOctetsCount + 1;
+            if (lengthLength > tlvBytesHex.length)
+                throw new ISOException("Truncated BER-TLV length");
             lengthBytes = new byte[lengthOctetsCount];
             System.arraycopy(tlvBytesHex, 1, lengthBytes, 0, lengthOctetsCount);
         } else {
@@ -392,6 +418,21 @@ public abstract class BERTLVPackager extends GenericPackager {
             lengthBytes = new byte[]{length};
         }
         return new UnpackResult(lengthBytes, lengthInterpreter.getPackedLength(lengthLength));
+    }
+
+    private byte[] uninterpretPrefix(BinaryInterpreter interpreter, byte[] data, int offset,
+                                     int maximumLength, String part) throws ISOException {
+        if (offset < 0 || offset > data.length)
+            throw new ISOException("Invalid offset for " + part + ": " + offset);
+        int remaining = data.length - offset;
+        int availableLength = 0;
+        while (availableLength < maximumLength &&
+               interpreter.getPackedLength(availableLength + 1) <= remaining) {
+            availableLength++;
+        }
+        if (availableLength == 0)
+            throw new ISOException("Truncated " + part);
+        return interpreter.uninterpret(data, offset, availableLength);
     }
 
     /**

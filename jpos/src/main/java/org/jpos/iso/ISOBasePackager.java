@@ -283,7 +283,10 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if (!(fld[0] == null) && !(fld[0] instanceof ISOBitMapPackager))
             {
                 ISOComponent mti = fld[0].createComponent(0);
-                consumed  += fld[0].unpack(mti, b, consumed);
+                int unpacked = fld[0].unpack(mti, b, consumed);
+                if (unpacked < 0 || unpacked > b.length - consumed)
+                    throw new ISOException("Invalid consumed length " + unpacked + " for field 0");
+                consumed += unpacked;
                 m.set (mti);
             }
 
@@ -293,7 +296,10 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
             if (emitBitMap()) {
                 ISOBitMap bitmap = new ISOBitMap (-1);
-                consumed += getBitMapfieldPackager().unpack(bitmap,b,consumed);
+                int unpacked = getBitMapfieldPackager().unpack(bitmap,b,consumed);
+                if (unpacked < 0 || unpacked > b.length - consumed)
+                    throw new ISOException("Invalid consumed length " + unpacked + " for bitmap");
+                consumed += unpacked;
                 bmap = (BitSet) bitmap.getValue();
                 bmapBytes= (bmap.length()-1 + 63) >> 6 << 3;
                 if (evt != null)
@@ -321,7 +327,10 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                             throw new ISOException ("field packager '" + i + "' is null");
 
                         ISOComponent c = fld[i].createComponent(i);
-                        consumed += fld[i].unpack (c, b, consumed);
+                        int unpacked = fld[i].unpack (c, b, consumed);
+                        if (unpacked < 0 || unpacked > b.length - consumed)
+                            throw new ISOException("Invalid consumed length " + unpacked + " for field " + i);
+                        consumed += unpacked;
                         if (evt != null)
                             fieldUnpackLogger(evt, i, c, fld[i], logFieldName);
                         m.set(c);

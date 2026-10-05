@@ -140,15 +140,18 @@ public class CTCSubFieldPackagerTest {
     }
 
     @Test
-    public void testUnpackThrowsNullPointerException() throws Throwable {
-        assertThrows(NullPointerException.class, () -> {
-            ISOFieldPackager[] fld = new ISOFieldPackager[4];
-            fld[0] = new IFE_CHAR();
-            CTCSubFieldPackager cTCSubFieldPackager = new CTCSubFieldPackager();
-            cTCSubFieldPackager.setFieldPackager(fld);
-            byte[] b = new byte[2];
-            cTCSubFieldPackager.unpack(null, b);
-        });
+    public void testUnpackRejectsZeroConsumption() {
+        ISOFieldPackager[] fld = new ISOFieldPackager[4];
+        fld[0] = new IFE_CHAR();
+        CTCSubFieldPackager cTCSubFieldPackager = new CTCSubFieldPackager();
+        cTCSubFieldPackager.setFieldPackager(fld);
+        byte[] b = new byte[2];
+
+        ISOException ex = assertThrows(
+            ISOException.class,
+            () -> cTCSubFieldPackager.unpack(null, b)
+        );
+        assertEquals("Invalid consumed length 0 for field 0 with 2 bytes remaining", ex.getMessage());
     }
 
     @Test

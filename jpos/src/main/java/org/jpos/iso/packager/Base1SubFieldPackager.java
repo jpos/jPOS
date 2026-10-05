@@ -85,7 +85,10 @@ public class Base1SubFieldPackager extends ISOBasePackager
             int maxField = fld.length;
             if (emitBitMap()) 
             {
-                consumed += getBitMapfieldPackager().unpack(bitmap,b,consumed);
+                int unpacked = getBitMapfieldPackager().unpack(bitmap,b,consumed);
+                if (unpacked < 0 || unpacked > b.length - consumed)
+                    throw new ISOException("Invalid consumed length " + unpacked + " for bitmap");
+                consumed += unpacked;
                 bmap = (BitSet) bitmap.getValue();
                 m.set (bitmap);
                 maxField = bmap.size();
@@ -94,8 +97,13 @@ public class Base1SubFieldPackager extends ISOBasePackager
             {
                 if (bmap == null || bmap.get(i)) 
                 {
+                    if (i >= fld.length || fld[i] == null)
+                        throw new ISOException("field packager '" + i + "' is null");
                     ISOComponent c = fld[i].createComponent(i);
-                    consumed += fld[i].unpack (c, b, consumed);
+                    int unpacked = fld[i].unpack (c, b, consumed);
+                    if (unpacked < 0 || unpacked > b.length - consumed)
+                        throw new ISOException("Invalid consumed length " + unpacked + " for field " + i);
+                    consumed += unpacked;
                     m.set(c);
                 }
             }
@@ -170,5 +178,4 @@ public class Base1SubFieldPackager extends ISOBasePackager
         }
     }
 }
-
 

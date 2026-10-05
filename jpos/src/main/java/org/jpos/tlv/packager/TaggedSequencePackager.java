@@ -119,7 +119,9 @@ public class TaggedSequencePackager extends GenericPackager {
                 }
                 int fieldNumber = subFieldId++;
                 ISOTaggedField taggedField = (ISOTaggedField) fieldPackager.createComponent(fieldNumber);
-                consumed += fieldPackager.unpack(taggedField, b, consumed);
+                int fieldConsumed = fieldPackager.unpack(taggedField, b, consumed);
+                validateConsumption(fieldConsumed, consumed, b.length, true, "tagged field");
+                consumed += fieldConsumed;
                 m.set(taggedField);
             }
             if (b.length != consumed) {
@@ -317,12 +319,25 @@ public class TaggedSequencePackager extends GenericPackager {
                 break;
             } else if (fld[subFieldId] != null) {
                 ISOComponent subField = fld[subFieldId].createComponent(subFieldId);
-                consumed += fld[subFieldId].unpack(subField, b, consumed);
+                int fieldConsumed = fld[subFieldId].unpack(subField, b, consumed);
+                validateConsumption(fieldConsumed, consumed, b.length, false, "prefix field");
+                consumed += fieldConsumed;
                 m.set(subField);
             }
             subFieldId++;
         }
         return new PrefixUnpackResult(consumed, subFieldId);
+    }
+
+    private void validateConsumption(int fieldConsumed, int consumed, int inputLength,
+                                     boolean requireProgress, String fieldType) throws ISOException {
+        if (fieldConsumed < 0 || requireProgress && fieldConsumed == 0) {
+            throw new ISOException("Invalid " + fieldType + " consumption: " + fieldConsumed);
+        }
+        if (fieldConsumed > inputLength - consumed) {
+            throw new ISOException(fieldType + " consumption " + fieldConsumed
+                    + " exceeds remaining input " + (inputLength - consumed));
+        }
     }
 
 }
