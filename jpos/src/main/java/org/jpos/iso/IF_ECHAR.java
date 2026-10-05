@@ -60,6 +60,7 @@ public class IF_ECHAR extends ISOFieldPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
+        checkAvailable(b, offset, getLength(), "EBCDIC field");
         c.setValue(ISOUtil.ebcdicToAscii(b, offset, getLength()));
         return getLength();
     }

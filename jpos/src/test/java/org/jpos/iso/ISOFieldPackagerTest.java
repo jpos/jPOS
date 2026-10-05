@@ -21,6 +21,7 @@ package org.jpos.iso;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -195,20 +196,13 @@ public class ISOFieldPackagerTest {
     }
 
     @Test
-    public void testUnpackThrowsNegativeArraySizeException() throws Throwable {
+    public void testBase1BitmapStreamRejectsTruncatedData() throws Throwable {
         byte[] bytes = new byte[0];
         InputStream in = new ByteArrayInputStream(bytes);
-        try {
-            new Base1_BITMAP126(-1, "testISOFieldPackagerDescription").unpack(new IFB_AMOUNT().createComponent(100), in);
-            fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            if (isJavaVersionAtMost(JAVA_10)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("-1", ex.getMessage(), "ex.getMessage()");
-            }
-            assertEquals(0, in.available(), "(ByteArrayInputStream) in.available()");
-        }
+        assertThrows(EOFException.class,
+          () -> new Base1_BITMAP126(-1, "testISOFieldPackagerDescription")
+            .unpack(new IFB_AMOUNT().createComponent(100), in));
+        assertEquals(0, in.available(), "(ByteArrayInputStream) in.available()");
     }
 
     @Test
@@ -228,15 +222,13 @@ public class ISOFieldPackagerTest {
     }
 
     @Test
-    public void testUnpackThrowsStringIndexOutOfBoundsException() throws Throwable {
+    public void testAmountUnpackRejectsUnconfiguredLength() {
         ISOFieldPackager iFB_AMOUNT = new IFB_AMOUNT();
-        InputStream in = new ByteArrayInputStream("testString".getBytes());
+        ByteArrayInputStream in = new ByteArrayInputStream("testString".getBytes());
         iFB_AMOUNT.setLength(-1);
-        try {
-            iFB_AMOUNT.unpack(new ISOMsg(), in);
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
-        } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals(10, in.available(), "(ByteArrayInputStream) in.available()");
-        }
+        ISOException ex = assertThrows(ISOException.class,
+          () -> iFB_AMOUNT.unpack(new ISOMsg(), in));
+        assertEquals("Amount length is not configured", ex.getMessage());
+        assertEquals(10, in.available(), "(ByteArrayInputStream) in.available()");
     }
 }

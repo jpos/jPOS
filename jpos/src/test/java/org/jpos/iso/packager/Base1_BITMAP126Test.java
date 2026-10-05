@@ -20,9 +20,9 @@ package org.jpos.iso.packager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import static org.apache.commons.lang3.JavaVersion.JAVA_10;
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
@@ -31,6 +31,7 @@ import java.util.BitSet;
 import org.jpos.iso.ISOBinaryField;
 import org.jpos.iso.ISOBitMap;
 import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.junit.jupiter.api.Test;
 
@@ -95,36 +96,22 @@ public class Base1_BITMAP126Test {
     }
 
     @Test
-    public void testUnpackThrowsArrayIndexOutOfBoundsException() throws Throwable {
+    public void testUnpackRejectsInsufficientData() {
         byte[] b = new byte[0];
         ISOComponent c = new ISOMsg();
-        try {
-            new Base1_BITMAP126().unpack(c, b, 100);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("100", ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Index 100 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
-            }
-            assertEquals(0, ((ISOMsg) c).getDirection(), "(ISOMsg) c.getDirection()");
-        }
+        ISOException ex = assertThrows(ISOException.class,
+          () -> new Base1_BITMAP126().unpack(c, b, 100));
+        assertEquals("Insufficient data for bitmap", ex.getMessage());
+        assertEquals(0, ((ISOMsg) c).getDirection(), "(ISOMsg) c.getDirection()");
     }
 
     @Test
-    public void testUnpackThrowsNullPointerException() throws Throwable {
+    public void testUnpackRejectsNullData() {
         Base1_BITMAP126 base1_BITMAP126 = new Base1_BITMAP126(100, "testBase1_BITMAP126Description");
         ISOComponent c = new ISOBinaryField(100);
-        try {
-            base1_BITMAP126.unpack(c, null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot load from byte/boolean array because \"b\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-            assertNull(((ISOBinaryField) c).getBytes(), "(ISOBinaryField) c.getBytes()");
-        }
+        ISOException ex = assertThrows(ISOException.class,
+          () -> base1_BITMAP126.unpack(c, null, 100));
+        assertEquals("Insufficient data for bitmap", ex.getMessage());
+        assertNull(((ISOBinaryField) c).getBytes(), "(ISOBinaryField) c.getBytes()");
     }
 }

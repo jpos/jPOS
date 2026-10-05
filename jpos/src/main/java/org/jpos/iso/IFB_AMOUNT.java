@@ -74,10 +74,31 @@ public class IFB_AMOUNT extends ISOFieldPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
+        if (getLength() < 1)
+            throw new ISOException("Amount length is not configured");
+        int packedLength = getMaxPackedLength();
+        checkAvailable(b, offset, packedLength, "amount");
+        checkBCD(b, offset + 1, getLength() - 1);
         String d = new String(b, offset, 1)
                     + interpreter.uninterpret(b, offset + 1, getLength() - 1);
         c.setValue(d);
-        return 1 + (getLength() >> 1);
+        return packedLength;
+    }
+
+    private void checkBCD(byte[] b, int offset, int digits) throws ISOException {
+        int packedLength = interpreter.getPackedLength(digits);
+        for (int i = 0; i < packedLength; i++) {
+            int value = b[offset + i] & 0xFF;
+            int high = value >>> 4;
+            int low = value & 0x0F;
+            if (high > 9 || low > 9)
+                throw new ISOException("Invalid BCD digit in amount");
+        }
+        if ((digits & 1) != 0) {
+            int padding = pad ? b[offset] >>> 4 : b[offset + packedLength - 1] & 0x0F;
+            if (padding != 0)
+                throw new ISOException("Invalid BCD padding in amount");
+        }
     }
     public int getMaxPackedLength() {
         return 1 + (getLength() >> 1);

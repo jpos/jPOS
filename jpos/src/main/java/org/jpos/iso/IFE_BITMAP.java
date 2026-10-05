@@ -99,29 +99,57 @@ public class IFE_BITMAP extends ISOBitMapPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-    	int bytes;
-    	byte [] b1 = ISOUtil.ebcdicToAsciiBytes (b, offset, getLength()*2 );
-    	BitSet bmap = ISOUtil.hex2BitSet (b1, 0, getLength() << 3);
+        checkBitmapLength();
+        int bytes = Math.min(getLength(), 8) << 1;
+        checkAvailable(b, offset, bytes, "primary bitmap");
+        byte[] primary = toAsciiHex(b, offset, bytes);
+        BitSet bmap = ISOUtil.hex2BitSet(new BitSet(64), primary, 0);
+        if (getLength() > 8 && bmap.get(1)) {
+            int secondary = Math.min(getLength() - 8, 8) << 1;
+            checkAvailable(b, offset + bytes, secondary, "secondary bitmap");
+            ISOUtil.hex2BitSet(bmap, toAsciiHex(b, offset + bytes, secondary), 64);
+            bytes += secondary;
+        }
+        if (getLength() > 16 && bmap.get(1) && bmap.get(65)) {
+            int tertiary = Math.min(getLength() - 16, 8) << 1;
+            checkAvailable(b, offset + bytes, tertiary, "tertiary bitmap");
+            ISOUtil.hex2BitSet(bmap, toAsciiHex(b, offset + bytes, tertiary), 128);
+            bytes += tertiary;
+        }
         c.setValue(bmap);
-        bytes = b1.length;
-        // check for 2nd bit map indicator
-        if (bytes > 16 && !bmap.get(1)) {
-          bytes = 16; 
-        // check for 3rd bit map indicator
-        } else if (bytes > 32 && !bmap.get(65)) {
-          bytes = 32; 
-        } 
         return bytes;
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
-    	byte [] b1 = ISOUtil.ebcdicToAsciiBytes (readBytes (in, 16), 0, 16);
-        BitSet bmap = ISOUtil.hex2BitSet (new BitSet (64), b1, 0);
-        if (getLength() > 8 && bmap.get (1)) {
-        	byte [] b2 = ISOUtil.ebcdicToAsciiBytes (readBytes (in, 16), 0, 16);        	
-            ISOUtil.hex2BitSet (bmap, b2, 64);
+        checkBitmapLength();
+        int primaryLength = Math.min(getLength(), 8) << 1;
+        byte[] b1 = toAsciiHex(readBytes(in, primaryLength), 0, primaryLength);
+        BitSet bmap = ISOUtil.hex2BitSet(new BitSet(64), b1, 0);
+        if (getLength() > 8 && bmap.get(1)) {
+            int secondaryLength = Math.min(getLength() - 8, 8) << 1;
+            byte[] b2 = toAsciiHex(readBytes(in, secondaryLength), 0, secondaryLength);
+            ISOUtil.hex2BitSet(bmap, b2, 64);
+        }
+        if (getLength() > 16 && bmap.get(1) && bmap.get(65)) {
+            int tertiaryLength = Math.min(getLength() - 16, 8) << 1;
+            byte[] b3 = toAsciiHex(readBytes(in, tertiaryLength), 0, tertiaryLength);
+            ISOUtil.hex2BitSet(bmap, b3, 128);
         }
         c.setValue(bmap);
+    }
+
+    private void checkBitmapLength() throws ISOException {
+        if (getLength() <= 0)
+            throw new ISOException("Invalid bitmap length " + getLength());
+    }
+
+    private static byte[] toAsciiHex(byte[] b, int offset, int length) throws ISOException {
+        byte[] ascii = ISOUtil.ebcdicToAsciiBytes(b, offset, length);
+        for (byte value : ascii) {
+            if (Character.digit((char) (value & 0xFF), 16) < 0)
+                throw new ISOException("Invalid hexadecimal digit in bitmap");
+        }
+        return ascii;
     }
 }

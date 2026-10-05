@@ -69,23 +69,71 @@ public class IFA_BITMAP extends ISOBitMapPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-        int len;
-        BitSet bmap = ISOUtil.hex2BitSet (b, offset, getLength() << 3);
-        c.setValue(bmap);
-        len = bmap.get(1) ? 128 : 64; /* changed by Hani */
-        if (getLength() > 16 && bmap.get(65)) {
-            len = 192;
+        int bytes = Math.min(getLength(), 8) << 1;
+        checkBitmapLength();
+        checkAvailable(b, offset, bytes, "primary bitmap");
+        BitSet bmap = new BitSet(64);
+        addHexBitmap(bmap, b, offset, bytes, 0);
+        if (getLength() > 8 && bmap.get(1)) {
+            int secondary = Math.min(getLength() - 8, 8) << 1;
+            checkAvailable(b, offset + bytes, secondary, "secondary bitmap");
+            addHexBitmap(bmap, b, offset + bytes, secondary, 64);
+            bytes += secondary;
+        }
+        if (getLength() > 16 && bmap.get(1) && bmap.get(65)) {
+            int tertiary = Math.min(getLength() - 16, 8) << 1;
+            checkAvailable(b, offset + bytes, tertiary, "tertiary bitmap");
+            addHexBitmap(bmap, b, offset + bytes, tertiary, 128);
+            bytes += tertiary;
             bmap.clear(65);
         }
-        return Math.min (getLength() << 1, len >> 2);
+        c.setValue(bmap);
+        return bytes;
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
-        BitSet bmap = ISOUtil.hex2BitSet (new BitSet (64), readBytes (in, 16), 0);
+        checkBitmapLength();
+        byte[] primary = readBytes(in, Math.min(getLength(), 8) << 1);
+        checkHexDigits(primary, 0, primary.length);
+        BitSet bmap = ISOUtil.hex2BitSet(new BitSet(64), primary, 0);
         if (getLength() > 8 && bmap.get (1)) {
-            ISOUtil.hex2BitSet (bmap, readBytes (in, 16), 64);
+            byte[] secondary = readBytes(in, Math.min(getLength() - 8, 8) << 1);
+            checkHexDigits(secondary, 0, secondary.length);
+            ISOUtil.hex2BitSet(bmap, secondary, 64);
+        }
+        if (getLength() > 16 && bmap.get(1) && bmap.get(65)) {
+            byte[] tertiary = readBytes(in, Math.min(getLength() - 16, 8) << 1);
+            checkHexDigits(tertiary, 0, tertiary.length);
+            ISOUtil.hex2BitSet(bmap, tertiary, 128);
+            bmap.clear(65);
         }
         c.setValue(bmap);
+    }
+
+    private void checkBitmapLength() throws ISOException {
+        if (getLength() <= 0)
+            throw new ISOException("Invalid bitmap length " + getLength());
+    }
+
+    private static void addHexBitmap(BitSet bmap, byte[] b, int offset, int length, int bitOffset)
+        throws ISOException
+    {
+        for (int i = 0; i < length; i++) {
+            int digit = Character.digit((char) (b[offset + i] & 0xFF), 16);
+            if (digit < 0)
+                throw new ISOException("Invalid hexadecimal digit in bitmap");
+            for (int bit = 0; bit < 4; bit++) {
+                if ((digit & 0x08 >> bit) != 0)
+                    bmap.set(bitOffset + (i << 2) + bit + 1);
+            }
+        }
+    }
+
+    private static void checkHexDigits(byte[] b, int offset, int length) throws ISOException {
+        for (int i = 0; i < length; i++) {
+            if (Character.digit((char) (b[offset + i] & 0xFF), 16) < 0)
+                throw new ISOException("Invalid hexadecimal digit in bitmap");
+        }
     }
 }

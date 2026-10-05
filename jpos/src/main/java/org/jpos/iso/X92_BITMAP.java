@@ -18,6 +18,8 @@
 
 package org.jpos.iso;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.BitSet;
 
 /**
@@ -60,9 +62,20 @@ public class X92_BITMAP extends ISOBitMapPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
+        final int packedLength = 16;
+        checkAvailable(b, offset, packedLength, "bitmap");
+        for (int i = 0; i < packedLength; i++) {
+            if (Character.digit((char) b[offset + i], 16) < 0)
+                throw new ISOException("Invalid hexadecimal digit in bitmap");
+        }
         BitSet bmap = ISOUtil.hex2BitSet (b, offset, false);
         c.setValue(bmap);
-        return bmap.size() >> 2;
+        return packedLength;
+    }
+    public void unpack (ISOComponent c, InputStream in)
+        throws IOException, ISOException
+    {
+        unpack(c, readBytes(in, 16), 0);
     }
     public int getMaxPackedLength() {
         return getLength() >> 2;

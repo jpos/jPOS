@@ -23,6 +23,8 @@ import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.BitSet;
 
 /**
@@ -75,11 +77,16 @@ public class Base1_BITMAP126 extends ISOBitMapPackager
         // The standard IFB_BITMAP class assumes that
         // bit0 always means extended bitmap 
         //
+        checkAvailable(b, offset, 8, "bitmap");
         BitSet bmap = ISOUtil.byte2BitSet (b, offset, false); // False => no extended bitmap
 
         c.setValue(bmap);
         len = (len=bmap.size()) > 128 ? 128 : len;
         return len >> 3;
+    }
+    public void unpack (ISOComponent c, InputStream in) throws IOException, ISOException
+    {
+        unpack(c, readBytes(in, 8), 0);
     }
     public int getMaxPackedLength() 
     {
