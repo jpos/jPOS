@@ -29,6 +29,8 @@ import java.util.Set;
  * known gadget-chain classes and enforce resource limits.
  */
 public class Serializer {
+    private static final int MAX_STRING_MAP_ENTRIES = 10_000;
+
     /** Utility class; instances carry no state. */
     public Serializer() {}
 
@@ -346,17 +348,25 @@ public class Serializer {
       throws ClassNotFoundException, IOException
     {
         checkInputLength(buf, DEFAULT_LIMITS);
-        ByteArrayInputStream  bais = new ByteArrayInputStream (buf);
-        ObjectInputStream     ois  = createAllowListObjectInputStream(bais);
-        Map<String,String> m = new HashMap<>();
-        int size = ois.readInt();
-        for (int i=0; i<size; i++) {
-            m.put (
-              (String) ois.readObject(),
-              (String) ois.readObject()
-            );
+        try (ObjectInputStream ois = createAllowListObjectInputStream(new ByteArrayInputStream(buf))) {
+            int size = ois.readInt();
+            if (size < 0)
+                throw new InvalidObjectException("Negative entry count in serialized string map");
+            if (size > MAX_STRING_MAP_ENTRIES)
+                throw new InvalidObjectException("Too many entries in serialized string map");
+
+            Map<String,String> m = new HashMap<>();
+            for (int i=0; i<size; i++) {
+                Object key = ois.readObject();
+                Object value = ois.readObject();
+                if (key != null && !(key instanceof String))
+                    throw new InvalidObjectException("Non-string key in serialized string map");
+                if (value != null && !(value instanceof String))
+                    throw new InvalidObjectException("Non-string value in serialized string map");
+                m.put((String) key, (String) value);
+            }
+            return m;
         }
-        return m;
     }
 
     private static ObjectInputStream createObjectInputStream(InputStream in, DeserializationLimits limits)

@@ -713,6 +713,8 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V>, PersistentS
         public Object deserialize (byte[] serialized) 
             throws IOException
         {
+            if (serialized == null || serialized.length < 24)
+                throw new IOException ("Invalid serialized Ref length");
             Ref d = new Ref ();
             d.recid   = getLong (serialized,  0);
             d.next    = getLong (serialized,  8);

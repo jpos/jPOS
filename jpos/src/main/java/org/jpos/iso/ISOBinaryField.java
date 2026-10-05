@@ -168,8 +168,13 @@ public class ISOBinaryField
     public void readExternal  (ObjectInput in) 
         throws IOException, ClassNotFoundException
     {
-        fieldNumber = in.readShort ();
-        value = new byte[in.readShort()];
-        in.readFully (value);
+        int newFieldNumber = in.readShort ();
+        int len = in.readShort ();
+        if (len < 0)
+            throw new InvalidObjectException ("Invalid ISOBinaryField length: " + len);
+        byte[] newValue = new byte[len];
+        in.readFully (newValue);
+        fieldNumber = newFieldNumber;
+        value = newValue;
     }
 }

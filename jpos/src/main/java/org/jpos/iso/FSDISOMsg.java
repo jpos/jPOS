@@ -22,13 +22,13 @@ import org.jpos.util.FSDMsg;
 import org.jdom2.JDOMException;
 
 import java.io.*;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /** An ISOMsg backed by a {@link org.jpos.util.FSDMsg} for fixed-schema message processing. */
 public class FSDISOMsg extends ISOMsg implements Cloneable  {
+    private static final int MAX_EXTERNALIZED_ENTRIES = 10_000;
     /** The underlying FSDMsg containing the field data. */
     FSDMsg fsd;
     Lock isLock = new ReentrantLock();
@@ -108,13 +108,24 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
         in.readByte();  // ignore version for now
         String basePath = in.readUTF();
         String baseSchema = in.readUTF();
-        fsd = new FSDMsg (basePath, baseSchema);
-        Map map = (Map) in.readObject();
-        Iterator iter = map.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            fsd.set ((String) entry.getKey(), (String) entry.getValue());
+        Object serializedMap = in.readObject();
+        if (!(serializedMap instanceof Map<?, ?> map))
+            throw new InvalidObjectException("Invalid field map in serialized FSDISOMsg");
+        if (map.size() > MAX_EXTERNALIZED_ENTRIES)
+            throw new InvalidObjectException("Too many entries in serialized FSDISOMsg");
+
+        FSDMsg newFsd = new FSDMsg (basePath, baseSchema);
+        int count = 0;
+        for (Object entryObject : map.entrySet()) {
+            if (++count > MAX_EXTERNALIZED_ENTRIES)
+                throw new InvalidObjectException("Too many entries in serialized FSDISOMsg");
+            if (!(entryObject instanceof Map.Entry<?, ?> entry) ||
+                !(entry.getKey() instanceof String key) ||
+                !(entry.getValue() instanceof String value))
+                throw new InvalidObjectException("Invalid field entry in serialized FSDISOMsg");
+            newFsd.set (key, value);
         }
+        fsd = newFsd;
     }
     public Object clone() {
         FSDISOMsg m = (FSDISOMsg) super.clone();
@@ -151,4 +162,3 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
     }   
     private static final long serialVersionUID = 1L;
 }
-

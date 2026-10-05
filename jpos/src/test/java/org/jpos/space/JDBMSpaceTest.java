@@ -21,6 +21,7 @@ package org.jpos.space;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -30,6 +31,7 @@ import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.time.Instant;
 
 public class JDBMSpaceTest {
@@ -292,40 +294,24 @@ public class JDBMSpaceTest {
     }
 
     @Test
-    public void testRefDeserializeThrowsArrayIndexOutOfBoundsException2() throws Throwable {
+    public void testRefDeserializeRejectsTruncatedRecord() throws Throwable {
         JDBMSpace.Ref ref = new JDBMSpace.Ref(100L, 1000L);
         byte[] serialized = new byte[2];
-        try {
-            ref.deserialize(serialized);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("7", ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Index 7 out of bounds for length 2", ex.getMessage(), "ex.getMessage()");
-            }
-            assertEquals(100L, ref.recid, "ref.recid");
-            assertEquals(1000L, ref.expires, "ref.expires");
-            assertEquals(-1L, ref.next, "ref.next");
-        }
+        IOException exception = assertThrows(IOException.class, () -> ref.deserialize(serialized));
+        assertEquals("Invalid serialized Ref length", exception.getMessage());
+        assertEquals(100L, ref.recid, "ref.recid");
+        assertEquals(1000L, ref.expires, "ref.expires");
+        assertEquals(-1L, ref.next, "ref.next");
     }
 
     @Test
-    public void testRefDeserializeThrowsNullPointerException() throws Throwable {
+    public void testRefDeserializeRejectsNullRecord() throws Throwable {
         JDBMSpace.Ref ref = new JDBMSpace.Ref(100L, 1000L);
-        try {
-            ref.deserialize(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot load from byte/boolean array because \"b\" is null", ex.getMessage(), "ex.getMessage()");
-            }
-            assertEquals(100L, ref.recid, "ref.recid");
-            assertEquals(1000L, ref.expires, "ref.expires");
-            assertEquals(-1L, ref.next, "ref.next");
-        }
+        IOException exception = assertThrows(IOException.class, () -> ref.deserialize(null));
+        assertEquals("Invalid serialized Ref length", exception.getMessage());
+        assertEquals(100L, ref.recid, "ref.recid");
+        assertEquals(1000L, ref.expires, "ref.expires");
+        assertEquals(-1L, ref.next, "ref.next");
     }
 
     @Test

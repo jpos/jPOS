@@ -1365,7 +1365,10 @@ public class ISOMsg extends ISOComponent
     protected void readHeader (ObjectInput in)
         throws IOException, ClassNotFoundException
     {
-        byte[] b = new byte[in.readShort()];
+        int len = in.readShort();
+        if (len < 0)
+            throw new InvalidObjectException("Invalid ISOMsg header length: " + len);
+        byte[] b = new byte[len];
         in.readFully (b);
         setHeader (b);
     }

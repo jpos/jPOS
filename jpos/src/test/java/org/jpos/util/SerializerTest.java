@@ -24,9 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -60,9 +64,33 @@ public class SerializerTest {
         Map<String,String> smap = new HashMap<>();
         smap.put ("A", "ABC");
         smap.put ("B", "CBA");
+        smap.put (null, null);
         byte[] b = Serializer.serializeStringMap(smap);
         Map<String,String> smap2 = Serializer.deserializeStringMap(b);
         assertEquals(smap, smap2);
+    }
+
+    @Test
+    public void testStringMapDeserializerRejectsInvalidEntryCounts() throws Exception {
+        assertThrows(InvalidObjectException.class, () -> Serializer.deserializeStringMap(stringMapStream(-1)));
+        assertThrows(InvalidObjectException.class, () -> Serializer.deserializeStringMap(stringMapStream(10_001)));
+    }
+
+    @Test
+    public void testStringMapDeserializerRejectsNonStringEntries() throws Exception {
+        assertThrows(
+          InvalidObjectException.class,
+          () -> Serializer.deserializeStringMap(stringMapStream(1, Integer.valueOf(1), "value"))
+        );
+        assertThrows(
+          InvalidObjectException.class,
+          () -> Serializer.deserializeStringMap(stringMapStream(1, "key", Integer.valueOf(1)))
+        );
+    }
+
+    @Test
+    public void testStringMapDeserializerRejectsTruncatedEntry() throws Exception {
+        assertThrows(EOFException.class, () -> Serializer.deserializeStringMap(stringMapStream(1, "key")));
     }
 
     @Test
@@ -198,6 +226,16 @@ public class SerializerTest {
 
     private Serializer.DeserializationLimits limits(long depth, long references, long arrayLength, long bytes) {
         return new Serializer.DeserializationLimits(depth, references, arrayLength, bytes);
+    }
+
+    private byte[] stringMapStream(int size, Object... entries) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+            out.writeInt(size);
+            for (Object entry : entries)
+                out.writeObject(entry);
+        }
+        return bytes.toByteArray();
     }
 
     private static class Link implements Serializable {
