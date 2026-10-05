@@ -22,11 +22,13 @@ import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOUtil;
 import org.jpos.iso.TaggedFieldPackager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 /**
  * Field Separator Terminated packager
@@ -43,7 +45,8 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
 
     @Override
     public void setToken(String token) {
-        if (token == null || token.length() != 1) {
+        if (token == null || token.length() != 1 || !ISOUtil.CHARSET.newEncoder().canEncode(token)
+          || token.getBytes(ISOUtil.CHARSET).length != 1) {
             throw new IllegalArgumentException("IF_FSTCHAR needs a token of 1 character.");
         }
         terminator = token.charAt(0);
@@ -69,18 +72,17 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
      * @throws org.jpos.iso.ISOException on pack/unpack error
      */
     public byte[] pack(ISOComponent c) throws ISOException {
-        int len;
-        String s = (String) c.getValue();
-
-        if ((len = s.length()) > getLength()) {
-            throw new ISOException(
-                    "Invalid length " + len + " packing IF_FSTCHAR field "
-                            + c.getKey() + " max length=" + getLength()
-            );
+        byte[] value = String.valueOf(c.getValue()).getBytes(ISOUtil.CHARSET);
+        byte token = terminatorByte();
+        checkUnpackedLength(value.length);
+        for (byte b : value) {
+            if (b == token)
+                throw new ISOException("Field value contains terminator");
         }
-
-        s = s + terminator;
-        return s.getBytes();
+        byte[] packed = new byte[value.length + 1];
+        System.arraycopy(value, 0, packed, 0, value.length);
+        packed[value.length] = token;
+        return packed;
     }
 
     /**
@@ -95,21 +97,18 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
         if (!(c instanceof ISOField))
             throw new ISOException
                     (c.getClass().getName() + " is not an ISOField");
-        int length = -1;
-        for (int i = 0; i < getMaxPackedLength(); i++) {
-            byte dataByte = b[offset + i];
-            if ((char) dataByte == terminator) {
-                length = i;
-                break;
+        byte token = terminatorByte();
+        checkUnpackedLength(0);
+        checkAvailable(b, offset, 0, "field separator terminated field");
+        int available = b.length - offset;
+        int maximum = Math.min(getLength(), available - 1);
+        for (int length = 0; length <= maximum; length++) {
+            if (b[offset + length] == token) {
+                c.setValue(new String(b, offset, length, ISOUtil.CHARSET));
+                return length + 1;
             }
         }
-        if (length >= 0) {
-            String value = new String(b, offset, length);
-            c.setValue(value);
-            return length + 1;
-        } else {
-            throw new ISOException("Terminating Backslash does not exist");
-        }
+        throw new ISOException("Field terminator not found within maximum length " + getLength());
     }
 
     public void unpack(ISOComponent c, InputStream in)
@@ -119,44 +118,27 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
             throw new ISOException
                     (c.getClass().getName() + " is not an ISOField");
 
-        boolean endFound = false;
-        if (in.markSupported()) {
-            in.mark(getMaxPackedLength());
-        }
-        ByteBuffer buf = ByteBuffer.allocate(getMaxPackedLength());
-
-        for (int i = 0; i < getMaxPackedLength() && in.available() > 0; i++) {
-            byte dataByte = (byte) in.read();
-            if ((char) dataByte == terminator) {
-                endFound = true;
-                break;
-            } else {
-                buf.put(dataByte);
+        byte token = terminatorByte();
+        checkUnpackedLength(0);
+        ByteArrayOutputStream value = new ByteArrayOutputStream(Math.min(getLength(), 32));
+        for (long length = 0; length <= getLength(); length++) {
+            int next = in.read();
+            if (next < 0)
+                throw new EOFException("Field terminator not found before end of stream");
+            if ((byte) next == token) {
+                c.setValue(value.toString(ISOUtil.CHARSET));
+                return;
             }
+            value.write(next);
         }
-        if (endFound) {
-            byte[] data = byteBufferToBytes(buf);
-            String value = new String(data);
-            c.setValue(value);
-        } else {
-            if (in.markSupported()) {
-                in.reset();
-            }
-            throw new ISOException("Terminating Backslash does not exist");
-        }
+        throw new ISOException("Field terminator not found within maximum length " + getLength());
     }
 
-    private byte[] byteBufferToBytes(ByteBuffer buffer) {
-        int dataLength = buffer.position();
-        byte[] bytes = new byte[dataLength];
-        buffer.position(0);
-        buffer.get(bytes);
-        buffer.position(dataLength);
-        return bytes;
+    private byte terminatorByte() {
+        return String.valueOf(terminator).getBytes(ISOUtil.CHARSET)[0];
     }
 
     public int getMaxPackedLength() {
-        return getLength() + 1;
+        return getLength() < 0 ? 0 : (int) Math.min((long) getLength() + 1, Integer.MAX_VALUE);
     }
 }
-

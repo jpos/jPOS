@@ -68,9 +68,16 @@ public class BinaryHexTaggedSequencePackager extends TaggedSequencePackager {
         public byte[] pack(ISOComponent c) throws ISOException {
             byte[] tagBytes;
             String tag = c.getValue().toString();
+            int packedLength = getPackedLength();
+            for (int i = 0; i < tag.length(); i++) {
+                if (Character.digit(tag.charAt(i), 16) < 0)
+                    throw new ISOException("Invalid hexadecimal tag");
+            }
             tagBytes = ISOUtil.hex2byte(tag);
-            if (tagBytes.length != getMaxPackedLength()) {
-                byte[] b = new byte[getMaxPackedLength()];
+            if (tagBytes.length > packedLength)
+                throw new ISOException("Tag length " + tag.length() + " too long. Max: " + getLength());
+            if (tagBytes.length != packedLength) {
+                byte[] b = new byte[packedLength];
                 System.arraycopy(tagBytes, 0, b, b.length - tagBytes.length, tagBytes.length);
                 tagBytes = b;
             }
@@ -79,10 +86,19 @@ public class BinaryHexTaggedSequencePackager extends TaggedSequencePackager {
 
         @Override
         public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException {
-            byte[] tagBytes = new byte[getMaxPackedLength()];
+            int packedLength = getPackedLength();
+            checkAvailable(b, offset, packedLength, "tag");
+            byte[] tagBytes = new byte[packedLength];
             System.arraycopy(b, offset, tagBytes, 0, tagBytes.length);
             c.setValue(ISOUtil.byte2hex(tagBytes));
             return tagBytes.length;
+        }
+
+        private int getPackedLength() throws ISOException {
+            int length = getLength();
+            if (length < 0 || (length & 1) != 0)
+                throw new ISOException("Invalid binary hexadecimal tag length " + length);
+            return length / 2;
         }
     }
 }

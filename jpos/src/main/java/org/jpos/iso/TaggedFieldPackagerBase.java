@@ -73,6 +73,9 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
                 packed = new byte[0];
             } else {
                 byte[] tagBytes = tag.getBytes(ISOUtil.CHARSET);
+                int tagLength = getTagLength();
+                if (tagBytes.length != tagLength)
+                    throw new ISOException("Invalid tag length " + tagBytes.length + ". Expected: " + tagLength);
                 byte[] message = getDelegate().pack(c);
                 packed = new byte[tagBytes.length + message.length];
                 System.arraycopy(tagBytes, 0, packed, 0, tagBytes.length);
@@ -102,12 +105,14 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
     @Override
     public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException {
         int consumed;
-        byte[] tagBytes = new byte[getTagNameLength()];
-        System.arraycopy(b, offset, tagBytes, 0, getTagNameLength());
-        String tag = new String(tagBytes, ISOUtil.CHARSET);
         if (!(c instanceof ISOField) && !(c instanceof ISOBinaryField))
             throw new ISOException(c.getClass().getName()
                     + " is not an ISOField");
+        int tagLength = getTagLength();
+        checkAvailable(b, offset, tagLength, "tag");
+        byte[] tagBytes = new byte[tagLength];
+        System.arraycopy(b, offset, tagBytes, 0, tagLength);
+        String tag = new String(tagBytes, ISOUtil.CHARSET);
         Integer fieldNumber = getTagMapper().getFieldNumberForTag(getParentFieldNumber(), tag);
         if (fieldNumber == null || fieldNumber < 0) {
             if (!isUnpackingLenient()) {
@@ -116,7 +121,7 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
             consumed = 0;
         } else {
             if (c.getKey().equals(fieldNumber)) {
-                consumed = getTagNameLength() + getDelegate().unpack(c, b, offset + tagBytes.length);
+                consumed = tagLength + getDelegate().unpack(c, b, offset + tagLength);
             } else {
                 consumed = 0;
             }
@@ -130,13 +135,14 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
         if (!in.markSupported()) {
             throw new ISOException("InputStream should support marking");
         }
-        if (!(c instanceof ISOField))
+        if (!(c instanceof ISOField) && !(c instanceof ISOBinaryField))
             throw new ISOException(c.getClass().getName()
                     + " is not an ISOField");
-        in.mark(getTagNameLength() + 1);
+        int tagLength = getTagLength();
+        in.mark(tagLength + 1);
         Integer fieldNumber;
         String tag;
-        tag = new String(readBytes(in, getTagNameLength()), ISOUtil.CHARSET);
+        tag = new String(readBytes(in, tagLength), ISOUtil.CHARSET);
         fieldNumber = getTagMapper().getFieldNumberForTag(getParentFieldNumber(), tag);
         if (fieldNumber == null || fieldNumber < 0) {
             if (!isUnpackingLenient()) {
@@ -172,6 +178,13 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
      * @return tag name length
      */
     protected abstract int getTagNameLength();
+
+    private int getTagLength() throws ISOException {
+        int tagLength = getTagNameLength();
+        if (tagLength < 0)
+            throw new ISOException("Invalid tag length " + tagLength);
+        return tagLength;
+    }
 
     /**
      * Returns whether lenient packing is enabled.
