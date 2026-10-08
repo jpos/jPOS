@@ -208,13 +208,26 @@ public abstract class ISOFieldPackager {
     /**
      * Verifies that a field part is wholly contained in a binary image.
      * The subtraction-based comparison avoids overflowing {@code offset + length}.
+     *
+     * @param b the binary image containing the field
+     * @param offset the starting byte offset of the field part
+     * @param length the number of bytes required for the field part
+     * @param part the field part's description for error reporting
+     * @throws ISOException if the image is null, the offset or length is negative,
+     *         or the field part extends beyond the image
      */
     protected static void checkAvailable(byte[] b, int offset, int length, String part) throws ISOException {
         if (b == null || offset < 0 || length < 0 || offset > b.length - length)
             throw new ISOException("Insufficient data for " + part);
     }
 
-    /** Verifies a decoded field length against this packager's configured maximum. */
+    /**
+     * Verifies a decoded field length against this packager's configured maximum.
+     *
+     * @param length the decoded field length
+     * @throws ISOException if the decoded length or configured maximum is negative,
+     *         or the decoded length exceeds the configured maximum
+     */
     protected void checkUnpackedLength(int length) throws ISOException {
         if (length < 0)
             throw new ISOException("Invalid field length " + length);

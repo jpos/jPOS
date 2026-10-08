@@ -56,6 +56,15 @@ public class Serializer {
         long maxArrayLength,
         long maxStreamBytes
     ) {
+        /**
+         * Creates resource limits with nonnegative values.
+         *
+         * @param maxDepth maximum object graph depth
+         * @param maxReferences maximum number of object references
+         * @param maxArrayLength maximum number of elements in an array
+         * @param maxStreamBytes maximum number of bytes read from the stream
+         * @throws IllegalArgumentException if any limit is negative
+         */
         public DeserializationLimits {
             if (maxDepth < 0 || maxReferences < 0 || maxArrayLength < 0 || maxStreamBytes < 0)
                 throw new IllegalArgumentException("Deserialization limits must not be negative");
