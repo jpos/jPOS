@@ -40,6 +40,10 @@ import static org.jpos.transaction.ContextConstants.*;
  * Transaction participant that validates the presence and shape of selected
  * ISOMsg fields against the configured rules, marking the transaction with
  * {@link CMF}-coded errors when validation fails.
+ *
+ * <p>The {@code mandatory} and {@code optional} properties may each be declared
+ * more than once. Their values are concatenated in declaration order, with a
+ * comma between lists, so shared field lists can be extended per participant.
  */
 public class CheckFields implements TransactionParticipant, Configurable {
     /** Default constructor; no instance state to initialise. */
@@ -68,8 +72,8 @@ public class CheckFields implements TransactionParticipant, Configurable {
                 return ABORTED | NO_JOIN | READONLY;
             }
             Set<String> validFields = new HashSet<>();
-            assertFields (ctx, m, cfg.get ("mandatory", ""), true, validFields, rc);
-            assertFields (ctx, m, cfg.get ("optional", ""), false, validFields, rc);
+            assertFields (ctx, m, String.join(",", cfg.getAll("mandatory")), true, validFields, rc);
+            assertFields (ctx, m, String.join(",", cfg.getAll("optional")), false, validFields, rc);
             if (!allowExtraFields) assertNoExtraFields (m, validFields, rc);
         } catch (Throwable t) {
             rc.fail(CMF.SYSTEM_ERROR, Caller.info(), t.getMessage());

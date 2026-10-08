@@ -24,6 +24,9 @@ Here is a sample configuration:
 </participant>
 ------------
 
+Each `mandatory` or `optional` list can be split across several properties with the same name;
+their values are concatenated in declaration order.
+
 The `CheckFields` handle standard numeric fields performing minimum validations (i.e. `7,11,12,35`),
 it just checks for presence of those fields, but it handle some special names that are relevant to
 most jPOS applications, specially those dealing with http://jpos.org/doc/jPOS-CMF.pdf[jPOS-CMF].
@@ -49,5 +52,4 @@ The complete list of special names are:
 * `AMOUNT` - picks `ISOAmount` from either field 4 or 5. If field 5 is available, then `AMOUNT` holds the content of field 5 (settlement amount)
   while field 4 gets stored in another Context variable called `LOCAL_AMOUNT` (ISO-8583 v2003 format).
 * `ORIGINAL_DATA_ELEMENTS` parses original MTI, STAN and TIMESTAMP from field 56 (ISO-8583 v2003 format).
-
 

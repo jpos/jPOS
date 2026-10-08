@@ -27,6 +27,8 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.rc.CMF;
 import org.jpos.rc.Result;
+import org.jpos.q2.SimpleConfigurationFactory;
+import org.jdom2.Element;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.ContextConstants;
 import org.jpos.transaction.TransactionConstants;
@@ -264,6 +266,69 @@ public class CheckFieldsTest implements TransactionConstants {
         assertFalse(rc.hasInfo());
         assertFalse(rc.hasWarnings());
         assertFalse(rc.hasFailures());
+    }
+
+    @Test
+    public void testRepeatedOptionalProperties () throws Exception {
+        Element participant = new Element("participant");
+        participant.addContent(new Element("property").setAttribute("name", "optional")
+            .setAttribute("value", "48,60"));
+        participant.addContent(new Element("property").setAttribute("name", "optional")
+            .setAttribute("value", "60,61"));
+        cf.setConfiguration(new SimpleConfigurationFactory().getConfiguration(participant));
+        Context ctx = new Context();
+        ISOMsg m = new ISOMsg();
+        m.set(48, "First list");
+        m.set(60, "Both lists");
+        m.set(61, "Second list");
+        ctx.put(ContextConstants.REQUEST.toString(), m);
+
+        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertFalse(ctx.getResult().hasFailures());
+
+        m.set(62, "Undeclared field");
+        Context extra = new Context();
+        extra.put(ContextConstants.REQUEST.toString(), m);
+        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(2L, extra));
+        assertEquals(CMF.EXTRA_FIELD, extra.getResult().failure().getIrc());
+    }
+
+    @Test
+    public void testRepeatedMandatoryProperties () throws Exception {
+        Element participant = new Element("participant");
+        participant.addContent(new Element("property").setAttribute("name", "mandatory")
+            .setAttribute("value", "48"));
+        participant.addContent(new Element("property").setAttribute("name", "mandatory")
+            .setAttribute("value", "60"));
+        cf.setConfiguration(new SimpleConfigurationFactory().getConfiguration(participant));
+        Context missing = new Context();
+        ISOMsg m = new ISOMsg();
+        m.set(48, "First list");
+        missing.put(ContextConstants.REQUEST.toString(), m);
+
+        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(1L, missing));
+        assertEquals(1, missing.getResult().failureList().size());
+        assertEquals(CMF.MISSING_FIELD, missing.getResult().failure().getIrc());
+        assertEquals("60", missing.getResult().failure().getMessage());
+
+        m.set(60, "Second list");
+        Context complete = new Context();
+        complete.put(ContextConstants.REQUEST.toString(), m);
+        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(2L, complete));
+        assertFalse(complete.getResult().hasFailures());
+    }
+
+    @Test
+    public void testEmptyRepeatedLists () {
+        cfg.put("mandatory", new String[] { "", " " });
+        cfg.put("optional", new String[] { "", "60", "" });
+        Context ctx = new Context();
+        ISOMsg m = new ISOMsg();
+        m.set(60, "Optional field");
+        ctx.put(ContextConstants.REQUEST.toString(), m);
+
+        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertFalse(ctx.getResult().hasFailures());
     }
 
     @Test
