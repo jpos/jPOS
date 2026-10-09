@@ -302,6 +302,8 @@ public class ISOMsg extends ISOComponent
      *
      * @param fpath dot-separated field path (i.e. 63.2)
      * @param value field value
+     * @throws IllegalArgumentException if fpath addresses a dataset field and does not
+     *         match the field packager's dataset envelope, or the value cannot be stored there
      */
     public void set(String fpath, String value) {
         try {
@@ -354,7 +356,8 @@ public class ISOMsg extends ISOComponent
      * Creates an ISOField associated with fldno within this ISOMsg
      * @param fpath dot-separated field path (i.e. 63.2)
      * @param c component
-     * @throws ISOException on error
+     * @throws ISOException on error, including a path that addresses a dataset field
+     *         and does not match the field packager's dataset envelope
      */
     public void set(String fpath, ISOComponent c) throws ISOException {
         if (setDatasetPath(fpath, c))
@@ -404,6 +407,8 @@ public class ISOMsg extends ISOComponent
      *
      * @param fpath dot-separated field path (i.e. 63.2)
      * @param value binary field value
+     * @throws IllegalArgumentException if fpath addresses a dataset field and does not
+     *         match the field packager's dataset envelope, or the value cannot be stored there
      */
     public void set(String fpath, byte[] value) {
         try {
@@ -496,6 +501,8 @@ public class ISOMsg extends ISOComponent
      * Unset a field referenced by a fpath if it exists, otherwise ignore.
      *
      * @param fpath dot-separated field path (i.e. 63.2)
+     * @throws IllegalArgumentException if fpath addresses a dataset field and does not
+     *         match the field packager's dataset envelope
      */
     public void unset(String fpath) {
         try {
@@ -564,6 +571,115 @@ public class ISOMsg extends ISOComponent
     public ISOMsg without(String ... fpaths) {
         unset(fpaths);
         return this;
+    }
+
+    /**
+     * Sets an element in a dataset field without a dataset envelope (such as DE 55
+     * ICC data), where the dataset identifier is the field number.
+     *
+     * <p>Unlike {@link #set(String, String)}, no packager is needed: the dataset
+     * field is created if absent, along with any intermediate composite fields.
+     * New datasets use {@link DatasetFormat#TLV}. The value replaces every existing
+     * element with the same identifier in the field's first dataset; TLV elements
+     * record whether the tag is constructed.</p>
+     *
+     * @param fpath dot-separated path of the dataset field (i.e. 55, 127.55)
+     * @param elementId element identifier (TLV tag)
+     * @param value a {@code String}, {@code byte[]} or {@link ISOComponent};
+     *        {@code null} removes the element, as {@link #unsetDatasetElement(String, int)}
+     * @throws IllegalArgumentException if fpath is malformed or elementId is negative
+     * @throws ISOException if the path runs through, or ends at, a field of the wrong
+     *         type, or the value type is not supported
+     */
+    public void setDatasetElement(String fpath, int elementId, Object value) throws ISOException {
+        writeDatasetElement(fpath, false, 0, elementId, value);
+    }
+
+    /**
+     * Sets an element in a dataset field with a dataset envelope (ISO 8583:2023
+     * composite data elements such as DE 104).
+     *
+     * <p>Unlike {@link #set(String, String)}, no packager is needed: the dataset
+     * field is created if absent, along with any intermediate composite fields.
+     * New datasets use {@link DatasetFormat#TLV} for identifiers up to {@code 0x70}
+     * and {@link DatasetFormat#DBM} above. The value replaces every existing element
+     * with the same identifier in the first dataset carrying {@code datasetId};
+     * TLV elements record whether the tag is constructed.</p>
+     *
+     * @param fpath dot-separated path of the dataset field (i.e. 104)
+     * @param datasetId dataset identifier
+     * @param elementId element identifier (TLV tag or DBM bit number)
+     * @param value a {@code String}, {@code byte[]} or {@link ISOComponent};
+     *        {@code null} removes the element, as {@link #unsetDatasetElement(String, int, int)}
+     * @throws IllegalArgumentException if fpath is malformed or an identifier is negative
+     * @throws ISOException if the path runs through, or ends at, a field of the wrong
+     *         type, or the value type is not supported
+     */
+    public void setDatasetElement(String fpath, int datasetId, int elementId, Object value) throws ISOException {
+        writeDatasetElement(fpath, true, datasetId, elementId, value);
+    }
+
+    /**
+     * Sets an element in a dataset field without a dataset envelope and returns
+     * this message for fluent chaining.
+     *
+     * @param fpath dot-separated path of the dataset field (i.e. 55)
+     * @param elementId element identifier (TLV tag)
+     * @param value element value
+     * @return this message
+     * @throws ISOException on errors, see {@link #setDatasetElement(String, int, Object)}
+     */
+    public ISOMsg withDatasetElement(String fpath, int elementId, Object value) throws ISOException {
+        setDatasetElement(fpath, elementId, value);
+        return this;
+    }
+
+    /**
+     * Sets an element in a dataset field with a dataset envelope and returns this
+     * message for fluent chaining.
+     *
+     * @param fpath dot-separated path of the dataset field (i.e. 104)
+     * @param datasetId dataset identifier
+     * @param elementId element identifier (TLV tag or DBM bit number)
+     * @param value element value
+     * @return this message
+     * @throws ISOException on errors, see {@link #setDatasetElement(String, int, int, Object)}
+     */
+    public ISOMsg withDatasetElement(String fpath, int datasetId, int elementId, Object value) throws ISOException {
+        setDatasetElement(fpath, datasetId, elementId, value);
+        return this;
+    }
+
+    /**
+     * Removes an element from a dataset field without a dataset envelope.
+     *
+     * <p>Every occurrence is removed. Datasets left empty are removed, and so is
+     * the dataset field once it has no datasets. An absent path is ignored.</p>
+     *
+     * @param fpath dot-separated path of the dataset field (i.e. 55)
+     * @param elementId element identifier (TLV tag)
+     * @throws IllegalArgumentException if fpath is malformed or elementId is negative
+     * @throws ISOException if the path ends at a field that is not a dataset field
+     */
+    public void unsetDatasetElement(String fpath, int elementId) throws ISOException {
+        writeDatasetElement(fpath, false, 0, elementId, null);
+    }
+
+    /**
+     * Removes an element from a dataset field with a dataset envelope.
+     *
+     * <p>Every occurrence is removed from every dataset carrying {@code datasetId}.
+     * Datasets left empty are removed, and so is the dataset field once it has no
+     * datasets. An absent path is ignored.</p>
+     *
+     * @param fpath dot-separated path of the dataset field (i.e. 104)
+     * @param datasetId dataset identifier
+     * @param elementId element identifier (TLV tag or DBM bit number)
+     * @throws IllegalArgumentException if fpath is malformed or an identifier is negative
+     * @throws ISOException if the path ends at a field that is not a dataset field
+     */
+    public void unsetDatasetElement(String fpath, int datasetId, int elementId) throws ISOException {
+        writeDatasetElement(fpath, true, datasetId, elementId, null);
     }
     /**
      * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
@@ -753,6 +869,80 @@ public class ISOMsg extends ISOComponent
                 break;
         }
         return obj;
+    }
+
+    /**
+     * Strict variant of {@link #getValue(String)}.
+     *
+     * <p>The whole path is validated before the message is read, so a malformed
+     * path always throws {@link IllegalArgumentException}, regardless of the
+     * message contents. Each segment is a decimal number ({@code 62}) or a
+     * {@code 0x}-prefixed hexadecimal number ({@code 0x9F26}) in the range
+     * {@code 0..Integer.MAX_VALUE}; signs, whitespace and empty segments are invalid.</p>
+     *
+     * <p>Every segment but the last must address a sub-{@link ISOMsg}. A path
+     * through a leaf field or an absent field returns {@link Optional#empty()}.
+     * The value is a {@code String}, a {@code byte[]}, the sub-{@code ISOMsg} for
+     * a composite field, or the {@code List<Dataset>} of a dataset field.</p>
+     *
+     * <p>When the path reaches an {@link ISODatasetField} with segments left, it
+     * addresses a dataset element, using the same layout as {@link #set(String, String)}:
+     * {@code 55.0x9F26} (no envelope, the dataset identifier is the field number) or
+     * {@code 104.0x71.0x01} (envelope: dataset identifier, then element identifier).
+     * If the field packager of the message holding the dataset field is a
+     * {@link DatasetFieldPackager}, its {@link ISODatasetPackager#hasDatasetEnvelope()}
+     * decides the layout and a path that does not match it returns empty. Otherwise
+     * the layout is inferred from the number of remaining segments. More than two
+     * segments past a dataset field return empty.</p>
+     *
+     * <p>A dataset element path returns the value of the first element in
+     * {@link #findDatasetElements(String)}, so {@code findValue(p).isPresent()} is
+     * equivalent to {@code !findDatasetElements(p).isEmpty()}. Constructed TLV
+     * elements return their encoded value; decode their children with
+     * {@link org.jpos.tlv.TLVList}.</p>
+     *
+     * <p>Without a packager, {@code set("55.0x9F26", value)} creates a plain
+     * composite field rather than a dataset field; this method reads it back
+     * through the normal composite walk. Use
+     * {@link #setDatasetElement(String, int, Object)} to create dataset fields
+     * without a packager.</p>
+     *
+     * @param fpath dot-separated field path (i.e. 62.1, 55.0x9F26)
+     * @return the value, or empty if the path is not present
+     * @throws IllegalArgumentException if fpath is malformed
+     * @throws ISOException if a dataset element value cannot be read
+     */
+    public Optional<Object> findValue(String fpath) throws ISOException {
+        int[] path = parsePath(fpath);
+        PathTarget target = locate(path);
+        if (target == null)
+            return Optional.empty();
+        if (target.datasetField() == null)
+            return Optional.ofNullable(target.msg().getValue(path[target.index()]));
+        List<DatasetElement> elements = target.msg().datasetElements(target.datasetField(), path, target.index());
+        return elements.isEmpty() ? Optional.empty() : Optional.ofNullable(elements.get(0).getValue());
+    }
+
+    /**
+     * Returns every occurrence of the dataset element addressed by a path.
+     *
+     * <p>Uses the same path grammar and dataset layout rules as {@link #findValue(String)}.
+     * Elements are collected from every dataset carrying the addressed dataset
+     * identifier, in dataset order and then element order, so repeated tags (such
+     * as EMV issuer scripts) are all returned with their constructed flag.</p>
+     *
+     * @param fpath dot-separated dataset element path (i.e. 55.0x71, 104.0x71.0x01)
+     * @return unmodifiable list of matching elements; empty if the path is absent or
+     *         does not address a dataset element
+     * @throws IllegalArgumentException if fpath is malformed
+     * @throws ISOException on dataset access errors
+     */
+    public List<DatasetElement> findDatasetElements(String fpath) throws ISOException {
+        int[] path = parsePath(fpath);
+        PathTarget target = locate(path);
+        if (target == null || target.datasetField() == null)
+            return Collections.emptyList();
+        return target.msg().datasetElements(target.datasetField(), path, target.index());
     }
     /**
      * Return the String value associated with the given ISOField number
@@ -962,17 +1152,34 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
-     * Partially clone an ISOMsg by field paths
+     * Partially clone an ISOMsg by field paths.
+     *
+     * <p>Paths use the grammar of {@link #findValue(String)}. Absent paths are
+     * skipped. A dataset element path (i.e. 55.0x9F26, 104.0x71.0x01) copies every
+     * occurrence of the element, keeping dataset identifiers, formats and constructed
+     * flags; elements are added in path order, and a path repeated or covered by an
+     * earlier path replaces the copied elements instead of duplicating them.</p>
+     *
      * @param fpaths string array of field paths to copy
      * @return new ISOMsg instance
+     * @throws IllegalArgumentException if a path is malformed
      */
     public ISOMsg clone(String ... fpaths) {
         try {
             ISOMsg m = (ISOMsg) super.clone();
             m.fields = new TreeMap();
+            Map<ISODataset,ISODatasetField> createdDatasets = new IdentityHashMap<>();
             for (String fpath : fpaths) {
+                int[] path = parsePath(fpath);
                 try {
-                    ISOComponent component = getComponent(fpath);
+                    PathTarget target = locate(path);
+                    if (target == null)
+                        continue;
+                    if (target.datasetField() != null) {
+                        m.cloneDatasetElements(target, path, createdDatasets);
+                        continue;
+                    }
+                    ISOComponent component = target.msg().getComponent(path[target.index()]);
                     if (component instanceof ISOMsg || component instanceof ISODatasetField) {
                         m.set(fpath, cloneComponent(component));
                     } else if (component != null) {
@@ -981,6 +1188,11 @@ public class ISOMsg extends ISOComponent
                 } catch (ISOException ignored) {
                     //should never happen
                 }
+            }
+            // datasets created only to keep repeated dataset identifiers aligned
+            for (Map.Entry<ISODataset,ISODatasetField> e : createdDatasets.entrySet()) {
+                if (e.getKey().isEmpty())
+                    e.getValue().removeDataset(e.getKey());
             }
             return m;
         } catch (CloneNotSupportedException e) {
@@ -1619,104 +1831,275 @@ public class ISOMsg extends ISOComponent
     }
 
     private boolean setDatasetPath(String fpath, Object value) throws ISOException {
-        StringTokenizer st = new StringTokenizer(fpath, ".");
-        if (st.countTokens() < 2)
+        DatasetAddress address = datasetAddress(fpath);
+        if (address == null)
             return false;
-
-        int fieldNo = parseInt(st.nextToken());
-        ISOFieldPackager fp = null;
-        if (packager instanceof ISOBasePackager) {
-            fp = ((ISOBasePackager) packager).getFieldPackager(fieldNo);
-        }
-        if (!(fp instanceof DatasetFieldPackager))
-            return false;
-
-        DatasetFieldPackager dfp = (DatasetFieldPackager) fp;
-        ISODatasetPackager datasetPackager = dfp.getISODatasetPackager();
-        int datasetId;
-        int elementId;
-
-        if (!datasetPackager.hasDatasetEnvelope()) {
-            if (st.countTokens() != 1)
-                return false;
-            datasetId = fieldNo;
-            elementId = parseInt(st.nextToken());
-        } else {
-            if (st.countTokens() != 2)
-                return false;
-            datasetId = parseInt(st.nextToken());
-            elementId = parseInt(st.nextToken());
-        }
-
-        ISODatasetField field;
-        ISOComponent component = getComponent(fieldNo);
-        if (component == null) {
-            field = new ISODatasetField(fieldNo);
-            set(field);
-        } else if (component instanceof ISODatasetField) {
-            field = (ISODatasetField) component;
-        } else {
-            throw new ISOException("Field " + fieldNo + " is not a dataset field");
-        }
-
-        ISODataset dataset = (ISODataset) field.getDataset(datasetId);
-        if (dataset == null) {
-            dataset = new ISODataset(datasetId, datasetId <= 0x70 ? DatasetFormat.TLV : DatasetFormat.DBM);
-            field.addDataset(dataset);
-        }
-        dataset.putElement(elementId, toDatasetComponent(elementId, value));
+        putDatasetElement(address, value);
         return true;
     }
 
     private boolean unsetDatasetPath(String fpath) throws ISOException {
-        StringTokenizer st = new StringTokenizer(fpath, ".");
-        if (st.countTokens() < 2)
+        DatasetAddress address = datasetAddress(fpath);
+        if (address == null)
             return false;
-
-        int fieldNo = parseInt(st.nextToken());
-        ISOFieldPackager fp = null;
-        if (packager instanceof ISOBasePackager) {
-            fp = ((ISOBasePackager) packager).getFieldPackager(fieldNo);
-        }
-        if (!(fp instanceof DatasetFieldPackager))
-            return false;
-
-        DatasetFieldPackager dfp = (DatasetFieldPackager) fp;
-        ISODatasetPackager datasetPackager = dfp.getISODatasetPackager();
-        int datasetId;
-        int elementId;
-
-        if (!datasetPackager.hasDatasetEnvelope()) {
-            if (st.countTokens() != 1)
-                return false;
-            datasetId = fieldNo;
-            elementId = parseInt(st.nextToken());
-        } else {
-            if (st.countTokens() != 2)
-                return false;
-            datasetId = parseInt(st.nextToken());
-            elementId = parseInt(st.nextToken());
-        }
-
-        ISOComponent component = getComponent(fieldNo);
-        if (component == null)
-            return true;
-        if (!(component instanceof ISODatasetField))
-            throw new ISOException("Field " + fieldNo + " is not a dataset field");
-
-        ISODatasetField field = (ISODatasetField) component;
-        ISODataset dataset = (ISODataset) field.getDataset(datasetId);
-        if (dataset == null)
-            return true;
-
-        dataset.removeElement(elementId);
-        if (dataset.isEmpty()) {
-            field.removeDataset(dataset);
-            if (!field.hasDatasets())
-                unset(fieldNo);
-        }
+        removeDatasetElement(address);
         return true;
     }
+
+    /**
+     * Resolves a lenient top-level dataset path against this message's packager.
+     *
+     * @return the address, or {@code null} if fpath is not a dataset path
+     * @throws ISOException if the field packager is a dataset packager and the
+     *         number of segments does not match its dataset envelope
+     */
+    private DatasetAddress datasetAddress(String fpath) throws ISOException {
+        StringTokenizer st = new StringTokenizer(fpath, ".");
+        if (st.countTokens() < 2)
+            return null;
+
+        int fieldNo = parseInt(st.nextToken());
+        Boolean envelope = datasetEnvelope(fieldNo);
+        if (envelope == null)
+            return null;
+        int expected = envelope ? 2 : 1;
+        if (st.countTokens() != expected)
+            throw new ISOException(
+              "Path '" + fpath + "' does not match the dataset " + (envelope ? "envelope" : "layout")
+                + " of field " + fieldNo + " (expected " + expected + " segment" + (expected > 1 ? "s" : "")
+                + " after the field)"
+            );
+        int datasetId = envelope ? parseInt(st.nextToken()) : fieldNo;
+        int elementId = parseInt(st.nextToken());
+        return new DatasetAddress(fieldNo, envelope, datasetId, elementId);
+    }
+
+    /**
+     * Resolves the dataset element addressed by the segments of a strict path that
+     * follow the dataset field at {@code path[index]}, held by this message.
+     *
+     * @return the address, or {@code null} if the segments do not address an element
+     */
+    private DatasetAddress datasetAddress(int[] path, int index) {
+        int fieldNo = path[index];
+        int remaining = path.length - index - 1;
+        Boolean envelope = datasetEnvelope(fieldNo);
+        if (envelope == null)
+            envelope = remaining == 2;
+        if (envelope)
+            return remaining == 2 ? new DatasetAddress(fieldNo, true, path[index + 1], path[index + 2]) : null;
+        return remaining == 1 ? new DatasetAddress(fieldNo, false, fieldNo, path[index + 1]) : null;
+    }
+
+    /**
+     * @return whether this message's packager defines a dataset envelope for
+     *         the field, or {@code null} if it does not define a dataset field there
+     */
+    private Boolean datasetEnvelope(int fieldNo) {
+        if (packager instanceof ISOBasePackager bp
+          && bp.getFieldPackager(fieldNo) instanceof DatasetFieldPackager dfp)
+            return dfp.getISODatasetPackager().hasDatasetEnvelope();
+        return null;
+    }
+
+    private void putDatasetElement(DatasetAddress address, Object value) throws ISOException {
+        int elementId = address.elementId();
+        ISOComponent elementComponent = toDatasetComponent(elementId, value);
+        ISODatasetField field;
+        ISOComponent component = getComponent(address.fieldNo());
+        if (component == null) {
+            field = new ISODatasetField(address.fieldNo());
+            set(field);
+        } else if (component instanceof ISODatasetField f) {
+            field = f;
+        } else {
+            throw new ISOException("Field " + address.fieldNo() + " is not a dataset field");
+        }
+
+        ISODataset dataset = (ISODataset) field.getDataset(address.datasetId());
+        if (dataset == null) {
+            // without an envelope the dataset is raw TLV (i.e. ICC data);
+            // otherwise ISO 8583:2023 identifiers above 0x70 are DBM
+            DatasetFormat format = address.envelope() && address.datasetId() > 0x70 ? DatasetFormat.DBM : DatasetFormat.TLV;
+            dataset = new ISODataset(address.datasetId(), format);
+            field.addDataset(dataset);
+        }
+        dataset.putElement(elementId, elementComponent,
+          dataset.getFormat() == DatasetFormat.TLV && DatasetElement.isConstructedTag(elementId));
+    }
+
+    private void removeDatasetElement(DatasetAddress address) throws ISOException {
+        ISOComponent component = getComponent(address.fieldNo());
+        if (component == null)
+            return;
+        if (!(component instanceof ISODatasetField field))
+            throw new ISOException("Field " + address.fieldNo() + " is not a dataset field");
+
+        for (Dataset dataset : field.getDatasets(address.datasetId())) {
+            if (dataset instanceof ISODataset isoDataset) {
+                isoDataset.removeElement(address.elementId());
+                if (isoDataset.isEmpty())
+                    field.removeDataset(isoDataset);
+            }
+        }
+        if (!field.hasDatasets())
+            unset(address.fieldNo());
+    }
+
+    private void writeDatasetElement(String fpath, boolean envelope, int datasetId, int elementId, Object value)
+      throws ISOException {
+        if (datasetId < 0 || elementId < 0)
+            throw new IllegalArgumentException("Invalid dataset element " + datasetId + "/" + elementId + " for '" + fpath + "'");
+        int[] path = parsePath(fpath);
+        ISOMsg m = this;
+        for (int i = 0; i < path.length - 1; i++) {
+            ISOComponent c = m.getComponent(path[i]);
+            if (c instanceof ISOMsg sub) {
+                m = sub;
+            } else if (value == null) {
+                return; // nothing to remove
+            } else if (c != null) {
+                throw new ISOException("Field " + path[i] + " in path '" + fpath + "' is not a composite field");
+            } else {
+                ISOMsg sub = new ISOMsg(path[i]);
+                m.set(sub);
+                m = sub;
+            }
+        }
+        int fieldNo = path[path.length - 1];
+        DatasetAddress address = new DatasetAddress(fieldNo, envelope, envelope ? datasetId : fieldNo, elementId);
+        if (value == null)
+            m.removeDatasetElement(address);
+        else
+            m.putDatasetElement(address, value);
+    }
+
+    private List<DatasetElement> datasetElements(ISODatasetField field, int[] path, int index) {
+        DatasetAddress address = datasetAddress(path, index);
+        if (address == null)
+            return Collections.emptyList();
+        List<DatasetElement> elements = new ArrayList<>();
+        for (Dataset dataset : field.getDatasets(address.datasetId()))
+            elements.addAll(dataset.getElements(address.elementId()));
+        return Collections.unmodifiableList(elements);
+    }
+
+    /**
+     * Copies the dataset element addressed by {@code source} into this (cloned) message.
+     * Same-identifier datasets are matched by position, so repeated datasets stay apart.
+     */
+    private void cloneDatasetElements(PathTarget source, int[] path, Map<ISODataset,ISODatasetField> createdDatasets)
+      throws ISOException {
+        DatasetAddress address = source.msg().datasetAddress(path, source.index());
+        if (address == null)
+            return;
+        int elementId = address.elementId();
+        List<Dataset> sourceDatasets = source.datasetField().getDatasets(address.datasetId());
+        if (sourceDatasets.stream().allMatch(d -> d.getElements(elementId).isEmpty()))
+            return;
+
+        ISOMsg m = this;
+        for (int i = 0; i < source.index(); i++) {
+            ISOComponent c = m.getComponent(path[i]);
+            ISOMsg sub;
+            if (c instanceof ISOMsg msg) {
+                sub = msg;
+            } else {
+                sub = new ISOMsg(path[i]);
+                m.set(sub);
+            }
+            m = sub;
+        }
+        ISODatasetField field;
+        ISOComponent c = m.getComponent(address.fieldNo());
+        if (c instanceof ISODatasetField f) {
+            field = f;
+        } else if (c == null) {
+            field = new ISODatasetField(address.fieldNo());
+            m.set(field);
+        } else {
+            return; // cannot happen: the clone mirrors the source hierarchy
+        }
+
+        List<Dataset> targetDatasets = field.getDatasets(address.datasetId());
+        for (int k = 0; k < sourceDatasets.size(); k++) {
+            Dataset src = sourceDatasets.get(k);
+            ISODataset dst;
+            if (k < targetDatasets.size() && targetDatasets.get(k) instanceof ISODataset d) {
+                dst = d;
+            } else {
+                dst = new ISODataset(address.datasetId(), src.getFormat());
+                field.addDataset(dst);
+                createdDatasets.put(dst, field);
+            }
+            dst.removeElement(elementId);
+            for (DatasetElement element : src.getElements(elementId))
+                dst.addElement(elementId, cloneDatasetComponent(element.getComponent()), element.isConstructed());
+        }
+    }
+
+    /**
+     * Walks a strict path.
+     *
+     * @return the message holding the component addressed by the last segment
+     *         ({@code datasetField} is {@code null}), the message holding the dataset
+     *         field at {@code path[index]} that the path descends into, or {@code null}
+     *         if the path runs through an absent or leaf field
+     */
+    private PathTarget locate(int[] path) {
+        ISOMsg m = this;
+        for (int i = 0; i < path.length - 1; i++) {
+            ISOComponent c = m.getComponent(path[i]);
+            if (c instanceof ISODatasetField field)
+                return new PathTarget(m, i, field);
+            if (!(c instanceof ISOMsg sub))
+                return null;
+            m = sub;
+        }
+        return new PathTarget(m, path.length - 1, null);
+    }
+
+    /**
+     * Parses a strict field path. Segments are decimal ({@code 62}) or
+     * {@code 0x}-prefixed hexadecimal ({@code 0x9F26}) numbers in the range
+     * {@code 0..Integer.MAX_VALUE}.
+     *
+     * @throws IllegalArgumentException if fpath is malformed
+     */
+    private static int[] parsePath(String fpath) {
+        if (fpath == null || fpath.isEmpty())
+            throw new IllegalArgumentException("Invalid path '" + fpath + "': empty path");
+        String[] segments = fpath.split("\\.", -1);
+        int[] path = new int[segments.length];
+        for (int i = 0; i < segments.length; i++)
+            path[i] = parsePathSegment(fpath, segments[i], i + 1);
+        return path;
+    }
+
+    private static int parsePathSegment(String fpath, String segment, int position) {
+        if (segment.isEmpty())
+            throw new IllegalArgumentException("Invalid path '" + fpath + "': empty segment at position " + position);
+        boolean hex = segment.startsWith("0x");
+        String digits = hex ? segment.substring(2) : segment;
+        boolean valid = !digits.isEmpty();
+        for (int i = 0; valid && i < digits.length(); i++) {
+            char ch = digits.charAt(i);
+            valid = ch >= '0' && ch <= '9' || hex && (ch >= 'a' && ch <= 'f' || ch >= 'A' && ch <= 'F');
+        }
+        if (!valid)
+            throw new IllegalArgumentException(
+              "Invalid path '" + fpath + "': invalid segment '" + segment + "' at position " + position);
+        try {
+            return Integer.parseInt(digits, hex ? 16 : 10);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+              "Invalid path '" + fpath + "': segment '" + segment + "' at position " + position + " is out of range", e);
+        }
+    }
+
+    private record PathTarget(ISOMsg msg, int index, ISODatasetField datasetField) { }
+
+    private record DatasetAddress(int fieldNo, boolean envelope, int datasetId, int elementId) { }
 
     private ISOComponent toDatasetComponent(int elementId, Object value) throws ISOException {
         if (value instanceof ISOComponent) {
