@@ -206,6 +206,46 @@ public class ISOMsgTest {
     }
 
     @Test
+    public void testGetComponentBrokenHierarchy() throws Exception {
+        ISOMsg m = new ISOMsg("0100");
+        m.set(62, "leaf62");
+        m.set("63.2", "leaf63.2");
+        m.set("63.3.1", "value63.3.1");
+        ISODatasetField f55 = new ISODatasetField(55);
+        f55.addDataset(new ISODataset(55, DatasetFormat.TLV).with(0x9F26, "0102030405060708".getBytes()));
+        m.set(f55);
+
+        assertNull(m.getComponent("62.1"), "path through a leaf");
+        assertNull(m.getComponent("62.1.2"), "path through a leaf");
+        assertNull(m.getComponent("63.2.1"), "path through a nested leaf");
+        assertNull(m.getComponent("55.0x9F26"), "path through a dataset field");
+        assertNull(m.getComponent("64.1"), "absent field");
+        assertNull(m.getComponent("63.4.1"), "absent subfield");
+        assertNull(m.getComponent("63.3.2"), "absent leaf");
+
+        assertEquals("leaf62", m.getComponent("62").getValue());
+        assertInstanceOf(ISOMsg.class, m.getComponent("63.3"));
+        assertEquals("value63.3.1", m.getComponent("63.3.1").getValue());
+        assertSame(f55, m.getComponent("55"));
+    }
+
+    @Test
+    public void testCloneFPathBrokenHierarchy() throws Exception {
+        ISOMsg m = new ISOMsg("0100");
+        m.set(62, "leaf62");
+        m.set("63.3.1", "value63.3.1");
+        ISODatasetField f55 = new ISODatasetField(55);
+        f55.addDataset(new ISODataset(55, DatasetFormat.TLV).with(0x9F26, "0102030405060708".getBytes()));
+        m.set(f55);
+
+        ISOMsg c = m.clone("0", "62.1", "55.0x9F26", "63.3.1");
+        assertEquals("0100", c.getMTI());
+        assertFalse(c.hasField(62), "path through a leaf must not create a composite");
+        assertFalse(c.hasField(55), "path through a dataset field must not copy the field");
+        assertEquals("value63.3.1", c.getString("63.3.1"));
+    }
+
+    @Test
     public void testFPathISOEcho() throws Exception {
         ISOMsg m = new ISOMsg("0100");
 
