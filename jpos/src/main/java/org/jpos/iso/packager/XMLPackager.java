@@ -280,7 +280,7 @@ public class XMLPackager extends DefaultHandler
                     throw new SAXException("invalid dataset element");
                 int elementId = dataset.getFormat() == DatasetFormat.TLV ? parseHexId(id) : parseDecimalOrHexId(id);
                 byte[] bytes = value == null ? new byte[0] : ISOUtil.hex2byte(value.getBytes(), 0, value.length() / 2);
-                dataset.addElement(elementId, new ISOBinaryField(elementId, bytes), dataset.getFormat() == DatasetFormat.TLV && isConstructedTag(elementId));
+                dataset.addElement(elementId, new ISOBinaryField(elementId, bytes), dataset.getFormat() == DatasetFormat.TLV && DatasetElement.isConstructedTag(elementId));
             } else if (HEADER_TAG.equals (name)) {
                 BaseHeader bh = new BaseHeader();
                 bh.setAsciiEncoding (ASCII_ENCODING.equalsIgnoreCase(atts.getValue(ENCODING_ATTR)));
@@ -437,13 +437,5 @@ public class XMLPackager extends DefaultHandler
         } catch (NumberFormatException ex) {
             throw new SAXException("Invalid hex id " + id, ex);
         }
-    }
-
-    private boolean isConstructedTag(int tag) {
-        String hexTag = Integer.toHexString(tag);
-        if ((hexTag.length() & 0x01) == 1)
-            hexTag = "0" + hexTag;
-        byte[] tagBytes = ISOUtil.hex2byte(hexTag);
-        return (tagBytes[0] & 0x20) == 0x20;
     }
 }

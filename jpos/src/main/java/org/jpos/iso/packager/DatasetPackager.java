@@ -247,7 +247,7 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
         ISODataset dataset = new ISODataset(identifier, DatasetFormat.TLV);
         for (TLVMsg tag : tlv.getTags()) {
             ISOBinaryField field = new ISOBinaryField(tag.getTag(), tag.getValue());
-            dataset.addElement(tag.getTag(), field, isConstructedTag(tag.getTag()));
+            dataset.addElement(tag.getTag(), field, DatasetElement.isConstructedTag(tag.getTag()));
         }
         return dataset;
     }
@@ -450,7 +450,7 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
             throw new ISOException(String.format("Invalid DBM TLV continuation in dataset %02X", identifier), e);
         }
         for (TLVMsg tag : tlv.getTags()) {
-            dataset.addElement(tag.getTag(), new ISOBinaryField(tag.getTag(), tag.getValue()), isConstructedTag(tag.getTag()));
+            dataset.addElement(tag.getTag(), new ISOBinaryField(tag.getTag(), tag.getValue()), DatasetElement.isConstructedTag(tag.getTag()));
         }
     }
 
@@ -509,15 +509,6 @@ public class DatasetPackager extends GenericPackager implements ISODatasetPackag
 
     private boolean isBitSet(byte value, int bitNumber) {
         return ((value >> (8 - bitNumber)) & 0x01) == 0x01;
-    }
-
-    private boolean isConstructedTag(int tag) {
-        String hexTag = Integer.toHexString(tag);
-        if ((hexTag.length() & 0x01) == 1) {
-            hexTag = '0' + hexTag;
-        }
-        byte[] tagBytes = ISOUtil.hex2byte(hexTag);
-        return (tagBytes[0] & 0x20) == 0x20;
     }
 
     private static class DBMBitmap {

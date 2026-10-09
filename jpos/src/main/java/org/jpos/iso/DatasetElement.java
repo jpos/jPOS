@@ -82,6 +82,21 @@ public class DatasetElement {
     }
 
     /**
+     * Indicates whether a BER-TLV tag is constructed, that is, whether bit 6
+     * of its first byte is set.
+     *
+     * @param tag TLV tag, for example {@code 0x71} or {@code 0x9F26}
+     * @return {@code true} for constructed tags
+     */
+    public static boolean isConstructedTag(int tag) {
+        String hexTag = Integer.toHexString(tag);
+        if ((hexTag.length() & 0x01) == 1)
+            hexTag = "0" + hexTag;
+        byte[] tagBytes = ISOUtil.hex2byte(hexTag);
+        return (tagBytes[0] & 0x20) == 0x20;
+    }
+
+    /**
      * Returns the component value.
      *
      * @return element value
