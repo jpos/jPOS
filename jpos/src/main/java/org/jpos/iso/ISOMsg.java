@@ -730,9 +730,10 @@ public class ISOMsg extends ISOComponent
         return obj;
     }
     /**
-     * get the component associated with the given field number
+     * get the component associated with the given field path
      * @param fpath field path
-     * @return the Component
+     * @return the Component, or {@code null} if it is not present or any
+     *         intermediate path element is absent or not an {@link ISOMsg}
      * @throws ISOException on error
      */
     public ISOComponent getComponent (String fpath) throws ISOException {
@@ -747,7 +748,7 @@ public class ISOMsg extends ISOComponent
                     m = (ISOMsg) obj;
                 }
                 else
-                    break; // 'Quick' exit if hierarchy is not present.
+                    return null; // hierarchy is not present
             } else
                 break;
         }
