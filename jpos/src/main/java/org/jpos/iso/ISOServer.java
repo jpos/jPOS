@@ -548,14 +548,30 @@ public class ISOServer extends Observable
                         if (connectionCount.getAndIncrement() % 100 == 0) {
                             purgeChannels ();
                         }
-                        executor.submit (() -> {
+                        // Acquired before handing off, so the next pass sees exhausted permits
+                        // and stops listening.
+                        permits.acquireUninterruptibly();
+                        try {
+                            executor.submit (() -> {
+                                try {
+                                    createSession(channel).run();
+                                } finally {
+                                    permits.release();
+                                }
+                              });
+                        } catch (Throwable t) {
+                            permits.release();
                             try {
-                                permits.acquireUninterruptibly();
-                                createSession(channel).run();
-                            } finally {
-                                permits.release();
+                                channel.disconnect();
+                            } catch (IOException e) {
+                                t.addSuppressed(e);
                             }
-                          });
+                            // Rejection is expected while shutting down; otherwise keep the
+                            // listening socket and go on accepting.
+                            if (!shutdown)
+                                log (new ThrowableAuditLogEvent(t));
+                            continue;
+                        }
                         setChanged ();
                         notifyObservers (this);
                         fireEvent(new ISOServerAcceptEvent(this, channel));
