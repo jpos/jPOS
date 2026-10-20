@@ -238,21 +238,32 @@ public class GenericSSLSocketFactory
     {
         if(socketFactory==null) socketFactory=createSocketFactory();
         String peerHost = serverAuthNeeded && serverName != null && !serverName.isEmpty() ? serverName : host;
-        SSLSocket s = (SSLSocket) socketFactory.createSocket(new Socket(host, port), peerHost, port, true);
-        if (serverAuthNeeded) {
-            SSLParameters parameters = s.getSSLParameters();
-            parameters.setEndpointIdentificationAlgorithm("HTTPS");
-            s.setSSLParameters(parameters);
+        Socket socket = new Socket(host, port);
+        try {
+            SSLSocket s = (SSLSocket) socketFactory.createSocket(socket, peerHost, port, true);
+            socket = s;
+            if (serverAuthNeeded) {
+                SSLParameters parameters = s.getSSLParameters();
+                parameters.setEndpointIdentificationAlgorithm("HTTPS");
+                s.setSSLParameters(parameters);
+            }
+            // The handshake has not run yet, so these restrictions still take effect.
+            if (enabledCipherSuites != null && enabledCipherSuites.length > 0) {
+                s.setEnabledCipherSuites(enabledCipherSuites);
+            }
+            if (enabledProtocols != null && enabledProtocols.length > 0) {
+                s.setEnabledProtocols(enabledProtocols);
+            }
+            return s;
+        } catch (IOException | RuntimeException e) {
+            // Ownership transfers to the caller only after successful configuration.
+            try {
+                socket.close();
+            } catch (IOException closeFailure) {
+                e.addSuppressed(closeFailure);
+            }
+            throw e;
         }
-        // apply the configured restrictions on the client path too, mirroring
-        // createServerSocket; the handshake has not run yet, so these still take effect
-        if (enabledCipherSuites != null && enabledCipherSuites.length > 0) {
-            s.setEnabledCipherSuites(enabledCipherSuites);
-        }
-        if (enabledProtocols != null && enabledProtocols.length > 0) {
-            s.setEnabledProtocols(enabledProtocols);
-        }
-        return s;
     }
 
     /**
