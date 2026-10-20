@@ -244,6 +244,14 @@ public class GenericSSLSocketFactory
             parameters.setEndpointIdentificationAlgorithm("HTTPS");
             s.setSSLParameters(parameters);
         }
+        // apply the configured restrictions on the client path too, mirroring
+        // createServerSocket; the handshake has not run yet, so these still take effect
+        if (enabledCipherSuites != null && enabledCipherSuites.length > 0) {
+            s.setEnabledCipherSuites(enabledCipherSuites);
+        }
+        if (enabledProtocols != null && enabledProtocols.length > 0) {
+            s.setEnabledProtocols(enabledProtocols);
+        }
         return s;
     }
 
