@@ -21,12 +21,12 @@ package org.jpos.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.jpos.iso.ISOUtil;
-
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
+import org.jpos.iso.ISOUtil;
 
 /**
  * <p>
@@ -90,7 +90,7 @@ public class SimpleMsg implements Loggeable {
         if (msgContent instanceof Object[])
             cl = Arrays.asList((Object[]) msgContent);
         else if (msgContent instanceof Collection)
-            cl = (Collection) msgContent;
+            cl = new ArrayList<>((Collection) msgContent);
         else if (msgContent instanceof Loggeable)
             cl = Arrays.asList(msgContent);
         else if (msgContent instanceof Throwable)
