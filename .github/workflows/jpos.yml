@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 26 ]
+        java: [ 27 ]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
