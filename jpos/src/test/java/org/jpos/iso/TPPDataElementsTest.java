@@ -81,6 +81,28 @@ public class TPPDataElementsTest {
         assertPackUnpackPreservesFieldValue("jar:packager/cmfv3.xml", "113.73", value);
     }
 
+    @Test
+    public void testW3CTraceContextWireFormatAndRoundTrip() throws ISOException {
+        GenericPackager packager = new GenericPackager("jar:packager/cmfv3.xml");
+        ISOMsgFieldPackager privateFields = (ISOMsgFieldPackager) packager.getFieldPackager(113);
+        ISOFieldPackager traceContext = ((ISOBasePackager) privateFields.getISOMsgPackager()).getFieldPackager(78);
+        assertInstanceOf(IFB_LLLCHAR.class, traceContext);
+        assertEquals(255, traceContext.getLength());
+
+        String traceparent = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
+        for (String value : new String[] {traceparent, "a".repeat(255)}) {
+            byte[] encoded = traceContext.pack(new ISOField(78, value));
+            byte[] prefix = value.length() == 55
+                ? new byte[] {0x00, 0x55} : new byte[] {0x02, 0x55};
+            assertArrayEquals(prefix, java.util.Arrays.copyOf(encoded, 2));
+            assertArrayEquals(value.getBytes(java.nio.charset.StandardCharsets.US_ASCII),
+                java.util.Arrays.copyOfRange(encoded, 2, encoded.length));
+            assertPackUnpackPreservesFieldValue("jar:packager/cmfv3.xml", "113.78", value);
+        }
+        assertThrows(ISOException.class,
+            () -> traceContext.pack(new ISOField(78, "a".repeat(256))));
+    }
+
     private void assertPackUnpackPreservesFieldValue(String packagerResource, String fieldPath, String value) throws ISOException {
         ISOPackager p = new GenericPackager(packagerResource);
         ISOMsg m = new ISOMsg("2100");
