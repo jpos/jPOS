@@ -42,6 +42,7 @@ import java.util.concurrent.locks.LockSupport;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.jfr.ChannelEvent;
 import org.jpos.log.AuditLogEvent;
 import org.jpos.log.evt.*;
@@ -96,7 +97,7 @@ public class ISOServer extends Observable
 
     private int backlog;
     /** The server configuration. */
-    protected Configuration cfg;
+    protected Configuration cfg = new SimpleConfiguration();
     private volatile boolean shutdown = false;
     private ServerSocket serverSocket;
     private Map<String,WeakReference<ISOChannel>> channels;
@@ -135,6 +136,7 @@ public class ISOServer extends Observable
         if (maxSessions > 0)
             permitsCount = maxSessions;
         permits = new Semaphore(permitsCount);
+        executor = QFactory.executorService(false);
     }
 
     @Override
