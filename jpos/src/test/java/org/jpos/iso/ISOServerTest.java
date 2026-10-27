@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -36,6 +37,7 @@ import org.jpos.util.NameRegistrar;
 import org.jpos.util.SimpleLogListener;
 import org.junit.jupiter.api.Test;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.ServerSocket;
@@ -313,6 +315,45 @@ public class ISOServerTest {
             m.set(11, "000001");
             client.send(m);
             assertTrue(received.await(5, TimeUnit.SECONDS), "a client matching a wildcard allow should be served");
+        } finally {
+            client.disconnect();
+            server.shutdown();
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
+    void wildcardDenyDisconnectsMatchingClient() throws Exception {
+        int port;
+        try (ServerSocket probe = new ServerSocket(0)) {
+            port = probe.getLocalPort();
+        }
+
+        CSChannel channel = new CSChannel();
+        channel.setPackager(new ISO87BPackager());
+        ISOServer server = new ISOServer(port, channel, 5);
+        server.setLogger(new Logger(), "ISOServerTest");
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("deny", "127.0.0.*");
+        server.setConfiguration(cfg);
+        CountDownLatch received = new CountDownLatch(1);
+        server.addISORequestListener((source, m) -> {
+            received.countDown();
+            return true;
+        });
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(server);
+        CSChannel client = new CSChannel("127.0.0.1", port, new ISO87BPackager());
+        try {
+            connect(port, 5000L).close();
+            client.connect();
+            client.setTimeout(10000); // past the server's random deny delay
+            ISOMsg m = new ISOMsg("0800");
+            m.set(11, "000001");
+            client.send(m);
+            assertThrows(EOFException.class, client::receive, "a client matching a wildcard deny should be disconnected");
+            assertEquals(1, received.getCount(), "a denied client's request should not reach the listeners");
         } finally {
             client.disconnect();
             server.shutdown();
