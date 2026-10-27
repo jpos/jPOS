@@ -34,6 +34,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -568,8 +569,11 @@ public class ISOServer extends Observable
                             }
                             // Rejection is expected while shutting down; otherwise keep the
                             // listening socket and go on accepting.
-                            if (!shutdown)
+                            if (!(shutdown && t instanceof RejectedExecutionException)) {
                                 log (new ThrowableAuditLogEvent(t));
+                                if (!shutdown)
+                                    relax();
+                            }
                             continue;
                         }
                         setChanged ();
