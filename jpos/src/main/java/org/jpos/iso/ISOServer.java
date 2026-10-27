@@ -456,7 +456,7 @@ public class ISOServer extends Observable
             String ip= socket.getInetAddress().getHostAddress ();           // The remote IP
 
             // first, check allows or denies for specific/whole IPs (no wildcards)
-            boolean specificAllow = specificIPPerms.get(ip);
+            Boolean specificAllow = specificIPPerms.get(ip);
             if (specificAllow == Boolean.TRUE) {                            // specific IP allow
                 evt.addMessage("access granted, ip=" + ip);
                 return;

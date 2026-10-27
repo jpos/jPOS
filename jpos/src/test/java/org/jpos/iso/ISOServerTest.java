@@ -37,6 +37,9 @@ import org.jpos.util.SimpleLogListener;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.text.ParseException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -277,6 +280,56 @@ public class ISOServerTest {
         } finally {
             server.shutdown();
             executor.shutdownNow();
+        }
+    }
+
+    @Test
+    void wildcardAllowGrantsMatchingClient() throws Exception {
+        int port;
+        try (ServerSocket probe = new ServerSocket(0)) {
+            port = probe.getLocalPort();
+        }
+
+        CSChannel channel = new CSChannel();
+        channel.setPackager(new ISO87BPackager());
+        ISOServer server = new ISOServer(port, channel, 5);
+        server.setLogger(new Logger(), "ISOServerTest");
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("allow", "127.0.0.*");
+        server.setConfiguration(cfg);
+        CountDownLatch received = new CountDownLatch(1);
+        server.addISORequestListener((source, m) -> {
+            received.countDown();
+            return true;
+        });
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(server);
+        CSChannel client = new CSChannel("127.0.0.1", port, new ISO87BPackager());
+        try {
+            connect(port, 5000L).close();
+            client.connect();
+            ISOMsg m = new ISOMsg("0800");
+            m.set(11, "000001");
+            client.send(m);
+            assertTrue(received.await(5, TimeUnit.SECONDS), "a client matching a wildcard allow should be served");
+        } finally {
+            client.disconnect();
+            server.shutdown();
+            executor.shutdownNow();
+        }
+    }
+
+    private static Socket connect(int port, long timeout) throws IOException {
+        long deadline = System.currentTimeMillis() + timeout;
+        while (true) {
+            try {
+                return new Socket("127.0.0.1", port);
+            } catch (ConnectException e) {
+                if (System.currentTimeMillis() > deadline)
+                    throw e;
+                ISOUtil.sleep(50L);
+            }
         }
     }
 
