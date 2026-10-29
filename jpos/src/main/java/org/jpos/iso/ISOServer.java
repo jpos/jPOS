@@ -343,6 +343,7 @@ public class ISOServer extends Observable
             int remotePort = 0;
             int localPort = 0;
             Instant start = Instant.now();
+            boolean permitted = true;
             if (channel instanceof BaseChannel baseChannel) {
                 Socket socket = baseChannel.getSocket ();
                 host = socket.getInetAddress().getHostAddress();
@@ -353,42 +354,44 @@ public class ISOServer extends Observable
                 LogEvent ev = createSessionEvent(sessionUUID, endpoint)
                   .add(new SessionStart(getActiveConnections(), permitsCount, host, remotePort, localPort)
                 );
-                if (!checkPermission (socket, ev))
-                    return;
+                permitted = checkPermission (socket, ev);
             }
-            try {
-                WeakReference<ISOChannel> wr = new WeakReference<> (channel);
-                channels.put (channel.getName(), wr);
-                channels.put (LAST, wr); // we are most likely the last one
-                while (true) try {
-                    ISOMsg m = channel.receive();
-                    lastTxn = System.currentTimeMillis();
-                    for (ISORequestListener listener : listeners) {
-                        if (listener.process(channel, m)) {
+            // A denied client skips the receive loop, but is disconnected like any other.
+            if (permitted) {
+                try {
+                    WeakReference<ISOChannel> wr = new WeakReference<> (channel);
+                    channels.put (channel.getName(), wr);
+                    channels.put (LAST, wr); // we are most likely the last one
+                    while (true) try {
+                        ISOMsg m = channel.receive();
+                        lastTxn = System.currentTimeMillis();
+                        for (ISORequestListener listener : listeners) {
+                            if (listener.process(channel, m)) {
+                                break;
+                            }
+                        }
+                        // A listener may intentionally close the connection after processing a message.
+                        if (!channel.isConnected())
                             break;
+                    } catch (ISOFilter.VetoException e) {
+                        Logger.log(createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e.getMessage()));
+                    } catch (ISOException e) {
+                        if (ignoreISOExceptions) {
+                            Logger.log(createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e.getMessage()));
+                        } else {
+                            throw e;
                         }
                     }
-                    // A listener may intentionally close the connection after processing a message.
-                    if (!channel.isConnected())
-                        break;
-                } catch (ISOFilter.VetoException e) {
-                    Logger.log(createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e.getMessage()));
-                } catch (ISOException e) {
-                    if (ignoreISOExceptions) {
-                        Logger.log(createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e.getMessage()));
-                    } else {
-                        throw e;
-                    }
+                } catch (EOFException e) {
+                    // Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
+                } catch (SocketException e) {
+                    if (!shutdown)
+                        Logger.log (createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e));
+                } catch (InterruptedIOException e) {
+                    // nothing to log
+                } catch (Throwable e) {
+                    Logger.log (createSessionEvent(Kind.SESSION_ERROR, sessionUUID, endpoint).add(e));
                 }
-            } catch (EOFException e) {
-                 // Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
-            } catch (SocketException e) {
-                 if (!shutdown)
-                     Logger.log (createSessionEvent(Kind.SESSION_WARNING, sessionUUID, endpoint).add(e));
-            } catch (InterruptedIOException e) {
-                // nothing to log
-            } catch (Throwable e) {
-                Logger.log (createSessionEvent(Kind.SESSION_ERROR, sessionUUID, endpoint).add(e));
             }
 
             try {
@@ -434,16 +437,10 @@ public class ISOServer extends Observable
                 checkPermission0 (socket, ev);
                 return true;
             } catch (ISOException e) {
-                try {
-                    int delay = 1000 + new Random().nextInt(4000);
-                    ev.addMessage(e.getMessage());
-                    ev.addMessage("delay=" + delay);
-                    ISOUtil.sleep(delay);
-                    socket.close();
-                    fireEvent(new ISOServerShutdownEvent(ISOServer.this));
-                } catch (Throwable t) {
-                    ev.addMessage (t);
-                }
+                int delay = 1000 + new Random().nextInt(4000);
+                ev.addMessage(e.getMessage());
+                ev.addMessage("delay=" + delay);
+                ISOUtil.sleep(delay);
             } finally {
                 Logger.log (ev);
             }

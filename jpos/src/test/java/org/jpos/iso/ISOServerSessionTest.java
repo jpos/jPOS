@@ -18,6 +18,7 @@
 
 package org.jpos.iso;
 
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.log.evt.SessionEnd;
 import org.jpos.iso.channel.CSChannel;
 import org.jpos.iso.packager.ISO87BPackager;
@@ -93,6 +94,29 @@ class ISOServerSessionTest {
                 assertFalse(accepted.isConnected());
                 assertEquals(0, countTag("session-error"));
                 assertEquals(0, countTag("session-warning"));
+                assertSessionEnded();
+            } finally {
+                client.disconnect();
+                accepted.disconnect();
+            }
+        }
+    }
+
+    @Test
+    void deniedClientEndsLikeAnyOtherSession() throws Exception {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("deny", "127.0.0.1");
+        server.setConfiguration(cfg);
+        try (ServerSocket socket = new ServerSocket(0)) {
+            socket.setSoTimeout(5000);
+            CSChannel client = new CSChannel("127.0.0.1", socket.getLocalPort(), new ISO87BPackager());
+            CSChannel accepted = new CSChannel(new ISO87BPackager());
+            try {
+                client.connect();
+                accepted.accept(socket);
+                server.createSession(accepted).run();
+                assertFalse(accepted.isConnected());
+                assertEquals(0, events.stream().filter(ISOServerShutdownEvent.class::isInstance).count());
                 assertSessionEnded();
             } finally {
                 client.disconnect();
