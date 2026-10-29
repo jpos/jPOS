@@ -1,5 +1,9 @@
 name: "Run jPOS Tests"
-on: [push, pull_request]
+on:
+  push:
+    branches: [ tail ]
+  pull_request:
+    branches: [ tail ]
 
 jobs:
   build:
@@ -10,19 +14,13 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Set up JDK ${{ matrix.java }}
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v6
       with:
         distribution: 'corretto'
         java-version: ${{ matrix.java }}
         cache: 'gradle'
-    - name: Cache Gradle packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-        restore-keys: ${{ runner.os }}-gradle
     - name: Assemble
       run: ./gradlew jpos:assemble --info
       env:
@@ -33,16 +31,13 @@ jobs:
         TERM: dumb
     - name: Upload test results
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v7
       with:
-        name: test-results
+        name: test-results-${{ matrix.os }}-java-${{ matrix.java }}
         path: jpos/build/reports/tests/*
-    - name: Dependency Check Analyze
-      run: ./gradlew jpos:dependencyCheckAnalyze --info
-      env:
-        TERM: dumb
-    - name: Dependency Check Analyze
-      run: ./gradlew jpos:dependencyCheckAnalyze --info
-      env:
-        TERM: dumb
+    # Dependency scans run separately: the legacy scanner uses an unavailable NVD feed.
+#    - name: Dependency Check Analyze
+#      run: ./gradlew jpos:dependencyCheckAnalyze --info
+#      env:
+#        TERM: dumb
 
