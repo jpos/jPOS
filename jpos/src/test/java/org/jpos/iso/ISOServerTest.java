@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -38,6 +39,9 @@ import org.jpos.util.SimpleLogListener;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.text.ParseException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ import java.util.concurrent.Executors;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
 
 public class ISOServerTest {
@@ -332,6 +337,56 @@ public class ISOServerTest {
         } finally {
             server.shutdown();
             executor.shutdownNow();
+        }
+    }
+
+    @Test
+    void maxSessionsRefusesConnectionsWhileExhausted() throws Exception {
+        int port;
+        try (ServerSocket probe = new ServerSocket(0)) {
+            port = probe.getLocalPort();
+        }
+
+        CSChannel channel = new CSChannel();
+        channel.setPackager(new ISO87BPackager());
+        ISOServer server = new ISOServer(port, channel, 1);
+        server.setLogger(new Logger(), "ISOServerTest");
+        server.setConfiguration(new SimpleConfiguration());
+        CountDownLatch stoppedListening = new CountDownLatch(1);
+        AtomicInteger activeOnAccept = new AtomicInteger(-1);
+        server.addServerEventListener(ev -> {
+            // Fired on the accept thread right after the session is submitted, before the next permit check.
+            if (ev instanceof ISOServerAcceptEvent)
+                activeOnAccept.compareAndSet(-1, server.getActiveConnections());
+            else if (ev instanceof ISOServerShutdownEvent)
+                stoppedListening.countDown();
+        });
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(server);
+        try {
+            try (Socket first = connect(port, 5000L)) {
+                assertTrue(stoppedListening.await(5, TimeUnit.SECONDS), "server should stop listening once its only permit is taken");
+                assertEquals(1, activeOnAccept.get(), "permit should be taken by the accept loop, not later by the session");
+                assertThrows(ConnectException.class, () -> new Socket("127.0.0.1", port).close());
+            }
+            connect(port, 5000L).close(); // the permit is returned and the server listens again
+        } finally {
+            server.shutdown();
+            executor.shutdownNow();
+        }
+    }
+
+    private static Socket connect(int port, long timeout) throws IOException {
+        long deadline = System.currentTimeMillis() + timeout;
+        while (true) {
+            try {
+                return new Socket("127.0.0.1", port);
+            } catch (ConnectException e) {
+                if (System.currentTimeMillis() > deadline)
+                    throw e;
+                ISOUtil.sleep(50L);
+            }
         }
     }
 

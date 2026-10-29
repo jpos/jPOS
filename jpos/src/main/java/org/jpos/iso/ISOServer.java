@@ -34,6 +34,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -550,14 +551,33 @@ public class ISOServer extends Observable
                         if (connectionCount.getAndIncrement() % 100 == 0) {
                             purgeChannels ();
                         }
-                        executor.submit (() -> {
+                        // Acquired before handing off, so the next pass sees exhausted permits
+                        // and stops listening.
+                        permits.acquireUninterruptibly();
+                        try {
+                            executor.submit (() -> {
+                                try {
+                                    createSession(channel).run();
+                                } finally {
+                                    permits.release();
+                                }
+                              });
+                        } catch (Throwable t) {
+                            permits.release();
                             try {
-                                permits.acquireUninterruptibly();
-                                createSession(channel).run();
-                            } finally {
-                                permits.release();
+                                channel.disconnect();
+                            } catch (IOException e) {
+                                t.addSuppressed(e);
                             }
-                          });
+                            // Rejection is expected while shutting down; otherwise keep the
+                            // listening socket and go on accepting.
+                            if (!(shutdown && t instanceof RejectedExecutionException)) {
+                                log (new ThrowableAuditLogEvent(t));
+                                if (!shutdown)
+                                    relax();
+                            }
+                            continue;
+                        }
                         setChanged ();
                         notifyObservers (this);
                         fireEvent(new ISOServerAcceptEvent(this, channel));
