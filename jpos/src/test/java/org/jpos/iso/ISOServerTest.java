@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.text.ParseException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -352,7 +353,11 @@ public class ISOServerTest {
             ISOMsg m = new ISOMsg("0800");
             m.set(11, "000001");
             client.send(m);
-            assertThrows(EOFException.class, client::receive, "a client matching a wildcard deny should be disconnected");
+            IOException e = assertThrows(IOException.class, client::receive,
+              "a client matching a wildcard deny should be disconnected");
+            // Closing a socket with unread data may report a reset instead of EOF.
+            assertTrue(e instanceof EOFException || e instanceof SocketException,
+              "expected EOF or socket closure, not a timeout: " + e);
             assertEquals(1, received.getCount(), "a denied client's request should not reach the listeners");
         } finally {
             client.disconnect();
