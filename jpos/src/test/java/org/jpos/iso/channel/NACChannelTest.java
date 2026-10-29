@@ -20,6 +20,7 @@ package org.jpos.iso.channel;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_14;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -212,10 +213,20 @@ public class NACChannelTest {
     }
 
     @Test
-    public void testSetHeader() throws Throwable {
-        NACChannel nACChannel = new NACChannel();
-        nACChannel.setHeader("testNACChannelHeader");
-        assertEquals(10, nACChannel.getHeader().length, "nACChannel.getHeader().length");
+    public void testSetHeader() {
+        NACChannel channel = new NACChannel();
+        channel.setHeader("6000010000");
+        assertArrayEquals(new byte[] { 0x60, 0x00, 0x01, 0x00, 0x00 }, channel.getHeader());
+    }
+
+    @Test
+    public void testSetHeaderWithHexLetters() {
+        NACChannel channel = new NACChannel();
+        byte[] expected = { 0x60, (byte) 0xAB, (byte) 0xCD, (byte) 0xEF, 0x01 };
+        channel.setHeader("60ABCDEF01");
+        assertArrayEquals(expected, channel.getHeader());
+        channel.setHeader("60abcdef01");
+        assertArrayEquals(expected, channel.getHeader());
     }
 
     @Test
