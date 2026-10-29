@@ -1,5 +1,9 @@
 name: "Run jPOS Tests"
-on: [push, pull_request]
+on:
+  push:
+    branches: [ tail ]
+  pull_request:
+    branches: [ tail ]
 
 jobs:
   build:
