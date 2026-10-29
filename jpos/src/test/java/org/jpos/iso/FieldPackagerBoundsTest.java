@@ -21,6 +21,7 @@ package org.jpos.iso;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -104,6 +105,45 @@ class FieldPackagerBoundsTest {
         ISOBinaryField binaryField = new ISOBinaryField(2);
         assertEquals(4, binaryPackager.unpack(binaryField, new byte[] { 3, 1, 2, 3 }, 0));
         TestUtils.assertEquals(new byte[] { 1, 2, 3 }, binaryField.getBytes());
+    }
+
+    @Test
+    void variableLengthBinaryPackagersRejectValueLongerThanMaxLength() {
+        ISOFieldPackager[] packagers = {
+          new IFB_LLBINARY(10, "test"), new IFB_LLLBINARY(10, "test"),
+          new IFB_LLHBINARY(10, "test"), new IFB_LLLHBINARY(10, "test"),
+          new IFA_LLBINARY(10, "test"), new IFE_LLBINARY(10, "test")
+        };
+        for (ISOFieldPackager packager : packagers) {
+            ISOException e = assertThrows(ISOException.class,
+              () -> packager.pack(new ISOBinaryField(2, new byte[11])),
+              packager.getClass().getSimpleName());
+            assertTrue(hasMessage(e, "Field length 11 too long. Max: 10"),
+              packager.getClass().getSimpleName());
+        }
+    }
+
+    @Test
+    void binaryPackagerRejectsLengthThePrefixCannotRepresent() {
+        IFB_LLBINARY packager = new IFB_LLBINARY(99, "test");
+
+        ISOException e = assertThrows(ISOException.class,
+          () -> packager.pack(new ISOBinaryField(2, new byte[150])));
+
+        assertTrue(hasMessage(e, "Field length 150 too long. Max: 99"));
+    }
+
+    @Test
+    void variableLengthBinaryPackagerRoundTripsValueAtMaxLength() throws ISOException {
+        IFB_LLBINARY packager = new IFB_LLBINARY(10, "test");
+        byte[] value = new byte[10];
+        Arrays.fill(value, (byte) 0xAB);
+
+        byte[] packed = packager.pack(new ISOBinaryField(2, value));
+        ISOBinaryField field = new ISOBinaryField(2);
+
+        assertEquals(11, packager.unpack(field, packed, 0));
+        TestUtils.assertEquals(value, field.getBytes());
     }
 
     @Test
