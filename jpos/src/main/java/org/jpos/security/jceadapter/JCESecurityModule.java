@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -178,7 +178,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      */
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
-        this.cfg = cfg;
+        super.setConfiguration(cfg);
         try {
             init(cfg.get("provider"), cfg.get("lmk", null), cfg.getBoolean("rebuildlmk"));
         } catch (SMException e) {
@@ -271,6 +271,14 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         byte[] clearPINBlock = calculatePINBlock(pin, FORMAT00, accountNumber);
         // Encrypt
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, getLMK(PINLMKIndex));
+        return new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber, false);
+    }
+
+    @Override
+    protected EncryptedPIN encryptPINImpl(String pin, String accountNumber, SecureDESKey pek) throws SMException {
+        byte[] clearPINBlock = calculatePINBlock(pin, FORMAT00, accountNumber);
+        Key clearPEK = decryptFromLMK(pek);
+        byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, clearPEK);
         return new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber, false);
     }
 
@@ -543,24 +551,9 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
 
     private byte[] calculateIVCVC3(Key mkcvc3, byte[] data)
             throws JCEHandlerException {
-        byte[] paddedData = paddingISO9797Method2(data);
+        byte[] paddedData = ISOUtil.padISO9797Method2(data);
         byte[] mac = calculateMACISO9797Alg3(mkcvc3, paddedData);
         return Arrays.copyOfRange(mac,6,8);
-    }
-
-    /**
-     * ISO/IEC 9797-1 padding method 2
-     * @param d da to be padded
-     * @return padded data
-     */
-    private byte[] paddingISO9797Method2(byte[] d) {
-        //Padding - first byte 0x80 rest 0x00
-        byte[] t = new byte[d.length - d.length%8 + 8];
-        System.arraycopy(d, 0, t, 0, d.length);
-        for (int i=d.length;i<t.length;i++)
-          t[i] = (byte)(i==d.length?0x80:0x00);
-        d = t;
-        return d;
     }
 
     /**
@@ -667,7 +660,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
      * </ul>
      * @param pan application primary account number
      * @param psn PAN Sequence Number
-     * @return 8-bytes representing first 16 digits
+     * @return 8-bytes representing rightmost 16 digits
      */
     private static byte[] formatPANPSNOptionA(String pan, String psn){
         if ( pan.length() < 14 )
@@ -817,11 +810,11 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
           case VSDC:
               //Add VSDC pin block padding
               clearPINBlock = ISOUtil.concat(new byte[]{0x08}, clearPINBlock);
-              clearPINBlock = paddingISO9797Method2(clearPINBlock);
+              clearPINBlock = ISOUtil.padISO9797Method2(clearPINBlock);
               break;
           case CCD:
               //Add CCD pin block padding
-              clearPINBlock = paddingISO9797Method2(clearPINBlock);
+              clearPINBlock = ISOUtil.padISO9797Method2(clearPINBlock);
               break;
           default:
         }
@@ -1065,7 +1058,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
                 b = ISOUtil.concat(arqc, arc);
                 if (propAuthData != null)
                     b = ISOUtil.concat(b, propAuthData);
-                b = paddingISO9797Method2(b);
+                b = ISOUtil.padISO9797Method2(b);
                 b = calculateMACISO9797Alg3(skarpc, b);
                 return Arrays.copyOf(b, 4);
             default:
@@ -1085,12 +1078,12 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
         switch(skdm){
           case VSDC:
             smi = deriveSK_VISA(mksmi, atc);
-            data = paddingISO9797Method2(data);
+            data = ISOUtil.padISO9797Method2(data);
             break;
           case MCHIP:
           case EMV_CSKD:
             smi = deriveCommonSK_SM(mksmi,arqc);
-            data = paddingISO9797Method2(data);
+            data = ISOUtil.padISO9797Method2(data);
             break;
           default:
             throw new SMException("Session Key Derivation "+skdm+" not supported");

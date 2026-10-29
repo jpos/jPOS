@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ import static org.jpos.emv.cryptogram.CryptogramDataBuilder.minimumSetOfDataElem
  * @author Rainer Reyes
  */
 public class CVN18DataBuilder implements CryptogramDataBuilder {
-    
+
     @Override
     public String getDefaultARPCRequest(boolean approved) {
         /* for success:
@@ -46,5 +46,10 @@ public class CVN18DataBuilder implements CryptogramDataBuilder {
         minimumSetOfDataElement(data).stream().forEach(sb::append);
         sb.append(iad.toString());
         return sb.toString();
+    }
+
+    @Override
+    public PaddingMethod getPaddingMethod() {
+        return PaddingMethod.ISO9797Method2;
     }
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -193,6 +193,12 @@ public class ISOMsg extends ISOComponent
      */
     public void setPackager (ISOPackager p) {
         packager = p;
+        if (packager == null) {
+            for (Object o : fields.values()) {
+                if (o instanceof ISOMsg)
+                    ((ISOMsg) o).setPackager(null);
+            }
+        }
     }
     /**
      * @return the peer packager
@@ -412,7 +418,7 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
-     * Unset a a set of fields referenced by fpaths if any ot them exist, otherwise ignore.
+     * Unset a set of fields referenced by fpaths, if any of them exist. Otherwise, ignore.
      *
      * @param fpaths dot-separated field paths (i.e. 63.2)
      */
@@ -837,14 +843,22 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
-     * add all fields present on received parameter to this ISOMsg<br>
-     * please note that received fields take precedence over
-     * existing ones (simplifying card agent message creation
-     * and template handling)
-     * @param m ISOMsg to merge
+     * Merges the content of the specified ISOMsg into this ISOMsg instance.
+     * It iterates over the fields of the input message and, for each field that is present,
+     * sets the corresponding component in this message to the value from the input message.
+     * This operation includes all fields that are present in the input message, but does not remove
+     * any existing fields from this message unless they are explicitly overwritten by the input message.
+     * <p>
+     * If the input message contains a header (non-null), this method also clones the header
+     * and sets it as the header of this message.
+     *
+     * @param m The ISOMsg to merge into this ISOMsg. It must not be {@code null}.
+     *          The method does nothing if {@code m} is {@code null}.
+     * @param mergeHeader A boolean flag indicating whether to merge the header of the input message into this message.
+     *
      */
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public void merge (ISOMsg m) {
+    public void merge (ISOMsg m, boolean mergeHeader) {
         for (int i : m.fields.keySet()) {
             try {
                 if (i >= 0 && m.hasField(i))
@@ -853,6 +867,18 @@ public class ISOMsg extends ISOComponent
                 // should never happen
             }
         }
+        if (mergeHeader && m.header != null)
+            header = (ISOHeader) m.header.clone();
+    }
+
+    /*
+     * Merges the content of the specified ISOMsg into this ISOMsg instance, excluding the header.
+     * This method is a convenience wrapper around {@link #merge(ISOMsg, boolean)} with the {@code mergeHeader}
+     * parameter set to {@code false} for backward compatibility, indicating that the header of the input message
+     * will not be merged.
+     */
+    public void merge (ISOMsg m) {
+        merge (m, false);
     }
 
     /**
@@ -962,6 +988,69 @@ public class ISOMsg extends ISOComponent
      */
     public boolean isResponse() throws ISOException {
         return !isRequest();
+    }
+    /**
+     * @return true if message class is "authorization"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isAuthorization() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '1';
+    }
+    /**
+     * @return true if message class is "financial"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isFinancial() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '2';
+    }
+    /**
+     * @return true if message class is "file action"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isFileAction() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '3';
+    }
+    /**
+     * @return true if message class is "reversal"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isReversal() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '4' && (getMTI().charAt(3) == '0' || getMTI().charAt(3) == '1');
+    }
+    /**
+     * @return true if message class is "chargeback"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isChargeback() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '4' && (getMTI().charAt(3) == '2' || getMTI().charAt(3) == '3');
+    }
+    /**
+     * @return true if message class is "reconciliation"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isReconciliation() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '5';
+    }
+    /**
+     * @return true if message class is "administrative"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isAdministrative() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '6';
+    }
+    /**
+     * @return true if message class is "fee collection"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isFeeCollection() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '7';
+    }
+    /**
+     * @return true if message class is "fee collection"
+     * @exception ISOException on MTI not set
+     */
+    public boolean isNetworkManagement() throws ISOException {
+        return hasMTI() && getMTI().charAt(1) == '8';
     }
     /**
      * @return true if message is Retransmission

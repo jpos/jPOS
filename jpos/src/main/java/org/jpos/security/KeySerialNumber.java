@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -156,10 +156,9 @@ public class KeySerialNumber
         p.println(indent + "<key-serial-number>");
         p.println(inner + "<base-key-id>" + getBaseKeyID() + "</base-key-id>");
         p.println(inner + "<device-id>" + getDeviceID() + "</device-id>");
-        p.println(inner + "<transaction-counter>" + getTransactionCounter() + "</transaction-counter");
+        p.println(inner + "<transaction-counter>" + getTransactionCounter() + "</transaction-counter>");
         p.println(indent + "</key-serial-number>");
     }
 }
-
 
 

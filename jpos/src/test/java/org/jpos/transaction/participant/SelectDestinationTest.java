@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -141,6 +141,19 @@ public class SelectDestinationTest implements TransactionConstants {
     @Test
     public void testNetwork_Default () {
         cfg.put ("ignore-luhn", "true");
+        p.setConfiguration(cfg);
+        Context ctx = new Context();
+        ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("0000000000000001"));
+        int action = p.prepare(1L, ctx);
+        assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
+        Result rc = ctx.getResult();
+        assertFalse(rc.hasFailures(), "No failures");
+        assertEquals("DEFAULT", ctx.getString(DESTINATION.toString()), "Invalid Destination");
+    }
+
+    @Test
+    public void testNoCardValidator () {
+        cfg.put ("ignore-card-validations", "true");
         p.setConfiguration(cfg);
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("0000000000000001"));

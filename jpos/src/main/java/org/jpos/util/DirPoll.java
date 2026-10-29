@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -279,7 +279,7 @@ public class DirPoll extends SimpleLogSource
                 }
                 else {
                     synchronized (shutdownMonitor) {
-                        if (!shutdown) {
+                        if (!shutdown && pollInterval > 0L) {
                             shutdownMonitor.wait(pollInterval);
                         }
                     }
@@ -289,7 +289,7 @@ public class DirPoll extends SimpleLogSource
                 Logger.log (new LogEvent (this, "dirpoll", e));
                 try {
                     synchronized (shutdownMonitor) {
-                        if (!shutdown) {
+                        if (!shutdown && pollInterval > 0L) {
                             shutdownMonitor.wait(pollInterval * 10);
                         }
                     }
@@ -458,7 +458,8 @@ public class DirPoll extends SimpleLogSource
                         synchronized (shutdownMonitor) {
                             if (!shutdown) {
                                 try {
-                                    shutdownMonitor.wait(pollInterval * 10); // retry delay (pollInterval defaults to 100ms)
+                                    if (pollInterval > 0L)
+                                        shutdownMonitor.wait(pollInterval * 10); // retry delay (pollInterval defaults to 100ms)
                                 } catch (InterruptedException ie) {
                                 }
                             }

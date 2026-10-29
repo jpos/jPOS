@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -136,10 +136,16 @@ public class ISOTagStringFieldPackager extends ISOFieldPackager
      */
     public byte[] pack(ISOComponent c) throws ISOException {
         try{
-            String data = (String)c.getValue();
-            if (data.length() > getLength())
-                throw new ISOException("Field length " + data.length() + " too long. Max: " + getLength());
+            String data;
+            if(c.getValue() instanceof byte[])
+                data = new String(c.getBytes(), ISOUtil.CHARSET); // transparent handling of complex fields
+            else
+                data = (String)c.getValue();
 
+            if (data.length() > getLength())
+            {
+                throw new ISOException("Field length " + data.length() + " too long. Max: " + getLength());
+            }
             int tag = (Integer)c.getKey();
             String paddedData = padder.pad(data, getLength());
             byte[] rawData = new byte[tagPrefixer.getPackedLength()+prefixer.getPackedLength()

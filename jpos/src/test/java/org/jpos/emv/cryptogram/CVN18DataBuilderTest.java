@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,7 +55,9 @@ class CVN18DataBuilderTest {
                 "00000000010000000000000008400000000000084018123101ABCDEF101800000106011203000000",
                 builder.buildARQCRequest(data, iad)
         );
-
-
+        assertEquals(
+                "00000000010000000000000008400000000000084018123101ABCDEF1018000001060112030000008000000000000000",
+                builder.buildARQCRequest_padded(data, iad)
+        );
     }
 }

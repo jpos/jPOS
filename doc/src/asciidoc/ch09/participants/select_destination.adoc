@@ -46,12 +46,13 @@ the configuration, then the `default-destination` will be set.
 .SelectDestination Configuration Properties
 [cols="1,2,2", options="header"]
 |========================================================================================
-|Property            | Description                                       | Default Value
-|request             | ISOMsg used to derive destination                 | `REQUEST` 
-|destination         | Destination Context variable                      | `DESTINATION`
-|default-destination | If no routing found, route to this destination    | 
-|ignore-luhn         | Set to `true` to lift LUHN validation             | `false`
-|fail                | Set to `true` to fail if no route found           | `false`
+|Property                | Description                                    | Default Value
+|request                 | ISOMsg used to derive destination              | `REQUEST`
+|destination             | Destination Context variable                   | `DESTINATION`
+|default-destination     | If no routing found, route to this destination |
+|ignore-card-validations | Set to `true` to lift Card validations         | `false`
+|ignore-luhn             | Set to `true` to lift LUHN validation          | `false`
+|fail                    | Set to `true` to fail if no route found        | `false`
 |========================================================================================
 
 `SelectDestination` may place CMF failure messages in the Context, i.e.:

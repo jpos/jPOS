@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -96,6 +96,27 @@ public class EnvironmentTest {
     public void multiExpr() {
         assertEquals("the numbers UNO and DOS and NaN",
                     Environment.get("the numbers ${test.one} and ${test.two} and ${test.three:NaN}"));
+    }
+    
+    @Test
+    public void multiLineExpression() {
+        assertEquals("The next sentence is true\nThe previous sentence is false\n", 
+                Environment.getEnvironment().getProperty("The next sentence is ${undefined-property:true}\n" + 
+                        "The previous sentence is ${undefined-property:false}\n"));
+    }
+
+    @Test
+    public void multiLineExpressionWithCR() {
+        assertEquals("The next sentence is true\rThe previous sentence is false\r",
+                Environment.getEnvironment().getProperty("The next sentence is ${undefined-property:true}\r" +
+                        "The previous sentence is ${undefined-property:false}\r"));
+    }
+
+    @Test
+    public void multiLineExpressionWithCRLF() {
+        assertEquals("The next sentence is true\r\nThe previous sentence is false\r\n",
+                Environment.getEnvironment().getProperty("The next sentence is ${undefined-property:true}\r\n" +
+                        "The previous sentence is ${undefined-property:false}\r\n"));
     }
 
     @Test

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
 
 package org.jpos.security;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,9 +28,11 @@ import org.jpos.iso.ISOUtil;
 /**
  * Defines the primary usage of the key contained in the key block.
  * <p>
- * Each value repesents bytes 5-6 of the Keyblok Header.
+ * Each value repesents bytes 5-6 of the keyblock header.
  */
-public class KeyUsage {
+public class KeyUsage implements Serializable {
+
+    private static final long serialVersionUID = -5504819939017756749L;
 
     protected static final Map<String, KeyUsage> TR31MAP =  new LinkedHashMap<>();
 

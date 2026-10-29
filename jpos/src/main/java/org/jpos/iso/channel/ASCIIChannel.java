@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import org.jpos.core.ConfigurationException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ISOChannel implementation suitable for OASIS Ltd &copy; hosts<br>
@@ -76,7 +77,7 @@ public class ASCIIChannel extends BaseChannel {
      * @exception IOException
      * @see ISOPackager
      */
-    public ASCIIChannel (ISOPackager p, ServerSocket serverSocket) 
+    public ASCIIChannel (ISOPackager p, ServerSocket serverSocket)
         throws IOException
     {
         super(p, serverSocket);
@@ -104,17 +105,24 @@ public class ASCIIChannel extends BaseChannel {
      * @return the Message len
      * @exception IOException, ISOException
      */
-    protected int getMessageLength() throws IOException, ISOException {
+    protected int getMessageLength() throws IOException, ISOException, InterruptedException {
         int l = 0;
         byte[] b = new byte[lengthDigits];
         while (l == 0) {
             serverIn.readFully(b, 0, lengthDigits);
             try {
-                if ((l=Integer.parseInt(new String(b))) == 0) {
-                    serverOut.write(b);
-                    serverOut.flush();
+                if ((l=Integer.parseInt(new String(b))) == 0 &&
+                    isExpectKeepAlive()) {
+                    try {
+                        if (serverOutSemaphore.tryAcquire(sendTimeout, TimeUnit.MILLISECONDS)) {
+                            serverOut.write(b);
+                            serverOut.flush();
+                        }
+                    } finally {
+                        serverOutSemaphore.release();
+                    }
                 }
-            } catch (NumberFormatException e) { 
+            } catch (NumberFormatException e) {
                 throw new ISOException ("Invalid message length "+new String(b));
             }
         }

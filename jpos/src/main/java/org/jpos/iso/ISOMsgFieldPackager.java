@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,8 @@
 
 package org.jpos.iso;
 
-
 import java.io.IOException;
 import java.io.InputStream;
-
 
 /**
  * ISOMsgFieldPackager is a packager able to pack compound ISOMsgs
@@ -57,12 +55,27 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
         if (c instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) c;
             m.recalcBitMap();
-            ISOBinaryField f = new ISOBinaryField(0, msgPackager.pack(m));
-            if(fieldPackager instanceof TaggedFieldPackagerBase &&
-               msgPackager   instanceof ISOSubFieldPackager) {
+
+            // honor ISOMsg's current position in hierarchy
+            int mfn = m.getFieldNumber() >= 0 ? m.getFieldNumber() : 0;
+            ISOBinaryField f = new ISOBinaryField(mfn, msgPackager.pack(m));
+
+            if (msgPackager instanceof ISOSubFieldPackager) {
                 ISOSubFieldPackager sfp = (ISOSubFieldPackager) msgPackager;
-                f.setFieldNumber(sfp.getFieldNumber());
+
+                // If this ISOMsg needs to be packed as part of some non-bitmapped tagged format
+                // (not all types covered here), or if the ISOSubFieldPackager has been configured
+                // with a specific field number, overriding the one in the ISOMsg.
+                if (fieldPackager instanceof TaggedFieldPackagerBase    ||
+                    fieldPackager instanceof TaggedFieldPackager        ||
+                    fieldPackager instanceof ISOTagStringFieldPackager  ||
+                    fieldPackager instanceof ISOTagBinaryFieldPackager  ||
+                    sfp.getFieldNumber() > -1)
+                {
+                    f.setFieldNumber(sfp.getFieldNumber());
+                }
             }
+
             return fieldPackager.pack(f);
         }
         return fieldPackager.pack(c);
@@ -97,7 +110,7 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
      * @throws java.io.IOException
      */
     @Override
-    public void unpack (ISOComponent c, InputStream in) 
+    public void unpack (ISOComponent c, InputStream in)
         throws IOException, ISOException
     {
         ISOBinaryField f = new ISOBinaryField(0);

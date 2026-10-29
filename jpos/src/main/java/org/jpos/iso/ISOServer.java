@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,17 +29,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EventObject;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jpos.core.Configurable;
@@ -96,7 +86,7 @@ public class ISOServer extends Observable
     protected Configuration cfg;
     private boolean shutdown = false;
     private ServerSocket serverSocket;
-    private Map<String, WeakReference<ServerChannel>> channels;
+    private Map<String,WeakReference<ISOChannel>> channels;
     protected boolean ignoreISOExceptions;
     protected List<ISOServerEventListener> serverListeners = null;
 
@@ -267,17 +257,12 @@ public class ISOServer extends Observable
         }
     }
     private void purgeChannels () {
-        Iterator iter = channels.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c == null || !c.isConnected()) {
-                iter.remove ();
-            }
-        }
+        channels.entrySet().removeIf(entry -> {
+            WeakReference<ISOChannel> ref = entry.getValue();
+            ISOChannel c = ref.get();
+            return c == null || !c.isConnected();
+        });
     }
-
 
     @Override
     public ServerSocket createServerSocket(int port) throws IOException {
@@ -340,6 +325,9 @@ public class ISOServer extends Observable
                 }
             }
             try {
+                WeakReference wr = new WeakReference (channel);
+                channels.put (channel.getName(), wr);
+                channels.put (LAST, wr);
                 for (;;) {
                     try {
                         ISOMsg m = channel.receive();
@@ -509,9 +497,6 @@ public class ISOServer extends Observable
                         if (cnt[CONNECT]++ % 100 == 0) {
                             purgeChannels ();
                         }
-                        WeakReference wr = new WeakReference (channel);
-                        channels.put (channel.getName(), wr);
-                        channels.put (LAST, wr);
                         pool.execute (createSession(channel));
                         setChanged ();
                         notifyObservers (this);
@@ -760,21 +745,26 @@ public class ISOServer extends Observable
         return sb.toString();
     }
     @Override
-    public void dump(PrintStream p, String indent) {
-        String counters = getCountersAsString();
-        p.println (indent + counters);
-
-        for (Map.Entry<String, WeakReference<ServerChannel>> entry : channels.entrySet()) {
-            String key = entry.getKey();
-            //Ignore last as it is a special key with the last channel used and would result in duplication.
-            if (!LAST.equals(key)) {
-                ISOChannel c = entry.getValue().get();
-                if (c != null && c.isConnected() && c instanceof BaseChannel) {
-                    int[] cc = ((BaseChannel) c).getCounters();
-                    String line = String.format("%s  %s: rx=%d, tx=%d, last=%d",
-                            indent, key, cc[ISOChannel.RX], cc[ISOChannel.TX], lastTxn);
-                    p.println(line);
-                }
+    public void dump (PrintStream p, String indent) {
+        p.println (indent + getCountersAsString());
+        Iterator iter = channels.entrySet().iterator();
+        String inner = indent + "  ";
+        for (int i=0; iter.hasNext(); i++) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            WeakReference ref = (WeakReference) entry.getValue();
+            ISOChannel c = (ISOChannel) ref.get ();
+            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected() && c instanceof BaseChannel) {
+                StringBuilder sb = new StringBuilder ();
+                int[] cc = ((BaseChannel)c).getCounters();
+                sb.append (inner);
+                sb.append (entry.getKey());
+                sb.append (": rx=");
+                sb.append (Integer.toString (cc[ISOChannel.RX]));
+                sb.append (", tx=");
+                sb.append (Integer.toString (cc[ISOChannel.TX]));
+                sb.append (", last=");
+                sb.append (Long.toString(lastTxn));
+                p.println (sb.toString());
             }
         }
     }

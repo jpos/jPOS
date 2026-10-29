@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package org.jpos.space;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -184,9 +183,9 @@ public class TSpacePerformanceTest  {
         for (int i=0; i<size; i++)
           es.execute(new WriteSpaceWithNotifyTask("WriteTask2-"+i,sp2,sp1));
 
-        Instant stamp = Instant.now();
+        Duration stamp = Duration.ofNanos(System.nanoTime());
         while (((ThreadPoolExecutor)es).getActiveCount() > 0) {
-          if (Duration.between(stamp, Instant.now()).toMillis() < 10000){
+          if (Duration.ofNanos(System.nanoTime()).minus(stamp).toMillis() < 10000){
             ISOUtil.sleep(100);
             continue;
           }

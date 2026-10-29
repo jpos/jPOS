@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -195,7 +195,8 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
                 (now = System.currentTimeMillis()) < end)
         {
             try {
-                this.wait (end - now);
+                if (end > now)
+                    this.wait (end - now);
             } catch (InterruptedException ignored) { }
         }
         return obj;
@@ -278,14 +279,12 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     }
 
     protected void dumpMap (PrintStream p, String indent) {
-        if (map != null) {
-            Map<Object,Object> cloned;
-            cloned = Collections.synchronizedMap (new LinkedHashMap<>());
-            synchronized(map) {
-                cloned.putAll(map);
-            }
-            cloned.entrySet().forEach(e -> dumpEntry(p, indent, e));
+        Map<Object,Object> m = getMap();
+        Map<Object,Object> cloned = Collections.synchronizedMap (new LinkedHashMap<>());
+        synchronized(m) {
+            cloned.putAll(m);
         }
+        cloned.entrySet().forEach(e -> dumpEntry(p, indent, e));
     }
 
     protected void dumpEntry (PrintStream p, String indent, Map.Entry<Object,Object> entry) {
@@ -297,7 +296,11 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
         Object value = entry.getValue();
         if (value instanceof Loggeable) {
             p.println("");
-            ((Loggeable) value).dump(p, indent + " ");
+            try {
+                ((Loggeable) value).dump(p, indent + " ");
+            } catch (Exception ex) {
+                ex.printStackTrace(p);
+            }
             p.print(indent);
         } else if (value instanceof Element) {
             p.println("");
@@ -328,10 +331,15 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
             ((LogEvent) value).dump(p, indent);
             p.print(indent);
         } else if (value != null) {
-            LogUtil.dump(p, indent, value.toString());
+            try {
+                LogUtil.dump(p, indent, value.toString());
+            } catch (Exception ex) {
+                ex.printStackTrace(p);
+            }
         }
         p.println();
     }
+
     /**
      * return a LogEvent used to store trace information
      * about this transaction.
@@ -401,7 +409,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     public PausedTransaction getPausedTransaction(long timeout) {
         return get (PAUSED_TRANSACTION.toString(), timeout);
     }
-    
+
     public void setTimeout (long timeout) {
         this.timeout = timeout;
     }

@@ -18,4 +18,3 @@ build
 .nb-gradle
 # VSCode Ignores
 .vscode/settings.json
-.sdkmanrc

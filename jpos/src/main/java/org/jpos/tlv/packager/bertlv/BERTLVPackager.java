@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -447,7 +447,7 @@ public abstract class BERTLVPackager extends GenericPackager {
     private int getUninterpretLength(int length, BinaryInterpreter interpreter) {
         if (length > 0) {
             int lengthAdjusted = length + length % 2;
-            return length * (lengthAdjusted / interpreter.getPackedLength(lengthAdjusted));
+            return (length * lengthAdjusted) / interpreter.getPackedLength(lengthAdjusted);
         }
         return 0;
     }
@@ -455,7 +455,7 @@ public abstract class BERTLVPackager extends GenericPackager {
     private int getUninterpretLength(int length, Interpreter interpreter) {
         if (length > 0) {
             int lengthAdjusted = length + length % 2;
-            return length * (lengthAdjusted / interpreter.getPackedLength(lengthAdjusted));
+            return (length * lengthAdjusted) / interpreter.getPackedLength(lengthAdjusted);
         }
         return 0;
     }

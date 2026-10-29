@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -69,24 +69,32 @@ public class LogEvent {
         honorSourceLogger = true;
         addMessage(msg);
     }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
     public String getTag() {
         return tag;
     }
     public void setTag (String tag) {
         this.tag = tag;
     }
+
     public void addMessage (Object msg) {
         payLoad.add (msg);
     }
     public void addMessage (String tagname, String message) {
         payLoad.add ("<"+tagname+">"+message+"</"+tagname+">");
     }
+
     public LogSource getSource() {
         return source;
     }
     public void setSource(LogSource source) {
         this.source = source;
     }
+
     public void setNoArmor (boolean noArmor) {
         this.noArmor = noArmor;
     }
@@ -109,7 +117,7 @@ public class LogEvent {
                 sb.append ("ms\"");
             }
             sb.append ('>');
-            p.println (sb.toString());
+            p.println (sb);
         }
         return indent + "  ";
     }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,6 +45,10 @@ import org.jpos.security.SMAdapter;
 import org.jpos.security.SMException;
 import org.jpos.security.SecureDESKey;
 import org.jpos.util.Logger;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogListener;
+import java.io.File;
+import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -240,7 +244,7 @@ public class JCESecurityModuleTest {
       }
 
       byte[] getDataPad80() {
-          return paddingISO9797Method2(getDataNoPad());
+          return ISOUtil.padISO9797Method2(getDataNoPad());
       }
 
       byte[] getATC() {
@@ -250,22 +254,6 @@ public class JCESecurityModuleTest {
       byte[] getUPN() {
           return dm.get("UPN");
       }
-
-    }
-
-    /**
-     * ISO/IEC 9797-1 padding method 2
-     * @param d da to be padded
-     * @return padded data
-     */
-    static byte[] paddingISO9797Method2(byte[] d) {
-        //Padding - first byte 0x80 rest 0x00
-        byte[] t = new byte[d.length - d.length%8 + 8];
-        System.arraycopy(d, 0, t, 0, d.length);
-        for (int i=d.length;i<t.length;i++)
-          t[i] = (byte)(i==d.length?0x80:0x00);
-        d = t;
-        return d;
     }
 
     @Test
@@ -339,12 +327,8 @@ public class JCESecurityModuleTest {
         try {
             new JCESecurityModule(cfg, new Logger(), "testJCESecurityModuleRealm");
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+        } catch (NullPointerException _) {
+            //expected
         }
     }
 
@@ -696,12 +680,8 @@ public class JCESecurityModuleTest {
         try {
             jCESecurityModule.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            if (isJavaVersionAtMost(JAVA_14)) {
-                assertNull(ex.getMessage(), "ex.getMessage()");
-            } else {
-                assertEquals("Cannot invoke \"org.jpos.core.Configuration.get(String)\" because \"this.cfg\" is null", ex.getMessage(), "ex.getMessage()");
-            }
+        } catch (NullPointerException _) {
+            //expected
         }
     }
 
@@ -957,6 +937,8 @@ public class JCESecurityModuleTest {
             jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
                         ,serviceCode, atc, MKDMethod.OPTION_A);
             fail("Expected SMException to be thrown");
+        } catch (IllegalArgumentException ex) {
+            assertTrue(ex.getMessage().contains("Account"));
         } catch (SMException ex){
             if (isJavaVersionAtMost(JAVA_13)) {
                 assertEquals("String index out of range: -4", ex.getNested().getMessage(), "ex.getMessage()");
@@ -977,6 +959,8 @@ public class JCESecurityModuleTest {
             jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
                         ,serviceCode, atc, MKDMethod.OPTION_A);
             fail("Expected SMException to be thrown");
+        } catch (IllegalArgumentException ex) {
+            assertTrue(ex.getMessage().contains("Account"));
         } catch (SMException ex){
             if (isJavaVersionAtMost(JAVA_14)) {
                 assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
@@ -1831,6 +1815,32 @@ public class JCESecurityModuleTest {
             "E09B073B4007541FAB76B04370451031",
             "4CBF5D51EA8525EF045EFED6E386D9D9");
         assertArrayEquals(ISOUtil.hex2byte("40D522"), sdk.getKeyCheckValue(), "3: KeyCheck was " + ISOUtil.hexString(sdk.getKeyCheckValue()));
+    }
+
+    @Test
+    public void testDebugPropertyEnablesLogging() throws Exception {
+        JCESecurityModule module = new JCESecurityModule();
+        Configuration cfg = new SimpleConfiguration();
+
+        File tempLmk = File.createTempFile("test-lmk", ".lmk");
+        tempLmk.deleteOnExit();
+
+        cfg.put("lmk", tempLmk.getAbsolutePath());
+        cfg.put("rebuildlmk", "true");
+        cfg.put("debug", "true");
+
+
+        module.setConfiguration(cfg);
+
+        Logger logger = new Logger();
+        LogListener listener = mock(LogListener.class);
+        logger.addListener(listener);
+        module.setLogger(logger, "test-realm");
+
+        // Generate a key to trigger logging
+        module.generateKey((short) 128, "ZPK");
+
+        verify(listener, times(1)).log(any(LogEvent.class));
     }
 
 }

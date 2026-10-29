@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -65,8 +65,7 @@ public class TransactionManager
     private static final ThreadLocal<Long> tlId = new ThreadLocal<>();
     private Metrics metrics;
     private static ScheduledThreadPoolExecutor loadMonitorExecutor;
-    private static Map<TransactionParticipant,String> names = new HashMap<>();
-
+    private Map<TransactionParticipant,String> names = new HashMap<>();
 
     Space sp;
     Space psp;
@@ -763,11 +762,11 @@ public class TransactionManager
     }
 
     protected void initStatusListeners (Element config)  throws ConfigurationException{
-        final Iterator iter = config.getChildren ("status-listener").iterator();
+        final Iterator<Element> iter = config.getChildren ("status-listener").iterator();
         while (iter.hasNext()) {
-            final Element e = (Element) iter.next();
+            final Element e = iter.next();
             final QFactory factory = getFactory();
-            final TransactionStatusListener listener = (TransactionStatusListener) factory.newInstance (QFactory.getAttributeValue (e, "class"));
+            final TransactionStatusListener listener = factory.newInstance (QFactory.getAttributeValue (e, "class"));
             factory.setConfiguration (listener, config);
             addListener(listener);
         }
@@ -960,7 +959,7 @@ public class TransactionManager
     protected void recover (int session, long id) {
         LogEvent evt = getLog().createLogEvent ("recover");
         Profiler prof = new Profiler();
-        evt.addMessage ("<id>" + id + "</id>");
+        evt.addMessage ("id", Long.toString(id));
         try {
             String stateKey   = getKey (STATE, id);
             String contextKey = getKey (CONTEXT, id);

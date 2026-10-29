@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -186,27 +186,6 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     }
                 }
             }
-
-// BBB This part not needed
-//            if(m.getMaxField()>128 && fld.length > 128) {
-//                for (int i=1; i<=64; i++) {
-//                    if ((c = (ISOComponent)fields.get (i + 128)) != null)
-//                    {
-//                        try {
-//                            b = fld[i+128].pack(c);
-//                            len += b.length;
-//                            v.add (b);
-//                        } catch (ISOException e) {
-//                            if (evt != null) {
-//                                evt.addMessage ("error packing field "+(i+128));
-//                                evt.addMessage (c);
-//                                evt.addMessage (e);
-//                            }
-//                            throw e;
-//                        }
-//                    }
-//                }
-//            }
 
             int k = 0;
             byte[] d = new byte[len];
@@ -452,7 +431,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * Internal helper logging function.
      * Assumes evt is not null.
      */
-    private static void fieldUnpackLogger(LogEvent evt, int fldno, ISOComponent c, ISOFieldPackager fld, boolean logFieldName) throws ISOException
+    protected static void fieldUnpackLogger(LogEvent evt, int fldno, ISOComponent c, ISOFieldPackager fld, boolean logFieldName) throws ISOException
     {
         evt.addMessage ("<unpack fld=\""+fldno
             +"\" packager=\""+fld.getClass().getName()+ "\">");

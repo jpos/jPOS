@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -430,6 +430,16 @@ public class ISOUtilTest {
         assertThrows(NullPointerException.class, () -> {
             ISOUtil.blankUnPad(null);
         });
+    }
+
+    @Test
+    public void testpadISO9797Method2() {
+        byte[] data = ISOUtil.hex2byte("010203");
+        byte[] result = ISOUtil.padISO9797Method2(data);
+        assertEquals("0102038000000000", ISOUtil.hexString(result));
+        data = ISOUtil.hex2byte("01020304010203");
+        result = ISOUtil.padISO9797Method2(data);
+        assertEquals("0102030401020380", ISOUtil.hexString(result));
     }
 
     @Test

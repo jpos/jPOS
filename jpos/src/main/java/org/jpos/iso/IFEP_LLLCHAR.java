@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,7 +50,7 @@ public class IFEP_LLLCHAR extends ISOFieldPackager {
         int len;
         String s = (String) c.getValue();
     
-        if ((len=s.length()) > getLength() || len>97)   // paranoia settings
+        if ((len=s.length()) > getLength() || len>997)   // paranoia settings
             throw new ISOException (
                 "invalid len "+len +" packing LLEPCHAR field "
                 +c.getKey()

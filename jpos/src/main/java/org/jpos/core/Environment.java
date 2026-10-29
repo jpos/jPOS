@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,8 +36,8 @@ public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
 
-    private static Pattern valuePattern = Pattern.compile("^(.*)(\\$)([\\w]*)\\{([-!\\w.]+)(:(.*?))?\\}(.*)$");
-    // make groups easier to read :-)                       11112222233333333   4444444444455666665    7777
+    private static Pattern valuePattern = Pattern.compile("^((?:.|\n|\r)*)(\\$)([\\w]*)\\{([-!\\w.]+)(:(.*?))?\\}((?:.|\n|\r)*)$");
+    // make groups easier to read :-)                       111111111111112222233333333   4444444444455666665    77777777777777
 
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
     private static Environment INSTANCE;
@@ -271,9 +271,11 @@ public class Environment implements Loggeable {
                 flat(properties, p, (Map<String,Object>)entry.getValue(), dereference);
             } else {
                 Object obj = entry.getValue();
-                properties.put (p, (dereference && obj instanceof String ?
-                                    Environment.get((String) obj) :
-                                    entry.getValue().toString()));
+                if (obj != null) {
+                    properties.put(p, (dereference && obj instanceof String ?
+                      Environment.get((String) obj) :
+                      obj.toString()));
+                }
             }
         }
     }

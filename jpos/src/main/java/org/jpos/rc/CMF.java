@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -117,6 +117,13 @@ public enum CMF implements IRC {
     SYSTEM_ERROR_DB(1811, false, true),
     SYSTEM_ERROR_TXN(1812,false, true),
     CONFIGURATION_ERROR(1818),
+
+    INVALID_TERMINAL(1819),
+    INACTIVE_TERMINAL(1820),
+    INVALID_MERCHANT(1821),
+    DUPLICATE_ENTITY(1822),
+    INVALID_ACQUIRER(1823),
+
     INVALID_FIELD(1830),
     MISCONFIGURED_ENDPOINT(1831),
     INVALID_REQUEST(1832),

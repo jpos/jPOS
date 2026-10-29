@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2023 jPOS Software SRL
+ * Copyright (C) 2000-2024 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -137,8 +137,11 @@ public class Q2 implements FileFilter, Runnable {
     private static String DEPLOY_PREFIX = "META-INF/q2/deploy/";
     private static String CFG_PREFIX = "META-INF/q2/cfg/";
     private String nameRegistrarKey;
-    
-    public Q2 (String[] args, BundleContext bundleContext) {
+
+    private boolean noShutdownHook;
+    private long shutdownHookDelay = 0L;
+
+    public Q2 (String[] args, BundleContext bundleContext, ClassLoader classLoader) {
         super();
         this.args = args;
         startTime = Instant.now();
@@ -147,10 +150,15 @@ public class Q2 implements FileFilter, Runnable {
         libDir     = new File (deployDir, "lib");
         dirMap     = new TreeMap<>();
         deployDir.mkdirs ();
-        mainClassLoader = getClass().getClassLoader();
+        mainClassLoader = classLoader == null ? getClass().getClassLoader() : classLoader;
         this.bundleContext = bundleContext;
         registerQ2();
     }
+
+    public Q2 (String[] args, BundleContext bundleContext) {
+        this(args, bundleContext, null);
+    }
+
     public Q2 () {
         this (new String[] {}, null );
     }
@@ -219,7 +227,7 @@ public class Q2 implements FileFilter, Runnable {
             factory = new QFactory(loaderName, this);
             writePidFile();
             initSystemLogger();
-            if (bundleContext == null)
+            if (bundleContext == null && !noShutdownHook)
                 addShutdownHook();
             q2Thread = Thread.currentThread();
             q2Thread.setContextClassLoader(loader);
@@ -344,11 +352,15 @@ public class Q2 implements FileFilter, Runnable {
         return watchServiceClassname;
     }
 
+    public int node() {
+        return PGPHelper.node();
+    }
+
     public static Q2 getQ2() {
-        return (Q2) NameRegistrar.getIfExists(JMX_NAME);
+        return NameRegistrar.getIfExists(JMX_NAME);
     }
     public static Q2 getQ2(long timeout) {
-        return (Q2) NameRegistrar.get(JMX_NAME, timeout);
+        return NameRegistrar.get(JMX_NAME, timeout);
     }
 
     private boolean isXml(File f) {
@@ -390,8 +402,12 @@ public class Q2 implements FileFilter, Runnable {
                         qentry.setDeployed (f.lastModified ());
                     }
                     else if (deploy(f)) {
-                        if (qentry.isQBean ())
-                            startList.add (qentry.getInstance());
+                        if (qentry.isQBean ()) {
+                            if (qentry.isEagerStart())
+                                start(qentry.getInstance());
+                            else
+                                startList.add(qentry.getInstance());
+                        }
                         qentry.setDeployed (f.lastModified ());
                     } else {
                         // deploy failed, clean up.
@@ -428,10 +444,14 @@ public class Q2 implements FileFilter, Runnable {
         Runtime.getRuntime().addShutdownHook (
             new Thread ("Q2-ShutdownHook") {
                 public void run () {
+                    log.info ("shutting down (hook/" + shutdownHookDelay + ")");
+                    if (shutdownHookDelay > 0)
+                        ISOUtil.sleep(shutdownHookDelay);
                     shuttingDown = true;
                     shutdown.countDown();
                     if (q2Thread != null) {
-                        log.info ("shutting down (hook)");
+                        if (shutdownHookDelay > 0)
+                            log.info ("shutting down (join/" + SHUTDOWN_TIMEOUT + ")");
                         try {
                             q2Thread.join (SHUTDOWN_TIMEOUT);
                         } catch (InterruptedException ignored) {
@@ -573,15 +593,15 @@ public class Q2 implements FileFilter, Runnable {
                 }
             }
             if (QFactory.isEnabled(rootElement)) {
-                if (evt != null)
-                    evt.addMessage("deploy: " + f.getCanonicalPath());
                 Object obj = factory.instantiate (this, rootElement);
                 qentry.setObject (obj);
-
+                qentry.setEagerStart(QFactory.isEagerStart(rootElement));
                 ObjectInstance instance = factory.createQBean (
                     this, doc.getRootElement(), obj
                 );
                 qentry.setInstance (instance);
+                if (evt != null)
+                    evt.addMessage("deploy: " + f.getCanonicalPath() + (qentry.isEagerStart() ? " (eager-start)" : ""));
             } else if (evt != null) {
                 evt.addMessage("deploy ignored (enabled='" + QFactory.getEnabledAttribute(rootElement) + "'): " + f.getCanonicalPath());
             }
@@ -679,14 +699,14 @@ public class Q2 implements FileFilter, Runnable {
         StringBuilder vs = new StringBuilder();
         if (appVersionString != null) {
             vs.append(
-              String.format ("jPOS %s %s/%s%s (%s)%n%s%s",
-                getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), appVersionString, getLicensee()
+              String.format ("jPOS %s %s/%s%s (%s/%d)%n%s%s",
+                getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), PGPHelper.node(), appVersionString, getLicensee()
               )
             );
         } else {
             vs.append(
-              String.format("jPOS %s %s/%s%s (%s) %s",
-                    getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), getLicensee()
+              String.format("jPOS %s %s/%s%s (%s/%d) %s",
+                    getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), PGPHelper.node(), getLicensee()
               )
             );
         }
@@ -725,8 +745,10 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("sa", "ssh-authorized-keys", true, "Path to authorized key file (defaults to 'cfg/authorized_keys')");
         options.addOption ("su", "ssh-user", true, "SSH user (defaults to 'admin')");
         options.addOption ("sh", "ssh-host-key-file", true, "SSH host key file, defaults to 'cfg/hostkeys.ser'");
+        options.addOption ("sd", "shutdown-delay", true, "Shutdown delay in seconds (defaults to immediate)");
         options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
         options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
+        options.addOption ("Nh", "no-shutdown-hook", false, "Disable shutdown hook");
         options.addOption ("E", "environment", true, "Environment name.\nCan be given multiple times (applied in order, and values may override previous ones)");
         options.addOption ("Ed", "envdir", true, "Environment file directory, defaults to cfg");
 
@@ -783,18 +805,21 @@ public class Q2 implements FileFilter, Runnable {
             sshAuthorizedKeys = line.getOptionValue ("sa", "cfg/authorized_keys");
             sshUser = line.getOptionValue("su", "admin");
             sshHostKeyFile = line.getOptionValue("sh", "cfg/hostkeys.ser");
-        } catch (MissingArgumentException e) {
+            noShutdownHook = line.hasOption("Nh");
+            shutdownHookDelay = line.hasOption ("sd") ? 1000L*Integer.parseInt(line.getOptionValue("sd")) : 0;
+
+            if (noShutdownHook && shutdownHookDelay > 0)
+                throw new IllegalArgumentException ("--no-shutdown-hook incompatible with --shutdown-delay argument");
+        } catch (MissingArgumentException | IllegalArgumentException | IllegalAccessError |
+                 UnrecognizedOptionException e) {
             System.out.println("ERROR: " + e.getMessage());
-            System.exit(1);
-        } catch (IllegalAccessError | UnrecognizedOptionException e) {
-            System.out.println(e.getMessage());
             System.exit(1);
         } catch (Exception e) {
             e.printStackTrace ();
             System.exit (1);
         }
     }
-    private void deployBundle (File bundle, boolean encrypt) 
+    private void deployBundle (File bundle, boolean encrypt)
         throws JDOMException, IOException, 
                 ISOException, GeneralSecurityException
     {
@@ -1049,6 +1074,7 @@ public class Q2 implements FileFilter, Runnable {
         ObjectInstance instance;
         Object obj;
         boolean osgiBundle;
+        boolean eagerStart;
         public QEntry (boolean osgiBundle) {
             super();
             this.osgiBundle = osgiBundle;
@@ -1087,6 +1113,14 @@ public class Q2 implements FileFilter, Runnable {
         }
         public boolean isQPersist () {
             return obj instanceof QPersist;
+        }
+
+        public boolean isEagerStart() {
+            return eagerStart;
+        }
+
+        public void setEagerStart(boolean eagerStart) {
+            this.eagerStart = eagerStart;
         }
     }
 
