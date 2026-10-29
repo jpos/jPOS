@@ -38,10 +38,12 @@ import org.jpos.util.NameRegistrar;
 import org.jpos.util.SimpleLogListener;
 import org.junit.jupiter.api.Test;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.text.ParseException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -372,6 +374,86 @@ public class ISOServerTest {
             }
             connect(port, 5000L).close(); // the permit is returned and the server listens again
         } finally {
+            server.shutdown();
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
+    void wildcardAllowGrantsMatchingClient() throws Exception {
+        int port;
+        try (ServerSocket probe = new ServerSocket(0)) {
+            port = probe.getLocalPort();
+        }
+
+        CSChannel channel = new CSChannel();
+        channel.setPackager(new ISO87BPackager());
+        ISOServer server = new ISOServer(port, channel, 5);
+        server.setLogger(new Logger(), "ISOServerTest");
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("allow", "127.0.0.*");
+        server.setConfiguration(cfg);
+        CountDownLatch received = new CountDownLatch(1);
+        server.addISORequestListener((source, m) -> {
+            received.countDown();
+            return true;
+        });
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(server);
+        CSChannel client = new CSChannel("127.0.0.1", port, new ISO87BPackager());
+        try {
+            connect(port, 5000L).close();
+            client.connect();
+            ISOMsg m = new ISOMsg("0800");
+            m.set(11, "000001");
+            client.send(m);
+            assertTrue(received.await(5, TimeUnit.SECONDS), "a client matching a wildcard allow should be served");
+        } finally {
+            client.disconnect();
+            server.shutdown();
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
+    void wildcardDenyDisconnectsMatchingClient() throws Exception {
+        int port;
+        try (ServerSocket probe = new ServerSocket(0)) {
+            port = probe.getLocalPort();
+        }
+
+        CSChannel channel = new CSChannel();
+        channel.setPackager(new ISO87BPackager());
+        ISOServer server = new ISOServer(port, channel, 5);
+        server.setLogger(new Logger(), "ISOServerTest");
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("deny", "127.0.0.*");
+        server.setConfiguration(cfg);
+        CountDownLatch received = new CountDownLatch(1);
+        server.addISORequestListener((source, m) -> {
+            received.countDown();
+            return true;
+        });
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(server);
+        CSChannel client = new CSChannel("127.0.0.1", port, new ISO87BPackager());
+        try {
+            connect(port, 5000L).close();
+            client.connect();
+            client.setTimeout(10000); // past the server's random deny delay
+            ISOMsg m = new ISOMsg("0800");
+            m.set(11, "000001");
+            client.send(m);
+            IOException e = assertThrows(IOException.class, client::receive,
+              "a client matching a wildcard deny should be disconnected");
+            // Closing a socket with unread data may report a reset instead of EOF.
+            assertTrue(e instanceof EOFException || e instanceof SocketException,
+              "expected EOF or socket closure, not a timeout: " + e);
+            assertEquals(1, received.getCount(), "a denied client's request should not reach the listeners");
+        } finally {
+            client.disconnect();
             server.shutdown();
             executor.shutdownNow();
         }
