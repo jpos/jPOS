@@ -30,6 +30,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -108,7 +109,7 @@ public class ISOServer extends Observable
             new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
         listeners = new Vector();
         name = "";
-        channels = Collections.synchronizedMap(new HashMap<>());
+        channels = new ConcurrentHashMap<>();
         cnt = new int[SIZEOF_CNT];
         serverListeners = new ArrayList<ISOServerEventListener>();
     }
