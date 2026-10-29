@@ -115,7 +115,7 @@ public class NACChannel extends BaseChannel {
      * @param header String as seen by QSP
      */
     public void setHeader (String header) {
-        super.setHeader (ISOUtil.str2bcd(header, false));
+        super.setHeader (ISOUtil.hex2byte(header));
     }
     public void setConfiguration (Configuration cfg) 
         throws ConfigurationException
