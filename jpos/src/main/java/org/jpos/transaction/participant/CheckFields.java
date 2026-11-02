@@ -49,7 +49,10 @@ import static org.jpos.transaction.ContextConstants.*;
  * when {@code trigger} is present, at least one field of every group must be present.
  * A group is a single field or several alternatives separated by {@code '|'}, so
  * {@code 5:50} requires 50 whenever 5 is present, and {@code 48:48.1|48.2:48.3}
- * requires 48.3 and one of 48.1 or 48.2 whenever 48 is present.
+ * requires 48.3 and one of 48.1 or 48.2 whenever 48 is present. The rule is split on
+ * {@code ':'} first, so {@code '|'} only binds inside a group: {@code a:b|c:d} reads as
+ * "a present implies (b or c) and d". There is no grouping syntax, so "(b and c) or d"
+ * cannot be expressed.
  */
 public class CheckFields implements TransactionParticipant, Configurable {
     /** Default constructor; no instance state to initialise. */
@@ -161,7 +164,8 @@ public class CheckFields implements TransactionParticipant, Configurable {
     /**
      * Evaluates a conditional rule of the form {@code trigger:group:group...} where each
      * group is one or more alternatives separated by {@code '|'}. When the trigger field is
-     * present, at least one field of every group must be present too. The trigger and every
+     * present, at least one field of every group must be present too. The rule is split on
+     * {@code ':'} first, so {@code '|'} only binds inside a group. The trigger and every
      * alternative are considered valid fields regardless of the outcome.
      */
     private void assertRule (ISOMsg m, String rule, boolean mandatory, Set<String> validFields, Result rc) {

@@ -29,8 +29,10 @@ their values are concatenated in declaration order.
 
 A token of the form `trigger:group:group...` declares a conditional rule: when the
 `trigger` field is present, at least one field of every group must be present too. A group
-is a single field or several alternatives separated by `|`. Rules are evaluated independently,
-so a field may appear in several tokens.
+is a single field or several alternatives separated by `|`. The token is split on `:` first,
+so `|` only binds inside a group: `a:b|c:d` reads as "a present implies (b or c) and d".
+There is no grouping syntax, so "(b and c) or d" cannot be expressed. Rules are evaluated
+independently, so a field may appear in several tokens.
 
 .Conditional rule examples
 [cols="1,3", options="header"]
