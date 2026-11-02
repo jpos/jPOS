@@ -319,6 +319,79 @@ public class CheckFieldsTest implements TransactionConstants {
     }
 
     @Test
+    public void testConditionalRuleRequiresCompanion () {
+        cfg.put("optional", "5:50 6:51");
+        ISOMsg m = new ISOMsg();
+        m.set(5, "000000001000");
+        Context ctx = new Context();
+        ctx.put(ContextConstants.REQUEST.toString(), m);
+        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertEquals(1, ctx.getResult().failureList().size());
+        assertEquals(CMF.MISSING_FIELD, ctx.getResult().failure().getIrc());
+        assertEquals("50 (required by 5)", ctx.getResult().failure().getMessage());
+
+        m.set(50, "840");
+        Context ok = new Context();
+        ok.put(ContextConstants.REQUEST.toString(), m);
+        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(2L, ok));
+        assertFalse(ok.getResult().hasFailures());
+
+        // companion alone is fine, trigger absent means no rule and no extra field
+        ISOMsg alone = new ISOMsg();
+        alone.set(51, "840");
+        Context noTrigger = new Context();
+        noTrigger.put(ContextConstants.REQUEST.toString(), alone);
+        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(3L, noTrigger));
+        assertFalse(noTrigger.getResult().hasFailures());
+    }
+
+    @Test
+    public void testConditionalRuleAllAndAnyOf () {
+        cfg.put("optional", "48:48.1|48.2:48.3");
+        ISOMsg m = new ISOMsg();
+        m.set("48.3", "C");
+        Context missingAny = new Context();
+        missingAny.put(ContextConstants.REQUEST.toString(), m);
+        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(1L, missingAny));
+        assertEquals(1, missingAny.getResult().failureList().size());
+        assertEquals("48.1|48.2 (required by 48)", missingAny.getResult().failure().getMessage());
+
+        m.set("48.2", "B");
+        Context ok = new Context();
+        ok.put(ContextConstants.REQUEST.toString(), m);
+        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(2L, ok));
+        assertFalse(ok.getResult().hasFailures());
+
+        m.unset("48.3");
+        Context missingAll = new Context();
+        missingAll.put(ContextConstants.REQUEST.toString(), m);
+        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(3L, missingAll));
+        assertEquals("48.3 (required by 48)", missingAll.getResult().failure().getMessage());
+    }
+
+    @Test
+    public void testConditionalRuleRepeatedTrigger () {
+        cfg.put("optional", "48 48:48.1 48:48.2");
+        ISOMsg m = new ISOMsg();
+        m.set("48.1", "A");
+        m.set("48.2", "B");
+        Context ctx = new Context();
+        ctx.put(ContextConstants.REQUEST.toString(), m);
+        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertFalse(ctx.getResult().hasFailures());
+    }
+
+    @Test
+    public void testConditionalRuleInMandatory () {
+        cfg.put("mandatory", "5:50");
+        Context ctx = new Context();
+        ctx.put(ContextConstants.REQUEST.toString(), new ISOMsg());
+        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertEquals(1, ctx.getResult().failureList().size());
+        assertEquals("5", ctx.getResult().failure().getMessage());
+    }
+
+    @Test
     public void testEmptyRepeatedLists () {
         cfg.put("mandatory", new String[] { "", " " });
         cfg.put("optional", new String[] { "", "60", "" });

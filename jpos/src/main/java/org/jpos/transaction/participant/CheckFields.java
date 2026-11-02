@@ -44,6 +44,12 @@ import static org.jpos.transaction.ContextConstants.*;
  * <p>The {@code mandatory} and {@code optional} properties may each be declared
  * more than once. Their values are concatenated in declaration order, with a
  * comma between lists, so shared field lists can be extended per participant.
+ *
+ * <p>A token of the form {@code trigger:group:group...} declares a conditional rule:
+ * when {@code trigger} is present, at least one field of every group must be present.
+ * A group is a single field or several alternatives separated by {@code '|'}, so
+ * {@code 5:50} requires 50 whenever 5 is present, and {@code 48:48.1|48.2:48.3}
+ * requires 48.3 and one of 48.1 or 48.2 whenever 48 is present.
  */
 public class CheckFields implements TransactionParticipant, Configurable {
     /** Default constructor; no instance state to initialise. */
@@ -142,11 +148,37 @@ public class CheckFields implements TransactionParticipant, Configurable {
                 }
             }
             if (k == null) {
-                if (mandatory && !m.hasField(s))
+                if (s.indexOf(':') >= 0)
+                    assertRule(m, s, mandatory, validFields, rc);
+                else if (mandatory && !m.hasField(s))
                     rc.fail(CMF.MISSING_FIELD, Caller.info(), s);
                 else
                     validFields.add(s);
             }
+        }
+    }
+
+    /**
+     * Evaluates a conditional rule of the form {@code trigger:group:group...} where each
+     * group is one or more alternatives separated by {@code '|'}. When the trigger field is
+     * present, at least one field of every group must be present too. The trigger and every
+     * alternative are considered valid fields regardless of the outcome.
+     */
+    private void assertRule (ISOMsg m, String rule, boolean mandatory, Set<String> validFields, Result rc) {
+        String[] groups = rule.split(":");
+        String trigger = groups[0];
+        boolean present = m.hasField(trigger);
+        if (mandatory && !present)
+            rc.fail(CMF.MISSING_FIELD, Caller.info(), trigger);
+        validFields.add(trigger);
+        for (int i=1; i<groups.length; i++) {
+            boolean satisfied = !present;
+            for (String f : groups[i].split("\\|")) { // no short-circuit: every alternative is a valid field
+                validFields.add(f);
+                satisfied |= m.hasField(f);
+            }
+            if (!satisfied)
+                rc.fail(CMF.MISSING_FIELD, Caller.info(), "%s (required by %s)", groups[i], trigger);
         }
     }
     private void assertNoExtraFields (ISOMsg m, Set validFields, Result rc) {
