@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.CRC32;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 
 import org.jpos.iso.ISOPackager;
@@ -248,6 +250,40 @@ public class GZIPChannelTest {
           () -> channel.getMessage(new byte[length], 0, length));
     }
 
+    @Test
+    public void testGetMessageReadsMemberWithOptionalHeaderFields() throws Exception {
+        byte[] first = "first".getBytes(StandardCharsets.UTF_8);
+        byte[] second = "second".getBytes(StandardCharsets.UTF_8);
+        ByteArrayOutputStream input = new ByteArrayOutputStream();
+        input.write(first.length >> 8);
+        input.write(first.length);
+        input.write(memberWithOptionalHeaderFields(first, false));
+        input.write(frame(second.length, second));
+        TestGZIPChannel channel = new TestGZIPChannel();
+        channel.setInput(input.toByteArray());
+
+        assertArrayEquals(first, receive(channel));
+        assertArrayEquals(second, receive(channel));
+    }
+
+    @Test
+    public void testGetMessageRejectsCorruptHeaderCRC() throws Exception {
+        byte[] payload = "header".getBytes(StandardCharsets.UTF_8);
+        TestGZIPChannel channel = new TestGZIPChannel();
+        channel.setInput(memberWithOptionalHeaderFields(payload, true));
+
+        assertThrows(IOException.class,
+          () -> channel.getMessage(new byte[payload.length], 0, payload.length));
+    }
+
+    @Test
+    public void testGetMessageRejectsNonGZIPData() throws Exception {
+        TestGZIPChannel channel = new TestGZIPChannel();
+        channel.setInput("not gzip data".getBytes(StandardCharsets.UTF_8));
+
+        assertThrows(IOException.class, () -> channel.getMessage(new byte[4], 0, 4));
+    }
+
     private static byte[] receive(TestGZIPChannel channel) throws Exception {
         int length = channel.getMessageLength();
         byte[] message = new byte[length];
@@ -263,6 +299,48 @@ public class GZIPChannelTest {
             gzip.write(payload);
         }
         return frame.toByteArray();
+    }
+
+    /*
+     * GZIPOutputStream never writes the optional header fields, so build a member
+     * with FEXTRA, FNAME, FCOMMENT and FHCRC by hand.
+     */
+    private static byte[] memberWithOptionalHeaderFields(byte[] payload, boolean corruptHeaderCRC) {
+        ByteArrayOutputStream header = new ByteArrayOutputStream();
+        header.writeBytes(new byte[] { 0x1F, (byte) 0x8B, 8, 2 | 4 | 8 | 16, 0, 0, 0, 0, 0, (byte) 0xFF });
+        header.writeBytes(new byte[] { 3, 0, 'x', 'y', 'z' });
+        header.writeBytes("name\0".getBytes(StandardCharsets.ISO_8859_1));
+        header.writeBytes("comment\0".getBytes(StandardCharsets.ISO_8859_1));
+        CRC32 headerCRC = new CRC32();
+        headerCRC.update(header.toByteArray());
+        int hcrc = (int) headerCRC.getValue() & 0xFFFF;
+        if (corruptHeaderCRC)
+            hcrc ^= 1;
+
+        Deflater deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
+        deflater.setInput(payload);
+        deflater.finish();
+        ByteArrayOutputStream deflated = new ByteArrayOutputStream();
+        byte[] buffer = new byte[64];
+        while (!deflater.finished())
+            deflated.write(buffer, 0, deflater.deflate(buffer));
+        deflater.end();
+        CRC32 dataCRC = new CRC32();
+        dataCRC.update(payload);
+
+        ByteArrayOutputStream member = new ByteArrayOutputStream();
+        member.writeBytes(header.toByteArray());
+        member.write(hcrc);
+        member.write(hcrc >> 8);
+        member.writeBytes(deflated.toByteArray());
+        writeUInt(member, dataCRC.getValue());
+        writeUInt(member, payload.length);
+        return member.toByteArray();
+    }
+
+    private static void writeUInt(ByteArrayOutputStream out, long value) {
+        for (int i = 0; i < 4; i++)
+            out.write((int) (value >> (8 * i)));
     }
 
     private static byte[] concat(byte[] first, byte[] second) throws IOException {

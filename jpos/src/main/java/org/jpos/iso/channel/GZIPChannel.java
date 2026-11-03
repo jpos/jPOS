@@ -20,12 +20,15 @@ package org.jpos.iso.channel;
 
 import org.jpos.iso.*;
 
-import java.io.FilterInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ServerSocket;
-import java.util.zip.GZIPInputStream;
+import java.util.Objects;
+import java.util.zip.CRC32;
+import java.util.zip.DataFormatException;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.Inflater;
+import java.util.zip.ZipException;
 
 /**
  * ISOChannel implementation.
@@ -107,44 +110,101 @@ public class GZIPChannel extends BaseChannel {
         gzip.finish();
         gzip.flush();
     }
+    /*
+     * Reads exactly one GZIP member (header, deflate data and trailer) and nothing
+     * past it, so the length prefix of the next frame stays unread. The Inflater is
+     * fed one byte at a time because GZIPInputStream may read past the trailer,
+     * depending on the JDK version.
+     */
     protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException {
-        int total = 0;
-        try (GZIPInputStream gzip = new GZIPInputStream(new SingleMemberInputStream(serverIn), 1)) {
-            while (total < len) {
-                int nread = gzip.read (b, offset, len - total);
-                if (nread == -1) {
-                    throw new ISOException("End of compressed stream reached before all data was read");
+        DataInputStream in = Objects.requireNonNull(serverIn);
+        readHeader(in);
+        Inflater inflater = new Inflater(true);
+        try {
+            CRC32 crc = new CRC32();
+            byte[] input = new byte[1];
+            byte[] extra = new byte[1];
+            int total = 0;
+            while (!inflater.finished()) {
+                if (inflater.needsInput()) {
+                    input[0] = in.readByte();
+                    inflater.setInput(input, 0, 1);
                 }
-                total += nread;
-                offset += nread;
+                if (total < len) {
+                    int nread = inflater.inflate(b, offset + total, len - total);
+                    crc.update(b, offset + total, nread);
+                    total += nread;
+                } else if (inflater.inflate(extra) > 0) {
+                    throw new ISOException("Compressed stream contains more data than expected");
+                }
+                if (inflater.needsDictionary())
+                    throw new ZipException("Unsupported GZIP preset dictionary");
             }
-            // Reach the end of the member to validate its trailer and exact uncompressed length.
-            if (gzip.read() != -1) {
-                throw new ISOException("Compressed stream contains more data than expected");
-            }
+            if (total < len)
+                throw new ISOException("End of compressed stream reached before all data was read");
+
+            // The inflater may still hold the first trailer byte.
+            byte[] trailer = new byte[8];
+            int remaining = inflater.getRemaining();
+            System.arraycopy(input, input.length - remaining, trailer, 0, remaining);
+            in.readFully(trailer, remaining, trailer.length - remaining);
+            if (readUInt(trailer, 0) != crc.getValue()
+              || readUInt(trailer, 4) != (inflater.getBytesWritten() & 0xFFFFFFFFL))
+                throw new ZipException("Corrupt GZIP trailer");
+        } catch (DataFormatException e) {
+            throw new ZipException(e.getMessage() != null ? e.getMessage() : "Invalid ZLIB data format");
+        } finally {
+            inflater.end();
         }
     }
 
-    /*
-     * GZIPInputStream uses available() to decide whether to read a concatenated member.
-     * A one-byte inflater buffer and a zero result here keep the next frame prefix unread.
-     */
-    private static class SingleMemberInputStream extends FilterInputStream {
-        SingleMemberInputStream(InputStream in) {
-            super(in);
-            if (in == null) {
-                throw new NullPointerException();
-            }
-        }
+    private static final int FHCRC = 2;
+    private static final int FEXTRA = 4;
+    private static final int FNAME = 8;
+    private static final int FCOMMENT = 16;
 
-        @Override
-        public int available() {
-            return 0;
+    private static void readHeader (DataInputStream in) throws IOException {
+        CRC32 crc = new CRC32();
+        byte[] header = new byte[10];
+        in.readFully(header);
+        crc.update(header);
+        if ((header[0] & 0xFF) != 0x1F || (header[1] & 0xFF) != 0x8B)
+            throw new ZipException("Not in GZIP format");
+        if (header[2] != 8)
+            throw new ZipException("Unsupported compression method");
+        int flags = header[3] & 0xFF;
+        if ((flags & FEXTRA) != 0) {
+            byte[] xlen = new byte[2];
+            in.readFully(xlen);
+            crc.update(xlen);
+            byte[] extra = new byte[(xlen[0] & 0xFF) | (xlen[1] & 0xFF) << 8];
+            in.readFully(extra);
+            crc.update(extra);
         }
+        if ((flags & FNAME) != 0)
+            skipZeroTerminated(in, crc);
+        if ((flags & FCOMMENT) != 0)
+            skipZeroTerminated(in, crc);
+        if ((flags & FHCRC) != 0) {
+            int expected = (int) crc.getValue() & 0xFFFF;
+            int actual = in.readUnsignedByte() | in.readUnsignedByte() << 8;
+            if (actual != expected)
+                throw new ZipException("Corrupt GZIP header");
+        }
+    }
 
-        @Override
-        public void close() {
-            // The channel owns the underlying stream.
-        }
+    private static void skipZeroTerminated (DataInputStream in, CRC32 crc) throws IOException {
+        int c;
+        do {
+            c = in.readUnsignedByte();
+            crc.update(c);
+        } while (c != 0);
+    }
+
+    private static long readUInt (byte[] b, int offset) {
+        return (b[offset] & 0xFFL)
+          | (b[offset + 1] & 0xFFL) << 8
+          | (b[offset + 2] & 0xFFL) << 16
+          | (b[offset + 3] & 0xFFL) << 24;
     }
 }
