@@ -18,7 +18,10 @@
 
 package org.jpos.transaction.participant;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.StringTokenizer;
@@ -44,6 +47,17 @@ import static org.jpos.transaction.ContextConstants.*;
  * <p>The {@code mandatory} and {@code optional} properties may each be declared
  * more than once. Their values are concatenated in declaration order, with a
  * comma between lists, so shared field lists can be extended per participant.
+ *
+ * <p>A token of the form {@code trigger:group:group...} declares a conditional rule:
+ * when {@code trigger} is present, at least one field of every group must be present.
+ * A group is a single field or several alternatives separated by {@code '|'}, so
+ * {@code 5:50} requires 50 whenever 5 is present, and {@code 48:48.1|48.2:48.3}
+ * requires 48.3 and one of 48.1 or 48.2 whenever 48 is present. The rule is split on
+ * {@code ':'} first, so {@code '|'} only binds inside a group: {@code a:b|c:d} reads as
+ * "a present implies (b or c) and d". There is no grouping syntax, so "(b and c) or d"
+ * cannot be expressed. Both lists are parsed once at configuration time; a token with an
+ * empty trigger, group or alternative (such as {@code 5:}, {@code 5::50} or {@code 48:|48.1})
+ * is rejected with a {@link ConfigurationException}.
  */
 public class CheckFields implements TransactionParticipant, Configurable {
     /** Default constructor; no instance state to initialise. */
@@ -61,6 +75,20 @@ public class CheckFields implements TransactionParticipant, Configurable {
     private boolean allowExtraFields = false;
     private Pattern track1Pattern = null;
     private Pattern track2Pattern = null;
+    private List<Rule> mandatoryRules = List.of();
+    private List<Rule> optionalRules = List.of();
+
+    /**
+     * One token of a {@code mandatory} or {@code optional} list, parsed once at configuration time.
+     * Either a special name handled by a dedicated parser, or a field path with zero or more
+     * conditional groups (an AND of OR-groups).
+     */
+    private record Rule(ContextConstants special, String trigger, String[][] groups) {}
+
+    private static final EnumSet<ContextConstants> SPECIAL = EnumSet.of(
+      PCODE, CARD, TID, MID, TRANSMISSION_TIMESTAMP, TRANSACTION_TIMESTAMP,
+      POS_DATA_CODE, CAPTURE_DATE, AMOUNT, ORIGINAL_DATA_ELEMENTS
+    );
 
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
@@ -72,8 +100,8 @@ public class CheckFields implements TransactionParticipant, Configurable {
                 return ABORTED | NO_JOIN | READONLY;
             }
             Set<String> validFields = new HashSet<>();
-            assertFields (ctx, m, String.join(",", cfg.getAll("mandatory")), true, validFields, rc);
-            assertFields (ctx, m, String.join(",", cfg.getAll("optional")), false, validFields, rc);
+            assertFields (ctx, m, mandatoryRules, true, validFields, rc);
+            assertFields (ctx, m, optionalRules, false, validFields, rc);
             if (!allowExtraFields) assertNoExtraFields (m, validFields, rc);
         } catch (Throwable t) {
             rc.fail(CMF.SYSTEM_ERROR, Caller.info(), t.getMessage());
@@ -82,8 +110,10 @@ public class CheckFields implements TransactionParticipant, Configurable {
         return (rc.hasFailures() ? ABORTED : PREPARED) | NO_JOIN | READONLY;
     }
 
-    public void setConfiguration (Configuration cfg) {
+    public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
+        mandatoryRules = parseRules(cfg.getAll("mandatory"), "mandatory");
+        optionalRules = parseRules(cfg.getAll("optional"), "optional");
         request = cfg.get ("request", ContextConstants.REQUEST.toString());
         ignoreCardValidation = cfg.getBoolean("ignore-card-validation", false);
         allowExtraFields = cfg.getBoolean("allow-extra-fields", false);
@@ -97,16 +127,36 @@ public class CheckFields implements TransactionParticipant, Configurable {
         }
     }
 
-    private void assertFields(Context ctx, ISOMsg m, String fields, boolean mandatory, Set<String> validFields, Result rc) {
-        StringTokenizer st = new StringTokenizer (fields, ", ");
+    private static List<Rule> parseRules (String[] lists, String property) throws ConfigurationException {
+        List<Rule> rules = new ArrayList<>();
+        StringTokenizer st = new StringTokenizer (String.join(",", lists), ", ");
         while (st.hasMoreTokens()) {
             String s = st.nextToken();
             ContextConstants k = null;
             try {
                 k = ContextConstants.valueOf(s);
             } catch (IllegalArgumentException ignored) { }
-            if (k != null) {
-                switch (k) {
+            if (k != null && SPECIAL.contains(k)) {
+                rules.add(new Rule(k, null, null));
+                continue;
+            }
+            String[] parts = s.split(":", -1);
+            String[][] groups = new String[parts.length - 1][];
+            for (int i=1; i<parts.length; i++)
+                groups[i-1] = parts[i].split("\\|", -1);
+            if (parts[0].isEmpty() || Arrays.stream(groups).flatMap(Arrays::stream).anyMatch(String::isEmpty))
+                throw new ConfigurationException(
+                  String.format("invalid %s token '%s': empty trigger, group or alternative", property, s)
+                );
+            rules.add(new Rule(null, parts[0], groups));
+        }
+        return rules;
+    }
+
+    private void assertFields(Context ctx, ISOMsg m, List<Rule> rules, boolean mandatory, Set<String> validFields, Result rc) {
+        for (Rule r : rules) {
+            if (r.special() != null) {
+                switch (r.special()) {
                     case PCODE:
                         putPCode(ctx, m, mandatory, validFields, rc);
                         break;
@@ -137,16 +187,33 @@ public class CheckFields implements TransactionParticipant, Configurable {
                     case ORIGINAL_DATA_ELEMENTS:
                         putOriginalDataElements(ctx, m, mandatory, validFields, rc);
                         break;
-                    default:
-                        k = null;
                 }
+            } else {
+                assertRule(m, r, mandatory, validFields, rc);
             }
-            if (k == null) {
-                if (mandatory && !m.hasField(s))
-                    rc.fail(CMF.MISSING_FIELD, Caller.info(), s);
-                else
-                    validFields.add(s);
+        }
+    }
+
+    /**
+     * Evaluates a field rule parsed by {@link #parseRules}. A plain field has no groups.
+     * When the trigger field is present, at least one field of every group must be present
+     * too. The trigger and every alternative are considered valid fields regardless of the
+     * outcome.
+     */
+    private void assertRule (ISOMsg m, Rule r, boolean mandatory, Set<String> validFields, Result rc) {
+        String trigger = r.trigger();
+        boolean present = m.hasField(trigger);
+        if (mandatory && !present)
+            rc.fail(CMF.MISSING_FIELD, Caller.info(), trigger);
+        validFields.add(trigger);
+        for (String[] group : r.groups()) {
+            boolean satisfied = !present;
+            for (String f : group) { // no short-circuit: every alternative is a valid field
+                validFields.add(f);
+                satisfied |= m.hasField(f);
             }
+            if (!satisfied)
+                rc.fail(CMF.MISSING_FIELD, Caller.info(), "%s (required by %s)", String.join("|", group), trigger);
         }
     }
     private void assertNoExtraFields (ISOMsg m, Set validFields, Result rc) {
