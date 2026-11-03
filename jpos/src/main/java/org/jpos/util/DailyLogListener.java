@@ -20,6 +20,7 @@ package org.jpos.util;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.annotation.Config;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -56,6 +57,10 @@ public class DailyLogListener extends RotateLogListener{
     private static final int DEF_BUFFER_SIZE = 128*1024;//128 KB
     private static final String[] DEF_COMPRESSED_SUFFIX= {"",".gz",".zip"};
     private static final Map<String,Integer> COMPRESSION_FORMATS = new HashMap<String,Integer>(3);
+    
+    @Config("max-depth-deletion")
+    private int maxDepthDeletion = DEF_MAXDEPTH;
+    
     static {
         COMPRESSION_FORMATS.put("none", NONE);
         COMPRESSION_FORMATS.put("gzip", GZIP);
@@ -93,7 +98,7 @@ public class DailyLogListener extends RotateLogListener{
         setCompressionBufferSize(cfg.getInt("compression-buffer-size",
                 DEF_BUFFER_SIZE));
 	    
-	deleteRegex = cfg.get("delete-regex", defaultDeleteRegex());
+	    deleteRegex = cfg.get("delete-regex", defaultDeleteRegex());
 
         setLastDate(fmt.format(new Date()));
 
@@ -178,7 +183,7 @@ public class DailyLogListener extends RotateLogListener{
 		long currentSystemTime = System.currentTimeMillis();
 
 		try {
-			Files.find(logBasePath, DEF_MAXDEPTH,
+			Files.find(logBasePath, maxDepthDeletion,
 					(path, attributes) ->
 							path.getFileName().toString().matches(deleteRegex)
 							&& attributes.isRegularFile()
