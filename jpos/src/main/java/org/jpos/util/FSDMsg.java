@@ -58,6 +58,10 @@ import org.jpos.space.SpaceFactory;
  * </dd>
  * <dt>key</dt>
  * <dd>If this optional attribute has a value of "true", then fields from another schema, specified by the value, are appended to this schema.</dd>
+ * <dt>realm</dt>
+ * <dd>This is the way to change the value appended to this schema when key="true". For example when the value contain character such as "/"
+ * it is not possible to create file in the file system. With realm="filename" you can avoid that.
+ * </dd>
  * <dt>separator</dt>
  * <dd>An optional attribute containing the separator for the field. This is the preferred method of specifying the separator. See the list of optional</dd>
  * </dl>
@@ -370,6 +374,8 @@ public class FSDMsg implements Loggeable, Cloneable {
             String type  = elem.getAttributeValue ("type");
             // For backward compatibility, look for a separator at the end of the type attribute, if no separator has been defined.
             String separator = elem.getAttributeValue ("separator");
+	    String realm = elem.getAttributeValue ("realm");
+	
             if (type != null && separator == null) {
             	separator = getSeparatorType (type);
             }
@@ -391,6 +397,9 @@ public class FSDMsg implements Loggeable, Cloneable {
             if (key) {
                 String v = isBinary(type) ? ISOUtil.hexString(value.getBytes(charset)) : value;
                 keyOff = keyOff + normalizeKeyValue(v, properties);
+		    if(realm != null && realm.length() > 0){
+                    keyOff = realm;
+                }
                 defaultKey += elem.getAttributeValue ("default-key");
             }
         }
@@ -425,6 +434,7 @@ public class FSDMsg implements Loggeable, Cloneable {
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
             String type  = elem.getAttributeValue ("type").toUpperCase();
             String separator = elem.getAttributeValue ("separator");
+	    String realm = elem.getAttributeValue ("realm");
             if (/* type != null && */       // can't be null or we would have NPE'ed when .toUpperCase()
                 separator == null) {
             	separator = getSeparatorType (type);
@@ -436,6 +446,9 @@ public class FSDMsg implements Loggeable, Cloneable {
 
             if (key) {
                 keyOff = keyOff + normalizeKeyValue(value, properties);
+		    if(realm != null && realm.length() > 0){
+                    keyOff = realm;
+                }
                 defaultKey += elem.getAttributeValue ("default-key");
             }
 
