@@ -20,6 +20,7 @@ package org.jpos.transaction.participant;
 
 
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.ISOAmount;
 import org.jpos.iso.ISODate;
@@ -38,8 +39,10 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -51,13 +54,18 @@ public class CheckFieldsTest implements TransactionConstants {
     public void setUp() {
         cfg = new SimpleConfiguration();
         cf = new CheckFields();
-        cf.setConfiguration(cfg);
+    }
+
+    // tests populate cfg after setUp, so the configuration is (re)applied right before prepare
+    private int prepare (long id, Context ctx) {
+        assertDoesNotThrow(() -> cf.setConfiguration(cfg));
+        return cf.prepare(id, ctx);
     }
 
     @Test
     public void testInvalidTransaction () {
         Context ctx = new Context();
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals (ABORTED | NO_JOIN | READONLY, action, "Action should be ABORTED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
         assertTrue(rc.hasFailures(), "RC should have failures");
@@ -70,7 +78,7 @@ public class CheckFieldsTest implements TransactionConstants {
         ISOMsg m = new ISOMsg();
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "3");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals (ABORTED | NO_JOIN | READONLY, action, "Action should be ABORTED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo(), "RC should have no info");
@@ -83,7 +91,7 @@ public class CheckFieldsTest implements TransactionConstants {
         Context ctx = new Context();
         ISOMsg m = new ISOMsg();
         ctx.put(ContextConstants.REQUEST.toString(), m);
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo(), "RC should have no info");
@@ -100,7 +108,7 @@ public class CheckFieldsTest implements TransactionConstants {
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "11");
         cfg.put("optional", "3");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo(), "RC should have no info");
@@ -119,7 +127,7 @@ public class CheckFieldsTest implements TransactionConstants {
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "11");
         cfg.put("optional", "3");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals (ABORTED | NO_JOIN | READONLY, action, "Action should be ABORTED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
         assertEquals(CMF.EXTRA_FIELD, rc.failure().getIrc());
@@ -137,7 +145,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(11, "000001");
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("optional", "PCODE");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals (ABORTED | NO_JOIN | READONLY, action, "Action should be ABORTED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
         assertEquals(CMF.INVALID_FIELD, rc.failure().getIrc());
@@ -158,7 +166,7 @@ public class CheckFieldsTest implements TransactionConstants {
 
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "CARD");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(PREPARED | NO_JOIN | READONLY, action);
     }
     @Test
@@ -171,7 +179,7 @@ public class CheckFieldsTest implements TransactionConstants {
 
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "CARD");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(ABORTED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertEquals(CMF.INVALID_CARD_NUMBER, rc.failure().getIrc());
@@ -189,7 +197,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(42, "*2");
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "MID, TID");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(ABORTED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertEquals(CMF.INVALID_FIELD, rc.failure().getIrc());
@@ -207,7 +215,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(42, "0000000001     ");
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "MID, TID");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(PREPARED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertFalse(rc.hasFailures());
@@ -222,7 +230,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(12, ISODate.getDateTime(now));
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "7 12");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(PREPARED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo());
@@ -239,7 +247,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(12, "*");
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "TRANSMISSION_TIMESTAMP TRANSACTION_TIMESTAMP");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         // ctx.dump (System.out, "");
         assertEquals(ABORTED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
@@ -260,7 +268,7 @@ public class CheckFieldsTest implements TransactionConstants {
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "48");
         cfg.put("optional", "60");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(PREPARED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo());
@@ -275,7 +283,7 @@ public class CheckFieldsTest implements TransactionConstants {
             .setAttribute("value", "48,60"));
         participant.addContent(new Element("property").setAttribute("name", "optional")
             .setAttribute("value", "60,61"));
-        cf.setConfiguration(new SimpleConfigurationFactory().getConfiguration(participant));
+        cfg = new SimpleConfigurationFactory().getConfiguration(participant);
         Context ctx = new Context();
         ISOMsg m = new ISOMsg();
         m.set(48, "First list");
@@ -283,13 +291,13 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(61, "Second list");
         ctx.put(ContextConstants.REQUEST.toString(), m);
 
-        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertEquals(PREPARED | NO_JOIN | READONLY, prepare(1L, ctx));
         assertFalse(ctx.getResult().hasFailures());
 
         m.set(62, "Undeclared field");
         Context extra = new Context();
         extra.put(ContextConstants.REQUEST.toString(), m);
-        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(2L, extra));
+        assertEquals(ABORTED | NO_JOIN | READONLY, prepare(2L, extra));
         assertEquals(CMF.EXTRA_FIELD, extra.getResult().failure().getIrc());
     }
 
@@ -300,13 +308,13 @@ public class CheckFieldsTest implements TransactionConstants {
             .setAttribute("value", "48"));
         participant.addContent(new Element("property").setAttribute("name", "mandatory")
             .setAttribute("value", "60"));
-        cf.setConfiguration(new SimpleConfigurationFactory().getConfiguration(participant));
+        cfg = new SimpleConfigurationFactory().getConfiguration(participant);
         Context missing = new Context();
         ISOMsg m = new ISOMsg();
         m.set(48, "First list");
         missing.put(ContextConstants.REQUEST.toString(), m);
 
-        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(1L, missing));
+        assertEquals(ABORTED | NO_JOIN | READONLY, prepare(1L, missing));
         assertEquals(1, missing.getResult().failureList().size());
         assertEquals(CMF.MISSING_FIELD, missing.getResult().failure().getIrc());
         assertEquals("60", missing.getResult().failure().getMessage());
@@ -314,7 +322,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(60, "Second list");
         Context complete = new Context();
         complete.put(ContextConstants.REQUEST.toString(), m);
-        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(2L, complete));
+        assertEquals(PREPARED | NO_JOIN | READONLY, prepare(2L, complete));
         assertFalse(complete.getResult().hasFailures());
     }
 
@@ -325,7 +333,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(5, "000000001000");
         Context ctx = new Context();
         ctx.put(ContextConstants.REQUEST.toString(), m);
-        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertEquals(ABORTED | NO_JOIN | READONLY, prepare(1L, ctx));
         assertEquals(1, ctx.getResult().failureList().size());
         assertEquals(CMF.MISSING_FIELD, ctx.getResult().failure().getIrc());
         assertEquals("50 (required by 5)", ctx.getResult().failure().getMessage());
@@ -333,7 +341,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(50, "840");
         Context ok = new Context();
         ok.put(ContextConstants.REQUEST.toString(), m);
-        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(2L, ok));
+        assertEquals(PREPARED | NO_JOIN | READONLY, prepare(2L, ok));
         assertFalse(ok.getResult().hasFailures());
 
         // companion alone is fine, trigger absent means no rule and no extra field
@@ -341,7 +349,7 @@ public class CheckFieldsTest implements TransactionConstants {
         alone.set(51, "840");
         Context noTrigger = new Context();
         noTrigger.put(ContextConstants.REQUEST.toString(), alone);
-        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(3L, noTrigger));
+        assertEquals(PREPARED | NO_JOIN | READONLY, prepare(3L, noTrigger));
         assertFalse(noTrigger.getResult().hasFailures());
     }
 
@@ -352,20 +360,20 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set("48.3", "C");
         Context missingAny = new Context();
         missingAny.put(ContextConstants.REQUEST.toString(), m);
-        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(1L, missingAny));
+        assertEquals(ABORTED | NO_JOIN | READONLY, prepare(1L, missingAny));
         assertEquals(1, missingAny.getResult().failureList().size());
         assertEquals("48.1|48.2 (required by 48)", missingAny.getResult().failure().getMessage());
 
         m.set("48.2", "B");
         Context ok = new Context();
         ok.put(ContextConstants.REQUEST.toString(), m);
-        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(2L, ok));
+        assertEquals(PREPARED | NO_JOIN | READONLY, prepare(2L, ok));
         assertFalse(ok.getResult().hasFailures());
 
         m.unset("48.3");
         Context missingAll = new Context();
         missingAll.put(ContextConstants.REQUEST.toString(), m);
-        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(3L, missingAll));
+        assertEquals(ABORTED | NO_JOIN | READONLY, prepare(3L, missingAll));
         assertEquals("48.3 (required by 48)", missingAll.getResult().failure().getMessage());
     }
 
@@ -377,7 +385,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set("48.2", "B");
         Context ctx = new Context();
         ctx.put(ContextConstants.REQUEST.toString(), m);
-        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertEquals(PREPARED | NO_JOIN | READONLY, prepare(1L, ctx));
         assertFalse(ctx.getResult().hasFailures());
     }
 
@@ -386,9 +394,18 @@ public class CheckFieldsTest implements TransactionConstants {
         cfg.put("mandatory", "5:50");
         Context ctx = new Context();
         ctx.put(ContextConstants.REQUEST.toString(), new ISOMsg());
-        assertEquals(ABORTED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertEquals(ABORTED | NO_JOIN | READONLY, prepare(1L, ctx));
         assertEquals(1, ctx.getResult().failureList().size());
         assertEquals("5", ctx.getResult().failure().getMessage());
+    }
+
+    @Test
+    public void testMalformedRulesRejectedAtConfiguration () {
+        for (String bad : new String[] { "5:", ":", "::", "5::50", "48:|48.2", "48:48.1||48.2" }) {
+            cfg.put("optional", bad);
+            ConfigurationException e = assertThrows(ConfigurationException.class, () -> cf.setConfiguration(cfg), bad);
+            assertTrue(e.getMessage().contains("'" + bad + "'"), e.getMessage());
+        }
     }
 
     @Test
@@ -400,7 +417,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(60, "Optional field");
         ctx.put(ContextConstants.REQUEST.toString(), m);
 
-        assertEquals(PREPARED | NO_JOIN | READONLY, cf.prepare(1L, ctx));
+        assertEquals(PREPARED | NO_JOIN | READONLY, prepare(1L, ctx));
         assertFalse(ctx.getResult().hasFailures());
     }
 
@@ -412,7 +429,7 @@ public class CheckFieldsTest implements TransactionConstants {
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "48");
         cfg.put("optional", "60");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(PREPARED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo());
@@ -428,7 +445,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(60, "Extra field 60");
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "48");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         // ctx.dump (System.out, "");
         assertEquals(ABORTED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
@@ -445,7 +462,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(22, new byte[16]);
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "POS_DATA_CODE");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(PREPARED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo());
@@ -460,7 +477,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(17, "0101");
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "CAPTURE_DATE");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(PREPARED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo());
@@ -478,7 +495,7 @@ public class CheckFieldsTest implements TransactionConstants {
 
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "AMOUNT");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(PREPARED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo());
@@ -496,7 +513,7 @@ public class CheckFieldsTest implements TransactionConstants {
         m.set(56, "0200000000000001" + ISODate.formatDate(now, "yyyyMMddHHmmss"));
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "ORIGINAL_DATA_ELEMENTS");
-        int action = cf.prepare(1L, ctx);
+        int action = prepare(1L, ctx);
         assertEquals(PREPARED | NO_JOIN | READONLY, action);
         Result rc = ctx.getResult();
         assertFalse(rc.hasInfo());
