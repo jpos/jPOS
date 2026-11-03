@@ -22,9 +22,12 @@ import org.jpos.iso.*;
 import org.jpos.iso.packager.XMLPackager;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -116,5 +119,10 @@ public class XMLChannel extends BaseChannel {
         if (reader != null)
             reader.close ();
         reader = null;
+    }
+
+    protected void connect(InputStream in, OutputStream out) {
+        super.connect(in, out);
+        reader = new BufferedReader(new InputStreamReader(in));
     }
 }
