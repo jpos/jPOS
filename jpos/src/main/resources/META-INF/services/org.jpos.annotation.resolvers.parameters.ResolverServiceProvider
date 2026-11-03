@@ -1,0 +1,3 @@
+org.jpos.annotation.resolvers.parameters.ContextResolver
+org.jpos.annotation.resolvers.parameters.RegistryResolver
+org.jpos.annotation.resolvers.parameters.ContextPassThruResolver

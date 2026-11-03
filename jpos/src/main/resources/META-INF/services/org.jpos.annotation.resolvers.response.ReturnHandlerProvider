@@ -1,0 +1,4 @@
+org.jpos.annotation.resolvers.response.IntPassthruContextReturnHandler
+org.jpos.annotation.resolvers.response.MultiValueContextReturnHandler
+org.jpos.annotation.resolvers.response.SingleValueContextReturnHandler
+org.jpos.annotation.resolvers.response.VoidContextReturnHandler
