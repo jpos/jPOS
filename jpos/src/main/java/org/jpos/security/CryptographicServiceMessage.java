@@ -119,7 +119,9 @@ public class CryptographicServiceMessage implements Loggeable {
         Objects.requireNonNull(tag, "The tag is required");
         Objects.requireNonNull(content, "The content is required");
         tag = tag.toUpperCase();
-        fields.put(tag, content);
+        synchronized (fields) {
+            fields.put(tag, content);
+        }
     }
 
     /**
@@ -191,7 +193,11 @@ public class CryptographicServiceMessage implements Loggeable {
         p.print(indent + "<csm");
         p.print(" class=\"" + getMCL() + "\"");
         p.println(">");
-        for (String tag : fields.keySet()) {
+        List<String> snapshot;
+        synchronized (fields) {
+            snapshot = new ArrayList<>(fields.keySet());
+        }
+        for (String tag : snapshot) {
             p.println(inner + "<field tag=\"" + tag + "\" value=\"" + getFieldContent(tag) + "\"/>");
         }
         p.println(indent + "</csm>");
