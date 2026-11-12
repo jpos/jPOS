@@ -105,13 +105,15 @@ public class TPPDataElementsTest {
 
     @Test
     public void testPinStepUpContinuation() throws ISOException {
-        GenericPackager packager = new GenericPackager("jar:packager/cmfv3.xml");
-        ISOMsgFieldPackager privateFields = (ISOMsgFieldPackager) packager.getFieldPackager(113);
-        ISOFieldPackager continuation = ((ISOBasePackager) privateFields.getISOMsgPackager()).getFieldPackager(79);
-        assertInstanceOf(IF_CHAR.class, continuation);
-        assertEquals(1, continuation.getLength());
+        for (String resource : new String[] {"jar:packager/cmf.xml", "jar:packager/cmfv3.xml"}) {
+            GenericPackager packager = new GenericPackager(resource);
+            ISOMsgFieldPackager privateFields = (ISOMsgFieldPackager) packager.getFieldPackager(113);
+            ISOFieldPackager continuation = ((ISOBasePackager) privateFields.getISOMsgPackager()).getFieldPackager(79);
+            assertInstanceOf(IF_CHAR.class, continuation, resource);
+            assertEquals(1, continuation.getLength(), resource);
 
-        assertPackUnpackPreservesFieldValue("jar:packager/cmfv3.xml", "113.79", "1");
+            assertPackUnpackPreservesFieldValue(resource, "113.79", "1");
+        }
     }
 
     private void assertPackUnpackPreservesFieldValue(String packagerResource, String fieldPath, String value) throws ISOException {
