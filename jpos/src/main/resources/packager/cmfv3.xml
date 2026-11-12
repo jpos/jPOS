@@ -1224,6 +1224,11 @@
           length="255"
           name="W3C Trace Context"
           class="org.jpos.iso.IFB_LLLCHAR" />
+      <isofield
+          id="79"
+          length="1"
+          name="PIN Step-up Continuation"
+          class="org.jpos.iso.IF_CHAR" />
   </isofieldpackager>
   <isofield
       id="114"

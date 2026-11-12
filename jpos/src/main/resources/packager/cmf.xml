@@ -1108,6 +1108,11 @@
           length="999"
           name="Age Verification Data"
           class="org.jpos.iso.IFB_LLLCHAR" />
+      <isofield
+          id="79"
+          length="1"
+          name="PIN Step-up Continuation"
+          class="org.jpos.iso.IF_CHAR" />
   </isofieldpackager>
   <isofield
       id="114"
