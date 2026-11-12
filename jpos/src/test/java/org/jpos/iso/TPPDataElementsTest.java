@@ -103,6 +103,17 @@ public class TPPDataElementsTest {
             () -> traceContext.pack(new ISOField(78, "a".repeat(256))));
     }
 
+    @Test
+    public void testPinStepUpContinuation() throws ISOException {
+        GenericPackager packager = new GenericPackager("jar:packager/cmfv3.xml");
+        ISOMsgFieldPackager privateFields = (ISOMsgFieldPackager) packager.getFieldPackager(113);
+        ISOFieldPackager continuation = ((ISOBasePackager) privateFields.getISOMsgPackager()).getFieldPackager(79);
+        assertInstanceOf(IF_CHAR.class, continuation);
+        assertEquals(1, continuation.getLength());
+
+        assertPackUnpackPreservesFieldValue("jar:packager/cmfv3.xml", "113.79", "1");
+    }
+
     private void assertPackUnpackPreservesFieldValue(String packagerResource, String fieldPath, String value) throws ISOException {
         ISOPackager p = new GenericPackager(packagerResource);
         ISOMsg m = new ISOMsg("2100");
