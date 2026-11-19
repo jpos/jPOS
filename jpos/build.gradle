@@ -113,10 +113,10 @@ def jposCopySpec = copySpec {
 
 task listJars {
     doLast {
-        configurations.testCompile.each { File file -> println file.name }
-        println "    libsDir: ${project.libsDir}"
-        println "libsDirName: ${project.libsDirName}"
-        println "libsDirName: ${project.libsDirName}"
+        configurations.testRuntimeClasspath.each { File file -> println file.name }
+        println "    libsDir: ${base.libsDirectory.get().asFile}"
+        println "libsDirName: ${base.libsDirectory.get().asFile.name}"
+        println "libsDirName: ${base.libsDirectory.get().asFile.name}"
         println "    project: ${project.buildDir}"
     }
 }
